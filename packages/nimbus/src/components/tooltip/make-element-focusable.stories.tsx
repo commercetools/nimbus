@@ -1,10 +1,10 @@
 import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
-import { Tooltip, MakeElementFocusable } from "@/components";
+import { MakeElementFocusable, Tooltip } from "@commercetools/nimbus";
 
 const meta: Meta<typeof MakeElementFocusable> = {
-  title: "components/Tooltip/MakeElementFocusable",
+  title: "Components/Tooltip/MakeElementFocusable",
   component: MakeElementFocusable,
   render: (args) => (
     <Tooltip.Root delay={0} closeDelay={0}>

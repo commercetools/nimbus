@@ -1,16 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { LoadingSpinner } from "./loading-spinner";
-import { Stack } from "./../stack";
-import type { LoadingSpinnerProps } from "./loading-spinner.types";
+import {
+  Box,
+  LoadingSpinner,
+  type LoadingSpinnerProps,
+  Stack,
+} from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
-import { Box } from "@/components";
 
 const sizes: LoadingSpinnerProps["size"][] = ["lg", "md", "sm", "xs", "2xs"];
 
 const tones: LoadingSpinnerProps["tone"][] = ["primary", "white"];
 
 const meta: Meta<typeof LoadingSpinner> = {
-  title: "components/LoadingSpinner",
+  title: "Components/LoadingSpinner",
   component: LoadingSpinner,
 };
 

@@ -1,16 +1,9 @@
-import {
-  type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
-  createRecipeContext,
-} from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react";
 import { avatarRecipe } from "./avatar.recipe";
+import type { AvatarRootSlotProps } from "./avatar.types";
 
-interface AvatarRecipeProps extends RecipeProps<"div">, UnstyledProp {}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface AvatarRootProps
-  extends HTMLChakraProps<"div", AvatarRecipeProps> {}
 const { withContext } = createRecipeContext({ recipe: avatarRecipe });
 
-export const AvatarRoot = withContext<HTMLElement, AvatarRootProps>("figure");
+export const AvatarRoot = withContext<HTMLElement, AvatarRootSlotProps>(
+  "figure"
+);

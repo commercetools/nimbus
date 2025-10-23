@@ -1,7 +1,7 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Flex, Separator } from "@/components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import { useDataTableContext } from "./data-table.context";
 import {
   DataTableColumnSlot,

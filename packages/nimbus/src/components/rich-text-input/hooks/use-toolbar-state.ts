@@ -26,9 +26,9 @@ import {
 } from "../utils/slate-helpers";
 import type { CustomElement } from "../utils/types";
 
-export interface UseToolbarStateProps {
+export type UseToolbarStateProps = {
   withPreservedSelection: (fn: () => void) => () => void;
-}
+};
 
 export const useToolbarState = ({
   withPreservedSelection,

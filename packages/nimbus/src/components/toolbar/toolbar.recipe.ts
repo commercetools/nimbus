@@ -20,25 +20,25 @@ export const toolbarRecipe = defineRecipe({
     size: {
       xs: {
         "--toolbar-spacing": "{spacing.100}",
-        "--divider-size": "{sizes.600}",
+        "--separator-size": "{sizes.600}",
       },
       md: {
         "--toolbar-spacing": "{spacing.200}",
-        "--divider-size": "{sizes.800}",
+        "--separator-size": "{sizes.800}",
       },
     },
     orientation: {
       horizontal: {
         "--toolbar-direction": "row",
-        "& .nimbus-divider": {
-          height: "var(--divider-size)",
+        "& .nimbus-separator": {
+          height: "var(--separator-size)",
           mx: "var(--toolbar-spacing)",
         },
       },
       vertical: {
         "--toolbar-direction": "column",
-        "& .nimbus-divider": {
-          width: "var(--divider-size)",
+        "& .nimbus-separator": {
+          width: "var(--separator-size)",
           my: "var(--toolbar-spacing)",
         },
       },

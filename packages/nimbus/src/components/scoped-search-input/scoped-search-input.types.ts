@@ -1,153 +1,102 @@
-import type { ScopedSearchInputRootSlotProps } from "./scoped-search-input.slots";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-/**
- * Value structure for ScopedSearchInput
- */
-export interface ScopedSearchInputValue {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type ScopedSearchInputRecipeProps = {
   /**
-   * The text in the search input
+   * Size variant of the scoped search input
    */
+  size?: SlotRecipeProps<"scopedSearchInput">["size"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ScopedSearchInputRootSlotProps = HTMLChakraProps<
+  "div",
+  ScopedSearchInputRecipeProps
+>;
+
+export type ScopedSearchInputContainerSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSelectWrapperSlotProps = HTMLChakraProps<"div">;
+
+export type ScopedSearchInputSearchWrapperSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+export type ScopedSearchInputValue = {
+  /** Search text entered by user */
   text: string;
-  /**
-   * The selected option key from the select dropdown
-   */
+  /** Selected scope/category option */
   option: string;
-}
+};
 
-/**
- * Option definition for the select dropdown
- */
-export interface ScopedSearchInputOption {
-  /**
-   * Display label for the option
-   */
+export type ScopedSearchInputOption = {
+  /** Display label for the option */
   label: string;
-  /**
-   * Unique value/key for the option
-   */
+  /** Unique value for the option */
   value: string;
-  /**
-   * Whether the option is disabled
-   */
+  /** Whether the option is disabled */
   isDisabled?: boolean;
-}
+};
 
-/**
- * Option group definition for grouped options
- */
-export interface ScopedSearchInputOptionGroup {
-  /**
-   * Group label
-   */
+export type ScopedSearchInputOptionGroup = {
+  /** Group label */
   label: string;
-  /**
-   * Options in this group
-   */
+  /** Options within the group */
   options: ScopedSearchInputOption[];
-}
+};
 
-export interface ScopedSearchInputProps
-  extends Omit<
-    ScopedSearchInputRootSlotProps,
-    "value" | "onSubmit" | "as" | "asChild"
-  > {
-  /**
-   * The current value (controlled)
-   */
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type ScopedSearchInputProps = Omit<
+  ScopedSearchInputRootSlotProps,
+  "value" | "onSubmit" | "as" | "asChild"
+> & {
+  /** Current value (text + selected option) */
   value: ScopedSearchInputValue;
-
-  /**
-   * Callback when the unified value changes
-   */
+  /** Callback when complete value changes */
   onValueChange?: (value: ScopedSearchInputValue) => void;
-
-  /**
-   * Callback when the text input changes
-   */
+  /** Callback when only search text changes */
   onTextChange?: (text: string) => void;
-
-  /**
-   * Callback when the select option changes
-   */
+  /** Callback when only option changes */
   onOptionChange?: (option: string) => void;
-
-  /**
-   * Callback when search is submitted (Enter key or submit button)
-   */
+  /** Callback when search is submitted */
   onSubmit: (value: ScopedSearchInputValue) => void;
-
-  /**
-   * Callback when reset/clear is triggered
-   */
+  /** Callback when search is reset/cleared */
   onReset?: () => void;
-
-  /**
-   * Options for the select dropdown
-   */
+  /** Available scope options or option groups */
   options: ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[];
-
-  /**
-   * Placeholder text for the select dropdown
-   */
+  /** Placeholder for scope selector */
   selectPlaceholder?: string;
-
-  /**
-   * Placeholder text for the search input
-   */
+  /** Placeholder for search input */
   searchPlaceholder?: string;
-
-  /**
-   * Accessible label for the select dropdown
-   */
+  /** Aria label for scope selector */
   selectAriaLabel?: string;
-
-  /**
-   * Accessible label for the search input
-   */
+  /** Aria label for search input */
   searchAriaLabel?: string;
-
-  /**
-   * Whether to show the clear button in the search input
-   * @default true
-   */
+  /** Whether to show clear button */
   isClearable?: boolean;
-
-  /**
-   * Whether the component is disabled
-   * @default false
-   */
+  /** Whether the input is disabled */
   isDisabled?: boolean;
-
-  /**
-   * Whether the component is read-only
-   * @default false
-   */
+  /** Whether the input is read-only */
   isReadOnly?: boolean;
-
-  /**
-   * Whether the component is in an invalid state
-   * @default false
-   */
+  /** Whether the input has validation errors */
   isInvalid?: boolean;
-
-  /**
-   * Whether the component is required
-   * @default false
-   */
+  /** Whether the input is required */
   isRequired?: boolean;
-
-  /**
-   * ID for the component (used for ARIA relationships)
-   */
+  /** Unique identifier */
   id?: string;
-
-  /**
-   * ID of element describing the component
-   */
+  /** ID of element describing the input */
   "aria-describedby"?: string;
-
-  /**
-   * ID of element labeling the component
-   */
+  /** ID of element labeling the input */
   "aria-labelledby"?: string;
-}
+};

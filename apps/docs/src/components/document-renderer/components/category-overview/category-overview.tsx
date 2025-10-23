@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { activeDocAtom } from "@/atoms/active-doc";
+import { Suspense, FC } from "react";
 import { documentationAtom } from "@/atoms/documentation";
 import {
   Box,
@@ -10,17 +10,21 @@ import {
   Stack,
   Text,
 } from "@commercetools/nimbus";
-import { FC } from "react";
 import * as Icons from "@commercetools/nimbus-icons";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
  * To be used in MDX files to show titles and descriptions of documents in the active category.
+ *
+ * This component uses the useActiveDoc hook which provides direct lookup to avoid
+ * race conditions with derived async atoms during navigation.
  */
-export const CategoryOverview: FC = ({ variant }) => {
-  const activeDoc = useAtomValue(activeDocAtom);
+const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   const documentation = useAtomValue(documentationAtom);
+  const activeDoc = useActiveDoc();
 
+  // If no document found for this route, don't render
   if (!activeDoc) {
     return null;
   }
@@ -118,7 +122,7 @@ export const CategoryOverview: FC = ({ variant }) => {
     <Box my="600">
       <Stack gap="0" direction="row" wrap="wrap">
         {sortedDocs.map((doc) => (
-          <Box width="1/4" pr="200" pb="200">
+          <Box width="1/4" pr="200" pb="200" key={doc.meta.route}>
             <Link unstyled href={doc.meta.route}>
               <Card.Root
                 key={doc.meta.route}
@@ -151,5 +155,18 @@ export const CategoryOverview: FC = ({ variant }) => {
         ))}
       </Stack>
     </Box>
+  );
+};
+
+/**
+ * Public export with Suspense boundary to handle async atom loading.
+ * This ensures the component properly handles the async nature of the documentation
+ * and active document atoms, providing a loading state while data is being fetched.
+ */
+export const CategoryOverview: FC<{ variant?: string }> = (props) => {
+  return (
+    <Suspense fallback={<Box>Loading categories...</Box>}>
+      <CategoryOverviewContent {...props} />
+    </Suspense>
   );
 };

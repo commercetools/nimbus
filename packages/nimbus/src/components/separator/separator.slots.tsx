@@ -1,10 +1,10 @@
-import { createRecipeContext } from "@chakra-ui/react/styled-system";
+import { createRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
+import type { SeparatorRootSlotProps } from "./separator.types";
 
-import { separatorRecipe } from "./separator.recipe";
-import type { SeparatorRootProps } from "./separator.types";
+const { withContext } = createRecipeContext({ key: "separator" });
 
-const { withContext } = createRecipeContext({ recipe: separatorRecipe });
-
-export const SeparatorRoot = withContext<HTMLDivElement, SeparatorRootProps>(
-  "div"
-);
+export const SeparatorRoot: SlotComponent<
+  HTMLDivElement,
+  SeparatorRootSlotProps
+> = withContext<HTMLDivElement, SeparatorRootSlotProps>("div");

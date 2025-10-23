@@ -1,4 +1,3 @@
-import { activeDocAtom } from "@/atoms/active-doc.ts";
 import { useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text, Badge } from "@commercetools/nimbus";
@@ -6,10 +5,11 @@ import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { memo, useMemo } from "react";
 import { brandNameAtom } from "@/atoms/brand";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
-  const activeDoc = useAtomValue(activeDocAtom);
+  const activeDoc = useActiveDoc();
 
   const content = activeDoc?.mdx;
   const meta = activeDoc?.meta;
@@ -21,7 +21,7 @@ const DocumentRendererComponent = () => {
 
   const pageTitle = useMemo(() => {
     return meta?.menu
-      ? `${meta.menu.reverse().join(" / ")} | ${brandName}`
+      ? `${[...meta.menu].reverse().join(" / ")} | ${brandName}`
       : `${brandName} | Home`;
   }, [meta?.menu, brandName]);
 

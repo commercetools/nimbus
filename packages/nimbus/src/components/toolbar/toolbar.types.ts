@@ -1,40 +1,50 @@
 import type { FC, Ref } from "react";
-import type { RecipeVariantProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
-import type { ToolbarSlotProps } from "./toolbar.slots";
-import { toolbarRecipe } from "./toolbar.recipe";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type ToolbarRecipeProps = {
+  /** Size variant of the toolbar */
+  size?: RecipeProps<"toolbar">["size"];
+  /** Layout orientation of the toolbar */
+  orientation?: RecipeProps<"toolbar">["orientation"];
+  /** Visual style variant of the toolbar */
+  variant?: RecipeProps<"toolbar">["variant"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ToolbarRootSlotProps = Omit<
+  HTMLChakraProps<"div", ToolbarRecipeProps>,
+  "translate"
+> & {
+  translate?: "yes" | "no";
+};
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 type DefaultExcludedProps = "css" | "asChild" | "as";
 
-// Root toolbar component
-export interface ToolbarProps
-  extends Omit<
-      ToolbarSlotProps,
-      DefaultExcludedProps | "orientation" | "children" | "slot"
-    >,
-    // Some RA props are incompatible / not supported
-    // orientation: can change based on breakpoint
-    // className & style: RA accepts a fn (a pattern we don't want to support, yet)
-    Omit<RaToolbarProps, "orientation" | "className" | "style"> {
-  /**
-   * The orientation of the toolbar.
-   * Supports responsive values for different breakpoints.
-   * @default "horizontal"
-   */
-  orientation?: RecipeVariantProps<typeof toolbarRecipe>["orientation"];
-  /**
-   * The size of the toolbar.
-   * @default "md"
-   */
-  size?: RecipeVariantProps<typeof toolbarRecipe>["size"];
-
-  /**
-   * The visual variant of the toolbar.
-   * @default "plain"
-   */
-  variant?: RecipeVariantProps<typeof toolbarRecipe>["variant"];
-
-  ref?: Ref<HTMLDivElement>;
-}
+// ============================================================
+// MAIN PROPS
+// ============================================================
+export type ToolbarProps = Omit<
+  ToolbarRootSlotProps,
+  DefaultExcludedProps | "children" | "slot"
+> &
+  Omit<RaToolbarProps, "orientation" | "className" | "style"> & {
+    ref?: Ref<HTMLDivElement>;
+  };
 
 export type ToolbarComponent = FC<ToolbarProps>;

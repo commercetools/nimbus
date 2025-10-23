@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Link } from "./link";
-import { Stack, Text } from "@/components";
-import type { LinkProps } from "./link.types";
+import { Link, type LinkProps, Stack, Text } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef } from "react";
 
@@ -12,7 +10,7 @@ const fontColors: LinkProps["fontColor"][] = ["primary", "inherit"];
  * The Link component allows a user to navigate to a different page or resource.
  */
 const meta: Meta<typeof Link> = {
-  title: "components/Link",
+  title: "Components/Link",
   component: Link,
 };
 

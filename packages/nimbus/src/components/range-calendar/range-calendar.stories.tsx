@@ -1,14 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { RangeCalendar } from "./index";
-import type { RangeCalendarProps, RangeValue } from "./range-calendar.types";
+import {
+  Box,
+  NimbusI18nProvider,
+  RangeCalendar,
+  type RangeCalendarProps,
+  type RangeValue,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import {
   today,
   getLocalTimeZone,
   type DateValue,
 } from "@internationalized/date";
 
-import { I18nProvider } from "react-aria";
-import { Box, Stack, Text } from "@/components";
 import { useState } from "react";
 
 const meta: Meta<typeof RangeCalendar> = {
@@ -19,9 +24,9 @@ const meta: Meta<typeof RangeCalendar> = {
   },
   decorators: [
     (Story) => (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Story />
-      </I18nProvider>
+      </NimbusI18nProvider>
     ),
   ],
 };
@@ -91,9 +96,9 @@ export const SpanishCalendar: Story = {
   },
 
   render: (args: RangeCalendarProps<DateValue>) => (
-    <I18nProvider locale="es-MX">
+    <NimbusI18nProvider locale="es-MX">
       <RangeCalendar {...args} />
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
 };
 
@@ -106,9 +111,9 @@ export const GermanCalendar: Story = {
   },
 
   render: (args: RangeCalendarProps<DateValue>) => (
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <RangeCalendar {...args} />
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
 };
 

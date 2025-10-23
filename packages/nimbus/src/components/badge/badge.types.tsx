@@ -2,41 +2,41 @@ import type {
   RecipeProps,
   UnstyledProp,
   HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import { badgeRecipe } from "./badge.recipe";
+} from "@chakra-ui/react";
 
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the span element.
- */
-export interface BadgeRecipeProps extends RecipeProps<"span">, UnstyledProp {}
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface BadgeRootProps
-  extends HTMLChakraProps<"span", BadgeRecipeProps> {}
+type BadgeRecipeProps = {
+  /**
+   * Size variant of the badge
+   * @default "md"
+   */
+  size?: RecipeProps<"badge">["size"];
+} & UnstyledProp;
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type BadgeVariantProps = BadgeRootProps &
-  RecipeVariantProps<typeof badgeRecipe> & {
-    [key: `data-${string}`]: string;
-  };
+// ============================================================
+// SLOT PROPS
+// ============================================================
 
-/**
- * Main props interface for the Badge component.
- * Extends BadgeVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface BadgeProps extends BadgeVariantProps {
+export type BadgeRootSlotProps = HTMLChakraProps<"span", BadgeRecipeProps>;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type BadgeProps = BadgeRootSlotProps & {
+  /**
+   * Content to display inside the badge
+   */
   children?: React.ReactNode;
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: React.Ref<HTMLSpanElement>;
-}
+  /**
+   * Data attributes for testing or custom metadata
+   */
+  [key: `data-${string}`]: string;
+};

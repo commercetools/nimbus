@@ -1,10 +1,10 @@
 import { type HTMLChakraProps } from "@chakra-ui/react/styled-system";
 import { Box as ChakraBox } from "@chakra-ui/react/box";
 
-export interface BoxProps extends HTMLChakraProps<"div"> {
+export type BoxProps = HTMLChakraProps<"div"> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * # Box

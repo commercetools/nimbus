@@ -1,17 +1,58 @@
-import type { ButtonRootProps } from "./button.slots.tsx";
-import type { AriaButtonProps } from "react-aria";
+import type { AriaButtonProps as RaButtonProps } from "react-aria";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-/** combine chakra-button props with aria-button props */
-type FunctionalButtonProps = AriaButtonProps &
-  Omit<ButtonRootProps, keyof AriaButtonProps | "slot"> & {
-    [key: `data-${string}`]: unknown;
-  };
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-export interface ButtonProps extends FunctionalButtonProps {
-  // TODO: evaluate if we should require setting a tone
-  // tone: FunctionalButtonProps["tone"];
-  // we need 'null' as a valid slot value for use with components from react-aria-components,
-  // in react-aria slots "An explicit null value indicates that the local props completely override all props received from a parent."
+type ButtonRecipeProps = {
+  /**
+   * Size variant of the button
+   * @default "md"
+   */
+  size?: RecipeProps<"button">["size"];
+  /**
+   * Visual style variant of the button
+   * @default "subtle"
+   */
+  variant?: RecipeProps<"button">["variant"];
+  /**
+   * Color tone palette for the button
+   */
+  tone?: RecipeProps<"button">["tone"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ButtonRootSlotProps = Omit<
+  HTMLChakraProps<"button", ButtonRecipeProps>,
+  "slot"
+> & {
   slot?: string | null | undefined;
-  ref?: React.Ref<HTMLButtonElement>;
-}
+};
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type ButtonProps = Omit<ButtonRootSlotProps, keyof RaButtonProps> &
+  RaButtonProps & {
+    /**
+     * Data attributes for testing or custom metadata
+     */
+    [key: `data-${string}`]: unknown;
+    /**
+     * Slot name for React Aria Components composition
+     */
+    slot?: string | null | undefined;
+    /**
+     * Ref forwarding to the button element
+     */
+    ref?: React.Ref<HTMLButtonElement>;
+  };

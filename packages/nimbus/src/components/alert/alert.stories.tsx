@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Alert } from "./alert";
-import { Stack } from "./../stack";
-import { Button } from "../button";
-import type { AlertProps } from "./alert.types";
+import { Alert, type AlertProps, Button, Stack } from "@commercetools/nimbus";
 
 const tones: AlertProps["tone"][] = ["critical", "info", "warning", "positive"];
 const variants: AlertProps["variant"][] = ["flat", "outlined"];
@@ -14,7 +11,7 @@ const variants: AlertProps["variant"][] = ["flat", "outlined"];
  * - component: references the component being documented
  */
 const meta: Meta<typeof Alert.Root> = {
-  title: "components/Alert",
+  title: "Components/Alert",
   component: Alert.Root,
 };
 

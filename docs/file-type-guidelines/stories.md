@@ -17,6 +17,12 @@ variations, test interactions, and ensure accessibility compliance.
 - Test interactive behavior with play functions
 - Validate accessibility
 - Provide usage examples
+- Use a StartCase value for meta.title
+- Use Nimbus components for any additional UI necessary in stories
+- Import components and component types from `@commercetools/nimbus`
+- Always use Nimbus components when building the UI for story components
+- Always prefer finding elements via their accessible attributes instead of
+  using `data-testid`
 
 ## File Structure
 
@@ -26,8 +32,7 @@ variations, test interactions, and ensure accessibility compliance.
 // component-name.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
-import { ComponentName } from "./component-name";
-import { Stack } from "@/components";
+import { ComponentName, Stack } from "@commercetools/nimbus";
 
 const meta: Meta<typeof ComponentName> = {
   title: "Components/ComponentName",

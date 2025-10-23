@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useHotkeys } from "./use-hotkeys";
+import { useHotkeys } from "@commercetools/nimbus";
 import { userEvent, expect, fn } from "storybook/test";
 import { useState } from "react";
 
@@ -27,7 +27,7 @@ const UseHotkeysDemo = ({
 };
 
 const meta: Meta<typeof UseHotkeysDemo> = {
-  title: "Hooks/useHotkeys",
+  title: "Hooks/UseHotkeys",
   component: UseHotkeysDemo,
   parameters: {
     layout: "centered",
@@ -40,14 +40,14 @@ type Story = StoryObj<typeof UseHotkeysDemo>;
 
 export const SingleKey: Story = {
   args: {
-    combo: "esc",
+    combo: "Escape",
     onHotkey: fn(),
   },
   play: async ({ args, step }) => {
     const onHotkey = args.onHotkey;
     await step("Trigger hotkey", async () => {
       await expect(onHotkey).toHaveBeenCalledTimes(0);
-      await userEvent.keyboard("{esc}");
+      await userEvent.keyboard("{Escape}");
       await expect(onHotkey).toHaveBeenCalledTimes(1);
     });
   },
@@ -63,6 +63,21 @@ export const KeyCombo: Story = {
     await step("Trigger hotkey combination", async () => {
       await expect(onHotkey).toHaveBeenCalledTimes(0);
       await userEvent.keyboard("{Control>}l{/Control}");
+      await expect(onHotkey).toHaveBeenCalledTimes(1);
+    });
+  },
+};
+
+export const LowercaseEscapeKey: Story = {
+  args: {
+    combo: "escape",
+    onHotkey: fn(),
+  },
+  play: async ({ args, step }) => {
+    const onHotkey = args.onHotkey;
+    await step("Trigger lowercase escape hotkey", async () => {
+      await expect(onHotkey).toHaveBeenCalledTimes(0);
+      await userEvent.keyboard("{Escape}");
       await expect(onHotkey).toHaveBeenCalledTimes(1);
     });
   },

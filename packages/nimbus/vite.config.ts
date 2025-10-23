@@ -14,8 +14,10 @@ import { analyzer } from "vite-bundle-analyzer";
 const createEntries = async () => {
   // Only index files are turned into entrypoints, as we don't want to include test files, storybook stories, etc.
   const entries = new Map<string, string>();
-  // Build a glob containing each index.ts file in src/components
-  const componentEntryPoints = await glob("src/components/**/index.ts");
+  // Build a glob containing each index.ts file in src/components or src/patterns
+  const componentEntryPoints = await glob(
+    "src/{components,patterns}/**/index.ts"
+  );
   // Declare an entrypoint for each component's index file. This enables consuming applications to only bundle the components imported into their app, instead of requiring that consumers bundle all components if they use any component.
   for (const file of componentEntryPoints) {
     // Get the name of the folder containing the index file to maintain semi-unique file/entrypoint names
@@ -47,11 +49,20 @@ const external = [
   "react-dom",
   "react-intl",
   "react/jsx-runtime",
-
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
-  // TODO: evaluate whether it makes more sense for `react-aria` and related packages to be bundled w/the library as they are currently,
-  //       or declared as peer deps to reduce unintentional code duplication if a consuming app already has react-aria related libraries installed (eg @internationalized/date or react-stately).
+  // Slate dependencies for RichTextInput
+  // These are externalized because immer (slate's dependency) uses internal singletons that break when bundled
+  "slate",
+  "slate-react",
+  "slate-history",
+  "slate-hyperscript",
+  // React Aria dependencies
+  // Externalized to prevent bundling issues and ensure consistent behavior across the app - ON HOLD
+  // "react-aria",
+  // "react-aria-components",
+  // "react-stately",
+  // "@react-aria/interactions",
 
   // Internal packages
   // TODO: Icons from @commercetools/nimbus-icons should be tree-shakeable, it might make more sense to just bundle the necessary icons with their components, and not care whether this package is installed in consuming apps.
@@ -125,17 +136,10 @@ export default defineConfig(async () => {
   if (!isWatchMode) {
     config.plugins.push(
       dts({
-        rollupTypes: true,
+        rollupTypes: false,
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
-        // This should not be necessary since we do not export these file types in our indexes,
-        // and `rollupTypes: true` means types are built for the rollup output in `/dist`, not the files in `/src`, but it's good to have a safeguard.
-        exclude: [
-          "src/**/*.stories.*",
-          "src/**/*.test.*",
-          "src/**/*.spec.*",
-          "src/test/**/*",
-        ],
+        exclude: ["src/**/*.stories.*", "src/**/*.spec.*", "src/test/**/*"],
       })
     );
     // Run analyzer if the ANALYZE_BUNDLE env var is present

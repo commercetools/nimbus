@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Separator } from "./separator";
-import { Box, Stack } from "@/components";
+import { Box, Separator, Stack } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 const meta: Meta<typeof Separator> = {
-  title: "components/Separator",
+  title: "Components/Separator",
   component: Separator,
 };
 

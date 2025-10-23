@@ -8,19 +8,20 @@ import React, {
 import { type Selection } from "react-aria-components";
 import { within, expect, waitFor, userEvent } from "storybook/test";
 import {
-  Stack,
-  TextInput,
-  Dialog,
+  Box,
   Button,
   Checkbox,
-  Heading,
-  Text,
-  Select,
-  Box,
+  Dialog,
   Flex,
+  Heading,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  DataTable,
 } from "@/components";
-import { DataTable } from "./data-table";
 import { UPDATE_ACTIONS } from "./constants";
+
 import {
   columns,
   sortableColumns,
@@ -380,7 +381,7 @@ const DataTableWithModals = ({
  * - component: references the component being documented
  */
 const meta: Meta<object> = {
-  title: "components/DataTable",
+  title: "Components/DataTable",
   component: DataTable,
 };
 

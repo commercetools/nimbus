@@ -1,35 +1,85 @@
-import type { ProgressBarRootProps } from "./progress-bar.slots.tsx";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+import type { AriaProgressBarProps } from "react-aria";
 
-/**
- * Additional properties we want to exclude from the ProgressBar component.
- * These are chakra-ui props we don't want exposed.
- */
-type ExcludedProps = "css" | "unstyled" | "as" | "asChild";
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-/**
- * Main props interface for the ProgressBar component.
- * Extends ProgressBarRootProps to include root props, variant props, and aria props,
- * while adding custom props for label display and formatting.
- */
-export interface ProgressBarProps
-  extends Omit<ProgressBarRootProps, ExcludedProps> {
+type ProgressBarRecipeProps = {
   /**
-   * Ref forwarding to the root element
+   * Size variant of the progress bar
+   * @default "md"
    */
-  ref?: React.Ref<HTMLDivElement>;
-
+  size?: SlotRecipeProps<"progressBar">["size"];
   /**
    * Whether the progress bar represents an active, ongoing process.
    * Set to `true` for dynamic progress (e.g., file uploads, downloads).
    * Set to `false` for static progress indicators (e.g., step 3 of 5 in a wizard).
    * @default true
    */
-  isDynamic?: boolean;
-
+  isDynamic?: SlotRecipeProps<"progressBar">["isDynamic"];
   /**
-   * Format options for the progress bar.
+   * Whether the progress is indeterminate (unknown duration)
+   * @default false
+   */
+  isIndeterminate?: SlotRecipeProps<"progressBar">["isIndeterminate"];
+  /**
+   * Visual style variant of the progress bar
+   * @default "solid"
+   */
+  variant?: SlotRecipeProps<"progressBar">["variant"];
+  /**
+   * Layout configuration for label and value positioning
+   * @default "stacked"
+   */
+  layout?: SlotRecipeProps<"progressBar">["layout"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type ProgressBarRootSlotProps = Omit<
+  HTMLChakraProps<"div", ProgressBarRecipeProps>,
+  "translate"
+> &
+  Omit<ProgressBarRecipeProps, "isIndeterminate"> &
+  AriaProgressBarProps & {
+    [key: `data-${string}`]: string;
+    translate?: "yes" | "no";
+  };
+
+export type ProgressBarTrackSlotProps = HTMLChakraProps<"div">;
+
+export type ProgressBarFillSlotProps = HTMLChakraProps<"div">;
+
+export type ProgressBarLabelSlotProps = HTMLChakraProps<"span">;
+
+export type ProgressBarValueSlotProps = HTMLChakraProps<"span">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type ExcludedProps = "css" | "unstyled" | "as" | "asChild";
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type ProgressBarProps = Omit<ProgressBarRootSlotProps, ExcludedProps> & {
+  /**
+   * Ref forwarding to the root element
+   */
+  ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Format options for the progress bar value display
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
    * @default { style: "percent" }
    */
-  formatOptions?: ProgressBarRootProps["formatOptions"];
-}
+  formatOptions?: ProgressBarRootSlotProps["formatOptions"];
+};

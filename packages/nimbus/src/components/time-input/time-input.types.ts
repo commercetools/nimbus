@@ -1,30 +1,52 @@
-import type { TimeInputRootProps } from "./time-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { timeInputRecipe } from "./time-input.recipe";
-import type { TimeFieldProps } from "react-aria-components";
+import type { TimeFieldProps as RaTimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-/**
- * Properties from TimeFieldProps that would conflict with similarly named
- * properties in TimeInputRootProps. We use this to prevent TypeScript interface
- * merging conflicts by prioritizing the TimeFieldProps implementation.
- *
- * Examples include: value, defaultValue, onChange, onBlur, onFocus, etc.
- */
-type ConflictingFieldStateProps = keyof TimeFieldProps<TimeValue>;
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-/**
- * Additional properties we want to exclude from the TimeInput component.
- * These are either deprecated or not intended for use in this component.
- */
+type TimeInputRecipeProps = {
+  /** Size variant of the time input */
+  size?: SlotRecipeProps<"timeInput">["size"];
+  /** Visual style variant of the time input */
+  variant?: SlotRecipeProps<"timeInput">["variant"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type TimeInputRootSlotProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
+
+export type TimeInputLeadingElementSlotProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
+
+export type TimeInputTrailingElementSlotProps = HTMLChakraProps<
+  "div",
+  TimeInputRecipeProps
+>;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type ConflictingFieldStateProps = keyof RaTimeFieldProps<TimeValue>;
+
 type ExcludedProps =
-  // deprecated
   | "validationState"
-  // handled by <FormField> component
   | "label"
   | "description"
   | "errorMessage"
-  // chakra-ui props we don't want exposed
   | "css"
   | "colorScheme"
   | "unstyled"
@@ -32,25 +54,17 @@ type ExcludedProps =
   | "as"
   | "asChild";
 
-/**
- * Main props interface for the TimeInput component.
- *
- * We use Omit to remove:
- * 1. Conflicting props from TimeInputRootProps to avoid TypeScript errors
- * 2. Explicitly excluded props that we don't want users to access
- */
-export interface TimeInputProps
-  extends Omit<TimeInputRootProps, ConflictingFieldStateProps | ExcludedProps>,
-    Omit<TimeFieldProps<TimeValue>, ExcludedProps>,
-    RecipeVariantProps<typeof timeInputRecipe> {
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type TimeInputProps = Omit<
+  TimeInputRootSlotProps,
+  ConflictingFieldStateProps | ExcludedProps
+> &
+  Omit<RaTimeFieldProps<TimeValue>, ExcludedProps> & {
+    /** Optional element to display at the start of the input */
+    leadingElement?: React.ReactNode;
+    /** Optional element to display at the end of the input */
+    trailingElement?: React.ReactNode;
+  };

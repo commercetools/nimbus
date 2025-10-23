@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useId, useLocale } from "react-aria";
+import { designTokens } from "@commercetools/nimbus-tokens";
 import { useIntl, FormattedMessage } from "react-intl";
 import {
   NumberInput,
@@ -10,7 +11,7 @@ import {
   MakeElementFocusable,
 } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import currenciesData from "./utils/currencies";
 import {
   MoneyInputRootSlot,
@@ -29,9 +30,9 @@ import {
   isEmpty,
 } from "./utils";
 import type {
-  TCustomEvent,
+  CustomEvent,
   MoneyInputProps,
-  TCurrencyCode,
+  CurrencyCode,
 } from "./money-input.types";
 import messages from "./money-input.i18n";
 
@@ -79,7 +80,7 @@ import messages from "./money-input.i18n";
  *     if (name?.endsWith(".amount")) {
  *       setValue(prev => ({ ...prev, amount: value as string }));
  *     } else if (name?.endsWith(".currencyCode")) {
- *       setValue(prev => ({ ...prev, currencyCode: value as TCurrencyCode }));
+ *       setValue(prev => ({ ...prev, currencyCode: value as CurrencyCode }));
  *     }
  *   };
  *
@@ -95,13 +96,13 @@ import messages from "./money-input.i18n";
  *
  * ## Features
  *
- * - **Type-safe currency handling** with TCurrencyCode enum
+ * - **Type-safe currency handling** with CurrencyCode enum
  * - **High precision support** for values exceeding standard currency precision
  * - **Automatic locale formatting** using React Aria NumberField
  * - **Accessibility compliant** following WCAG 2.1 AA standards
  * - **Dual API support** for backward compatibility and modern development
  */
-export const MoneyInputComponent = (props: MoneyInputProps) => {
+export const MoneyInput = (props: MoneyInputProps) => {
   const {
     id,
     name,
@@ -176,7 +177,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       const stringValue = newValue.toString();
 
       // Support legacy API
-      const event: TCustomEvent = {
+      const event: CustomEvent = {
         target: {
           id: amountInputId,
           name: amountInputName,
@@ -194,7 +195,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   );
 
   const handleAmountFocus = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: amountInputId,
         name: amountInputName,
@@ -205,7 +206,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   }, [onFocus, value.amount, id, name]);
 
   const handleAmountBlur = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: amountInputId,
         name: amountInputName,
@@ -218,7 +219,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
       // Support legacy API
-      const event: TCustomEvent = {
+      const event: CustomEvent = {
         target: {
           id: currencySelectId,
           name: currencySelectName,
@@ -230,16 +231,16 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
       // Support modern APIs
       const newValueObject = {
         ...value,
-        currencyCode: currencyCode as TCurrencyCode,
+        currencyCode: currencyCode as CurrencyCode,
       };
       onValueChange?.(newValueObject);
-      onCurrencyChange?.(currencyCode as TCurrencyCode);
+      onCurrencyChange?.(currencyCode as CurrencyCode);
     },
     [onChange, onValueChange, onCurrencyChange, value, id, name]
   );
 
   const handleCurrencyFocus = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: currencySelectId,
         name: currencySelectName,
@@ -250,7 +251,7 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
   }, [onFocus, value.currencyCode, id, name]);
 
   const handleCurrencyBlur = useCallback(() => {
-    const event: TCustomEvent = {
+    const event: CustomEvent = {
       target: {
         id: currencySelectId,
         name: currencySelectName,
@@ -341,52 +342,40 @@ export const MoneyInputComponent = (props: MoneyInputProps) => {
             step={undefined}
           />
         </MoneyInputAmountInputSlot>
+        {/* High Precision Badge */}
+        {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
+          <MoneyInputBadgeSlot>
+            <Tooltip.Root delay={0} closeDelay={0}>
+              <MakeElementFocusable>
+                <Box
+                  as={HighPrecision}
+                  id={highPrecisionBadgeId}
+                  color={isDisabled ? "neutral.8" : "neutral.11"}
+                  aria-label={intl.formatMessage(messages.highPrecisionPrice)}
+                  // Position the badge correctly as we don't want layout shift that occurs with trailingElement use in the underlying NumberInput
+                  transform={`translateX(-${designTokens.spacing["1200"]})`}
+                />
+              </MakeElementFocusable>
+              <Tooltip.Content placement="top">
+                <FormattedMessage {...messages.highPrecisionPrice} />
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </MoneyInputBadgeSlot>
+        )}
       </MoneyInputContainerSlot>
-
-      {/* High Precision Badge */}
-      {hasHighPrecisionBadge && isCurrentlyHighPrecision && (
-        <MoneyInputBadgeSlot>
-          <Tooltip.Root delay={0} closeDelay={0}>
-            <MakeElementFocusable>
-              <Box
-                as={HighPrecision}
-                id={highPrecisionBadgeId}
-                color={isDisabled ? "neutral.8" : "neutral.11"}
-                aria-label={intl.formatMessage(messages.highPrecisionPrice)}
-                // TODO: this is a hack to position the badge correctly until we have trailingElement support
-                transform="translateX(-100px) translateY(2px)"
-              />
-            </MakeElementFocusable>
-            <Tooltip.Content placement="top">
-              <FormattedMessage {...messages.highPrecisionPrice} />
-            </Tooltip.Content>
-          </Tooltip.Root>
-        </MoneyInputBadgeSlot>
-      )}
     </MoneyInputRootSlot>
   );
 };
 
-MoneyInputComponent.displayName = "MoneyInput";
-
-// Create the main export with static methods
-type MoneyInputType = typeof MoneyInputComponent & {
-  // Static methods preserved from UI Kit
-  convertToMoneyValue: typeof transformFormInputToMoneyValue;
-  parseMoneyValue: typeof formatMoneyValueForDisplay;
-  isEmpty: typeof isEmpty;
-  isHighPrecision: typeof isHighPrecision;
-  getAmountInputId: (id?: string) => string | undefined;
-  getCurrencyDropdownId: (id?: string) => string | undefined;
-};
-
-export const MoneyInput = MoneyInputComponent as MoneyInputType;
-
 // Static methods for UI-Kit compatibility and internal utilities
-MoneyInput.getAmountInputId = (id) => getMoneyGroupAttribute(id, "amount");
-MoneyInput.getCurrencyDropdownId = (id) =>
+MoneyInput.getAmountInputId = (id?: string) =>
+  getMoneyGroupAttribute(id, "amount");
+MoneyInput.getCurrencyDropdownId = (id?: string) =>
   getMoneyGroupAttribute(id, "currencyCode");
 MoneyInput.convertToMoneyValue = transformFormInputToMoneyValue;
 MoneyInput.parseMoneyValue = formatMoneyValueForDisplay;
 MoneyInput.isEmpty = isEmpty;
 MoneyInput.isHighPrecision = isHighPrecision;
+
+// Display name
+MoneyInput.displayName = "MoneyInput";

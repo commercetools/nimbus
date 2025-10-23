@@ -1,10 +1,43 @@
 import type { Ref, FocusEventHandler } from "react";
-import type { RichTextInputRootSlotProps } from "./rich-text-input.slots";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type RichTextInputRecipeProps = SlotRecipeProps<"richTextInput">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type RichTextInputRootSlotProps = HTMLChakraProps<
+  "div",
+  RichTextInputRecipeProps & UnstyledProp
+>;
+
+export type RichTextInputToolbarSlotProps = HTMLChakraProps<"div">;
+
+export type RichTextInputEditableSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 type DefaultExcludedProps = "css" | "asChild" | "as" | "onChange";
 
-export interface RichTextInputProps
-  extends Omit<RichTextInputRootSlotProps, DefaultExcludedProps | "children"> {
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type RichTextInputProps = Omit<
+  RichTextInputRootSlotProps,
+  DefaultExcludedProps | "children"
+> & {
   /**
    * The ref for the rich text input component
    */
@@ -59,4 +92,4 @@ export interface RichTextInputProps
    * Whether to focus the input when it mounts
    */
   autoFocus?: boolean;
-}
+};

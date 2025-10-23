@@ -1,31 +1,56 @@
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-  RecipeProps,
-} from "@chakra-ui/react/styled-system";
-import { radioInputSlotRecipe } from "./radio-input.recipe";
+import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type {
   RadioGroupProps as RaRadioGroupProps,
   RadioProps as RaRadioProps,
 } from "react-aria-components";
-type RadioGroupProps = Omit<RaRadioGroupProps, "children"> & {
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type RadioInputRecipeProps = {
+  /**
+   * Layout orientation for radio options
+   * @default "vertical"
+   */
+  orientation?: RecipeProps<"radioInput">["orientation"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type RadioInputRootSlotProps = HTMLChakraProps<
+  "div",
+  RadioInputRecipeProps
+>;
+
+export type RadioInputOptionSlotProps = HTMLChakraProps<
+  "span",
+  RecipeProps<"option">
+>;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type RadioGroupPropsSubset = Omit<
+  RaRadioGroupProps,
+  "children" | "orientation"
+> & {
+  /** Radio options to display */
   children?: React.ReactNode;
 };
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface RadioInputRootSlotProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof radioInputSlotRecipe>
-  > {}
 
-export interface RadioInputRootProps
-  extends RadioGroupProps,
-    Omit<RadioInputRootSlotProps, keyof RadioGroupProps> {}
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface RadioInputOptionSlotProps
-  extends HTMLChakraProps<"span", RecipeProps<"option">> {}
+export type RadioInputRootProps = Omit<
+  RadioInputRootSlotProps,
+  keyof RadioGroupPropsSubset
+> &
+  RadioGroupPropsSubset;
 
-export interface RadioInputOptionProps
-  extends RaRadioProps,
-    Omit<RadioInputOptionSlotProps, keyof RaRadioProps> {}
+export type RadioInputOptionProps = RaRadioProps &
+  Omit<RadioInputOptionSlotProps, keyof RaRadioProps>;

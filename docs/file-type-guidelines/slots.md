@@ -27,30 +27,59 @@ bridge React Aria components with the Nimbus styling system.
 
 ## Critical Requirements
 
+### MUST Use Explicit Return Type Annotations
+
+**All slot component exports MUST include explicit return type annotations** using the `SlotComponent<TElement, TProps>` utility type. This prevents TypeScript TS2742 errors during declaration file generation by avoiding inferred types that reference peer dependency internals.
+
 ### MUST Export Both Components AND Types
 
 **This is non-negotiable** - Slot files must export:
 
-1. The slot component itself
+1. The slot component itself with explicit return type annotation
 2. Its TypeScript type definition
 
 **The type name MUST equal the component name plus "Props" suffix:**
 
 ```typescript
+import type { SlotComponent } from "../utils/slot-types";
+
 // ✅ CORRECT - Multi-slot component
 export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
-export const MenuTriggerSlot = withContext<
+export const MenuTriggerSlot: SlotComponent<
   HTMLButtonElement,
   MenuTriggerSlotProps
->("button", "trigger");
+> = withContext<HTMLButtonElement, MenuTriggerSlotProps>("button", "trigger");
 
 // ✅ CORRECT - Single-slot component
 export type ButtonRootProps = HTMLChakraProps<"button">;
-export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
-  "button",
-  "root"
-);
+export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
+  withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
 ```
+
+## SlotComponent Utility Type
+
+The `SlotComponent<TElement, TProps>` utility type provides explicit return type annotations for slot components created with Chakra UI's `withProvider` and `withContext` HOCs.
+
+**Why this is required:**
+
+- TypeScript infers return types for `withProvider`/`withContext` that reference Chakra's internal generated recipe types
+- These inferred types create non-portable references to `node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen`
+- During declaration file (`.d.ts`) generation, this causes TS2742 errors because the types reference peer dependency internals that won't exist in consumer projects
+- Explicit return type annotations using `SlotComponent` override the inference and create stable, portable types
+
+**Type Definition:**
+
+```typescript
+// packages/nimbus/src/components/utils/slot-types.ts
+export type SlotComponent<
+  TElement = Element,
+  TProps = Record<string, unknown>,
+> = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<TProps> & React.RefAttributes<TElement>
+>;
+```
+
+**Usage:** Every slot component export must include this type annotation.
 
 ## File Structure
 
@@ -65,6 +94,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { buttonRecipe } from "./button.recipe";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
@@ -72,10 +102,8 @@ const { withContext } = createRecipeContext({
 
 // Export both type and component - type name = component name + "Props"
 export type ButtonRootProps = HTMLChakraProps<"button">;
-export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
-  "button",
-  "root"
-);
+export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
+  withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
 ```
 
 ### Slot Recipe Components
@@ -89,6 +117,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { menuSlotRecipe } from "./menu.recipe";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: menuSlotRecipe,
@@ -96,31 +125,27 @@ const { withProvider, withContext } = createSlotRecipeContext({
 
 // Root slot - provides context
 export type MenuRootSlotProps = HTMLChakraProps<"div">;
-export const MenuRootSlot = withProvider<HTMLDivElement, MenuRootSlotProps>(
-  "div",
-  "root"
-);
+export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> =
+  withProvider<HTMLDivElement, MenuRootSlotProps>("div", "root");
 
 // Trigger slot - consumes context
 export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
-export const MenuTriggerSlot = withContext<
+export const MenuTriggerSlot: SlotComponent<
   HTMLButtonElement,
   MenuTriggerSlotProps
->("button", "trigger");
+> = withContext<HTMLButtonElement, MenuTriggerSlotProps>("button", "trigger");
 
 // Content slot
 export type MenuContentSlotProps = HTMLChakraProps<"div">;
-export const MenuContentSlot = withContext<
+export const MenuContentSlot: SlotComponent<
   HTMLDivElement,
   MenuContentSlotProps
->("div", "content");
+> = withContext<HTMLDivElement, MenuContentSlotProps>("div", "content");
 
 // Item slot
 export type MenuItemSlotProps = HTMLChakraProps<"div">;
-export const MenuItemSlot = withContext<HTMLDivElement, MenuItemSlotProps>(
-  "div",
-  "item"
-);
+export const MenuItemSlot: SlotComponent<HTMLDivElement, MenuItemSlotProps> =
+  withContext<HTMLDivElement, MenuItemSlotProps>("div", "item");
 ```
 
 ## Context Patterns
@@ -131,17 +156,15 @@ export const MenuItemSlot = withContext<HTMLDivElement, MenuItemSlotProps>(
 - **`withContext`**: Used for child slots, consumes recipe context
 
 ```typescript
+import type { SlotComponent } from "../utils/slot-types";
+
 // Root provides context
-export const ComponentRootSlot = withProvider<HTMLDivElement, RootProps>(
-  "div",
-  "root"
-);
+export const ComponentRootSlot: SlotComponent<HTMLDivElement, RootProps> =
+  withProvider<HTMLDivElement, RootProps>("div", "root");
 
 // Children consume context
-export const ComponentChildSlot = withContext<HTMLSpanElement, ChildProps>(
-  "span",
-  "child"
-);
+export const ComponentChildSlot: SlotComponent<HTMLSpanElement, ChildProps> =
+  withContext<HTMLSpanElement, ChildProps>("span", "child");
 ```
 
 ### Context Propagation
@@ -269,17 +292,16 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { buttonRecipe } from "./button.recipe";
+import type { SlotComponent } from "../utils/slot-types";
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
 });
 
-// Export both type and component
+// Export both type and component with explicit return type annotation
 export type ButtonRootProps = HTMLChakraProps<"button">;
-export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
-  "button",
-  "root"
-);
+export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
+  withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
 ```
 
 ## Related Guidelines
@@ -291,6 +313,8 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
 ## Validation Checklist
 
 - [ ] Slot file exists with `.tsx` extension
+- [ ] **`SlotComponent` utility type imported** from `../utils/slot-types`
+- [ ] **All slot component exports have explicit return type annotations** using `SlotComponent<TElement, TProps>`
 - [ ] **Slot components exported** (types can be in slots file or types file)
 - [ ] Types use `HTMLChakraProps` or appropriate interface
 - [ ] Naming follows appropriate pattern (see Naming Conventions table)

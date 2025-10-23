@@ -1,7 +1,7 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { radioInputSlotRecipe } from "../radio-input.recipe";
 import { RadioGroup as RaRadioGroup } from "react-aria-components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 import type { RadioInputRootProps } from "../radio-input.types";
 import { RadioInputRootSlot } from "../radio-input.slots";
 

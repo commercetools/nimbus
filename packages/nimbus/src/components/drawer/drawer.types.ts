@@ -1,6 +1,6 @@
 import { type RecipeVariantProps } from "@chakra-ui/react";
 import { drawerSlotRecipe } from "./drawer.recipe";
-import { type ModalOverlayProps } from "react-aria-components";
+import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
 import type {
   DrawerModalOverlaySlotProps,
   DrawerTriggerSlotProps,
@@ -11,6 +11,10 @@ import type {
 } from "./drawer.slots";
 import type { IconButtonProps } from "@/components";
 
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 /**
  * Props for the Drawer.Root component
  *
@@ -20,8 +24,7 @@ import type { IconButtonProps } from "@/components";
  * This component handles configuration through recipe variants that are passed
  * down to child components via context.
  */
-export interface DrawerRootProps
-  extends RecipeVariantProps<typeof drawerSlotRecipe> {
+export type DrawerRootProps = RecipeVariantProps<typeof drawerSlotRecipe> & {
   /**
    * The children components (Trigger, Content, etc.)
    */
@@ -43,20 +46,20 @@ export interface DrawerRootProps
    * If true, clicking outside the drawer or pressing Escape will close it.
    * @default true
    */
-  isDismissable?: ModalOverlayProps["isDismissable"];
+  isDismissable?: RaModalOverlayProps["isDismissable"];
 
   /**
    * Whether keyboard dismissal (Escape key) is disabled.
    * If true, pressing Escape will NOT close the drawer.
    * @default false
    */
-  isKeyboardDismissDisabled?: ModalOverlayProps["isKeyboardDismissDisabled"];
+  isKeyboardDismissDisabled?: RaModalOverlayProps["isKeyboardDismissDisabled"];
 
   /**
    * Function to determine whether the drawer should close when interacting outside.
    * Receives the event and returns true to allow closing, false to prevent.
    */
-  shouldCloseOnInteractOutside?: ModalOverlayProps["shouldCloseOnInteractOutside"];
+  shouldCloseOnInteractOutside?: RaModalOverlayProps["shouldCloseOnInteractOutside"];
 
   /**
    * Callback fired when the drawer open state changes
@@ -75,14 +78,14 @@ export interface DrawerRootProps
    * a `slot`-property set to `title`.
    */
   "aria-label"?: string;
-}
+};
 
 /**
  * Props for the Drawer.Trigger component
  *
  * The trigger element that opens the drawer when activated.
  */
-export interface DrawerTriggerProps extends DrawerTriggerSlotProps {
+export type DrawerTriggerProps = DrawerTriggerSlotProps & {
   /**
    * The trigger content
    */
@@ -103,7 +106,7 @@ export interface DrawerTriggerProps extends DrawerTriggerSlotProps {
    * The ref to the trigger html-button
    */
   ref?: React.RefObject<HTMLButtonElement>;
-}
+};
 
 /**
  * Props for the Drawer.Content component
@@ -111,7 +114,7 @@ export interface DrawerTriggerProps extends DrawerTriggerSlotProps {
  * The main drawer content container that wraps the React Aria Dialog and Dialog.
  * Configuration (size, placement, etc.) is inherited from Drawer.Root via context.
  */
-export interface DrawerContentProps extends DrawerModalOverlaySlotProps {
+export type DrawerContentProps = DrawerModalOverlaySlotProps & {
   /**
    * The drawer content
    */
@@ -121,13 +124,14 @@ export interface DrawerContentProps extends DrawerModalOverlaySlotProps {
    * The ref to the drawer content
    */
   ref?: React.RefObject<HTMLDivElement>;
-}
+};
+
 /**
  * Props for the Drawer.Header component
  *
  * The header section of the drawer content.
  */
-export interface DrawerHeaderProps extends DrawerHeaderSlotProps {
+export type DrawerHeaderProps = DrawerHeaderSlotProps & {
   /**
    * The header content
    */
@@ -137,14 +141,14 @@ export interface DrawerHeaderProps extends DrawerHeaderSlotProps {
    * The ref to the drawer header
    */
   ref?: React.Ref<HTMLElement>;
-}
+};
 
 /**
  * Props for the Drawer.Body component
  *
  * The main body content section of the drawer.
  */
-export interface DrawerBodyProps extends DrawerBodySlotProps {
+export type DrawerBodyProps = DrawerBodySlotProps & {
   /**
    * The body content
    */
@@ -154,14 +158,14 @@ export interface DrawerBodyProps extends DrawerBodySlotProps {
    * The ref to the drawer body
    */
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * Props for the Drawer.Footer component
  *
  * The footer section of the drawer, typically containing action buttons.
  */
-export interface DrawerFooterProps extends DrawerFooterSlotProps {
+export type DrawerFooterProps = DrawerFooterSlotProps & {
   /**
    * The footer content (usually buttons)
    */
@@ -171,14 +175,14 @@ export interface DrawerFooterProps extends DrawerFooterSlotProps {
    * The ref to the drawer footer
    */
   ref?: React.Ref<HTMLElement>;
-}
+};
 
 /**
  * Props for the Drawer.Title component
  *
  * The accessible title element for the drawer.
  */
-export interface DrawerTitleProps extends DrawerTitleSlotProps {
+export type DrawerTitleProps = DrawerTitleSlotProps & {
   /**
    * The title text
    */
@@ -188,7 +192,7 @@ export interface DrawerTitleProps extends DrawerTitleSlotProps {
    * The ref to the drawer title
    */
   ref?: React.Ref<HTMLHeadingElement>;
-}
+};
 
 /**
  * Props for the Drawer.CloseTrigger component
@@ -196,11 +200,10 @@ export interface DrawerTitleProps extends DrawerTitleSlotProps {
  * A button that closes the drawer when activated.
  * Displays an IconButton with an X icon by default.
  */
-export interface DrawerCloseTriggerProps
-  extends Omit<IconButtonProps, "aria-label"> {
+export type DrawerCloseTriggerProps = Omit<IconButtonProps, "aria-label"> & {
   /**
    * Accessible label for the close button
    * @default "Close drawer"
    */
   "aria-label"?: string;
-}
+};

@@ -7,8 +7,8 @@ export type SearchableDocItem = MdxFileFrontmatter["meta"] & {
   content: string;
 };
 
-export const searchableDocItemsAtom = atom((get) => {
-  const data = get(documentationAtom);
+export const searchableDocItemsAtom = atom(async (get) => {
+  const data = await get(documentationAtom);
   const items: SearchableDocItem[] = Object.keys(data).map((key) => ({
     ...data[key].meta,
     content: stripMarkdown(data[key].mdx),

@@ -12,10 +12,10 @@ import { GridItem } from "@chakra-ui/react/grid";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/simplegrid}
  */
-export interface SimpleGridProps extends ChakraSimpleGridProps {
+export type SimpleGridProps = ChakraSimpleGridProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const GridComponent = (props: SimpleGridProps) => {
   const { ref, ...restProps } = props;

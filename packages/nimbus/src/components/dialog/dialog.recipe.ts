@@ -6,6 +6,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  */
 export const dialogSlotRecipe = defineSlotRecipe({
   slots: [
+    "root",
     "trigger",
     "modalOverlay",
     "modal",

@@ -1,13 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button } from "./button";
-import { Box, Stack } from "@/components";
-import type { ButtonProps } from "./button.types";
+import { Box, Button, type ButtonProps, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
 
 const meta: Meta<typeof Button> = {
-  title: "components/Buttons/Button",
+  title: "Components/Buttons/Button",
   component: Button,
 };
 
@@ -61,9 +59,6 @@ export const Base: Story = {
       await expect(button).toHaveAttribute("aria-label", "test-button");
     });
 
-    // ATTENTION: react-aria does some complicated science,
-    // if there is a **KEYSTROKE** before the click (like a tab-key aiming to focus the button),
-    // the first click is not counted as a valid click
     await step("Is clickable", async () => {
       button.click();
       await expect(onPress).toHaveBeenCalledTimes(1);

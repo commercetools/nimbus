@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { useState } from "react";
-import { ScopedSearchInput } from "./scoped-search-input";
-import { Stack } from "@/components/stack";
-import { FormField } from "@/components/form-field";
-import { Box } from "@/components/box";
-import type { ScopedSearchInputValue } from "./scoped-search-input.types";
+import {
+  Box,
+  FormField,
+  ScopedSearchInput,
+  type ScopedSearchInputValue,
+  Stack,
+} from "@commercetools/nimbus";
 
 const meta: Meta<typeof ScopedSearchInput> = {
   title: "Components/ScopedSearchInput",

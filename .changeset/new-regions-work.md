@@ -2,4 +2,4 @@
 "@commercetools/nimbus": minor
 ---
 
-Drawer component added
+Add IntlProvider to NimbusProvider

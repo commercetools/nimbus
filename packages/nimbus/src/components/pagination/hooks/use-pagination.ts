@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 
-export interface PaginationState {
+export type PaginationState = {
   /** Total number of items across all pages */
   totalItems: number;
   /** Current active page (1-based) */
@@ -17,9 +17,9 @@ export interface PaginationState {
   hasPreviousPage: boolean;
   /** Whether there is a next page available */
   hasNextPage: boolean;
-}
+};
 
-export interface UsePaginationProps {
+export type UsePaginationProps = {
   /** Total number of items to paginate */
   totalItems: number;
   /** Initial current page (1-based), defaults to 1 */
@@ -30,9 +30,9 @@ export interface UsePaginationProps {
   onPageChange?: (page: number) => void;
   /** Callback fired when the page size changes */
   onPageSizeChange?: (pageSize: number) => void;
-}
+};
 
-export interface UsePaginationReturn extends PaginationState {
+export type UsePaginationReturn = PaginationState & {
   /** Navigate to a specific page number (1-based) */
   goToPage: (page: number) => void;
   /** Navigate to the previous page, if available */
@@ -41,7 +41,7 @@ export interface UsePaginationReturn extends PaginationState {
   goToNextPage: () => void;
   /** Change the number of items displayed per page */
   setPageSize: (pageSize: number) => void;
-}
+};
 
 /**
  * # usePagination

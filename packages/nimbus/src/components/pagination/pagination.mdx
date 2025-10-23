@@ -13,15 +13,16 @@ tags:
   - component
 figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system
+  
 ---
 
 # Pagination
 
-A component that provides navigation controls for paginated content, allowing users to move through pages of data and adjust the number of items displayed per page.
+Pagination is a component that divides a large set of content or data into sequential pages, providing navigation controls to move between them.
 
 ## Overview
 
-The Pagination component combines page navigation controls with a page size selector, providing a complete solution for navigating through large datasets. It includes previous/next navigation buttons, page number display with optional direct input, and configurable items per page selection.
+Pagination contains controls for navigating with dedicated buttons for moving to the next and previous pages, visible page numbering for direct access, and clear feedback indicating the user's current page position within the total set of results.
 
 ### Resources
 
@@ -33,9 +34,137 @@ Deep dive on details and access design library.
 
 Get familiar with the features.
 
-### Basic usage
+### Visuals
 
-The most common implementation with navigation controls and page size selection.
+**Page size selection paired with jump to page**
+
+Use this combination for the most control over viewing and jumping to pages. This is best suited for navigating pagination with a lot of resources. Allowing users to jump to different pages as needed. 
+
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(20);
+  
+  return (
+    <Pagination
+      totalItems={150}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
+**Simplified paging without page input**
+
+This combination allows users to select how many items appear on the page and tab through other existing pages. It simplifies paging but restricts users from jumping pages. This is better suited for content that is 20 pages or less. 
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(20);
+  
+  return (
+    <Pagination
+      totalItems={150}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+      enablePageInput={false}
+    />
+  );
+};
+```
+
+**Without page size selector**
+
+The simplest solution, and mainly for uses with minimal data or processes that have multiple steps. This won't allow users to select how much information is viewed on the page, but only to navigate through via tapping through the arrows.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  
+  return (
+    <Box display="flex" justifyContent="flex-start">
+      <Pagination
+        totalItems={75}
+        currentPage={currentPage}
+        pageSize={15}
+        onPageChange={setCurrentPage}
+        enablePageInput={false}
+        enablePageSizeSelector={false}
+      />
+    </Box>
+  );
+};
+```
+
+## Guidelines
+Pagination guidelines aim to support similar and consistent experiences for users seeking to navigate their data or processes. 
+
+### Best practices
+
+ - **Provide clear feedback:** always highlight the current active page clearly.
+ - **Keep navigation minimal:** limit the visible page numbers shown to a manageable amount (e.g., show 5-7 pages).
+ - **Show total context:** display the total number of items or total pages available (e.g., "Showing 1-20 of 150 results").
+ - **Disable end controls:** clearly disable the "Previous" button on the first page and the "Next" button on the last page.
+
+
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Control is essential:** When the user needs control over where they are and how many items they see.
+- **Predictable data sets:** For data tables, structured search results, or catalogs where items have a known order and consistent size.
+- **User needs to bookmark/reference:** When users need to easily save or share a specific page number, or refer back to a particular screen of results.
+
+> [!CAUTION]\
+> When not to use
+
+- **Unstructured or image-heavy content:** For image galleries or highly dynamic, unstructured content where infinite scrolling provides a smoother, faster visual experience.
+- **Mobile experience:** Infinite scroll is often preferred on mobile devices to reduce the effort of tapping small pagination controls
+
+
+
+
+### Pagination in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do allow direct input to jump to a specific page number (if the set is very large).
+> - Do place pagination controls consistently at the top, bottom, or both, of the content being paginated.
+
+
+![pagination in use - do](/images/pagination/pagination-in-use-do.png)
+
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't reset the pagination every time a filter or sort option is applied; try to maintain the user's current page if possible.
+> - Don't overload the component with too many page numbers that visually clutter the interface.
+> - Don't hide or neglect to disable the 'Previous' or 'Next' buttons when they are no longer functional.
+
+![pagination in use - dont](/images/pagination/pagination-in-use-dont.png)
+
+
+## Properties
+
+<PropsTable id="Pagination" />
+
+
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+
 
 ```jsx-live
 const App = () => {
@@ -54,131 +183,9 @@ const App = () => {
 };
 ```
 
-### Page navigation
+### Accessibility standards
 
-#### With page input
-
-Allows users to directly type a page number for quick navigation through large datasets.
-
-```jsx-live
-const App = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  
-  return (
-    <Pagination
-      totalItems={500}
-      currentPage={currentPage}
-      pageSize={10}
-      onPageChange={setCurrentPage}
-      enablePageInput={true}
-    />
-  );
-};
-```
-
-#### Without page input
-
-Simple navigation with previous/next buttons and current page display.
-
-```jsx-live
-const App = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  
-  return (
-    <Pagination
-      totalItems={100}
-      currentPage={currentPage}
-      pageSize={10}
-      onPageChange={setCurrentPage}
-      enablePageInput={false}
-    />
-  );
-};
-```
-
-### Page size selection
-
-#### Custom page size options
-
-Configure the available page size options to match your data requirements.
-
-```jsx-live
-const App = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(3);
-  
-  return (
-    <Pagination
-      totalItems={1000}
-      currentPage={currentPage}
-      pageSize={pageSize}
-      pageSizeOptions={[3, 5, 8, 13]}
-      onPageChange={setCurrentPage}
-      onPageSizeChange={setPageSize}
-    />
-  );
-};
-```
-
-#### Without page size selector
-
-When the number of items per page should be fixed.
-
-```jsx-live
-const App = () => {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  
-  return (
-    <Pagination
-      totalItems={75}
-      currentPage={currentPage}
-      pageSize={15}
-      onPageChange={setCurrentPage}
-      enablePageSizeSelector={false}
-    />
-  );
-};
-```
-
-
-
-
-## Accessibility
-
-The Pagination component is built with accessibility in mind:
-
-- Navigation controls have proper ARIA labels
-- Keyboard navigation support with Tab, Enter, and Space keys
-- Screen reader friendly with descriptive labels
-- Disabled states for unavailable navigation options
-- Focus management for keyboard users
-- Customizable aria-label for the navigation container
-
-## Usage guidelines
-
-### When to use
-
-- **Data tables**: Navigate through rows of tabular data
-- **Lists**: Browse through long lists of items
-- **Search results**: Move through pages of search results
-- **Galleries**: Navigate through collections of images or cards
-
-### Best practices
-
-- **Consistent positioning**: Place pagination controls in a predictable location, typically at the bottom of the content
-- **Show total pages**: Always display the total number of pages to give users context
-- **Reasonable page sizes**: Offer page size options that make sense for your content type
-- **Remember preferences**: Consider persisting the user's page size preference
-- **Reset on filter changes**: Return to page 1 when filters or search queries change
-
-## Props
-
-<PropsTable id="Pagination" />
-
-## Related components
-
-- [Table](/components/table) - Often used with pagination for data tables
-- [DataTable](/components/data-table) - Advanced table with built-in pagination support
-- [Select](/components/select) - Used internally for page size selection
-- [NumberInput](/components/number-input) - Used internally for page number input
-- [IconButton](/components/icon-button) - Used for navigation buttons
+- **ARIA Roles:** Use `role="navigation"` to identify the component as a navigation block. Use `aria-current="page"` on the active page link/button to signal the user's location to screen readers.
+- **Keyboard Navigation:** Ensure the entire component is navigable using the Tab key and that all links/buttons are operable with the Enter key.
+- **Descriptive Text:** Use `aria-label` on the navigation buttons ("Previous page," "Next page") to provide screen readers with unambiguous information, even if the visual text is just an arrow.
+- **Focus Indication:** Provide a strong, clear focus indicator on the currently active navigation item when using keyboard control.

@@ -8,77 +8,102 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import type { MenuTriggerSlotProps } from "./menu.slots";
-import { menuSlotRecipe } from "./menu.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type MenuRecipeProps = SlotRecipeProps<"menu">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type MenuRootSlotProps = HTMLChakraProps<"div", MenuRecipeProps>;
+
+export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
+
+export type MenuPopoverSlotProps = HTMLChakraProps<"div">;
+
+export type MenuContentSlotProps = HTMLChakraProps<"div">;
+
+export type MenuItemSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSectionSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSectionLabelSlotProps = HTMLChakraProps<"div">;
+
+export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
 // Root component that wraps MenuTrigger
-export interface MenuRootProps
-  extends Omit<RaMenuTriggerProps, "trigger" | "children">,
-    Omit<RaMenuProps<object>, "children">,
-    RecipeVariantProps<typeof menuSlotRecipe> {
-  /**
-   * The trigger element and menu content
-   */
-  children: ReactNode;
-  /**
-   * The trigger event to use for the menu.
-   * @default "press"
-   */
-  trigger?: "press" | "longPress";
-  /**
-   * The placement of the menu relative to the trigger.
-   * @default "bottom start"
-   */
-  placement?: RaPopoverProps["placement"];
-}
+export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
+  Omit<RaMenuProps<object>, "children"> &
+  MenuRootSlotProps & {
+    /**
+     * The trigger element and menu content
+     */
+    children: ReactNode;
+    /**
+     * The trigger event to use for the menu.
+     * @default "press"
+     */
+    trigger?: "press" | "longPress";
+    /**
+     * The placement of the menu relative to the trigger.
+     * @default "bottom start"
+     */
+    placement?: RaPopoverProps["placement"];
+  };
 
 // Menu trigger component
-export interface MenuTriggerProps
-  extends Omit<MenuTriggerSlotProps, keyof RaButtonProps>,
-    RaButtonProps {
-  ref?: Ref<HTMLButtonElement>;
-}
+export type MenuTriggerProps = Omit<MenuTriggerSlotProps, keyof RaButtonProps> &
+  RaButtonProps & {
+    ref?: Ref<HTMLButtonElement>;
+  };
 
 // Menu content/popover component
-export interface MenuContentProps {
+export type MenuContentProps = {
   children?: ReactNode;
   ref?: Ref<HTMLDivElement>;
   /**
    * The placement of the menu relative to the trigger.
    */
   placement?: RaPopoverProps["placement"];
-}
+};
 
 // Menu item component
-export interface MenuItemProps extends RaMenuItemProps {
+export type MenuItemProps = RaMenuItemProps & {
   /**
    * if set to `true`, highlights the item as critical (red)
    * */
   isCritical?: boolean;
   ref?: Ref<HTMLDivElement>;
-}
+};
 
 // Menu section component
-export interface MenuSectionProps<T = object> extends RaMenuSectionProps<T> {
+export type MenuSectionProps<T = object> = RaMenuSectionProps<T> & {
   ref?: Ref<HTMLDivElement>;
   /**
    * Label for the section header
    */
   label: ReactNode;
-}
+};
 
 // Menu section label component - Header doesn't have props type, so we'll use basic props
-export interface MenuSectionLabelProps {
+export type MenuSectionLabelProps = {
   children: ReactNode;
   ref?: Ref<HTMLDivElement>;
-}
+};
 
 // Menu submenu component - extends MenuContentProps
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface MenuSubmenuProps extends MenuContentProps {}
+export type MenuSubmenuProps = MenuContentProps;
 
 // Menu submenu trigger component
-export interface MenuSubmenuTriggerProps extends RaSubmenuTriggerProps {
+export type MenuSubmenuTriggerProps = RaSubmenuTriggerProps & {
   ref?: Ref<HTMLDivElement>;
-}
+};

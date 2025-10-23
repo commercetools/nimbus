@@ -11,17 +11,17 @@ import {
   waitFor,
 } from "storybook/test";
 import {
+  Box,
+  Button,
+  ComboBox,
+  type ComboBoxRootProps,
+  Flex,
   FormField,
+  Icon,
+  RadioInput,
   Stack,
   Text,
-  Box,
-  Flex,
-  RadioInput,
-  Button,
-  Icon,
-} from "@/components";
-import { ComboBox } from "./combobox";
-import type { ComboBoxRootProps } from "./combobox.types";
+} from "@commercetools/nimbus";
 import { AddReaction, Search } from "@commercetools/nimbus-icons";
 
 /**
@@ -30,7 +30,7 @@ import { AddReaction, Search } from "@commercetools/nimbus-icons";
  * - component: references the component being documented
  */
 const meta: Meta<typeof ComboBox.Root> = {
-  title: "components/ComboBox",
+  title: "Components/ComboBox",
   component: ComboBox.Root,
 };
 
@@ -74,19 +74,19 @@ const sectionedItems = [
 ];
 
 // Type definitions for complex options
-interface PlanOption {
+type PlanOption = {
   uuid: number;
   type: string;
   description: string;
   price: string;
   features: string[];
-}
+};
 
-interface PlanGroup {
+type PlanGroup = {
   name: string;
   id: string;
   children: PlanOption[];
-}
+};
 
 const complexOptionsWithGroups: PlanGroup[] = [
   {

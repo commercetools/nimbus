@@ -1,7 +1,11 @@
 import type { ThemeProviderProps } from "next-themes";
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 /**
- * TypeScript module augmentation for Nimbus router configuration.
+ * TypeScript module augmentation interface for Nimbus router configuration.
  *
  * This allows consumers to extend the router configuration types
  * to match their specific router framework, providing better type safety.
@@ -28,12 +32,11 @@ import type { ThemeProviderProps } from "next-themes";
  *   }
  * }
  */
-
-// Base interface for router options that can be extended via module augmentation
+// Base type for router options that can be extended via module augmentation
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface NimbusRouterOptionsBase {
+export type NimbusRouterOptionsBase = {
   // This can be augmented by consumers via module augmentation
-}
+};
 
 // Default router options type (can be overridden via module augmentation)
 export type RouterOptions = NimbusRouterOptionsBase extends {
@@ -44,14 +47,18 @@ export type RouterOptions = NimbusRouterOptionsBase extends {
   : // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any;
 
-// Enhanced router configuration with proper typing
-export interface TypedNimbusRouterConfig {
+/**
+ * Enhanced router configuration with proper typing
+ */
+export type TypedNimbusRouterConfig = {
   navigate: (href: string, routerOptions?: RouterOptions) => void;
   useHref?: (href: string) => string;
-}
+};
 
-// Router configuration interface matching react-aria's expectations
-export interface NimbusRouterConfig {
+/**
+ * Router configuration type matching react-aria's expectations
+ */
+export type NimbusRouterConfig = {
   /**
    * Function to programmatically navigate to a new route.
    * This should be the navigate function from your client-side router.
@@ -79,25 +86,32 @@ export interface NimbusRouterConfig {
    * <NimbusProvider router={{ navigate, useHref }} />
    */
   useHref?: (href: string) => string;
-}
+};
 
-// Color mode provider props
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ColorModeProviderProps extends ThemeProviderProps {}
+/**
+ * Color mode provider props inherited from next-themes
+ */
+export type ColorModeProviderProps = ThemeProviderProps;
 
-// Main provider props
-export interface NimbusProviderProps extends ColorModeProviderProps {
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+/**
+ * Main props for the NimbusProvider component
+ */
+export type NimbusProviderProps = ColorModeProviderProps & {
   /**
-   * Optional locale for internationalization.
-   * Expects a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., 'en-US', 'de-DE', 'fr-FR').
-   * Defaults to the user's browser locale if not provided.
+   * Locale for internationalization support
+   * Expects a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., 'en-US', 'de-DE', 'fr-FR')
+   * @default User's browser locale
    */
   locale?: string;
   /**
-   * Optional router configuration object for client-side navigation.
-   * When provided, all nimbus components with href props will use client-side routing.
-   * - `navigate`: Function to programmatically navigate to routes.
-   * - `useHref`: Optional function to transform hrefs (useful for base paths).
+   * Router configuration for client-side navigation
+   * When provided, all Nimbus components with href props will use client-side routing
+   * - `navigate`: Function to programmatically navigate to routes
+   * - `useHref`: Optional function to transform hrefs (useful for base paths)
    */
   router?: NimbusRouterConfig | TypedNimbusRouterConfig;
-}
+};

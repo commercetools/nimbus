@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
-import { Button } from "../button";
-import { IconButton } from "../icon-button";
-import { IconToggleButton } from "../icon-toggle-button";
 import {
   Box,
-  Text,
+  Button,
+  Group,
+  IconButton,
+  IconToggleButton,
   Menu,
   Separator,
-  Group,
+  Text,
   ToggleButtonGroup,
-} from "@/components";
-import { Toolbar } from "./toolbar.tsx";
+  Toolbar,
+} from "@commercetools/nimbus";
 import {
   FormatBold,
   FormatItalic,
@@ -38,7 +38,7 @@ import {
 import { useState } from "react";
 
 const meta: Meta<typeof Toolbar> = {
-  title: "Components / Toolbar",
+  title: "Components/Toolbar",
   component: Toolbar,
   argTypes: {
     orientation: {

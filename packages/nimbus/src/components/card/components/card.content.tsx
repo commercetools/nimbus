@@ -1,9 +1,7 @@
 import { useContext, useEffect } from "react";
-import {
-  CardContent as CardContentSlot,
-  type CardContentProps,
-} from "../card.slots";
+import { CardContent as CardContentSlot } from "../card.slots";
 import { CardContext } from "./card.root";
+import type { CardContentProps } from "../card.types";
 
 export const CardContent = ({ children, ...props }: CardContentProps) => {
   const context = useContext(CardContext);

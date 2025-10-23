@@ -1,14 +1,17 @@
 import type { Ref } from "react";
 import type { IconProps } from "../icon/icon.types";
 
-export interface InlineSvgProps
-  extends Omit<IconProps, "children" | "as" | "asChild"> {
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type InlineSvgProps = Omit<IconProps, "children" | "as" | "asChild"> & {
   /**
-   * SVG markup as a string to render
+   * SVG content as a string to be rendered inline
    */
   data: string;
   /**
-   * Ref to the SVG element
+   * Ref forwarding to the SVG element
    */
   ref?: Ref<SVGSVGElement>;
-}
+};

@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
-import { Tooltip, Button, Stack, type TooltipProps } from "@/components";
+import {
+  Button,
+  Stack,
+  Tooltip,
+  type TooltipProps,
+} from "@commercetools/nimbus";
 
 const placements = {
   top: ["top", "top left", "top right", "top start", "top end"],
@@ -20,7 +25,7 @@ const placements = {
 const allPlacements = Object.values(placements).flatMap((x) => x);
 
 const meta: Meta<typeof Tooltip.Content> = {
-  title: "components/tooltip/Tooltip",
+  title: "Components/Tooltip/Tooltip",
   component: Tooltip.Content,
   argTypes: {
     placement: {

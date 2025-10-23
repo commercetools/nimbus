@@ -1,29 +1,31 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, within, waitFor } from "storybook/test";
-import { I18nProvider } from "react-aria";
-import { Box, FormField, Text } from "@/components";
-import { MoneyInput } from "./money-input";
+import {
+  Box,
+  FormField,
+  NimbusI18nProvider,
+  MoneyInput,
+  Text,
+  Stack,
+} from "@commercetools/nimbus";
 
 import type {
-  TValue,
-  TCurrencyCode,
-  TCustomEvent,
+  MoneyInputValue,
+  CurrencyCode,
+  CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
 
 // Props for the MoneyInputExample wrapper component
-interface MoneyInputExampleProps extends Partial<MoneyInputProps> {
-  initialValue?: TValue;
+type MoneyInputExampleProps = Partial<MoneyInputProps> & {
+  initialValue?: MoneyInputValue;
   currencies?: string[];
-}
+};
 
 const meta: Meta<typeof MoneyInput> = {
   title: "Components/MoneyInput",
   component: MoneyInput,
-  parameters: {
-    layout: "centered",
-  },
   tags: ["autodocs"],
 };
 
@@ -42,9 +44,9 @@ const MoneyInputExample = ({
   currencies = DEFAULT_CURRENCIES,
   ...props
 }: MoneyInputExampleProps) => {
-  const [value, setValue] = useState<TValue>(initialValue);
+  const [value, setValue] = useState<MoneyInputValue>(initialValue);
 
-  const handleChange = (event: TCustomEvent) => {
+  const handleChange = (event: CustomEvent) => {
     if (!event.target.name) return;
 
     if (event.target.name.endsWith(".amount")) {
@@ -54,13 +56,13 @@ const MoneyInputExample = ({
     if (event.target.name.endsWith(".currencyCode")) {
       setValue((prev) => ({
         ...prev,
-        currencyCode: event.target.value as TCurrencyCode | "",
+        currencyCode: event.target.value as CurrencyCode | "",
       }));
     }
   };
 
   return (
-    <div style={{ minHeight: "200px", width: "400px" }}>
+    <div style={{ minHeight: "200px" }}>
       <MoneyInput
         value={value}
         currencies={currencies}
@@ -388,7 +390,7 @@ export const CurrencySwitchingTest: Story = {
 
 export const EULocaleFormattingExample: Story = {
   render: (args) => (
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
           EU Locale Formatting (de-DE) - High Precision
@@ -418,7 +420,7 @@ export const EULocaleFormattingExample: Story = {
           {...args}
         />
       </div>
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
   args: {
     hasHighPrecisionBadge: true,
@@ -430,7 +432,7 @@ export const EULocaleFormattingExample: Story = {
     const badges = canvas.getAllByLabelText(/high precision price/i);
     expect(badges).toHaveLength(3);
 
-    // With German locale I18nProvider, React Aria formats with German conventions
+    // With German locale NimbusI18nProvider, React Aria formats with German conventions
     const inputs = await canvas.findAllByRole("textbox", {
       name: /Amount/i,
     });
@@ -580,340 +582,37 @@ export const CurrencyFormattingTest: Story = {
   },
 };
 
-export const StaticMethodsCompliance: Story = {
-  play: async () => {
-    // Helper to capture console warnings
-    const originalWarn = console.warn;
-    let capturedWarnings: unknown[][] = [];
-    console.warn = (...args: unknown[]) => {
-      capturedWarnings.push(args);
-      originalWarn.apply(console, args);
-    };
-
-    try {
-      // ========== convertToMoneyValue Tests ==========
-
-      // Test null/invalid currency cases
-      expect(
-        MoneyInput.convertToMoneyValue({ amount: "1", currencyCode: "" }, "en")
-      ).toBe(null);
-
-      expect(
-        MoneyInput.convertToMoneyValue(
-          { amount: "1", currencyCode: "FOO" as TCurrencyCode },
-          "en"
-        )
-      ).toBe(null);
-
-      // Test empty/invalid amount cases
-      expect(
-        MoneyInput.convertToMoneyValue(
-          { amount: "", currencyCode: "EUR" },
-          "en"
-        )
-      ).toBe(null);
-
-      expect(
-        MoneyInput.convertToMoneyValue(
-          { amount: "   ", currencyCode: "EUR" },
-          "en"
-        )
-      ).toBe(null);
-
-      expect(
-        MoneyInput.convertToMoneyValue(
-          { amount: "invalid", currencyCode: "EUR" },
-          "en"
-        )
-      ).toBe(null);
-
-      // Test basic cent precision conversion
-      const euroCent = MoneyInput.convertToMoneyValue(
-        { amount: "1.2", currencyCode: "EUR" },
-        "en"
-      );
-      expect(euroCent?.type).toBe("centPrecision");
-      expect(euroCent?.centAmount).toBe(120);
-      expect(euroCent?.fractionDigits).toBe(2);
-
-      // Test high precision conversion
-      const euroHigh = MoneyInput.convertToMoneyValue(
-        { amount: "1.234", currencyCode: "EUR" },
-        "en"
-      );
-      expect(euroHigh?.type).toBe("highPrecision");
-      expect(euroHigh?.preciseAmount).toBe(1234);
-      expect(euroHigh?.fractionDigits).toBe(3);
-
-      // Test complex high precision value (from original UI-Kit)
-      const complexHigh = MoneyInput.convertToMoneyValue(
-        { amount: "8.066652", currencyCode: "EUR" },
-        "en"
-      );
-      expect(complexHigh?.type).toBe("highPrecision");
-      expect(complexHigh?.preciseAmount).toBe(8066652);
-      expect(complexHigh?.fractionDigits).toBe(6);
-
-      // Test JPY (0 fraction digits) - should trigger locale warning
-      capturedWarnings = [];
-      const jpyResult = MoneyInput.convertToMoneyValue(
-        { amount: "100", currencyCode: "JPY" },
-        "" // Empty locale should trigger warning
-      );
-      expect(jpyResult?.type).toBe("centPrecision");
-      expect(jpyResult?.centAmount).toBe(100);
-      expect(jpyResult?.fractionDigits).toBe(0);
-      expect(
-        capturedWarnings.some((warning) =>
-          warning.some(
-            (arg: unknown) =>
-              typeof arg === "string" && arg.includes("locale must be provided")
-          )
-        )
-      ).toBe(true);
-
-      // Test KWD (3 fraction digits) high precision
-      const kwdHigh = MoneyInput.convertToMoneyValue(
-        { amount: "1.2345", currencyCode: "KWD" },
-        "en"
-      );
-      expect(kwdHigh?.type).toBe("highPrecision");
-      expect(kwdHigh?.preciseAmount).toBe(12345);
-      expect(kwdHigh?.fractionDigits).toBe(4);
-
-      // Test rounding edge case (2399.99 from original tests)
-      const roundingTest = MoneyInput.convertToMoneyValue(
-        { amount: "2399.99", currencyCode: "USD" },
-        "en"
-      );
-      expect(roundingTest?.type).toBe("centPrecision");
-      expect(roundingTest?.centAmount).toBe(239999); // Should be properly rounded
-
-      // ========== parseMoneyValue Tests ==========
-
-      // Test null/undefined handling
-      expect(MoneyInput.parseMoneyValue(null as never, "en")).toEqual({
-        currencyCode: "",
-        amount: "",
-      });
-
-      // Test cent precision parsing
-      const centResult = MoneyInput.parseMoneyValue(
-        {
-          type: "centPrecision",
-          centAmount: 1234,
-          currencyCode: "EUR",
-          fractionDigits: 2,
-        },
-        "en"
-      );
-      expect(centResult.amount).toBe("12.34");
-      expect(centResult.currencyCode).toBe("EUR");
-
-      // Test high precision parsing
-      const highResult = MoneyInput.parseMoneyValue(
-        {
-          type: "highPrecision",
-          currencyCode: "EUR",
-          centAmount: 1234,
-          fractionDigits: 5,
-          preciseAmount: 1234527,
-        },
-        "en"
-      );
-      expect(highResult.amount).toBe("12.34527");
-      expect(highResult.currencyCode).toBe("EUR");
-
-      // Test error cases - missing currencyCode
-      capturedWarnings = [];
-      let threwError = false;
-      try {
-        MoneyInput.parseMoneyValue({ centAmount: 10 } as never, "en");
-      } catch (error: unknown) {
-        threwError = true;
-        expect((error as Error).message).toContain("currencyCode");
-      }
-      expect(threwError).toBe(true);
-      expect(
-        capturedWarnings.some((warning) =>
-          warning.some(
-            (arg: unknown) =>
-              typeof arg === "string" && arg.includes("currencyCode")
-          )
-        )
-      ).toBe(true);
-
-      // Test error cases - invalid currency code
-      capturedWarnings = [];
-      threwError = false;
-      try {
-        MoneyInput.parseMoneyValue(
-          {
-            currencyCode: "INVALID" as TCurrencyCode,
-            centAmount: 100,
-            fractionDigits: 2,
-            type: "centPrecision",
-          },
-          "en"
-        );
-      } catch (error: unknown) {
-        threwError = true;
-        expect((error as Error).message).toContain("known currency code");
-      }
-      expect(threwError).toBe(true);
-
-      // Test locale-specific formatting - Swiss locale (de-CH)
-      const swissResult = MoneyInput.parseMoneyValue(
-        {
-          type: "highPrecision",
-          currencyCode: "EUR",
-          centAmount: 1234,
-          fractionDigits: 3,
-          preciseAmount: 1234567,
-        },
-        "de-CH"
-      );
-      // Swiss locale uses separator for thousands (can vary based on system locale)
-      expect(swissResult.amount).toMatch(/^1.234\.567$/); // General pattern: 1[separator]234.567
-
-      // Test locale-specific formatting - Spanish locale (es)
-      const spanishResult = MoneyInput.parseMoneyValue(
-        {
-          type: "highPrecision",
-          currencyCode: "EUR",
-          centAmount: 1234,
-          fractionDigits: 3,
-          preciseAmount: 1234567,
-        },
-        "es"
-      );
-      expect(spanishResult.amount).toContain(","); // Spanish uses comma for decimals
-
-      // Test locale validation - empty string should trigger warning but not crash
-      capturedWarnings = [];
-      try {
-        MoneyInput.parseMoneyValue(
-          {
-            type: "centPrecision",
-            centAmount: 100,
-            currencyCode: "USD",
-            fractionDigits: 2,
-          },
-          "" // Empty string should be handled gracefully
-        );
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        // This is expected due to invalid language tag
-      }
-      expect(
-        capturedWarnings.some((warning) =>
-          warning.some(
-            (arg: unknown) =>
-              typeof arg === "string" && arg.includes("locale must be passed")
-          )
-        )
-      ).toBe(true);
-
-      // Test missing amount validation
-      capturedWarnings = [];
-      MoneyInput.parseMoneyValue(
-        {
-          type: "centPrecision",
-          currencyCode: "USD",
-          fractionDigits: 2,
-        } as never,
-        "en"
-      );
-      expect(
-        capturedWarnings.some((warning) =>
-          warning.some(
-            (arg: unknown) => typeof arg === "string" && arg.includes("amount")
-          )
-        )
-      ).toBe(true);
-
-      // ========== isEmpty Tests ==========
-
-      expect(MoneyInput.isEmpty({ amount: "5", currencyCode: "EUR" })).toBe(
-        false
-      );
-      expect(MoneyInput.isEmpty({ amount: "", currencyCode: "EUR" })).toBe(
-        true
-      );
-      expect(MoneyInput.isEmpty({ amount: "5", currencyCode: "" })).toBe(true);
-      expect(MoneyInput.isEmpty({ amount: "   ", currencyCode: "EUR" })).toBe(
-        true
-      );
-      expect(MoneyInput.isEmpty({ amount: "EUR", currencyCode: "" })).toBe(
-        true
-      );
-      expect(MoneyInput.isEmpty(null as never)).toBe(true);
-      expect(MoneyInput.isEmpty(undefined as never)).toBe(true);
-
-      // ========== isHighPrecision Tests ==========
-
-      // Test basic high precision detection
-      expect(
-        MoneyInput.isHighPrecision(
-          { amount: "2.001", currencyCode: "EUR" },
-          "en"
-        )
-      ).toBe(true);
-
-      expect(
-        MoneyInput.isHighPrecision(
-          { amount: "2.00", currencyCode: "EUR" },
-          "en"
-        )
-      ).toBe(false);
-
-      // Test JPY high precision (JPY has 0 fraction digits)
-      expect(
-        MoneyInput.isHighPrecision(
-          { amount: "100.5", currencyCode: "JPY" },
-          "en"
-        )
-      ).toBe(true);
-
-      expect(
-        MoneyInput.isHighPrecision({ amount: "100", currencyCode: "JPY" }, "en")
-      ).toBe(false);
-
-      // Test KWD high precision (KWD has 3 fraction digits)
-      expect(
-        MoneyInput.isHighPrecision(
-          { amount: "1.2345", currencyCode: "KWD" },
-          "en"
-        )
-      ).toBe(true);
-
-      expect(
-        MoneyInput.isHighPrecision(
-          { amount: "1.234", currencyCode: "KWD" },
-          "en"
-        )
-      ).toBe(false);
-
-      // Test warning for empty values
-      capturedWarnings = [];
-      const emptyResult = MoneyInput.isHighPrecision(
-        { amount: "", currencyCode: "EUR" },
-        "en"
-      );
-      expect(emptyResult).toBe(false);
-
-      // ========== getAmountInputId Tests ==========
-      expect(MoneyInput.getAmountInputId("id")).toBe("id.amount");
-      expect(MoneyInput.getAmountInputId(undefined)).toBe(undefined);
-      // ========== getCurrencyDropdownId Tests ==========
-      expect(MoneyInput.getCurrencyDropdownId("id")).toBe("id.currencyCode");
-      expect(MoneyInput.getCurrencyDropdownId(undefined)).toBe(undefined);
-    } finally {
-      console.warn = originalWarn;
-    }
+/**
+ * Custom Width
+ * Demonstrates MoneyInput at different widths: 512px, 768px, and full
+ */
+export const CustomWidth: Story = {
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400">
+        <Text>Width: 512px</Text>
+        <MoneyInputExample
+          {...args}
+          width="512px"
+          initialValue={{ amount: "456.78", currencyCode: "EUR" }}
+        />
+        <Text>Width: 768px</Text>
+        <MoneyInputExample
+          {...args}
+          width="768px"
+          initialValue={{ amount: "123.45", currencyCode: "USD" }}
+        />
+        <Text>Width: full</Text>
+        <MoneyInputExample
+          {...args}
+          width="full"
+          initialValue={{ amount: "789.01", currencyCode: "GBP" }}
+        />
+      </Stack>
+    );
   },
-  render: () => {
-    return <>No UI, testing component's static methods</>;
+  args: {
+    hasHighPrecisionBadge: true,
   },
 };
 
@@ -923,17 +622,17 @@ export const StaticMethodsCompliance: Story = {
  */
 export const FormFieldBasic: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "USD",
     });
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root>
             <FormField.Label>Product Price</FormField.Label>
@@ -951,7 +650,7 @@ export const FormFieldBasic: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -979,20 +678,20 @@ export const FormFieldBasic: Story = {
  */
 export const FormFieldValidation: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "EUR",
     });
     const [isInvalid, setIsInvalid] = useState(false);
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
       // Simple validation: require amount > 0
       setIsInvalid(!newValue.amount || parseFloat(newValue.amount) <= 0);
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isInvalid={isInvalid} isRequired>
             <FormField.Label>Required Price (with validation)</FormField.Label>
@@ -1013,7 +712,7 @@ export const FormFieldValidation: Story = {
             </FormField.Error>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -1041,13 +740,13 @@ export const FormFieldValidation: Story = {
  */
 export const FormFieldReadOnly: Story = {
   render: () => {
-    const [value] = useState<TValue>({
+    const [value] = useState<MoneyInputValue>({
       amount: "250.75",
       currencyCode: "GBP",
     });
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isReadOnly>
             <FormField.Label>Read-only Price</FormField.Label>
@@ -1063,7 +762,7 @@ export const FormFieldReadOnly: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -1081,13 +780,13 @@ export const FormFieldReadOnly: Story = {
  */
 export const FormFieldDisabled: Story = {
   render: () => {
-    const [value] = useState<TValue>({
+    const [value] = useState<MoneyInputValue>({
       amount: "100.00",
       currencyCode: "JPY",
     });
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root isDisabled>
             <FormField.Label>Disabled Price</FormField.Label>
@@ -1103,7 +802,7 @@ export const FormFieldDisabled: Story = {
             </FormField.Description>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -1120,17 +819,17 @@ export const FormFieldDisabled: Story = {
  */
 export const FormFieldHighPrecision: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "KWD",
     });
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
     };
 
     return (
-      <I18nProvider locale="en-US">
+      <NimbusI18nProvider locale="en-US">
         <Box maxWidth="400px">
           <FormField.Root>
             <FormField.Label>High Precision Price</FormField.Label>
@@ -1160,7 +859,7 @@ export const FormFieldHighPrecision: Story = {
             </FormField.InfoBox>
           </FormField.Root>
         </Box>
-      </I18nProvider>
+      </NimbusI18nProvider>
     );
   },
   play: async ({ canvasElement }) => {
@@ -1181,13 +880,13 @@ export const FormFieldHighPrecision: Story = {
  */
 export const ModernApiTest: Story = {
   render: () => {
-    const [value, setValue] = useState<TValue>({
+    const [value, setValue] = useState<MoneyInputValue>({
       amount: "",
       currencyCode: "USD",
     });
     const [events, setEvents] = useState<string[]>([]);
 
-    const handleValueChange = (newValue: TValue) => {
+    const handleValueChange = (newValue: MoneyInputValue) => {
       setValue(newValue);
       setEvents((prev) => [
         ...prev,
@@ -1199,7 +898,7 @@ export const ModernApiTest: Story = {
       setEvents((prev) => [...prev, `onAmountChange: ${amount}`]);
     };
 
-    const handleCurrencyChange = (currencyCode: TCurrencyCode) => {
+    const handleCurrencyChange = (currencyCode: CurrencyCode) => {
       setEvents((prev) => [...prev, `onCurrencyChange: ${currencyCode}`]);
     };
 

@@ -11,10 +11,10 @@ import {
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/grid}
  */
-export interface GridProps extends ChakraGridProps {
+export type GridProps = ChakraGridProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const GridComponent = (props: GridProps) => {
   const { ref, ...restProps } = props;

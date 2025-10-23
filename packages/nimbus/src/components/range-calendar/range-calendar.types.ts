@@ -1,27 +1,56 @@
 import type { DateValue } from "@internationalized/date";
-import type { RangeCalendarProps as AriaRangeCalendarProps } from "react-aria-components";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import type { rangeCalendarSlotRecipe } from "./range-calendar.recipe";
-import type { RangeCalendarRootSlotProps } from "./range-calendar.slots";
+import type { RangeCalendarProps as RaRangeCalendarProps } from "react-aria-components";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
-/**
- * Range value type for date ranges
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type RangeCalendarRecipeProps = SlotRecipeProps<"rangeCalendar">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type RangeCalendarRootSlotProps = HTMLChakraProps<
+  "div",
+  RangeCalendarRecipeProps & RaRangeCalendarProps<DateValue>
+>;
+
+export type RangeCalendarHeaderSlotProps = HTMLChakraProps<"div">;
+
+export type RangeCalendarGridsSlotProps = HTMLChakraProps<"div">;
+
+export type RangeCalendarMonthTitleSlotProps = HTMLChakraProps<"div">;
+
+export type RangeCalendarGridSlotProps = HTMLChakraProps<"table">;
+
+export type RangeCalendarGridHeaderSlotProps = HTMLChakraProps<"thead">;
+
+export type RangeCalendarHeaderCellSlotProps = HTMLChakraProps<"th">;
+
+export type RangeCalendarGridBodySlotProps = HTMLChakraProps<"tbody">;
+
+export type RangeCalendarCellSlotProps = HTMLChakraProps<"td">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 export type RangeValue<T> = {
   start: T;
   end: T;
 };
 
-/**
- * Additional properties we want to exclude from the RangeCalendar component.
- * These are either deprecated or not intended for use in this component.
- */
 type ExcludedProps = "as" | "style" | "createCalendar";
 
-export interface RangeCalendarProps<T extends DateValue>
-  extends Omit<
-      RangeCalendarRootSlotProps,
-      keyof AriaRangeCalendarProps<DateValue> | ExcludedProps
-    >,
-    Omit<AriaRangeCalendarProps<T>, ExcludedProps>,
-    RecipeVariantProps<typeof rangeCalendarSlotRecipe> {}
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type RangeCalendarProps<T extends DateValue> = Omit<
+  RangeCalendarRootSlotProps,
+  keyof RaRangeCalendarProps<DateValue> | ExcludedProps
+> &
+  Omit<RaRangeCalendarProps<T>, ExcludedProps> &
+  SlotRecipeProps<"rangeCalendar">;

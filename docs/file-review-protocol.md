@@ -9,6 +9,7 @@ Determine the file type by extension and location:
 
 - `*.mdx` → Documentation file
 - `*.stories.tsx` → Storybook stories
+- `*.spec.tsx` or `*.spec.ts` → Unit tests
 - `*.recipe.ts` → Chakra UI recipe
 - `*.slots.tsx` → Slot components
 - `*.types.ts` → Type definitions
@@ -25,6 +26,7 @@ IMMEDIATELY read the appropriate guidelines document:
 
 - MDX files → `/docs/file-type-guidelines/documentation.md`
 - Stories → `/docs/file-type-guidelines/stories.md`
+- Unit tests → `/docs/file-type-guidelines/unit-testing.md`
 - Recipes → `/docs/file-type-guidelines/recipes.md`
 - Slots → `/docs/file-type-guidelines/slots.md`
 - Types → `/docs/file-type-guidelines/types.md`

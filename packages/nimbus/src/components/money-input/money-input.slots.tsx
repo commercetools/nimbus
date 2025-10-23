@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import { createSlotRecipeContext } from "@chakra-ui/react";
 import { Group } from "@/components";
 import type {
   MoneyInputRootSlotProps,
@@ -8,10 +8,9 @@ import type {
   MoneyInputAmountInputSlotProps,
   MoneyInputBadgeSlotProps,
 } from "./money-input.types";
-import { moneyInputRecipe } from "./money-input.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: moneyInputRecipe,
+  key: "moneyInput",
 });
 
 export const MoneyInputRootSlot = withProvider<

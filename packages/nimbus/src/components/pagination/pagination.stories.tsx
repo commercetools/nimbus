@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect } from "storybook/test";
-import { Pagination } from "./pagination";
+import { Box, Pagination, Stack, Text } from "@commercetools/nimbus";
 import { useState } from "react";
-import { Stack, Box, Text } from "@/components";
 
 const meta: Meta<typeof Pagination> = {
-  title: "components/Pagination",
+  title: "Components/Pagination",
   component: Pagination,
 
   argTypes: {

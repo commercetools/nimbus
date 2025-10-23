@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconToggleButton } from "./icon-toggle-button";
-import { Stack } from "@/components";
+import { IconToggleButton, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState } from "react";
 
 const meta: Meta<typeof IconToggleButton> = {
-  title: "components/Buttons/IconToggleButton",
+  title: "Components/Buttons/IconToggleButton",
   component: IconToggleButton,
 };
 

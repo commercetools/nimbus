@@ -1,14 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DatePicker } from "./date-picker";
-import { I18nProvider } from "react-aria";
-import { Button, Stack, FormField, Text } from "@/components";
 import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+
 import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { DateValue } from "react-aria";
+import {
+  Button,
+  DatePicker,
+  FormField,
+  NimbusI18nProvider,
+  Stack,
+  Text,
+  type DateValue,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**
@@ -2591,38 +2597,38 @@ export const MultipleLocales: Story = {
       <Stack direction="column" gap="600" alignItems="start">
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">English (US) - 12-hour format</Text>
-          <I18nProvider locale="en-US">
+          <NimbusI18nProvider locale="en-US">
             <DatePicker
               {...args}
               granularity="minute"
               defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
               aria-label="US English picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">German (DE) - 24-hour format</Text>
-          <I18nProvider locale="de-DE">
+          <NimbusI18nProvider locale="de-DE">
             <DatePicker
               {...args}
               granularity="minute"
               defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
               aria-label="German picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
 
         <Stack direction="column" gap="200" alignItems="start">
           <Text fontWeight="700">Spanish (ES) - Different date format</Text>
-          <I18nProvider locale="es-ES">
+          <NimbusI18nProvider locale="es-ES">
             <DatePicker
               {...args}
               granularity="minute"
               defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}
               aria-label="Spanish picker"
             />
-          </I18nProvider>
+          </NimbusI18nProvider>
         </Stack>
       </Stack>
     );

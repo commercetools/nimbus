@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { Menu } from "./index";
 import {
   Box,
   Button,
@@ -9,10 +8,11 @@ import {
   Icon,
   IconButton,
   Kbd,
+  Menu,
   Separator,
   Stack,
   Text,
-} from "@/components";
+} from "@commercetools/nimbus";
 import {
   MoreVert,
   KeyboardArrowDown,
@@ -50,7 +50,7 @@ import {
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Menu.Root> = {
-  title: "components/Menu",
+  title: "Components/Menu",
   component: Menu.Root,
   parameters: {},
   tags: ["autodocs"],

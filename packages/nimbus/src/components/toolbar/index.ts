@@ -1,2 +1,2 @@
-export * from "./toolbar.tsx";
-export * from "./toolbar.types.ts";
+export * from "./toolbar";
+export * from "./toolbar.types";

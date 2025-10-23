@@ -1,5 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react/styled-system";
-import { I18nProvider, RouterProvider } from "react-aria";
+import { RouterProvider } from "react-aria";
+import { IntlProvider } from "react-intl";
+import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
@@ -7,7 +9,7 @@ import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode
 /**
  * # NimbusProvider
  *
- * provides an environment for the rest of the components to work in
+ * Provides an environment for the rest of the components to work in.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/utilities/nimbusprovider}
  */
@@ -18,12 +20,15 @@ export function NimbusProvider({
   ...props
 }: NimbusProviderProps) {
   // Inner content with all the existing providers
+  // If no locale is provided, use browser's locale as fallback
   const content = (
-    <ChakraProvider value={system}>
-      <NimbusColorModeProvider enableSystem={false} {...props}>
-        <I18nProvider locale={locale}>{children}</I18nProvider>
-      </NimbusColorModeProvider>
-    </ChakraProvider>
+    <IntlProvider locale={locale ?? navigator.language} defaultLocale="en">
+      <ChakraProvider value={system}>
+        <NimbusColorModeProvider enableSystem={false} {...props}>
+          <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
+        </NimbusColorModeProvider>
+      </ChakraProvider>
+    </IntlProvider>
   );
 
   // If router config is provided, wrap with RouterProvider for client-side routing

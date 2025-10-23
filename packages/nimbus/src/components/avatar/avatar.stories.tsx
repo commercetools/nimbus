@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar } from "./avatar";
-import type { AvatarProps } from "./avatar.types";
+import { Avatar, type AvatarProps, Button, Stack } from "@commercetools/nimbus";
 import { within, expect, waitFor } from "storybook/test";
-import { Button, Stack } from "@/components";
 
 /**
  * Storybook metadata configuration
@@ -10,7 +8,7 @@ import { Button, Stack } from "@/components";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Avatar> = {
-  title: "components/Avatar",
+  title: "Components/Avatar",
   component: Avatar,
 };
 

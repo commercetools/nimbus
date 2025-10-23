@@ -1,23 +1,50 @@
-import type { CardRootProps } from "./card.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { cardRecipe } from "./card.recipe";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type CardVariantProps = CardRootProps &
-  RecipeVariantProps<typeof cardRecipe> & {
-    [key: `data-${string}`]: unknown;
-  };
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-/**
- * Main props interface for the Card component.
- * Extends CardVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface CardProps extends CardVariantProps {
+type CardRecipeProps = {
+  /** Internal padding variant for the card content */
+  cardPadding?: SlotRecipeProps<"card">["cardPadding"];
+  /** Border style variant (outline, none, etc.) */
+  borderStyle?: SlotRecipeProps<"card">["borderStyle"];
+  /** Elevation shadow level for the card */
+  elevation?: SlotRecipeProps<"card">["elevation"];
+  /** Background style variant (white, gray, etc.) */
+  backgroundStyle?: SlotRecipeProps<"card">["backgroundStyle"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type CardRootSlotProps = HTMLChakraProps<"div", CardRecipeProps>;
+
+export type CardHeaderSlotProps = HTMLChakraProps<"div">;
+
+export type CardContentSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type CardProps = CardRootSlotProps & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-}
+  [key: `data-${string}`]: unknown;
+};
+
+export type CardHeaderProps = CardHeaderSlotProps & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+};
+
+export type CardContentProps = CardContentSlotProps & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+};

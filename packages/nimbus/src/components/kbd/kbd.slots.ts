@@ -3,29 +3,27 @@ import {
   type RecipeProps,
   type UnstyledProp,
   createRecipeContext,
-} from "@chakra-ui/react/styled-system";
-
-import { kbdRecipe } from "./kbd.recipe";
+} from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 
 /**
  * Base recipe props interface that combines Chakra UI's recipe props
  * with the unstyled prop option for the svg element.
  */
-interface KbdRecipeProps extends RecipeProps<"kbd">, UnstyledProp {}
+type KbdRecipeProps = RecipeProps<"kbd"> & UnstyledProp;
 
 /**
  * Root props interface that extends Chakra's HTML props with our recipe props.
  * This creates a complete set of props for the root element, combining
  * HTML attributes, Chakra's styling system, and our custom recipe props.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface KbdRootSlotProps
-  extends HTMLChakraProps<"kbd", KbdRecipeProps> {}
+export type KbdRootSlotProps = HTMLChakraProps<"kbd", KbdRecipeProps>;
 
-const { withContext } = createRecipeContext({ recipe: kbdRecipe });
+const { withContext } = createRecipeContext({ key: "kbd" });
 
 /**
  * Root component that provides the styling context for the Icon component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const KbdRootSlot = withContext<HTMLElement, KbdRootSlotProps>("kbd");
+export const KbdRootSlot: SlotComponent<HTMLElement, KbdRootSlotProps> =
+  withContext<HTMLElement, KbdRootSlotProps>("kbd");

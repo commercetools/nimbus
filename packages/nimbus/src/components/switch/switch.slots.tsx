@@ -1,39 +1,32 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-import {
-  createSlotRecipeContext,
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import { switchSlotRecipe } from "./switch.recipe";
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
+import type {
+  SwitchRootSlotProps,
+  SwitchLabelSlotProps,
+  SwitchTrackSlotProps,
+  SwitchThumbSlotProps,
+} from "./switch.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "switch",
 });
 
-export interface SwitchRootProps
-  extends HTMLChakraProps<
-    "label",
-    RecipeVariantProps<typeof switchSlotRecipe>
-  > {}
-export const SwitchRootSlot = withProvider<HTMLLabelElement, SwitchRootProps>(
-  "label",
-  "root"
-);
+export const SwitchRootSlot: SlotComponent<
+  HTMLLabelElement,
+  SwitchRootSlotProps
+> = withProvider<HTMLLabelElement, SwitchRootSlotProps>("label", "root");
 
-interface SwitchLabelProps extends HTMLChakraProps<"span"> {}
-export const SwitchLabelSlot = withContext<HTMLSpanElement, SwitchLabelProps>(
-  "span",
-  "label"
-);
+export const SwitchLabelSlot = withContext<
+  HTMLSpanElement,
+  SwitchLabelSlotProps
+>("span", "label");
 
-interface SwitchTrackProps extends HTMLChakraProps<"span"> {}
-export const SwitchTrackSlot = withContext<HTMLSpanElement, SwitchTrackProps>(
-  "span",
-  "track"
-);
+export const SwitchTrackSlot = withContext<
+  HTMLSpanElement,
+  SwitchTrackSlotProps
+>("span", "track");
 
-interface SwitchThumbProps extends HTMLChakraProps<"span"> {}
-export const SwitchThumbSlot = withContext<HTMLSpanElement, SwitchThumbProps>(
-  "span",
-  "thumb"
-);
+export const SwitchThumbSlot = withContext<
+  HTMLSpanElement,
+  SwitchThumbSlotProps
+>("span", "thumb");

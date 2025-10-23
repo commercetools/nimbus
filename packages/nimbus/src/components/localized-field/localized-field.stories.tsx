@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent } from "storybook/test";
-import { Stack, Text, type TValue } from "@/components";
-import { LocalizedField } from "./index";
+import {
+  LocalizedField,
+  Stack,
+  Text,
+  type MoneyInputValue,
+} from "@commercetools/nimbus";
 import {
   baseLocales,
   baseCurrencies,
@@ -43,7 +47,7 @@ import {
 import { LocalizedFieldStoryComponent } from "./utils/localized-field.story-component";
 
 const meta: Meta<typeof LocalizedField> = {
-  title: "components/LocalizedField",
+  title: "Components/LocalizedField",
   component: LocalizedField,
   parameters: {
     a11y: {
@@ -191,7 +195,7 @@ export const Base: Story = {
         async () => {
           for await (const currency of baseCurrencies) {
             const currentValue = (
-              baseStoryProps.money.fieldData.values[currency] as TValue
+              baseStoryProps.money.fieldData.values[currency] as MoneyInputValue
             ).amount;
             const placeholderValue =
               baseStoryProps.money.fieldData.placeholders?.[currency];

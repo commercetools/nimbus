@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Group } from "./group";
-import type { GroupProps } from "./group.types";
-import { Button } from "../button";
+import { Button, Group, type GroupProps } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 /**
@@ -10,7 +8,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Group> = {
-  title: "components/Group",
+  title: "Components/Group",
   component: Group,
 };
 

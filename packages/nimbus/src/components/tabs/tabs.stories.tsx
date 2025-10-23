@@ -1,8 +1,7 @@
-import { Tabs } from "./tabs";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
+import { Box, Tabs } from "@commercetools/nimbus";
 import { SentimentSatisfied } from "@commercetools/nimbus-icons";
-import { Box } from "../box";
 
 /**
  * Storybook metadata configuration
@@ -10,7 +9,7 @@ import { Box } from "../box";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Tabs.Root> = {
-  title: "components/Tabs",
+  title: "Components/Tabs",
   component: Tabs.Root,
   argTypes: {
     orientation: {

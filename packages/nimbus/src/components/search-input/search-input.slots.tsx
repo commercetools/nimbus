@@ -1,36 +1,25 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-import {
-  type HTMLChakraProps,
-  type RecipeVariantProps,
-  createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
-
-import { searchInputSlotRecipe } from "./search-input.recipe";
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type {
+  SearchInputRootSlotProps,
+  SearchInputLeadingElementSlotProps,
+  SearchInputInputSlotProps,
+} from "./search-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "searchInput",
 });
 
-export interface SearchInputRootProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof searchInputSlotRecipe>
-  > {}
-
 export const SearchInputRootSlot = withProvider<
   HTMLDivElement,
-  SearchInputRootProps
+  SearchInputRootSlotProps
 >("div", "root");
 
-export interface SearchInputLeadingElementProps
-  extends HTMLChakraProps<"div"> {}
 export const SearchInputLeadingElementSlot = withContext<
   HTMLDivElement,
-  SearchInputLeadingElementProps
+  SearchInputLeadingElementSlotProps
 >("div", "leadingElement");
 
-export interface SearchInputInputProps extends HTMLChakraProps<"input"> {}
 export const SearchInputInputSlot = withContext<
   HTMLInputElement,
-  SearchInputInputProps
+  SearchInputInputSlotProps
 >("input", "input");

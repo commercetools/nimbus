@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { SplitButton } from "./index";
-import { Stack, Separator } from "@/components";
-import { Menu } from "@/components/menu";
+import { Menu, Separator, SplitButton, Stack } from "@commercetools/nimbus";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof SplitButton> = {
-  title: "components/Buttons/SplitButton",
+  title: "Components/Buttons/SplitButton",
   component: SplitButton,
   parameters: {},
   tags: ["autodocs"],

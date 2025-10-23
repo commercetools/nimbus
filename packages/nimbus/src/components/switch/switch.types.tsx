@@ -1,14 +1,29 @@
-import type {
-  HTMLChakraProps,
-  RecipeVariantProps,
-} from "@chakra-ui/react/styled-system";
-import { switchSlotRecipe } from "./switch.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
 
-/**
- * List of props that should be excluded from the root props when combining with ARIA props
- */
-export type ExcludedSwitchProps =
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type SwitchRecipeProps = SlotRecipeProps<"switch">;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type SwitchRootSlotProps = HTMLChakraProps<"label", SwitchRecipeProps>;
+
+export type SwitchLabelSlotProps = HTMLChakraProps<"span">;
+
+export type SwitchTrackSlotProps = HTMLChakraProps<"span">;
+
+export type SwitchThumbSlotProps = HTMLChakraProps<"span">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type ExcludedSwitchProps =
   | "asChild"
   | "isIndeterminate"
   | "colorScheme"
@@ -16,30 +31,21 @@ export type ExcludedSwitchProps =
   | "validationBehavior"
   | "validate";
 
-/**
- * Props for the Switch component root element.
- * Includes all HTML props for the label element and recipe variant props.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SwitchRootProps
-  extends HTMLChakraProps<
-    "label",
-    RecipeVariantProps<typeof switchSlotRecipe>
-  > {}
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-/**
- * Main props interface for the Switch component.
- * Combines root element props with ARIA toggle functionality props.
- */
 export type SwitchProps = Omit<
-  SwitchRootProps,
+  SwitchRootSlotProps,
   ExcludedSwitchProps | "onChange"
 > &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {
     /**
-     * The content to display next to the switch.
-     * Can be a string or React node.
+     * The label content to display next to the switch
      */
     children?: React.ReactNode;
+    /**
+     * Ref forwarding to the input element
+     */
     ref?: React.Ref<HTMLInputElement>;
   };

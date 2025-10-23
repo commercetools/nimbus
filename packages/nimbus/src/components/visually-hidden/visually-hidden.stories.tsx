@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { VisuallyHidden } from "./visually-hidden";
-import { Button } from "@/components";
+import { Button, VisuallyHidden } from "@commercetools/nimbus";
 import { expect, userEvent, within } from "storybook/test";
 
 // CSS property combination, that makes content invisible to the viewer
@@ -21,7 +20,7 @@ const invisibleCssProps = {
  * Makes it visible if focused.
  */
 const meta: Meta<typeof VisuallyHidden> = {
-  title: "utils/VisuallyHidden",
+  title: "Utils/VisuallyHidden",
   component: VisuallyHidden,
 };
 

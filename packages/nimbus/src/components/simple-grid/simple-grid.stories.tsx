@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "../box";
-import { SimpleGrid } from "./simple-grid";
+import { Box, SimpleGrid } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 /**
@@ -9,7 +8,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof SimpleGrid> = {
-  title: "components/SimpleGrid",
+  title: "Components/SimpleGrid",
   component: SimpleGrid,
 };
 

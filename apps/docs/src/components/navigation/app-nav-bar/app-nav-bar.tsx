@@ -1,5 +1,6 @@
 import { Flex, Box, Stack } from "@commercetools/nimbus";
 import { DevOnly } from "@/components/utils/dev-only";
+import { Suspense } from "react";
 
 import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";
 import { AppNavBarSearch } from "./components/app-nav-bar-search/app-nav-bar-search.tsx";
@@ -22,7 +23,9 @@ export const AppNavBar = () => {
       </Stack>
       <Box flexGrow="1" />
       <Flex flexGrow="1">
-        <AppNavBarSearch />
+        <Suspense fallback={<Box>Loading search...</Box>}>
+          <AppNavBarSearch />
+        </Suspense>
       </Flex>
       <Box flexGrow="1" />
       <Box>

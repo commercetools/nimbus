@@ -1,4 +1,24 @@
 import type { PopoverProps as RaPopoverProps } from "react-aria-components";
-import type { PopoverSlotProps } from "./popover.slots";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-export type PopoverProps = RaPopoverProps & PopoverSlotProps;
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type PopoverRecipeProps = RecipeProps<"popover"> & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type PopoverRootSlotProps = HTMLChakraProps<"div", PopoverRecipeProps>;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type PopoverProps = RaPopoverProps & PopoverRootSlotProps;

@@ -1,23 +1,50 @@
-import type { LoadingSpinnerRootProps } from "./loading-spinner.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { loadingSpinnerRecipe } from "./loading-spinner.recipe";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-/**
- * Combines the root props with Chakra UI's recipe variant props and Aria's progress bar props.
- *
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type LoadingSpinnerVariantProps = LoadingSpinnerRootProps &
-  RecipeVariantProps<typeof loadingSpinnerRecipe> & {
-    [key: `data-${string}`]: string;
-  };
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
-/**
- * Main props interface for the LoadingSpinner component.
- * Extends LoadingSpinnerVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
+type LoadingSpinnerRecipeProps = {
+  /**
+   * Size variant of the loading spinner
+   * @default "sm"
+   */
+  size?: RecipeProps<"loadingSpinner">["size"];
+  /**
+   * Color tone palette for the loading spinner
+   * @default "primary"
+   */
+  tone?: RecipeProps<"loadingSpinner">["tone"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type LoadingSpinnerRootSlotProps = Omit<
+  HTMLChakraProps<"div", LoadingSpinnerRecipeProps>,
+  "as" | "asChild"
+>;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+type LoadingSpinnerVariantProps = LoadingSpinnerRootSlotProps & {
+  [key: `data-${string}`]: string;
+};
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
 export type LoadingSpinnerProps = LoadingSpinnerVariantProps & {
+  /**
+   * Ref forwarding to the root element
+   */
   ref?: React.Ref<HTMLDivElement>;
 };

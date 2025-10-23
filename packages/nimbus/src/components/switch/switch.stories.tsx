@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Switch } from "./switch";
-import { Stack, Box } from "@/components";
+import { Box, Stack, Switch } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef, useState } from "react";
 

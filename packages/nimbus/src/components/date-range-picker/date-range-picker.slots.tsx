@@ -1,30 +1,12 @@
 import {
   type HTMLChakraProps,
-  type RecipeProps,
-  type UnstyledProp,
   createSlotRecipeContext,
-} from "@chakra-ui/react/styled-system";
-
-import { dateRangePickerSlotRecipe } from "./date-range-picker.recipe";
-
-/**
- * Base recipe props interface that combines Chakra UI's recipe props
- * with the unstyled prop option for the div element.
- */
-interface DateRangePickerRecipeProps extends RecipeProps<"div">, UnstyledProp {}
-
-/**
- * Root props interface that extends Chakra's HTML props with our recipe props.
- * This creates a complete set of props for the root element, combining
- * HTML attributes, Chakra's styling system, and our custom recipe props.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DateRangePickerRootProps
-  extends HTMLChakraProps<"div", DateRangePickerRecipeProps> {}
+} from "@chakra-ui/react";
+import type { DateRangePickerRootSlotProps } from "./date-range-picker.types";
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: dateRangePickerSlotRecipe,
+  key: "dateRangePicker",
 });
 
 /**
@@ -33,7 +15,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
  */
 export const DateRangePickerRootSlot = withProvider<
   HTMLDivElement,
-  DateRangePickerRootProps
+  DateRangePickerRootSlotProps
 >("div", "root");
 
 /**

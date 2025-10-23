@@ -9,67 +9,86 @@ import { StickySidebar } from "./components/navigation/sticky-sidebar.tsx";
 import { RouterProvider } from "./components/router";
 import { useAtom } from "jotai";
 import { activeRouteAtom } from "./atoms/route";
-import { IntlProvider } from "react-intl";
+import { Suspense } from "react";
 
 function App() {
   const [, setActiveRoute] = useAtom(activeRouteAtom);
 
   return (
     <RouterProvider>
-      <IntlProvider locale="en">
-        <NimbusProvider router={{ navigate: setActiveRoute }} locale="en">
-          <>
-            <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
-              <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
-                <AppNavBar />
-              </Box>
-
-              <Flex zIndex="0" flexGrow="1" flexShrink="1">
-                <StickySidebar
-                  as="nav"
-                  width="7200"
-                  borderRight="solid-25"
-                  borderColor="neutral.3"
-                  flexShrink="0"
-                  pt="600"
-                  id="sidebar-left"
-                >
+      <NimbusProvider router={{ navigate: setActiveRoute }} locale="en">
+        <>
+          <Flex direction="column" width="full" maxWidth="1600px" mx="auto">
+            <Box position="sticky" top="0" zIndex="1" bg="neutral.1">
+              <AppNavBar />
+            </Box>
+            <Flex zIndex="0" flexGrow="1" flexShrink="1">
+              <StickySidebar
+                as="nav"
+                width="7200"
+                borderRight="solid-25"
+                borderColor="neutral.3"
+                flexShrink="0"
+                pt="600"
+                id="sidebar-left"
+              >
+                <Suspense fallback={<Box>Loading...</Box>}>
                   <Menu />
-                </StickySidebar>
-
-                <Flex
-                  id="main"
-                  as="main"
-                  flexGrow="1"
-                  flexShrink="1"
-                  minWidth="lg"
-                  pt="800"
-                  px="1600"
-                >
+                </Suspense>
+              </StickySidebar>
+              <Flex
+                id="main"
+                as="main"
+                flexGrow="1"
+                flexShrink="1"
+                minWidth="lg"
+                pt="800"
+                px="1600"
+              >
+                <Suspense fallback={<Box>Loading...</Box>}>
                   <DocumentRenderer />
-                </Flex>
-
-                <StickySidebar
-                  width="8000"
-                  borderLeft="solid-25"
-                  borderColor="neutral.3"
-                  flexShrink="0"
-                  px="400"
-                  pt="600"
-                  id="sidebar-right"
-                >
-                  <Stack gap="800">
-                    <DevOnly>
-                      <DocumentMetaSettings />
-                    </DevOnly>
-                    <Toc />
-                  </Stack>
-                </StickySidebar>
+                </Suspense>
               </Flex>
+              <StickySidebar
+                width="8000"
+                borderLeft="solid-25"
+                borderColor="neutral.3"
+                flexShrink="0"
+                px="400"
+                pt="600"
+                id="sidebar-right"
+              >
+                <Stack gap="800">
+                  <DevOnly>
+                    <Suspense fallback={<Box>Loading...</Box>}>
+                      <DocumentMetaSettings />
+                    </Suspense>
+                  </DevOnly>
+                  <Suspense fallback={<Box>Loading...</Box>}>
+                    <Toc />
+                  </Suspense>
+                </Stack>
+              </StickySidebar>
             </Flex>
-          </>
-        </NimbusProvider>
-      </IntlProvider>
+            <StickySidebar
+              width="8000"
+              borderLeft="solid-25"
+              borderColor="neutral.3"
+              flexShrink="0"
+              px="400"
+              pt="600"
+              id="sidebar-right"
+            >
+              <Stack gap="800">
+                <DevOnly>
+                  <DocumentMetaSettings />
+                </DevOnly>
+                <Toc />
+              </Stack>
+            </StickySidebar>
+          </Flex>
+        </>
+      </NimbusProvider>
     </RouterProvider>
   );
 }

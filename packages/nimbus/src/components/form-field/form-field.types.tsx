@@ -1,24 +1,80 @@
-import type { FormFieldRootSlotProps } from "./form-field.slots";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 
-/**
- * Main props interface for the FormField component.
- * Extends FormFieldVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface FormFieldProps extends FormFieldRootSlotProps {
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type FormFieldRecipeProps = {
+  /**
+   * Size variant of the form field
+   * @default "md"
+   */
+  size?: SlotRecipeProps<"formField">["size"];
+  /**
+   * Layout direction for label and input positioning
+   * @default "column"
+   */
+  direction?: SlotRecipeProps<"formField">["direction"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type FormFieldRootSlotProps = HTMLChakraProps<
+  "div",
+  FormFieldRecipeProps & UnstyledProp
+>;
+
+export type FormFieldLabelSlotProps = HTMLChakraProps<"div">;
+
+export type FormFieldInputSlotProps = HTMLChakraProps<"div">;
+
+export type FormFieldDescriptionSlotProps = HTMLChakraProps<"div">;
+
+export type FormFieldErrorSlotProps = HTMLChakraProps<"div">;
+
+export type FormFieldPopoverSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type FormFieldProps = FormFieldRootSlotProps & {
+  /**
+   * Form field content (label, input, description, error)
+   */
   children?: React.ReactNode;
-  /** true if the field is a required field */
+  /**
+   * Whether the field is required for form submission
+   * @default false
+   */
   isRequired?: boolean;
-  /** true if the field is invalid */
+  /**
+   * Whether the field has a validation error
+   * @default false
+   */
   isInvalid?: boolean;
-  /** true if the field is disabled */
+  /**
+   * Whether the field is disabled
+   * @default false
+   */
   isDisabled?: boolean;
-  /** true, if the field is read only  */
+  /**
+   * Whether the field is read-only
+   * @default false
+   */
   isReadOnly?: boolean;
-  /** id passed to the field's input component*/
+  /**
+   * Unique identifier for the input element
+   */
   id?: string;
   /**
-   * React ref to be forwarded to the root element
+   * Ref forwarding to the root element
    */
   ref?: React.Ref<HTMLDivElement>;
-}
+};

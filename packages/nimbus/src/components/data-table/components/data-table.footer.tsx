@@ -3,13 +3,13 @@ import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { DataTableFooter as DataTableFooterSlot } from "../data-table.slots";
 
-export interface DataTableFooterProps {
+export type DataTableFooterProps = {
   children?: React.ReactNode;
   /**
    * React ref to be forwarded to the footer element
    */
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 export const DataTableFooter = function DataTableFooter({
   ref: forwardedRef,

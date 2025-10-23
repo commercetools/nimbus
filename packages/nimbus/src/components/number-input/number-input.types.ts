@@ -1,24 +1,97 @@
-import type { NumberInputRootSlotProps } from "./number-input.slots";
-import type { AriaNumberFieldProps } from "react-aria";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+import { type InputProps as RaInputProps } from "react-aria-components";
+import type {
+  AriaButtonProps as RaButtonProps,
+  AriaNumberFieldProps as RaNumberFieldProps,
+} from "react-aria";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+export type NumberInputRecipeProps = {
+  /**
+   * Size variant of the number input
+   * @default "md"
+   */
+  size?: SlotRecipeProps<"numberInput">["size"];
+  /**
+   * Visual style variant of the number input
+   * @default "solid"
+   */
+  variant?: SlotRecipeProps<"numberInput">["variant"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type NumberInputRootSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+> & {
+  name?: string;
+};
+
+export type NumberInputLeadingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+>;
+
+export type NumberInputTrailingElementSlotProps = HTMLChakraProps<
+  "div",
+  NumberInputRecipeProps
+>;
+
+export type NumberInputInputSlotProps = HTMLChakraProps<
+  "input",
+  NumberInputRecipeProps
+> &
+  RaInputProps;
+
+export type NumberInputIncrementButtonSlotProps = HTMLChakraProps<
+  "button",
+  NumberInputRecipeProps
+> &
+  RaButtonProps;
+
+export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
+  "button",
+  NumberInputRecipeProps
+> &
+  RaButtonProps;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
 
 export type ExcludedNumberInputProps = "asChild" | "onChange";
 
-export interface NumberInputProps
-  extends AriaNumberFieldProps,
-    Omit<
-      NumberInputRootSlotProps,
-      keyof AriaNumberFieldProps | ExcludedNumberInputProps
-    > {
-  ref?: React.Ref<HTMLInputElement>;
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+export type NumberInputProps = Omit<
+  NumberInputRootSlotProps,
+  keyof RaNumberFieldProps | ExcludedNumberInputProps
+> &
+  RaNumberFieldProps & {
+    /**
+     * Ref forwarding to the input element
+     */
+    ref?: React.Ref<HTMLInputElement>;
+    /**
+     * Optional element to display at the start of the input
+     * Respects text direction (left in LTR, right in RTL)
+     */
+    leadingElement?: React.ReactNode;
+    /**
+     * Optional element to display at the end of the input
+     * Respects text direction (right in LTR, left in RTL)
+     */
+    trailingElement?: React.ReactNode;
+  };

@@ -1,14 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Calendar } from "./index";
-import type { CalendarProps } from "./calendar.types";
+import {
+  Box,
+  Calendar,
+  type CalendarProps,
+  NimbusI18nProvider,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import {
   today,
   getLocalTimeZone,
   type DateValue,
 } from "@internationalized/date";
 
-import { I18nProvider } from "react-aria";
-import { Box, Stack, Text } from "@/components";
 import { useState } from "react";
 
 const meta: Meta<typeof Calendar> = {
@@ -57,9 +61,9 @@ export const Autofocus: Story = {
 
 export const GermanCalendar: Story = {
   render: (args: CalendarProps<DateValue>) => (
-    <I18nProvider locale="de-DE">
+    <NimbusI18nProvider locale="de-DE">
       <Calendar {...args} />
-    </I18nProvider>
+    </NimbusI18nProvider>
   ),
 };
 

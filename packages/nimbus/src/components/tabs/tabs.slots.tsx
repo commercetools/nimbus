@@ -1,5 +1,5 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
-import { tabsSlotRecipe } from "./tabs.recipe";
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   TabsRootSlotProps,
   TabsListSlotProps,
@@ -9,7 +9,7 @@ import type {
 } from "./tabs.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: tabsSlotRecipe,
+  key: "tabs",
 });
 
 /**
@@ -31,12 +31,10 @@ export const TabsTabSlot = withContext<HTMLButtonElement, TabsTabSlotProps>(
   "tab"
 );
 
-export const TabsPanelsSlot = withContext<HTMLDivElement, TabsPanelsSlotProps>(
-  "div",
-  "panels"
-);
+export const TabsPanelsSlot: SlotComponent<
+  HTMLDivElement,
+  TabsPanelsSlotProps
+> = withContext<HTMLDivElement, TabsPanelsSlotProps>("div", "panels");
 
-export const TabsPanelSlot = withContext<HTMLDivElement, TabsPanelSlotProps>(
-  "div",
-  "panel"
-);
+export const TabsPanelSlot: SlotComponent<HTMLDivElement, TabsPanelSlotProps> =
+  withContext<HTMLDivElement, TabsPanelSlotProps>("div", "panel");

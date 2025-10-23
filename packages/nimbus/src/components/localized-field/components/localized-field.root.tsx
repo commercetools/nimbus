@@ -20,7 +20,7 @@ import {
   Icon,
   IconButton,
   Stack,
-  type TCurrencyCode,
+  type CurrencyCode,
 } from "@/components";
 import { Popover } from "../../popover";
 import messages from "../localized-field.i18n";
@@ -118,7 +118,7 @@ export const LocalizedField = ({
     });
 
   // Array of locales/currencies to display as input fields
-  const localizationKeys: string[] | TCurrencyCode[] = Object.keys(
+  const localizationKeys: string[] | CurrencyCode[] = Object.keys(
     valuesByLocaleOrCurrency
   );
 
@@ -127,8 +127,8 @@ export const LocalizedField = ({
     const sortedFieldData =
       type === "money"
         ? sortCurrencies(
-            defaultLocaleOrCurrency as TCurrencyCode,
-            localizationKeys as TCurrencyCode[]
+            defaultLocaleOrCurrency as CurrencyCode,
+            localizationKeys as CurrencyCode[]
           )
         : sortLocalesByDefaultLocaleLanguage(
             defaultLocaleOrCurrency,

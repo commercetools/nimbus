@@ -1,9 +1,9 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react/styled-system";
+} from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
-  ComboBoxRootProps,
   ComboBoxValueSlotProps,
   ComboBoxButtonGroupSlotProps,
   ComboBoxPopoverSlotProps,
@@ -13,17 +13,23 @@ import type {
   ComboBoxOptionGroupProps,
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
+  ComboBoxMultiSelectRootSlotProps,
+  ComboBoxSingleSelectRootSlotProps,
 } from "./combobox.types";
-import { comboBoxSlotRecipe } from "./combobox.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: comboBoxSlotRecipe,
+  key: "combobox",
 });
 
 // ComboBox Root
-export const ComboBoxRootSlot = withProvider<
+export const ComboBoxRootSlot: SlotComponent<
   HTMLDivElement,
-  ComboBoxRootProps<object>
+  | ComboBoxMultiSelectRootSlotProps<object>
+  | ComboBoxSingleSelectRootSlotProps<object>
+> = withProvider<
+  HTMLDivElement,
+  | ComboBoxMultiSelectRootSlotProps<object>
+  | ComboBoxSingleSelectRootSlotProps<object>
 >("div", "root");
 
 export const ComboBoxLeadingElementSlot = withContext<
@@ -44,10 +50,10 @@ export const ComboBoxButtonGroupSlot = withContext<
 >("div", "buttonGroup");
 
 // Popover container (multi-select)
-export const ComboBoxPopoverSlot = withContext<
+export const ComboBoxPopoverSlot: SlotComponent<
   HTMLDivElement,
   ComboBoxPopoverSlotProps
->("div", "popover");
+> = withContext<HTMLDivElement, ComboBoxPopoverSlotProps>("div", "popover");
 
 // Multi-select input (in popover)
 export const ComboBoxMultiSelectInputSlot = withContext<

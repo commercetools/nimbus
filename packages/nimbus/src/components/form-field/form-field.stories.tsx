@@ -1,10 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormField, type FormFieldProps } from "./index";
-import { Box, TextInput, Select, Stack } from "@/components";
+import {
+  Box,
+  FormField,
+  type FormFieldProps,
+  Select,
+  Stack,
+  TextInput,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect } from "storybook/test";
 
 const meta: Meta<typeof FormField.Root> = {
-  title: "components/FormField",
+  title: "Components/FormField",
   component: FormField.Root,
   argTypes: {
     direction: {

@@ -2,7 +2,7 @@ import { AccordionRootSlot } from "../accordion.slots";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { DisclosureGroup as RaDisclosureGroup } from "react-aria-components";
 import type { AccordionRootProps } from "../accordion.types";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 
 /**
  * # Accordion

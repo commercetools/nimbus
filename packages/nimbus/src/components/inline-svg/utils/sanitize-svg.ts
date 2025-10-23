@@ -4,7 +4,7 @@ import { DEFAULT_FORBIDDEN_TAGS } from "../constants";
 /**
  * Configuration options for SVG sanitization
  */
-interface SanitizationOptions {
+type SanitizationOptions = {
   /**
    * Whether to allow style attributes in SVG elements
    * @default false
@@ -20,7 +20,7 @@ interface SanitizationOptions {
    * @default []
    */
   forbiddenTags?: string[];
-}
+};
 
 /**
  * Sanitizes SVG markup string to prevent XSS attacks

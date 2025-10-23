@@ -28,9 +28,9 @@ import { useToolbarState } from "../hooks/use-toolbar-state";
 import { textStyles } from "../constants";
 import { FormattingMenu } from "./formatting-menu";
 
-export interface RichTextToolbarProps {
+export type RichTextToolbarProps = {
   isDisabled?: boolean;
-}
+};
 
 export const RichTextToolbar = ({
   isDisabled = false,

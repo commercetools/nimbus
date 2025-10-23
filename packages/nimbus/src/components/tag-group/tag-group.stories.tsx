@@ -3,9 +3,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { useListData } from "react-stately";
 import type { Selection as RsSelection } from "react-stately";
-import { Stack, Text } from "@/components";
-import type { TagGroupProps } from "./tag-group.types";
-import { TagGroup } from "./tag-group";
+import {
+  Stack,
+  TagGroup,
+  type TagGroupProps,
+  Text,
+} from "@commercetools/nimbus";
 
 /**
  * Storybook metadata configuration
@@ -13,7 +16,7 @@ import { TagGroup } from "./tag-group";
  * - component: references the component being documented
  */
 const meta: Meta<typeof TagGroup.Root> = {
-  title: "components/TagGroup",
+  title: "Components/TagGroup",
   component: TagGroup.Root,
 };
 

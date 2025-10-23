@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "../box";
-import { Grid } from "./grid";
+import { Box, Grid } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 /**
@@ -9,7 +8,7 @@ import { within, expect } from "storybook/test";
  * - component: references the component being documented
  */
 const meta: Meta<typeof Grid> = {
-  title: "components/Grid",
+  title: "Components/Grid",
   component: Grid,
 };
 

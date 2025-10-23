@@ -26,7 +26,7 @@ import { createEmptyValue } from "../utils/html-serialization";
 import { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";
 import { EDITOR_DEFAULTS } from "../constants";
 
-export interface RichTextEditorProps {
+export type RichTextEditorProps = {
   value?: Descendant[];
   onChange: (value: Descendant[]) => void;
   onFocus?: FocusEventHandler<HTMLDivElement>;
@@ -40,12 +40,12 @@ export interface RichTextEditorProps {
    * React ref to be forwarded to the editor
    */
   ref?: React.Ref<RichTextEditorRef>;
-}
+};
 
-export interface RichTextEditorRef {
+export type RichTextEditorRef = {
   focus: () => void;
   resetValue: (html: string) => void;
-}
+};
 
 export const RichTextEditor = function RichTextEditor({
   ref: forwardedRef,

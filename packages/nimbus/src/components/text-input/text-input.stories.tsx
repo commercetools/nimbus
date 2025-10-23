@@ -1,9 +1,15 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TextInput } from "./text-input";
-import type { TextInputProps } from "./text-input.types";
+import {
+  Box,
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+  TextInput,
+  type TextInputProps,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Box, Stack, Text, Icon, IconButton } from "@/components";
 import {
   Search,
   Visibility,
@@ -13,7 +19,7 @@ import {
 } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof TextInput> = {
-  title: "components/TextInput",
+  title: "Components/TextInput",
   component: TextInput,
 };
 

@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { within, userEvent, expect, waitFor } from "storybook/test";
-import { CollapsibleMotion } from "./collapsible-motion";
-import { Button } from "../button";
-import { Text } from "../text";
-import { Box } from "../box";
+import { Box, Button, CollapsibleMotion, Text } from "@commercetools/nimbus";
 
 const meta: Meta<typeof CollapsibleMotion.Root> = {
   title: "Components/Layout/CollapsibleMotion",

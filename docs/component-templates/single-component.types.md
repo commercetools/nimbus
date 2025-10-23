@@ -16,9 +16,8 @@ import { componentNameRecipe } from "./component-name.recipe";
 /**
  * Props for the ComponentName component
  */
-export interface ComponentNameProps
-  extends ComponentProps<"div">, // Change element type as needed
-    RecipeVariantProps<typeof componentNameRecipe> {
+export type ComponentNameProps = ComponentProps<"div"> & // Change element type as needed
+  RecipeVariantProps<typeof componentNameRecipe> & {
   /**
    * Component content
    */

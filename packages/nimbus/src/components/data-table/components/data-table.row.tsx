@@ -20,7 +20,7 @@ import {
   KeyboardArrowRight,
   PushPin,
 } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 
 /**
  * Determines if a click event originated from an interactive element within a table row.

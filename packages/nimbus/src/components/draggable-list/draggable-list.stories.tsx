@@ -1,8 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { useState } from "react";
-import { Flex } from "@/components";
-import { DraggableList } from "./draggable-list";
+import {
+  DraggableList,
+  Flex,
+  Button,
+  Text,
+  Group,
+} from "@commercetools/nimbus";
+
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**
@@ -31,7 +37,8 @@ async function dragItem(
   // Navigate using arrow keys
   const key = steps > 0 ? "{ArrowDown}" : "{ArrowUp}";
   for (let i = 0; i < Math.abs(steps); i++) {
-    // Delay to ensure drag mode is fully activated
+    // Small delay to ensure drag mode is fully activated and keyboard events are processed
+    // This timing is necessary for React Aria's drag-and-drop state machine
     await new Promise((resolve) => setTimeout(resolve, 50));
     await userEvent.keyboard(key);
   }
@@ -41,7 +48,7 @@ async function dragItem(
 }
 
 const meta: Meta<typeof DraggableList.Root> = {
-  title: "components/DraggableList",
+  title: "Components/DraggableList",
   tags: ["autodocs"],
 };
 
@@ -126,16 +133,13 @@ export const DragAndDrop: Story = {
       await dragItem(canvas, firstItem.label as string, 1);
 
       // Wait for reorder and verify the list order changed
-      await waitFor(
-        async () => {
-          const reorderedItems = await within(grid).findAllByRole("row");
-          // After dragging first item down 1 position, order should be: 2, 1, 3
-          expect(reorderedItems[0]).toHaveAttribute("data-key", "2");
-          expect(reorderedItems[1]).toHaveAttribute("data-key", "1");
-          expect(reorderedItems[2]).toHaveAttribute("data-key", "3");
-        },
-        { timeout: 2000 }
-      );
+      await waitFor(async () => {
+        const reorderedItems = await within(grid).findAllByRole("row");
+        // After dragging first item down 1 position, order should be: 2, 1, 3
+        expect(reorderedItems[0]).toHaveAttribute("data-key", "2");
+        expect(reorderedItems[1]).toHaveAttribute("data-key", "1");
+        expect(reorderedItems[2]).toHaveAttribute("data-key", "3");
+      });
     });
   },
 };
@@ -252,20 +256,17 @@ export const CrossListDragAndDrop: Story = {
       await userEvent.keyboard("{Enter}");
 
       // Wait for items to update
-      await waitFor(
-        async () => {
-          const updatedSourceItems =
-            await within(sourceGrid).findAllByRole("row");
-          const updatedTargetItems =
-            await within(targetGrid).findAllByRole("row");
+      await waitFor(async () => {
+        const updatedSourceItems =
+          await within(sourceGrid).findAllByRole("row");
+        const updatedTargetItems =
+          await within(targetGrid).findAllByRole("row");
 
-          // Source should have one less item
-          expect(updatedSourceItems.length).toBe(2);
-          // Target should have one more item
-          expect(updatedTargetItems.length).toBe(3);
-        },
-        { timeout: 2000 }
-      );
+        // Source should have one less item
+        expect(updatedSourceItems.length).toBe(2);
+        // Target should have one more item
+        expect(updatedTargetItems.length).toBe(3);
+      });
     });
   },
 };
@@ -324,13 +325,10 @@ export const RemovableItems: Story = {
       await userEvent.click(removeButton);
 
       // Wait for the item to be removed
-      await waitFor(
-        async () => {
-          const updatedRows = await within(grid).findAllByRole("row");
-          expect(updatedRows.length).toBe(initialCount - 1);
-        },
-        { timeout: 2000 }
-      );
+      await waitFor(async () => {
+        const updatedRows = await within(grid).findAllByRole("row");
+        expect(updatedRows.length).toBe(initialCount - 1);
+      });
     });
 
     await step("Remove item via keyboard", async () => {
@@ -416,19 +414,16 @@ export const CustomChildren: Story = {
   render: () => {
     const customItems = [
       {
-        key: "a",
         label: "Custom A",
         metadata: "extra data",
         colorPalette: "sky",
       },
       {
-        key: "b",
         label: "Custom B",
         metadata: "more info",
         colorPalette: "yellow",
       },
       {
-        key: "c",
         label: "Custom C",
         metadata: "additional",
         colorPalette: "pink",
@@ -436,11 +431,15 @@ export const CustomChildren: Story = {
     ];
 
     return (
-      <DraggableList.Root aria-label="custom children list" items={customItems}>
+      <DraggableList.Root
+        aria-label="custom children list"
+        items={customItems}
+        getKey={(item) => item.label}
+      >
         {(item) => (
           <DraggableList.Item
-            key={item.key}
-            id={item.key}
+            key={item.label}
+            id={item.label}
             textValue={item.label}
             colorPalette={item.colorPalette}
           >
@@ -473,25 +472,33 @@ export const CustomChildren: Story = {
       ).findByText(/additional/i);
     });
 
-    await step("Verify drag and drop works with custom children", async () => {
+    await step("Verify custom getKey uses label as key", async () => {
       const grid = await canvas.findByRole("grid", {
         name: /custom children list/i,
       });
 
       const rows = await within(grid).findAllByRole("row");
-      expect(rows[0]).toHaveAttribute("data-key", "a");
+      // Verify data-key attributes use label values from getKey
+      expect(rows[0]).toHaveAttribute("data-key", "Custom A");
+      expect(rows[1]).toHaveAttribute("data-key", "Custom B");
+      expect(rows[2]).toHaveAttribute("data-key", "Custom C");
+    });
+
+    await step("Verify drag and drop works with custom getKey", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /custom children list/i,
+      });
 
       // Drag first item (Custom A) down 1 position (1 arrow press)
       await dragItem(canvas, "Custom A", 1);
 
-      await waitFor(
-        async () => {
-          const updatedRows = await within(grid).findAllByRole("row");
-          expect(updatedRows[0]).toHaveAttribute("data-key", "b");
-          expect(updatedRows[1]).toHaveAttribute("data-key", "a");
-        },
-        { timeout: 2000 }
-      );
+      await waitFor(async () => {
+        const updatedRows = await within(grid).findAllByRole("row");
+        // After drag, Custom B should be first, Custom A second
+        expect(updatedRows[0]).toHaveAttribute("data-key", "Custom B");
+        expect(updatedRows[1]).toHaveAttribute("data-key", "Custom A");
+        expect(updatedRows[2]).toHaveAttribute("data-key", "Custom C");
+      });
     });
   },
 };
@@ -501,20 +508,46 @@ export const ControlledMode: Story = {
     const ControlledComponent = () => {
       const [listItems, setListItems] = useState(items);
 
+      const handleAddItem = () => {
+        setListItems([
+          ...listItems,
+          {
+            key: String(listItems.length + 1),
+            label: `Item ${listItems.length + 1}`,
+          },
+        ]);
+      };
+
+      const handleRemoveLastItem = () => {
+        setListItems(listItems.slice(0, -1));
+      };
+
       return (
-        <>
+        <Flex direction="column" gap={400}>
+          <Flex gap={200}>
+            <Button onClick={handleAddItem}>Add Item</Button>
+            <Button
+              onClick={handleRemoveLastItem}
+              isDisabled={listItems.length === 0}
+            >
+              Remove Last Item
+            </Button>
+          </Flex>
           <DraggableList.Root
             aria-label="controlled list"
             items={listItems}
             onUpdateItems={setListItems}
           />
-          <Flex mt="400" direction="column" gap={100}>
-            <div data-testid="item-count">Items: {listItems.length}</div>
-            <div data-testid="item-order">
-              Order: {listItems.map((item) => item.key).join(" ")}
-            </div>
-          </Flex>
-        </>
+          <Group
+            aria-label="state information"
+            flexDirection="column"
+            alignItems="flex-start"
+            gap={100}
+          >
+            <Text>Items: {listItems.length}</Text>
+            <Text>Order: {listItems.map((item) => item.key).join(" ")}</Text>
+          </Group>
+        </Flex>
       );
     };
 
@@ -523,34 +556,191 @@ export const ControlledMode: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Verify controlled state updates", async () => {
-      // Verify Items in state have expected initial count and order
-      expect(await canvas.findByTestId("item-count")).toHaveTextContent(
-        "Items: 5"
-      );
-      expect(await canvas.findByTestId("item-order")).toHaveTextContent(
-        "Order: 1 2 3 4 5"
-      );
-      // Ensure that items are rendered.
-      // The first tick paints the empty state, so we need to make sure they have been loaded
-      await new Promise((resolve) => setTimeout(resolve, 10));
-      // Drag first item (Item 1) down 1 position (1 arrow press)
-      await dragItem(canvas, items[0].label as string, 1);
-      // Wait for reorder
-      await waitFor(
-        async () => {
-          // Order has changed (1 is after 2)
-          expect(await canvas.findByTestId("item-order")).toHaveTextContent(
-            "Order: 2 1 3 4 5"
+    await step(
+      "Verify controlled state updates via drag and drop",
+      async () => {
+        // Verify initial state display
+        const stateInfo = await canvas.findByRole("group", {
+          name: /state information/i,
+        });
+        await within(stateInfo).findByText(/Items: 5/);
+        await within(stateInfo).findByText(/Order: 1 2 3 4 5/);
+
+        // Ensure that items are rendered
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
+        // Verify initial order in the list
+        const initialGrid = await canvas.findByRole("grid", {
+          name: /controlled list/i,
+        });
+        const initialRows = await within(initialGrid).findAllByRole("row");
+        expect(initialRows[0]).toHaveAttribute("data-key", "1");
+        expect(initialRows[1]).toHaveAttribute("data-key", "2");
+
+        // Drag first item (Item 1) down 1 position (1 arrow press)
+        await dragItem(canvas, items[0].label as string, 1);
+
+        // Wait for reorder and verify both the list and state display updated
+        await waitFor(async () => {
+          // Re-query grid to get fresh DOM reference
+          const grid = await canvas.findByRole("grid", {
+            name: /controlled list/i,
+          });
+          // Verify Item 2 is first row
+          const updatedRows = await within(grid).findAllByRole("row");
+          expect(updatedRows[0]).toHaveAttribute("data-key", "2");
+          expect(updatedRows[1]).toHaveAttribute("data-key", "1");
+
+          // Re-query stateInfo to get fresh DOM reference
+          const stateInfo = await canvas.findByRole("group", {
+            name: /state information/i,
+          });
+          // Verify state display shows the update
+          await within(stateInfo).findByText(/Order: 2 1 3 4 5/);
+          await within(stateInfo).findByText(/Items: 5/);
+        });
+      }
+    );
+
+    await step(
+      "Verify list renders external state updates from add button",
+      async () => {
+        const grid = await canvas.findByRole("grid", {
+          name: /controlled list/i,
+        });
+
+        // Get initial row count from the list
+        const initialRows = await within(grid).findAllByRole("row");
+        const initialCount = initialRows.length;
+
+        // Click "Add Item" button to modify parent state directly
+        const addButton = await canvas.findByRole("button", {
+          name: /add item/i,
+        });
+        await userEvent.click(addButton);
+
+        // Wait for the list to render the new item
+        await waitFor(async () => {
+          // Re-query grid to get fresh DOM reference
+          const grid = await canvas.findByRole("grid", {
+            name: /controlled list/i,
+          });
+          const updatedRows = await within(grid).findAllByRole("row");
+          expect(updatedRows.length).toBe(initialCount + 1);
+
+          // Verify the new item is actually rendered in the list
+          const newItem = updatedRows[updatedRows.length - 1];
+          expect(newItem).toHaveAttribute("data-key", String(initialCount + 1));
+
+          // Verify state display shows the update
+          const stateInfo = await canvas.findByRole("group", {
+            name: /state information/i,
+          });
+
+          await within(stateInfo).findByText(`Items: ${initialCount + 1}`);
+        });
+
+        // Verify the new item has accessible content
+        await canvas.findByRole("row", {
+          name: new RegExp(`Item ${initialCount + 1}`, "i"),
+        });
+      }
+    );
+
+    await step(
+      "Verify list renders external state updates from remove button",
+      async () => {
+        const grid = await canvas.findByRole("grid", {
+          name: /controlled list/i,
+        });
+
+        // Get current count before removal
+        const rowsBeforeRemoval = await within(grid).findAllByRole("row");
+        const countBeforeRemoval = rowsBeforeRemoval.length;
+        const lastItemKey =
+          rowsBeforeRemoval[countBeforeRemoval - 1].getAttribute("data-key");
+
+        // Click "Remove Last Item" button
+        const removeButton = await canvas.findByRole("button", {
+          name: /remove last item/i,
+        });
+        await userEvent.click(removeButton);
+
+        // Wait for the list to render without the removed item
+        await waitFor(async () => {
+          // Re-query grid to get fresh DOM reference
+          const grid = await canvas.findByRole("grid", {
+            name: /controlled list/i,
+          });
+          const updatedRows = await within(grid).findAllByRole("row");
+          expect(updatedRows.length).toBe(countBeforeRemoval - 1);
+
+          // Verify the last item is actually removed from the DOM
+          const lastRow = updatedRows[updatedRows.length - 1];
+          expect(lastRow).not.toHaveAttribute("data-key", lastItemKey);
+
+          // Verify state display shows the update
+          const stateInfo = await canvas.findByRole("group", {
+            name: /state information/i,
+          });
+          await within(stateInfo).findByText(
+            `Items: ${countBeforeRemoval - 1}`
           );
-          // Item count should remain the same
-          expect(await canvas.findByTestId("item-count")).toHaveTextContent(
-            "Items: 5"
+        });
+      }
+    );
+
+    await step(
+      "Verify multiple rapid external state changes render correctly",
+      async () => {
+        const grid = await canvas.findByRole("grid", {
+          name: /controlled list/i,
+        });
+
+        const addButton = await canvas.findByRole("button", {
+          name: /add item/i,
+        });
+
+        // Get initial count
+        const initialRows = await within(grid).findAllByRole("row");
+        const initialCount = initialRows.length;
+
+        // Add multiple items rapidly
+        await userEvent.click(addButton);
+        await userEvent.click(addButton);
+        await userEvent.click(addButton);
+
+        // Wait for all items to be rendered
+        await waitFor(async () => {
+          // Re-query grid to get fresh DOM reference
+          const grid = await canvas.findByRole("grid", {
+            name: /controlled list/i,
+          });
+          const updatedRows = await within(grid).findAllByRole("row");
+          expect(updatedRows.length).toBe(initialCount + 3);
+
+          // Verify all new items are actually in the list
+          expect(updatedRows[initialCount]).toHaveAttribute(
+            "data-key",
+            String(initialCount + 1)
           );
-        },
-        { timeout: 2000 }
-      );
-    });
+          expect(updatedRows[initialCount + 1]).toHaveAttribute(
+            "data-key",
+            String(initialCount + 2)
+          );
+          expect(updatedRows[initialCount + 2]).toHaveAttribute(
+            "data-key",
+            String(initialCount + 3)
+          );
+
+          // Verify state display is correct
+          const stateInfo = await canvas.findByRole("group", {
+            name: /state information/i,
+          });
+          await within(stateInfo).findByText(`Items: ${initialCount + 3}`);
+        });
+      }
+    );
   },
 };
 
@@ -617,13 +807,10 @@ export const Field: Story = {
       // Drag first item down 1 position (1 arrow press)
       await dragItem(canvas, fieldItems[0].label, 1);
 
-      await waitFor(
-        async () => {
-          const updatedRows = await within(grid).findAllByRole("row");
-          expect(updatedRows[0]).toHaveAttribute("data-key", "2");
-        },
-        { timeout: 2000 }
-      );
+      await waitFor(async () => {
+        const updatedRows = await within(grid).findAllByRole("row");
+        expect(updatedRows[0]).toHaveAttribute("data-key", "2");
+      });
     });
   },
 };

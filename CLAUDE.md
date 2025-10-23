@@ -78,7 +78,7 @@ cd packages/i18n
 pnpm build
 
 # Or from root
-pnpm --filter @commercetools-nimbus/i18n build
+pnpm --filter @commercetools/nimbus-i18n build
 
 # Or use the formatjs CLI directly from root
 pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/data packages/i18n/compiled-data
@@ -87,21 +87,30 @@ pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/dat
 ### Testing
 
 ```bash
-# Run all tests
+# Run all tests (both unit and Storybook tests)
 pnpm test
 
-# Run Storybook tests (interactive components)
+# Run only unit tests (JSDOM-based, fast)
+pnpm test:unit
+
+# Run only Storybook tests (browser-based, slower)
 pnpm test:storybook
 
-# Run tests for specific component (from nimbus package)
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=basic
+# Run specific test file
+pnpm test packages/nimbus/src/components/button/button.spec.tsx
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
 
-# Run tests with different reporters
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --reporter=verbose
-pnpm --filter @commercetools/nimbus test component-name.stories.tsx --silent
+# Run tests with minimal console output
+pnpm test --silent
 
 # Run specific test pattern
-pnpm --filter @commercetools/nimbus test --testNamePattern="Component.*TestName"
+pnpm test --testNamePattern="Component.*TestName"
+
+# Run tests in watch mode
+pnpm test --watch
+
+# Run tests with coverage
+pnpm test --coverage
 ```
 
 ### Code Quality
@@ -141,9 +150,9 @@ pnpm -r --filter './packages/*' build
 pnpm -r --filter './packages/*' typecheck
 
 # Component-specific testing patterns
-pnpm --filter @commercetools/nimbus test button.stories.tsx --reporter=basic
-pnpm --filter @commercetools/nimbus test menu.stories.tsx --silent
-pnpm --filter @commercetools/nimbus test pagination.stories.tsx --reporter=verbose
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
+pnpm test packages/nimbus/src/components/menu/menu.stories.tsx
+pnpm test packages/nimbus/src/components/pagination/pagination.stories.tsx
 ```
 
 ### Release Management
@@ -200,8 +209,11 @@ This project follows strict development standards detailed in the documentation:
 
 - **Styling**: Chakra UI v3 with design token-based recipes
   @docs/file-type-guidelines/recipes.md
-- **Testing**: Storybook interaction testing required
-  @docs/file-type-guidelines/stories.md
+- **Testing**:
+  - Storybook interaction tests (browser-based, required for interactive
+    components) @docs/file-type-guidelines/stories.md
+  - Unit tests (JSDOM-based, fast isolated tests)
+    @docs/file-type-guidelines/unit-testing.md
 - **TypeScript**: Strict typing with comprehensive interfaces
   @docs/file-type-guidelines/types.md
 - **Documentation**: JSDoc comments required for all code
@@ -224,7 +236,8 @@ For comprehensive file review procedures, see @docs/file-review-protocol.md
 
 ### Key Architectural Patterns
 
-For comprehensive architectural patterns, component decision matrices, React Aria integration strategies, and styling system architecture, see:
+For comprehensive architectural patterns, component decision matrices, React
+Aria integration strategies, and styling system architecture, see:
 
 - **Multi-layered Architecture & React Aria Integration**:
   @docs/file-type-guidelines/architecture-decisions.md
@@ -237,7 +250,8 @@ For complete development rules, patterns, and requirements, see:
 
 - **Recipe Registration & Styling Rules**: @docs/file-type-guidelines/recipes.md
 - **Testing Requirements**: @docs/file-type-guidelines/stories.md
-- **Compound Component Patterns**: @docs/file-type-guidelines/compound-components.md
+- **Compound Component Patterns**:
+  @docs/file-type-guidelines/compound-components.md
 - **Type Safety Guidelines**: @docs/file-type-guidelines/types.md
 - **Internationalization**: @docs/file-type-guidelines/i18n.md
 
@@ -272,27 +286,116 @@ tasks:
 
 ### Agent-Driven Development Workflow
 
-**Use specialized agents proactively in an iterative cycle for all component development:**
+**Use specialized agents proactively in an iterative cycle for all component
+development:**
 
-1. **Research Phase** (nimbus-researcher): Gather requirements, patterns, library documentation, and architectural guidance before writing any code
-2. **Implementation Phase** (nimbus-coder): Write code strictly according to the guidelines and patterns identified in research
-3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus standards and guidelines
-4. **Iteration**: If review identifies non-compliance or improvement areas, return to implementation phase and repeat until all standards are met
+1. **Research Phase** (nimbus-researcher): Gather requirements, patterns,
+   library documentation, and architectural guidance before writing any code
+2. **Implementation Phase** (nimbus-coder): Write code strictly according to the
+   guidelines and patterns identified in research
+3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus
+   standards and guidelines
+4. **Iteration**: If review identifies non-compliance or improvement areas,
+   return to implementation phase and repeat until all standards are met
 
-Invoke agents autonomously when task complexity warrants it - don't wait for explicit user requests. The goal is to leverage automation intelligently by recognizing when a task's scope or requirements align with an agent's capabilities.
+Invoke agents autonomously when task complexity warrants it - don't wait for
+explicit user requests. The goal is to leverage automation intelligently by
+recognizing when a task's scope or requirements align with an agent's
+capabilities.
 
 ## Development Workflow Best Practices
 
 ### Testing Strategy
 
-The testing system uses Vitest with Storybook integration and browser-based
-testing:
+The testing system uses Vitest with two distinct test types:
 
-- Stories serve as both documentation AND tests via play functions
+**Component Testing (Storybook stories with play functions):**
+
+- Stories serve as both maintainer documentation AND tests via play functions
 - Browser testing runs in headless Chromium with Playwright
-- Component tests are story-based, not unit tests
+- **ALL component behavior, interactions, and visual states are tested in
+  Storybook**
 - **Critical**: Interactive components MUST have play functions that test user
   interactions
+
+**Unit Testing (utilities and hooks only):**
+
+- Fast JSDOM-based tests for utilities, hooks, and non-component logic
+- All component testing happens in Storybook stories with play functions
+- Unit tests focus exclusively on pure functions, custom hooks, and business
+  logic
+
+### Testing Workflow
+
+**CRITICAL: Storybook tests run against the built bundle, NOT source files.**
+
+#### Development vs Testing Mode
+
+The Storybook configuration has two distinct modes:
+
+- **Development mode** (`pnpm start:storybook`): Uses source alias for HMR
+  - Alias: `@commercetools/nimbus` → `packages/nimbus/src`
+  - Enables instant feedback while editing components
+  - Changes reflect immediately without rebuilding
+
+- **Testing mode** (`pnpm test:storybook`): Uses built bundle
+  - Alias: None - imports from `packages/nimbus/dist`
+  - Tests run against production-like code
+  - Ensures tests validate actual published behavior
+
+#### Testing Your Changes
+
+To test component changes in Storybook tests, follow this workflow:
+
+```bash
+# 1. Make your changes to component source files
+# 2. Build the package to update the dist folder
+pnpm --filter @commercetools/nimbus build
+
+# 3. Run Storybook tests
+pnpm test:storybook
+
+# Or run specific test file
+pnpm test packages/nimbus/src/components/button/button.stories.tsx
+```
+
+**Why build is required:**
+
+- Tests import from `@commercetools/nimbus` which resolves to `dist/` during
+  testing
+- Without building, tests run against stale code from previous build
+- This matches how consumers use the package (from `node_modules`)
+
+#### Detection Logic
+
+The system detects test mode via environment variables:
+
+- **`VITEST_WORKER_ID`**: Automatically set by Vitest when running tests
+- **`VITEST=true`**: Manual override for forcing test mode
+
+**Manual Override Example:**
+```bash
+# Force test mode (use built bundle) even in development
+VITEST=true pnpm start:storybook
+
+# Normal development mode (use source files with HMR)
+pnpm start:storybook
+```
+
+#### Developer Visibility
+
+Storybook logs which mode is active on startup:
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+This helps confirm whether your changes require a build before testing.
+
+#### Common Pitfalls
+
+- ❌ **Making changes and immediately running tests** - Tests will use old code
+- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
+- ✅ **Build first, then test** - Ensures tests validate actual changes
+- ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
 
 ### Build Dependencies
 
@@ -305,5 +408,5 @@ Understanding build order is crucial:
 
 ### Component Development Workflow
 
-For detailed development workflows, implementation steps, and common pitfalls, see:
-@docs/component-guidelines.md
+For detailed development workflows, implementation steps, and common pitfalls,
+see: @docs/component-guidelines.md

@@ -1,20 +1,51 @@
-import type { SearchInputRootProps } from "./search-input.slots";
-import type { SearchFieldProps } from "react-aria-components";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { SearchFieldProps as RaSearchFieldProps } from "react-aria-components";
 
-/**
- * Props for the SearchInput component.
- * Built on React Aria's SearchField for accessibility.
- */
-export interface SearchInputProps
-  extends Omit<SearchFieldProps, "ref">,
-    Omit<SearchInputRootProps, keyof SearchFieldProps | "as" | "asChild"> {
-  /**
-   * React ref to be forwarded to the input element
-   */
-  ref?: React.Ref<HTMLInputElement>;
+// ============================================================
+// RECIPE PROPS
+// ============================================================
 
+type SearchInputRecipeProps = {
   /**
-   * Placeholder text for the input
+   * Size variant of the search input
+   * @default "md"
    */
-  placeholder?: string;
-}
+  size?: SlotRecipeProps<"searchInput">["size"];
+  /**
+   * Visual style variant of the search input
+   * @default "solid"
+   */
+  variant?: SlotRecipeProps<"searchInput">["variant"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type SearchInputRootSlotProps = HTMLChakraProps<
+  "div",
+  SearchInputRecipeProps
+>;
+
+export type SearchInputLeadingElementSlotProps = HTMLChakraProps<"div">;
+
+export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type SearchInputProps = Omit<
+  SearchInputRootSlotProps,
+  keyof RaSearchFieldProps | "as" | "asChild"
+> &
+  Omit<RaSearchFieldProps, "ref"> & {
+    /**
+     * Ref forwarding to the input element
+     */
+    ref?: React.Ref<HTMLInputElement>;
+    /**
+     * Placeholder text for the search input
+     */
+    placeholder?: string;
+  };

@@ -1,8 +1,11 @@
 ---
 id: Components-Toolbar
 title: Toolbar
-description: A compound component for grouping related actions and controls in horizontal or vertical layouts.
-lifecycleState: Experimental
+description:
+  Toolbars organize related actions and controls in a compact bar for easy
+  access. They provide consistent placement for common or contextual tasks
+  within an application.
+documentState: InitialDraft
 order: 999
 menu:
   - Components
@@ -10,14 +13,266 @@ menu:
   - Toolbar
 tags:
   - component
+  - toolbar
+  - actions
+  - controls
 figmaLink: >-
-  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5733-23105&m=dev
 ---
 
 # Toolbar
 
-{/* TODO: needs to be reviewed by a designer*/}
-A compound component that provides a way to group related actions and controls in a horizontal or vertical layout, commonly used for frequently-used actions, formatting controls, or contextual commands.
+Toolbars organize related actions and controls in a compact bar for easy access.
+They provide consistent placement for common or contextual tasks within an
+application.
 
+## Overview
+
+A toolbar is a handy container that organizes a group of related buttons and
+tools, using both horizontal and vertical layouts to fit the screen;
+essentially, it gives users quick access to the most common actions they need
+right now.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5733-23105&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Horizontal
+
+Most commonly used, horizontal toolbars should sit above the content meant to be
+altered.
+
+```jsx-live
+const App = () => (
+  <Toolbar orientation="horizontal">
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatUnderlined />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.MoreHoriz />
+      </IconButton>
+    </Group>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListBulleted />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListNumbered />
+      </IconButton>
+    </Group>
+  </Toolbar>
+)
+```
+
+#### Vertical
+
+Vertical toolbars are less common, but in the right interface it can be more
+helpful than a horizontal placement.
+
+```jsx-live
+const App = () => (
+  <Toolbar orientation="vertical">
+    <IconButton size="xs" variant="ghost">
+      <Icons.FormatBold />
+    </IconButton>
+    <IconButton size="xs" variant="ghost">
+      <Icons.FormatItalic />
+    </IconButton>
+    <IconButton size="xs" variant="ghost">
+      <Icons.FormatUnderlined />
+    </IconButton>
+    <IconButton size="xs" variant="ghost">
+      <Icons.MoreHoriz />
+    </IconButton>
+  </Toolbar>
+)
+```
+
+#### Plain and outline
+
+Two versions are available, a plain version that has a slight shadow to lift,
+and an outlined version that has more contrast from elements around it. The
+plain version without an outline is most common.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="600" alignItems="center">
+    <Toolbar variant="plain" size="xs">
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatUnderlined />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.MoreHoriz />
+      </IconButton>
+    </Toolbar>
+
+    <Toolbar variant="outline" size="xs">
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatUnderlined />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.MoreHoriz />
+      </IconButton>
+    </Toolbar>
+  </Stack>
+)
+```
+
+### Groups
+
+Grouping similar tools is a common best practice within all toolbars. Please
+combine similar tools in groups to make it easier for users to make choices
+quickly. If there are a lot of tools within a group, fold them under a menu
+button and leave 2-3 out that are the most popular choices.
+
+```jsx-live
+const App = () => (
+  <Toolbar size="xs">
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatUnderlined />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.MoreHoriz />
+      </IconButton>
+    </Group>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListBulleted />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListNumbered />
+      </IconButton>
+    </Group>
+  </Toolbar>
+)
+```
+
+## Guidelines
+
+These guidelines provide comprehensive direction for designing and developing
+toolbars within Nimbus.
+
+### Best practices
+
+- **Contextual placement:** Place the toolbar directly above the content it
+  controls (e.g., above a text editor, above a data table). This ensures an
+  immediate, clear connection between the tools and the content being modified.
+- **Logical grouping:** Group related actions visually using small separators
+  (like vertical lines or subtle spacing) to aid readability. For example, group
+  text alignment controls together, and export actions together.
+- **Hierarchical order:** Arrange items based on usage frequency and logical
+  flow, placing the most common or primary actions prominently on the left (in
+  LTR languages).
+- **Minimize clutter:** Avoid overcrowding the toolbar. If there are too many
+  items, use secondary controls like overflow menus to hide less frequently used
+  actions.
+
+### Usage
+
+A toolbar's use is to provide a dedicated, contextual area for a set of related,
+frequently used actions and controls to manage the content directly below it.
+
+> [!TIP]\
+> When to use
+
+- **Group related actions and controls** in a compact, container.
+- **Offer contextual actions** relevant to the content being viewed or edited
+  (e.g., formatting options in a text editor, or bulk actions for a list or
+  table).
+- **Maintain screen space** by consolidating many items into a single, compact
+  bar.
+
+> [!CAUTION]\
+> When not to use
+
+- **The primary purpose is navigation** between different pages or application
+  views; use a navigation component or tabs instead.
+- **Actions are rarely used or require complex input;** use a menu or modal
+  dialog to house these actions to simplify.
+- **The area needs to display a large amount of primary content** without being
+  obscured.
+- **Only one or two actions are needed** for a view; consider placing these
+  directly or within a relevant component, like a card.
+
+### Toolbar in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do group related actions and controls in a compact container.
+> - Offer contextual actions relevant to the content being viewed or edited
+>   (e.g., formatting options in a text editor, or bulk actions for a list).
+> - Maintain screen space by consolidating many items into a single, compact
+>   bar.
+
+![Do](/images/toolbar/toolbar-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't overcrowd the toolbar with too many items; use an overflow menu
+>   instead.
+> - Don't place unrelated actions next to each other without visual separation
+>   to group similar functions.
+> - Don't use a standard text button with a label when an icon button is
+>   sufficient and space is limited.
+> - Don't assume the user understands an icon without a descriptive tooltip.
+> - Don't hide actions that are temporarily disabled, as this causes shifting
+>   elements and breaks muscle memory.
+
+![Don't](/images/toolbar/toolbar-dont.png)
+
+## Specs
 
 <PropsTable id="Toolbar" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Accessibility standards
+
+- **Keyboard Navigation:** Ensure all interactive elements within the toolbar are navigable using the tab key in a logical order, following the order of items.
+- **ARIA Roles:** Apply the ARIA role toolbar to the container element.
+- **Labeling:** Provide descriptive, concise aria-labels for the toolbar container and for all icon buttons to ensure screen reader users understand the component's purpose and the action it performs.
+- **Provide clear status:**
+  - Use the disabled state for actions that are temporarily unavailable. Do not hide actions that are simply disabled, as this can cause shifting layouts and confuse users.
+  - Clearly communicate the reason an action is disabled via tooltips or other contextual help.

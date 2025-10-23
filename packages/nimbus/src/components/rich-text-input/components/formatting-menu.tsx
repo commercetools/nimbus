@@ -8,9 +8,9 @@ import {
 import { usePreservedSelection } from "../hooks/use-preserved-selection";
 import { useFormattingState } from "../hooks/use-formatting-state";
 
-export interface FormattingMenuProps {
+export type FormattingMenuProps = {
   isDisabled?: boolean;
-}
+};
 
 export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
   const editor = useSlate();

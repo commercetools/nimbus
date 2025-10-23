@@ -1,24 +1,44 @@
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
-import type { CheckboxRootProps } from "./checkbox.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { checkboxSlotRecipe } from "./checkbox.recipe";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 
-/**
- * Combines the root props with Chakra UI's recipe variant props.
- * This allows the component to accept both structural props from Root
- * and styling variants from the recipe.
- */
-type CheckboxVariantProps = CheckboxRootProps &
-  RecipeVariantProps<typeof checkboxSlotRecipe> &
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type CheckboxRecipeProps = {
+  /**
+   * Size variant of the checkbox
+   * @default "md"
+   */
+  size?: SlotRecipeProps<"checkbox">["size"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type CheckboxRootSlotProps = Omit<
+  HTMLChakraProps<"label", CheckboxRecipeProps>,
+  keyof RaCheckboxProps
+> &
   RaCheckboxProps;
 
-/**
- * Main props interface for the Checkbox component.
- * Extends CheckboxVariantProps to include both root props and variant props,
- * while adding support for React children.
- */
-export interface CheckboxProps extends Omit<CheckboxVariantProps, "children"> {
-  ref?: Ref<RaCheckboxProps>;
+export type CheckboxLabelSlotProps = HTMLChakraProps<"span">;
+
+export type CheckboxIndicatorSlotProps = HTMLChakraProps<"span">;
+
+// ============================================================
+// MAIN PROPS
+// ============================================================
+
+export type CheckboxProps = CheckboxRootSlotProps & {
+  /**
+   * Ref forwarding to the label element
+   */
+  ref?: Ref<HTMLLabelElement>;
+  /**
+   * The label content to display next to the checkbox
+   */
   children?: ReactNode;
-}
+};

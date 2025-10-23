@@ -1,21 +1,44 @@
-import type { DateInputRootProps } from "./date-input.slots";
-import type { RecipeVariantProps } from "@chakra-ui/react/styled-system";
-import { dateInputSlotRecipe } from "./date-input.recipe";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import type { DateValue } from "react-aria";
-import type { DateFieldProps } from "react-aria-components";
+import type { DateFieldProps as RaDateFieldProps } from "react-aria-components";
 
-/**
- * Additional properties we want to exclude from the DateInput component.
- * These are either deprecated or not intended for use in this component.
- */
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type DateInputRecipeProps = {
+  /** Size variant of the date input */
+  size?: SlotRecipeProps<"dateInput">["size"];
+  /** Visual style variant of the date input */
+  variant?: SlotRecipeProps<"dateInput">["variant"];
+} & UnstyledProp;
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type DateInputRootSlotProps = HTMLChakraProps<
+  "div",
+  DateInputRecipeProps
+>;
+
+export type DateInputLeadingElementSlotProps = HTMLChakraProps<"div">;
+
+export type DateInputTrailingElementSlotProps = HTMLChakraProps<"div">;
+
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
 type ExcludedProps =
-  // deprecated
   | "validationState"
-  // handled by <FormField> component
   | "label"
   | "description"
   | "errorMessage"
-  // chakra-ui props we don't want exposed
   | "css"
   | "colorScheme"
   | "unstyled"
@@ -23,27 +46,17 @@ type ExcludedProps =
   | "as"
   | "asChild";
 
-/**
- * Main props interface for the DateInput component.
- *
- * We use the same pattern as TextInput to avoid type conflicts:
- * 1. Start with DateFieldProps as the base
- * 2. Merge with DateInputRootProps, excluding conflicting keys
- * 3. Add recipe variant props
- */
-export interface DateInputProps
-  extends DateFieldProps<DateValue>,
-    Omit<DateInputRootProps, keyof DateFieldProps<DateValue> | ExcludedProps>,
-    RecipeVariantProps<typeof dateInputSlotRecipe> {
-  /**
-   * Optional element to display at the start of the input
-   * Will respect text direction (left in LTR, right in RTL)
-   */
-  leadingElement?: React.ReactNode;
+// ============================================================
+// MAIN PROPS
+// ============================================================
 
-  /**
-   * Optional element to display at the end of the input
-   * Will respect text direction (right in LTR, left in RTL)
-   */
-  trailingElement?: React.ReactNode;
-}
+export type DateInputProps = Omit<
+  DateInputRootSlotProps,
+  keyof RaDateFieldProps<DateValue> | ExcludedProps
+> &
+  Omit<RaDateFieldProps<DateValue>, ExcludedProps> & {
+    /** Optional element to display at the start of the input */
+    leadingElement?: React.ReactNode;
+    /** Optional element to display at the end of the input */
+    trailingElement?: React.ReactNode;
+  };

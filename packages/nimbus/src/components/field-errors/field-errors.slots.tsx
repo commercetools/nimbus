@@ -1,22 +1,19 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-import {
-  createSlotRecipeContext,
-  type HTMLChakraProps,
-} from "@chakra-ui/react/styled-system";
-import { fieldErrorsRecipe } from "./field-errors.recipe";
-import type { FieldErrorsRootProps } from "./field-errors.types";
+import { createSlotRecipeContext } from "@chakra-ui/react";
+import type {
+  FieldErrorsMessageSlotProps,
+  FieldErrorsRootSlotProps,
+} from "./field-errors.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: fieldErrorsRecipe,
+  key: "fieldErrors",
 });
 
 export const FieldErrorsRoot = withProvider<
   HTMLDivElement,
-  FieldErrorsRootProps
+  FieldErrorsRootSlotProps
 >("div", "root");
 
-export interface FieldErrorsMessageProps extends HTMLChakraProps<"div"> {}
 export const FieldErrorsMessage = withContext<
   HTMLDivElement,
-  FieldErrorsMessageProps
+  FieldErrorsMessageSlotProps
 >("div", "message");

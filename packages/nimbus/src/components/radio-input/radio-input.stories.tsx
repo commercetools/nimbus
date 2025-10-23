@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { RadioInput } from "./radio-input";
-import { Stack } from "@/components";
+import { FormField, RadioInput, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
-
-import { FormField } from "@/components/form-field";
 
 /**
  * Storybook metadata configuration
@@ -11,7 +8,7 @@ import { FormField } from "@/components/form-field";
  * - component: references the component being documented
  */
 const meta: Meta<typeof RadioInput.Root> = {
-  title: "components/RadioInput",
+  title: "Components/RadioInput",
   component: RadioInput.Root,
 };
 

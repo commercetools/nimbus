@@ -21,9 +21,9 @@ import type { Key } from "react-aria";
 import { BASIC_FORMATTING, SCRIPT_FORMATTING } from "../constants";
 import { isMarkActive, toggleMark } from "../utils/slate-helpers";
 
-export interface UseFormattingStateProps {
+export type UseFormattingStateProps = {
   withPreservedSelection: (fn: () => void) => () => void;
-}
+};
 
 export const useFormattingState = ({
   withPreservedSelection,
