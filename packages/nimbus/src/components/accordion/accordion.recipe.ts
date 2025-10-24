@@ -24,7 +24,7 @@ export const accordionSlotRecipe = defineSlotRecipe({
       width: "100%",
     },
     trigger: {
-      fontSize: "var(--font-size)",
+      fontSize: "var(--accordion-font-size)",
       focusVisibleRing: "outside",
       minHeight: "1200",
       bg: "none",
@@ -34,8 +34,8 @@ export const accordionSlotRecipe = defineSlotRecipe({
       gap: "8px",
       width: "auto",
       "& svg": {
-        width: "var(--width)",
-        height: "var(--height)",
+        width: "var(--accordion-width)",
+        height: "var(--accordion-height)",
         rotate: "0deg",
         transition: "rotate 200ms",
       },
@@ -47,9 +47,9 @@ export const accordionSlotRecipe = defineSlotRecipe({
       },
     },
     panel: {
-      paddingTop: "var(--padding-top)",
-      paddingBottom: "var(--padding-bottom)",
-      paddingLeft: "var(--padding-left)",
+      paddingTop: "var(--accordion-padding-top)",
+      paddingBottom: "var(--accordion-padding-bottom)",
+      paddingLeft: "var(--accordion-padding-left)",
       '&[aria-hidden="true"]': {
         display: "none",
       },
@@ -63,30 +63,30 @@ export const accordionSlotRecipe = defineSlotRecipe({
     size: {
       md: {
         trigger: {
-          "--font-size": "fontSizes.500",
+          "--accordion-font-size": "fontSizes.500",
           "& svg": {
-            "--width": "sizes.600",
-            "--height": "sizes.600",
+            "--accordion-width": "sizes.600",
+            "--accordion-height": "sizes.600",
           },
         },
         panel: {
-          "--padding-top": "spacing.600",
-          "--padding-bottom": "spacing.800",
-          "--padding-left": "spacing.800",
+          "--accordion-padding-top": "spacing.600",
+          "--accordion-padding-bottom": "spacing.800",
+          "--accordion-padding-left": "spacing.800",
         },
       },
       sm: {
         trigger: {
-          "--font-size": "fontSizes.400",
+          "--accordion-font-size": "fontSizes.400",
           "& svg": {
-            "--width": "sizes.500",
-            "--height": "sizes.500",
+            "--accordion-width": "sizes.500",
+            "--accordion-height": "sizes.500",
           },
         },
         panel: {
-          "--padding-top": "spacing.400",
-          "--padding-bottom": "spacing.600",
-          "--padding-left": "spacing.700",
+          "--accordion-padding-top": "spacing.400",
+          "--accordion-padding-bottom": "spacing.600",
+          "--accordion-padding-left": "spacing.700",
         },
       },
     },

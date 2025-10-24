@@ -3,7 +3,13 @@ import { DisclosurePanel as RaDisclosurePanel } from "react-aria-components";
 import type { AccordionContentProps } from "../accordion.types";
 import { extractStyleProps } from "@/utils";
 
-// Create Content component
+/**
+ * Accordion.Content - The collapsible content area
+ *
+ * Contains the main content that is shown/hidden when the header is activated.
+ *
+ * @supportsStyleProps
+ */
 export const AccordionContent = ({
   children,
   ref,
@@ -17,3 +23,5 @@ export const AccordionContent = ({
     </AccordionPanelSlot>
   );
 };
+
+AccordionContent.displayName = "Accordion.Content";
