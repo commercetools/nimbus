@@ -1,6 +1,12 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
-import { IconButton, Drawer, Tabs, UPDATE_ACTIONS } from "@/components";
+import {
+  IconButton,
+  Drawer,
+  Tabs,
+  Tooltip,
+  UPDATE_ACTIONS,
+} from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import VisibleColumnsPanel from "./data-table-visible-columns-panel";
 import LayoutSettingsPanel from "./data-table-layout-settings-panel";
@@ -156,15 +162,20 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
   }, [onColumnsChange]);
 
   const defaultTrigger = (
-    <IconButton
-      variant="ghost"
-      tone="primary"
-      size="md"
-      aria-label={formatMessage(messages.settings)}
-      onClick={() => setIsOpen(true)}
-    >
-      <Settings />
-    </IconButton>
+    <Tooltip.Root>
+      <Tooltip.Content placement="top">
+        {formatMessage(messages.settings)}
+      </Tooltip.Content>
+      <IconButton
+        variant="ghost"
+        tone="primary"
+        size="xs"
+        aria-label={formatMessage(messages.settings)}
+        onClick={() => setIsOpen(true)}
+      >
+        <Settings />
+      </IconButton>
+    </Tooltip.Root>
   );
 
   return (

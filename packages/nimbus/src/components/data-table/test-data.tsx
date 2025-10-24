@@ -1201,6 +1201,31 @@ export const initialHiddenColumns: DataTableColumnItem[] = [
     header: "Custom attribute that breaks into 2 lines",
     accessor: (row) => row.customAttr as React.ReactNode,
   },
+  {
+    id: "brand",
+    header: "Brand",
+    accessor: (row) => row.brand as React.ReactNode,
+  },
+  {
+    id: "material",
+    header: "Material",
+    accessor: (row) => row.material as React.ReactNode,
+  },
+  {
+    id: "size",
+    header: "Size",
+    accessor: (row) => row.size as React.ReactNode,
+  },
+  {
+    id: "color",
+    header: "Color",
+    accessor: (row) => row.color as React.ReactNode,
+  },
+  {
+    id: "supplier",
+    header: "Supplier",
+    accessor: (row) => row.supplier as React.ReactNode,
+  },
 ];
 
 export const managerRows: DataTableRowItem[] = [
@@ -1215,6 +1240,11 @@ export const managerRows: DataTableRowItem[] = [
     store: "Main Store",
     country: "USA",
     customAttr: "Premium",
+    brand: "Elegance Co.",
+    material: "Silk",
+    size: "M",
+    color: "Midnight Blue",
+    supplier: "Textile Imports Ltd",
   },
   {
     id: "2",
@@ -1227,6 +1257,11 @@ export const managerRows: DataTableRowItem[] = [
     store: "Downtown",
     country: "Canada",
     customAttr: "Standard",
+    brand: "UrbanStyle",
+    material: "Denim",
+    size: "L",
+    color: "Dark Wash",
+    supplier: "Global Denim Corp",
   },
   {
     id: "3",
@@ -1239,6 +1274,11 @@ export const managerRows: DataTableRowItem[] = [
     store: "Beach Shop",
     country: "USA",
     customAttr: "Eco-friendly",
+    brand: "Coastal Wear",
+    material: "Linen",
+    size: "32",
+    color: "Beige",
+    supplier: "EcoFabrics Inc",
   },
   {
     id: "4",
@@ -1251,6 +1291,11 @@ export const managerRows: DataTableRowItem[] = [
     store: "Main Store",
     country: "UK",
     customAttr: "Premium",
+    brand: "Highland Knitwear",
+    material: "Merino Wool",
+    size: "XL",
+    color: "Charcoal",
+    supplier: "British Woolens",
   },
   {
     id: "5",
@@ -1263,5 +1308,10 @@ export const managerRows: DataTableRowItem[] = [
     store: "Outlet",
     country: "USA",
     customAttr: "Standard",
+    brand: "SunWear",
+    material: "Cotton",
+    size: "S",
+    color: "Sunset Orange",
+    supplier: "Cotton Mills USA",
   },
 ];

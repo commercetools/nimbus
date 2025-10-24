@@ -3623,31 +3623,38 @@ export const WithTableManager: Story = {
     };
 
     return (
-      <Stack direction="column" gap="400">
-        <DataTable.Root
-          columns={initialColumnsState}
-          rows={managerRows}
-          visibleColumns={visibleColumns.map((col) => col.id)}
-          allowsSorting={true}
-          isTruncated={isTruncated}
-          density={density}
-          onColumnsChange={handleColumnsChange}
-          onSettingsChange={handleSettingsChange}
-        >
-          <Flex justifyContent="space-between" alignItems="center" width="100%">
-            <Heading as="h3" size="lg">
-              Table settings
-            </Heading>
-            <Box p="200">
-              <DataTable.Manager />
-            </Box>
-          </Flex>
-          <DataTable.Table aria-label="Products table">
-            <DataTable.Header aria-label="Products table header" />
-            <DataTable.Body aria-label="Products table body" />
-          </DataTable.Table>
-        </DataTable.Root>
-      </Stack>
+      <>
+        <Box>
+          <Heading>Demo Table with Table Settings Manager</Heading>
+        </Box>
+        <Stack direction="column" gap="400">
+          <DataTable.Root
+            columns={initialColumnsState}
+            rows={managerRows}
+            visibleColumns={visibleColumns.map((col) => col.id)}
+            allowsSorting={true}
+            isTruncated={isTruncated}
+            density={density}
+            onColumnsChange={handleColumnsChange}
+            onSettingsChange={handleSettingsChange}
+          >
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+            >
+              <Text>Table settings</Text>
+              <Box p="200">
+                <DataTable.Manager />
+              </Box>
+            </Flex>
+            <DataTable.Table aria-label="Products table">
+              <DataTable.Header aria-label="Products table header" />
+              <DataTable.Body aria-label="Products table body" />
+            </DataTable.Table>
+          </DataTable.Root>
+        </Stack>
+      </>
     );
   },
   args: {},

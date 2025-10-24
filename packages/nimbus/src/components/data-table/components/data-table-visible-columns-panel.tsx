@@ -122,8 +122,8 @@ const VisibleColumnsPanel = ({
   );
 
   return (
-    <Stack gap="400" mt="400">
-      <SimpleGrid gap="400" width="100%" mb="800" columns={2}>
+    <Stack mt="800">
+      <SimpleGrid gap="400" width="100%" columns={2}>
         {/* Hidden Columns Section */}
         <Box>
           <Stack direction="row" alignItems="center" mb="200">
@@ -138,11 +138,12 @@ const VisibleColumnsPanel = ({
             borderColor="colorPalette.3"
             borderRadius="200"
             gap="200"
-            p="400"
-            h="full"
+            p="300"
+            h="lg"
           >
             <SearchInput
               w="full"
+              size="sm"
               variant="ghost"
               placeholder={formatMessage(messages.searchHiddenColumns)}
               aria-label={formatMessage(messages.searchHiddenColumns)}
@@ -158,7 +159,7 @@ const VisibleColumnsPanel = ({
               border="none"
               borderColor="none"
               h="full"
-              p="0"
+              overflowY="auto"
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
               aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
@@ -191,9 +192,10 @@ const VisibleColumnsPanel = ({
             </Text>
           </Stack>
           <DraggableList.Root
-            p="400"
             removableItems
-            h="full"
+            p="300"
+            h="lg"
+            overflowY="auto"
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsListUpdate}
             aria-label={formatMessage(messages.visibleColumnsAria)}
@@ -224,7 +226,7 @@ const VisibleColumnsPanel = ({
         <Button
           variant="ghost"
           tone="primary"
-          size="md"
+          size="xs"
           onClick={handleResetColumns}
           aria-label={formatMessage(messages.reset)}
         >
