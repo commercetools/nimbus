@@ -57,10 +57,12 @@ Button.displayName = 'Button';
 
 ````typescript
 // menu.tsx - EXPORTS ONLY, NO IMPLEMENTATION
-import { MenuRoot } from "./components/menu.root";
-import { MenuTrigger } from "./components/menu.trigger";
-import { MenuItem } from "./components/menu.item";
-// ... other imports
+// Import from barrel export index to ensure consistent module resolution
+import { MenuRoot, MenuTrigger, MenuItem } from "./components";
+// Or individually if needed:
+// import { MenuRoot } from "./components";
+// import { MenuTrigger } from "./components";
+// import { MenuItem } from "./components";
 
 /**
  * Menu
@@ -411,9 +413,7 @@ Badge.displayName = 'Badge';
 
 ```typescript
 // select.tsx - EXPORTS ONLY
-import { SelectRoot } from "./components/select-root";
-import { SelectTrigger } from "./components/select-trigger";
-import { SelectOption } from "./components/select-option";
+import { SelectRoot, SelectTrigger, SelectContent, SelectOption } from "./components";
 
 /**
  * Select
@@ -647,6 +647,7 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 - [ ] Main component file exists
 - [ ] For compound: exports only, no implementation
+- [ ] **For compound: sub-components imported from barrel export (`./components/index.ts`)**
 - [ ] For compound: `.Root` is FIRST property
 - [ ] For single: implementation present
 - [ ] DisplayName set for all exported components

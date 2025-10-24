@@ -1,7 +1,8 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import type { SemanticPalettesOnly } from "@/type-utils";
+import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,14 +17,16 @@ type AlertRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
+export type AlertRootSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div", AlertRecipeProps>
+> & {
   /** Color palette variant of the alert */
   colorPalette?: Exclude<SemanticPalettesOnly, "neutral" | "primary">;
 };
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;
 
-export type AlertActionsSlotProps = HTMLChakraProps<"div">;
+export type AlertActionsSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
 // ============================================================
 // MAIN PROPS
@@ -69,4 +72,4 @@ export type AlertActionsProps = AlertActionsSlotProps;
 /**
  * Props for the Alert.DismissButton component.
  */
-export type AlertDismissButtonProps = ButtonProps;
+export type AlertDismissButtonProps = OmitUnwantedProps<ButtonProps>;
