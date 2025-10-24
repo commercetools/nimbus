@@ -22,7 +22,7 @@ type ToggleButtonGroupRecipeVariantProps = {
    * @default "md"
    */
   size?: "xs" | "md";
-  colorPalette?: Exclude<SemanticPalettesOnly, "info" | "positive" | "warning">;
+  colorPalette?: Exclude<SemanticPalettesOnly, "positive" | "warning">;
 };
 
 // ============================================================
