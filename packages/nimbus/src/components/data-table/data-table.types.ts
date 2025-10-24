@@ -13,6 +13,7 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type { UPDATE_ACTIONS } from "./constants";
 
 // ============================================================
 // RECIPE PROPS
@@ -68,7 +69,6 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
     row: T;
     column: DataTableColumnItem<T>;
   }) => ReactNode;
-  isVisible?: boolean;
   isResizable?: boolean;
   width?: number | null;
   defaultWidth?: number | null;
@@ -92,8 +92,11 @@ export type DataTableDensity = "default" | "condensed";
 export type DataTableContextValue<T extends object = Record<string, unknown>> =
   {
     columns: DataTableColumnItem<T>[];
-    data: DataTableRowItem<T>[];
+    rows: DataTableRowItem<T>[];
     visibleColumns?: string[];
+    onSettingsChange?: (
+      action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
+    ) => void;
     renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
     search?: string;
     sortDescriptor?: SortDescriptor;
@@ -126,9 +129,11 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     pinnedRows: Set<string>;
     onPinToggle?: (rowId: string) => void;
     togglePin: (id: string) => void;
+    onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+    onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 
-type DataTableVariantProps = Omit<DataTableRootSlotProps, "columns" | "data">;
+type DataTableVariantProps = Omit<DataTableRootSlotProps, "columns" | "rows">;
 
 // ============================================================
 // MAIN PROPS
@@ -143,7 +148,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   ref?: React.Ref<HTMLDivElement>;
   columns: DataTableColumnItem<T>[];
   unstyled?: boolean;
-  data: DataTableRowItem<T>[];
+  rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
@@ -173,6 +178,10 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
+  onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+  onSettingsChange?: (
+    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
+  ) => void;
 };
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
@@ -211,3 +220,12 @@ export type DataTableCellProps = RaCellProps &
     ref?: Ref<HTMLTableCellElement>;
     isDisabled?: boolean;
   };
+
+/**
+ * Type for column list items used in the DataTable.Manager component
+ * with DraggableList for managing column visibility and order.
+ */
+export type TColumnListItem = {
+  id: string;
+  label: React.ReactNode;
+};
