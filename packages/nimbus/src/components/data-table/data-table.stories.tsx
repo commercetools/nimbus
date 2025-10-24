@@ -1442,7 +1442,7 @@ export const StickyHeader: Story = {
 
     await step("Sticky header maintains accessibility", async () => {
       const table = canvas.getByRole("grid");
-      expect(table).toHaveAttribute("aria-label", "Data Table");
+      expect(table).toHaveAttribute("aria-label", "Data table");
 
       const rows = canvas.getAllByRole("row");
       const headerRow = rows[0];
@@ -2232,7 +2232,7 @@ export const SelectionShowcase: Story = {
 
     await step("Selection maintains accessibility", async () => {
       const table = canvas.getByRole("grid");
-      expect(table).toHaveAttribute("aria-label", "Data Table");
+      expect(table).toHaveAttribute("aria-label", "Data table");
 
       const checkboxes = canvas.getAllByRole("rowgroup")[1];
       const dataRows = within(checkboxes).getAllByRole("row");

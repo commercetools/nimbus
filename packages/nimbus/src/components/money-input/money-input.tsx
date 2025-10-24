@@ -34,7 +34,7 @@ import type {
   MoneyInputProps,
   CurrencyCode,
 } from "./money-input.types";
-import messages from "./money-input.i18n";
+import { messages } from "./money-input.i18n";
 
 /**
  * # MoneyInput

@@ -3,7 +3,7 @@ import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { SelectStateContext } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
-import messages from "../select.i18n";
+import { messages } from "../select.i18n";
 import { useIntl } from "react-intl";
 
 export const SelectClearButton = () => {

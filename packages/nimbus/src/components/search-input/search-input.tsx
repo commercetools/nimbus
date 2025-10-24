@@ -17,7 +17,7 @@ import {
   SearchInputInputSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
-import messages from "./search-input.i18n";
+import { messages } from "./search-input.i18n";
 
 /**
  * # SearchInput

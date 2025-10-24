@@ -1,5 +1,7 @@
+import { useIntl } from "react-intl";
 import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { TagGroupTagSlot } from "../tag-group.slots";
+import { messages } from "../tag-group.i18n";
 
 import type { TagGroupTagComponent } from "../tag-group.types";
 import { IconButton } from "@/components";
@@ -9,6 +11,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
   ref,
   ...rest
 }) => {
+  const intl = useIntl();
   const textValue = typeof children === "string" ? children : undefined;
   return (
     <TagGroupTagSlot ref={ref} textValue={textValue} {...rest}>
@@ -18,12 +21,12 @@ export const TagGroupTag: TagGroupTagComponent = ({
           {allowsRemoving &&
             selectionMode !== "multiple" &&
             selectionMode !== "single" && (
-              // @ts-expect-error aria props are handled by ButtonContext internally in IconButton
               <IconButton
                 size="2xs"
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
                 tone={isSelected ? undefined : "neutral"}
+                aria-label={intl.formatMessage(messages.removeTag)}
               >
                 <CloseIcon />
               </IconButton>

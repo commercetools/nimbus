@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export default defineMessages({
+export const messages = defineMessages({
   hide: {
     id: "Nimbus.PasswordInput.hide",
     description: "aria-label & tooltip for hide password button",

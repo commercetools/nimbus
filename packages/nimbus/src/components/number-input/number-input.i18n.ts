@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export default defineMessages({
+export const messages = defineMessages({
   decrement: {
     id: "Nimbus.NumberInput.decrement",
     description: "aria-label for the decrement button in number input",

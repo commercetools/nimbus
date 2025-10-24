@@ -7,12 +7,15 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
+import { useIntl } from "react-intl";
+import { messages } from "../date-range-picker.i18n";
 
 export const DateRangePickerCustomContext = ({
   children,
 }: {
   children: ReactNode;
 }) => {
+  const intl = useIntl();
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
@@ -44,16 +47,24 @@ export const DateRangePickerCustomContext = ({
 
   // Generate default aria-label based on granularity if not provided
   const getDefaultTimeInputAriaLabel = (type: "start" | "end") => {
-    const prefix = type === "start" ? "Start" : "End";
+    const messageKey = type === "start" ? "start" : "end";
     switch (granularity) {
       case "hour":
-        return `${prefix} time (hour)`;
+        return intl.formatMessage(
+          messages[`${messageKey}TimeHour` as keyof typeof messages]
+        );
       case "minute":
-        return `${prefix} time (hour and minute)`;
+        return intl.formatMessage(
+          messages[`${messageKey}TimeHourMinute` as keyof typeof messages]
+        );
       case "second":
-        return `${prefix} time (hour, minute, and second)`;
+        return intl.formatMessage(
+          messages[`${messageKey}TimeHourMinuteSecond` as keyof typeof messages]
+        );
       default:
-        return `${prefix} time`;
+        return intl.formatMessage(
+          messages[`${messageKey}Time` as keyof typeof messages]
+        );
     }
   };
 
@@ -81,7 +92,7 @@ export const DateRangePickerCustomContext = ({
     clear: {
       // Clear both start and end values
       onPress: () => dateRangePickerState?.setValue(null),
-      "aria-label": "Clear input value",
+      "aria-label": intl.formatMessage(messages.clearInput),
       isDisabled: isDateRangePickerDisabled,
       // Hide the button when there's no value
       style: incompleteValue ? { display: "none" } : undefined,

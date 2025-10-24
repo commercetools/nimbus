@@ -1,3 +1,6 @@
+import type { IntlShape } from "react-intl";
+import { messages } from "../rich-text-input.i18n";
+
 /**
  * Text style definitions for rich text editor block formatting
  *
@@ -21,10 +24,14 @@ export type TextStyleDefinition = {
   };
 };
 
-export const textStyles: TextStyleDefinition[] = [
+/**
+ * Returns text style definitions with localized labels
+ * @param intl - react-intl IntlShape instance for formatting messages
+ */
+export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   {
     id: "paragraph",
-    label: "Paragraph",
+    label: intl.formatMessage(messages.paragraph),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -32,7 +39,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "heading-one",
-    label: "Heading 1",
+    label: intl.formatMessage(messages.headingOne),
     props: {
       textStyle: "2xl",
       fontWeight: "500",
@@ -40,7 +47,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "heading-two",
-    label: "Heading 2",
+    label: intl.formatMessage(messages.headingTwo),
     props: {
       textStyle: "xl",
       fontWeight: "500",
@@ -48,7 +55,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "heading-three",
-    label: "Heading 3",
+    label: intl.formatMessage(messages.headingThree),
     props: {
       textStyle: "lg",
       fontWeight: "500",
@@ -56,7 +63,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "heading-four",
-    label: "Heading 4",
+    label: intl.formatMessage(messages.headingFour),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -64,7 +71,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "heading-five",
-    label: "Heading 5",
+    label: intl.formatMessage(messages.headingFive),
     props: {
       textStyle: "xs",
       fontWeight: "500",
@@ -72,7 +79,7 @@ export const textStyles: TextStyleDefinition[] = [
   },
   {
     id: "block-quote",
-    label: "Quote",
+    label: intl.formatMessage(messages.quote),
     props: {
       textStyle: "md",
       fontWeight: "400",

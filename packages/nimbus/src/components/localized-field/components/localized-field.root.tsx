@@ -23,7 +23,7 @@ import {
   type CurrencyCode,
 } from "@/components";
 import { Popover } from "../../popover";
-import messages from "../localized-field.i18n";
+import { messages } from "../localized-field.i18n";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,

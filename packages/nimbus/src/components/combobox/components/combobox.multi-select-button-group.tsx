@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useIntl } from "react-intl";
 import {
   Close as CloseIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
@@ -8,6 +9,7 @@ import { ClearPressResponder } from "@react-aria/interactions";
 import { IconButton, Flex, Box } from "@/components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
+import { messages } from "../combobox.i18n";
 
 export const ComboBoxButtonGroup = ({
   selectedKeys,
@@ -18,6 +20,7 @@ export const ComboBoxButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
+  const intl = useIntl();
   const handleClearSelection = useCallback(() => {
     onSelectionChange?.(new Set());
     onInputChange?.("");
@@ -37,7 +40,7 @@ export const ComboBoxButtonGroup = ({
             size="2xs"
             variant="ghost"
             tone="primary"
-            aria-label="Clear Selection"
+            aria-label={intl.formatMessage(messages.clearSelection)}
             isDisabled={isDisabled || isReadOnly}
             onPress={handleClearSelection}
             my="auto"

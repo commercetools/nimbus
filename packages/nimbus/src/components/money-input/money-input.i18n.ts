@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export default defineMessages({
+export const messages = defineMessages({
   currencySelectLabel: {
     id: "Nimbus.MoneyInput.currencySelectLabel",
     description: "aria-label for currency selection dropdown",

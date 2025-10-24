@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export default defineMessages({
+export const messages = defineMessages({
   defaultLoadingMessage: {
     id: "Nimbus.LoadingSpinner.default",
     description: "Default loading message for loading spinners",

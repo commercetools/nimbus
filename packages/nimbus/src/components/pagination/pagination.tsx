@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useIntl } from "react-intl";
 import { ChevronLeft, ChevronRight } from "@commercetools/nimbus-icons";
 import {
   Flex,
@@ -10,6 +11,7 @@ import {
 } from "@/components";
 import { usePagination } from "./hooks/use-pagination";
 import type { PaginationProps } from "./pagination.types";
+import { messages } from "./pagination.i18n";
 
 /**
  * # Pagination
@@ -20,6 +22,7 @@ import type { PaginationProps } from "./pagination.types";
  * @see {@link https://nimbus-documentation.vercel.app/components/pagination}
  */
 export const Pagination = (props: PaginationProps) => {
+  const intl = useIntl();
   const {
     totalItems,
     currentPage,
@@ -27,7 +30,7 @@ export const Pagination = (props: PaginationProps) => {
     pageSizeOptions = [10, 20, 50, 100],
     onPageChange,
     onPageSizeChange,
-    "aria-label": ariaLabel = "Pagination",
+    "aria-label": ariaLabel,
     enablePageInput = true,
     enablePageSizeSelector = true,
   } = props;
@@ -66,7 +69,7 @@ export const Pagination = (props: PaginationProps) => {
             isClearable={false}
             selectedKey={pagination.pageSize.toString()}
             onSelectionChange={handlePageSizeChange}
-            aria-label="Items per page"
+            aria-label={intl.formatMessage(messages.itemsPerPage)}
           >
             <Select.Options>
               {pageSizeSelectOptions.map((option) => (
@@ -76,24 +79,31 @@ export const Pagination = (props: PaginationProps) => {
               ))}
             </Select.Options>
           </Select.Root>
-          <Text color="neutral.12">items per page</Text>
+          <Text color="neutral.12">
+            {intl.formatMessage(messages.itemsPerPageText)}
+          </Text>
         </Flex>
       )}
       <Flex flexGrow="1" />
       {/* Page Navigator */}
-      <Flex align="center" gap="200" role="navigation" aria-label={ariaLabel}>
+      <Flex
+        align="center"
+        gap="200"
+        role="navigation"
+        aria-label={ariaLabel ?? intl.formatMessage(messages.pagination)}
+      >
         <IconButton
           onClick={pagination.goToPreviousPage}
           isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
           tone="primary"
-          aria-label="Go to previous page"
+          aria-label={intl.formatMessage(messages.goToPreviousPage)}
         >
           <ChevronLeft />
         </IconButton>
 
         <Flex align="center" gap="200">
-          <Text color="neutral.12">Page</Text>
+          <Text color="neutral.12">{intl.formatMessage(messages.page)}</Text>
           {enablePageInput ? (
             <NumberInput
               value={pagination.currentPage}
@@ -105,7 +115,7 @@ export const Pagination = (props: PaginationProps) => {
               step={1}
               isDisabled={false}
               width="9ch"
-              aria-label="Current page"
+              aria-label={intl.formatMessage(messages.currentPage)}
               aria-current="page"
             />
           ) : (
@@ -114,7 +124,9 @@ export const Pagination = (props: PaginationProps) => {
             </Text>
           )}
           <Text color="neutral.12">
-            of {pagination.totalPages.toLocaleString()}
+            {intl.formatMessage(messages.ofTotalPages, {
+              totalPages: intl.formatNumber(pagination.totalPages),
+            })}
           </Text>
         </Flex>
 
@@ -123,7 +135,7 @@ export const Pagination = (props: PaginationProps) => {
           isDisabled={!pagination.hasNextPage}
           variant="ghost"
           tone="primary"
-          aria-label="Go to next page"
+          aria-label={intl.formatMessage(messages.goToNextPage)}
         >
           <ChevronRight />
         </IconButton>
