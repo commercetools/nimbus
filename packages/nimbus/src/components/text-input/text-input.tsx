@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useTextField } from "react-aria";
-import { Input } from "react-aria-components";
+import { Input, InputContext, useContextProps } from "react-aria-components";
 import { extractStyleProps } from "@/utils";
 import { textInputSlotRecipe } from "./text-input.recipe";
 import {
@@ -33,10 +33,39 @@ export const TextInput = (props: TextInputProps) => {
 
   const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
-  const { inputProps } = useTextField(otherProps, ref);
+
+  /**
+   * Consume context props from InputContext when TextInput is used
+   * as a child of React Aria components (e.g., within SearchField, Form).
+   * This enables proper slot-aware behavior and prop composition, allowing
+   * TextInput to work seamlessly within React Aria's component hierarchy.
+   */
+  const [contextProps, contextRef] = useContextProps(
+    otherProps,
+    baseRef,
+    InputContext
+  );
+
+  // Type guards to validate DOM props exist at runtime
+  const hasDisabled = (obj: unknown): obj is { disabled: boolean } =>
+    typeof obj === "object" && obj !== null && "disabled" in obj;
+  const hasReadOnly = (obj: unknown): obj is { readOnly: boolean } =>
+    typeof obj === "object" && obj !== null && "readOnly" in obj;
+  const hasRequired = (obj: unknown): obj is { required: boolean } =>
+    typeof obj === "object" && obj !== null && "required" in obj;
+
+  const { inputProps } = useTextField(
+    {
+      isDisabled: hasDisabled(contextProps) ? contextProps.disabled : undefined,
+      isReadOnly: hasReadOnly(contextProps) ? contextProps.readOnly : undefined,
+      isRequired: hasRequired(contextProps) ? contextProps.required : undefined,
+      ...contextProps,
+    },
+    contextRef
+  );
 
   const stateProps = {
     "data-disabled": inputProps.disabled ? "true" : undefined,
@@ -78,7 +107,7 @@ export const TextInput = (props: TextInputProps) => {
         </TextInputLeadingElementSlot>
       )}
       <TextInputInputSlot asChild>
-        <Input ref={ref} {...inputProps} />
+        <Input ref={contextRef} {...inputProps} />
       </TextInputInputSlot>
       {trailingElement && (
         <TextInputTrailingElementSlot>
