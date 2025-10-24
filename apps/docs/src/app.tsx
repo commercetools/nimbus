@@ -70,22 +70,6 @@ function App() {
                 </Stack>
               </StickySidebar>
             </Flex>
-            <StickySidebar
-              width="8000"
-              borderLeft="solid-25"
-              borderColor="neutral.3"
-              flexShrink="0"
-              px="400"
-              pt="600"
-              id="sidebar-right"
-            >
-              <Stack gap="800">
-                <DevOnly>
-                  <DocumentMetaSettings />
-                </DevOnly>
-                <Toc />
-              </Stack>
-            </StickySidebar>
           </Flex>
         </>
       </NimbusProvider>
