@@ -12,18 +12,12 @@ import { useObjectRef, mergeProps } from "react-aria";
  */
 
 export const Badge = (props: BadgeProps) => {
-  const { ref: forwardedRef, as, children, ...rest } = props;
+  const { ref: forwardedRef, children, ...rest } = props;
 
   const localRef = useRef<HTMLSpanElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  const elementType = as || "span";
-
-  return (
-    <BadgeRoot as={elementType} {...mergeProps(rest, { ref })}>
-      {children}
-    </BadgeRoot>
-  );
+  return <BadgeRoot {...mergeProps(rest, { ref })}>{children}</BadgeRoot>;
 };
 
 Badge.displayName = "Badge";

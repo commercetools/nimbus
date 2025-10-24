@@ -27,4 +27,8 @@
  * };
  * ```
  */
-export type OmitPolymorphicProps<T> = Omit<T, "as" | "asChild">;
+export type OmitPolymorphicProps<T> = Omit<T, "as" | "asChild" | "elementType">;
+
+export type OmitCSSProps<T> = Omit<T, "css">;
+
+export type OmitUnwantedProps<T> = OmitPolymorphicProps<OmitCSSProps<T>>;

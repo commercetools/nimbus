@@ -9,7 +9,16 @@ import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import { Button as RaButton } from "react-aria-components";
 import type { AccordionHeaderProps } from "../accordion.types";
 import { extractStyleProps } from "@/utils";
+import { AccordionHeaderRightContent } from "./accordion.header-right-content";
 
+/**
+ * Accordion.Header - The clickable header for accordion items
+ *
+ * Expands/collapses the accordion content when activated.
+ * Handles keyboard and mouse interactions.
+ *
+ * @supportsStyleProps
+ */
 export const AccordionHeader = ({
   children,
   ref,
@@ -24,7 +33,8 @@ export const AccordionHeader = ({
     React.Children.forEach(children, (child) => {
       if (
         React.isValidElement(child) &&
-        child.type === AccordionHeaderRightContentSlot
+        (child.type === AccordionHeaderRightContent ||
+          child.type === AccordionHeaderRightContentSlot)
       ) {
         rightContent.push(child);
       } else {
@@ -57,3 +67,5 @@ export const AccordionHeader = ({
     </Flex>
   );
 };
+
+AccordionHeader.displayName = "Accordion.Header";

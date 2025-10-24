@@ -3,6 +3,11 @@ import { AlertDescription as AlertDescriptionSlot } from "../alert.slots";
 import type { AlertDescriptionProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
+/**
+ * Alert.Description - Displays the description text for the alert
+ *
+ * @supportsStyleProps
+ */
 export const AlertDescription = ({
   children,
   ...props

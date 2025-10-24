@@ -1,6 +1,7 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -17,11 +18,13 @@ type AlertRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps>;
+export type AlertRootSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div", AlertRecipeProps>
+>;
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;
 
-export type AlertActionsSlotProps = HTMLChakraProps<"div">;
+export type AlertActionsSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
 // ============================================================
 // MAIN PROPS
@@ -67,4 +70,4 @@ export type AlertActionsProps = AlertActionsSlotProps;
 /**
  * Props for the Alert.DismissButton component.
  */
-export type AlertDismissButtonProps = ButtonProps;
+export type AlertDismissButtonProps = OmitUnwantedProps<ButtonProps>;
