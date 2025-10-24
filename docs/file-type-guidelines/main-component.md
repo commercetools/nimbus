@@ -69,6 +69,8 @@ import { MenuRoot, MenuTrigger, MenuItem } from "./components";
  * ============================================================
  * An accessible dropdown menu component
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/navigation/menu}
+ *
  * @example
  * ```tsx
  * <Menu.Root>
@@ -287,6 +289,8 @@ component part documentation:
  * A foundational dialog component for overlays that require user attention.
  * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/dialog}
+ *
  * @example
  * ```tsx
  * <Dialog.Root>
@@ -413,12 +417,19 @@ Badge.displayName = 'Badge';
 
 ```typescript
 // select.tsx - EXPORTS ONLY
-import { SelectRoot, SelectTrigger, SelectContent, SelectOption } from "./components";
+import {
+  SelectRoot,
+  SelectTrigger,
+  SelectContent,
+  SelectOption,
+} from "./components";
 
 /**
  * Select
  * ============================================================
  * Dropdown selection component with accessibility
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
  */
 export const Select = {
   Root: SelectRoot,
@@ -523,7 +534,8 @@ See [i18n Guidelines](./i18n.md) for complete documentation.
 
 ### JSDoc Comments
 
-Include comprehensive JSDoc for the main export:
+Include comprehensive JSDoc for the main export with a mandatory link to the
+live documentation:
 
 ````typescript
 /**
@@ -531,14 +543,14 @@ Include comprehensive JSDoc for the main export:
  * ============================================================
  * Brief description of what the component does
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/category/component-name}
+ *
  * @example
  * ```tsx
  * <ComponentName variant="primary" size="md">
  *   Content
  * </ComponentName>
  * ```
- *
- * @see https://react-spectrum.adobe.com/react-aria/ComponentName.html
  */
 export const ComponentName = {
   // ...
@@ -647,7 +659,8 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 - [ ] Main component file exists
 - [ ] For compound: exports only, no implementation
-- [ ] **For compound: sub-components imported from barrel export (`./components/index.ts`)**
+- [ ] **For compound: sub-components imported from barrel export
+      (`./components/index.ts`)**
 - [ ] For compound: `.Root` is FIRST property
 - [ ] For single: implementation present
 - [ ] DisplayName set for all exported components
@@ -659,6 +672,9 @@ export const CustomButton = (props: CustomButtonProps) => {
 ### JSDoc Documentation
 
 - [ ] Main component has JSDoc with description and example
+- [ ] **Main component JSDoc includes `@see` link to live documentation site**
+- [ ] **`@see` link uses `{@link URL}` format**
+- [ ] **`@see` link placed before `@example` block**
 - [ ] **For compound components: Each part has JSDoc documentation in main
       file**
 - [ ] **Each part's JSDoc includes heading (# ComponentName.Part)**
