@@ -4,6 +4,11 @@ import type { MenuRootProps } from "../menu.types";
 import { MenuRootSlot } from "../menu.slots";
 import { MenuProvider } from "./menu.context";
 
+/**
+ * Menu.Root - Container component that provides configuration and state management
+ *
+ * @supportsStyleProps
+ */
 export const MenuRoot = (props: MenuRootProps) => {
   const recipe = useSlotRecipe({ key: "menu" });
   const [recipeProps, functionalProps] = recipe.splitVariantProps(props);

@@ -41,6 +41,8 @@ export const Menu = {
 };
 ```
 
+**IMPORTANT**: Each part must have JSDoc documentation in the main file. See [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts) for detailed documentation requirements.
+
 ### 2. Root Component is MANDATORY
 
 **Every compound component MUST have a `.Root` component** as the first
@@ -237,6 +239,70 @@ export const MenuTrigger = ({ children, asChild, ref, ...props }: MenuTriggerPro
 MenuTrigger.displayName = 'Menu.Trigger';
 ```
 
+### JSDoc Tags in Implementation Files (CRITICAL)
+
+**Implementation File JSDoc Requirement:**
+
+JSDoc tags like `@supportsStyleProps` must be placed **directly above the component function** in implementation files (e.g., `components/menu.trigger.tsx`) for `react-docgen-typescript` to extract metadata for documentation generation.
+
+#### Parser Behavior
+
+The `react-docgen-typescript` parser extracts JSDoc tags from component function definitions in implementation files. Place the `@supportsStyleProps` tag in individual subcomponent implementation files where the parser can process it.
+
+#### Implementation File JSDoc Pattern
+
+Each component implementation file must include JSDoc directly above the component export:
+
+```typescript
+// components/menu.trigger.tsx
+import { Button } from 'react-aria-components';
+import { MenuTriggerSlot } from '../menu.slots';
+import type { MenuTriggerProps } from '../menu.types';
+
+/**
+ * Menu.Trigger - The button or element that opens the menu
+ *
+ * @supportsStyleProps
+ */
+export const MenuTrigger = ({
+  children,
+  asChild,
+  ref,
+  ...props
+}: MenuTriggerProps) => {
+  // Implementation...
+};
+
+MenuTrigger.displayName = 'Menu.Trigger';
+```
+
+#### Main Export File Namespace JSDoc
+
+The main export file documents each part with JSDoc for developer convenience (IDE tooltips and code readability):
+
+```typescript
+// menu.tsx
+export const Menu = {
+  /**
+   * # Menu.Trigger
+   *
+   * The trigger element that opens the menu when activated.
+   * Handles keyboard and mouse interactions for menu activation.
+   *
+   * @example
+   * ```tsx
+   * <Menu.Root>
+   *   <Menu.Trigger>Options</Menu.Trigger>
+   *   <Menu.Content>...</Menu.Content>
+   * </Menu.Root>
+   * ```
+   */
+  Trigger: MenuTrigger,
+};
+```
+
+**Note**: Place `@supportsStyleProps` tags in implementation files for documentation generation. The parser extracts metadata from implementation files, not namespace objects.
+
 ### Components Index File
 
 ```typescript
@@ -396,6 +462,19 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] Root component in `components/component-name.root.tsx`
 - [ ] All sub-components in separate files
 - [ ] Components index file exports all parts
+
+### Documentation (in main file)
+
+- [ ] **Each part has JSDoc documentation directly above it**
+- [ ] **JSDoc includes heading (# ComponentName.Part)**
+- [ ] **JSDoc includes purpose description**
+- [ ] **JSDoc includes `@example` block for each part**
+
+### Documentation (in implementation files)
+
+- [ ] **Each component implementation has JSDoc directly above the component function**
+- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (required for doc generation)
+- [ ] **`@supportsStyleProps` tag placed in implementation files where parser can extract it**
 
 ### Standard Patterns
 

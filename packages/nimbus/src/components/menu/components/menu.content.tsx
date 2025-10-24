@@ -4,6 +4,11 @@ import type { MenuContentProps } from "../menu.types";
 import { useMenuContext } from "./menu.context";
 import { MenuSectionProvider } from "./menu.section-context";
 
+/**
+ * Menu.Content - The popover container that displays menu items
+ *
+ * @supportsStyleProps
+ */
 export const MenuContent = ({
   children,
   placement: placementOverride,
