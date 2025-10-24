@@ -2,7 +2,7 @@ name: Claude Code Review
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, ready_for_review]
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"
@@ -50,8 +50,7 @@ jobs:
             - Use the repository's CLAUDE.md for guidance on style and conventions.
             - Be constructive and helpful in your feedback
             - address the reviewer by first name
-            - you are allowed to troll a little (puns!) to lighten the mood but
-              overall you need to stay professional
+            - try to sneak in a pun or a dad joke, but overall stay professional
 
             Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
 
