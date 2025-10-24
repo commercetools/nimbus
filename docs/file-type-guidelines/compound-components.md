@@ -460,7 +460,7 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] Main file contains exports only
 - [ ] **`.Root` component exists and is first property**
 - [ ] Root component in `components/component-name.root.tsx`
-- [ ] All sub-components in separate files
+- [ ] All sub-components in separate files following pattern: `components/component-name.{part}.tsx`
 - [ ] Components index file exports all parts
 
 ### Documentation (in main file)
