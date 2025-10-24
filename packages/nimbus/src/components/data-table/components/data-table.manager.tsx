@@ -14,12 +14,7 @@ import { useDataTableContext } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
-export type DataTableManagerProps = {
-  // /** Position of the settings button - can be a render prop for custom positioning */
-  renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
-};
-
-export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
+export const DataTableManager = () => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
   const { formatMessage } = useIntl();
@@ -180,10 +175,7 @@ export const DataTableManager = ({ renderTrigger }: DataTableManagerProps) => {
 
   return (
     <>
-      {renderTrigger
-        ? renderTrigger({ onClick: () => setIsOpen(true) })
-        : defaultTrigger}
-
+      {defaultTrigger}
       <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen} placement="right">
         <Drawer.Content width="640px">
           <Drawer.Header>

@@ -19,11 +19,6 @@ import {
 import type { TColumnListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
-export type DataTableManagerProps = {
-  // /** Position of the settings button - can be a render prop for custom positioning */
-  renderTrigger?: (props: { onClick: () => void }) => React.ReactNode;
-};
-
 // Type for items with onRemoveItem provided by DraggableList.Root
 type TColumnListItemWithRemove = TColumnListItem & {
   onRemoveItem?: (key: Key) => void;
