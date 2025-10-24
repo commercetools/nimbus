@@ -1,7 +1,7 @@
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 export const avatarRecipe = defineRecipe({
-  className: "avatar",
+  className: "nimbus-avatar",
   base: {
     display: "inline-flex",
     alignItems: "center",
