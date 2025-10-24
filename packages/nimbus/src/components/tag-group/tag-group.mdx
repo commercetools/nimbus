@@ -59,7 +59,7 @@ const App = () => {
         </TagGroup.Root>
       </Box>      
       <Box>
-        <Text as="p" textStyle="sm" fontWeight="bold"marginBottom="200">Medium</Text>
+        <Text as="p" textStyle="sm" fontWeight="bold" marginBottom="200">Medium</Text>
         <TagGroup.Root size="md" aria-label="Medium tags" onRemove={() => {}}>
           <TagGroup.TagList items={mediumTag}>
             {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
@@ -175,7 +175,7 @@ Tags are used to display keywords. They also help filter data, allowing users to
 > **Do**
 >
 > - Do keep tag phrases short and descriptive. 
-> -Do keep removable tags easy to remove, and toggle-able tags easy to click. Avoid moving them or shuffling them while a user is interacting with them. Moving targets are harder to click. 
+> - Do keep removable tags easy to remove, and toggle-able tags easy to click. Avoid moving them or shuffling them while a user is interacting with them. Moving targets are harder to click. 
 > - Do keep styling and sizing consistent within the same context. 
 > - Do limit the amount of tags per context to not overwhelm the UI.
 
@@ -225,6 +225,11 @@ const App = () => {
 
 ![tag group in use - dont](/images/tag-group/tag-group-in-use-dont.png)
 
+## Specs
+
+<PropsTable id="TagGroup" />
+
+
 
 ## Accessibility
 Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
@@ -243,7 +248,7 @@ const App = () => {
       <TagGroup.TagList items={animalOptions}>
         {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
       </TagGroup.TagList>
-    </TagGroup>
+    </TagGroup.Root>
   );
 }
 ```
