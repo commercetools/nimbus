@@ -17,14 +17,14 @@ nimbus component's design guidelines documentation.
 - use clear and succinct language
 - prefer brevity over large amounts of detail
 - requirements reflect the current state of the nimbus component
-- requirements highlight any differences between the nimbus component and its'
+- requirements highlight any differences between the nimbus component and its
   figma design
 - highlight any attributes or features of the component that might not be
   obvious to a designer
 - Refer to `docs/file-type-guidelines/documentation.md` as a guideline for what
   to include, but **do not** explicitly list proposed content for every section.
   The designer will decide the document's content
-- include a link the the component's storybook story
+- include a link to the component's storybook story
 - if applicable, include a link to the component's current documentation page
 
 ## Input Requirements
@@ -43,7 +43,7 @@ Before writing examples, check the actual component implementation:
 
 1. **Find the component files:**
 
-   ```bash
+   ```text
    /packages/nimbus/src/components/{component-name}/{component-name}.tsx
    /packages/nimbus/src/components/{component-name}/index.ts
    /packages/nimbus/src/components/{component-name}/{component-name}.types.ts
@@ -119,16 +119,17 @@ and formatting requirements:
    - **Visual Variants**: List size variants, type variants, and state
      combinations
    - **Discrepancies from Design**: Note high-level differences between figma
-     and implementation. Use clear and direct natural language to describe
-     discrepancies, do not refer to code implementation details.
+     and implementation related to visual appearance and variant behavior. Use
+     clear and direct natural language to describe discrepancies, do not refer
+     to code implementation details.
    - **State Combinations**: Document interactive states and their behaviors
-   - **Anatomy Differences**: Highlight high-level discrepancies with code
-     implementation not obvious from design. Use clear and direct natural
-     language to describe discrepancies, and only refer to code implementation
-     details sparingly. Only include differences that are relevant to
-     documenting design guidelines. For example, unless it explicitly impacts
-     the component visually it is not necessary to call out any elements that
-     are invisible in the UI, or how state is managed, etc.
+   - **Anatomy Differences**: Highlight structural differences in component
+     hierarchy or composition not obvious from design. Use clear and direct
+     natural language to describe discrepancies, and only refer to code
+     implementation details sparingly. Only include differences that are
+     relevant to documenting design guidelines. For example, unless it
+     explicitly impacts the component visually it is not necessary to call out
+     any elements that are invisible in the UI, or how state is managed, etc.
    - **[Component-Specific Sections]**: Add sections for unique patterns (e.g.,
      validation, data structures)
    - **Examples to Document**: List the types of examples necessary to
@@ -136,8 +137,9 @@ and formatting requirements:
 
 4. **Accessibility Concerns**
    - Numbered list of accessibility considerations
-   - Focus on how the considerations are met by the component, not what the
-     considerations are
+   - Document what accessibility features the component implements (based on
+     code/stories analysis)
+   - Reference React Aria integration if applicable
    - Include semantic HTML, ARIA attributes, keyboard navigation, screen reader
      announcements
    - Reference specific HTML elements and ARIA attributes in backticks
@@ -159,3 +161,37 @@ and formatting requirements:
 - Storybook base url: `https://nimbus-storybook.vercel.app/`
 - Documentation base url: `https://nimbus-documentation.vercel.app/`
 - Figma: Use the exact link provided by the user
+
+## Common Pitfalls to Avoid
+
+❌ **Don't** include implementation details in design-focused tickets\
+❌ **Don't** miss the mapping between Figma terminology and code terminology\
+❌ **Don't** create overly technical acceptance criteria for designers\
+❌ **Don't** forget to link to Storybook or documentation\
+❌ **Don't** list every possible example - focus on representative visual and
+interaction states\
+❌ **Don't** duplicate content between "Discrepancies from Design" and "Anatomy
+Differences" sections
+
+✅ **Do** focus on visual appearance and user interaction\
+✅ **Do** use clear, designer-friendly language\
+✅ **Do** map Figma terms to component structure clearly\
+✅ **Do** provide specific, actionable acceptance criteria\
+✅ **Do** highlight non-obvious component behaviors
+
+## Pre-Submission Checklist
+
+Before submitting the JIRA ticket, verify:
+
+- [ ] All anatomy terms from Figma are mapped to code terms
+- [ ] All visual variants are documented
+- [ ] State combinations cover the main interaction flows
+- [ ] Accessibility concerns are specific to this component
+- [ ] Storybook and documentation links are correct and functional
+- [ ] All code references are wrapped in backticks
+- [ ] Acceptance criteria are actionable and testable for designers
+- [ ] Examples list focuses on visual and interaction states, not implementation
+      patterns
+- [ ] "Discrepancies from Design" covers visual/variant differences
+- [ ] "Anatomy Differences" covers structural/hierarchy differences
+- [ ] Language is clear and avoids unnecessary technical jargon
