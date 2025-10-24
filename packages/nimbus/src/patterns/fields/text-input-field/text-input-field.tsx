@@ -1,7 +1,7 @@
 import { TextInput } from "@/components/text-input";
 import type { TextInputFieldProps } from "./text-input-field.types";
 import { FormField, FieldErrors } from "@/components";
-import { extractStyleProps } from "@/utils/extractStyleProps";
+import { extractStyleProps } from "@/utils";
 
 /**
  * # TextInputField

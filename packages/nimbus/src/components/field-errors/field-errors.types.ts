@@ -13,23 +13,9 @@ export type FieldErrorsRootSlotProps = HTMLChakraProps<"div"> & {
    */
   id?: string;
   /**
-   * Error object - only truthy values will be rendered
-   * Compatible with UI-Kit FieldErrors format
+   * ARIA role for the container
    */
-  errors?: FieldErrorsData;
-
-  /**
-   * Whether error messages should be visible
-   * @deprecated This prop will be automatically handled by the component
-   */
-  isVisible?: boolean;
-
-  /**
-   * Custom error renderer function
-   * Return null to fall back to renderDefaultError or built-in errors
-   */
-  renderError?: TErrorRenderer;
-
+  role?: string;
   /**
    * Error message content to display
    */
@@ -40,7 +26,7 @@ export type FieldErrorsRootSlotProps = HTMLChakraProps<"div"> & {
 // HELPER TYPES
 // ============================================================
 
-export type TFieldErrors = Record<string, boolean>;
+export type FieldErrorsData = Record<string, boolean>;
 
 export type TErrorRenderer = (key: string, error?: boolean) => ReactNode;
 
@@ -77,7 +63,7 @@ export type FieldErrorsProps = FieldErrorsRootSlotProps & {
   /**
    * Object mapping error types to boolean values indicating presence
    */
-  errors?: TFieldErrors;
+  errors?: FieldErrorsData;
   /**
    * Whether the error messages are visible
    * @default false
