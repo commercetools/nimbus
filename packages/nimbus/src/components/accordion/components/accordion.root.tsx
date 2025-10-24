@@ -5,11 +5,11 @@ import type { AccordionRootProps } from "../accordion.types";
 import { extractStyleProps } from "@/utils";
 
 /**
- * # Accordion
+ * Accordion.Root
  *
- * Displays an Accordion.
+ * Provides context and configuration for all accordion items.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/navigation/accordion}
+ * @supportsStyleProps
  */
 export const AccordionRoot = (props: AccordionRootProps) => {
   const { ref, ...restProps } = props;
@@ -23,3 +23,5 @@ export const AccordionRoot = (props: AccordionRootProps) => {
     </AccordionRootSlot>
   );
 };
+
+AccordionRoot.displayName = "Accordion.Root";

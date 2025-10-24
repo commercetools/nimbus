@@ -24,6 +24,16 @@ export type AccordionRootSlotProps = HTMLChakraProps<
 >;
 
 // ============================================================
+// HELPER TYPES
+// ============================================================
+
+/**
+ * React Aria polymorphic props that conflict with Chakra UI props.
+ * OmitPolymorphicProps removes these conflicting props to prevent type errors.
+ */
+// Note: OmitPolymorphicProps is used in component props below
+
+// ============================================================
 // MAIN PROPS
 // ============================================================
 
@@ -76,5 +86,16 @@ export type AccordionContentProps = OmitPolymorphicProps<
   /** The content to display when expanded */
   children: ReactNode;
   /** Ref to the content element */
+  ref?: Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for the Accordion.HeaderRightContent component.
+ * Optional content that appears on the right side of the accordion header.
+ */
+export type AccordionHeaderRightContentProps = HTMLChakraProps<"div"> & {
+  /** The content to display on the right side of the header */
+  children: ReactNode;
+  /** Ref to the element */
   ref?: Ref<HTMLDivElement>;
 };

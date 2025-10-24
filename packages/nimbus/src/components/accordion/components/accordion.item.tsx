@@ -3,6 +3,14 @@ import { Disclosure as RaDisclosure } from "react-aria-components";
 import type { AccordionItemProps } from "../accordion.types";
 import { extractStyleProps } from "@/utils";
 
+/**
+ * Accordion.Item - An individual accordion item
+ *
+ * Contains a header and collapsible content.
+ * Multiple items can be placed within an Accordion.Root.
+ *
+ * @supportsStyleProps
+ */
 export const AccordionItem = ({
   children,
   value,
@@ -26,3 +34,5 @@ export const AccordionItem = ({
     </AccordionDisclosureSlot>
   );
 };
+
+AccordionItem.displayName = "Accordion.Item";
