@@ -1,5 +1,41 @@
 # @commercetools/nimbus
 
+## 3.0.0
+
+### Minor Changes
+
+- [#563](https://github.com/commercetools/nimbus/pull/563)
+  [`5cc6790`](https://github.com/commercetools/nimbus/commit/5cc6790b12218c96b94e5c6bff71d9c4c2b2d75d)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Add IntlProvider to
+  NimbusProvider
+
+- [#547](https://github.com/commercetools/nimbus/pull/547)
+  [`205af3a`](https://github.com/commercetools/nimbus/commit/205af3a3eebfbc4a0bbcf990fc13cea56a0fc178)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Stop packaging slate,
+  slate-hyperscript, slate-history, and slate-react in nimbus directly, and
+  specify them as peer dependencies instead
+
+### Patch Changes
+
+- [#577](https://github.com/commercetools/nimbus/pull/577)
+  [`f83b57f`](https://github.com/commercetools/nimbus/commit/f83b57f4c4378c2c0928bad0681441d342a3a1a8)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add patterns directory
+  to package entrypoint
+
+- [#579](https://github.com/commercetools/nimbus/pull/579)
+  [`ef90e9c`](https://github.com/commercetools/nimbus/commit/ef90e9c284c3db3dafe830ac4f9258edcafd8bdd)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Fixes bug in
+  DraggableList where list does not update when external items array changes
+
+- [#536](https://github.com/commercetools/nimbus/pull/536)
+  [`29cc2d7`](https://github.com/commercetools/nimbus/commit/29cc2d77a954a15ed64ae6947764690c36ae852b)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Introduce grouped props
+  tables and enhanced JSDoc documentation system
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.0.0
+  - @commercetools/nimbus-icons@3.0.0
+
 ## 2.0.1
 
 ### Patch Changes
