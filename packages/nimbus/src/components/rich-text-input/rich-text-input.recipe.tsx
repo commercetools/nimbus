@@ -34,6 +34,8 @@ export const richTextInputRecipe = defineSlotRecipe({
     editable: {
       padding: "400",
       minHeight: "inherit",
+      maxHeight: "inherit",
+      overflow: "auto",
       outline: "none",
       color: "colorPalette.12",
 
