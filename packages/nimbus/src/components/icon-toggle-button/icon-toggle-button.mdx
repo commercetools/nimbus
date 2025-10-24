@@ -1,74 +1,219 @@
 ---
 id: Components-IconToggleButton
-title: IconToggleButton
-description: >-
-  A convenience component that renders a ToggleButton optimized for icon-only 
-  usage with proper accessibility requirements and square proportions.
+title: Icon Toggle Button
+description:
+  An interactive icon button that toggles between two binary states such as
+  active and inactive.
 documentState: InitialDraft
 order: 999
 menu:
   - Components
   - Inputs
-  - IconToggleButton
+  - Icon Toggle Button
 tags:
   - component
   - toggle
   - icon
   - button
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5921-47629&m=dev
 ---
-{/* TODO: Needs designer review */}
-# IconToggleButton
 
-A convenience wrapper around the [ToggleButton](/components/toggle-button) 
-component designed for icon-only usage. It provides the same toggle 
-functionality with optimizations for icon-based interactions.
+# Icon Toggle Button
+
+An interactive icon button that toggles between two binary states such as active
+and inactive.
 
 ## Overview
 
-IconToggleButton maintains all the functionality of ToggleButton while 
-enforcing accessibility best practices and providing appropriate styling for 
-icon-only toggle buttons.
+An icon toggle button is used similarly to a checkbox or a radio button, but
+supports a smaller interactive component that can be used to give a binary
+active state choice to users that can be used alone or in combination with other
+choices. A toggle button or icon toggle button gives a user a new way of
+visualizing the information in the interface. It does not typically perform an
+action. Please use a button or an icon button for these uses.
 
-### Key differences from ToggleButton
+### Resources
 
-- **Required `aria-label`:** Ensures screen reader compatibility for icon-only 
-  content
-- **Icon Optimized Styling:** Square aspect ratio with zero padding for clean 
-  icon presentation
-- **Identical API:** All ToggleButton props are supported except 
-  `aria-labelledby`
+Deep dive on details and access design library.
 
-### When to use
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5921-47629&m=dev)
 
-Use IconToggleButton for toggle actions that only contain an icon:
-- Favorite/unfavorite actions
-- Bookmark/unbookmark functions  
-- Show/hide content toggles
-- Feature enable/disable controls
+## Variables
 
-For toggle buttons with text content, use the standard
-[ToggleButton](/components/toggle-button) component.
+Get familiar with the features.
 
-## Example
+### Visuals
+
+#### Outlined
+
+Most common styling of the icon toggle button.
 
 ```jsx-live
 const App = () => (
-  <IconToggleButton aria-label="Add to favorites">
-    <Icons.Star />
+  <IconToggleButton variant="outline" aria-label="Pin item">
+    <Icons.SentimentSatisfied />
   </IconToggleButton>
-);
+)
 ```
 
-## API reference
+#### Ghost
 
-IconToggleButton accepts all props from ToggleButton but requires an
-`aria-label` for accessibility.
+Ghost styled buttons are helpful for UI simplification.
 
-<PropsTable id="ToggleButton" />
+```jsx-live
+const App = () => (
+  <IconToggleButton variant="ghost" aria-label="Pin item">
+    <Icons.SentimentSatisfied />
+  </IconToggleButton>
+)
+```
 
-## Related components
+### Size
 
-- **[ToggleButton](/components/toggle-button):** The base component for text 
-  and mixed-content toggles
-- **[IconButton](/components/icon-button):** For non-toggle icon-only buttons
-- **[Button](/components/button):** For general button actions 
+There are three sizes to icon toggle buttons, the default size is medium (md),
+extra small (xs), and 2x-small (2xs).
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="400">
+    <IconToggleButton size="md" aria-label="Pin favorite">
+      <Icons.SentimentSatisfied />
+    </IconToggleButton>
+    <IconToggleButton size="xs" aria-label="Pin favorite">
+      <Icons.SentimentSatisfied />
+    </IconToggleButton>
+    <IconToggleButton size="2xs" aria-label="Pin favorite">
+      <Icons.SentimentSatisfied />
+    </IconToggleButton>
+  </Stack>
+)
+```
+
+## Guidelines
+
+Icon toggle button guidelines aim to provide clear and consistent visual
+feedback to users for compact binary states.
+
+### Best practices
+
+- **Avoid setting a default toggle as active:** Instead, let users choose their
+  preference. If one option is selected more frequently, make it the default,
+  while still allowing users to switch to the less popular choice.
+- **Intuitive icons:** Use icons that are universally recognized for the action
+  they represent. Consider adding a tooltip on hover to provide a text label to
+  help a user understand what is being chosen.
+- **Maintain visual consistency:** The icon's style (line weight, color, fill)
+  should be consistent with the rest of the icons in the design system to ensure
+  a cohesive look and feel.
+- **Provide immediate feedback:** The button should visually respond instantly
+  when a user clicks or taps it, providing reassurance that the action was
+  successful.
+- **Communicate meaningful changes:** If a toggle button makes a significant
+  change (ex: updating default payment) pair this toggled action with a toast
+  message to better communicate the change when needed.
+
+##### Toggle Groups (Segmented Controls)
+
+- **Enforce mutual exclusivity:** Use toggle groups (segmented controls) when
+  the user must select only one option from a small, defined set, similar to
+  radio button behavior (e.g., alignment controls, viewing modes).
+- **Limit options:** Keep the number of options within a group small (ideally 3
+  to 5) to prevent overcrowding and ensure each button is easily tappable.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Compact binary states:** Use them for on/off settings in toolbars or
+  space-limited areas (e.g., toggling bold text, muting).
+- **Clear, universal actions:** Use them for actions whose icon is immediately
+  understood without a text label (e.g., Pin, Star).
+- **Quick filtering:** Use them for providing quick, visual controls for
+  filtering items or selecting a mode.
+- **Frequent interactions:** Use them when an action is performed often to save
+  time and screen space.
+- **Instant application:** When the action takes effect immediately without
+  requiring the user to press a separate "Save" or "Submit" button.
+
+> [!CAUTION]\
+> When not to use
+
+- **Ambiguous actions:** Do not use them when the icon's meaning is unclear or
+  requires the user to guess; use a text label or tooltip.
+- **Complex or multi-state processes:** Avoid using them for actions that
+  require more than two states or sequential steps; use a segmented button or
+  switch.
+- **Critical, permanent actions:** Do not use them for destructive or major
+  actions; use a full text button with confirmation.
+- **Core navigation:** Avoid making primary navigation items toggle-able unless
+  they explicitly switch between two main views.
+- **Multi-select options:** If the user can select multiple items from a list,
+  use checkboxes instead.
+- **Multi-state options:** If the user needs to select one option from three or
+  more choices, use radio buttons or a segmented control instead.
+- **Actions requiring confirmation:** Do not use for actions that are
+  destructive, irreversible, or require confirmation (e.g., deleting an account,
+  submitting a payment). Use a standard button that triggers a confirmation
+  dialog.
+- **Complex settings:** Avoid using a toggle if the result of the action isn't
+  clear or if the setting requires additional input fields to be configured.
+- **Triggers for new pages:** Do not use a toggle to navigate to a new section
+  or page; use a link or standard button for navigation.
+- **Long-running processes:** For actions that take time to complete (e.g.,
+  "Start Backup"), a standard button that displays a loading spinner upon press
+  is more appropriate.
+
+### Icon toggle buttons in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do use icon toggle buttons for a simple binary choice (on/off).
+> - Do place them in toolbars or areas where space is limited.
+> - Do ensure the "on" state is clearly distinct from the "off" state.
+> - Do connect buttons that toggle one active state among a small selection of
+>   options.
+
+![Do](/images/icon-toggle-button/icon-toggle-button-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use them for multi-step processes or complex selections.
+> - Don't use an ambiguous icon without a tooltip or a text label.
+> - Don't use an icon toggle button, when you should use an icon button instead.
+
+![Don't](/images/icon-toggle-button/icon-toggle-button-dont.png)
+
+## Specs
+
+<PropsTable id="IconToggleButton" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <IconToggleButton aria-label="Toggle favorite">
+    <Icons.SentimentSatisfied />
+  </IconToggleButton>
+)
+```
+
+### Accessibility standards
+
+- **Use aria-pressed:** The most crucial accessibility attribute for a icon
+  toggle button is `aria-pressed`. When the button is "on," set
+  `aria-pressed="true"`. When it's "off," set `aria-pressed="false"`. This tells
+  screen readers that the button's function is to toggle.
+- **Provide a Clear aria-label:** Since the button lacks visible text, provide a
+  descriptive `aria-label` (e.g., `aria-label="Toggle Bold"` or
+  `aria-label="Show Advanced Settings"`). This is what a screen reader will
+  announce to the user.
+- **Ensure Keyboard Operability:** Users must be able to navigate to the button
+  using the Tab key and toggle its state using the Enter or Spacebar keys.
