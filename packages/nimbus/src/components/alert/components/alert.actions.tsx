@@ -3,6 +3,11 @@ import { AlertActions as AlertActionsSlot } from "../alert.slots";
 import type { AlertActionsProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
+/**
+ * Alert.Actions - Container for action buttons within the alert
+ *
+ * @supportsStyleProps
+ */
 export const AlertActions = ({ children, ...props }: AlertActionsProps) => {
   const context = useContext(AlertContext);
 

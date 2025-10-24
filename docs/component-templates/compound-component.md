@@ -9,11 +9,14 @@ ComponentName, component-name, componentName
  * Replace: ComponentName, component-name, componentName
  */
 
-import { ComponentNameRoot } from "./components/component-name.root";
-import { ComponentNameTrigger } from "./components/component-name.trigger";
-import { ComponentNameContent } from "./components/component-name.content";
-import { ComponentNameItem } from "./components/component-name.item";
-// Import other sub-components as needed
+// Import from barrel export index for consistent module resolution
+import {
+  ComponentNameRoot,
+  ComponentNameTrigger,
+  ComponentNameContent,
+  ComponentNameItem,
+} from "./components";
+// Import other sub-components as needed from the barrel export
 
 /**
  * ComponentName
