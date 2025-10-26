@@ -16,5 +16,3 @@ declare module "remark-flexible-toc" {
   const plugin: Plugin<[FlexibleTocOptions?] | [boolean]>;
   export default plugin;
 }
-
-
