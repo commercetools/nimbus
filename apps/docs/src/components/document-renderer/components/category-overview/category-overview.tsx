@@ -1,6 +1,5 @@
-import { useAtomValue } from "jotai";
 import { Suspense, FC } from "react";
-import { documentationAtom } from "@/atoms/documentation";
+import { useManifest } from "@/contexts/manifest-context";
 import {
   Box,
   Card,
@@ -17,15 +16,14 @@ import { useActiveDoc } from "@/hooks/useActiveDoc";
  * Component that displays an overview of all documents in the current menu category.
  * To be used in MDX files to show titles and descriptions of documents in the active category.
  *
- * This component uses the useActiveDoc hook which provides direct lookup to avoid
- * race conditions with derived async atoms during navigation.
+ * This component uses the route manifest to list documents in the same category.
  */
 const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
-  const documentation = useAtomValue(documentationAtom);
+  const { manifest } = useManifest();
   const activeDoc = useActiveDoc();
 
   // If no document found for this route, don't render
-  if (!activeDoc) {
+  if (!activeDoc || !manifest) {
     return null;
   }
 
@@ -36,31 +34,29 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   const subcategory =
     activeDoc.meta.menu.length > 1 ? activeDoc.meta.menu[1] : null;
 
-  // Find all documents that are in the same category
-  const categoryDocs = Object.values(documentation).filter((doc) => {
+  // Find all documents that are in the same category from the manifest
+  const categoryDocs = manifest.routes.filter((route) => {
     // Make sure we're in the same top-level category
-    if (doc.meta.menu[0] !== currentCategory) {
+    if (route.menu[0] !== currentCategory) {
       return false;
     }
     // Don't include currently active document
-    if (doc.meta.route === activeDoc.meta.route) {
+    if (route.path === `/${activeDoc.meta.route}`) {
       return false;
     }
 
     // If we're in a subcategory page, only show documents with the same first and second level
     if (subcategory && activeDoc.meta.menu.length > 1) {
-      return doc.meta.menu.length > 1 && doc.meta.menu[1] === subcategory;
+      return route.menu.length > 1 && route.menu[1] === subcategory;
     }
 
     // If we're at the category root, only show direct subcategories
-    return (
-      doc.meta.menu.length === 2 && doc.meta.route !== activeDoc.meta.route
-    );
+    return route.menu.length === 2 && route.path !== `/${activeDoc.meta.route}`;
   });
 
   // Sort the documents by their order property
   const sortedDocs = [...categoryDocs].sort((a, b) => {
-    return (a.meta.order || 999) - (b.meta.order || 999);
+    return (a.order || 999) - (b.order || 999);
   });
 
   if (sortedDocs.length === 0) {
@@ -71,8 +67,20 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     );
   }
 
-  const IconComponent = ({ id }) => {
-    const Ic = Icons[id];
+  const IconComponent = ({
+    id,
+    fallback,
+  }: {
+    id?: string;
+    fallback: string;
+  }) => {
+    const iconName = id || fallback;
+    const Ic = Icons[iconName as keyof typeof Icons];
+    if (!Ic) {
+      // If icon doesn't exist, use fallback
+      const FallbackIcon = Icons[fallback as keyof typeof Icons];
+      return FallbackIcon ? <FallbackIcon /> : null;
+    }
     return <Ic />;
   };
 
@@ -81,18 +89,13 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
       <Box my="600">
         <Stack as="ul" gap="0" direction="row" wrap="wrap">
           {sortedDocs.map((doc) => (
-            <Box as="li" width="full" pr="200" pb="200">
-              <Link unstyled href={doc.meta.route}>
-                <Card.Root
-                  key={doc.meta.route}
-                  cardPadding="md"
-                  borderStyle="outlined"
-                  width="full"
-                >
+            <Box as="li" width="full" pr="200" pb="200" key={doc.path}>
+              <Link textDecoration="none" href={doc.path}>
+                <Card.Root cardPadding="md" borderStyle="outlined" width="full">
                   <Card.Content>
                     <Flex>
                       <Box color="primary.11" textStyle="2xl" mr="300">
-                        <IconComponent id={doc.meta.icon || "ArrowForward"} />
+                        <IconComponent id={doc.icon} fallback="ArrowForward" />
                       </Box>
                       <Box>
                         <Heading
@@ -101,10 +104,10 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                           size="lg"
                           truncate
                         >
-                          {doc.meta.title}
+                          {doc.title}
                         </Heading>
                         <Text color="neutral.11" lineClamp={1}>
-                          {doc.meta.description}
+                          {doc.description}
                         </Text>
                       </Box>
                     </Flex>
@@ -122,18 +125,18 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     <Box my="600">
       <Stack gap="0" direction="row" wrap="wrap">
         {sortedDocs.map((doc) => (
-          <Box width="1/4" pr="200" pb="200" key={doc.meta.route}>
-            <Link unstyled href={doc.meta.route}>
+          <Box width="1/3" key={doc.path}>
+            <Link textDecoration="none" href={doc.path}>
               <Card.Root
-                key={doc.meta.route}
+                _hover={{ bg: "colorPalette.2" }}
                 cardPadding="md"
-                borderStyle="outlined"
+                borderStyle="none"
                 width="full"
               >
-                <Card.Content height="200px">
+                <Card.Content>
                   <Stack>
                     <Box color="primary.11" textStyle="5xl" mb="200">
-                      <IconComponent id={doc.meta.icon || "Layers"} />
+                      <IconComponent id={doc.icon} fallback="Layers" />
                     </Box>
                     <Heading
                       color="neutral.12"
@@ -141,11 +144,11 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                       size="lg"
                       truncate
                     >
-                      {doc.meta.title}
+                      {doc.title}
                     </Heading>
 
                     <Text color="neutral.11" lineClamp={4}>
-                      {doc.meta.description}
+                      {doc.description}
                     </Text>
                   </Stack>
                 </Card.Content>
@@ -159,9 +162,9 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
 };
 
 /**
- * Public export with Suspense boundary to handle async atom loading.
- * This ensures the component properly handles the async nature of the documentation
- * and active document atoms, providing a loading state while data is being fetched.
+ * Public export with Suspense boundary to handle async data loading.
+ * This ensures the component properly handles the async nature of the data
+ * and provides a loading state while data is being fetched.
  */
 export const CategoryOverview: FC<{ variant?: string }> = (props) => {
   return (

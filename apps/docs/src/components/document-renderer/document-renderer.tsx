@@ -1,7 +1,6 @@
 import { useAtomValue } from "jotai";
 import { MdxStringRenderer } from "./mdx-string-renderer.tsx";
 import { Box, Flex, Stack, Text, Badge } from "@commercetools/nimbus";
-import { BreadcrumbNav } from "../navigation/breadcrumb";
 import { memo, useMemo } from "react";
 import { brandNameAtom } from "@/atoms/brand";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
@@ -37,18 +36,13 @@ const DocumentRendererComponent = () => {
       <title>{pageTitle}</title>
       <Box width="full" maxWidth="4xl">
         <Stack gap="400">
-          <Flex
-            height="46px"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <BreadcrumbNav />
-            {lifecycleInfo && (
+          {lifecycleInfo && (
+            <Flex alignItems="center" justifyContent="flex-end">
               <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
                 {lifecycleInfo.label}
               </Badge>
-            )}
-          </Flex>
+            </Flex>
+          )}
 
           <Box pb="2400">
             <MdxStringRenderer content={content} />

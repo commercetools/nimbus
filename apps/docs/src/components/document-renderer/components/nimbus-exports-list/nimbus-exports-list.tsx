@@ -15,7 +15,7 @@ import { useState } from "react";
 import React from "react";
 import { nimbusExportsAtom, NimbusExportItem } from "./atom";
 import { PropsTable } from "@/components/document-renderer/components/props-table";
-import { documentationAtom } from "@/atoms/documentation";
+import { useManifest } from "@/contexts/manifest-context";
 import { CheckCircle, HighlightOff } from "@commercetools/nimbus-icons";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 
@@ -32,7 +32,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
   filter,
 }) => {
   const allExports = useAtomValue(nimbusExportsAtom);
-  const documentation = useAtomValue(documentationAtom);
+  const { manifest } = useManifest();
   const filteredExports = filter ? allExports.filter(filter) : allExports;
   const [expandedComponents, setExpandedComponents] = useState<string[]>([]);
 
@@ -45,11 +45,11 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
     );
   };
 
-  // Find documentation for an export item
+  // Find documentation for an export item using the route manifest
   const findDocForExport = (exportName: string) => {
-    return Object.values(documentation).find(
-      (doc) => doc.meta.title === exportName
-    );
+    if (!manifest) return undefined;
+
+    return manifest.routes.find((route) => route.title === exportName);
   };
 
   // Group exports by type
@@ -103,7 +103,9 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
             <Table.Body>
               {items.map((item) => {
                 const doc = findDocForExport(item.name);
-                const lifecycleState = doc?.meta.lifecycleState;
+                // Note: lifecycleState is not in the route manifest
+                // Would need to be added to manifest if needed
+                const lifecycleState = undefined;
                 const lifecycleInfo = lifecycleState
                   ? lifecycleStateDescriptions[lifecycleState]
                   : null;
@@ -113,7 +115,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
                     <Table.Row>
                       <Table.Cell>
                         {doc ? (
-                          <Link href={doc.meta.route}>
+                          <Link href={doc.path}>
                             <code>{item.name}</code>
                           </Link>
                         ) : (

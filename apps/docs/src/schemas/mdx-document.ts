@@ -9,6 +9,9 @@ export const TocItemSchema = z.object({
   parent: z.string(),
 });
 
+/** Available layout types for MDX documents */
+export const layoutTypes = ["app-frame", "no-sidebar"] as const;
+
 /** the schema that is being generated from the mdx-file parser and
  * needed by the app to properly rennder the document
  */
@@ -41,6 +44,8 @@ export const mdxDocumentSchema = z.object({
     icon: z.string().optional(),
     /** a link to a figma-design or -node */
     figmaLink: z.string().url().optional(),
+    /** layout type - defaults to 'app-frame' if not specified */
+    layout: z.enum(layoutTypes).optional().default("app-frame"),
   }),
   /** the mdx content as a single string */
   mdx: z.string(),

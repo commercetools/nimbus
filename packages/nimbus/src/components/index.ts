@@ -44,6 +44,7 @@ export * from "./search-input";
 export * from "./scoped-search-input";
 export * from "./split-button";
 export * from "./time-input";
+export * from "./toaster";
 export * from "./multiline-text-input";
 export * from "./money-input";
 export * from "./radio-input";

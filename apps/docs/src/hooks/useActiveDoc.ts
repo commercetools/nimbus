@@ -1,39 +1,41 @@
-import { useAtomValue } from "jotai";
-import { useMemo } from "react";
-import { documentationAtom } from "@/atoms/documentation";
-import { activeRouteAtom } from "@/atoms/route";
+import { useLocation } from "react-router-dom";
+import { normalizeRoute } from "@/utils/normalize-route";
+import { useDocData } from "./use-doc-data";
 import type { MdxFileFrontmatter } from "@/types";
 
 /**
  * Hook to get the currently active document.
  *
- * This hook uses direct lookup from the documentation object instead of
- * relying on the derived activeDocAtom, which eliminates race conditions
- * during navigation when async atoms can be out of sync.
+ * This hook uses the useDocData hook to load the current route's document data
+ * on demand, eliminating the need for a monolithic documentation object.
  *
- * @returns The active document's frontmatter, or undefined if not found
+ * @returns The active document's frontmatter, or undefined if not found or loading
  */
 export const useActiveDoc = (): MdxFileFrontmatter | undefined => {
-  const documentation = useAtomValue(documentationAtom);
-  const activeRoute = useAtomValue(activeRouteAtom);
+  const location = useLocation();
+  const activeRoute = normalizeRoute(location.pathname);
 
-  const activeDoc = useMemo(() => {
-    const doc = Object.values(documentation).find(
-      (doc) => doc.meta.route === activeRoute
-    );
+  // Use useDocData to load the current route's document
+  const { doc, isLoading, error } = useDocData(activeRoute);
 
-    if (!doc) return undefined;
+  // Return undefined if loading or error
+  if (isLoading || error || !doc) {
+    return undefined;
+  }
 
-    // CRITICAL: Create defensive copy with cloned menu array
-    // This prevents any component from mutating the shared menu array
-    return {
-      ...doc,
-      meta: {
-        ...doc.meta,
-        menu: [...doc.meta.menu],
-      },
-    };
-  }, [documentation, activeRoute]);
+  // Type guard: doc should have meta and mdx properties
+  if (!("meta" in doc) || !("mdx" in doc)) {
+    console.error("Invalid document structure:", doc);
+    return undefined;
+  }
 
-  return activeDoc;
+  // CRITICAL: Create defensive copy with cloned menu array
+  // This prevents any component from mutating the shared menu array
+  return {
+    meta: {
+      ...doc.meta,
+      menu: [...doc.meta.menu],
+    },
+    mdx: doc.mdx,
+  } as MdxFileFrontmatter;
 };

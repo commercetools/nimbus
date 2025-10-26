@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { Box, Link } from "@commercetools/nimbus";
+import { Box, Flex, Icon, Link } from "@commercetools/nimbus";
+import { ChevronRight, Home } from "@commercetools/nimbus-icons";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
 import { useActiveDoc } from "../../../hooks/useActiveDoc";
@@ -22,27 +23,37 @@ export const BreadcrumbNav = () => {
     }));
   }, [activeDoc]);
 
-  const firstIsHome = parts[0]?.label === "Home";
+  // Filter out "Home" from parts since we always show it as the first item with icon
+  const filteredParts = parts.filter((item) => item.label !== "Home");
 
   return (
-    <Box as="nav" aria-label="Breadcrumb">
+    <Box as="nav" aria-label="Breadcrumb" color="neutral.11">
       <Box as="ul" display="inline-flex">
-        {!firstIsHome && (
-          <Box as="li" _after={{ content: "'»'", mx: "200" }}>
-            <Link href={"home"}>Home</Link>
-          </Box>
-        )}
-        {parts.map((item, idx) => {
-          const isLastItem = idx + 1 == parts.length;
-
+        <Flex as="li">
+          <Link
+            _hover={{ textDecoration: "underline" }}
+            href={"home"}
+            aria-label="Home"
+            color="inherit"
+            textDecoration="none"
+          >
+            <Icon as={Home} textStyle="md" mr="100" color="inherit" />
+            Home
+          </Link>
+        </Flex>
+        {filteredParts.map((item) => {
           return (
-            <Box
-              as="li"
-              key={item.href}
-              _after={!isLastItem ? { content: "'»'", mx: "200" } : {}}
-            >
-              <Link href={item.href}>{item.label}</Link>
-            </Box>
+            <Flex alignItems="center" as="li" key={item.href}>
+              <Icon as={ChevronRight} textStyle="md" mx="100" color="inherit" />
+              <Link
+                textDecoration="none"
+                _hover={{ textDecoration: "underline" }}
+                href={item.href}
+                color="inherit"
+              >
+                {item.label}
+              </Link>
+            </Flex>
           );
         })}
       </Box>

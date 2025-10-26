@@ -1,7 +1,5 @@
 import { atom } from "jotai";
-import { documentationAtom } from "./documentation";
 import orderBy from "lodash/orderBy";
-import { MdxFileFrontmatter } from "../types";
 import { sluggify } from "../utils/sluggify";
 
 type MenuItem = {
@@ -10,68 +8,94 @@ type MenuItem = {
   order?: number;
   icon?: string;
   slug: string;
+  route: string; // The actual route from manifest
   children?: MenuItem[];
 };
 
+type RouteManifestItem = {
+  path: string;
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  menu: string[];
+  order: number;
+  chunkName: string;
+};
+
+type RouteManifest = {
+  routes: RouteManifestItem[];
+  categories: Array<{
+    id: string;
+    label: string;
+    items: Array<{
+      id: string;
+      title: string;
+      path: string;
+    }>;
+  }>;
+};
+
 /**
- * Builds the menu structure from the given metadata.
- * @param itemMetas - Array of metadata objects.
- * @returns Array of MenuItem objects representing the menu structure.
+ * Builds the menu structure from the route manifest.
+ * Uses the 'route' field (derived from path) as the single source of truth for navigation.
+ * @param routes - Array of route items from manifest
+ * @returns Array of MenuItem objects representing the menu structure
  */
-function buildMenu(itemMetas: MdxFileFrontmatter["meta"][]): MenuItem[] {
+function buildMenu(routes: RouteManifestItem[]): MenuItem[] {
   const root: MenuItem[] = [];
 
   // Identify and add first-level menu items
-  addFirstLevelItems(itemMetas, root);
+  addFirstLevelItems(routes, root);
 
   // Add nested menu items
-  addNestedItems(itemMetas, root);
+  addNestedItems(routes, root);
 
   // Order the menu items
-  return orderMenuItems(root, itemMetas);
+  return orderMenuItems(root);
 }
 
 /**
  * Identifies and adds first-level menu items to the root.
- * @param itemMetas - Array of metadata objects.
+ * @param routes - Array of route items from manifest
  * @param root - Root array to which first-level items are added.
  */
 function addFirstLevelItems(
-  itemMetas: MdxFileFrontmatter["meta"][],
+  routes: RouteManifestItem[],
   root: MenuItem[]
 ): void {
-  const firstLevelItems = itemMetas.filter(
-    (itemMeta) => itemMeta.menu.length === 1
-  );
+  const firstLevelItems = routes.filter((route) => route.menu.length === 1);
 
-  firstLevelItems.forEach((itemMeta) => {
-    const segment = itemMeta.menu[0];
+  firstLevelItems.forEach((route) => {
+    const segment = route.menu[0];
     const slugPath = sluggify(segment);
 
-    root.push({
-      id: slugPath,
-      icon: itemMeta.icon,
-      order: itemMeta.order || 999,
-      label: segment,
-      slug: slugPath,
-      children: [],
-    });
+    // Check if already exists
+    if (!root.find((item) => item.id === slugPath)) {
+      root.push({
+        id: slugPath,
+        order: route.order || 999,
+        label: segment,
+        slug: slugPath,
+        route: route.path.slice(1), // Remove leading slash
+        children: [],
+      });
+    }
   });
 }
 
 /**
  * Adds nested menu items to the root.
- * @param itemMetas - Array of metadata objects.
+ * Uses the 'path' field from manifest as the single source of truth.
+ * @param routes - Array of route items from manifest
  * @param root - Root array to which nested items are added.
  */
-function addNestedItems(
-  itemMetas: MdxFileFrontmatter["meta"][],
-  root: MenuItem[]
-): void {
-  itemMetas.forEach((itemMeta) => {
-    if (itemMeta.menu.length === 1) return; // Skip first-level items
+function addNestedItems(routes: RouteManifestItem[], root: MenuItem[]): void {
+  routes.forEach((route) => {
+    if (route.menu.length === 1) return; // Skip first-level items
 
-    const path = itemMeta.menu;
+    const path = route.menu;
     let currentLevel = root;
 
     path.forEach((segment, index) => {
@@ -83,19 +107,22 @@ function addNestedItems(
       let existingNode = currentLevel.find((item) => item.label === segment);
 
       if (!existingNode) {
+        // For leaf nodes, use the actual route from manifest
+        const isLeafNode = index === path.length - 1;
         existingNode = {
           id: slugPath,
-          icon: index === path.length - 1 ? itemMeta.icon : undefined, // Assign icon only to the last segment
-          order: index === path.length - 1 ? itemMeta.order || 999 : undefined, // Assign order only to the last segment
+          order: isLeafNode ? route.order || 999 : undefined,
           label: segment,
           slug: slugPath,
+          route: isLeafNode ? route.path.slice(1) : slugPath, // Remove leading slash from path
           children: [],
         };
         currentLevel.push(existingNode);
       } else {
+        // Update existing node if it's a leaf node
         if (index === path.length - 1) {
-          if (itemMeta.icon) existingNode.icon = itemMeta.icon; // Update icon if it exists
-          if (itemMeta.order) existingNode.order = itemMeta.order; // Update order if it exists
+          if (route.order) existingNode.order = route.order;
+          existingNode.route = route.path.slice(1); // Remove leading slash
         }
       }
 
@@ -105,15 +132,44 @@ function addNestedItems(
 }
 
 /**
+ * Propagates minimum child orders to parent nodes.
+ * Intermediate nodes without an explicit order inherit the minimum order from their children.
+ * @param items - Array of menu items.
+ * @returns Array of menu items with propagated orders.
+ */
+function propagateMinimumOrders(items: MenuItem[]): MenuItem[] {
+  return items.map((item) => {
+    // First, recursively process children
+    const processedChildren = item.children
+      ? propagateMinimumOrders(item.children)
+      : [];
+
+    // If this item has no explicit order and has children, inherit minimum child order
+    let effectiveOrder = item.order;
+    if (effectiveOrder === undefined && processedChildren.length > 0) {
+      const childOrders = processedChildren
+        .map((child) => child.order)
+        .filter((order): order is number => order !== undefined);
+      effectiveOrder = childOrders.length > 0 ? Math.min(...childOrders) : 999;
+    }
+
+    return {
+      ...item,
+      order: effectiveOrder,
+      children: processedChildren,
+    };
+  });
+}
+
+/**
  * Orders the menu items based on their order and label.
  * @param root - Root array of menu items.
- * @param itemMetas - Array of metadata objects.
  * @returns Ordered array of MenuItem objects.
  */
-function orderMenuItems(
-  root: MenuItem[],
-  itemMetas: MdxFileFrontmatter["meta"][]
-): MenuItem[] {
+function orderMenuItems(root: MenuItem[]): MenuItem[] {
+  // First, propagate minimum orders from children to parents
+  const withPropagatedOrders = propagateMinimumOrders(root);
+
   /**
    * Recursively orders the children of menu items.
    * @param items - Array of menu items.
@@ -123,35 +179,37 @@ function orderMenuItems(
     return orderBy(
       items.map((item) => ({
         ...item,
+        order: item.order !== undefined ? item.order : 999,
         children: item.children ? orderChildren(item.children) : [],
       })),
       ["order", "label"]
     );
   }
 
-  const fixedRoot = root.map((item) => ({
-    ...item,
-    order:
-      item.order !== undefined
-        ? item.order
-        : itemMetas.find(
-            (meta) => meta.menu[meta.menu.length - 1] === item.label
-          )?.order || 999,
-    children: item.children ? orderChildren(item.children) : [],
-  }));
-
-  return orderBy(fixedRoot, ["order", "label"]);
+  return orderBy(
+    withPropagatedOrders.map((item) => ({
+      ...item,
+      order: item.order !== undefined ? item.order : 999,
+      children: item.children ? orderChildren(item.children) : [],
+    })),
+    ["order", "label"]
+  );
 }
 
 /**
+ * Atom to load and parse the route manifest
+ */
+const routeManifestAtom = atom<Promise<RouteManifest>>(async () => {
+  const module = await import("./../data/route-manifest.json");
+  return module.default as RouteManifest;
+});
+
+/**
  * Atom to manage the menu state.
- * Async since it derives from the async documentationAtom.
+ * Async since it derives from the async routeManifestAtom.
  */
 export const menuAtom = atom(async (get) => {
-  const docsObj = await get(documentationAtom);
-  const items: MdxFileFrontmatter["meta"][] = Object.keys(docsObj).map(
-    (key) => docsObj[key].meta
-  );
-  const menu = buildMenu(items);
+  const manifest = await get(routeManifestAtom);
+  const menu = buildMenu(manifest.routes);
   return menu;
 });
