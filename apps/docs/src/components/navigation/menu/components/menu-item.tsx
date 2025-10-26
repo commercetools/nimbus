@@ -26,7 +26,7 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
   }, [isActiveRoute, isParentItem]);
 
   // Preserve sidebar scroll position on click
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     const sidebar = document.getElementById("app-frame-left-nav");
     if (sidebar) {
       const scrollPos = sidebar.scrollTop;
