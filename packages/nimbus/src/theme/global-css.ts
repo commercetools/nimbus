@@ -81,7 +81,4 @@ export const globalCss = defineGlobalStyles({
     display: "initial",
     verticalAlign: "initial",
   },
-  a: {
-    textDecoration: "none",
-  },
 });
