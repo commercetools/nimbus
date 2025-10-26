@@ -13,7 +13,6 @@ import {
   Menu,
   IconButton,
   useColorMode,
-  useToast,
   Separator,
   Icon,
 } from "@commercetools/nimbus";
@@ -44,7 +43,6 @@ const DEFAULT_PREFERENCES = {
 export function SettingsMenu() {
   const { colorMode, setColorMode } = useColorMode();
   const [preferences, setPreferences] = useAtom(userPreferencesAtom);
-  const toast = useToast();
 
   // Cross-tab sync via storage events
   useEffect(() => {
@@ -124,11 +122,6 @@ export function SettingsMenu() {
     a.download = `nimbus-docs-settings-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    toast({
-      title: "Settings exported",
-      description: "Your preferences have been downloaded",
-      variant: "positive",
-    });
   };
 
   const handleImportSettings = () => {
@@ -150,18 +143,8 @@ export function SettingsMenu() {
         if (settings.colorMode) {
           setColorMode(settings.colorMode);
         }
-
-        toast({
-          title: "Settings imported",
-          description: "Your preferences have been restored",
-          variant: "positive",
-        });
       } catch {
-        toast({
-          title: "Import failed",
-          description: "Could not read settings file",
-          variant: "critical",
-        });
+        // Import failed
       }
     };
     input.click();
@@ -171,11 +154,6 @@ export function SettingsMenu() {
     setPreferences(DEFAULT_PREFERENCES);
     applyFontSize(DEFAULT_PREFERENCES.fontSize);
     setColorMode("system");
-    toast({
-      title: "Settings reset",
-      description: "Preferences restored to defaults",
-      variant: "info",
-    });
   };
 
   return (

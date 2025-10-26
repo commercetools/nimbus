@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { Box, IconButton, useToast } from "@commercetools/nimbus";
+import { Box, IconButton } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 
 interface CodeBlockWithCopyProps {
@@ -15,25 +15,14 @@ interface CodeBlockWithCopyProps {
 
 export function CodeBlockWithCopy({ code, children }: CodeBlockWithCopyProps) {
   const [copied, setCopied] = useState(false);
-  const toast = useToast();
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      toast({
-        title: "Code copied",
-        description: "Copied to clipboard",
-        variant: "positive",
-        duration: 2000,
-      });
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast({
-        title: "Copy failed",
-        description: "Could not copy to clipboard",
-        variant: "critical",
-      });
+      // Copy failed
     }
   };
 
