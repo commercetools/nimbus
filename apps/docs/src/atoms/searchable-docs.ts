@@ -1,19 +1,34 @@
 import { atom } from "jotai";
-import { documentationAtom } from "./documentation";
-import { MdxFileFrontmatter } from "@/types";
-import { stripMarkdown } from "@/utils/stip-markdown";
 
-export type SearchableDocItem = MdxFileFrontmatter["meta"] & {
-  content: string;
+export type SearchableDocItem = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  route: string;
+  menu: string[];
+  content: string; // Truncated content for search
 };
 
-export const searchableDocItemsAtom = atom(async (get) => {
-  const data = await get(documentationAtom);
-  const items: SearchableDocItem[] = Object.keys(data).map((key) => ({
-    ...data[key].meta,
-    content: stripMarkdown(data[key].mdx),
-  }));
-  return items;
+/**
+ * Atom to load the search index
+ * Loads from search-index.json which contains lightweight search data
+ */
+const searchIndexAtom = atom<Promise<SearchableDocItem[]>>(async () => {
+  const module = await import("./../data/search-index.json");
+  return module.default as SearchableDocItem[];
 });
 
+/**
+ * Atom to manage searchable documentation items
+ * Derives from the search index instead of the full documentation
+ */
+export const searchableDocItemsAtom = atom(async (get) => {
+  const searchIndex = await get(searchIndexAtom);
+  return searchIndex;
+});
+
+/**
+ * Atom for the current search query
+ */
 export const searchQueryAtom = atom("");

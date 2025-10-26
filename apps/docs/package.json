@@ -7,9 +7,20 @@
     "build": "pnpm run build:docs && pnpm run build:app && pnpm run copy-index",
     "build:docs": "npx tsx ./scripts/build.ts",
     "build:app": "vite build",
+    "build:analyze": "pnpm build:app && open dist/stats.html",
     "copy-index": "cp ./dist/index.html ./dist/404.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "analyze": "open dist/stats.html",
+    "test": "vitest run",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:coverage": "vitest run --coverage",
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",
@@ -42,6 +53,8 @@
     "react-dom": "catalog:react",
     "react-intl": "catalog:react",
     "react-live": "^4.1.7",
+    "react-router": "catalog:",
+    "react-router-dom": "catalog:",
     "react-syntax-highlighter": "^15.6.6",
     "remark": "^15.0.1",
     "remark-flexible-toc": "^1.2.3",
@@ -55,16 +68,26 @@
   },
   "devDependencies": {
     "@eslint/js": "catalog:tooling",
+    "@playwright/test": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/lodash": "catalog:utils",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",
+    "@vitest/ui": "catalog:",
     "eslint": "catalog:tooling",
     "eslint-plugin-react-hooks": "catalog:tooling",
     "eslint-plugin-react-refresh": "catalog:tooling",
     "globals": "catalog:tooling",
+    "happy-dom": "catalog:",
+    "jsdom": "catalog:",
+    "rollup-plugin-visualizer": "catalog:",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "vite": "catalog:tooling"
+    "vite": "catalog:tooling",
+    "vite-plugin-compression": "catalog:",
+    "vitest": "catalog:"
   }
 }

@@ -48,7 +48,7 @@ export const useClosestHeading = (): string | null => {
       if (scrollElement) {
         scrollElement.removeEventListener("scroll", handleScroll);
       }
-      window.addEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 

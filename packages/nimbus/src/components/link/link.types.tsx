@@ -3,7 +3,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { AriaLinkOptions } from "react-aria";
+import type { LinkProps as RaLinkProps } from "react-aria-components";
 
 // ============================================================
 // RECIPE PROPS
@@ -30,25 +30,20 @@ export type LinkRootSlotProps = HTMLChakraProps<"a", LinkRecipeProps>;
 // HELPER TYPES
 // ============================================================
 
-type LinkVariantProps = Omit<
-  LinkRootSlotProps,
-  "onFocus" | "onBlur" | "onClick"
-> &
-  Pick<AriaLinkOptions, "onFocus" | "onBlur" | "onClick"> & {
-    [key: `data-${string}`]: string;
-  };
+type ExcludedLinkProps = "className" | "style";
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type LinkProps = LinkVariantProps & {
-  /**
-   * Content to display inside the link
-   */
-  children?: React.ReactNode;
-  /**
-   * Ref forwarding to the anchor element
-   */
-  ref?: React.Ref<HTMLAnchorElement>;
-};
+export type LinkProps = Omit<LinkRootSlotProps, ExcludedLinkProps> &
+  Omit<RaLinkProps, ExcludedLinkProps> & {
+    /**
+     * Content to display inside the link
+     */
+    children?: React.ReactNode;
+    /**
+     * Ref forwarding to the anchor element
+     */
+    ref?: React.Ref<HTMLAnchorElement>;
+  };
