@@ -1,9 +1,8 @@
-import { Link as RaLink } from "react-aria-components";
+import { useRef } from "react";
 import { LinkRoot } from "./link.slots";
 import type { LinkProps } from "./link.types";
-import { extractStyleProps } from "@/utils";
-import { useRecipe } from "@chakra-ui/react";
-import { linkRecipe } from "./link.recipe";
+import { useLink, useObjectRef, mergeProps } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 
 /**
  * # Link
@@ -13,15 +12,17 @@ import { linkRecipe } from "./link.recipe";
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/link}
  */
 export const Link = (props: LinkProps) => {
-  const recipe = useRecipe({ recipe: linkRecipe });
-  // Extract recipe props
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
-  // Extract style props for Chakra UI styling
-  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+  const { as, asChild, children, ref: forwardedRef, ...rest } = props;
+
+  const localRef = useRef<HTMLAnchorElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  const elementType = (as as string) || (asChild ? "span" : "a") || "a";
+  const { linkProps } = useLink({ ...rest, elementType }, ref);
 
   return (
-    <LinkRoot asChild {...recipeProps} {...styleProps}>
-      <RaLink {...functionalProps} />
+    <LinkRoot {...mergeProps(rest, linkProps, { as, asChild, ref })}>
+      {children}
     </LinkRoot>
   );
 };
