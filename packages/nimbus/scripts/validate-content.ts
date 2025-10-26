@@ -101,7 +101,7 @@ async function validateContent(options: {
       const result = frontmatterSchema.safeParse(frontmatter);
 
       if (!result.success) {
-        result.error.errors.forEach((err) => {
+        result.error.issues.forEach((err) => {
           errors.push({
             file: relativePath,
             severity: "error",

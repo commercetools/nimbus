@@ -10,7 +10,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import matter from "gray-matter";
 import { remark } from "remark";
-import remarkFlexibleToc from "remark-flexible-toc";
+import remarkFlexibleToc, {
+  type FlexibleTocOptions,
+} from "remark-flexible-toc";
 import { read } from "to-vfile";
 import { mdxDocumentSchema } from "./schemas";
 import type { MdxDocument, TocItem } from "./types";
@@ -27,7 +29,7 @@ export const flog = (str: string) => {
  * Generate table of contents from MDX content
  */
 const generateToc = async (filePath: string): Promise<TocItem[]> => {
-  const toc: TocItem[] = [];
+  const toc: NonNullable<FlexibleTocOptions["tocRef"]> = [];
 
   await remark()
     .use(remarkFlexibleToc, { tocRef: toc })
@@ -75,8 +77,8 @@ export async function parseMdxFile(
     // Get relative path
     const repoPath = getPathFromMonorepoRoot(filePath);
 
-    // Build document structure
-    const document: MdxDocument = {
+    // Build document structure (validated by Zod below)
+    const document = {
       meta: {
         ...meta,
         repoPath,
