@@ -37,7 +37,6 @@ export const AppNavBarMenu = () => {
             colorPalette={isActive ? "primary" : "neutral"}
           >
             <Link
-              unstyled
               href={`/${item.route}`}
               display="block"
               focusRing="outside"
@@ -46,7 +45,7 @@ export const AppNavBarMenu = () => {
             >
               <Text
                 borderRadius="100"
-                color={isActive ? "colorPalette.11" : "colorPalette.10"}
+                color={isActive ? "colorPalette.11!" : "colorPalette.10!"}
                 bg={isActive ? "colorPalette.3" : undefined}
                 fontWeight="500"
                 fontSize="350"

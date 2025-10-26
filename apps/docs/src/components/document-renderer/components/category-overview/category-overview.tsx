@@ -86,15 +86,21 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
 
   if (variant === "list") {
     return (
-      <Box my="600">
+      <Box>
         <Stack as="ul" gap="0" direction="row" wrap="wrap">
           {sortedDocs.map((doc) => (
             <Box as="li" width="full" pr="200" pb="200" key={doc.path}>
-              <Link textDecoration="none" href={doc.path}>
-                <Card.Root cardPadding="md" borderStyle="outlined" width="full">
+              <Link textDecoration="none" href={doc.path} width="full">
+                <Card.Root
+                  cardPadding="md"
+                  borderStyle="none"
+                  ml="-400"
+                  width="full"
+                  _hover={{ bg: "colorPalette.2" }}
+                >
                   <Card.Content>
                     <Flex>
-                      <Box color="primary.11" textStyle="2xl" mr="300">
+                      <Box color="primary.9" textStyle="2xl" mr="400">
                         <IconComponent id={doc.icon} fallback="ArrowForward" />
                       </Box>
                       <Box>
@@ -135,7 +141,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
               >
                 <Card.Content>
                   <Stack>
-                    <Box color="primary.11" textStyle="5xl" mb="200">
+                    <Box color="primary.9" textStyle="5xl" mb="200">
                       <IconComponent id={doc.icon} fallback="Layers" />
                     </Box>
                     <Heading
