@@ -119,6 +119,7 @@ function AppFrameTopBar({ children }: AppFrameTopBarProps) {
 function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
   return (
     <Box
+      id="app-frame-left-nav"
       as="nav"
       gridArea="nav"
       overflowY="auto"

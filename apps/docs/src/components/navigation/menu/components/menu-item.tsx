@@ -25,6 +25,24 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
     }
   }, [isActiveRoute, isParentItem]);
 
+  // Preserve sidebar scroll position on click
+  const handleClick = (e: React.MouseEvent) => {
+    const sidebar = document.getElementById("app-frame-left-nav");
+    if (sidebar) {
+      const scrollPos = sidebar.scrollTop;
+      // Store scroll position in sessionStorage as backup
+      sessionStorage.setItem("sidebar-scroll", scrollPos.toString());
+
+      // Also force the scroll to stay by setting it multiple times
+      requestAnimationFrame(() => {
+        if (sidebar) sidebar.scrollTop = scrollPos;
+      });
+      setTimeout(() => {
+        if (sidebar) sidebar.scrollTop = scrollPos;
+      }, 0);
+    }
+  };
+
   const marginLeft = level > 2 ? `400` : undefined;
 
   return (
@@ -46,7 +64,12 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
         transitionDuration="slow"
         ml={marginLeft}
       >
-        <Link unstyled href={`/${item.route}`} textDecoration="none">
+        <Link
+          unstyled
+          href={`/${item.route}`}
+          textDecoration="none"
+          onClick={handleClick}
+        >
           {level > 1 && (
             <Text display="inline" mr="200" position="relative">
               └

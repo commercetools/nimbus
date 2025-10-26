@@ -15,10 +15,14 @@ import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 //import { DevOnly } from "@/components/utils/dev-only";
 //import { DocumentMetaSettings } from "@/components/document-meta-settings/document-meta-settings";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
+import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
 
 export function AppLayout() {
   // Enable scroll restoration on navigation
   useScrollRestoration();
+
+  // Enable sidebar scroll restoration
+  useSidebarScrollRestoration();
 
   // Get current location to trigger content animation on route changes
   const location = useLocation();
