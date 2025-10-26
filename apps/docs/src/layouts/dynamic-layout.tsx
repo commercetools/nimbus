@@ -6,14 +6,12 @@
  */
 
 import { Suspense } from "react";
-import { useLocation } from "react-router-dom";
 import { LoadingSpinner } from "@commercetools/nimbus";
 import { AppLayout } from "./app-layout";
 import { NoSidebarLayout } from "./no-sidebar-layout";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 export function DynamicLayout() {
-  const location = useLocation();
   const activeDoc = useActiveDoc();
 
   // Show loading state while document is being fetched

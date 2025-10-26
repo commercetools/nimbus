@@ -39,6 +39,7 @@ export function ShareButton({
         setIsOpen(false);
       } catch (error) {
         // User cancelled or error occurred
+        console.error(error);
       }
     }
   };
