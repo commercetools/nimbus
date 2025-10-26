@@ -5,14 +5,7 @@
  */
 
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Stack,
-  Text,
-  Textarea,
-  useToast,
-} from "@commercetools/nimbus";
+import { Box, Button, Stack, Text, Textarea } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 
 interface ContentFeedbackProps {
@@ -24,7 +17,6 @@ type FeedbackState = "initial" | "helpful" | "not-helpful" | "submitted";
 export function ContentFeedback({ documentId }: ContentFeedbackProps) {
   const [state, setState] = useState<FeedbackState>("initial");
   const [comment, setComment] = useState("");
-  const toast = useToast();
 
   const handleHelpful = () => {
     setState("helpful");
@@ -33,11 +25,6 @@ export function ContentFeedback({ documentId }: ContentFeedbackProps) {
 
     setTimeout(() => {
       setState("submitted");
-      toast({
-        title: "Thank you!",
-        description: "Your feedback helps us improve",
-        variant: "positive",
-      });
     }, 500);
   };
 
@@ -50,11 +37,6 @@ export function ContentFeedback({ documentId }: ContentFeedbackProps) {
     console.log("Feedback: Not helpful", { documentId, comment });
 
     setState("submitted");
-    toast({
-      title: "Thank you!",
-      description: "Your feedback has been received",
-      variant: "positive",
-    });
   };
 
   const handleCancel = () => {

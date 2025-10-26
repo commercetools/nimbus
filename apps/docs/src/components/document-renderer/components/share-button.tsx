@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { Menu, IconButton, useToast } from "@commercetools/nimbus";
+import { Menu, IconButton } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 
 interface ShareButtonProps {
@@ -18,23 +18,13 @@ export function ShareButton({
   url = window.location.href,
 }: ShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const toast = useToast();
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(url);
-      toast({
-        title: "Link copied",
-        description: "Documentation link copied to clipboard",
-        variant: "positive",
-      });
       setIsOpen(false);
     } catch {
-      toast({
-        title: "Copy failed",
-        description: "Could not copy link",
-        variant: "critical",
-      });
+      // Copy failed
     }
   };
 
@@ -49,13 +39,6 @@ export function ShareButton({
         setIsOpen(false);
       } catch (error) {
         // User cancelled or error occurred
-        if ((error as Error).name !== "AbortError") {
-          toast({
-            title: "Share failed",
-            description: "Could not share link",
-            variant: "critical",
-          });
-        }
       }
     }
   };

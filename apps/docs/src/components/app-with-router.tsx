@@ -6,13 +6,12 @@
  */
 
 import { Outlet } from "react-router-dom";
-import { Box, Toaster } from "@commercetools/nimbus";
+import { Box } from "@commercetools/nimbus";
 
 export function AppWithRouter() {
   return (
     <Box id="root-font-size-setting" fontSize="350">
       <Outlet />
-      <Toaster />
     </Box>
   );
 }
