@@ -31,7 +31,6 @@ export const Base: Story = {
   args: {
     children: "Demo Link",
     onClick: fn(),
-    // @ts-expect-error: data-testid is not a valid prop, but we forward it
     ["data-testid"]: "link-test",
     ["aria-label"]: "link-to-somewhere",
     href: "#",
@@ -116,7 +115,6 @@ export const AsChild: Story = {
   args: {
     children: <span>I am just a span</span>,
     asChild: true,
-    // @ts-expect-error: data-testid is not a valid prop, but we forward it
     ["data-testid"]: "test",
   },
   play: async ({ canvasElement, step }) => {
@@ -141,7 +139,6 @@ const linkRef = createRef<HTMLAnchorElement>();
 export const WithRef: Story = {
   args: {
     children: "Demo Link",
-    // @ts-expect-error: data-testid is not a valid prop, but we forward it
     ["data-testid"]: "ref-test",
   },
   render: (args) => {
@@ -182,7 +179,6 @@ export const WithCustomHref: Story = {
 export const SmokeTest: Story = {
   args: {
     children: "Demo Link",
-    // @ts-expect-error: data-testid is not a valid prop, but we forward it
     ["data-testid"]: "smoke-test",
   },
   render: (args) => {
