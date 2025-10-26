@@ -6,7 +6,7 @@
  */
 
 import { lazy } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { AppWithRouter } from "./components/app-with-router";
 import { DynamicLayout } from "./layouts/dynamic-layout";
 import { ManifestProvider } from "./contexts/manifest-context";
@@ -29,6 +29,8 @@ function App() {
             errorElement={<ErrorBoundary />}
           >
             <Route element={<DynamicLayout />} errorElement={<ErrorBoundary />}>
+              {/* Redirect root to /home */}
+              <Route index element={<Navigate to="/home" replace />} />
               {/* Catch-all route - dynamically resolves content from manifest */}
               <Route
                 path="*"
