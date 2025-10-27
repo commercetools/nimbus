@@ -1,6 +1,7 @@
 import type { ReactNode, RefObject } from "react";
 import type { AriaButtonProps as RaButtonProps } from "react-aria";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -12,14 +13,17 @@ export type CollapsibleMotionRecipeProps = SlotRecipeProps<"collapsibleMotion">;
 // SLOT PROPS
 // ============================================================
 
-export type CollapsibleMotionRootSlotProps = HTMLChakraProps<
-  "div",
-  CollapsibleMotionRecipeProps
+export type CollapsibleMotionRootSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div", CollapsibleMotionRecipeProps>
 >;
 
-export type CollapsibleMotionTriggerSlotProps = HTMLChakraProps<"button">;
+export type CollapsibleMotionTriggerSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"button">
+>;
 
-export type CollapsibleMotionContentSlotProps = HTMLChakraProps<"div">;
+export type CollapsibleMotionContentSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div">
+>;
 
 // ============================================================
 // HELPER TYPES
