@@ -8,11 +8,7 @@ import type {
   CellProps as RaCellProps,
   Selection,
 } from "react-aria-components";
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-  UnstyledProp,
-} from "@chakra-ui/react";
+import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
 import type { UPDATE_ACTIONS } from "./constants";
 
 // ============================================================
@@ -21,9 +17,9 @@ import type { UPDATE_ACTIONS } from "./constants";
 
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
-  truncated?: SlotRecipeProps<"dataTable">["truncated"];
+  truncated?: boolean;
   /** Density variant controlling row height and padding */
-  density?: SlotRecipeProps<"dataTable">["density"];
+  density?: "default" | "condensed";
 } & UnstyledProp;
 
 // ============================================================
