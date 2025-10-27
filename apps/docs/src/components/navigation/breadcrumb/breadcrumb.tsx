@@ -1,19 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { Box, Flex, Icon, Link } from "@commercetools/nimbus";
 import { ChevronRight, Home } from "@commercetools/nimbus-icons";
 import { menuToPath } from "../../../utils/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
 import { useActiveDoc } from "../../../hooks/useActiveDoc";
+import { useBreadcrumbContext } from "../../../contexts/breadcrumb-context";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
   const activeDoc = useActiveDoc();
+  const { previousParts, setPreviousParts } = useBreadcrumbContext();
 
   // Memoize the breadcrumb parts to avoid unnecessary recalculations
   const parts: BreadcrumbItem[] = useMemo(() => {
-    if (!activeDoc) return [];
+    if (!activeDoc) return previousParts;
 
     const { menu } = activeDoc.meta;
 
@@ -21,7 +23,14 @@ export const BreadcrumbNav = () => {
       label: item,
       href: menuToPath(menu.slice(0, idx + 1)),
     }));
-  }, [activeDoc]);
+  }, [activeDoc, previousParts]);
+
+  // Update the previous parts in context when we have valid data
+  useEffect(() => {
+    if (activeDoc && parts.length > 0) {
+      setPreviousParts(parts);
+    }
+  }, [activeDoc, parts, setPreviousParts]);
 
   // Filter out "Home" from parts since we always show it as the first item with icon
   const filteredParts = parts.filter((item) => item.label !== "Home");
