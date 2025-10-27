@@ -42,4 +42,5 @@ export type TextInputFieldProps = Omit<TextInputProps, "type"> &
      * @see {@link https://github.com/commercetools/nimbus/blob/main/packages/nimbus/src/components/field-errors/field-errors.types.ts#L8}
      */
     errors?: FieldErrorsData;
+    renderError?: (errorKey: string) => ReactNode;
   };

@@ -28,11 +28,13 @@ import { extractStyleProps } from "@/utils";
  */
 
 export const TextInputField = ({
+  id,
   label,
   description,
   errors,
   info,
   onChange,
+  renderError,
   touched = false,
   isDisabled = false,
   isReadOnly = false,
@@ -46,6 +48,7 @@ export const TextInputField = ({
 
   return (
     <FormField.Root
+      id={id}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
       isInvalid={hasErrors}
@@ -66,7 +69,11 @@ export const TextInputField = ({
       )}
       {hasErrors && (
         <FormField.Error>
-          <FieldErrors errors={errors} />
+          <FieldErrors
+            id={`${id}-errors`}
+            errors={errors}
+            renderError={renderError}
+          />
         </FormField.Error>
       )}
       {info && <FormField.InfoBox>{info}</FormField.InfoBox>}
