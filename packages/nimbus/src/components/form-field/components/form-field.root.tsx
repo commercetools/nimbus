@@ -27,10 +27,11 @@ import { Box, IconButton } from "@/components";
 import { ErrorOutline, HelpOutline } from "@commercetools/nimbus-icons";
 
 /**
- * # FormField
+ * # FormField.Root
  *
  * displays miscellaneous inputs in a FormField context
  *
+ * @supportsStyleProps
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/formfield}
  */
 export const FormFieldRoot = function FormFieldRoot({
@@ -192,3 +193,5 @@ export const FormFieldRoot = function FormFieldRoot({
     </FormFieldContext.Provider>
   );
 };
+
+FormFieldRoot.displayName = "FormField.Root";

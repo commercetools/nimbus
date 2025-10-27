@@ -1,3 +1,4 @@
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
@@ -30,13 +31,15 @@ export type FormFieldRootSlotProps = HTMLChakraProps<
   FormFieldRecipeProps & UnstyledProp
 >;
 
-export type FormFieldLabelSlotProps = HTMLChakraProps<"div">;
+export type FormFieldLabelSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
-export type FormFieldInputSlotProps = HTMLChakraProps<"div">;
+export type FormFieldInputSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
-export type FormFieldDescriptionSlotProps = HTMLChakraProps<"div">;
+export type FormFieldDescriptionSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div">
+>;
 
-export type FormFieldErrorSlotProps = HTMLChakraProps<"div">;
+export type FormFieldErrorSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
 export type FormFieldPopoverSlotProps = HTMLChakraProps<"div">;
 
@@ -44,7 +47,7 @@ export type FormFieldPopoverSlotProps = HTMLChakraProps<"div">;
 // MAIN PROPS
 // ============================================================
 
-export type FormFieldProps = FormFieldRootSlotProps & {
+export type FormFieldProps = OmitUnwantedProps<FormFieldRootSlotProps> & {
   /**
    * Form field content (label, input, description, error)
    */

@@ -747,13 +747,7 @@ export const LoginForm: Story = {
 
                 <FormField.Root display="block" width="100%">
                   <FormField.Label>Password</FormField.Label>
-                  <FormField.Input
-                    css={{
-                      "& > div": {
-                        width: "100%",
-                      },
-                    }}
-                  >
+                  <FormField.Input width="100%">
                     <PasswordInput
                       display="block"
                       width="100%"

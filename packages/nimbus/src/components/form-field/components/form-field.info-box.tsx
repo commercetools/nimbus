@@ -8,6 +8,11 @@ type FormFieldInfoBoxProps = {
   children: ReactNode;
 };
 
+/**
+ * FormField.InfoBox - The info box popover content for the form field
+ *
+ * @supportsStyleProps
+ */
 export const FormFieldInfoBox = ({ children }: FormFieldInfoBoxProps) => {
   const { setContext } = useContext(FormFieldContext);
 
@@ -28,3 +33,5 @@ export const FormFieldInfoBox = ({ children }: FormFieldInfoBoxProps) => {
 
   return null;
 };
+
+FormFieldInfoBox.displayName = "FormField.InfoBox";
