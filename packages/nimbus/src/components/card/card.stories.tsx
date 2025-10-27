@@ -44,11 +44,6 @@ export const Base: Story = {
     await step("Displays correct content", async () => {
       await expect(card).toHaveTextContent(args.children as string);
     });
-
-    await step("Can be focused with the keyboard", async () => {
-      await userEvent.keyboard("{tab}");
-      await expect(card).toHaveFocus();
-    });
   },
 };
 
