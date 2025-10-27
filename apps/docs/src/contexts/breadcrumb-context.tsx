@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, ReactNode, useEffect } from "react";
+import { createContext, useContext, useRef, ReactNode } from "react";
 import { BreadcrumbItem } from "@/components/navigation/breadcrumb/breadcrumb.types";
 
 type BreadcrumbContextValue = {
