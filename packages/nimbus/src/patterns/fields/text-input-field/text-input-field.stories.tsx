@@ -174,6 +174,7 @@ export const WithErrors: Story = {
     placeholder: "My Awesome Project",
     isInvalid: true,
     errors: { missing: true, format: true },
+    touched: true,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
