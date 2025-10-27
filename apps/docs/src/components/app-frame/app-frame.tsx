@@ -7,7 +7,6 @@
 
 import type { ReactNode } from "react";
 import { Box, Grid } from "@commercetools/nimbus";
-import { useLocation } from "react-router-dom";
 
 export interface AppFrameRootProps {
   children: ReactNode;
@@ -60,9 +59,6 @@ function AppFrameRoot({ children }: AppFrameRootProps) {
  * Slides down with animation when transitioning away from /home route
  */
 function AppFrameBreadcrumbBar({ children }: AppFrameBreadcrumbBarProps) {
-  const location = useLocation();
-  const isOnHome = location.pathname === "/home";
-
   return (
     <Box
       gridArea="breadcrumbs"
