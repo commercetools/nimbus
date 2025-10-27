@@ -472,7 +472,7 @@ export const InputTypes: Story = {
 export const WithinReactAriaContext: Story = {
   render: () => {
     return (
-      <TextInput.Context
+      <TextInput.Context.Provider
         value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
       >
         <TextInput
@@ -480,7 +480,7 @@ export const WithinReactAriaContext: Story = {
           type="email"
           placeholder="Enter your email"
         />
-      </TextInput.Context>
+      </TextInput.Context.Provider>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -519,7 +519,7 @@ export const WithinReactAriaContext: Story = {
 export const OverrideContextWithLocalProps: Story = {
   render: () => {
     return (
-      <TextInput.Context
+      <TextInput.Context.Provider
         value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
       >
         <TextInput
@@ -530,7 +530,7 @@ export const OverrideContextWithLocalProps: Story = {
           isRequired={false}
           isReadOnly={false}
         />
-      </TextInput.Context>
+      </TextInput.Context.Provider>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -538,25 +538,25 @@ export const OverrideContextWithLocalProps: Story = {
     const input = canvas.getByPlaceholderText("Enter your email");
 
     await step(
-      "TextInput consumes required prop from TextField context",
+      "TextInput local props override context required prop",
       async () => {
-        // Verify TextInput receives required attribute from TextField context
+        // Verify TextInput's local isRequired={false} overrides context isRequired={true}
         await expect(input).not.toHaveAttribute("aria-required");
       }
     );
 
     await step(
-      "TextInput consumes disabled prop from TextField context",
+      "TextInput local props override context disabled prop",
       async () => {
-        // Verify TextInput receives disabled attribute from TextField context
+        // Verify TextInput's local isDisabled={false} overrides context isDisabled={true}
         await expect(input).not.toBeDisabled();
       }
     );
 
     await step(
-      "TextInput consumes readonly prop from TextField context",
+      "TextInput local props override context readonly prop",
       async () => {
-        // Verify TextInput receives readonly attribute from TextField context
+        // Verify TextInput's local isReadOnly={false} overrides context isReadOnly={true}
         await expect(input).not.toHaveAttribute("readonly");
       }
     );

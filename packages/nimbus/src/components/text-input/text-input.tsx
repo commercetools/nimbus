@@ -1,4 +1,4 @@
-import { useEffect, useRef, type Context } from "react";
+import { useEffect, useMemo, useRef, type Context } from "react";
 import { mergeRefs } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
@@ -40,6 +40,10 @@ const TextInputComponent = (props: TextInputProps) => {
    * (e.g., TextField, SearchField, Form). useSlottedContext respects the `slot`
    * prop for proper nesting. Context may contain either React Aria props or DOM
    * attributes depending on the parent component.
+   *
+   * Note: We use useSlottedContext (not useContextProps) to read context and
+   * manually normalize DOM attributes → React Aria props, ensuring type safety
+   * with TextInputContextValue and support for both prop styles from parents.
    */
   const inputContext = useSlottedContext(
     InputContext
@@ -50,16 +54,28 @@ const TextInputComponent = (props: TextInputProps) => {
    * to React Aria props (isDisabled, isRequired) since React Aria's useTextField
    * hook expects the latter. Remove DOM attributes to prevent React warnings.
    */
-  const normalizedInputContext = {
-    ...inputContext,
-    isDisabled: inputContext?.isDisabled ?? inputContext?.disabled,
-    isRequired: inputContext?.isRequired ?? inputContext?.required,
-    isReadOnly: inputContext?.isReadOnly ?? inputContext?.readOnly,
-    isInvalid: inputContext?.isInvalid ?? inputContext?.["aria-invalid"],
-    disabled: undefined,
-    required: undefined,
-    readOnly: undefined,
-  };
+  const normalizedInputContext = useMemo(
+    () => ({
+      ...inputContext,
+      isDisabled: inputContext?.isDisabled ?? inputContext?.disabled,
+      isRequired: inputContext?.isRequired ?? inputContext?.required,
+      isReadOnly: inputContext?.isReadOnly ?? inputContext?.readOnly,
+      // Explicit boolean coercion for aria-invalid: "false" string is truthy!
+      isInvalid:
+        inputContext?.isInvalid ??
+        (inputContext?.["aria-invalid"] === true ||
+        inputContext?.["aria-invalid"] === "true"
+          ? true
+          : inputContext?.["aria-invalid"] === false ||
+              inputContext?.["aria-invalid"] === "false"
+            ? false
+            : undefined),
+      disabled: undefined,
+      required: undefined,
+      readOnly: undefined,
+    }),
+    [inputContext]
+  );
 
   // Merge context with component props (component props take precedence)
   const inputFieldProps = mergeProps(normalizedInputContext, otherProps);

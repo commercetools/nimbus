@@ -390,18 +390,21 @@ export const OverrideContextWithLocalProps: Story = {
   render: () => {
     return (
       <Button.Context.Provider value={{ isDisabled: true }}>
-        <Button isDisabled={false}>Disabled by Context</Button>
+        <Button isDisabled={false}>Not Disabled (Override)</Button>
       </Button.Context.Provider>
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Button consumes disabled prop from ButtonContext", async () => {
-      const button = canvas.getByRole("button");
+    await step(
+      "Button local props override context disabled prop",
+      async () => {
+        const button = canvas.getByRole("button");
 
-      // Verify Button receives disabled attribute from ButtonContext
-      await expect(button).not.toHaveAttribute("aria-disabled");
-    });
+        // Verify Button's local isDisabled={false} overrides context isDisabled={true}
+        await expect(button).not.toHaveAttribute("aria-disabled");
+      }
+    );
   },
 };
