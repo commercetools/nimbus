@@ -31,16 +31,26 @@ export const TextInputField = ({
   label,
   description,
   errors,
-  infoBox,
+  info,
   onChange,
+  touched = false,
+  isDisabled = false,
+  isReadOnly = false,
   value,
   placeholder,
   ...rest
 }: TextInputFieldProps) => {
   const [styleProps, functionalProps] = extractStyleProps(rest);
+  // Determine if we should show errors
+  const hasErrors = touched && errors && Object.values(errors).some(Boolean);
 
   return (
-    <FormField.Root {...functionalProps}>
+    <FormField.Root
+      isDisabled={isDisabled}
+      isReadOnly={isReadOnly}
+      isInvalid={hasErrors}
+      {...functionalProps}
+    >
       <FormField.Label>{label}</FormField.Label>
       <FormField.Input>
         <TextInput
@@ -59,7 +69,7 @@ export const TextInputField = ({
           <FieldErrors errors={errors} />
         </FormField.Error>
       )}
-      {infoBox && <FormField.InfoBox>{infoBox}</FormField.InfoBox>}
+      {info && <FormField.InfoBox>{info}</FormField.InfoBox>}
     </FormField.Root>
   );
 };
