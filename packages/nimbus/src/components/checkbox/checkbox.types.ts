@@ -1,4 +1,9 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 
@@ -12,7 +17,7 @@ type CheckboxRecipeProps = {
    * @default "md"
    */
   size?: SlotRecipeProps<"checkbox">["size"];
-};
+} & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
@@ -32,7 +37,7 @@ export type CheckboxIndicatorSlotProps = HTMLChakraProps<"span">;
 // MAIN PROPS
 // ============================================================
 
-export type CheckboxProps = CheckboxRootSlotProps & {
+export type CheckboxProps = OmitUnwantedProps<CheckboxRootSlotProps> & {
   /**
    * Ref forwarding to the label element
    */

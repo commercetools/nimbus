@@ -1,5 +1,6 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
 import { Checkbox as RaCheckbox } from "react-aria-components";
+import type { SlotComponent } from "@/type-utils/slot-types";
 import type {
   CheckboxRootSlotProps,
   CheckboxIndicatorSlotProps,
@@ -10,17 +11,20 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "checkbox",
 });
 
-export const CheckboxRoot = withProvider<
+export const CheckboxRoot: SlotComponent<
   HTMLLabelElement,
   CheckboxRootSlotProps
->(RaCheckbox, "root");
+> = withProvider<HTMLLabelElement, CheckboxRootSlotProps>(RaCheckbox, "root");
 
-export const CheckboxLabel = withContext<
+export const CheckboxLabel: SlotComponent<
   HTMLSpanElement,
   CheckboxLabelSlotProps
->("span", "label");
+> = withContext<HTMLSpanElement, CheckboxLabelSlotProps>("span", "label");
 
-export const CheckboxIndicator = withContext<
+export const CheckboxIndicator: SlotComponent<
   HTMLSpanElement,
   CheckboxIndicatorSlotProps
->("span", "indicator");
+> = withContext<HTMLSpanElement, CheckboxIndicatorSlotProps>(
+  "span",
+  "indicator"
+);
