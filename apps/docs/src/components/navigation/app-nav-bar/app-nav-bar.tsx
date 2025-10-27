@@ -2,7 +2,7 @@ import { Flex, Box, Stack, Separator } from "@commercetools/nimbus";
 import { DevOnly } from "@/components/utils/dev-only";
 import { Suspense } from "react";
 
-import { SettingsMenu } from "@/components/top-bar";
+import { SettingsMenu, ColorThemeMenu } from "@/components/top-bar";
 import { AppNavBarSearch } from "./components/app-nav-bar-search/app-nav-bar-search.tsx";
 import { AppNavBarCreateButton } from "./components/app-nav-bar-create-button.tsx";
 import { AppNavBarBrand } from "./components/app-nav-bar-brand.tsx";
@@ -31,7 +31,7 @@ export const AppNavBar = () => {
         <AppNavBarMenuWithSuspense />
       </Stack>
 
-      {/* Right: Search + Dev Controls + Settings */}
+      {/* Right: Search + Dev Controls + Color Theme + Settings */}
       <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <Suspense fallback={<Box>Loading search...</Box>}>
           <AppNavBarSearch />
@@ -39,6 +39,7 @@ export const AppNavBar = () => {
         <DevOnly>
           <AppNavBarCreateButton />
         </DevOnly>
+        <ColorThemeMenu />
         <SettingsMenu />
       </Stack>
     </Flex>

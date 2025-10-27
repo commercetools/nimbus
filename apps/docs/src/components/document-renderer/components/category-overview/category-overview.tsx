@@ -100,7 +100,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                 >
                   <Card.Content>
                     <Flex>
-                      <Box color="primary.9" textStyle="2xl" mr="400">
+                      <Box color="primary.11" textStyle="2xl" mr="400">
                         <IconComponent id={doc.icon} fallback="ArrowForward" />
                       </Box>
                       <Box>
@@ -141,7 +141,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
               >
                 <Card.Content>
                   <Stack>
-                    <Box color="primary.9" textStyle="5xl" mb="200">
+                    <Box color="primary.11" textStyle="5xl" mb="200">
                       <IconComponent id={doc.icon} fallback="Layers" />
                     </Box>
                     <Heading

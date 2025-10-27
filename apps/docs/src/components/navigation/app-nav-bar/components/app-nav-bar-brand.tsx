@@ -32,7 +32,7 @@ export const AppNavBarBrand = () => {
           display="inline-flex"
           alignItems="center"
         >
-          <Link href="home" textDecoration="none" color="primary.9">
+          <Link href="home" textDecoration="none" color="primary.11">
             <Icon as={FilterDrama} mr="100" /> {brandName}
           </Link>
         </Text>
