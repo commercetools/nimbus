@@ -174,9 +174,9 @@ export type ComboBoxMultiSelectRootProps<T extends object> = Omit<
 /**
  * Root element can either be single or multi select.
  */
-export type ComboBoxRootProps<T extends object> = OmitUnwantedProps<
-  ComboBoxSingleSelectRootProps<T> | ComboBoxMultiSelectRootProps<T>
->;
+export type ComboBoxRootProps<T extends object> =
+  | OmitUnwantedProps<ComboBoxSingleSelectRootProps<T>>
+  | OmitUnwantedProps<ComboBoxMultiSelectRootProps<T>>;
 
 /**
  * Props for the internal ComboBox value display component (multi-select).
