@@ -89,6 +89,11 @@ const TextInputComponent = (props: TextInputProps) => {
     ref
   );
 
+  const stateProps = {
+    "data-disabled": inputProps.disabled ? "true" : undefined,
+    "data-invalid": inputProps["aria-invalid"] ? "true" : "false",
+  };
+
   // Using a useEffect instead of "onClick" on the element, to preserve
   // the `onClick` prop for consumers.
   useEffect(() => {
@@ -116,6 +121,7 @@ const TextInputComponent = (props: TextInputProps) => {
       className={props?.className as string}
       {...recipeProps}
       {...styleProps}
+      {...stateProps}
     >
       {leadingElement && (
         <TextInputLeadingElementSlot>
