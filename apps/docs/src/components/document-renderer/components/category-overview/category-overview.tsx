@@ -20,7 +20,7 @@ import { useActiveDoc } from "@/hooks/useActiveDoc";
  */
 const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   const { manifest } = useManifest();
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc } = useActiveDoc();
 
   // If no document found for this route, don't render
   if (!activeDoc || !manifest) {

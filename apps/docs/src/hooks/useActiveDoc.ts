@@ -3,39 +3,62 @@ import { normalizeRoute } from "@/utils/normalize-route";
 import { useDocData } from "./use-doc-data";
 import type { MdxFileFrontmatter } from "@/types";
 
+type UseActiveDocReturn = {
+  doc: MdxFileFrontmatter | undefined;
+  isLoading: boolean;
+  error: Error | null;
+};
+
 /**
  * Hook to get the currently active document.
  *
  * This hook uses the useDocData hook to load the current route's document data
  * on demand, eliminating the need for a monolithic documentation object.
  *
- * @returns The active document's frontmatter, or undefined if not found or loading
+ * @returns Object containing the active document, loading state, and error state
  */
-export const useActiveDoc = (): MdxFileFrontmatter | undefined => {
+export const useActiveDoc = (): UseActiveDocReturn => {
   const location = useLocation();
   const activeRoute = normalizeRoute(location.pathname);
 
   // Use useDocData to load the current route's document
   const { doc, isLoading, error } = useDocData(activeRoute);
 
-  // Return undefined if loading or error
-  if (isLoading || error || !doc) {
-    return undefined;
+  // Return loading state as-is
+  if (isLoading) {
+    return { doc: undefined, isLoading: true, error: null };
+  }
+
+  // Return error state
+  if (error || !doc) {
+    return {
+      doc: undefined,
+      isLoading: false,
+      error: error || new Error("Document not found"),
+    };
   }
 
   // Type guard: doc should have meta and mdx properties
   if (!("meta" in doc) || !("mdx" in doc)) {
     console.error("Invalid document structure:", doc);
-    return undefined;
+    return {
+      doc: undefined,
+      isLoading: false,
+      error: new Error("Invalid document structure"),
+    };
   }
 
   // CRITICAL: Create defensive copy with cloned menu array
   // This prevents any component from mutating the shared menu array
   return {
-    meta: {
-      ...doc.meta,
-      menu: [...doc.meta.menu],
-    },
-    mdx: doc.mdx,
-  } as MdxFileFrontmatter;
+    doc: {
+      meta: {
+        ...doc.meta,
+        menu: [...doc.meta.menu],
+      },
+      mdx: doc.mdx,
+    } as MdxFileFrontmatter,
+    isLoading: false,
+    error: null,
+  };
 };

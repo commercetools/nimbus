@@ -9,7 +9,7 @@ import { useActiveDoc } from "./useActiveDoc";
  * Hook to handle the creation of a new document.
  */
 export const useCreateDocument = () => {
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc } = useActiveDoc();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [menuLabel, setMenuLabel] = useState("");

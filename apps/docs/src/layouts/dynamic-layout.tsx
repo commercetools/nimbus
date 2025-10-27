@@ -12,7 +12,7 @@ import { NoSidebarLayout } from "./no-sidebar-layout";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 export function DynamicLayout() {
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc } = useActiveDoc();
 
   // Show loading state while document is being fetched
   if (!activeDoc) {
