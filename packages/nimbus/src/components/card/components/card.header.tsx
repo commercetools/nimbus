@@ -2,14 +2,25 @@ import { useContext, useEffect } from "react";
 import { CardHeader as CardHeaderSlot } from "../card.slots";
 import { CardContext } from "./card.root";
 import type { CardHeaderProps } from "../card.types";
+import { extractStyleProps } from "@/utils";
 
+/**
+ * Card.Header - The header section of the card
+ *
+ * @supportsStyleProps
+ */
 export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
   const context = useContext(CardContext);
+
+  // Standard pattern: Extract and forward style props
+  const [styleProps, functionalProps] = extractStyleProps(props);
 
   useEffect(() => {
     if (context) {
       const slotElement = (
-        <CardHeaderSlot {...props}>{children}</CardHeaderSlot>
+        <CardHeaderSlot {...styleProps} {...functionalProps}>
+          {children}
+        </CardHeaderSlot>
       );
       // Register it with the parent
       context.setHeader(slotElement);
@@ -17,7 +28,7 @@ export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
       // On unmount, remove it
       return () => context.setHeader(null);
     }
-  }, [children, props]);
+  }, [children, styleProps, functionalProps, context]);
 
   return null;
 };

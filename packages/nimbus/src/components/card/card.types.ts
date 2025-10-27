@@ -1,3 +1,4 @@
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
@@ -23,11 +24,13 @@ type CardRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type CardRootSlotProps = HTMLChakraProps<"div", CardRecipeProps>;
+export type CardRootSlotProps = OmitUnwantedProps<
+  HTMLChakraProps<"div", CardRecipeProps>
+>;
 
-export type CardHeaderSlotProps = HTMLChakraProps<"div">;
+export type CardHeaderSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
-export type CardContentSlotProps = HTMLChakraProps<"div">;
+export type CardContentSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 
 // ============================================================
 // MAIN PROPS
