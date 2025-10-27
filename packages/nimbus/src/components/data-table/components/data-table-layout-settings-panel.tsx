@@ -51,31 +51,18 @@ const LayoutSettingsPanel = ({
 
   return (
     <SimpleGrid
-      columns={{
-        base: 2,
-        md: 4,
-      }}
+      templateColumns="repeat(4, 1fr)"
       columnGap="400"
       rowGap="600"
       mt="800"
       alignItems="center"
     >
       {/* Text visibility section */}
-      <SimpleGrid.Item
-        colSpan={{
-          base: 1,
-          md: 1,
-        }}
-      >
+      <SimpleGrid.Item colSpan={1}>
         <Text fontWeight="500">{formatMessage(messages.textVisibility)}</Text>
       </SimpleGrid.Item>
-      <SimpleGrid.Item
-        colSpan={{
-          base: 1,
-          md: 3,
-        }}
-      >
-        <Toolbar orientation="horizontal" variant="outline" size="xs">
+      <SimpleGrid.Item colSpan={3}>
+        <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
           <ToggleButtonGroup.Root
             w="full"
             selectedKeys={textVisibility ? ["preview"] : ["full"]}
@@ -88,6 +75,7 @@ const LayoutSettingsPanel = ({
               aria-label={formatMessage(messages.fullText)}
               variant="ghost"
               px="300"
+              flex="1"
             >
               <WrapText />
               {formatMessage(messages.fullText)}
@@ -98,6 +86,7 @@ const LayoutSettingsPanel = ({
               aria-label={formatMessage(messages.TextPreviews)}
               variant="ghost"
               px="300"
+              flex="1"
             >
               <ShortText />
               {formatMessage(messages.TextPreviews)}
@@ -106,21 +95,11 @@ const LayoutSettingsPanel = ({
         </Toolbar>
       </SimpleGrid.Item>
       {/* Row density section */}
-      <SimpleGrid.Item
-        colSpan={{
-          base: 1,
-          md: 1,
-        }}
-      >
+      <SimpleGrid.Item colSpan={1}>
         <Text fontWeight="500">{formatMessage(messages.RowDensity)}</Text>
       </SimpleGrid.Item>
-      <SimpleGrid.Item
-        colSpan={{
-          base: 1,
-          md: 3,
-        }}
-      >
-        <Toolbar orientation="horizontal" variant="outline" size="xs">
+      <SimpleGrid.Item colSpan={3}>
+        <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
           <ToggleButtonGroup.Root
             w="full"
             tone="primary"
