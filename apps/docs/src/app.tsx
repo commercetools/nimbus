@@ -5,16 +5,13 @@
  * All routes are dynamically resolved from MDX file menu properties.
  */
 
-import { lazy } from "react";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { AppWithRouter } from "./components/app-with-router";
 import { DynamicLayout } from "./layouts/dynamic-layout";
 import { ManifestProvider } from "./contexts/manifest-context";
 import { ErrorBoundary } from "./components/error-boundary";
 import { NimbusProvider } from "@commercetools/nimbus";
-
-// Single dynamic route that handles all paths based on manifest
-const DynamicRoute = lazy(() => import("./routes/dynamic-route"));
+import DynamicRoute from "./routes/dynamic-route";
 
 function App() {
   const navigate = useNavigate();
