@@ -71,11 +71,7 @@ export const TextInputField = ({
       )}
       {hasErrors && (
         <FormField.Error>
-          <FieldErrors
-            id={`${id}-errors`}
-            errors={errors}
-            renderError={renderError}
-          />
+          <FieldErrors errors={errors} renderError={renderError} />
         </FormField.Error>
       )}
       {info && <FormField.InfoBox>{info}</FormField.InfoBox>}

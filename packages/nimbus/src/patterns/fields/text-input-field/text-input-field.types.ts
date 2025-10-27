@@ -39,6 +39,7 @@ export type TextInputFieldProps = Omit<TextInputProps, "type"> &
     /**
      * Error object - only truthy values will be rendered
      * Compatible with FieldErrors format
+     * TODO: update this link to point to the FieldErrors docs once they are implemented
      * @see {@link https://github.com/commercetools/nimbus/blob/main/packages/nimbus/src/components/field-errors/field-errors.types.ts#L8}
      */
     errors?: FieldErrorsData;
