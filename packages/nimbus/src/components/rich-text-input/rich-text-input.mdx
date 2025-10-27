@@ -2,9 +2,9 @@
 id: Components-RichTextInput
 title: RichTextInput
 description:
-  A rich text input component with formatting capabilities for creating
-  formatted text content.
-lifecycleState: Alpha
+  The rich text input component allows users to input and format text using a
+  user friendly interface. Changing standard text inputs into fully featured
+  edits, supporting formatting, linking, and embedding.
 order: 999
 menu:
   - Components
@@ -12,38 +12,170 @@ menu:
   - RichTextInput
 tags:
   - component
+  - rich-text
+  - editor
+  - formatting
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev
 ---
 
 # RichTextInput
 
-A rich text input component that provides users with formatting tools to create
-rich text content. It supports various text formatting options including bold,
-italic, underline, lists, headings, and links.
+The rich text input component allows users to input and format text using a user
+friendly interface. Changing standard text inputs into fully featured edits,
+supporting formatting, linking, and embedding.
 
-## Features
+## Overview
 
-- **Text Formatting**: Bold, italic, underline, strikethrough, code,
-  superscript, subscript
-- **Block Formatting**: Headings (H1-H5), blockquotes, bulleted and numbered
-  lists
-- **Links**: Automatic URL detection and link creation
-- **Keyboard Shortcuts**: Standard rich text editing shortcuts (Cmd+B, Cmd+I,
-  etc.)
-- **Accessibility**: Full keyboard navigation and screen reader support
-- **HTML Output**: Clean HTML string output for easy integration with forms and
-  APIs
-- **Controlled/Uncontrolled**: Supports both controlled and uncontrolled usage
-  patterns
+Rich text input is made of two parts, the input where users can add text, and a
+toolbar. This toolbar has been arranged to suit user's needs for text editing.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Slate.js Documentation](https://docs.slatejs.org/)
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Toolbar features
+
+Users can change type styles, toggle bold, italics, underline, strikethrough,
+code sections, superscript, subscript, bullet points and numbered lists. Undo
+and redo buttons are icon buttons.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("<p><strong>Nimbus</strong> dolor sit amet, consectetur adipiscing elit. Aliquam <em>component</em> felis, vel consistency elementum. Sed design tokens ut turpis ac <u>user experience</u> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>");
+
+  return (
+    <RichTextInput
+      value={value}
+      onChange={setValue}
+      placeholder="Try formatting some text..."
+    />
+  );
+};
+```
+
+### Minimum and maximum height
+
+These can be fully configured as needed. Toolbar should remain sticky to the top
+of the input. Set the minimum height to ensure at least a few lines of content
+are visible.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac user experience maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>");
+
+  return (
+    <RichTextInput
+      minHeight="7200"
+      maxHeight="9600"
+      value={value}
+      onChange={setValue}
+      placeholder="Start typing..."
+    />
+  );
+};
+```
+
+## Guidelines
+
+These guidelines provide comprehensive direction for designing and developing
+rich text inputs within Nimbus.
+
+### Best practices
+
+- **Make responsive changes:** Apply changes immediately to the selected text
+  upon clicking a toolbar control.
+- **Utilize tooltips and labels:** Include tooltips for all toolbar actions to
+  enhance discoverability and accessibility.
+- **Keep a user's focus:** Maintain the user's focus within the text area after
+  an action or toggle is selected.
+- **Allow for common shortcuts:** Support standard keyboard shortcuts for
+  formatting (e.g., Ctrl/Cmd+B for bold).
+- **Make it easier to correct mistakes:** Offer an undo/redo history for content
+  changes, and allow for a large enough input window so a user can quickly read
+  content without needing to scroll line by line.
+- **Tailor tooling:** Determine the required formatting options based on the
+  user's needs for the specific application.
+- **Curate tools into meaningful similar collections:** Group related controls
+  logically in the toolbar (e.g., text styling, lists, media).
 
 ## Usage
 
-### Basic usage
+Rich text inputs should be used in areas where a user knows that a longer
+response or description is expected.
 
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
+> [!TIP]\
+> When to use
 
-function BasicExample() {
-  const [value, setValue] = useState("");
+- **Editing long-form content:** Such as product descriptions, knowledge base
+  articles, or email bodies, where visual hierarchy and style are necessary for
+  readability.
+- **Formatting text:** Such as applying bold, italics, underlines, or specific
+  heading levels.
+- **Structuring content:** With bulleted or numbered lists.
+- **Embedding external elements:** Like links, images, or videos within other
+  content.
+
+> [!CAUTION]\
+> When not to use
+
+- **Short answers:** Or single-line inputs, such as names, titles, or search
+  queries.
+- **Specific data entry:** Unformatted text is required, like SKUs, passwords,
+  or simple codes.
+- **Plain text communication:** Such as chat messages or comments, where
+  formatting options can clutter the interface or distract from the
+  conversation.
+- **Inputs that need to be strictly controlled:** Where the application's style
+  guide should be the only source of formatting (e.g., when there is passing
+  through of styling and content to another site).
+
+### Rich text input in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do use tooltips for tools represented by icons. In the case of paragraph
+>   styles show the style in the dropdown, not just stated in plain text.
+> - Do provide more height for the input to see a few lines of text and reduce
+>   scrolling.
+> - Do utilize an undo and redo button to assist a user with writing and editing
+>   text when possible.
+
+![Do](/images/rich-text-input/rich-text-input-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't make the input so small that you cannot easily see a few lines of
+>   text.
+> - Don't move the rich text toolbar to sit on the bottom of the input.
+> - Don't overload the rich text toolbar with tools that are unnecessary.
+
+![Don't](/images/rich-text-input/rich-text-input-dont.png)
+
+## Specs
+
+<PropsTable id="RichTextInput" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Accessibility standards
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("");
 
   return (
     <RichTextInput
@@ -52,135 +184,12 @@ function BasicExample() {
       placeholder="Start typing..."
     />
   );
-}
+};
 ```
 
-### Uncontrolled usage
-
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
-
-function UncontrolledExample() {
-  return (
-    <RichTextInput
-      defaultValue="<p>Initial content with <strong>formatting</strong></p>"
-      placeholder="Start typing..."
-    />
-  );
-}
-```
-
-### Form integration
-
-```tsx
-import { RichTextInput } from "@commercetools/nimbus";
-import { useForm } from "react-hook-form";
-
-function FormExample() {
-  const { control, handleSubmit } = useForm();
-
-  return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <Controller
-        name="content"
-        control={control}
-        render={({ field }) => (
-          <RichTextInput
-            value={field.value}
-            onChange={field.onChange}
-            placeholder="Enter your content..."
-          />
-        )}
-      />
-    </form>
-  );
-}
-```
-
-## Keyboard shortcuts
-
-The rich text input supports standard keyboard shortcuts for formatting:
-
-- **Cmd/Ctrl + B** - Toggle bold formatting
-- **Cmd/Ctrl + I** - Toggle italic formatting
-- **Cmd/Ctrl + U** - Toggle underline formatting
-- **Cmd/Ctrl + `** - Toggle code formatting
-- **Shift + Enter** - Insert soft line break
-
-## Formatting options
-
-### Text formatting
-
-- **Bold** - Make text bold
-- **Italic** - Make text italic
-- **Underline** - Add underline to text
-- **Strikethrough** - Add strikethrough to text
-- **Code** - Format text as inline code
-- **Superscript** - Format text as superscript
-- **Subscript** - Format text as subscript
-
-### Block formatting
-
-- **Headings** - H1, H2, H3, H4, H5 heading levels
-- **Blockquote** - Format text as a blockquote
-- **Bulleted List** - Create unordered lists
-- **Numbered List** - Create ordered lists
-
-### Links
-
-- **Automatic Detection** - URLs are automatically converted to links
-- **Manual Creation** - Use the toolbar to create links
-
-## API Reference
-
-### Props
-
-<PropsTable id="RichTextInput" />
-
-### Utility functions
-
-The RichTextInput also exports utility functions for working with rich text
-content:
-
-```tsx
-import { isEmpty, toHTML, fromHTML } from "@commercetools/nimbus";
-
-// Check if rich text content is empty
-const empty = isEmpty("<p></p>"); // true
-const notEmpty = isEmpty("<p>Hello</p>"); // false
-
-// Convert between HTML and internal format (advanced usage)
-const slateValue = fromHTML("<p><strong>Bold</strong> text</p>");
-const htmlValue = toHTML(slateValue);
-```
-
-## Best practices
-
-1. **Always provide a placeholder** to guide users on what content is expected
-2. **Use controlled components** when you need to validate or transform the
-   content
-3. **Handle empty states** using the `isEmpty` utility function
-4. **Consider accessibility** - the component handles most accessibility
-   concerns automatically
-5. **Validate HTML output** on the server side before storing or displaying
-   content
-
-## Accessibility
-
-The RichTextInput component is built with accessibility in mind:
-
-- **Keyboard Navigation**: Full keyboard support for all formatting options
-- **Screen Readers**: Proper ARIA labels and roles for all interactive elements
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Semantic HTML**: Generated HTML uses proper semantic elements
-
-## Examples
-
-```jsx-live
-const App = () => (
-  <RichTextInput placeholder="Try typing and using the formatting tools!" />
-);
-```
-
-The component automatically handles complex rich text editing scenarios while
-maintaining a clean and accessible interface.
+- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,
+  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
+- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab
+  key. Users must be able to navigate and apply formatting without a mouse.
+- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,
+  such as `aria-label` for toggle icon buttons.

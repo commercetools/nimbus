@@ -1,7 +1,7 @@
 import { mergeProps, useProgressBar } from "react-aria";
 import { LoadingSpinnerRoot } from "./loading-spinner.slots";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
-import messages from "./loading-spinner.i18n";
+import { messages } from "./loading-spinner.i18n";
 import { useIntl } from "react-intl";
 
 const circlePath =

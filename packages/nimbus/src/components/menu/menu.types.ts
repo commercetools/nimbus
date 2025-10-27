@@ -47,7 +47,7 @@ export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
     /**
      * The trigger element and menu content
      */
-    children: ReactNode;
+    children: RaMenuTriggerProps["children"];
     /**
      * The trigger event to use for the menu.
      * @default "press"

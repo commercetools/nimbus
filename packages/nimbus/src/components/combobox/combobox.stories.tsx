@@ -141,7 +141,7 @@ const getTagList = async (multiSelect: HTMLElement) =>
 
 const getFilterInput = () =>
   document.querySelector(
-    '[aria-label="filter combobox options"]'
+    '[aria-label="Filter combobox options"]'
   ) as HTMLInputElement;
 
 const getListboxOptions = () => document.querySelectorAll('[role="option"]');
@@ -624,7 +624,7 @@ export const Base: Story = {
         const tagList = await getTagList(multiSelect);
         const kangarooTag = tagList.childNodes[1] as HTMLElement;
         const removeButton = within(kangarooTag).getByRole("button", {
-          name: /remove kangaroo/i,
+          name: /remove tag kangaroo/i,
         });
         await userEvent.click(removeButton);
         // Verify Kangaroo removed
@@ -638,7 +638,7 @@ export const Base: Story = {
         const updatedTagList = await getTagList(multiSelect);
         const koalaTag = updatedTagList.childNodes[0] as HTMLElement;
         const koalaRemoveButton = within(koalaTag).getByRole("button", {
-          name: /remove koala/i,
+          name: /remove tag koala/i,
         });
         await userEvent.click(koalaRemoveButton);
         // Verify only Platypus remains
@@ -767,7 +767,7 @@ export const Base: Story = {
         await closePopover();
         // Click the remove button
         const removeButton = await within(multiSelect).findByRole("button", {
-          name: /remove koala/i,
+          name: /remove tag koala/i,
         });
         await userEvent.click(removeButton);
         // Check popover is closed
@@ -800,7 +800,7 @@ export const Base: Story = {
         const removeButton = within(
           tagList.childNodes[0] as HTMLElement
         ).getByRole("button", {
-          name: /remove koala/i,
+          name: /remove tag koala/i,
         });
         await expect(removeButton).toHaveFocus();
         // Tab to clear button
@@ -1475,7 +1475,7 @@ export const OptionGroups: Story = {
         const tagList = await getTagList(multiSelect);
         const carrotTag = tagList.childNodes[1] as HTMLElement;
         const removeButton = within(carrotTag).getByRole("button", {
-          name: /remove carrot/i,
+          name: /remove tag carrot/i,
         });
         await userEvent.click(removeButton);
         // Verify carrot tag is removed
@@ -1732,7 +1732,7 @@ export const ComplexOptions: Story = {
       const tagList = await getTagList(multiSelect);
       const enterpriseTag = tagList.childNodes[1] as HTMLElement;
       const removeButton = within(enterpriseTag).getByRole("button", {
-        name: /remove enterprise plan/i,
+        name: /remove tag enterprise plan/i,
       });
       await userEvent.click(removeButton);
       // TagsList should include tags for Starter Plan and Small Team Plan

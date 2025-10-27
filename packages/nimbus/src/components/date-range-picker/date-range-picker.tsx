@@ -21,6 +21,8 @@ import { extractStyleProps } from "@/utils";
 import { DateInput, RangeCalendar, IconButton, Text } from "@/components";
 import { DateRangePickerTimeInput } from "./components/date-range-picker.time-input";
 import { DateRangePickerCustomContext } from "./components/date-range-picker.custom-context";
+import { useIntl } from "react-intl";
+import { messages } from "./date-range-picker.i18n";
 
 /**
  * DateRangePicker
@@ -29,6 +31,8 @@ import { DateRangePickerCustomContext } from "./components/date-range-picker.cus
  * Users can either type a date range directly or select from the calendar.
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
+  const intl = useIntl();
+
   // Forward hideTimeZone and hourCycle to child components (footer time inputs)
   const { granularity = "day", hideTimeZone, hourCycle } = props;
   const recipe = useSlotRecipe({ recipe: dateRangePickerSlotRecipe });
@@ -83,21 +87,21 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                 hourCycle={hourCycle}
               />
               <DateRangePickerTriggerSlot>
-                {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
                   tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="clear"
+                  aria-label={intl.formatMessage(messages.clearSelection)}
                 >
                   <Close />
                 </IconButton>
-                {/* @ts-expect-error react aria is adding the aria-label prop */}
                 <IconButton
                   tone="primary"
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="calendarToggle"
+                  aria-label={intl.formatMessage(messages.openCalendar)}
                 >
                   <CalendarMonth />
                 </IconButton>

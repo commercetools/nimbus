@@ -80,6 +80,7 @@ export const AppNavBarSearch = () => {
               inputValue={query}
               onInputChange={setQuery}
               onSelectionChange={handleSelectionChange}
+              allowsCustomValue
             >
               <Flex alignItems="center" width="100%" py="400" pb="600">
                 <Box

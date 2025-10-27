@@ -1,9 +1,17 @@
-import { Button } from "react-aria-components";
+import {
+  Button,
+  type MenuTriggerProps as RaMenuTriggerProps,
+} from "react-aria-components";
 import { MenuTriggerSlot } from "../menu.slots";
 import type { MenuTriggerProps } from "../menu.types";
 import { extractStyleProps } from "@/utils";
-import type { ReactNode } from "react";
+import type {} from "react";
 
+/**
+ * Menu.Trigger - The button or element that opens the menu when activated
+ *
+ * @supportsStyleProps
+ */
 export const MenuTrigger = ({
   children,
   asChild,
@@ -19,7 +27,7 @@ export const MenuTrigger = ({
     // When asChild is true, apply styles to the child element
     return (
       <MenuTriggerSlot ref={ref} asChild {...styleProps}>
-        {children as ReactNode}
+        {children as RaMenuTriggerProps["children"]}
       </MenuTriggerSlot>
     );
   }

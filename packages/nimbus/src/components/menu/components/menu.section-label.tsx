@@ -4,7 +4,9 @@ import type { MenuSectionLabelProps } from "../menu.types";
 import { extractStyleProps } from "@/utils";
 
 /**
- * Used in MenuSection for rendering the `label` property.
+ * Menu.SectionLabel - Used in MenuSection for rendering the `label` property
+ *
+ * @supportsStyleProps
  */
 export const MenuSectionLabel = ({
   children,

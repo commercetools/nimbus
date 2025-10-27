@@ -4,7 +4,7 @@ import { TextInput } from "@/components/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
 import { FormattedMessage, useIntl } from "react-intl";
-import messages from "./password-input.i18n";
+import { messages } from "./password-input.i18n";
 
 /**
  * # PasswordInput

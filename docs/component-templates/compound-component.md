@@ -15,9 +15,6 @@ import { ComponentNameContent } from "./components/component-name.content";
 import { ComponentNameItem } from "./components/component-name.item";
 // Import other sub-components as needed
 
-// Re-export types
-export type * from "./component-name.types";
-
 /**
  * ComponentName
  * ============================================================

@@ -1,9 +1,11 @@
 import { useMemo, useCallback } from "react";
+import { useIntl } from "react-intl";
 import { type Key, type Selection } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
 import { TagGroup } from "@/components";
 import type { ComboBoxMultiSelectValueProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
+import { messages } from "../combobox.i18n";
 
 // Type guard to check if an item has children array (sectioned data)
 function hasChildrenArray<T extends object>(
@@ -54,6 +56,7 @@ export const MultiSelectTagGroup =
     containerRef,
     ref,
   }: ComboBoxMultiSelectValueProps<T>) => {
+    const intl = useIntl();
     const selectedItems = useMemo(() => {
       if (!items) return [];
 
@@ -128,7 +131,7 @@ export const MultiSelectTagGroup =
           <TagGroup.Root
             size={size}
             onRemove={handleRemoveSelectedItem}
-            aria-label="Selected values"
+            aria-label={intl.formatMessage(messages.selectedValues)}
             selectionMode="none"
             disabledKeys={isDisabled || isReadOnly ? selectedKeys : undefined}
             data-disabled={isDisabled}
