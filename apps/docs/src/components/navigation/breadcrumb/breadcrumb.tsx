@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { Box, Flex, Icon, Link, IconButton } from "@commercetools/nimbus";
+import { Box, Flex, Icon, Link, Button } from "@commercetools/nimbus";
 import {
   ChevronRight,
   Home,
@@ -101,15 +101,16 @@ export const BreadcrumbNav = () => {
         transition="opacity 0.2s ease-in-out"
         pointerEvents={isHovered ? "auto" : "none"}
       >
-        <IconButton
+        <Button
           aria-label={isCopied ? "Link copied!" : "Copy link to this page"}
-          size="xs"
+          size="2xs"
           variant="ghost"
           onClick={handleCopyLink}
           colorPalette={isCopied ? "success" : "neutral"}
         >
           <Icon as={isCopied ? CheckCircle : LinkIcon} />
-        </IconButton>
+          {isCopied ? "Link copied!" : "Copy link"}
+        </Button>
       </Box>
     </Flex>
   );
