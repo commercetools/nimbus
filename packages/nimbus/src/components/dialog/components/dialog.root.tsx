@@ -5,6 +5,11 @@ import { DialogRootSlot } from "../dialog.slots";
 import type { DialogRootProps } from "../dialog.types";
 import { DialogProvider } from "./dialog.context";
 
+/**
+ * Dialog.Root - The root component that provides context and state management
+ *
+ * @supportsStyleProps
+ */
 export const DialogRoot = (props: DialogRootProps) => {
   const recipe = useSlotRecipe({ key: "dialog" });
   // Extract recipe props
