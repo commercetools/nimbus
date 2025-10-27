@@ -111,6 +111,10 @@ const getBuiltInMessage = (key: string): React.ReactNode => {
  *
  * Supports custom error renderers and localized built-in error messages
  * for common validation scenarios like missing required fields.
+ *
+ * @see {@link https://nimbus.commercetools.com/components/field-errors}
+ *
+ * @supportsStyleProps
  */
 export const FieldErrors = ({
   id,
