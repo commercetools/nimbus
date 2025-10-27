@@ -18,6 +18,15 @@ import {
 } from "../localized-field.slots";
 import type { LocalizedFieldLocaleFieldProps } from "../localized-field.types";
 
+/**
+ * LocalizedFieldLocaleField - Individual locale or currency input field
+ *
+ * Renders a single input field for a specific locale or currency with integrated
+ * label, description, warning, and error message display. Supports text, multiline,
+ * richText, and money input types.
+ *
+ * @supportsStyleProps
+ */
 export const LocalizedFieldLocaleField = ({
   type,
   size,
