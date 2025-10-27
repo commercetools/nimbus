@@ -237,7 +237,7 @@ Accessibility ensures that digital content and functionality are usable by every
 
 ```jsx-live
 const App = () => {
-  const animalOptions = [
+  const vegetableOptions = [
   { id: "tomato", name: "Tomato" },
   { id: "zucchini", name: "Zucchini" },
   { id: "peppers", name: "Peppers" },
@@ -245,7 +245,7 @@ const App = () => {
 
   return (
     <TagGroup.Root onRemove={() => {}}>
-      <TagGroup.TagList items={animalOptions}>
+      <TagGroup.TagList items={vegetableOptions}>
         {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
       </TagGroup.TagList>
     </TagGroup.Root>
