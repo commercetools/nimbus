@@ -27,7 +27,10 @@ export type ToggleButtonRootSlotProps = Omit<
   HTMLChakraProps<"button", ToggleButtonRecipeProps>,
   "colorPalette"
 > & {
-  colorPalette?: Exclude<SemanticPalettesOnly, "positive" | "warning">;
+  /**
+   * Color palette for the toggle button
+   */
+  colorPalette?: SemanticPalettesOnly;
 };
 
 // ============================================================

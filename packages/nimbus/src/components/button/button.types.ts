@@ -32,7 +32,10 @@ export type ButtonRootSlotProps = Omit<
   "slot" | "colorPalette"
 > & {
   slot?: string | null | undefined;
-  colorPalette?: Exclude<SemanticPalettesOnly, "warning">;
+  /**
+   * Color palette for the button
+   */
+  colorPalette?: SemanticPalettesOnly;
 };
 
 // ============================================================

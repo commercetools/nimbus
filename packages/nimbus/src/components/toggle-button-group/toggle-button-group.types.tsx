@@ -22,7 +22,6 @@ type ToggleButtonGroupRecipeVariantProps = {
    * @default "md"
    */
   size?: "xs" | "md";
-  colorPalette?: Exclude<SemanticPalettesOnly, "positive" | "warning">;
 };
 
 // ============================================================
@@ -33,7 +32,10 @@ type ToggleButtonGroupRootSlotProps = Omit<
   HTMLChakraProps<"div", RecipeProps<"div">>,
   "colorPalette"
 > & {
-  colorPalette?: Exclude<SemanticPalettesOnly, "info" | "positive" | "warning">;
+  /**
+   * Color palette for the button group
+   */
+  colorPalette?: SemanticPalettesOnly;
 };
 
 type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<

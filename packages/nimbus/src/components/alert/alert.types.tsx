@@ -1,6 +1,7 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
+import type { SemanticPalettesOnly } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -9,15 +10,16 @@ import type { ButtonProps } from "../button";
 type AlertRecipeProps = {
   /** Visual style variant of the alert */
   variant?: SlotRecipeProps<"alert">["variant"];
-  /** Color palette variant of the alert */
-  colorPalette?: "positive" | "info" | "warning" | "critical";
 };
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps>;
+export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
+  /** Color palette variant of the alert */
+  colorPalette?: Exclude<SemanticPalettesOnly, "neutral" | "primary">;
+};
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;
 
