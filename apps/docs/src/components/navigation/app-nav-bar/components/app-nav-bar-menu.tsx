@@ -19,7 +19,7 @@ export const AppNavBarMenu = () => {
   }
 
   return (
-    <Stack direction="row" gap="0" alignItems="stretch">
+    <Stack direction="row" gap="200" alignItems="stretch">
       {menu.map((item) => {
         // Check if this item or any of its children is active
         const isActive =
@@ -39,22 +39,23 @@ export const AppNavBarMenu = () => {
             <Link
               href={`/${item.route}`}
               display="block"
-              focusRing="outside"
-              borderRadius="50"
+              focusVisibleRing="outside"
               textDecoration="none"
             >
               <Text
-                borderRadius="100"
+                borderRadius="200"
                 color={isActive ? "colorPalette.11!" : "colorPalette.10!"}
                 bg={isActive ? "colorPalette.3" : undefined}
                 fontWeight="500"
                 fontSize="350"
-                px="400"
+                px="350"
                 py="150"
                 transition="colors"
                 transitionDuration="fast"
                 _hover={{
-                  color: "colorPalette.11",
+                  colorPalette: "primary",
+                  color: isActive ? "colorPalette.11!" : "colorPalette.10!",
+                  bg: isActive ? "colorPalette.3" : "colorPalette.2",
                 }}
               >
                 {item.label}

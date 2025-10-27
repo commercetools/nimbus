@@ -1,4 +1,4 @@
-import { Flex, Box, Stack, Separator } from "@commercetools/nimbus";
+import { Flex, Box, Stack } from "@commercetools/nimbus";
 import { DevOnly } from "@/components/utils/dev-only";
 import { Suspense } from "react";
 
@@ -19,15 +19,8 @@ export const AppNavBar = () => {
       py="100"
     >
       {/* Left: Logo + Main Menu */}
-      <Stack
-        direction="row"
-        gap="400"
-        alignItems="center"
-        flexShrink="0"
-        divideY="1px solid tomato"
-      >
+      <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <AppNavBarBrand />
-        <Separator orientation="vertical" flexGrow="1" />
         <AppNavBarMenuWithSuspense />
       </Stack>
 
