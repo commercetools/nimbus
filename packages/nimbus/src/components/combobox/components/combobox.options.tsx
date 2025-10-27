@@ -3,6 +3,11 @@ import { ComboBoxOptionsSlot } from "../combobox.slots";
 import type { ComboBoxOptionsProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
+/**
+ * ComboBox.Options - Container for the list of selectable options
+ *
+ * @supportsStyleProps
+ */
 export const ComboBoxOptions = <T extends object>({
   children,
   ref,

@@ -9,6 +9,11 @@ import { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button
 import type { ComboBoxSingleSelectRootProps } from "../combobox.types";
 import { ComboBoxLeadingElement } from "./combobox.leading-element";
 
+/**
+ * Internal single-select root implementation for ComboBox
+ *
+ * @supportsStyleProps
+ */
 export const SingleSelectRoot = <T extends object>({
   children,
   inputValue,

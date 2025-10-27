@@ -7,6 +7,11 @@ import {
 import { ComboBoxOptionGroupSlot } from "../combobox.slots";
 import type { ComboBoxOptionGroupProps } from "../combobox.types";
 
+/**
+ * ComboBox.OptionGroup - Groups related options with an optional label
+ *
+ * @supportsStyleProps
+ */
 export const ComboBoxOptionGroup = <T extends object>({
   children,
   label,

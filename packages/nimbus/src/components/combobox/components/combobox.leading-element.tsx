@@ -8,6 +8,8 @@ import { ComboBoxLeadingElementSlot } from "../combobox.slots";
  *
  * the css variable is then used in the recipe to update the left-padding of the
  * input.
+ *
+ * @supportsStyleProps
  */
 export const ComboBoxLeadingElement = ({
   children,

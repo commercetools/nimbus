@@ -8,6 +8,11 @@ import {
 import type { SingleSelectInputProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
 
+/**
+ * Internal single-select input component for ComboBox
+ *
+ * @supportsStyleProps
+ */
 export const SingleSelectInput = (props: SingleSelectInputProps) => {
   const {
     placeholder,
