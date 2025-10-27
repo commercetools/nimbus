@@ -1,15 +1,9 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
-import {
-  IconButton,
-  Drawer,
-  Tabs,
-  Tooltip,
-  UPDATE_ACTIONS,
-} from "@/components";
+import { IconButton, Drawer, Tabs, Tooltip } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
-import VisibleColumnsPanel from "./data-table-visible-columns-panel";
-import LayoutSettingsPanel from "./data-table-layout-settings-panel";
+import VisibleColumnsPanel from "./data-table.visible-columns-panel";
+import LayoutSettingsPanel from "./data-table.layout-settings-panel";
 import { useDataTableContext } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
@@ -45,8 +39,10 @@ export const DataTableManager = () => {
 
   // Handle when visible columns are updated (reordered or removed)
   // Memoized to prevent infinite re-renders in child components
-  const handleVisibleColumnsUpdate = useCallback(
-    (updatedItems: { id: string; key?: string; label?: React.ReactNode }[]) => {
+  const handleVisibleColumnsUpdate = useMemo(() => {
+    return (
+      updatedItems: { id: string; key?: string; label?: React.ReactNode }[]
+    ) => {
       const updatedIds = updatedItems.map((item) => item.id);
 
       // Check if IDs or order has actually changed
@@ -77,17 +73,8 @@ export const DataTableManager = () => {
       if (onColumnsChange) {
         onColumnsChange(updatedColumns);
       }
-    },
-    [onColumnsChange]
-  );
-
-  const handleSettingsChange = (
-    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
-  ) => {
-    if (onSettingsChange) {
-      onSettingsChange(action);
-    }
-  };
+    };
+  }, [onColumnsChange]);
 
   const hiddenItems = useMemo(() => {
     return columns
@@ -182,7 +169,7 @@ export const DataTableManager = () => {
         placement="right"
         data-testid="data-table-manager-drawer"
       >
-        <Drawer.Content width="640px" data-testid="data-table-manager-drawer">
+        <Drawer.Content width="2xl" data-testid="data-table-manager-drawer">
           <Drawer.Header>
             <Drawer.Title>{formatMessage(messages.settings)}</Drawer.Title>
             <Drawer.CloseTrigger />
@@ -217,9 +204,7 @@ export const DataTableManager = () => {
                     </>
                   ),
                   panelContent: (
-                    <LayoutSettingsPanel
-                      onSettingsChange={handleSettingsChange}
-                    />
+                    <LayoutSettingsPanel onSettingsChange={onSettingsChange} />
                   ),
                 },
                 // TODO: Add custom settings tab here!

@@ -3615,7 +3615,7 @@ export const WithTableManager: Story = {
       }
       switch (action) {
         case UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY:
-          setIsTruncated(isTruncated);
+          setIsTruncated(!isTruncated);
           break;
         case UPDATE_ACTIONS.TOGGLE_ROW_DENSITY:
           setDensity(density === "condensed" ? "default" : "condensed");
