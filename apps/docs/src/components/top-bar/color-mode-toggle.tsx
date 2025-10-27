@@ -5,7 +5,7 @@
  * Displays an icon representing the current mode and updates on click.
  */
 
-import { IconButton, Icon, useColorMode } from "@commercetools/nimbus";
+import { IconButton, Icon, useColorMode, Tooltip } from "@commercetools/nimbus";
 import { LightMode, DarkMode } from "@commercetools/nimbus-icons";
 import { useState, useEffect } from "react";
 
@@ -53,14 +53,20 @@ export function ColorModeToggle() {
       ? "Light mode (click for dark)"
       : "Dark mode (click for light)";
 
+  const tooltipText =
+    themeMode === "light" ? "Switch to dark mode" : "Switch to light mode";
+
   return (
-    <IconButton
-      aria-label={ariaLabel}
-      size="xs"
-      variant="ghost"
-      onClick={handleToggle}
-    >
-      <Icon as={ModeIcon} slot="icon" />
-    </IconButton>
+    <Tooltip.Root>
+      <IconButton
+        aria-label={ariaLabel}
+        size="xs"
+        variant="ghost"
+        onClick={handleToggle}
+      >
+        <Icon as={ModeIcon} slot="icon" />
+      </IconButton>
+      <Tooltip.Content placement="bottom">{tooltipText}</Tooltip.Content>
+    </Tooltip.Root>
   );
 }

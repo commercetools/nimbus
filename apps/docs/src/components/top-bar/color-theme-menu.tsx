@@ -5,7 +5,14 @@
  * Dynamically overrides Chakra's primary palette CSS variables with the selected color.
  */
 
-import { Menu, IconButton, Icon, Separator, Box } from "@commercetools/nimbus";
+import {
+  Menu,
+  IconButton,
+  Icon,
+  Separator,
+  Box,
+  Tooltip,
+} from "@commercetools/nimbus";
 import { Palette, RestartAlt } from "@commercetools/nimbus-icons";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
@@ -129,11 +136,16 @@ export function ColorThemeMenu() {
 
   return (
     <Menu.Root>
-      <Menu.Trigger asChild>
-        <IconButton aria-label="Primary Color" size="xs" variant="ghost">
-          <Icon as={Palette} slot="icon" />
-        </IconButton>
-      </Menu.Trigger>
+      <Tooltip.Root>
+        <Menu.Trigger asChild>
+          <IconButton aria-label="Primary Color" size="xs" variant="ghost">
+            <Icon as={Palette} slot="icon" />
+          </IconButton>
+        </Menu.Trigger>
+        <Tooltip.Content placement="bottom">
+          Change primary color
+        </Tooltip.Content>
+      </Tooltip.Root>
 
       <Menu.Content>
         {/* Brand Colors Section */}
