@@ -29,19 +29,19 @@ export function AppLayout() {
 
   return (
     <AppFrame.Root>
-      {/* Breadcrumb Bar - At the very top */}
-      <AppFrame.BreadcrumbBar>
-        <Suspense fallback={<Box />}>
-          <BreadcrumbNav />
-        </Suspense>
-      </AppFrame.BreadcrumbBar>
-
       {/* Top Bar */}
       <AppFrame.TopBar>
         <Suspense fallback={<LoadingSpinner />}>
           <AppNavBar />
         </Suspense>
       </AppFrame.TopBar>
+
+      {/* Breadcrumb Bar - At the very top */}
+      <AppFrame.BreadcrumbBar>
+        <Suspense fallback={<Box />}>
+          <BreadcrumbNav />
+        </Suspense>
+      </AppFrame.BreadcrumbBar>
 
       {/* Left Navigation */}
       <AppFrame.LeftNav>
