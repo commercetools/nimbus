@@ -144,6 +144,7 @@ const VisibleColumnsPanel = ({
               aria-label={formatMessage(messages.searchHiddenColumns)}
               onChange={handleSearch}
               value={searchValue}
+              data-testid="search-hidden-columns"
             />
             <Separator
               colorPalette="primary"
@@ -158,6 +159,7 @@ const VisibleColumnsPanel = ({
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
               aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
+              data-testid="hidden-columns-list"
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
                   {formatMessage(messages.noHiddenColumns)}
@@ -194,6 +196,7 @@ const VisibleColumnsPanel = ({
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsListUpdate}
             aria-label={formatMessage(messages.visibleColumnsAria)}
+            data-testid="visible-columns-list"
           >
             {(item) => {
               // Cast to include onRemoveItem provided by DraggableList.Root when removableItems is true

@@ -28,9 +28,7 @@ const LayoutSettingsPanel = ({
 
   // Local state for text visibility and row density
   // TODO: Would be controlled via DataTable props
-  const [textVisibility, setTextVisibility] = useState<"full" | "preview">(
-    "full"
-  );
+  const [textVisibility, setTextVisibility] = useState<boolean>(false);
   const [rowDensity, setRowDensity] = useState<"comfortable" | "compact">(
     context.density === "condensed" ? "compact" : "comfortable"
   );
@@ -38,7 +36,7 @@ const LayoutSettingsPanel = ({
   const handleTextVisibilityChange = (keys: Set<string | number>) => {
     const selected = Array.from(keys)[0] as "full" | "preview";
     if (selected) {
-      setTextVisibility(selected);
+      setTextVisibility(selected === "full" ? false : true);
       onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY);
     }
   };
@@ -79,7 +77,8 @@ const LayoutSettingsPanel = ({
       >
         <Toolbar orientation="horizontal" variant="outline" size="xs">
           <ToggleButtonGroup.Root
-            selectedKeys={[textVisibility]}
+            w="full"
+            selectedKeys={textVisibility ? ["preview"] : ["full"]}
             onSelectionChange={handleTextVisibilityChange}
             aria-label={formatMessage(messages.textVisibilityAriaLabel)}
           >
@@ -123,6 +122,7 @@ const LayoutSettingsPanel = ({
       >
         <Toolbar orientation="horizontal" variant="outline" size="xs">
           <ToggleButtonGroup.Root
+            w="full"
             tone="primary"
             selectedKeys={[rowDensity]}
             onSelectionChange={handleRowDensityChange}
@@ -134,6 +134,7 @@ const LayoutSettingsPanel = ({
               variant="ghost"
               aria-label={formatMessage(messages.comfortable)}
               px="300"
+              flex="1"
             >
               <DensitySmall />
               {formatMessage(messages.comfortable)}
@@ -144,6 +145,7 @@ const LayoutSettingsPanel = ({
               variant="ghost"
               aria-label={formatMessage(messages.compact)}
               px="300"
+              flex="1"
             >
               <FormatAlignJustify />
               {formatMessage(messages.compact)}

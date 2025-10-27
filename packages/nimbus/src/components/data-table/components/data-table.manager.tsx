@@ -176,8 +176,13 @@ export const DataTableManager = () => {
   return (
     <>
       {defaultTrigger}
-      <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen} placement="right">
-        <Drawer.Content width="640px">
+      <Drawer.Root
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        placement="right"
+        data-testid="data-table-manager-drawer"
+      >
+        <Drawer.Content width="640px" data-testid="data-table-manager-drawer">
           <Drawer.Header>
             <Drawer.Title>{formatMessage(messages.settings)}</Drawer.Title>
             <Drawer.CloseTrigger />
