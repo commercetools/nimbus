@@ -12,7 +12,7 @@ import type { ButtonProps } from "./button.types.ts";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
  */
-export const Button = (props: ButtonProps) => {
+const ButtonComponent = (props: ButtonProps) => {
   const { ref: forwardedRef, as, asChild, children, ...rest } = props;
 
   // create a local ref (because the consumer may not provide a forwardedRef)
@@ -64,4 +64,29 @@ export const Button = (props: ButtonProps) => {
 };
 
 // Manually assign a displayName for debugging purposes
-Button.displayName = "Button";
+ButtonComponent.displayName = "Button";
+
+/**
+ * ### Button
+ *
+ * Displays a Button.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
+ */
+export const Button: typeof ButtonComponent & {
+  // TypeScript can't properly name the internal React Aria types when inferring
+  // Button.Context, so we explicitly type it using typeof and Object.assign
+  /**
+   * ### Button.Context
+   *
+   * Re-exports React-Aria's `ButtonContext`
+   *
+   * For advanced use cases, **you generally will not need this**
+   *
+   * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
+   * @see {@link https://react-spectrum.adobe.com/react-aria/Button.html#contexts}
+   */
+  Context: typeof ButtonContext;
+} = Object.assign(ButtonComponent, {
+  Context: ButtonContext,
+});

@@ -464,3 +464,101 @@ export const InputTypes: Story = {
     );
   },
 };
+
+/**
+ * Demonstrates TextInput consuming context from React Aria's TextField.
+ * This validates the useContextProps integration.
+ */
+export const WithinReactAriaContext: Story = {
+  render: () => {
+    return (
+      <TextInput.Context.Provider
+        value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
+      >
+        <TextInput
+          aria-label="email address"
+          type="email"
+          placeholder="Enter your email"
+        />
+      </TextInput.Context.Provider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("Enter your email");
+
+    await step(
+      "TextInput consumes required prop from TextField context",
+      async () => {
+        // Verify TextInput receives required attribute from TextField context
+        await expect(input).toHaveAttribute("aria-required", "true");
+      }
+    );
+
+    await step(
+      "TextInput consumes disabled prop from TextField context",
+      async () => {
+        // Verify TextInput receives disabled attribute from TextField context
+        await expect(input).toBeDisabled();
+      }
+    );
+
+    await step(
+      "TextInput consumes readonly prop from TextField context",
+      async () => {
+        // Verify TextInput receives readonly attribute from TextField context
+        await expect(input).toHaveAttribute("readonly");
+      }
+    );
+  },
+};
+
+/**
+ * Demonstrates local TextInput props overriding props from React Aria's InputContext.
+ */
+export const OverrideContextWithLocalProps: Story = {
+  render: () => {
+    return (
+      <TextInput.Context.Provider
+        value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
+      >
+        <TextInput
+          aria-label="email address"
+          type="email"
+          placeholder="Enter your email"
+          isDisabled={false}
+          isRequired={false}
+          isReadOnly={false}
+        />
+      </TextInput.Context.Provider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("Enter your email");
+
+    await step(
+      "TextInput local props override context required prop",
+      async () => {
+        // Verify TextInput's local isRequired={false} overrides context isRequired={true}
+        await expect(input).not.toHaveAttribute("aria-required");
+      }
+    );
+
+    await step(
+      "TextInput local props override context disabled prop",
+      async () => {
+        // Verify TextInput's local isDisabled={false} overrides context isDisabled={true}
+        await expect(input).not.toBeDisabled();
+      }
+    );
+
+    await step(
+      "TextInput local props override context readonly prop",
+      async () => {
+        // Verify TextInput's local isReadOnly={false} overrides context isReadOnly={true}
+        await expect(input).not.toHaveAttribute("readonly");
+      }
+    );
+  },
+};
