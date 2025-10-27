@@ -74,19 +74,6 @@ function AppFrameBreadcrumbBar({ children }: AppFrameBreadcrumbBarProps) {
       borderColor="neutral.3"
       px="400"
       py="200"
-      css={{
-        animation: !isOnHome ? "slideDownBreadcrumbs 0.3s ease-out" : "none",
-        "@keyframes slideDownBreadcrumbs": {
-          from: {
-            opacity: 0,
-            transform: "translateY(-8px)",
-          },
-          to: {
-            opacity: 1,
-            transform: "translateY(0)",
-          },
-        },
-      }}
     >
       {children}
     </Box>
@@ -164,18 +151,6 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
       p="800"
       bg="bg"
       css={{
-        // Fade in + slide down animation
-        animation: "fadeInSlideDown 0.4s ease-out forwards",
-        "@keyframes fadeInSlideDown": {
-          from: {
-            opacity: 0,
-            transform: "translateY(-16px)",
-          },
-          to: {
-            opacity: 1,
-            transform: "translateY(0)",
-          },
-        },
         // Custom scrollbar styling
         "&::-webkit-scrollbar": {
           width: "8px",
