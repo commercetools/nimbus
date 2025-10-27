@@ -305,29 +305,6 @@ export const WithId: Story = {
   },
 };
 
-// export const WithMaxLength: Story = {
-//   args: {
-//     label: "Project code",
-//     description: "Maximum 28 characters",
-//     maxLength: 28,
-//     placeholder: "Enter code",
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const input = canvas.getByRole("textbox");
-
-//     await step("MaxLength attribute is applied to input", async () => {
-//       await expect(input).toHaveAttribute("maxLength", "28");
-//     });
-
-//     await step("Input prevents typing beyond maxLength", async () => {
-//       await userEvent.type(input, "123456789012345678901234567828");
-//       // Should only contain first 28 characters
-//       await expect(input).toHaveValue("1234567890123456789012345678");
-//     });
-//   },
-// };
-
 export const WithDifferentWidths: Story = {
   render: () => {
     return (
