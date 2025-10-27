@@ -9,6 +9,7 @@ import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { AppWithRouter } from "./components/app-with-router";
 import { DynamicLayout } from "./layouts/dynamic-layout";
 import { ManifestProvider } from "./contexts/manifest-context";
+import { BreadcrumbProvider } from "./contexts/breadcrumb-context";
 import { ErrorBoundary } from "./components/error-boundary";
 import { NimbusProvider } from "@commercetools/nimbus";
 import DynamicRoute from "./routes/dynamic-route";
@@ -19,24 +20,29 @@ function App() {
   return (
     <NimbusProvider locale="en" router={{ navigate }}>
       <ManifestProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={<AppWithRouter />}
-            errorElement={<ErrorBoundary />}
-          >
-            <Route element={<DynamicLayout />} errorElement={<ErrorBoundary />}>
-              {/* Redirect root to /home */}
-              <Route index element={<Navigate to="/home" replace />} />
-              {/* Catch-all route - dynamically resolves content from manifest */}
+        <BreadcrumbProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={<AppWithRouter />}
+              errorElement={<ErrorBoundary />}
+            >
               <Route
-                path="*"
-                element={<DynamicRoute />}
+                element={<DynamicLayout />}
                 errorElement={<ErrorBoundary />}
-              />
+              >
+                {/* Redirect root to /home */}
+                <Route index element={<Navigate to="/home" replace />} />
+                {/* Catch-all route - dynamically resolves content from manifest */}
+                <Route
+                  path="*"
+                  element={<DynamicRoute />}
+                  errorElement={<ErrorBoundary />}
+                />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </BreadcrumbProvider>
       </ManifestProvider>
     </NimbusProvider>
   );
