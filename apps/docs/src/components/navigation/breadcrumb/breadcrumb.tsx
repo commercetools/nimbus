@@ -15,7 +15,7 @@ import { useBreadcrumbContext } from "../../../contexts/breadcrumb-context";
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc } = useActiveDoc();
   const { previousParts, setPreviousParts } = useBreadcrumbContext();
   const [isHovered, setIsHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);

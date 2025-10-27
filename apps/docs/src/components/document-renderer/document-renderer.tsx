@@ -8,7 +8,7 @@ import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc, isLoading, error } = useActiveDoc();
 
   const content = activeDoc?.mdx;
   const meta = activeDoc?.meta;
@@ -24,12 +24,19 @@ const DocumentRendererComponent = () => {
       : `${brandName} | Home`;
   }, [meta?.menu, brandName]);
 
-  if (!content || !meta)
+  // Don't show 404 while loading
+  if (isLoading) {
+    return null;
+  }
+
+  // Only show 404 if not loading and there's no content
+  if (!content || !meta || error) {
     return (
       <Box>
         <Text fontWeight="700">404 - This page does not exist.</Text>
       </Box>
     );
+  }
 
   return (
     <>

@@ -54,7 +54,7 @@ export const AppNavBarMenu = () => {
                 transitionDuration="fast"
                 _hover={{
                   colorPalette: "primary",
-                  color: isActive ? "colorPalette.11!" : "colorPalette.10!",
+                  color: "colorPalette.11",
                   bg: isActive ? "colorPalette.3" : "colorPalette.2",
                 }}
               >
