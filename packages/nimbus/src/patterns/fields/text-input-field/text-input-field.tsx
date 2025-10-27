@@ -64,7 +64,7 @@ export const TextInputField = ({
       {description && (
         <FormField.Description>{description}</FormField.Description>
       )}
-      {errors && (
+      {hasErrors && (
         <FormField.Error>
           <FieldErrors errors={errors} />
         </FormField.Error>

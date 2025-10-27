@@ -377,12 +377,12 @@ export const WithDifferentWidths: Story = {
   },
 };
 
-export const WithInfoBox: Story = {
+export const WithInfo: Story = {
   args: {
     label: "Project name",
     description: "Enter your project name",
     placeholder: "My Awesome Project",
-    infoBox: "Project names should be descriptive and unique.",
+    info: "Project names should be descriptive and unique.",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(
@@ -397,24 +397,24 @@ export const WithInfoBox: Story = {
     });
 
     await step(
-      "InfoBox content is visible after clicking info button",
+      "Info content is visible after clicking info button",
       async () => {
-        const infoBox = within(document.body).getByText(
+        const info = within(document.body).getByText(
           "Project names should be descriptive and unique."
         );
-        await expect(infoBox).toBeInTheDocument();
+        await expect(info).toBeInTheDocument();
       }
     );
 
-    await step("InfoBox is properly linked via aria-describedby", async () => {
-      const infoBox = within(document.body).getByText(
+    await step("Info is properly linked via aria-describedby", async () => {
+      const info = within(document.body).getByText(
         "Project names should be descriptive and unique."
       );
       const ariaDescribedby = input.getAttribute("aria-describedby");
-      await expect(ariaDescribedby).toContain(infoBox.id);
+      await expect(ariaDescribedby).toContain(info.id);
     });
 
-    await step("Input is still functional with InfoBox", async () => {
+    await step("Input is still functional with Info", async () => {
       await userEvent.click(infoButton);
 
       await userEvent.type(input, "My Awesome Project");
