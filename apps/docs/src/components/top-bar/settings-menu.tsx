@@ -2,7 +2,7 @@
  * Settings Menu Component
  *
  * Provides user preferences controls:
- * - Color mode (light/dark/system)
+ * - Color mode (light/dark)
  * - Font size (xs, sm, md, lg, xl)
  * - Density (compact, comfortable, spacious)
  * - Export/Import settings
@@ -20,7 +20,6 @@ import {
   Settings,
   LightMode,
   DarkMode,
-  SettingsBrightness,
   FileDownload,
   FileUpload,
   RestartAlt,
@@ -102,7 +101,7 @@ export function SettingsMenu() {
   const handleColorModeChange = (selectedKeys: Set<React.Key>) => {
     const mode = Array.from(selectedKeys)[0] as string;
     if (mode) {
-      setColorMode(mode as "light" | "dark" | "system");
+      setColorMode(mode as "light" | "dark");
     }
   };
 
@@ -153,7 +152,7 @@ export function SettingsMenu() {
   const handleResetSettings = () => {
     setPreferences(DEFAULT_PREFERENCES);
     applyFontSize(DEFAULT_PREFERENCES.fontSize);
-    setColorMode("system");
+    setColorMode("light");
   };
 
   return (
@@ -179,10 +178,6 @@ export function SettingsMenu() {
           <Menu.Item id="dark">
             <Icon as={DarkMode} slot="icon" />
             Dark
-          </Menu.Item>
-          <Menu.Item id="system">
-            <Icon as={SettingsBrightness} slot="icon" />
-            System
           </Menu.Item>
         </Menu.Section>
 
