@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, type AvatarProps, Button, Stack } from "@commercetools/nimbus";
+import { Avatar, type AvatarProps, Stack } from "@commercetools/nimbus";
 import { within, expect, waitFor } from "storybook/test";
 
 /**
@@ -153,21 +153,5 @@ export const ImageErrorFallback: Story = {
       await expect(img).not.toBeNull(); // Image element should still exist
       await expect(img).toHaveStyle("display: none"); // But should be hidden
     });
-  },
-};
-
-export const InAButton: Story = {
-  args: {
-    firstName: "Jane",
-    lastName: "Smith",
-    src: avatarImg,
-  },
-
-  render(args) {
-    return (
-      <Button unstyled asChild>
-        <Avatar {...args} as="button" />
-      </Button>
-    );
   },
 };

@@ -19,8 +19,9 @@ type AccordionRecipeProps = SlotRecipeProps<"accordion">;
 // SLOT PROPS
 // ============================================================
 
-export type AccordionRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div", AccordionRecipeProps>
+export type AccordionRootSlotProps = HTMLChakraProps<
+  "div",
+  AccordionRecipeProps
 >;
 
 // ============================================================
@@ -41,7 +42,7 @@ export type AccordionRootSlotProps = OmitUnwantedProps<
  * Props for the Accordion.Root component.
  * Controls the overall accordion container and behavior.
  */
-export type AccordionRootProps = AccordionRootSlotProps &
+export type AccordionRootProps = OmitUnwantedProps<AccordionRootSlotProps> &
   RaDisclosureGroupProps & {
     /** The accordion items to display */
     children: ReactNode;
