@@ -5,7 +5,7 @@
  * Routes are defined by the menu property in MDX frontmatter, not hardcoded.
  */
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -23,8 +23,20 @@ export default function DynamicRoute() {
   const location = useLocation();
   const { manifest, isLoading } = useManifest();
   const currentPath = normalizeRoute(location.pathname);
+  const [isRouteChecked, setIsRouteChecked] = useState(false);
 
-  if (isLoading || !manifest) {
+  // Reset route check state when location changes
+  useEffect(() => {
+    setIsRouteChecked(false);
+    // Give the manifest a moment to stabilize before checking route
+    const timer = setTimeout(() => {
+      setIsRouteChecked(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  // Show loading while manifest is loading or route hasn't been checked yet
+  if (isLoading || !manifest || !isRouteChecked) {
     return <LoadingSpinner />;
   }
 
