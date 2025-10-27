@@ -12,7 +12,7 @@ import type { ButtonProps } from "./button.types.ts";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
  */
-export const Button = (props: ButtonProps) => {
+const ButtonComponent = (props: ButtonProps) => {
   const { ref: forwardedRef, as, asChild, children, ...rest } = props;
 
   // create a local ref (because the consumer may not provide a forwardedRef)
@@ -20,30 +20,21 @@ export const Button = (props: ButtonProps) => {
   // merge the local ref with a potentially forwarded ref
   const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  /**
-   * Consume context props from ButtonContext when Button is used
-   * as a child of React Aria components (e.g., within ToggleButton, Toolbar).
-   * This enables proper slot-aware behavior and prop composition, allowing
-   * Button to work seamlessly within React Aria's component hierarchy.
-   */
+  // Consume context props based on slot (this enables slot-aware behavior)
   const [contextProps, contextRef] = useContextProps(
     rest,
     baseRef,
     ButtonContext
   );
 
-  // Type guard to validate disabled prop exists at runtime
-  const hasDisabled = (obj: unknown): obj is { disabled: boolean } =>
-    typeof obj === "object" && obj !== null && "disabled" in obj;
-
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
+
   const elementType = as || (asChild ? "a" : "button") || "button";
 
   const { buttonProps } = useButton(
     {
       ...contextProps,
-      isDisabled: hasDisabled(contextProps) ? contextProps.disabled : undefined,
       elementType,
     },
     contextRef
@@ -73,4 +64,29 @@ export const Button = (props: ButtonProps) => {
 };
 
 // Manually assign a displayName for debugging purposes
-Button.displayName = "Button";
+ButtonComponent.displayName = "Button";
+
+/**
+ * ### Button
+ *
+ * Displays a Button.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
+ */
+export const Button: typeof ButtonComponent & {
+  // TypeScript can't properly name the internal React Aria types when inferring
+  // Button.Context, so we explicitly type it using typeof and Object.assign
+  /**
+   * ### Button.Context
+   *
+   * Re-exports React-Aria's `ButtonContext`
+   *
+   * For advanced use cases, **you generally will not need this**
+   *
+   * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
+   * @see {@link https://react-spectrum.adobe.com/react-aria/Button.html#contexts}
+   */
+  Context: typeof ButtonContext;
+} = Object.assign(ButtonComponent, {
+  Context: ButtonContext,
+});

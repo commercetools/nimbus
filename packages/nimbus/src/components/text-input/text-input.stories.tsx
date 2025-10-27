@@ -17,7 +17,6 @@ import {
   AddBox,
   Close,
 } from "@commercetools/nimbus-icons";
-import { TextField as RaTextField, Label } from "react-aria-components";
 
 const meta: Meta<typeof TextInput> = {
   title: "Components/TextInput",
@@ -473,17 +472,15 @@ export const InputTypes: Story = {
 export const WithinReactAriaContext: Story = {
   render: () => {
     return (
-      <RaTextField
-        isRequired
-        isReadOnly
-        isDisabled
-        aria-label="context-test-field"
+      <TextInput.Context
+        value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
       >
-        <Label style={{ display: "block", marginBottom: "8px" }}>
-          Email Address
-        </Label>
-        <TextInput type="email" placeholder="Enter your email" />
-      </RaTextField>
+        <TextInput
+          aria-label="email address"
+          type="email"
+          placeholder="Enter your email"
+        />
+      </TextInput.Context>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -511,6 +508,56 @@ export const WithinReactAriaContext: Story = {
       async () => {
         // Verify TextInput receives readonly attribute from TextField context
         await expect(input).toHaveAttribute("readonly");
+      }
+    );
+  },
+};
+
+/**
+ * Demonstrates local TextInput props overriding props from React Aria's InputContext.
+ */
+export const OverrideContextWithLocalProps: Story = {
+  render: () => {
+    return (
+      <TextInput.Context
+        value={{ isDisabled: true, isRequired: true, isReadOnly: true }}
+      >
+        <TextInput
+          aria-label="email address"
+          type="email"
+          placeholder="Enter your email"
+          isDisabled={false}
+          isRequired={false}
+          isReadOnly={false}
+        />
+      </TextInput.Context>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("Enter your email");
+
+    await step(
+      "TextInput consumes required prop from TextField context",
+      async () => {
+        // Verify TextInput receives required attribute from TextField context
+        await expect(input).not.toHaveAttribute("aria-required");
+      }
+    );
+
+    await step(
+      "TextInput consumes disabled prop from TextField context",
+      async () => {
+        // Verify TextInput receives disabled attribute from TextField context
+        await expect(input).not.toBeDisabled();
+      }
+    );
+
+    await step(
+      "TextInput consumes readonly prop from TextField context",
+      async () => {
+        // Verify TextInput receives readonly attribute from TextField context
+        await expect(input).not.toHaveAttribute("readonly");
       }
     );
   },

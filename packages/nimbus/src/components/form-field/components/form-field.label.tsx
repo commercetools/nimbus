@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { FormFieldContext } from "./form-field.context";
 import type { FormFieldLabelSlotProps } from "../form-field.types";
-
+// TODO: should this be wrapped in react-aria's `LabelContext` provider?, e.g. https://react-spectrum.adobe.com/react-aria/TextField.html#custom-children
 export const FormFieldLabel = ({
   children,
   ...labelSlotProps

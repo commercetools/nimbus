@@ -1,5 +1,8 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
+import type {
+  TextFieldProps as RaTextFieldProps,
+  InputProps as RaInputProps,
+} from "react-aria-components";
 
 // ============================================================
 // RECIPE PROPS
@@ -60,4 +63,39 @@ export type TextInputProps = Omit<
      * Placeholder text for the input
      */
     placeholder?: string;
+  };
+
+// ============================================================
+// CONTEXT VALUE
+// ============================================================
+
+/**
+ * Extended InputContext value type that accepts both React Aria props
+ * and DOM attributes for maximum flexibility when using TextInput.Context.
+ *
+ * @example
+ * ```tsx
+ * <TextInput.Context value={{ isDisabled: true, isRequired: true }}>
+ *   <TextInput placeholder="Email" />
+ * </TextInput.Context>
+ * ```
+ */
+export type TextInputContextValue = RaInputProps &
+  RaTextFieldProps & {
+    /**
+     * DOM disabled attribute
+     */
+    disabled?: boolean;
+    /**
+     * DOM required attribute
+     */
+    required?: boolean;
+    /**
+     * DOM readOnly attribute
+     */
+    readOnly?: boolean;
+    /**
+     * ARIA invalid attribute
+     */
+    "aria-invalid"?: boolean | "true" | "false";
   };
