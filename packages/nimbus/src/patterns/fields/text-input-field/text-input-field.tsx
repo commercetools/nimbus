@@ -36,6 +36,7 @@ export const TextInputField = ({
   onChange,
   renderError,
   touched = false,
+  isRequired = false,
   isDisabled = false,
   isReadOnly = false,
   value,
@@ -49,6 +50,7 @@ export const TextInputField = ({
   return (
     <FormField.Root
       id={id}
+      isRequired={isRequired}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
       isInvalid={hasErrors}
