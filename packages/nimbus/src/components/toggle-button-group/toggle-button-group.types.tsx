@@ -55,7 +55,7 @@ type ToggleButtonGroupRootCombinedProps = ToggleButtonGroupRootSlotProps &
 // ============================================================
 
 export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
-  Omit<ToggleButtonGroupRootCombinedProps, "size" | "colorPalette"> & {
+  Omit<ToggleButtonGroupRootCombinedProps, "size"> & {
     ref?: React.Ref<typeof RaToggleButtonGroup>;
   };
 
