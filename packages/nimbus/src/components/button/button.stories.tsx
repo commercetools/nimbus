@@ -31,9 +31,10 @@ const variants: ButtonProps["variant"][] = [
   "link",
 ];
 
-const tones: ButtonProps["tone"][] = [
+const colorPalettes: ButtonProps["colorPalette"][] = [
   "primary",
   "neutral",
+  "info",
   "critical",
 ] as const;
 
@@ -176,16 +177,16 @@ export const Variants: Story = {
   },
 };
 
-export const Tones: Story = {
+export const ColorPalettes: Story = {
   args: {
     children: "Demo Button",
   },
   render: (args) => {
     return (
       <Stack>
-        {tones.map((tone) => (
+        {colorPalettes.map((colorPalette) => (
           <Stack
-            key={tone as string}
+            key={colorPalette as string}
             direction="row"
             gap="400"
             alignItems="center"
@@ -195,7 +196,7 @@ export const Tones: Story = {
                 key={variant as string}
                 {...args}
                 variant={variant}
-                tone={tone}
+                colorPalette={colorPalette}
               />
             ))}
           </Stack>
@@ -291,8 +292,8 @@ export const SmokeTest: Story = {
   render: (args) => {
     return (
       <Stack gap="1200">
-        {tones.map((tone) => (
-          <Stack key={tone as string} direction="column" gap="400">
+        {colorPalettes.map((colorPalette) => (
+          <Stack key={colorPalette as string} direction="column" gap="400">
             {sizes.map((size) => (
               <Stack direction="row" key={size as string}>
                 {variants.map((variant) => (
@@ -303,7 +304,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          tone={tone}
+                          colorPalette={colorPalette}
                         >
                           <DemoIcon />
                           {JSON.stringify(variant)} {args.children}
@@ -316,7 +317,7 @@ export const SmokeTest: Story = {
                           as="a"
                           variant={variant}
                           size={size}
-                          tone={tone}
+                          colorPalette={colorPalette}
                           isDisabled
                         >
                           <DemoIcon />
@@ -329,7 +330,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          tone={tone}
+                          colorPalette={colorPalette}
                         >
                           <DemoIcon />
                           {JSON.stringify(variant)} {args.children}
@@ -340,7 +341,7 @@ export const SmokeTest: Story = {
                           {...args}
                           variant={variant}
                           size={size}
-                          tone={tone}
+                          colorPalette={colorPalette}
                         >
                           {JSON.stringify(variant)} {args.children}
                           <DemoIcon />

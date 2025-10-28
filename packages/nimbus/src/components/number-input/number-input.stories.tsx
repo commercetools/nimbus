@@ -279,7 +279,7 @@ export const LeadingAndTrailingElements: Story = {
           leadingElement: (
             <IconButton
               size={size === "sm" ? "2xs" : "xs"}
-              tone="primary"
+              colorPalette="primary"
               variant="ghost"
               aria-label="number options"
             >
@@ -289,7 +289,7 @@ export const LeadingAndTrailingElements: Story = {
           trailingElement: (
             <IconButton
               size={size === "sm" ? "2xs" : "xs"}
-              tone="primary"
+              colorPalette="primary"
               variant="ghost"
               aria-label="clear"
             >

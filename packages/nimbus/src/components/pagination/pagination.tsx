@@ -96,7 +96,7 @@ export const Pagination = (props: PaginationProps) => {
           onClick={pagination.goToPreviousPage}
           isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
-          tone="primary"
+          colorPalette="primary"
           aria-label={intl.formatMessage(messages.goToPreviousPage)}
         >
           <ChevronLeft />
@@ -134,7 +134,7 @@ export const Pagination = (props: PaginationProps) => {
           onClick={pagination.goToNextPage}
           isDisabled={!pagination.hasNextPage}
           variant="ghost"
-          tone="primary"
+          colorPalette="primary"
           aria-label={intl.formatMessage(messages.goToNextPage)}
         >
           <ChevronRight />

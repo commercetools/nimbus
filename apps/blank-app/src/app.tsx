@@ -31,7 +31,7 @@ export const App = () => {
         </Text>
         <Button
           variant="solid"
-          tone="primary"
+          colorPalette="primary"
           mx="auto"
           onClick={toggleColorMode}
         >

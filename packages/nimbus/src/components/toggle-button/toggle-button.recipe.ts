@@ -5,6 +5,7 @@ export const toggleButtonRecipe = defineRecipe({
   className: "nimbus-toggle-button",
   base: {
     ...buttonRecipe.base,
+    colorPalette: "primary",
   },
   variants: {
     size: {
@@ -57,13 +58,9 @@ export const toggleButtonRecipe = defineRecipe({
         },
       },
     },
-    tone: {
-      ...buttonRecipe.variants?.tone,
-    },
   },
   defaultVariants: {
     size: "md",
     variant: "outline",
-    tone: "primary",
   },
 });

@@ -10,8 +10,8 @@ import {
   WarningAmber,
 } from "@commercetools/nimbus-icons";
 
-const getIconFromTone = (tone: AlertProps["tone"]) => {
-  switch (tone) {
+const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
+  switch (colorPalette) {
     case "critical":
       return <ErrorOutline />;
     case "info":
@@ -65,7 +65,7 @@ export const AlertRoot: AlertRootComponent = (props) => {
     <AlertContext.Provider value={contextValue}>
       <AlertRootSlot ref={ref} {...restProps} role="alert">
         <AlertIcon alignItems="flex-start">
-          {getIconFromTone(restProps.tone)}
+          {getIconFromColorPalette(restProps.colorPalette)}
         </AlertIcon>
         <Stack flex="1" gap="200">
           <Box>

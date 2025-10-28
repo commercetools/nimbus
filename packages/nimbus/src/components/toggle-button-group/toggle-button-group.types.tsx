@@ -10,6 +10,7 @@ import {
   ToggleButton as RaToggleButton,
   ToggleButtonGroup as RaToggleButtonGroup,
 } from "react-aria-components";
+import type { SemanticPalettesOnly } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -21,20 +22,21 @@ type ToggleButtonGroupRecipeVariantProps = {
    * @default "md"
    */
   size?: "xs" | "md";
-  /**
-   * Tone variant
-   */
-  tone?: "primary" | "critical" | "neutral";
 };
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-type ToggleButtonGroupRootSlotProps = HTMLChakraProps<
-  "div",
-  RecipeProps<"div">
->;
+type ToggleButtonGroupRootSlotProps = Omit<
+  HTMLChakraProps<"div", RecipeProps<"div">>,
+  "colorPalette"
+> & {
+  /**
+   * Color palette for the button group
+   */
+  colorPalette?: SemanticPalettesOnly;
+};
 
 type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
   "button",
@@ -53,7 +55,7 @@ type ToggleButtonGroupRootCombinedProps = ToggleButtonGroupRootSlotProps &
 // ============================================================
 
 export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
-  Omit<ToggleButtonGroupRootCombinedProps, "size" | "tone"> & {
+  Omit<ToggleButtonGroupRootCombinedProps, "size"> & {
     ref?: React.Ref<typeof RaToggleButtonGroup>;
   };
 

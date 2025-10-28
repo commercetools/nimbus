@@ -2807,7 +2807,7 @@ export const FormikIntegration: Story = {
             <FormField.Error>{errors.animals}</FormField.Error>
           </FormField.Root>
           <Stack direction="row" gap="200" mt="200">
-            <Button tone="primary" type="submit">
+            <Button colorPalette="primary" type="submit">
               Submit Form
             </Button>
             <Button variant="ghost" onPress={resetForm}>

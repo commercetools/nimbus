@@ -1,5 +1,6 @@
 import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-components";
+import type { SemanticPalettesOnly } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,21 +17,21 @@ type ToggleButtonRecipeProps = {
    * @default "outline"
    */
   variant?: RecipeProps<"toggleButton">["variant"];
-  /**
-   * Color tone palette for the toggle button
-   * @default "primary"
-   */
-  tone?: RecipeProps<"toggleButton">["tone"];
 };
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-export type ToggleButtonRootSlotProps = HTMLChakraProps<
-  "button",
-  ToggleButtonRecipeProps
->;
+export type ToggleButtonRootSlotProps = Omit<
+  HTMLChakraProps<"button", ToggleButtonRecipeProps>,
+  "colorPalette"
+> & {
+  /**
+   * Color palette for the toggle button
+   */
+  colorPalette?: SemanticPalettesOnly;
+};
 
 // ============================================================
 // HELPER TYPES

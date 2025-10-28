@@ -188,7 +188,7 @@ export const TriggerVariations: Story = {
         <Box display="flex" gap="16px" alignItems="center">
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button variant="solid" tone="primary">
+              <Button variant="solid" colorPalette="primary">
                 <KeyboardArrowDown />
                 Primary
               </Button>
@@ -444,7 +444,7 @@ export const WithDifferentPlacements: Story = {
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               <Menu.Root placement={placement as any}>
                 <Menu.Trigger asChild>
-                  <Button variant="solid" tone="primary" size="xs">
+                  <Button variant="solid" colorPalette="primary" size="xs">
                     {placement}
                   </Button>
                 </Menu.Trigger>
