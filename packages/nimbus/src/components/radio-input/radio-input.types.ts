@@ -1,3 +1,4 @@
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type {
   RadioGroupProps as RaRadioGroupProps,
@@ -47,10 +48,10 @@ type RadioGroupPropsSubset = Omit<
 // ============================================================
 
 export type RadioInputRootProps = Omit<
-  RadioInputRootSlotProps,
+  OmitUnwantedProps<RadioInputRootSlotProps>,
   keyof RadioGroupPropsSubset
 > &
   RadioGroupPropsSubset;
 
 export type RadioInputOptionProps = RaRadioProps &
-  Omit<RadioInputOptionSlotProps, keyof RaRadioProps>;
+  OmitUnwantedProps<Omit<RadioInputOptionSlotProps, keyof RaRadioProps>>;
