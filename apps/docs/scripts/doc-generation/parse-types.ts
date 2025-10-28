@@ -9,7 +9,8 @@ export const flog = (str) => {
 };
 
 // Directory where individual type files will be saved
-const typesDirectory = "./src/data/types";
+// Using public folder so files are accessible in production builds
+const typesDirectory = "./public/generated/types";
 const manifestFile = path.join(typesDirectory, "manifest.json");
 
 const fileToGrabTypesFrom: string = "./../../packages/nimbus/src/index.ts";
