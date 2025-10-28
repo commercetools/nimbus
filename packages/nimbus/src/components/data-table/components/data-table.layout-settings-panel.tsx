@@ -97,7 +97,7 @@ export const LayoutSettingsPanel = ({
         <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
           <ToggleButtonGroup.Root
             w="full"
-            tone="primary"
+            colorPalette="primary"
             selectedKeys={[rowDensity]}
             onSelectionChange={handleRowDensityChange}
             aria-label={formatMessage(messages.RowDensityAriaLabel)}
