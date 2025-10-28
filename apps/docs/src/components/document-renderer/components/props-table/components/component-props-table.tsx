@@ -1,7 +1,7 @@
-import { Box, Stack, Text } from "@commercetools/nimbus";
-import { useAtomValue } from "jotai";
-import { useMemo } from "react";
-import { typesAtom } from "../../../../../atoms/types.ts";
+import { Box, Stack, Text, LoadingSpinner } from "@commercetools/nimbus";
+import { useState, useEffect, useMemo } from "react";
+import type { ComponentDoc } from "react-docgen-typescript";
+import { loadComponentType } from "../../../../../atoms/types.ts";
 import type { PropItem } from "../types";
 import { groupProps } from "../utils";
 import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
@@ -13,13 +13,38 @@ import { CollapsiblePropsCategory } from "./collapsible-props-category";
 // ============================================================
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
-  // Get all type definitions from global atom
-  const typesArr = useAtomValue(typesAtom);
+  // State for async loading
+  const [propsTableData, setPropsTableData] = useState<ComponentDoc | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Find the type definition for this specific component
-  const propsTableData = useMemo(() => {
-    return typesArr.find((v) => v.displayName === id);
-  }, [typesArr, id]);
+  // Load component type data on mount or when id changes
+  useEffect(() => {
+    let cancelled = false;
+
+    setIsLoading(true);
+    setError(null);
+
+    loadComponentType(id)
+      .then((data) => {
+        if (!cancelled) {
+          setPropsTableData(data);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.message || "Failed to load component types");
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   // Convert props object to array for easier manipulation
   const propsArr = useMemo<PropItem[]>(() => {
@@ -42,6 +67,31 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
   const groupedProps = useMemo(() => {
     return groupProps(propsArr);
   }, [propsArr]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Box
+        padding="600"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <LoadingSpinner size="md" />
+      </Box>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Box padding="400" backgroundColor="critical.subtle" borderRadius="4">
+        <Text color="critical.emphasized">
+          Error loading component types: {error}
+        </Text>
+      </Box>
+    );
+  }
 
   // Component not found - show error
   if (!propsTableData) {
