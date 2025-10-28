@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   ScopedSearchInputRootSlotProps,
   ScopedSearchInputContainerSlotProps,
@@ -10,22 +11,31 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "scopedSearchInput",
 });
 
-export const ScopedSearchInputRootSlot = withProvider<
+export const ScopedSearchInputRootSlot: SlotComponent<
   HTMLDivElement,
   ScopedSearchInputRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, ScopedSearchInputRootSlotProps>("div", "root");
 
-export const ScopedSearchInputContainerSlot = withContext<
+export const ScopedSearchInputContainerSlot: SlotComponent<
   HTMLDivElement,
   ScopedSearchInputContainerSlotProps
->("div", "container");
+> = withContext<HTMLDivElement, ScopedSearchInputContainerSlotProps>(
+  "div",
+  "container"
+);
 
-export const ScopedSearchInputSelectWrapperSlot = withContext<
+export const ScopedSearchInputSelectWrapperSlot: SlotComponent<
   HTMLDivElement,
   ScopedSearchInputSelectWrapperSlotProps
->("div", "selectWrapper");
+> = withContext<HTMLDivElement, ScopedSearchInputSelectWrapperSlotProps>(
+  "div",
+  "selectWrapper"
+);
 
-export const ScopedSearchInputSearchWrapperSlot = withContext<
+export const ScopedSearchInputSearchWrapperSlot: SlotComponent<
   HTMLDivElement,
   ScopedSearchInputSearchWrapperSlotProps
->("div", "searchWrapper");
+> = withContext<HTMLDivElement, ScopedSearchInputSearchWrapperSlotProps>(
+  "div",
+  "searchWrapper"
+);
