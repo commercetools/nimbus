@@ -67,11 +67,12 @@ export function ManifestProvider({ children }: { children: ReactNode }) {
       try {
         const [routeData, typesData] = await Promise.all([
           import("../data/route-manifest.json"),
-          import("../data/types/manifest.json"),
+          // Fetch types manifest from public folder (available in production)
+          fetch("/generated/types/manifest.json").then((res) => res.json()),
         ]);
 
         setRouteManifest(routeData.default || routeData);
-        setTypesManifest(typesData.default || typesData);
+        setTypesManifest(typesData);
       } catch (error) {
         console.error("Failed to load manifests:", error);
       } finally {

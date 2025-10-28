@@ -35,9 +35,12 @@ export async function loadComponentType(
   }
 
   try {
-    // Dynamically import the component type file
-    const typeModule = await import(`./../data/types/${filename}`);
-    const typeData: ComponentDoc = typeModule.default;
+    // Fetch the component type file from public folder
+    const response = await fetch(`/generated/types/${filename}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch type: ${response.statusText}`);
+    }
+    const typeData: ComponentDoc = await response.json();
 
     // Cache for future use
     typeCache.set(componentId, typeData);

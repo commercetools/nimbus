@@ -24,7 +24,11 @@ dist-ssr
 *.sw?
 
 
-# Ignore generated json files for 
+# Ignore generated json files for
 # component docs & their ts-types
 # These files are generated from MDX files during build
 src/data/**/*.json
+
+# Ignore generated types in public folder
+# These files are generated during build from TypeScript definitions
+public/generated/
