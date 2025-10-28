@@ -1,6 +1,5 @@
 import { atom } from "jotai";
 import type { ComponentDoc } from "react-docgen-typescript";
-import manifest from "./../data/types/manifest.json";
 
 /**
  * Cache for loaded component types to avoid re-fetching
@@ -10,18 +9,26 @@ const typeCache = new Map<string, ComponentDoc>();
 /**
  * Loads a component's type definition dynamically
  * @param componentId - The displayName of the component
+ * @param manifest - The types manifest from ManifestProvider context
  * @returns The component's type definition or null if not found
  */
 export async function loadComponentType(
-  componentId: string
+  componentId: string,
+  manifest: Record<string, string> | null
 ): Promise<ComponentDoc | null> {
   // Return from cache if already loaded
   if (typeCache.has(componentId)) {
     return typeCache.get(componentId)!;
   }
 
+  // Check if manifest is loaded
+  if (!manifest) {
+    console.warn("Types manifest not loaded yet");
+    return null;
+  }
+
   // Check if component exists in manifest
-  const filename = manifest[componentId as keyof typeof manifest];
+  const filename = manifest[componentId];
   if (!filename) {
     console.warn(`Component type not found: ${componentId}`);
     return null;

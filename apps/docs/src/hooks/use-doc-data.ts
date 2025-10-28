@@ -25,10 +25,10 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
   const [relatedDocs, setRelatedDocs] = useState<DocData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { manifest } = useManifest();
+  const { routeManifest } = useManifest();
 
   useEffect(() => {
-    if (!path || !manifest) {
+    if (!path || !routeManifest) {
       if (!path) {
         setError(new Error("Path is required"));
       }
@@ -42,7 +42,7 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         setError(null);
 
         // Find route in manifest
-        const route = manifest.routes.find((r) => r.path === `/${path}`);
+        const route = routeManifest.routes.find((r) => r.path === `/${path}`);
 
         if (!route) {
           throw new Error(`Document not found: ${path}`);
@@ -80,7 +80,7 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
     };
 
     loadDoc();
-  }, [path, manifest]);
+  }, [path, routeManifest]);
 
   return { doc, relatedDocs, isLoading, error };
 }

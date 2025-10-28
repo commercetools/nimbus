@@ -2,6 +2,7 @@ import { Box, Stack, Text, LoadingSpinner } from "@commercetools/nimbus";
 import { useState, useEffect, useMemo } from "react";
 import type { ComponentDoc } from "react-docgen-typescript";
 import { loadComponentType } from "../../../../../atoms/types.ts";
+import { useManifest } from "../../../../../contexts/manifest-context";
 import type { PropItem } from "../types";
 import { groupProps } from "../utils";
 import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
@@ -13,6 +14,8 @@ import { CollapsiblePropsCategory } from "./collapsible-props-category";
 // ============================================================
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
+  const { typesManifest, isLoading: isManifestLoading } = useManifest();
+
   // State for async loading
   const [propsTableData, setPropsTableData] = useState<ComponentDoc | null>(
     null
@@ -20,14 +23,16 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load component type data on mount or when id changes
+  // Load component type data when manifest is ready
   useEffect(() => {
+    if (isManifestLoading) return; // Wait for manifest to load
+
     let cancelled = false;
 
     setIsLoading(true);
     setError(null);
 
-    loadComponentType(id)
+    loadComponentType(id, typesManifest)
       .then((data) => {
         if (!cancelled) {
           setPropsTableData(data);
@@ -44,7 +49,7 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, typesManifest, isManifestLoading]);
 
   // Convert props object to array for easier manipulation
   const propsArr = useMemo<PropItem[]>(() => {

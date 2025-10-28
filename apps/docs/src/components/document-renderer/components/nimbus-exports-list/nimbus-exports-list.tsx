@@ -32,7 +32,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
   filter,
 }) => {
   const allExports = useAtomValue(nimbusExportsAtom);
-  const { manifest } = useManifest();
+  const { routeManifest } = useManifest();
   const filteredExports = filter ? allExports.filter(filter) : allExports;
   const [expandedComponents, setExpandedComponents] = useState<string[]>([]);
 
@@ -47,9 +47,9 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
 
   // Find documentation for an export item using the route manifest
   const findDocForExport = (exportName: string) => {
-    if (!manifest) return undefined;
+    if (!routeManifest) return undefined;
 
-    return manifest.routes.find((route) => route.title === exportName);
+    return routeManifest.routes.find((route) => route.title === exportName);
   };
 
   // Group exports by type

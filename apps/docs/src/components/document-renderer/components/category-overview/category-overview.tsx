@@ -19,11 +19,11 @@ import { useActiveDoc } from "@/hooks/useActiveDoc";
  * This component uses the route manifest to list documents in the same category.
  */
 const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
-  const { manifest } = useManifest();
+  const { routeManifest } = useManifest();
   const { doc: activeDoc } = useActiveDoc();
 
   // If no document found for this route, don't render
-  if (!activeDoc || !manifest) {
+  if (!activeDoc || !routeManifest) {
     return null;
   }
 
@@ -35,7 +35,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     activeDoc.meta.menu.length > 1 ? activeDoc.meta.menu[1] : null;
 
   // Find all documents that are in the same category from the manifest
-  const categoryDocs = manifest.routes.filter((route) => {
+  const categoryDocs = routeManifest.routes.filter((route) => {
     // Make sure we're in the same top-level category
     if (route.menu[0] !== currentCategory) {
       return false;
