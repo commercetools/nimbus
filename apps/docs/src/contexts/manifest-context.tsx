@@ -33,8 +33,14 @@ export type RouteManifest = {
   }>;
 };
 
+/**
+ * Types manifest structure - maps component names to type filenames
+ */
+export type TypesManifest = Record<string, string>;
+
 type ManifestContextValue = {
-  manifest: RouteManifest | null;
+  routeManifest: RouteManifest | null;
+  typesManifest: TypesManifest | null;
   isLoading: boolean;
 };
 
@@ -43,31 +49,43 @@ const ManifestContext = createContext<ManifestContextValue | undefined>(
 );
 
 /**
- * ManifestProvider loads and provides the route manifest to the entire app.
- * This is loaded once at app startup for optimal performance.
+ * ManifestProvider loads and provides both route and types manifests to the entire app.
+ * Both manifests are loaded once at app startup for optimal performance.
  */
 export function ManifestProvider({ children }: { children: ReactNode }) {
-  const [manifest, setManifest] = useState<RouteManifest | null>(null);
+  const [routeManifest, setRouteManifest] = useState<RouteManifest | null>(
+    null
+  );
+  const [typesManifest, setTypesManifest] = useState<TypesManifest | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load manifest on mount
-    const loadManifest = async () => {
+    // Load both manifests on mount
+    const loadManifests = async () => {
       try {
-        const manifestData = await import("../data/route-manifest.json");
-        setManifest(manifestData.default || manifestData);
+        const [routeData, typesData] = await Promise.all([
+          import("../data/route-manifest.json"),
+          import("../data/types/manifest.json"),
+        ]);
+
+        setRouteManifest(routeData.default || routeData);
+        setTypesManifest(typesData.default || typesData);
       } catch (error) {
-        console.error("Failed to load route manifest:", error);
+        console.error("Failed to load manifests:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadManifest();
+    loadManifests();
   }, []);
 
   return (
-    <ManifestContext.Provider value={{ manifest, isLoading }}>
+    <ManifestContext.Provider
+      value={{ routeManifest, typesManifest, isLoading }}
+    >
       {children}
     </ManifestContext.Provider>
   );

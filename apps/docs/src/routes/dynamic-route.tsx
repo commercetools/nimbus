@@ -21,7 +21,7 @@ import { normalizeRoute } from "@/utils/normalize-route";
 
 export default function DynamicRoute() {
   const location = useLocation();
-  const { manifest, isLoading } = useManifest();
+  const { routeManifest, isLoading } = useManifest();
   const currentPath = normalizeRoute(location.pathname);
   const [isRouteChecked, setIsRouteChecked] = useState(false);
 
@@ -36,14 +36,14 @@ export default function DynamicRoute() {
   }, [location.pathname]);
 
   // Show loading while manifest is loading or route hasn't been checked yet
-  if (isLoading || !manifest || !isRouteChecked) {
+  if (isLoading || !routeManifest || !isRouteChecked) {
     return <LoadingSpinner />;
   }
 
   // Special case: home route
   if (currentPath === "home" || currentPath === "") {
     // Check if there's a home document in the manifest
-    const homeRoute = manifest.routes.find(
+    const homeRoute = routeManifest.routes.find(
       (r) => r.path === "/" || r.path === "/home"
     );
 
@@ -71,9 +71,9 @@ export default function DynamicRoute() {
             </Text>
           </Box>
 
-          {manifest.categories && manifest.categories.length > 0 && (
+          {routeManifest.categories && routeManifest.categories.length > 0 && (
             <Stack gap="600">
-              {manifest.categories.map((category) => (
+              {routeManifest.categories.map((category) => (
                 <Box key={category.id}>
                   <Heading as="h2" size="xl" mb="400">
                     {category.label}
@@ -96,7 +96,7 @@ export default function DynamicRoute() {
 
   // Look up route in manifest
   const routePath = `/${currentPath}`;
-  const route = manifest.routes.find((r) => r.path === routePath);
+  const route = routeManifest.routes.find((r) => r.path === routePath);
 
   if (!route) {
     // Route not found - show 404
