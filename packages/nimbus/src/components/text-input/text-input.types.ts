@@ -1,3 +1,4 @@
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type {
   TextFieldProps as RaTextFieldProps,
@@ -41,8 +42,8 @@ export type TextInputTrailingElementSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 
 export type TextInputProps = Omit<
-  TextInputRootSlotProps,
-  keyof RaTextFieldProps | "as" | "asChild"
+  OmitUnwantedProps<TextInputRootSlotProps>,
+  keyof RaTextFieldProps
 > &
   Omit<RaTextFieldProps, "ref"> & {
     /**
