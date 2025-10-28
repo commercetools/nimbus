@@ -5,7 +5,7 @@ import type {
   ProgressBarFillSlotProps,
   ProgressBarLabelSlotProps,
   ProgressBarValueSlotProps,
-} from "./progress-bar.types.tsx";
+} from "./progress-bar.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "progressBar",

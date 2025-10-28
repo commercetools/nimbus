@@ -1,8 +1,5 @@
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-  UnstyledProp,
-} from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaProgressBarProps } from "react-aria";
 
 // ============================================================
@@ -37,7 +34,7 @@ type ProgressBarRecipeProps = {
    * @default "stacked"
    */
   layout?: SlotRecipeProps<"progressBar">["layout"];
-} & UnstyledProp;
+};
 
 // ============================================================
 // SLOT PROPS
@@ -62,16 +59,10 @@ export type ProgressBarLabelSlotProps = HTMLChakraProps<"span">;
 export type ProgressBarValueSlotProps = HTMLChakraProps<"span">;
 
 // ============================================================
-// HELPER TYPES
-// ============================================================
-
-type ExcludedProps = "css" | "unstyled" | "as" | "asChild";
-
-// ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type ProgressBarProps = Omit<ProgressBarRootSlotProps, ExcludedProps> & {
+export type ProgressBarProps = OmitUnwantedProps<ProgressBarRootSlotProps> & {
   /**
    * Ref forwarding to the root element
    */
