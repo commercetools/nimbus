@@ -3,6 +3,11 @@ import { SelectOptionsSlot } from "./../select.slots";
 import type { SelectOptionsProps } from "../select.types";
 import { extractStyleProps } from "@/utils";
 
+/**
+ * Select.Options - The trigger button and dropdown container for select options
+ *
+ * @supportsStyleProps
+ */
 export const SelectOptions = <T extends object>(
   props: SelectOptionsProps<T> & { ref?: React.Ref<HTMLDivElement> }
 ) => {

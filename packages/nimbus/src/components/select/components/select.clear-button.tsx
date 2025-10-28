@@ -6,6 +6,11 @@ import { ClearPressResponder } from "@react-aria/interactions";
 import { messages } from "../select.i18n";
 import { useIntl } from "react-intl";
 
+/**
+ * Select.ClearButton - Internal button component for clearing selected values
+ *
+ * @supportsStyleProps
+ */
 export const SelectClearButton = () => {
   const state = useContext(SelectStateContext);
   const intl = useIntl();

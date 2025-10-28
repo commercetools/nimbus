@@ -1,7 +1,9 @@
-import { SelectRoot as _SelectRoot } from "./components/select.root";
-import { SelectOptions as _SelectOptions } from "./components/select.options";
-import { SelectOption as _SelectOption } from "./components/select.option";
-import { SelectOptionGroup as _SelectOptionGroup } from "./components/select.option-group";
+import {
+  SelectRoot as _SelectRoot,
+  SelectOptions as _SelectOptions,
+  SelectOption as _SelectOption,
+  SelectOptionGroup as _SelectOptionGroup,
+} from "./components";
 
 /**
  * Select

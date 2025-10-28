@@ -6,6 +6,7 @@ import {
   type ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -45,7 +46,7 @@ export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
 // MAIN PROPS
 // ============================================================
 
-export type SelectRootProps = SelectRootSlotProps &
+export type SelectRootProps = OmitUnwantedProps<SelectRootSlotProps> &
   RaSelectProps & {
     /**
      * Whether the select is in a loading state
@@ -72,9 +73,8 @@ export type SelectRootProps = SelectRootSlotProps &
     ref?: React.Ref<HTMLDivElement>;
   };
 
-export interface SelectOptionsProps<T>
-  extends RaListBoxProps<T>,
-    Omit<SelectOptionsSlotProps, keyof RaListBoxProps<T>> {}
+export type SelectOptionsProps<T> = RaListBoxProps<T> &
+  Omit<OmitUnwantedProps<SelectOptionsSlotProps>, keyof RaListBoxProps<T>>;
 
 export type SelectOptionProps = Omit<
   RaListBoxItemProps,
@@ -87,7 +87,7 @@ export type SelectOptionProps = Omit<
   | "onMouseDown"
   | "onMouseUp"
 > &
-  Omit<SelectOptionSlotProps, keyof RaListBoxItemProps> & {
+  Omit<OmitUnwantedProps<SelectOptionSlotProps>, keyof RaListBoxItemProps> & {
     /**
      * Ref forwarding to the option element
      */
@@ -95,7 +95,10 @@ export type SelectOptionProps = Omit<
   };
 
 export type SelectOptionGroupProps<T> = RaListBoxSectionProps<T> &
-  Omit<SelectOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> & {
+  Omit<
+    OmitUnwantedProps<SelectOptionGroupSlotProps>,
+    keyof RaListBoxSectionProps<T>
+  > & {
     /**
      * Label text for the option group section
      */

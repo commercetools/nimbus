@@ -9,6 +9,11 @@ import {
 import { SelectOptionGroupSlot } from "./../select.slots";
 import type { SelectOptionGroupProps } from "../select.types";
 
+/**
+ * Select.OptionGroup - A container for grouping related options with an optional label
+ *
+ * @supportsStyleProps
+ */
 export const SelectOptionGroup = <T extends object>(
   props: SelectOptionGroupProps<T> & { ref?: React.Ref<HTMLDivElement> }
 ) => {
