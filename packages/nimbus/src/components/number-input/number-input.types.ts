@@ -8,6 +8,7 @@ import type {
   AriaButtonProps as RaButtonProps,
   AriaNumberFieldProps as RaNumberFieldProps,
 } from "react-aria";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -69,15 +70,17 @@ export type NumberInputDecrementButtonSlotProps = HTMLChakraProps<
 // HELPER TYPES
 // ============================================================
 
-export type ExcludedNumberInputProps = "asChild" | "onChange";
+export type ExcludedNumberInputProps = "onChange";
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type NumberInputProps = Omit<
-  NumberInputRootSlotProps,
-  keyof RaNumberFieldProps | ExcludedNumberInputProps
+export type NumberInputProps = OmitUnwantedProps<
+  Omit<
+    NumberInputRootSlotProps,
+    keyof RaNumberFieldProps | ExcludedNumberInputProps
+  >
 > &
   RaNumberFieldProps & {
     /**
