@@ -224,7 +224,7 @@ export const VisibleColumnsPanel = ({
       <Box>
         <Button
           variant="ghost"
-          tone="primary"
+          colorPalette="primary"
           size="xs"
           onClick={handleResetColumns}
           aria-label={formatMessage(messages.reset)}

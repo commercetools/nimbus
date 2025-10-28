@@ -156,7 +156,7 @@ export const DataTableManager = () => {
         </Tooltip.Content>
         <IconButton
           variant="ghost"
-          tone="primary"
+          colorPalette="primary"
           size="xs"
           aria-label={formatMessage(messages.settings)}
           onClick={() => setIsOpen(true)}
