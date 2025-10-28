@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { useIntl } from "react-intl";
 import type { Key } from "react-aria-components";
 import {
@@ -24,6 +24,13 @@ type TColumnListItemWithRemove = TColumnListItem & {
   onRemoveItem?: (key: Key) => void;
 };
 
+// Type guard to check if item has onRemoveItem
+function hasRemoveItem(
+  item: TColumnListItem
+): item is TColumnListItemWithRemove {
+  return "onRemoveItem" in item && typeof item.onRemoveItem === "function";
+}
+
 const VisibleColumnsPanel = ({
   hiddenItems,
   visibleItems,
@@ -36,19 +43,17 @@ const VisibleColumnsPanel = ({
   handleResetColumns: () => void;
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [searchedHiddenItems, setSearchedHiddenItems] = useState(hiddenItems);
   const { formatMessage } = useIntl();
 
   if (!hiddenItems || !visibleItems) {
     return null;
   }
 
-  // Update searched items when hidden items change
-  useEffect(() => {
-    setSearchedHiddenItems(
-      hiddenItems.filter((item) =>
-        item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
-      )
+  // Derive searched items from hiddenItems and searchValue using useMemo
+  // This ensures searchedHiddenItems is always in sync on every render
+  const searchedHiddenItems = useMemo(() => {
+    return hiddenItems.filter((item) =>
+      item.label?.toString().toLowerCase().includes(searchValue.toLowerCase())
     );
   }, [hiddenItems, searchValue]);
 
@@ -198,23 +203,19 @@ const VisibleColumnsPanel = ({
             aria-label={formatMessage(messages.visibleColumnsAria)}
             data-testid="visible-columns-list"
           >
-            {(item) => {
-              // Cast to include onRemoveItem provided by DraggableList.Root when removableItems is true
-              const itemWithRemove = item as TColumnListItemWithRemove;
-              return (
-                <DraggableList.Item
-                  py="100"
-                  key={itemWithRemove.id}
-                  id={itemWithRemove.id}
-                  onRemoveItem={itemWithRemove.onRemoveItem}
-                  aria-label={
-                    itemWithRemove.label?.toString() ?? itemWithRemove.id
-                  }
-                >
-                  {itemWithRemove.label}
-                </DraggableList.Item>
-              );
-            }}
+            {(item) => (
+              <DraggableList.Item
+                py="100"
+                key={item.id}
+                id={item.id}
+                onRemoveItem={
+                  hasRemoveItem(item) ? item.onRemoveItem : undefined
+                }
+                aria-label={item.label?.toString() ?? item.id}
+              >
+                {item.label}
+              </DraggableList.Item>
+            )}
           </DraggableList.Root>
         </Box>
       </SimpleGrid>

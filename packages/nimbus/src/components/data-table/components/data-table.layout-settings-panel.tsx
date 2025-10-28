@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useIntl } from "react-intl";
 import {
   ToggleButtonGroup,
@@ -26,17 +25,14 @@ const LayoutSettingsPanel = ({
   const { formatMessage } = useIntl();
   const context = useDataTableContext();
 
-  // Local state for text visibility and row density
-  // TODO: Would be controlled via DataTable props
-  const [textVisibility, setTextVisibility] = useState<boolean>(false);
-  const [rowDensity, setRowDensity] = useState<"comfortable" | "compact">(
-    context.density === "condensed" ? "compact" : "comfortable"
-  );
+  // Connected to DataTable context state
+  const textVisibility = context.isTruncated ?? false;
+  const rowDensity: "comfortable" | "compact" =
+    context.density === "condensed" ? "compact" : "comfortable";
 
   const handleTextVisibilityChange = (keys: Set<string | number>) => {
     const selected = Array.from(keys)[0] as "full" | "preview";
     if (selected) {
-      setTextVisibility(selected === "full" ? false : true);
       onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY);
     }
   };
@@ -44,7 +40,6 @@ const LayoutSettingsPanel = ({
   const handleRowDensityChange = (keys: Set<string | number>) => {
     const selected = Array.from(keys)[0] as "comfortable" | "compact";
     if (selected) {
-      setRowDensity(selected);
       onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_ROW_DENSITY);
     }
   };
