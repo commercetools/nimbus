@@ -56,8 +56,8 @@ catalogs:
       specifier: ^2.8.12
       version: 2.8.12
     '@storybook/addon-a11y':
-      specifier: ^9.1.13
-      version: 9.1.13
+      specifier: ^9.1.15
+      version: 9.1.15
     '@storybook/addon-docs':
       specifier: ^9.1.13
       version: 9.1.13
@@ -534,7 +534,7 @@ importers:
         version: 1.1.5
       '@storybook/addon-a11y':
         specifier: catalog:tooling
-        version: 9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
+        version: 9.1.15(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@storybook/addon-docs':
         specifier: catalog:tooling
         version: 9.1.13(@types/react@19.2.2)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
@@ -2221,10 +2221,10 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
-  '@storybook/addon-a11y@9.1.13':
-    resolution: {integrity: sha512-4enIl1h2XSZnFKUQJJoZbp1X40lzdj7f5JE15ZhU1al4z6hHWp7i2zD7ySyDpEbMypBCz1xnLvyiyw79m1fp7w==}
+  '@storybook/addon-a11y@9.1.15':
+    resolution: {integrity: sha512-UIr9F/XCECoE9nxZ4v7SmBl50soy+7N7RtcruMNeiDjv0nlBsSO5xUc9Lr4ZwcTkN8FOrAvddHpoF4UtGrAmsQ==}
     peerDependencies:
-      storybook: ^9.1.13
+      storybook: ^9.1.15
 
   '@storybook/addon-docs@9.1.13':
     resolution: {integrity: sha512-V1nCo7bfC3kQ5VNVq0VDcHsIhQf507m+BxMA5SIYiwdJHljH2BXpW2fL3FFn9gv9Wp57AEEzhm+wh4zANaJgkg==}
@@ -8626,7 +8626,7 @@ snapshots:
 
   '@sindresorhus/merge-streams@2.3.0': {}
 
-  '@storybook/addon-a11y@9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
+  '@storybook/addon-a11y@9.1.15(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.11.0
