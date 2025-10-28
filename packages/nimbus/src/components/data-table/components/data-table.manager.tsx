@@ -148,26 +148,22 @@ export const DataTableManager = () => {
     }
   }, [onColumnsChange]);
 
-  const defaultTrigger = (
-    <Tooltip.Root>
-      <Tooltip.Content placement="top">
-        {formatMessage(messages.settings)}
-      </Tooltip.Content>
-      <IconButton
-        variant="ghost"
-        tone="primary"
-        size="xs"
-        aria-label={formatMessage(messages.settings)}
-        onClick={() => setIsOpen(true)}
-      >
-        <Settings />
-      </IconButton>
-    </Tooltip.Root>
-  );
-
   return (
     <>
-      {defaultTrigger}
+      <Tooltip.Root>
+        <Tooltip.Content placement="top">
+          {formatMessage(messages.settings)}
+        </Tooltip.Content>
+        <IconButton
+          variant="ghost"
+          tone="primary"
+          size="xs"
+          aria-label={formatMessage(messages.settings)}
+          onClick={() => setIsOpen(true)}
+        >
+          <Settings />
+        </IconButton>
+      </Tooltip.Root>
       <Drawer.Root
         isOpen={isOpen}
         onOpenChange={setIsOpen}
