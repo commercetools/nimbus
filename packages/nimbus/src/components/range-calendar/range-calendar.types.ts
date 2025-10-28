@@ -1,6 +1,7 @@
 import type { DateValue } from "@internationalized/date";
 import type { RangeCalendarProps as RaRangeCalendarProps } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -42,15 +43,17 @@ export type RangeValue<T> = {
   end: T;
 };
 
-type ExcludedProps = "as" | "style" | "createCalendar";
+type ExcludedProps = "style" | "createCalendar";
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type RangeCalendarProps<T extends DateValue> = Omit<
-  RangeCalendarRootSlotProps,
-  keyof RaRangeCalendarProps<DateValue> | ExcludedProps
-> &
-  Omit<RaRangeCalendarProps<T>, ExcludedProps> &
-  SlotRecipeProps<"rangeCalendar">;
+export type RangeCalendarProps<T extends DateValue> = OmitUnwantedProps<
+  Omit<
+    RangeCalendarRootSlotProps,
+    keyof RaRangeCalendarProps<DateValue> | ExcludedProps
+  > &
+    Omit<RaRangeCalendarProps<T>, ExcludedProps> &
+    SlotRecipeProps<"rangeCalendar">
+>;
