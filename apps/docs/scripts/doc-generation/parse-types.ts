@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import debounce from "lodash/debounce";
 import docgen from "react-docgen-typescript";
 import { processComponentTypes } from "./process-types";
@@ -7,8 +8,9 @@ export const flog = (str) => {
   console.log("\x1b[32m%s\x1b[0m", `\n  ➜ ${str}\n`);
 };
 
-// Thats where compiled docs will be saved
-const compiledTypesFile = "./src/data/types.json";
+// Directory where individual type files will be saved
+const typesDirectory = "./src/data/types";
+const manifestFile = path.join(typesDirectory, "manifest.json");
 
 const fileToGrabTypesFrom: string = "./../../packages/nimbus/src/index.ts";
 
@@ -23,9 +25,34 @@ const writeDocs = debounce(() => {
   // Step 2: Process in memory (enrich + filter in single pass)
   const processedTypes = processComponentTypes(rawTypes);
 
-  // Step 3: Single write to disk
-  fs.writeFileSync(compiledTypesFile, JSON.stringify(processedTypes, null, 2));
-  flog("[TSX] Prop tables updated");
+  // Step 3: Ensure types directory exists
+  if (!fs.existsSync(typesDirectory)) {
+    fs.mkdirSync(typesDirectory, { recursive: true });
+  }
+
+  // Step 4: Write individual component type files and build manifest
+  const manifest: Record<string, string> = {};
+
+  processedTypes.forEach((componentDoc) => {
+    const componentName = componentDoc.displayName;
+    if (!componentName) return;
+
+    const filename = `${componentName}.json`;
+    const filePath = path.join(typesDirectory, filename);
+
+    // Write individual component type file
+    fs.writeFileSync(filePath, JSON.stringify(componentDoc, null, 2));
+
+    // Add to manifest
+    manifest[componentName] = filename;
+  });
+
+  // Step 5: Write manifest file
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2));
+
+  flog(
+    `[TSX] Prop tables updated (${Object.keys(manifest).length} components)`
+  );
 }, 500);
 
 const observable = (target, callback, _base = []) => {
