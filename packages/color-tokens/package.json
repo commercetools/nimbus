@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/chroma-js": "^3.1.0",
+    "@types/chroma-js": "^3.1.2",
     "@types/node": "catalog:utils"
   },
   "peerDependencies": {
