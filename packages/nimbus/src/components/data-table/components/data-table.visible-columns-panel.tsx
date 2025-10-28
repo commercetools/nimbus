@@ -16,17 +16,17 @@ import {
   VisibilityOff,
   Visibility,
 } from "@commercetools/nimbus-icons";
-import type { TColumnListItem } from "../data-table.types";
+import type { ColumnManagerListItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
 // Type for items with onRemoveItem provided by DraggableList.Root
-type TColumnListItemWithRemove = TColumnListItem & {
+type TColumnListItemWithRemove = ColumnManagerListItem & {
   onRemoveItem?: (key: Key) => void;
 };
 
 // Type guard to check if item has onRemoveItem
 function hasRemoveItem(
-  item: TColumnListItem
+  item: ColumnManagerListItem
 ): item is TColumnListItemWithRemove {
   return "onRemoveItem" in item && typeof item.onRemoveItem === "function";
 }
@@ -37,9 +37,9 @@ export const VisibleColumnsPanel = ({
   handleVisibleColumnsUpdate,
   handleResetColumns,
 }: {
-  hiddenItems: TColumnListItem[];
-  visibleItems: TColumnListItem[];
-  handleVisibleColumnsUpdate: (updatedItems: TColumnListItem[]) => void;
+  hiddenItems: ColumnManagerListItem[];
+  visibleItems: ColumnManagerListItem[];
+  handleVisibleColumnsUpdate: (updatedItems: ColumnManagerListItem[]) => void;
   handleResetColumns: () => void;
 }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -66,7 +66,7 @@ export const VisibleColumnsPanel = ({
    * updatedSearchedItems - The updated list of items in the hidden columns (filtered by search)
    */
   const handleHiddenColumnsListUpdate = useCallback(
-    (updatedSearchedItems: TColumnListItem[]) => {
+    (updatedSearchedItems: ColumnManagerListItem[]) => {
       const currentHiddenIds = new Set(hiddenItems.map((item) => item.id));
       const updatedSearchedIds = new Set(
         updatedSearchedItems.map((item) => item.id)
@@ -113,7 +113,7 @@ export const VisibleColumnsPanel = ({
    * updatedVisibleItems - The updated list of visible column items with new order/content
    */
   const handleVisibleColumnsListUpdate = useCallback(
-    (updatedVisibleItems: TColumnListItem[]) => {
+    (updatedVisibleItems: ColumnManagerListItem[]) => {
       // Simply pass through the updated list - this preserves the new order from reordering
       // or updates from drag-and-drop operations between lists
       handleVisibleColumnsUpdate(updatedVisibleItems);

@@ -1,149 +1,6 @@
 import { defineMessages } from "react-intl";
 
 export const messages = defineMessages({
-  settings: {
-    id: "data-table.manager.settings",
-    description: "aria-label for the settings button in the data table manager",
-    defaultMessage: "Table settings",
-  },
-  visibleColumns: {
-    id: "data-table.manager.visible-columns",
-    description:
-      "title for the visible columns section in the data table manager",
-    defaultMessage: "Visible columns",
-  },
-  hiddenColumns: {
-    id: "data-table.manager.hidden-columns",
-    description:
-      "title for the hidden columns section in the data table manager",
-    defaultMessage: "Hidden columns",
-  },
-  noHiddenColumns: {
-    id: "data-table.manager.no-hidden-columns",
-    description:
-      "message when there is no hidden columns in the data table manager",
-    defaultMessage: "No Hidden columns",
-  },
-  hiddenColumnsAriaLabel: {
-    id: "data-table.manager.hidden-columns-aria-label",
-    description:
-      "aria-label for the hidden columns list in the data table manager",
-    defaultMessage: "Hidden columns list",
-  },
-  visibleColumnsList: {
-    id: "data-table.manager.visible-columns-list",
-    description:
-      "title for the visible columns section in the data table manager",
-    defaultMessage: "Visible columns",
-  },
-  visibleColumnsAria: {
-    id: "data-table.manager.visible-columns-aria",
-    description:
-      "aria-label for the visible columns list in the data table manager",
-    defaultMessage: "Visible columns list",
-  },
-  hideColumn: {
-    id: "data-table.manager.hide-column",
-    description:
-      "aria-label for the hide column button in the data table manager",
-    defaultMessage: "Hide column",
-  },
-  reset: {
-    id: "data-table.manager.reset",
-    description:
-      "aria-label for the reset columns button in the data table manager",
-    defaultMessage: "Reset columns",
-  },
-  layoutSettings: {
-    id: "data-table.manager.layout-settings",
-    description:
-      "title for the layout settings section in the data table manager",
-    defaultMessage: "Layout settings",
-  },
-  layoutSettingsAriaLabel: {
-    id: "data-table.manager.layout-settings-aria-label",
-    description:
-      "aria-label for the layout settings section in the data table manager",
-    defaultMessage: "Layout settings section",
-  },
-  textVisibility: {
-    id: "data-table.manager.text-visibility",
-    description:
-      "title for the text visibility section in the data table manager layout",
-    defaultMessage: "Text visibility",
-  },
-  textVisibilityAriaLabel: {
-    id: "data-table.manager.text-visibility-aria-label",
-    description:
-      "aria-label for the text visibility section in the data table manager layout",
-    defaultMessage: "Text visibility section",
-  },
-  fullText: {
-    id: "data-table.manager.full-text",
-    description:
-      "title for the full text section in the data table manager layout",
-    defaultMessage: "Full text",
-  },
-  fullTextAriaLabel: {
-    id: "data-table.manager.full-text-aria-label",
-    description:
-      "aria-label for the full text section in the data table manager layout",
-    defaultMessage: "Full text section",
-  },
-  TextPreviews: {
-    id: "data-table.manager.text-previews",
-    description:
-      "title for the text previews section in the data table manager layout",
-    defaultMessage: "Text previews",
-  },
-  TextPreviewsAriaLabel: {
-    id: "data-table.manager.text-previews-aria-label",
-    description:
-      "aria-label for the text previews section in the data table manager layout",
-    defaultMessage: "Text previews section",
-  },
-  RowDensity: {
-    id: "data-table.manager.row-density",
-    description:
-      "title for the row density section in the data table manager layout",
-    defaultMessage: "Row density",
-  },
-  RowDensityAriaLabel: {
-    id: "data-table.manager.row-density-aria-label",
-    description:
-      "aria-label for the row density section in the data table manager layout",
-    defaultMessage: "Row density section",
-  },
-  comfortable: {
-    id: "data-table.manager.comfortable",
-    description:
-      "title for the comfortable togglebutton in the data table manager layout",
-    defaultMessage: "Comfortable",
-  },
-  comfortableAriaLabel: {
-    id: "data-table.manager.comfortable-aria-label",
-    description:
-      "aria-label for the comfortable togglebutton in the data table manager layout",
-    defaultMessage: "Comfortable section",
-  },
-  compact: {
-    id: "data-table.manager.compact",
-    description:
-      "title for the compact togglebutton in the data table manager layout",
-    defaultMessage: "Compact",
-  },
-  compactAriaLabel: {
-    id: "data-table.manager.compact-aria-label",
-    description:
-      "aria-label for the compact togglebutton in the data table manager layout",
-    defaultMessage: "Compact section",
-  },
-  searchHiddenColumns: {
-    id: "data-table.manager.search-hidden-columns",
-    description:
-      "placeholder for the search input in the hidden columns section in the data table manager",
-    defaultMessage: "Search...",
-  },
   dataTable: {
     id: "Nimbus.DataTable.dataTable",
     description: "aria-label for the data table element",
@@ -178,5 +35,148 @@ export const messages = defineMessages({
     id: "Nimbus.DataTable.resizeColumn",
     description: "aria-label for the column resizer",
     defaultMessage: "Resize column",
+  },
+  settings: {
+    id: "Nimbus.DataTable.settings",
+    description: "aria-label for the settings button in the data table manager",
+    defaultMessage: "Table settings",
+  },
+  visibleColumns: {
+    id: "Nimbus.DataTable.visibleColumns",
+    description:
+      "title for the visible columns section in the data table manager",
+    defaultMessage: "Visible columns",
+  },
+  hiddenColumns: {
+    id: "Nimbus.DataTable.hiddenColumns",
+    description:
+      "title for the hidden columns section in the data table manager",
+    defaultMessage: "Hidden columns",
+  },
+  noHiddenColumns: {
+    id: "Nimbus.DataTable.noHiddenColumns",
+    description:
+      "message when there is no hidden columns in the data table manager",
+    defaultMessage: "No Hidden columns",
+  },
+  hiddenColumnsAriaLabel: {
+    id: "Nimbus.DataTable.hiddenColumnsAriaLabel",
+    description:
+      "aria-label for the hidden columns list in the data table manager",
+    defaultMessage: "Hidden columns list",
+  },
+  visibleColumnsList: {
+    id: "Nimbus.DataTable.visibleColumnsList",
+    description:
+      "title for the visible columns section in the data table manager",
+    defaultMessage: "Visible columns",
+  },
+  visibleColumnsAria: {
+    id: "Nimbus.DataTable.visibleColumnsAria",
+    description:
+      "aria-label for the visible columns list in the data table manager",
+    defaultMessage: "Visible columns list",
+  },
+  hideColumn: {
+    id: "Nimbus.DataTable.hideColumn",
+    description:
+      "aria-label for the hide column button in the data table manager",
+    defaultMessage: "Hide column",
+  },
+  reset: {
+    id: "Nimbus.DataTable.reset",
+    description:
+      "aria-label for the reset columns button in the data table manager",
+    defaultMessage: "Reset columns",
+  },
+  layoutSettings: {
+    id: "Nimbus.DataTable.layoutSettings",
+    description:
+      "title for the layout settings section in the data table manager",
+    defaultMessage: "Layout settings",
+  },
+  layoutSettingsAriaLabel: {
+    id: "Nimbus.DataTable.layoutSettingsAriaLabel",
+    description:
+      "aria-label for the layout settings section in the data table manager",
+    defaultMessage: "Layout settings section",
+  },
+  textVisibility: {
+    id: "Nimbus.DataTable.textVisibility",
+    description:
+      "title for the text visibility section in the data table manager layout",
+    defaultMessage: "Text visibility",
+  },
+  textVisibilityAriaLabel: {
+    id: "Nimbus.DataTable.textVisibilityAriaLabel",
+    description:
+      "aria-label for the text visibility section in the data table manager layout",
+    defaultMessage: "Text visibility section",
+  },
+  fullText: {
+    id: "Nimbus.DataTable.fullText",
+    description:
+      "title for the full text section in the data table manager layout",
+    defaultMessage: "Full text",
+  },
+  fullTextAriaLabel: {
+    id: "Nimbus.DataTable.fullTextAriaLabel",
+    description:
+      "aria-label for the full text section in the data table manager layout",
+    defaultMessage: "Full text section",
+  },
+  TextPreviews: {
+    id: "Nimbus.DataTable.textPreviews",
+    description:
+      "title for the text previews section in the data table manager layout",
+    defaultMessage: "Text previews",
+  },
+  TextPreviewsAriaLabel: {
+    id: "Nimbus.DataTable.textPreviewsAriaLabel",
+    description:
+      "aria-label for the text previews section in the data table manager layout",
+    defaultMessage: "Text previews section",
+  },
+  RowDensity: {
+    id: "Nimbus.DataTable.rowDensity",
+    description:
+      "title for the row density section in the data table manager layout",
+    defaultMessage: "Row density",
+  },
+  RowDensityAriaLabel: {
+    id: "Nimbus.DataTable.rowDensityAriaLabel",
+    description:
+      "aria-label for the row density section in the data table manager layout",
+    defaultMessage: "Row density section",
+  },
+  comfortable: {
+    id: "Nimbus.DataTable.comfortable",
+    description:
+      "title for the comfortable togglebutton in the data table manager layout",
+    defaultMessage: "Comfortable",
+  },
+  comfortableAriaLabel: {
+    id: "Nimbus.DataTable.comfortableAriaLabel",
+    description:
+      "aria-label for the comfortable togglebutton in the data table manager layout",
+    defaultMessage: "Comfortable section",
+  },
+  compact: {
+    id: "Nimbus.DataTable.compact",
+    description:
+      "title for the compact togglebutton in the data table manager layout",
+    defaultMessage: "Compact",
+  },
+  compactAriaLabel: {
+    id: "Nimbus.DataTable.compactAriaLabel",
+    description:
+      "aria-label for the compact togglebutton in the data table manager layout",
+    defaultMessage: "Compact section",
+  },
+  searchHiddenColumns: {
+    id: "Nimbus.DataTable.searchHiddenColumns",
+    description:
+      "placeholder for the search input in the hidden columns section in the data table manager",
+    defaultMessage: "Search...",
   },
 });

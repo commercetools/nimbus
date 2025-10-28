@@ -221,7 +221,7 @@ export type DataTableCellProps = RaCellProps &
  * Type for column list items used in the DataTable.Manager component
  * with DraggableList for managing column visibility and order.
  */
-export type TColumnListItem = {
+export type ColumnManagerListItem = {
   id: string;
   label: React.ReactNode;
 };
