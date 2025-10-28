@@ -17,7 +17,7 @@ export const DataTableRoot = function DataTableRoot<
   const {
     ref: forwardedRef,
     columns = [],
-    data = [],
+    rows = [],
     visibleColumns,
     search,
     sortDescriptor: controlledSortDescriptor,
@@ -41,6 +41,8 @@ export const DataTableRoot = function DataTableRoot<
     pinnedRows: controlledPinnedRows,
     defaultPinnedRows,
     onPinToggle,
+    onColumnsChange,
+    onSettingsChange,
     children,
     ...rest
   } = props;
@@ -61,17 +63,21 @@ export const DataTableRoot = function DataTableRoot<
   const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
   const activeColumns = useMemo(() => {
-    const activeCols = columns.filter(
-      (col) =>
-        (visibleColumns ? visibleColumns.includes(col.id) : true) &&
-        col.isVisible !== false
-    );
-    return activeCols;
+    if (!visibleColumns) {
+      return columns;
+    }
+
+    const columnMap = new Map(columns.map((col) => [col.id, col]));
+
+    // Map visibleColumns IDs to column objects, preserving the order from visibleColumns
+    return visibleColumns
+      .map((id) => columnMap.get(id))
+      .filter((col): col is NonNullable<typeof col> => col !== undefined);
   }, [columns, visibleColumns]);
 
   const filteredRows = useMemo(
-    () => (search ? filterRows(data, search, activeColumns, nestedKey) : data),
-    [data, search, activeColumns, nestedKey]
+    () => (search ? filterRows(rows, search, activeColumns, nestedKey) : rows),
+    [rows, search, activeColumns, nestedKey]
   );
 
   const sortedRows = useMemo(
@@ -127,7 +133,7 @@ export const DataTableRoot = function DataTableRoot<
   const contextValue: DataTableContextValue<T> = useMemo(
     () => ({
       columns,
-      data,
+      rows,
       visibleColumns,
       search,
       sortDescriptor,
@@ -157,10 +163,12 @@ export const DataTableRoot = function DataTableRoot<
       pinnedRows,
       onPinToggle,
       togglePin,
+      onColumnsChange,
+      onSettingsChange,
     }),
     [
       columns,
-      data,
+      rows,
       visibleColumns,
       search,
       sortDescriptor,
@@ -190,6 +198,8 @@ export const DataTableRoot = function DataTableRoot<
       pinnedRows,
       onPinToggle,
       togglePin,
+      onColumnsChange,
+      onSettingsChange,
     ]
   );
 

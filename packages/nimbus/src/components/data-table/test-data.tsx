@@ -95,7 +95,7 @@ export const sortableColumns: DataTableColumnItem[] = [
   },
 ];
 
-export const data: DataTableRowItem[] = [
+export const rows: DataTableRowItem[] = [
   { id: "1", name: "Alice", age: 30, role: "Admin", class: "special" },
   { id: "2", name: "Bob", age: 25, role: "User", class: "rare" },
   { id: "3", name: "Carol", age: 28, role: "User", class: "common" },
@@ -744,7 +744,7 @@ export const modifiedFetchedData = fetchData.map((item) => ({
       </Heading>
       <DataTable
         columns={nestedTableColumns}
-        data={item.sky}
+        rows={item.sky}
         allowsSorting={true}
         isResizable={true}
         onRowClick={() => {}}
@@ -1133,5 +1133,185 @@ export const mcMockData = [
     hasStagedChanges: true,
     stores: ["Spain", "India", "South Africa"],
     dateModified: "10.05.2024 11:20",
+  },
+];
+
+export const initialVisibleColumns: DataTableColumnItem[] = [
+  {
+    id: "product-name",
+    header: "Product name",
+    accessor: (row) => row.name as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "sku",
+    header: "SKU",
+    accessor: (row) => row.sku as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "status",
+    header: "Status",
+    accessor: (row) => (
+      <Badge
+        colorPalette={
+          row.status === "Published"
+            ? "success"
+            : row.status === "Modified"
+              ? "warning"
+              : "neutral"
+        }
+        size="xs"
+      >
+        {row.status as string}
+      </Badge>
+    ),
+    isSortable: false,
+  },
+  {
+    id: "category",
+    header: "Category",
+    accessor: (row) => row.category as React.ReactNode,
+  },
+  {
+    id: "inventory",
+    header: "Inventory",
+    accessor: (row) => row.inventory as React.ReactNode,
+  },
+];
+
+export const initialHiddenColumns: DataTableColumnItem[] = [
+  {
+    id: "price",
+    header: "Price",
+    accessor: (row) => row.price as React.ReactNode,
+  },
+  {
+    id: "store",
+    header: "Store",
+    accessor: (row) => row.store as React.ReactNode,
+  },
+  {
+    id: "country",
+    header: "Country",
+    accessor: (row) => row.country as React.ReactNode,
+  },
+  {
+    id: "custom-attr",
+    header: "Custom attribute that breaks into 2 lines",
+    accessor: (row) => row.customAttr as React.ReactNode,
+  },
+  {
+    id: "brand",
+    header: "Brand",
+    accessor: (row) => row.brand as React.ReactNode,
+  },
+  {
+    id: "material",
+    header: "Material",
+    accessor: (row) => row.material as React.ReactNode,
+  },
+  {
+    id: "size",
+    header: "Size",
+    accessor: (row) => row.size as React.ReactNode,
+  },
+  {
+    id: "color",
+    header: "Color",
+    accessor: (row) => row.color as React.ReactNode,
+  },
+  {
+    id: "supplier",
+    header: "Supplier",
+    accessor: (row) => row.supplier as React.ReactNode,
+  },
+];
+
+export const managerRows: DataTableRowItem[] = [
+  {
+    id: "1",
+    name: "Midnight Bloom Silk Blouse",
+    sku: "MID-BLM-SLK-BLS",
+    status: "Published",
+    category: "Clothing",
+    inventory: 120,
+    price: "$89.99",
+    store: "Main Store",
+    country: "USA",
+    customAttr: "Premium",
+    brand: "Elegance Co.",
+    material: "Silk",
+    size: "M",
+    color: "Midnight Blue",
+    supplier: "Textile Imports Ltd",
+  },
+  {
+    id: "2",
+    name: "Urban Canvas Denim",
+    sku: "URB-CAN-DNM",
+    status: "Modified",
+    category: "Clothing",
+    inventory: 85,
+    price: "$129.99",
+    store: "Downtown",
+    country: "Canada",
+    customAttr: "Standard",
+    brand: "UrbanStyle",
+    material: "Denim",
+    size: "L",
+    color: "Dark Wash",
+    supplier: "Global Denim Corp",
+  },
+  {
+    id: "3",
+    name: "Coastal Breeze Linen Pants",
+    sku: "COS-BRZ-LIN-PNT",
+    status: "Published",
+    category: "Clothing",
+    inventory: 200,
+    price: "$79.99",
+    store: "Beach Shop",
+    country: "USA",
+    customAttr: "Eco-friendly",
+    brand: "Coastal Wear",
+    material: "Linen",
+    size: "32",
+    color: "Beige",
+    supplier: "EcoFabrics Inc",
+  },
+  {
+    id: "4",
+    name: "Rustic Knit Merino",
+    sku: "SUN-STR-COT",
+    status: "Modified",
+    category: "Clothing",
+    inventory: 150,
+    price: "$99.99",
+    store: "Main Store",
+    country: "UK",
+    customAttr: "Premium",
+    brand: "Highland Knitwear",
+    material: "Merino Wool",
+    size: "XL",
+    color: "Charcoal",
+    supplier: "British Woolens",
+  },
+  {
+    id: "5",
+    name: "Sunset Stripes Cotton Tee",
+    sku: "FOR-TRL-HIK-LGS",
+    status: "Modified",
+    category: "Clothing",
+    inventory: 95,
+    price: "$49.99",
+    store: "Outlet",
+    country: "USA",
+    customAttr: "Standard",
+    brand: "SunWear",
+    material: "Cotton",
+    size: "S",
+    color: "Sunset Orange",
+    supplier: "Cotton Mills USA",
   },
 ];

@@ -14,6 +14,7 @@ import { DataTableHeader } from "./components/data-table.header";
 import { DataTableRoot } from "./components/data-table.root";
 import { DataTableRow } from "./components/data-table.row";
 import { DataTableTable } from "./components/data-table.table";
+import { DataTableManager } from "./components/data-table.manager";
 import {
   DataTableExpandButton,
   DataTableNestedIcon,
@@ -60,6 +61,25 @@ export const DataTable = Object.assign(DataTableBase, {
   Row: DataTableRow,
   Cell: DataTableCell,
   Footer: DataTableFooter,
+  /**
+   * # DataTable.Manager
+   *
+   * A settings panel that allows users to manage table columns visibility and layout.
+   * Opens in a drawer with tabs for "Visible columns" and "Layout settings".
+   * Uses drag-and-drop to reorder columns.
+   *
+   * @example
+   * ```tsx
+   * <DataTable.Root columns={columns} rows={rows}>
+   *   <DataTable.Manager />
+   *   <DataTable.Table>
+   *     <DataTable.Header />
+   *     <DataTable.Body />
+   *   </DataTable.Table>
+   * </DataTable.Root>
+   * ```
+   */
+  Manager: DataTableManager,
   ExpandButton: DataTableExpandButton,
   NestedIcon: DataTableNestedIcon,
   SelectionCell: DataTableSelectionCell,
@@ -81,6 +101,7 @@ export {
   DataTableRow as _DataTableRow,
   DataTableCell as _DataTableCell,
   DataTableFooter as _DataTableFooter,
+  DataTableManager as _DataTableManager,
   DataTableExpandButton as _DataTableExpandButton,
   DataTableNestedIcon as _DataTableNestedIcon,
   DataTableSelectionCell as _DataTableSelectionCell,
