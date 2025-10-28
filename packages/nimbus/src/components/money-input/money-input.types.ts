@@ -1,5 +1,6 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { MoneyInputValue, CurrencyCode } from "./utils";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 
 export type { MoneyInputValue, CurrencyCode, MoneyValue } from "./utils";
 
@@ -41,8 +42,8 @@ export type CustomEvent = {
 };
 
 // Props to exclude from slot props that conflict with our custom event handling
+// TODO: We have this pattern and the `OmitUnwantedProps` utility type. How can we generalize this?
 export type ExcludedSlotProps =
-  | "asChild"
   | "onChange"
   | "onBlur"
   | "onFocus"
@@ -90,9 +91,8 @@ export type ExcludedSlotProps =
 // ============================================================
 // MAIN PROPS
 // ============================================================
-export type MoneyInputProps = Omit<
-  MoneyInputRootSlotProps,
-  ExcludedSlotProps
+export type MoneyInputProps = OmitUnwantedProps<
+  Omit<MoneyInputRootSlotProps, ExcludedSlotProps>
 > & {
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.
