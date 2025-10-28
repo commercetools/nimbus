@@ -31,7 +31,7 @@ function hasRemoveItem(
   return "onRemoveItem" in item && typeof item.onRemoveItem === "function";
 }
 
-const VisibleColumnsPanel = ({
+export const VisibleColumnsPanel = ({
   hiddenItems,
   visibleItems,
   handleVisibleColumnsUpdate,
@@ -236,5 +236,3 @@ const VisibleColumnsPanel = ({
     </Stack>
   );
 };
-
-export default VisibleColumnsPanel;

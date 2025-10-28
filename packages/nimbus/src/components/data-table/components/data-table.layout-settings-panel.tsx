@@ -17,7 +17,7 @@ import { messages } from "../data-table.i18n";
 import { useDataTableContext } from "./data-table.context";
 import type { DataTableProps } from "../data-table.types";
 
-const LayoutSettingsPanel = ({
+export const LayoutSettingsPanel = ({
   onSettingsChange,
 }: {
   onSettingsChange?: DataTableProps["onSettingsChange"];
@@ -130,5 +130,3 @@ const LayoutSettingsPanel = ({
     </SimpleGrid>
   );
 };
-
-export default LayoutSettingsPanel;

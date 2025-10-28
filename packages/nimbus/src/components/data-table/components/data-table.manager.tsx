@@ -2,12 +2,17 @@ import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
 import { IconButton, Drawer, Tabs, Tooltip } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
-import VisibleColumnsPanel from "./data-table.visible-columns-panel";
-import LayoutSettingsPanel from "./data-table.layout-settings-panel";
+import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
+import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
 import { useDataTableContext } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
+/**
+ * DataTable.Manager - Manager component for the data table
+ *
+ * @supportsStyleProps
+ */
 export const DataTableManager = () => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
@@ -74,7 +79,7 @@ export const DataTableManager = () => {
         onColumnsChange(updatedColumns);
       }
     };
-  }, [onColumnsChange]);
+  }, []);
 
   const hiddenItems = useMemo(() => {
     return columns
@@ -207,17 +212,6 @@ export const DataTableManager = () => {
                     <LayoutSettingsPanel onSettingsChange={onSettingsChange} />
                   ),
                 },
-                // TODO: Add custom settings tab here!
-                // {
-                //   id: "custom-settings",
-                //   tabLabel: (
-                //     <>
-                //       {props.icon}
-                //       {props.label}
-                //     </>
-                //   ),
-                //   panelContent: props.panelContent,
-                // },
               ]}
             />
           </Drawer.Body>
