@@ -30,12 +30,19 @@ export const useToc = () => {
       return [];
     }
 
-    // If in developer view and devView TOC exists, return it
-    if (activeView === "dev" && doc.devView?.toc) {
-      return doc.devView.toc;
+    // If active view exists and has a TOC in views object, use it
+    if (activeView && doc.views?.[activeView]?.toc) {
+      return doc.views[activeView].toc;
     }
 
-    // Otherwise return the design view TOC from metadata
+    // Fallback to first tab's TOC or main TOC
+    const tabs = doc.meta.tabs || [];
+    const defaultViewKey = tabs[0]?.key || "overview";
+    if (doc.views?.[defaultViewKey]?.toc) {
+      return doc.views[defaultViewKey].toc;
+    }
+
+    // Final fallback to main TOC from metadata
     return doc.meta.toc;
   }, [doc, isLoading, error, activeView]);
 

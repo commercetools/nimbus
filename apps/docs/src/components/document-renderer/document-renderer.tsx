@@ -14,20 +14,27 @@ const DocumentRendererComponent = () => {
   const activeView = useActiveView();
 
   const meta = activeDoc?.meta;
-  const hasDevView = meta?.hasDevView || false;
+  const tabs = meta?.tabs || [];
+  const hasMultipleViews = tabs.length > 1;
 
   // Determine which content to show based on active view
   const content = useMemo(() => {
     if (!activeDoc) return undefined;
 
-    // If dev view is active and available, use it
-    if (activeView === "dev" && activeDoc.devView) {
-      return activeDoc.devView.mdx;
+    // If a specific view is active and available in views object, use it
+    if (activeView && activeDoc.views?.[activeView]) {
+      return activeDoc.views[activeView].mdx;
     }
 
-    // Otherwise use the main (design) content
+    // Fallback to first tab's view or main content
+    const defaultViewKey = tabs[0]?.key || "overview";
+    if (activeDoc.views?.[defaultViewKey]) {
+      return activeDoc.views[defaultViewKey].mdx;
+    }
+
+    // Final fallback to main mdx content
     return activeDoc.mdx;
-  }, [activeDoc, activeView]);
+  }, [activeDoc, activeView, tabs]);
 
   const lifecycleState = meta?.lifecycleState;
   const lifecycleInfo = lifecycleState
@@ -67,8 +74,8 @@ const DocumentRendererComponent = () => {
             </Flex>
           )}
 
-          {/* Show tabs if dev view is available */}
-          {hasDevView && <ViewTabs />}
+          {/* Show tabs if multiple views are available */}
+          {hasMultipleViews && <ViewTabs tabs={tabs} />}
 
           <Box pb="2400">
             <MdxStringRenderer content={content} />

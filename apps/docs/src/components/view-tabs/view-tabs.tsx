@@ -1,47 +1,67 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { Box, Stack } from "@commercetools/nimbus";
+import type { TabMetadata } from "@/types";
 import styles from "./view-tabs.module.css";
-
-export type ViewType = "design" | "dev";
 
 interface ViewTabsProps {
   /**
+   * Array of tab metadata from the document
+   */
+  tabs: TabMetadata[];
+  /**
    * Callback when active view changes
    */
-  onViewChange?: (view: ViewType) => void;
+  onViewChange?: (viewKey: string) => void;
 }
 
 /**
- * ViewTabs component for switching between design and developer documentation views.
- * Syncs with URL query parameter (?view=design or ?view=dev)
+ * ViewTabs component for switching between different documentation views.
+ * Tabs are dynamically generated based on the document's available views.
+ * Syncs with URL query parameter (?view={key})
  */
-export const ViewTabs = ({ onViewChange }: ViewTabsProps) => {
+export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewParam = searchParams.get("view");
-  const activeView: ViewType = viewParam === "dev" ? "dev" : "design";
 
-  const handleViewChange = (newView: ViewType) => {
+  // Determine active view - default to first tab if param is invalid
+  const defaultView = tabs[0]?.key || "overview";
+  const activeView = tabs.find((tab) => tab.key === viewParam)
+    ? viewParam!
+    : defaultView;
+
+  // Set default view in URL if not present
+  useEffect(() => {
+    if (!viewParam && tabs.length > 0) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("view", defaultView);
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [viewParam, tabs, defaultView, searchParams, setSearchParams]);
+
+  const handleViewChange = (newViewKey: string) => {
     // Update URL with new view parameter
     const newParams = new URLSearchParams(searchParams);
-    newParams.set("view", newView);
+    newParams.set("view", newViewKey);
     setSearchParams(newParams, { replace: true });
 
     // Call optional callback
-    onViewChange?.(newView);
+    onViewChange?.(newViewKey);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent, view: ViewType) => {
+  const handleKeyDown = (event: React.KeyboardEvent, currentIndex: number) => {
     // Handle keyboard navigation
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      handleViewChange(view);
+      handleViewChange(tabs[currentIndex].key);
     } else if (event.key === "ArrowRight") {
       event.preventDefault();
-      handleViewChange(view === "design" ? "dev" : "design");
+      const nextIndex = (currentIndex + 1) % tabs.length;
+      handleViewChange(tabs[nextIndex].key);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      handleViewChange(view === "design" ? "dev" : "design");
+      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      handleViewChange(tabs[prevIndex].key);
     }
   };
 
@@ -54,30 +74,24 @@ export const ViewTabs = ({ onViewChange }: ViewTabsProps) => {
         gap="0"
         className={styles.tabList}
       >
-        <button
-          role="tab"
-          id="tab-design"
-          aria-selected={activeView === "design"}
-          aria-controls="panel-design"
-          tabIndex={activeView === "design" ? 0 : -1}
-          onClick={() => handleViewChange("design")}
-          onKeyDown={(e) => handleKeyDown(e, "design")}
-          className={`${styles.tab} ${activeView === "design" ? styles.tabActive : ""}`}
-        >
-          Design
-        </button>
-        <button
-          role="tab"
-          id="tab-dev"
-          aria-selected={activeView === "dev"}
-          aria-controls="panel-dev"
-          tabIndex={activeView === "dev" ? 0 : -1}
-          onClick={() => handleViewChange("dev")}
-          onKeyDown={(e) => handleKeyDown(e, "dev")}
-          className={`${styles.tab} ${activeView === "dev" ? styles.tabActive : ""}`}
-        >
-          Developer
-        </button>
+        {tabs.map((tab, index) => {
+          const isActive = activeView === tab.key;
+          return (
+            <button
+              key={tab.key}
+              role="tab"
+              id={`tab-${tab.key}`}
+              aria-selected={isActive}
+              aria-controls={`panel-${tab.key}`}
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => handleViewChange(tab.key)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              className={`${styles.tab} ${isActive ? styles.tabActive : ""}`}
+            >
+              {tab.title}
+            </button>
+          );
+        })}
       </Stack>
     </Box>
   );
