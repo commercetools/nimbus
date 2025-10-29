@@ -16,8 +16,11 @@
     ]
   ],
   "ignore": ["color-tokens", "blank-app", "docs"],
-  "updateInternalDependencies": "patch",
+  "updateInternalDependencies": "minor",
   "access": "restricted",
   "baseBranch": "main",
-  "bumpVersionsWithWorkspaceProtocolOnly": false
+  "bumpVersionsWithWorkspaceProtocolOnly": false,
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "onlyUpdatePeerDependentsWhenOutOfRange": true
+  }
 }
