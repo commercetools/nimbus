@@ -16,6 +16,7 @@
     ]
   ],
   "ignore": ["color-tokens", "blank-app", "docs"],
+  "updateInternalDependencies": "patch",
   "access": "restricted",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false
