@@ -70,4 +70,4 @@ catalogs:
     dompurify: ^3.3.0
     lodash: ^4.17.21
     "@types/lodash": ^4.17.20
-    "@types/node": ^24.7.1
+    "@types/node": ^24.9.2
