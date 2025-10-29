@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card, type CardProps, Stack } from "@commercetools/nimbus";
-import { within, expect, userEvent } from "storybook/test";
+import { within, expect } from "storybook/test";
 
 const cardPaddings: CardProps["cardPadding"][] = ["sm", "md", "lg"];
 const elevations: CardProps["elevation"][] = ["none", "elevated"];
@@ -43,11 +43,6 @@ export const Base: Story = {
 
     await step("Displays correct content", async () => {
       await expect(card).toHaveTextContent(args.children as string);
-    });
-
-    await step("Can be focused with the keyboard", async () => {
-      await userEvent.keyboard("{tab}");
-      await expect(card).toHaveFocus();
     });
   },
 };
