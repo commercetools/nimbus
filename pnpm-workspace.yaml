@@ -15,6 +15,7 @@ catalogs:
     "@babel/runtime": ^7.28.4
     "@babel/preset-typescript": ^7.28.5
     "@eslint/js": ^9.39.2
+    "@react-types/shared": ^3.32.1
     eslint: ^9.39.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.4

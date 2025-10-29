@@ -1,4 +1,6 @@
 export * from "./drawer";
+
+// Re-export types for external usage
 export type * from "./drawer.types";
 
 // Re-export slot types for advanced usage
