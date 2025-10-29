@@ -12,7 +12,17 @@ export const TocItemSchema = z.object({
 /** Available layout types for MDX documents */
 export const layoutTypes = ["app-frame", "no-sidebar"] as const;
 
-/** Schema for a single view (design or dev) containing MDX content and TOC */
+/** Schema for tab metadata describing available views for a document */
+export const TabMetadataSchema = z.object({
+  /** Unique key for the view (e.g., "overview", "api", "examples") */
+  key: z.string(),
+  /** Display title for the tab */
+  title: z.string(),
+  /** Sort order for tabs (ascending) */
+  order: z.number(),
+});
+
+/** Schema for a single view (e.g., overview, api, dev) containing MDX content and TOC */
 const viewSchema = z.object({
   /** the mdx content as a single string */
   mdx: z.string(),
@@ -54,13 +64,13 @@ export const mdxDocumentSchema = z.object({
     figmaLink: z.string().url().optional(),
     /** layout type - defaults to 'app-frame' if not specified */
     layout: z.enum(layoutTypes).optional().default("app-frame"),
-    /** whether this document has a developer view (.dev.mdx file) */
-    hasDevView: z.boolean().optional().default(false),
+    /** array of available tabs/views for this document */
+    tabs: z.array(TabMetadataSchema).default([]),
   }),
-  /** the mdx content as a single string (design/default view) */
+  /** the mdx content as a single string (main/default view) */
   mdx: z.string(),
-  /** optional developer view content */
-  devView: viewSchema.optional(),
+  /** map of view key to view content (e.g., { "overview": {...}, "api": {...} }) */
+  views: z.record(z.string(), viewSchema).default({}),
 });
 
 const metaSchemaWithoutGeneratedMeta = mdxDocumentSchema.shape.meta.omit({

@@ -3,7 +3,6 @@ import matter from "gray-matter";
 import { menuToPath } from "../../src/utils/sluggify";
 import { MdxFileFrontmatter, TocItem } from "../../src/types";
 
-import { read } from "to-vfile";
 import { remark } from "remark";
 import remarkFlexibleToc from "remark-flexible-toc";
 import debounce from "lodash/debounce";
@@ -28,12 +27,10 @@ if (!fs.existsSync(routesDir)) {
 // In-memory storage for generating manifest and search index
 const documentation: Record<string, MdxFileFrontmatter> = {};
 
-const generateToc = async (fileRef) => {
+const generateToc = async (mdxContent: string) => {
   const toc: TocItem[] = [];
 
-  await remark()
-    .use(remarkFlexibleToc, { tocRef: toc })
-    .process(await read(fileRef));
+  await remark().use(remarkFlexibleToc, { tocRef: toc }).process(mdxContent);
 
   return toc || [];
 };
@@ -61,7 +58,7 @@ const writeManifest = debounce(() => {
         order: doc.meta.order || 999,
         chunkName: chunkName,
         icon: doc.meta.icon,
-        hasDevView: doc.meta.hasDevView || false,
+        tabs: doc.meta.tabs || [],
       };
     });
 
@@ -178,26 +175,59 @@ const observableDocumentation: Record<string, MdxFileFrontmatter> = observable(
 );
 
 /**
- * Check if a .dev.mdx file exists for the given .mdx file
+ * Get all view MDX files for the given base .mdx file
+ * Returns array of objects with key and filePath
+ * e.g., button.api.mdx -> { key: "api", filePath: "..." }
  */
-const getDevMdxPath = (mdxFilePath: string): string => {
-  // Replace .mdx with .dev.mdx
-  return mdxFilePath.replace(/\.mdx$/, ".dev.mdx");
+const getViewMdxFiles = async (
+  baseMdxPath: string
+): Promise<Array<{ key: string; filePath: string }>> => {
+  const dir = path.dirname(baseMdxPath);
+  const basename = path.basename(baseMdxPath, ".mdx");
+
+  try {
+    const files = await fs.promises.readdir(dir);
+    const viewFiles = files
+      .filter((file) => {
+        // Match pattern: component-name.{key}.mdx
+        const regex = new RegExp(`^${basename}\\.([^.]+)\\.mdx$`);
+        return regex.test(file);
+      })
+      .map((file) => {
+        // Extract key from filename
+        const regex = new RegExp(`^${basename}\\.([^.]+)\\.mdx$`);
+        const match = file.match(regex);
+        const key = match ? match[1] : "";
+        return {
+          key,
+          filePath: path.join(dir, file),
+        };
+      });
+
+    return viewFiles;
+  } catch (err) {
+    return [];
+  }
 };
 
 /**
- * Parse a single MDX file and return its content and TOC
+ * Parse a single MDX file and return its content, frontmatter, and TOC
  */
 const parseSingleMdx = async (
   filePath: string
-): Promise<{ mdx: string; toc: any[] } | null> => {
+): Promise<{
+  mdx: string;
+  toc: any[];
+  frontmatter: Record<string, any>;
+} | null> => {
   try {
     const content = await fs.promises.readFile(filePath, "utf8");
-    const { content: mdx } = matter(content) as unknown as {
+    const { data: frontmatter, content: mdx } = matter(content) as unknown as {
+      data: Record<string, any>;
       content: string;
     };
-    const toc = await generateToc(filePath);
-    return { mdx, toc };
+    const toc = await generateToc(mdx);
+    return { mdx, toc, frontmatter };
   } catch (err) {
     return null;
   }
@@ -209,10 +239,14 @@ export const parseMdx = async (filePath: string) => {
     return;
   }
 
-  // Skip .dev.mdx files as they will be processed with their main .mdx file
-  if (filePath.endsWith(".dev.mdx")) {
+  // Skip view files (*.{key}.mdx) as they will be processed with their main .mdx file
+  // Pattern: component-name.{key}.mdx (e.g., button.api.mdx, button.dev.mdx)
+  // We detect these by checking if the filename has more than one dot before .mdx
+  const basename = path.basename(filePath);
+  const nameWithoutMdx = basename.replace(/\.mdx$/, "");
+  if (nameWithoutMdx.includes(".")) {
     flog(
-      `[MDX] Skipping .dev.mdx file (will be processed with main .mdx): ${filePath}`
+      `[MDX] Skipping view file (will be processed with main .mdx): ${filePath}`
     );
     return;
   }
@@ -230,12 +264,42 @@ export const parseMdx = async (filePath: string) => {
       content: MdxFileFrontmatter["mdx"];
     };
 
-    const toc = await generateToc(filePath);
+    const toc = await generateToc(mdx);
     const repoPath = await getPathFromMonorepoRoot(filePath);
 
-    // Check for .dev.mdx file
-    const devMdxPath = getDevMdxPath(filePath);
-    const devView = await parseSingleMdx(devMdxPath);
+    // Get tab metadata from main file frontmatter (with defaults)
+    const mainTabTitle = meta["tab-title"] || meta["tabTitle"] || "Overview";
+    const mainTabOrder = meta["tab-order"] || meta["tabOrder"] || 0;
+
+    // Discover all view files (e.g., button.api.mdx, button.dev.mdx)
+    const viewFiles = await getViewMdxFiles(filePath);
+
+    // Build tabs array and views object
+    const tabs: Array<{ key: string; title: string; order: number }> = [
+      { key: "overview", title: mainTabTitle, order: mainTabOrder },
+    ];
+
+    const views: Record<string, { mdx: string; toc: any[] }> = {
+      overview: { mdx, toc },
+    };
+
+    // Parse each view file
+    for (const { key, filePath: viewFilePath } of viewFiles) {
+      const viewData = await parseSingleMdx(viewFilePath);
+      if (viewData) {
+        const { mdx: viewMdx, toc: viewToc, frontmatter: viewMeta } = viewData;
+
+        // Get tab metadata from view file frontmatter (with defaults)
+        const tabTitle = viewMeta["tab-title"] || viewMeta["tabTitle"] || key;
+        const tabOrder = viewMeta["tab-order"] || viewMeta["tabOrder"] || 999;
+
+        tabs.push({ key, title: tabTitle, order: tabOrder });
+        views[key] = { mdx: viewMdx, toc: viewToc };
+      }
+    }
+
+    // Sort tabs by order (ascending)
+    tabs.sort((a, b) => a.order - b.order);
 
     const item = {
       meta: {
@@ -244,10 +308,10 @@ export const parseMdx = async (filePath: string) => {
         order: meta.order || 999,
         route: menuToPath(meta.menu),
         toc,
-        hasDevView: devView !== null,
+        tabs,
       },
       mdx,
-      ...(devView && { devView }),
+      views,
     };
 
     try {
@@ -257,12 +321,17 @@ export const parseMdx = async (filePath: string) => {
       // Store in observable documentation (triggers file writes)
       observableDocumentation[repoPath] = validData;
 
-      if (devView) {
-        flog(`[MDX] Parsed ${filePath} with dev view`);
+      const viewCount = tabs.length;
+      if (viewCount > 1) {
+        flog(
+          `[MDX] Parsed ${filePath} with ${viewCount} views: ${tabs.map((t) => t.key).join(", ")}`
+        );
+      } else {
+        flog(`[MDX] Parsed ${filePath}`);
       }
       return;
     } catch (error) {
-      console.error("Error serializing frontmatter:", error);
+      console.error("Error parsing MDX document:", error);
       throw error;
     }
   });

@@ -1,17 +1,15 @@
 import { useSearchParams } from "react-router";
 
-export type ViewType = "design" | "dev";
-
 /**
- * Hook to manage the active documentation view (design or developer).
- * Syncs with URL query parameter (?view=design or ?view=dev).
+ * Hook to manage the active documentation view.
+ * Syncs with URL query parameter (?view={key}).
  *
- * @returns The current active view type
+ * @returns The current active view key (e.g., "overview", "api", "dev") or undefined if not set
  */
-export const useActiveView = (): ViewType => {
+export const useActiveView = (): string | undefined => {
   const [searchParams] = useSearchParams();
   const viewParam = searchParams.get("view");
 
-  // Default to design view if no param or invalid param
-  return viewParam === "dev" ? "dev" : "design";
+  // Return the view parameter or undefined if not set
+  return viewParam || undefined;
 };
