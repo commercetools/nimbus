@@ -179,8 +179,8 @@ function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
       overflowY="auto"
       overflowX="hidden"
       bg="bg"
-      pl="400"
-      pr="400"
+      pl="800"
+      pr="800"
       py="400"
       css={{
         // Custom scrollbar styling
