@@ -63,20 +63,28 @@ export const tabsSlotRecipe = defineSlotRecipe({
   },
 
   variants: {
+    variant: {
+      line: {},
+      enclosed: {
+        tab: {
+          borderTopLeftRadius: "200",
+          borderTopRightRadius: "200",
+        },
+      },
+      pills: {
+        tab: {
+          borderRadius: "full",
+          _selected: {
+            backgroundColor: "primary.3",
+            color: "primary.12",
+          },
+        },
+      },
+    },
     orientation: {
       horizontal: {
         root: {
           flexDirection: "column",
-        },
-        list: {
-          borderBottom: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderBottom: "{spacing.50} solid transparent",
-          marginRight: "-25",
-          _selected: {
-            borderBottomColor: "primary.9",
-          },
         },
       },
       vertical: {
@@ -126,8 +134,136 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
   },
 
-  // Compound variants for different orientation/placement combinations
+  // Compound variants for different variant/orientation/placement combinations
   compoundVariants: [
+    // ==================== LINE VARIANT ====================
+    // Line + Horizontal
+    {
+      variant: "line",
+      orientation: "horizontal",
+      css: {
+        list: {
+          borderBottom: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          borderBottom: "{spacing.50} solid transparent",
+          marginBottom: "-25",
+          _selected: {
+            borderBottomColor: "primary.9",
+          },
+        },
+      },
+    },
+    // Line + Vertical + Start (tabs on left, border on left)
+    {
+      variant: "line",
+      orientation: "vertical",
+      placement: "start",
+      css: {
+        list: {
+          borderLeft: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          borderLeft: "{spacing.50} solid transparent",
+          marginLeft: "-25",
+          _selected: {
+            borderLeftColor: "primary.9",
+          },
+        },
+      },
+    },
+    // Line + Vertical + End (tabs on right, border on right)
+    {
+      variant: "line",
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        list: {
+          borderRight: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          borderRight: "{spacing.50} solid transparent",
+          marginRight: "-25",
+          _selected: {
+            borderRightColor: "primary.9",
+          },
+        },
+      },
+    },
+
+    // ==================== ENCLOSED VARIANT ====================
+    // Enclosed + Horizontal
+    {
+      variant: "enclosed",
+      orientation: "horizontal",
+      css: {
+        list: {
+          borderBottom: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          border: "{spacing.25} solid transparent",
+          borderBottom: "none",
+          marginBottom: "-25",
+          _selected: {
+            backgroundColor: "bg",
+            borderColor: "neutral.6",
+            borderBottomColor: "bg",
+          },
+        },
+      },
+    },
+    // Enclosed + Vertical + Start (tabs on left)
+    {
+      variant: "enclosed",
+      orientation: "vertical",
+      placement: "start",
+      css: {
+        list: {
+          borderRight: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          border: "{spacing.25} solid transparent",
+          borderRight: "none",
+          marginRight: "-25",
+          borderTopLeftRadius: "200",
+          borderBottomLeftRadius: "200",
+          borderTopRightRadius: "0",
+          borderBottomRightRadius: "0",
+          _selected: {
+            backgroundColor: "bg",
+            borderColor: "neutral.6",
+            borderRightColor: "bg",
+          },
+        },
+      },
+    },
+    // Enclosed + Vertical + End (tabs on right)
+    {
+      variant: "enclosed",
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        list: {
+          borderLeft: "{spacing.25} {colors.neutral.6} solid",
+        },
+        tab: {
+          border: "{spacing.25} solid transparent",
+          borderLeft: "none",
+          marginLeft: "-25",
+          borderTopLeftRadius: "0",
+          borderBottomLeftRadius: "0",
+          borderTopRightRadius: "200",
+          borderBottomRightRadius: "200",
+          _selected: {
+            backgroundColor: "bg",
+            borderColor: "neutral.6",
+            borderLeftColor: "bg",
+          },
+        },
+      },
+    },
+
+    // ==================== PLACEMENT-ONLY VARIANTS ====================
     // Horizontal + Start (default)
     {
       orientation: "horizontal",
@@ -148,46 +284,32 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Vertical + Start (tabs on left, border on left)
+
+    // ==================== PILLS VARIANT ====================
+    // Pills + Horizontal
     {
-      orientation: "vertical",
-      placement: "start",
+      variant: "pills",
+      orientation: "horizontal",
       css: {
-        root: {
-          flexDirection: "row",
-        },
         list: {
-          borderLeft: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderLeft: "{spacing.50} solid transparent",
-          marginLeft: "-25",
-          _selected: {
-            borderLeftColor: "primary.9",
-          },
+          gap: "200",
         },
       },
     },
-    // Vertical + End (tabs on right, border on right)
+    // Pills + Vertical
     {
+      variant: "pills",
       orientation: "vertical",
-      placement: "end",
       css: {
         list: {
-          borderRight: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderRight: "{spacing.50} solid transparent",
-          marginRight: "-25",
-          _selected: {
-            borderRightColor: "primary.9",
-          },
+          gap: "200",
         },
       },
     },
   ],
 
   defaultVariants: {
+    variant: "line",
     orientation: "horizontal",
     placement: "start",
     size: "md",

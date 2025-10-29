@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router";
-import { Box, Stack } from "@commercetools/nimbus";
+import { Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
-import styles from "./view-tabs.module.css";
 
 interface ViewTabsProps {
   /**
@@ -39,7 +38,9 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
     }
   }, [viewParam, tabs, defaultView, searchParams, setSearchParams]);
 
-  const handleViewChange = (newViewKey: string) => {
+  const handleSelectionChange = (key: string | number) => {
+    const newViewKey = String(key);
+
     // Update URL with new view parameter
     const newParams = new URLSearchParams(searchParams);
     newParams.set("view", newViewKey);
@@ -49,50 +50,19 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
     onViewChange?.(newViewKey);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent, currentIndex: number) => {
-    // Handle keyboard navigation
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleViewChange(tabs[currentIndex].key);
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      const nextIndex = (currentIndex + 1) % tabs.length;
-      handleViewChange(tabs[nextIndex].key);
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-      handleViewChange(tabs[prevIndex].key);
-    }
-  };
-
   return (
-    <Box className={styles.viewTabsContainer}>
-      <Stack
-        role="tablist"
-        aria-label="Documentation views"
-        direction="row"
-        gap="0"
-        className={styles.tabList}
-      >
-        {tabs.map((tab, index) => {
-          const isActive = activeView === tab.key;
-          return (
-            <button
-              key={tab.key}
-              role="tab"
-              id={`tab-${tab.key}`}
-              aria-selected={isActive}
-              aria-controls={`panel-${tab.key}`}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => handleViewChange(tab.key)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              className={`${styles.tab} ${isActive ? styles.tabActive : ""}`}
-            >
-              {tab.title}
-            </button>
-          );
-        })}
-      </Stack>
-    </Box>
+    <Tabs.Root
+      selectedKey={activeView}
+      onSelectionChange={handleSelectionChange}
+      variant="pills"
+    >
+      <Tabs.List>
+        {tabs.map((tab) => (
+          <Tabs.Tab key={tab.key} id={tab.key}>
+            {tab.title}
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+    </Tabs.Root>
   );
 };

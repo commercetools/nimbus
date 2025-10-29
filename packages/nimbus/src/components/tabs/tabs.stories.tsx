@@ -12,6 +12,11 @@ const meta: Meta<typeof Tabs.Root> = {
   title: "Components/Tabs",
   component: Tabs.Root,
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["line", "enclosed", "pills"],
+      description: "Visual style variant of the tabs",
+    },
     orientation: {
       control: "select",
       options: ["horizontal", "vertical"],
@@ -605,6 +610,57 @@ export const Disabled: Story = {
       const activePanel = canvas.getByRole("tabpanel");
       await expect(activePanel).toHaveTextContent("This tab is also enabled.");
     });
+  },
+};
+
+export const Variants: Story = {
+  render: () => {
+    const variantTabs = [
+      {
+        id: "overview",
+        tabLabel: "Overview",
+        panelContent: "This is the overview content for the selected variant.",
+      },
+      {
+        id: "details",
+        tabLabel: "Details",
+        panelContent: "This is the details content for the selected variant.",
+      },
+      {
+        id: "settings",
+        tabLabel: "Settings",
+        panelContent: "This is the settings content for the selected variant.",
+      },
+    ];
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+        <div data-testid="line-variant">
+          <h3>Line Variant (Default)</h3>
+          <p style={{ marginBottom: "16px", color: "#666" }}>
+            Tabs with an underline indicator showing the selected tab.
+          </p>
+          <Tabs.Root variant="line" tabs={variantTabs} />
+        </div>
+
+        <div data-testid="enclosed-variant">
+          <h3>Enclosed Variant</h3>
+          <p style={{ marginBottom: "16px", color: "#666" }}>
+            Tabs with borders and background, resembling traditional folder
+            tabs.
+          </p>
+          <Tabs.Root variant="enclosed" tabs={variantTabs} />
+        </div>
+
+        <div data-testid="pills-variant">
+          <h3>Pills Variant</h3>
+          <p style={{ marginBottom: "16px", color: "#666" }}>
+            Tabs with rounded pill-like appearance and background highlighting.
+          </p>
+          <Tabs.Root variant="pills" tabs={variantTabs} />
+        </div>
+      </div>
+    );
   },
 };
 
