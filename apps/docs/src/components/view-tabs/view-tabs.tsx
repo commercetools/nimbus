@@ -91,12 +91,12 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
 
   return (
     <Box
+      mx="auto"
       id="floating-nav"
       bg="bg/75"
       borderRadius="full"
       padding="200"
       backdropFilter="blur({sizes.500})"
-      ml="-200"
       position="sticky"
       top="0"
       zIndex="1"
