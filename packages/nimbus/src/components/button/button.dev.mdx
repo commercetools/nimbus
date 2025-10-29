@@ -1,0 +1,113 @@
+# Button Developer Guide
+
+This is the developer-focused documentation for the Button component.
+
+## API Reference
+
+<PropsTable id="Button" />
+
+## TypeScript Usage
+
+```tsx
+import { Button } from '@commercetools/nimbus';
+import type { ButtonProps } from '@commercetools/nimbus';
+
+const MyButton: React.FC<ButtonProps> = (props) => {
+  return <Button {...props}>Click me</Button>;
+};
+```
+
+## Implementation Details
+
+The Button component is built using React Aria's Button component for accessibility.
+
+### Key Features
+
+- **Accessible by default**: Built on React Aria Components
+- **Keyboard navigation**: Full keyboard support
+- **Focus management**: Proper focus ring and states
+- **Loading states**: Built-in support for async actions
+
+## Advanced Usage
+
+### Async Actions with Loading State
+
+```jsx-live
+const App = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(false);
+  };
+
+  return (
+    <Button
+      onPress={handleClick}
+      isDisabled={isLoading}
+    >
+      {isLoading ? 'Loading...' : 'Click me'}
+    </Button>
+  );
+};
+```
+
+### With Custom Ref
+
+```tsx
+import { useRef } from 'react';
+import { Button } from '@commercetools/nimbus';
+
+const MyComponent = () => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  return (
+    <Button ref={buttonRef}>
+      Button with Ref
+    </Button>
+  );
+};
+```
+
+## Accessibility Implementation
+
+### ARIA Attributes
+
+The Button component automatically handles:
+
+- `role="button"` for non-button elements
+- `aria-pressed` for toggle buttons
+- `aria-disabled` when disabled
+- `aria-label` for icon-only buttons
+
+### Keyboard Interactions
+
+| Key | Action |
+|-----|--------|
+| `Enter` or `Space` | Activates the button |
+| `Tab` | Moves focus to/from the button |
+
+## Performance Considerations
+
+- Button is a lightweight component with minimal re-renders
+- Use `React.memo` if passing as a prop frequently
+- For lists of buttons, consider memoization
+
+## Testing
+
+### Unit Testing Example
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Button } from '@commercetools/nimbus';
+
+test('button handles click events', async () => {
+  const handleClick = jest.fn();
+  render(<Button onPress={handleClick}>Click me</Button>);
+
+  await userEvent.click(screen.getByRole('button'));
+  expect(handleClick).toHaveBeenCalledTimes(1);
+});
+```

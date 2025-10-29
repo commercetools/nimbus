@@ -6,6 +6,14 @@ import { parseTypes } from "./parse-types";
 const directoryToWatch: string = "./../../packages";
 
 const handleFileChange = async (filePath: string) => {
+  // Check if this is a .dev.mdx file
+  if (filePath.endsWith(".dev.mdx")) {
+    // Trigger re-parsing of the main .mdx file instead
+    const mainMdxPath = filePath.replace(/\.dev\.mdx$/, ".mdx");
+    await parseMdx(mainMdxPath);
+    return;
+  }
+
   const ext = filePath.split(".").pop();
   switch (true) {
     case ext === "mdx":
