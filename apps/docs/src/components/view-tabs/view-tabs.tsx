@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import { Tabs } from "@commercetools/nimbus";
+import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 
 interface ViewTabsProps {
@@ -22,6 +22,8 @@ interface ViewTabsProps {
 export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewParam = searchParams.get("view");
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Determine active view - default to first tab if param is invalid
   const defaultView = tabs[0]?.key || "overview";
@@ -38,6 +40,43 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
     }
   }, [viewParam, tabs, defaultView, searchParams, setSearchParams]);
 
+  // Handle scroll direction to show/hide tabs
+  useEffect(() => {
+    const SCROLL_THRESHOLD = 5; // Minimum scroll distance to trigger hide/show
+    const mainElement = document.getElementById("main");
+
+    if (!mainElement) return;
+
+    const handleScroll = () => {
+      const currentScrollY = mainElement.scrollTop;
+      const scrollDiff = Math.abs(currentScrollY - lastScrollY);
+
+      // Ignore small scroll changes to avoid flickering
+      if (scrollDiff < SCROLL_THRESHOLD) {
+        return;
+      }
+
+      // Show tabs if at the top of the page
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+      }
+      // Hide when scrolling down, show when scrolling up
+      else if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    mainElement.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      mainElement.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
   const handleSelectionChange = (key: string | number) => {
     const newViewKey = String(key);
 
@@ -51,18 +90,35 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
   };
 
   return (
-    <Tabs.Root
-      selectedKey={activeView}
-      onSelectionChange={handleSelectionChange}
-      variant="pills"
+    <Box
+      id="floating-nav"
+      bg="bg/75"
+      borderRadius="full"
+      padding="200"
+      backdropFilter="blur({sizes.500})"
+      ml="-200"
+      position="sticky"
+      top="0"
+      zIndex="1"
+      css={{
+        transform: isVisible ? "translateY(0)" : "translateY(-100%)",
+        opacity: isVisible ? 1 : 0,
+        transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
+      }}
     >
-      <Tabs.List>
-        {tabs.map((tab) => (
-          <Tabs.Tab key={tab.key} id={tab.key}>
-            {tab.title}
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
-    </Tabs.Root>
+      <Tabs.Root
+        selectedKey={activeView}
+        onSelectionChange={handleSelectionChange}
+        variant="pills"
+      >
+        <Tabs.List>
+          {tabs.map((tab) => (
+            <Tabs.Tab key={tab.key} id={tab.key}>
+              {tab.title}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
+    </Box>
   );
 };
