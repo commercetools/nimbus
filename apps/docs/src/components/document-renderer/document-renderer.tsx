@@ -5,13 +5,29 @@ import { memo, useMemo } from "react";
 import { brandNameAtom } from "@/atoms/brand";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
+import { useActiveView } from "@/hooks/use-active-view";
+import { ViewTabs } from "@/components/view-tabs";
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
   const { doc: activeDoc, isLoading, error } = useActiveDoc();
+  const activeView = useActiveView();
 
-  const content = activeDoc?.mdx;
   const meta = activeDoc?.meta;
+  const hasDevView = meta?.hasDevView || false;
+
+  // Determine which content to show based on active view
+  const content = useMemo(() => {
+    if (!activeDoc) return undefined;
+
+    // If dev view is active and available, use it
+    if (activeView === "dev" && activeDoc.devView) {
+      return activeDoc.devView.mdx;
+    }
+
+    // Otherwise use the main (design) content
+    return activeDoc.mdx;
+  }, [activeDoc, activeView]);
 
   const lifecycleState = meta?.lifecycleState;
   const lifecycleInfo = lifecycleState
@@ -50,6 +66,9 @@ const DocumentRendererComponent = () => {
               </Badge>
             </Flex>
           )}
+
+          {/* Show tabs if dev view is available */}
+          {hasDevView && <ViewTabs />}
 
           <Box pb="2400">
             <MdxStringRenderer content={content} />

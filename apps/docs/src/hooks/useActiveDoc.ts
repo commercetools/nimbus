@@ -57,6 +57,7 @@ export const useActiveDoc = (): UseActiveDocReturn => {
         menu: [...doc.meta.menu],
       },
       mdx: doc.mdx,
+      ...(doc.devView && { devView: doc.devView }),
     } as MdxFileFrontmatter,
     isLoading: false,
     error: null,

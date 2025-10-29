@@ -61,6 +61,7 @@ const writeManifest = debounce(() => {
         order: doc.meta.order || 999,
         chunkName: chunkName,
         icon: doc.meta.icon,
+        hasDevView: doc.meta.hasDevView || false,
       };
     });
 
@@ -176,9 +177,43 @@ const observableDocumentation: Record<string, MdxFileFrontmatter> = observable(
   writeAllFiles
 );
 
+/**
+ * Check if a .dev.mdx file exists for the given .mdx file
+ */
+const getDevMdxPath = (mdxFilePath: string): string => {
+  // Replace .mdx with .dev.mdx
+  return mdxFilePath.replace(/\.mdx$/, ".dev.mdx");
+};
+
+/**
+ * Parse a single MDX file and return its content and TOC
+ */
+const parseSingleMdx = async (
+  filePath: string
+): Promise<{ mdx: string; toc: any[] } | null> => {
+  try {
+    const content = await fs.promises.readFile(filePath, "utf8");
+    const { content: mdx } = matter(content) as unknown as {
+      content: string;
+    };
+    const toc = await generateToc(filePath);
+    return { mdx, toc };
+  } catch (err) {
+    return null;
+  }
+};
+
 export const parseMdx = async (filePath: string) => {
   // Skip files from node_modules to avoid duplicated IDs
   if (filePath.includes("node_modules")) {
+    return;
+  }
+
+  // Skip .dev.mdx files as they will be processed with their main .mdx file
+  if (filePath.endsWith(".dev.mdx")) {
+    flog(
+      `[MDX] Skipping .dev.mdx file (will be processed with main .mdx): ${filePath}`
+    );
     return;
   }
 
@@ -196,8 +231,11 @@ export const parseMdx = async (filePath: string) => {
     };
 
     const toc = await generateToc(filePath);
-
     const repoPath = await getPathFromMonorepoRoot(filePath);
+
+    // Check for .dev.mdx file
+    const devMdxPath = getDevMdxPath(filePath);
+    const devView = await parseSingleMdx(devMdxPath);
 
     const item = {
       meta: {
@@ -206,15 +244,22 @@ export const parseMdx = async (filePath: string) => {
         order: meta.order || 999,
         route: menuToPath(meta.menu),
         toc,
+        hasDevView: devView !== null,
       },
       mdx,
+      ...(devView && { devView }),
     };
+
     try {
       // Validate data before converting to a string
       const validData = mdxDocumentSchema.parse(item);
 
       // Store in observable documentation (triggers file writes)
       observableDocumentation[repoPath] = validData;
+
+      if (devView) {
+        flog(`[MDX] Parsed ${filePath} with dev view`);
+      }
       return;
     } catch (error) {
       console.error("Error serializing frontmatter:", error);
