@@ -1,4 +1,4 @@
-export { Drawer } from "./drawer";
+export * from "./drawer";
 
 // Re-export types for external usage
 export type * from "./drawer.types";
