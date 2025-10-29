@@ -10,10 +10,10 @@ export const tooltipRecipe = defineRecipe({
 
   // Base styles applied to all instances of the component
   base: {
-    color: "white",
+    color: "neutral.contrast",
     textStyle: "xs",
     fontWeight: "400",
-    background: "slate.12",
+    background: "neutral.12",
     display: "inline-flex",
     alignItems: "center",
     borderRadius: "100",
