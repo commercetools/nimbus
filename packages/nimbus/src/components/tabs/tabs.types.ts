@@ -7,6 +7,11 @@ import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
 type TabsRecipeProps = {
   /**
+   * Visual style variant of the tabs
+   * @default "line"
+   */
+  variant?: SlotRecipeProps<"tabs">["variant"];
+  /**
    * Layout orientation of the tabs
    * @default "horizontal"
    */
@@ -48,6 +53,10 @@ export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
    * The keyboard activation of the Tabs component.
    */
   keyboardActivation?: "automatic" | "manual";
+  /**
+   * Callback invoked when the selected tab changes.
+   */
+  onSelectionChange?: (key: string | number) => void;
 };
 
 export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
