@@ -53,7 +53,7 @@ export const Toc = () => {
   }
 
   return (
-    <Box>
+    <Box maxWidth="300px">
       <Text fontWeight="600" mb="400">
         On this page
       </Text>
