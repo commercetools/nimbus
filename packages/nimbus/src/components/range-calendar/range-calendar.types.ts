@@ -50,10 +50,8 @@ type ExcludedProps = "style" | "createCalendar";
 // ============================================================
 
 export type RangeCalendarProps<T extends DateValue> = OmitUnwantedProps<
-  Omit<
-    RangeCalendarRootSlotProps,
-    keyof RaRangeCalendarProps<DateValue> | ExcludedProps
-  > &
-    Omit<RaRangeCalendarProps<T>, ExcludedProps> &
-    SlotRecipeProps<"rangeCalendar">
->;
+  RangeCalendarRootSlotProps,
+  keyof RaRangeCalendarProps<DateValue> | ExcludedProps
+> &
+  Omit<RaRangeCalendarProps<T>, ExcludedProps> &
+  SlotRecipeProps<"rangeCalendar">;

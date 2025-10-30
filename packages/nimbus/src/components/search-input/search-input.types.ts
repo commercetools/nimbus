@@ -36,8 +36,8 @@ export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
 // MAIN PROPS
 // ============================================================
 
-export type SearchInputProps = Omit<
-  OmitUnwantedProps<SearchInputRootSlotProps>,
+export type SearchInputProps = OmitUnwantedProps<
+  SearchInputRootSlotProps,
   keyof RaSearchFieldProps
 > &
   Omit<RaSearchFieldProps, "ref"> & {

@@ -47,7 +47,8 @@ export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
 // ============================================================
 
 export type MultilineTextInputProps = OmitUnwantedProps<
-  Omit<MultilineTextInputRootSlotProps, keyof RaTextFieldProps>
+  MultilineTextInputRootSlotProps,
+  keyof RaTextFieldProps
 > &
   RaTextFieldProps & {
     /**

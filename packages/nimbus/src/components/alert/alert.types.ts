@@ -17,16 +17,14 @@ type AlertRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type AlertRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div", AlertRecipeProps>
-> & {
+export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
   /** Color palette variant of the alert */
   colorPalette?: Exclude<SemanticPalettesOnly, "neutral" | "primary">;
 };
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;
 
-export type AlertActionsSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
+export type AlertActionsSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
@@ -35,7 +33,7 @@ export type AlertActionsSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
 /**
  * Props for the Alert.Root component.
  */
-export type AlertProps = AlertRootSlotProps & {
+export type AlertProps = OmitUnwantedProps<AlertRootSlotProps> & {
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -67,7 +65,7 @@ export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
 /**
  * Props for the Alert.Actions component.
  */
-export type AlertActionsProps = AlertActionsSlotProps;
+export type AlertActionsProps = OmitUnwantedProps<AlertActionsSlotProps>;
 
 /**
  * Props for the Alert.DismissButton component.

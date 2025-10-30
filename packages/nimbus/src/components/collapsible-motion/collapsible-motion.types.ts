@@ -13,17 +13,14 @@ export type CollapsibleMotionRecipeProps = SlotRecipeProps<"collapsibleMotion">;
 // SLOT PROPS
 // ============================================================
 
-export type CollapsibleMotionRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div", CollapsibleMotionRecipeProps>
+export type CollapsibleMotionRootSlotProps = HTMLChakraProps<
+  "div",
+  CollapsibleMotionRecipeProps
 >;
 
-export type CollapsibleMotionTriggerSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"button">
->;
+export type CollapsibleMotionTriggerSlotProps = HTMLChakraProps<"button">;
 
-export type CollapsibleMotionContentSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div">
->;
+export type CollapsibleMotionContentSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // HELPER TYPES
@@ -41,37 +38,38 @@ export type CollapsibleMotionContextValue = {
 // MAIN PROPS
 // ============================================================
 
-export type CollapsibleMotionRootProps = CollapsibleMotionRootSlotProps & {
-  /**
-   * Content of the collapsible component
-   */
-  children: ReactNode;
-  /**
-   * Default expanded state (uncontrolled mode)
-   * @default false
-   */
-  defaultExpanded?: boolean;
-  /**
-   * Controlled expanded state
-   */
-  isExpanded?: boolean;
-  /**
-   * Callback fired when expanded state changes
-   */
-  onExpandedChange?: (isExpanded: boolean) => void;
-  /**
-   * Whether the component is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
-  /**
-   * Data attributes for testing or custom metadata
-   */
-  [key: `data-${string}`]: unknown;
-};
+export type CollapsibleMotionRootProps =
+  OmitUnwantedProps<CollapsibleMotionRootSlotProps> & {
+    /**
+     * Content of the collapsible component
+     */
+    children: ReactNode;
+    /**
+     * Default expanded state (uncontrolled mode)
+     * @default false
+     */
+    defaultExpanded?: boolean;
+    /**
+     * Controlled expanded state
+     */
+    isExpanded?: boolean;
+    /**
+     * Callback fired when expanded state changes
+     */
+    onExpandedChange?: (isExpanded: boolean) => void;
+    /**
+     * Whether the component is disabled
+     * @default false
+     */
+    isDisabled?: boolean;
+    /**
+     * Data attributes for testing or custom metadata
+     */
+    [key: `data-${string}`]: unknown;
+  };
 
 export type CollapsibleMotionTriggerProps =
-  CollapsibleMotionTriggerSlotProps & {
+  OmitUnwantedProps<CollapsibleMotionTriggerSlotProps> & {
     /**
      * Content to display in the trigger button
      */
@@ -84,7 +82,7 @@ export type CollapsibleMotionTriggerProps =
   };
 
 export type CollapsibleMotionContentProps =
-  CollapsibleMotionContentSlotProps & {
+  OmitUnwantedProps<CollapsibleMotionContentSlotProps> & {
     /**
      * Content to display inside the collapsible area
      */

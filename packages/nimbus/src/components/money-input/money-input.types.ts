@@ -42,7 +42,6 @@ export type CustomEvent = {
 };
 
 // Props to exclude from slot props that conflict with our custom event handling
-// TODO: We have this pattern and the `OmitUnwantedProps` utility type. How can we generalize this?
 export type ExcludedSlotProps =
   | "onChange"
   | "onBlur"
@@ -92,7 +91,8 @@ export type ExcludedSlotProps =
 // MAIN PROPS
 // ============================================================
 export type MoneyInputProps = OmitUnwantedProps<
-  Omit<MoneyInputRootSlotProps, ExcludedSlotProps>
+  MoneyInputRootSlotProps,
+  ExcludedSlotProps
 > & {
   /**
    * Used as HTML id property. An id is auto-generated when it is not specified.

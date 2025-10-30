@@ -21,15 +21,13 @@ type BadgeRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type BadgeRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"span", BadgeRecipeProps>
->;
+export type BadgeRootSlotProps = HTMLChakraProps<"span", BadgeRecipeProps>;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type BadgeProps = BadgeRootSlotProps & {
+export type BadgeProps = OmitUnwantedProps<BadgeRootSlotProps> & {
   /**
    * Content to display inside the badge
    */

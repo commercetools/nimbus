@@ -74,7 +74,7 @@ export type SelectRootProps = OmitUnwantedProps<SelectRootSlotProps> &
   };
 
 export type SelectOptionsProps<T> = RaListBoxProps<T> &
-  Omit<OmitUnwantedProps<SelectOptionsSlotProps>, keyof RaListBoxProps<T>>;
+  OmitUnwantedProps<SelectOptionsSlotProps, keyof RaListBoxProps<T>>;
 
 export type SelectOptionProps = Omit<
   RaListBoxItemProps,
@@ -87,7 +87,7 @@ export type SelectOptionProps = Omit<
   | "onMouseDown"
   | "onMouseUp"
 > &
-  Omit<OmitUnwantedProps<SelectOptionSlotProps>, keyof RaListBoxItemProps> & {
+  OmitUnwantedProps<SelectOptionSlotProps, keyof RaListBoxItemProps> & {
     /**
      * Ref forwarding to the option element
      */
@@ -95,8 +95,8 @@ export type SelectOptionProps = Omit<
   };
 
 export type SelectOptionGroupProps<T> = RaListBoxSectionProps<T> &
-  Omit<
-    OmitUnwantedProps<SelectOptionGroupSlotProps>,
+  OmitUnwantedProps<
+    SelectOptionGroupSlotProps,
     keyof RaListBoxSectionProps<T>
   > & {
     /**

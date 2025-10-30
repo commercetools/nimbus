@@ -47,11 +47,11 @@ type RadioGroupPropsSubset = Omit<
 // MAIN PROPS
 // ============================================================
 
-export type RadioInputRootProps = Omit<
-  OmitUnwantedProps<RadioInputRootSlotProps>,
+export type RadioInputRootProps = OmitUnwantedProps<
+  RadioInputRootSlotProps,
   keyof RadioGroupPropsSubset
 > &
   RadioGroupPropsSubset;
 
 export type RadioInputOptionProps = RaRadioProps &
-  OmitUnwantedProps<Omit<RadioInputOptionSlotProps, keyof RaRadioProps>>;
+  OmitUnwantedProps<RadioInputOptionSlotProps, keyof RaRadioProps>;

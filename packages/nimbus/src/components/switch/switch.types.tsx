@@ -35,8 +35,8 @@ type ExcludedSwitchProps =
 // MAIN PROPS
 // ============================================================
 
-export type SwitchProps = Omit<
-  OmitUnwantedProps<SwitchRootSlotProps>,
+export type SwitchProps = OmitUnwantedProps<
+  SwitchRootSlotProps,
   ExcludedSwitchProps | "onChange"
 > &
   Omit<AriaCheckboxProps, ExcludedSwitchProps> & {

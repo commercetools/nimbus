@@ -41,14 +41,14 @@ type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
 export type TagGroupProps = TagGroupRecipeVariantProps &
-  Omit<OmitUnwantedProps<TagGroupRootProps>, "size"> & {
+  OmitUnwantedProps<TagGroupRootProps, "size"> & {
     ref?: Ref<typeof RaTagGroup>;
   };
 
 export type TagGroupRootComponent = FC<TagGroupProps>;
 
 export type TagGroupTagListProps<T extends object> = RaTagListProps<T> &
-  Omit<OmitUnwantedProps<TagGroupTagListSlotProps>, keyof RaTagListProps<T>> & {
+  OmitUnwantedProps<TagGroupTagListSlotProps, keyof RaTagListProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };
 
@@ -57,7 +57,7 @@ export type TagGroupTagListComponent<T extends object> = FC<
 >;
 
 export type TagGroupTagProps = RaTagProps &
-  Omit<OmitUnwantedProps<TagGroupTagSlotProps>, keyof RaTagProps> & {
+  OmitUnwantedProps<TagGroupTagSlotProps, keyof RaTagProps> & {
     ref?: Ref<typeof RaTag>;
   };
 

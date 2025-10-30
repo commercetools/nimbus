@@ -77,10 +77,8 @@ export type ExcludedNumberInputProps = "onChange";
 // ============================================================
 
 export type NumberInputProps = OmitUnwantedProps<
-  Omit<
-    NumberInputRootSlotProps,
-    keyof RaNumberFieldProps | ExcludedNumberInputProps
-  >
+  NumberInputRootSlotProps,
+  keyof RaNumberFieldProps | ExcludedNumberInputProps
 > &
   RaNumberFieldProps & {
     /**

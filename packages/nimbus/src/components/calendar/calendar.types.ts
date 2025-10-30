@@ -81,9 +81,7 @@ type ExcludedProps = "style" | "createCalendar";
  * @template T - Date value type from @internationalized/date
  */
 export type CalendarProps<T extends DateValue> = OmitUnwantedProps<
-  Omit<
-    CalendarRootSlotProps,
-    keyof RaCalendarProps<DateValue> | ExcludedProps
-  > &
-    Omit<RaCalendarProps<T>, ExcludedProps>
->;
+  CalendarRootSlotProps,
+  keyof RaCalendarProps<DateValue> | ExcludedProps
+> &
+  Omit<RaCalendarProps<T>, ExcludedProps>;

@@ -41,9 +41,9 @@ export type TextInputTrailingElementSlotProps = HTMLChakraProps<"div">;
 // MAIN PROPS
 // ============================================================
 
-export type TextInputProps = Omit<
-  OmitUnwantedProps<TextInputRootSlotProps>,
-  keyof RaTextFieldProps
+export type TextInputProps = OmitUnwantedProps<
+  TextInputRootSlotProps,
+  keyof RaTextFieldProps & keyof TextInputRootSlotProps
 > &
   Omit<RaTextFieldProps, "ref"> & {
     /**

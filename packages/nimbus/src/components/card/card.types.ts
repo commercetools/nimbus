@@ -24,30 +24,28 @@ type CardRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type CardRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div", CardRecipeProps>
->;
+export type CardRootSlotProps = HTMLChakraProps<"div", CardRecipeProps>;
 
-export type CardHeaderSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
+export type CardHeaderSlotProps = HTMLChakraProps<"div">;
 
-export type CardContentSlotProps = OmitUnwantedProps<HTMLChakraProps<"div">>;
+export type CardContentSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type CardProps = CardRootSlotProps & {
+export type CardProps = OmitUnwantedProps<CardRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
   [key: `data-${string}`]: unknown;
 };
 
-export type CardHeaderProps = CardHeaderSlotProps & {
+export type CardHeaderProps = OmitUnwantedProps<CardHeaderSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };
 
-export type CardContentProps = CardContentSlotProps & {
+export type CardContentProps = OmitUnwantedProps<CardContentSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };

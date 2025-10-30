@@ -105,8 +105,8 @@ export type LocalizedFieldChangeEvent = {
 // ============================================================
 
 export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
-  Omit<
-    OmitUnwantedProps<LocalizedFieldRootSlotProps>,
+  OmitUnwantedProps<
+    LocalizedFieldRootSlotProps,
     "onChange" | "onBlur" | "onFocus" | "size"
   > & {
     /**

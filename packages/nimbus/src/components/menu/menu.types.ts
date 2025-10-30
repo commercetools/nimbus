@@ -62,8 +62,8 @@ export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
   };
 
 // Menu trigger component
-export type MenuTriggerProps = Omit<
-  OmitUnwantedProps<MenuTriggerSlotProps>,
+export type MenuTriggerProps = OmitUnwantedProps<
+  MenuTriggerSlotProps,
   keyof RaButtonProps
 > &
   RaButtonProps & {

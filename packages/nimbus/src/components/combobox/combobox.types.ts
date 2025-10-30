@@ -240,8 +240,8 @@ export type ComboBoxOptionsProps<T extends object> = RaListBoxProps<T> &
  */
 export type ComboBoxOptionGroupProps<T extends object> =
   RaListBoxSectionProps<T> &
-    Omit<
-      OmitUnwantedProps<ComboBoxOptionGroupSlotProps>,
+    OmitUnwantedProps<
+      ComboBoxOptionGroupSlotProps,
       keyof RaListBoxSectionProps<T>
     > & {
       label?: ReactNode;
@@ -251,9 +251,6 @@ export type ComboBoxOptionGroupProps<T extends object> =
  * Props for the ComboBox.Option component.
  */
 export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
-  Omit<
-    OmitUnwantedProps<ComboBoxOptionSlotProps>,
-    keyof RaListBoxItemProps<T>
-  > & {
+  OmitUnwantedProps<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };

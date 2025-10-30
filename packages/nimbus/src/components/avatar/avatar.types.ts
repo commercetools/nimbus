@@ -22,15 +22,13 @@ type AvatarRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type AvatarRootSlotProps = OmitUnwantedProps<
-  HTMLChakraProps<"div", AvatarRecipeProps>
->;
+export type AvatarRootSlotProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type AvatarProps = AvatarRootSlotProps &
+export type AvatarProps = OmitUnwantedProps<AvatarRootSlotProps> &
   HTMLAttributes<HTMLDivElement> & {
     /**
      * First name for generating initials

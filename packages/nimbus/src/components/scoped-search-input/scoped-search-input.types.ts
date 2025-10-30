@@ -58,8 +58,8 @@ export type ScopedSearchInputOptionGroup = {
 // MAIN PROPS
 // ============================================================
 
-export type ScopedSearchInputProps = Omit<
-  OmitUnwantedProps<ScopedSearchInputRootSlotProps>,
+export type ScopedSearchInputProps = OmitUnwantedProps<
+  ScopedSearchInputRootSlotProps,
   "value" | "onSubmit"
 > & {
   /** Current value (text + selected option) */
