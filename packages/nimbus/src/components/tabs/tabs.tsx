@@ -1,15 +1,15 @@
 import { TabsRoot } from "./components/tabs.root";
-import { TabList } from "./components/tabs.list";
-import { Tab } from "./components/tabs.tab";
-import { TabPanels } from "./components/tabs.panels";
-import { TabPanel } from "./components/tabs.panel";
+import { TabsList } from "./components/tabs.list";
+import { TabsTab } from "./components/tabs.tab";
+import { TabsPanels } from "./components/tabs.panels";
+import { TabsPanel } from "./components/tabs.panel";
 
 export const Tabs = {
   Root: TabsRoot,
-  List: TabList,
-  Tab: Tab,
-  Panels: TabPanels,
-  Panel: TabPanel,
+  List: TabsList,
+  Tab: TabsTab,
+  Panels: TabsPanels,
+  Panel: TabsPanel,
 };
 
 export type { TabsProps, TabListProps, TabItemProps } from "./tabs.types";
@@ -21,8 +21,8 @@ export type { TabsProps, TabListProps, TabItemProps } from "./tabs.types";
  */
 export {
   TabsRoot as _TabsRoot,
-  TabList as _TabList,
-  Tab as _Tab,
-  TabPanels as _TabPanels,
-  TabPanel as _TabPanel,
+  TabsList as _TabsList,
+  TabsTab as _TabsTab,
+  TabsPanels as _TabsPanels,
+  TabsPanel as _TabsPanel,
 };

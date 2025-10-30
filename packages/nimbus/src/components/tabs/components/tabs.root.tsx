@@ -1,8 +1,8 @@
 import { Tabs as RATabs } from "react-aria-components";
 import { TabsRootSlot } from "../tabs.slots";
 import type { TabsProps } from "../tabs.types";
-import { TabList } from "./tabs.list";
-import { TabPanels } from "./tabs.panels";
+import { TabsList } from "./tabs.list";
+import { TabsPanels } from "./tabs.panels";
 
 /**
  * # Tabs
@@ -10,6 +10,7 @@ import { TabPanels } from "./tabs.panels";
  * A tabs component built on React Aria Components that allows users to switch between different views.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/tabs}
+ * @supportsStyleProps
  */
 export const TabsRoot = ({
   children,
@@ -31,8 +32,8 @@ export const TabsRoot = ({
       <RATabs disabledKeys={disabledKeys} {...tabs}>
         {children || (
           <>
-            <TabList tabs={tabs} />
-            <TabPanels tabs={tabs} />
+            <TabsList tabs={tabs} />
+            <TabsPanels tabs={tabs} />
           </>
         )}
       </RATabs>
