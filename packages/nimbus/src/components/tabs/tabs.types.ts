@@ -1,3 +1,4 @@
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
 import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -103,7 +104,7 @@ export type TabItemProps = {
 // MAIN PROPS
 // ============================================================
 
-export type TabsProps = TabsRootSlotProps &
+export type TabsProps = OmitUnwantedProps<TabsRootSlotProps> &
   TabsVariantProps & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
@@ -113,7 +114,7 @@ export type TabsProps = TabsRootSlotProps &
 /**
  * Props for individual tab list component
  */
-export type TabListProps = TabsListSlotProps & {
+export type TabListProps = OmitUnwantedProps<TabsListSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -122,7 +123,7 @@ export type TabListProps = TabsListSlotProps & {
 /**
  * Props for individual tab component
  */
-export type TabProps = TabsTabSlotProps & {
+export type TabProps = OmitUnwantedProps<TabsTabSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
@@ -131,7 +132,7 @@ export type TabProps = TabsTabSlotProps & {
 /**
  * Props for tab panels container component
  */
-export type TabPanelsProps = TabsPanelsSlotProps & {
+export type TabPanelsProps = OmitUnwantedProps<TabsPanelsSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -140,7 +141,7 @@ export type TabPanelsProps = TabsPanelsSlotProps & {
 /**
  * Props for individual tab panel component
  */
-export type TabPanelProps = TabsPanelSlotProps & {
+export type TabPanelProps = OmitUnwantedProps<TabsPanelSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
