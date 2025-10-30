@@ -19,7 +19,7 @@ export const Base: Story = {
     description: "Choose a descriptive name for your project",
     placeholder: "Enter your project name",
   },
-  render: (args) => <TextInputField {...args} data-testid="project-input" />,
+  render: (args) => <TextInputField {...args} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox");

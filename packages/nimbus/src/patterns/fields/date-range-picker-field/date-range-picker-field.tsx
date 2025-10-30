@@ -35,6 +35,7 @@ export const DateRangePickerField = ({
   isRequired = false,
   isDisabled = false,
   isReadOnly = false,
+  isInvalid = false,
   direction = "column",
   size = "md",
   ...dateRangePickerProps
@@ -47,7 +48,7 @@ export const DateRangePickerField = ({
       id={id}
       direction={direction as "row" | "column"}
       size={size}
-      isInvalid={hasErrors}
+      isInvalid={hasErrors || isInvalid}
       isRequired={isRequired}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}

@@ -1,7 +1,6 @@
 import { TextInput } from "@/components/text-input";
 import type { TextInputFieldProps } from "./text-input-field.types";
 import { FormField, FieldErrors } from "@/components";
-import { extractStyleProps } from "@/utils";
 
 /**
  * # TextInputField
@@ -39,11 +38,11 @@ export const TextInputField = ({
   isRequired = false,
   isDisabled = false,
   isReadOnly = false,
+  isInvalid = false,
   value,
   placeholder,
   ...rest
 }: TextInputFieldProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(rest);
   // Determine if we should show errors
   const hasErrors = touched && errors && Object.values(errors).some(Boolean);
 
@@ -53,13 +52,12 @@ export const TextInputField = ({
       isRequired={isRequired}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
-      isInvalid={hasErrors}
-      {...functionalProps}
+      isInvalid={hasErrors || isInvalid}
     >
       <FormField.Label>{label}</FormField.Label>
       <FormField.Input>
         <TextInput
-          {...styleProps}
+          {...rest}
           type="text"
           placeholder={placeholder}
           onChange={onChange}
