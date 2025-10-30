@@ -16,6 +16,11 @@ import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
 import { messages } from "../data-table.i18n";
 
+/**
+ * DataTable.Header - The table header section that renders column headers with sorting capabilities
+ *
+ * @supportsStyleProps
+ */
 export const DataTableHeader = <
   T extends DataTableColumnItem = DataTableColumnItem,
 >({

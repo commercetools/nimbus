@@ -12,6 +12,11 @@ import {
 import type { DataTableColumnComponent } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
+/**
+ * DataTable.Column - Individual column header component that handles sorting interactions
+ *
+ * @supportsStyleProps
+ */
 export const DataTableColumn: DataTableColumnComponent = ({
   children,
   ref,
@@ -91,3 +96,5 @@ export const DataTableColumn: DataTableColumnComponent = ({
     </DataTableColumnSlot>
   );
 };
+
+DataTableColumn.displayName = "DataTable.Column";
