@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { Box, Tabs } from "@commercetools/nimbus";
@@ -797,6 +798,140 @@ export const Sizes: Story = {
       const largeTab2 = canvas.getByRole("tab", { name: "Large Tab 2" });
       await userEvent.click(largeTab2);
       await expect(largeTab2).toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
+/**
+ * Regression test for controlled tabs with external state
+ * Tests that selectedKey and onSelectionChange props are properly forwarded to React Aria
+ * This ensures tabs can be controlled from external state (e.g., URL routing)
+ */
+export const ControlledWithExternalState: Story = {
+  render: () => {
+    const [selected, setSelected] = useState("overview");
+    return (
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "32px" }}
+        data-testid="controlled-tabs-container"
+      >
+        <div style={{ display: "flex", gap: "16px" }}>
+          <button
+            onClick={() => setSelected("overview")}
+            data-testid="switch-overview"
+          >
+            Switch to Overview
+          </button>
+          <button onClick={() => setSelected("api")} data-testid="switch-api">
+            Switch to API
+          </button>
+          <button
+            onClick={() => setSelected("examples")}
+            data-testid="switch-examples"
+          >
+            Switch to Examples
+          </button>
+        </div>
+        <Tabs.Root
+          selectedKey={selected}
+          onSelectionChange={(key) => setSelected(String(key))}
+          data-testid="controlled-tabs"
+        >
+          <Tabs.List>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="api">API</Tabs.Tab>
+            <Tabs.Tab id="examples">Examples</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="api">API content</Tabs.Panel>
+            <Tabs.Panel id="examples">Examples content</Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Initial state renders correctly", async () => {
+      const overviewTab = await canvas.findByRole("tab", { name: "Overview" });
+      await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+      const panel = await canvas.findByRole("tabpanel");
+      await expect(panel).toHaveTextContent("Overview content");
+    });
+
+    await step(
+      "External button controls tab selection (controlled behavior)",
+      async () => {
+        const apiButton = canvas.getByTestId("switch-api");
+        await userEvent.click(apiButton);
+
+        // Tab should update based on external state
+        const apiTab = await canvas.findByRole("tab", { name: "API" });
+        await expect(apiTab).toHaveAttribute("aria-selected", "true");
+
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("API content");
+      }
+    );
+
+    await step(
+      "Tab click updates external state (onSelectionChange works)",
+      async () => {
+        const examplesTab = await canvas.findByRole("tab", {
+          name: "Examples",
+        });
+        await userEvent.click(examplesTab);
+
+        await expect(examplesTab).toHaveAttribute("aria-selected", "true");
+
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("Examples content");
+      }
+    );
+
+    await step(
+      "External state change followed by tab click (no navigation loop)",
+      async () => {
+        // Simulate external state change (like URL change)
+        const overviewButton = canvas.getByTestId("switch-overview");
+        await userEvent.click(overviewButton);
+
+        const overviewTab = await canvas.findByRole("tab", {
+          name: "Overview",
+        });
+        await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+        // Now click another tab - should not cause loop
+        const apiTab = await canvas.findByRole("tab", { name: "API" });
+        await userEvent.click(apiTab);
+
+        await expect(apiTab).toHaveAttribute("aria-selected", "true");
+
+        // Verify content changed
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("API content");
+      }
+    );
+
+    await step("State synchronization is bidirectional", async () => {
+      // External → Tab
+      const examplesButton = canvas.getByTestId("switch-examples");
+      await userEvent.click(examplesButton);
+
+      const examplesTab = await canvas.findByRole("tab", { name: "Examples" });
+      await expect(examplesTab).toHaveAttribute("aria-selected", "true");
+
+      // Tab → External (verified by external button working next)
+      const overviewTab = await canvas.findByRole("tab", { name: "Overview" });
+      await userEvent.click(overviewTab);
+      await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+      // External button should still work after tab click
+      await userEvent.click(examplesButton);
+      await expect(examplesTab).toHaveAttribute("aria-selected", "true");
     });
   },
 };

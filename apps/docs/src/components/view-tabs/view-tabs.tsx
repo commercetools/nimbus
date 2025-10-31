@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Box, Link } from "@commercetools/nimbus";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
@@ -11,33 +11,66 @@ interface ViewTabsProps {
    * Array of tab metadata from the document
    */
   tabs: TabMetadata[];
-  /**
-   * Callback when active view changes
-   */
-  onViewChange?: (viewKey: string) => void;
 }
 
 /**
  * ViewTabs component for switching between different documentation views.
  * Tabs are dynamically generated based on the document's available views.
- * Syncs with URL subroutes (/{viewKey}).
+ * Syncs with URL subroutes (/{viewKey}). Navigation is controlled entirely
+ * through URL state - clicking a tab updates the URL, and the active tab
+ * follows the URL.
  */
-export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
+export const ViewTabs = ({ tabs }: ViewTabsProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { baseRoute, viewKey } = useRouteInfo();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Determine active view - default to first tab if param is invalid
+  // Determine active view - default to first tab only when at base route
+  // or when viewKey doesn't match any tab
   const { defaultView, activeView } = useMemo(() => {
     const fallback = tabs[0]?.key || "overview";
+
+    // If no viewKey is present (at base route), use default
+    if (!viewKey) {
+      return {
+        defaultView: fallback,
+        activeView: fallback,
+      };
+    }
+
+    // Find matching tab for the viewKey
     const matchedTab = tabs.find((tab) => tab.key === viewKey);
 
+    // If viewKey exists but doesn't match any tab, fall back
+    // This handles invalid viewKeys in URL
     return {
       defaultView: fallback,
       activeView: matchedTab?.key ?? fallback,
     };
   }, [tabs, viewKey]);
+
+  // Handle tab selection - navigate to the corresponding route
+  const handleSelectionChange = useCallback(
+    (key: string | number) => {
+      const selectedKey = String(key);
+
+      // Guard: Only navigate if the selected key is different from the current active view
+      // This prevents navigation loops when the selectedKey prop updates
+      if (selectedKey === activeView) {
+        return;
+      }
+
+      const basePath = `/${baseRoute}`;
+      const targetPath =
+        selectedKey === defaultView ? basePath : `${basePath}/${selectedKey}`;
+      const newPath = `${targetPath}${location.hash ?? ""}`;
+
+      navigate(newPath);
+    },
+    [activeView, baseRoute, defaultView, location.hash, navigate]
+  );
 
   // Handle scroll direction to show/hide tabs
   useEffect(() => {
@@ -93,26 +126,19 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
         transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
       }}
     >
-      <Box display="flex" gap="200" justifyContent="center">
-        {tabs.map((tab) => {
-          const isActive = tab.key === activeView;
-          const basePath = `/${baseRoute}`;
-          const targetPath =
-            tab.key === defaultView ? basePath : `${basePath}/${tab.key}`;
-          const href = `${targetPath}${location.hash ?? ""}`;
-
-          return (
-            <Link
-              key={tab.key}
-              href={href}
-              aria-current={isActive ? "page" : undefined}
-              onClick={() => onViewChange?.(tab.key)}
-            >
+      <Tabs.Root
+        selectedKey={activeView}
+        onSelectionChange={handleSelectionChange}
+        variant="pills"
+      >
+        <Tabs.List>
+          {tabs.map((tab) => (
+            <Tabs.Tab key={tab.key} id={tab.key}>
               {tab.title}
-            </Link>
-          );
-        })}
-      </Box>
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
     </Box>
   );
 };
