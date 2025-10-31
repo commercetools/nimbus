@@ -205,7 +205,7 @@ const getViewMdxFiles = async (
       });
 
     return viewFiles;
-  } catch (err) {
+  } catch {
     return [];
   }
 };
@@ -217,18 +217,18 @@ const parseSingleMdx = async (
   filePath: string
 ): Promise<{
   mdx: string;
-  toc: any[];
-  frontmatter: Record<string, any>;
+  toc: TocItem[];
+  frontmatter: Record<string, unknown>;
 } | null> => {
   try {
     const content = await fs.promises.readFile(filePath, "utf8");
     const { data: frontmatter, content: mdx } = matter(content) as unknown as {
-      data: Record<string, any>;
+      data: Record<string, unknown>;
       content: string;
     };
     const toc = await generateToc(mdx);
     return { mdx, toc, frontmatter };
-  } catch (err) {
+  } catch {
     return null;
   }
 };
@@ -279,7 +279,7 @@ export const parseMdx = async (filePath: string) => {
       { key: "overview", title: mainTabTitle, order: mainTabOrder },
     ];
 
-    const views: Record<string, { mdx: string; toc: any[] }> = {
+    const views: Record<string, { mdx: string; toc: TocItem[] }> = {
       overview: { mdx, toc },
     };
 

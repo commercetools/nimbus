@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 import { useRouteInfo } from "@/hooks/use-route-info";
