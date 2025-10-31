@@ -218,6 +218,3 @@ export const SplitButton = (props: SplitButtonProps) => {
 };
 
 SplitButton.displayName = "SplitButton";
-
-// Export for internal use by react-docgen
-export { SplitButton as _SplitButton };

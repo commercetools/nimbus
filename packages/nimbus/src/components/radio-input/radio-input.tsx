@@ -1,7 +1,4 @@
-import {
-  RadioInputRoot as _RadioInputRoot,
-  RadioInputOption as _RadioInputOption,
-} from "./components";
+import { RadioInputRoot, RadioInputOption } from "./components";
 
 export const RadioInput = {
   /**
@@ -18,7 +15,7 @@ export const RadioInput = {
    * </RadioInput.Root>
    * ```
    */
-  Root: _RadioInputRoot,
+  Root: RadioInputRoot,
 
   /**
    * # RadioInput.Option
@@ -34,7 +31,5 @@ export const RadioInput = {
    * </RadioInput.Root>
    * ```
    */
-  Option: _RadioInputOption,
+  Option: RadioInputOption,
 };
-
-export { _RadioInputRoot, _RadioInputOption };
