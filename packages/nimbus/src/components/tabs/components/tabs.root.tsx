@@ -9,7 +9,6 @@ import { TabsPanels } from "./tabs.panels";
  *
  * A tabs component built on React Aria Components that allows users to switch between different views.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/navigation/tabs}
  * @supportsStyleProps
  */
 export const TabsRoot = ({
