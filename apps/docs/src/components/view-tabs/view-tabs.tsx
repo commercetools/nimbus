@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
@@ -21,15 +21,12 @@ interface ViewTabsProps {
  * follows the URL.
  */
 export const ViewTabs = ({ tabs }: ViewTabsProps) => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { baseRoute, viewKey } = useRouteInfo();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Determine active view - default to first tab only when at base route
-  // or when viewKey doesn't match any tab
-  const { defaultView, activeView } = useMemo(() => {
+  // Determine active view - needed to highlight the active tab
+  const { activeView } = useMemo(() => {
     const fallback = tabs[0]?.key || "overview";
 
     // If no viewKey is present (at base route), use default
@@ -50,27 +47,6 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
       activeView: matchedTab?.key ?? fallback,
     };
   }, [tabs, viewKey]);
-
-  // Handle tab selection - navigate to the corresponding route
-  const handleSelectionChange = useCallback(
-    (key: string | number) => {
-      const selectedKey = String(key);
-
-      // Guard: Only navigate if the selected key is different from the current active view
-      // This prevents navigation loops when the selectedKey prop updates
-      if (selectedKey === activeView) {
-        return;
-      }
-
-      const basePath = `/${baseRoute}`;
-      const targetPath =
-        selectedKey === defaultView ? basePath : `${basePath}/${selectedKey}`;
-      const newPath = `${targetPath}${location.hash ?? ""}`;
-
-      navigate(newPath);
-    },
-    [activeView, baseRoute, defaultView, location.hash, navigate]
-  );
 
   // Handle scroll direction to show/hide tabs
   useEffect(() => {
@@ -126,17 +102,20 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
         transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
       }}
     >
-      <Tabs.Root
-        selectedKey={activeView}
-        onSelectionChange={handleSelectionChange}
-        variant="pills"
-      >
+      <Tabs.Root selectedKey={activeView} variant="pills">
         <Tabs.List>
-          {tabs.map((tab) => (
-            <Tabs.Tab key={tab.key} id={tab.key}>
-              {tab.title}
-            </Tabs.Tab>
-          ))}
+          {tabs.map((tab) => {
+            const isOverviewTab = tab.key === "overview";
+            const href = isOverviewTab
+              ? `/${baseRoute}`
+              : `/${baseRoute}/${tab.key}`;
+            return (
+              // @ts-expect-error - href on tab is not properly typed
+              <Tabs.Tab href={href} key={tab.key} id={tab.key}>
+                {tab.title}
+              </Tabs.Tab>
+            );
+          })}
         </Tabs.List>
       </Tabs.Root>
     </Box>
