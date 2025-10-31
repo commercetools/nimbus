@@ -54,11 +54,12 @@ jobs:
       - name:
           Creating release pull request or publishing release to npm registry
         id: changesets
-        uses: dotansimha/changesets-action@v1.5.2
+        uses: changesets/action@v1.5.3
         with:
           publish: pnpm changeset publish
           version: pnpm changeset:version-and-format
           commit: "ci(changesets): version packages"
+          title: "ci(changesets): version packages"
           createGithubReleases: aggregate
           githubReleaseName: v${{ steps.release_version.outputs.VALUE }}
           githubTagName: v${{ steps.release_version.outputs.VALUE }}
