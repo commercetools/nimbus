@@ -59,10 +59,6 @@ Button.displayName = 'Button';
 // menu.tsx - EXPORTS ONLY, NO IMPLEMENTATION
 // Import from barrel export index to ensure consistent module resolution
 import { MenuRoot, MenuTrigger, MenuItem } from "./components";
-// Or individually if needed:
-// import { MenuRoot } from "./components";
-// import { MenuTrigger } from "./components";
-// import { MenuItem } from "./components";
 
 /**
  * Menu
