@@ -9,13 +9,13 @@ import { checkboxSlotRecipe } from "../checkbox/checkbox.recipe";
 export const comboBoxSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
-    "value",
+    "trigger",
     "leadingElement",
-    "buttonGroup",
+    "tagGroup",
+    "input",
     "popover",
-    "multiSelectInput",
-    "options",
-    "optionGroup",
+    "listBox",
+    "section",
     "option",
     "optionIndicator",
     "optionContent",
@@ -64,7 +64,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       color: "neutral.11",
     },
-    value: {
+    trigger: {
       display: "flex",
       focusRing: "outside",
       alignItems: "flex-start",
@@ -91,41 +91,25 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    buttonGroup: {
-      position: "absolute",
-      display: "inline-flex",
-      top: 0,
-      bottom: 0,
-      right: 300,
-      my: "auto",
-    },
+    // buttonGroup: {
+    //   position: "absolute",
+    //   display: "inline-flex",
+    //   top: 0,
+    //   bottom: 0,
+    //   right: 300,
+    //   my: "auto",
+    // },
     popover: {
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
     },
-    multiSelectInput: {
-      "& input": {
-        py: "300",
-        px: "400",
-        focusRing: "none",
-        borderBottom: "solid 1px",
-        borderBottomColor: "neutral.3",
-        bg: "transparent",
-        w: "100%",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        fontSize: "350",
-        fontWeight: "400",
-        lineHeight: "400",
-        _placeholder: { opacity: 0.5 },
-      },
-    },
-    options: {
+
+    listBox: {
       ...selectSlotRecipe.base?.options,
       gap: "100",
     },
-    optionGroup: {
+    section: {
       ...selectSlotRecipe.base?.optionGroup,
     },
     option: {
@@ -266,7 +250,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
             },
           },
         },
-        options: {
+        listBox: {
           width: "var(--trigger-width)",
         },
       },
@@ -285,10 +269,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       variant: "ghost",
       selectionMode: "single",
       css: {
-        value: {
+        trigger: {
           flex: "1 1 auto",
         },
-        options: {
+        listBox: {
           minW: "max(var(--trigger-width), {sizes.2000})",
           maxW: "max(var(--trigger-width), {sizes.7200})",
         },

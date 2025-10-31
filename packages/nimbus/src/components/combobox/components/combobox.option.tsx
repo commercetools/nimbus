@@ -8,6 +8,37 @@ import {
 import type { ComboBoxOptionProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
+/**
+ * # ComboBox.Option
+ *
+ * Individual option within the combobox listbox.
+ * Wraps React Aria's ListBoxItem for automatic ARIA management.
+ * Displays a checkmark indicator for selected items in multi-select mode.
+ * Supports render prop pattern for custom rendering.
+ *
+ * @example
+ * ```tsx
+ * <ComboBox.Root>
+ *   <ComboBox.Option id="1">Option 1</ComboBox.Option>
+ *   <ComboBox.Option id="2">Option 2</ComboBox.Option>
+ * </ComboBox.Root>
+ * ```
+ *
+ * @example Render prop pattern
+ * ```tsx
+ * <ComboBox.Option id="1">
+ *   {({ isSelected, isDisabled }) => (
+ *     <div>
+ *       Option 1 {isSelected && "(Selected)"}
+ *     </div>
+ *   )}
+ * </ComboBox.Option>
+ * ```
+ */
+
+/**
+ * @supportsStyleProps
+ */
 export const ComboBoxOption = <T extends object>({
   children,
   ref,
