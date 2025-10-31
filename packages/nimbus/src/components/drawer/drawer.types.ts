@@ -1,15 +1,42 @@
-import { type RecipeVariantProps } from "@chakra-ui/react";
-import { drawerSlotRecipe } from "./drawer.recipe";
 import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
-import type {
-  DrawerModalOverlaySlotProps,
-  DrawerTriggerSlotProps,
-  DrawerHeaderSlotProps,
-  DrawerBodySlotProps,
-  DrawerFooterSlotProps,
-  DrawerTitleSlotProps,
-} from "./drawer.slots";
-import type { IconButtonProps } from "@/components";
+import type { IconButtonProps } from "../icon-button";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type DrawerRecipeProps = {
+  /** Placement of the drawer in the viewport */
+  placement?: SlotRecipeProps<"drawer">["placement"];
+  /** Whether to show backdrop overlay */
+  showBackdrop?: SlotRecipeProps<"drawer">["showBackdrop"];
+};
+
+// ============================================================
+// SLOT PROPS
+// ============================================================
+
+export type DrawerRootSlotProps = HTMLChakraProps<"div", DrawerRecipeProps>;
+
+export type DrawerTriggerSlotProps = HTMLChakraProps<"button">;
+
+export type DrawerModalOverlaySlotProps = HTMLChakraProps<"div">;
+
+export type DrawerModalSlotProps = HTMLChakraProps<"div">;
+
+export type DrawerContentSlotProps = HTMLChakraProps<"div">;
+
+export type DrawerHeaderSlotProps = HTMLChakraProps<"header">;
+
+export type DrawerBodySlotProps = HTMLChakraProps<"div">;
+
+export type DrawerFooterSlotProps = HTMLChakraProps<"footer">;
+
+export type DrawerTitleSlotProps = HTMLChakraProps<"h2">;
+
+export type DrawerCloseTriggerSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
@@ -24,7 +51,7 @@ import type { IconButtonProps } from "@/components";
  * This component handles configuration through recipe variants that are passed
  * down to child components via context.
  */
-export type DrawerRootProps = RecipeVariantProps<typeof drawerSlotRecipe> & {
+export type DrawerRootProps = OmitUnwantedProps<DrawerRootSlotProps> & {
   /**
    * The children components (Trigger, Content, etc.)
    */
@@ -85,7 +112,7 @@ export type DrawerRootProps = RecipeVariantProps<typeof drawerSlotRecipe> & {
  *
  * The trigger element that opens the drawer when activated.
  */
-export type DrawerTriggerProps = DrawerTriggerSlotProps & {
+export type DrawerTriggerProps = OmitUnwantedProps<DrawerTriggerSlotProps> & {
   /**
    * The trigger content
    */
@@ -114,24 +141,25 @@ export type DrawerTriggerProps = DrawerTriggerSlotProps & {
  * The main drawer content container that wraps the React Aria Dialog and Dialog.
  * Configuration (size, placement, etc.) is inherited from Drawer.Root via context.
  */
-export type DrawerContentProps = DrawerModalOverlaySlotProps & {
-  /**
-   * The drawer content
-   */
-  children: React.ReactNode;
+export type DrawerContentProps =
+  OmitUnwantedProps<DrawerModalOverlaySlotProps> & {
+    /**
+     * The drawer content
+     */
+    children: React.ReactNode;
 
-  /**
-   * The ref to the drawer content
-   */
-  ref?: React.RefObject<HTMLDivElement>;
-};
+    /**
+     * The ref to the drawer content
+     */
+    ref?: React.RefObject<HTMLDivElement>;
+  };
 
 /**
  * Props for the Drawer.Header component
  *
  * The header section of the drawer content.
  */
-export type DrawerHeaderProps = DrawerHeaderSlotProps & {
+export type DrawerHeaderProps = OmitUnwantedProps<DrawerHeaderSlotProps> & {
   /**
    * The header content
    */
@@ -148,7 +176,7 @@ export type DrawerHeaderProps = DrawerHeaderSlotProps & {
  *
  * The main body content section of the drawer.
  */
-export type DrawerBodyProps = DrawerBodySlotProps & {
+export type DrawerBodyProps = OmitUnwantedProps<DrawerBodySlotProps> & {
   /**
    * The body content
    */
@@ -165,7 +193,7 @@ export type DrawerBodyProps = DrawerBodySlotProps & {
  *
  * The footer section of the drawer, typically containing action buttons.
  */
-export type DrawerFooterProps = DrawerFooterSlotProps & {
+export type DrawerFooterProps = OmitUnwantedProps<DrawerFooterSlotProps> & {
   /**
    * The footer content (usually buttons)
    */
@@ -182,7 +210,7 @@ export type DrawerFooterProps = DrawerFooterSlotProps & {
  *
  * The accessible title element for the drawer.
  */
-export type DrawerTitleProps = DrawerTitleSlotProps & {
+export type DrawerTitleProps = OmitUnwantedProps<DrawerTitleSlotProps> & {
   /**
    * The title text
    */
@@ -200,7 +228,10 @@ export type DrawerTitleProps = DrawerTitleSlotProps & {
  * A button that closes the drawer when activated.
  * Displays an IconButton with an X icon by default.
  */
-export type DrawerCloseTriggerProps = Omit<IconButtonProps, "aria-label"> & {
+export type DrawerCloseTriggerProps = OmitUnwantedProps<
+  IconButtonProps,
+  "aria-label"
+> & {
   /**
    * Accessible label for the close button
    * @default "Close drawer"
