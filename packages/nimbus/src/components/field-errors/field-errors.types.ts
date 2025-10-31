@@ -26,7 +26,7 @@ export type FieldErrorsRootSlotProps = HTMLChakraProps<"div"> & {
 // HELPER TYPES
 // ============================================================
 
-export type TFieldErrors = Record<string, boolean>;
+export type FieldErrorsData = Record<string, boolean>;
 
 export type TErrorRenderer = (key: string, error?: boolean) => ReactNode;
 
@@ -63,7 +63,7 @@ export type FieldErrorsProps = FieldErrorsRootSlotProps & {
   /**
    * Object mapping error types to boolean values indicating presence
    */
-  errors?: TFieldErrors;
+  errors?: FieldErrorsData;
   /**
    * Whether the error messages are visible
    * @default false

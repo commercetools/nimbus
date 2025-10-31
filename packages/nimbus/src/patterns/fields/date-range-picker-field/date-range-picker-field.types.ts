@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { DateRangePickerProps } from "@/components/date-range-picker";
-import type { TFieldErrors } from "@/components";
+import type { FieldErrorsData } from "@/components";
 
 /**
  * Props for the DateRangePickerField component.
@@ -42,7 +42,7 @@ export type DateRangePickerFieldProps = DateRangePickerProps & {
    * Error object - only truthy values will be rendered
    * Compatible with UI-Kit FieldErrors format
    */
-  errors?: TFieldErrors;
+  errors?: FieldErrorsData;
   renderError?: (errorKey: string) => ReactNode;
   /**
    * Indicates whether the field was touched. Errors will only be shown when the field was touched.

@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { FormField, FieldErrors } from "@/components";
 import type { DateRangePickerFieldProps } from "./date-range-picker-field.types";
@@ -25,37 +24,31 @@ import type { DateRangePickerFieldProps } from "./date-range-picker-field.types"
  * />
  * ```
  */
-export const DateRangePickerField = forwardRef<
-  HTMLDivElement,
-  DateRangePickerFieldProps
->(function DateRangePickerField(
-  {
-    id,
-    label,
-    description,
-    info,
-    errors,
-    renderError,
-    touched = false,
-    isRequired = false,
-    isDisabled = false,
-    isReadOnly = false,
-    direction = "column",
-    size = "md",
-    ...dateRangePickerProps
-  },
-  ref
-) {
+export const DateRangePickerField = ({
+  id,
+  label,
+  description,
+  info,
+  errors,
+  renderError,
+  touched = false,
+  isRequired = false,
+  isDisabled = false,
+  isReadOnly = false,
+  isInvalid = false,
+  direction = "column",
+  size = "md",
+  ...dateRangePickerProps
+}: DateRangePickerFieldProps) => {
   // Determine if we should show errors
   const hasErrors = touched && errors && Object.values(errors).some(Boolean);
 
   return (
     <FormField.Root
-      ref={ref}
       id={id}
       direction={direction as "row" | "column"}
       size={size}
-      isInvalid={hasErrors}
+      isInvalid={hasErrors || isInvalid}
       isRequired={isRequired}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
@@ -86,6 +79,6 @@ export const DateRangePickerField = forwardRef<
       )}
     </FormField.Root>
   );
-});
+};
 
 DateRangePickerField.displayName = "DateRangePickerField";
