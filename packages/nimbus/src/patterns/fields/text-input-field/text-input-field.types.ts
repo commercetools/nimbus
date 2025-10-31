@@ -18,6 +18,10 @@ export type TextInputFieldProps = Omit<TextInputProps, "type"> &
     "isRequired" | "isInvalid" | "isDisabled" | "isReadOnly" | "id"
   > & {
     /**
+     * HTML input type attribute
+     */
+    type?: "email" | "password" | "search" | "text";
+    /**
      * Label text for the input field (required for accessibility)
      */
     label: ReactNode;

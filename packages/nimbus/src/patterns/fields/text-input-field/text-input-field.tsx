@@ -41,6 +41,7 @@ export const TextInputField = ({
   isInvalid = false,
   value,
   placeholder,
+  type = "text",
   ...rest
 }: TextInputFieldProps) => {
   // Determine if we should show errors
@@ -58,7 +59,7 @@ export const TextInputField = ({
       <FormField.Input>
         <TextInput
           {...rest}
-          type="text"
+          type={type}
           placeholder={placeholder}
           onChange={onChange}
           value={value}
