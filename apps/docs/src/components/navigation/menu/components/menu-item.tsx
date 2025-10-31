@@ -1,18 +1,17 @@
-import { useLocation } from "react-router-dom";
 import { type MenuItemProps } from "../menu.types";
-import { normalizeRoute } from "@/utils/normalize-route";
 import { useEffect, useState } from "react";
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { MenuIcon } from "./menu-icon";
 import { MenuList } from "./menu-list";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * MenuItem component
  * @param {MenuItemProps} props - The props for the MenuItem component
  */
 export const MenuItem = ({ item, level }: MenuItemProps) => {
-  const location = useLocation();
-  const activeRoute = normalizeRoute(location.pathname);
+  const { baseRoute } = useRouteInfo();
+  const activeRoute = baseRoute;
   const isParentItem = activeRoute.includes(item.route);
   const isActiveRoute = activeRoute === item.route;
   const [isOpen, setIsOpen] = useState(

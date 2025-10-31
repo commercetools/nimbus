@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import { Box, Tabs } from "@commercetools/nimbus";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Box, Link } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
+import { useRouteInfo } from "@/hooks/use-route-info";
+
+export type ViewType = TabMetadata["key"];
 
 interface ViewTabsProps {
   /**
@@ -17,28 +20,24 @@ interface ViewTabsProps {
 /**
  * ViewTabs component for switching between different documentation views.
  * Tabs are dynamically generated based on the document's available views.
- * Syncs with URL query parameter (?view={key})
+ * Syncs with URL subroutes (/{viewKey}).
  */
 export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const viewParam = searchParams.get("view");
+  const location = useLocation();
+  const { baseRoute, viewKey } = useRouteInfo();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   // Determine active view - default to first tab if param is invalid
-  const defaultView = tabs[0]?.key || "overview";
-  const activeView = tabs.find((tab) => tab.key === viewParam)
-    ? viewParam!
-    : defaultView;
+  const { defaultView, activeView } = useMemo(() => {
+    const fallback = tabs[0]?.key || "overview";
+    const matchedTab = tabs.find((tab) => tab.key === viewKey);
 
-  // Set default view in URL if not present
-  useEffect(() => {
-    if (!viewParam && tabs.length > 0) {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set("view", defaultView);
-      setSearchParams(newParams, { replace: true });
-    }
-  }, [viewParam, tabs, defaultView, searchParams, setSearchParams]);
+    return {
+      defaultView: fallback,
+      activeView: matchedTab?.key ?? fallback,
+    };
+  }, [tabs, viewKey]);
 
   // Handle scroll direction to show/hide tabs
   useEffect(() => {
@@ -77,18 +76,6 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
     };
   }, [lastScrollY]);
 
-  const handleSelectionChange = (key: string | number) => {
-    const newViewKey = String(key);
-
-    // Update URL with new view parameter
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("view", newViewKey);
-    setSearchParams(newParams, { replace: true });
-
-    // Call optional callback
-    onViewChange?.(newViewKey);
-  };
-
   return (
     <Box
       mx="auto"
@@ -106,19 +93,26 @@ export const ViewTabs = ({ tabs, onViewChange }: ViewTabsProps) => {
         transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
       }}
     >
-      <Tabs.Root
-        selectedKey={activeView}
-        onSelectionChange={handleSelectionChange}
-        variant="pills"
-      >
-        <Tabs.List>
-          {tabs.map((tab) => (
-            <Tabs.Tab key={tab.key} id={tab.key}>
+      <Box display="flex" gap="200" justifyContent="center">
+        {tabs.map((tab) => {
+          const isActive = tab.key === activeView;
+          const basePath = `/${baseRoute}`;
+          const targetPath =
+            tab.key === defaultView ? basePath : `${basePath}/${tab.key}`;
+          const href = `${targetPath}${location.hash ?? ""}`;
+
+          return (
+            <Link
+              key={tab.key}
+              href={href}
+              aria-current={isActive ? "page" : undefined}
+              onClick={() => onViewChange?.(tab.key)}
+            >
               {tab.title}
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-      </Tabs.Root>
+            </Link>
+          );
+        })}
+      </Box>
     </Box>
   );
 };
