@@ -5,7 +5,7 @@
  * Component tier: 1 (Simple)
  */
 
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type { BoxProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -16,7 +16,7 @@ import type { BoxProps } from "@chakra-ui/react";
  * Props for the Spacer component.
  * Extends Chakra UI Box props with flexGrow automatically set to 1.
  */
-export type SpacerProps = OmitUnwantedProps<BoxProps, "flexGrow"> & {
+export type SpacerProps = OmitInternalProps<BoxProps, "flexGrow"> & {
   /**
    * Reference to the spacer element
    */

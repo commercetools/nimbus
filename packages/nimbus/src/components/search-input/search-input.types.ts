@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { SearchFieldProps as RaSearchFieldProps } from "react-aria-components";
 
@@ -36,7 +36,7 @@ export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
 // MAIN PROPS
 // ============================================================
 
-export type SearchInputProps = OmitUnwantedProps<
+export type SearchInputProps = OmitInternalProps<
   SearchInputRootSlotProps,
   keyof RaSearchFieldProps
 > &

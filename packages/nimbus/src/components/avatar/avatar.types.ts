@@ -4,7 +4,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -28,7 +28,7 @@ export type AvatarRootSlotProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 // MAIN PROPS
 // ============================================================
 
-export type AvatarProps = OmitUnwantedProps<AvatarRootSlotProps> &
+export type AvatarProps = OmitInternalProps<AvatarRootSlotProps> &
   HTMLAttributes<HTMLDivElement> & {
     /**
      * First name for generating initials

@@ -1,6 +1,6 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { MoneyInputValue, CurrencyCode } from "./utils";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 export type { MoneyInputValue, CurrencyCode, MoneyValue } from "./utils";
 
@@ -90,7 +90,7 @@ export type ExcludedSlotProps =
 // ============================================================
 // MAIN PROPS
 // ============================================================
-export type MoneyInputProps = OmitUnwantedProps<
+export type MoneyInputProps = OmitInternalProps<
   MoneyInputRootSlotProps,
   ExcludedSlotProps
 > & {

@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -104,7 +104,7 @@ export type TabItemProps = {
 // MAIN PROPS
 // ============================================================
 
-export type TabsProps = OmitUnwantedProps<TabsRootSlotProps> &
+export type TabsProps = OmitInternalProps<TabsRootSlotProps> &
   TabsVariantProps & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
@@ -114,7 +114,7 @@ export type TabsProps = OmitUnwantedProps<TabsRootSlotProps> &
 /**
  * Props for individual tab list component
  */
-export type TabListProps = OmitUnwantedProps<TabsListSlotProps> & {
+export type TabListProps = OmitInternalProps<TabsListSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -123,7 +123,7 @@ export type TabListProps = OmitUnwantedProps<TabsListSlotProps> & {
 /**
  * Props for individual tab component
  */
-export type TabProps = OmitUnwantedProps<TabsTabSlotProps> & {
+export type TabProps = OmitInternalProps<TabsTabSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
@@ -132,7 +132,7 @@ export type TabProps = OmitUnwantedProps<TabsTabSlotProps> & {
 /**
  * Props for tab panels container component
  */
-export type TabPanelsProps = OmitUnwantedProps<TabsPanelsSlotProps> & {
+export type TabPanelsProps = OmitInternalProps<TabsPanelsSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -141,7 +141,7 @@ export type TabPanelsProps = OmitUnwantedProps<TabsPanelsSlotProps> & {
 /**
  * Props for individual tab panel component
  */
-export type TabPanelProps = OmitUnwantedProps<TabsPanelSlotProps> & {
+export type TabPanelProps = OmitInternalProps<TabsPanelSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;

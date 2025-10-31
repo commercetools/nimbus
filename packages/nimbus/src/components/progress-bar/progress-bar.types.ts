@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaProgressBarProps } from "react-aria";
 
@@ -62,7 +62,7 @@ export type ProgressBarValueSlotProps = HTMLChakraProps<"span">;
 // MAIN PROPS
 // ============================================================
 
-export type ProgressBarProps = OmitUnwantedProps<ProgressBarRootSlotProps> & {
+export type ProgressBarProps = OmitInternalProps<ProgressBarRootSlotProps> & {
   /**
    * Ref forwarding to the root element
    */

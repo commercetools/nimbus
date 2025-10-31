@@ -9,7 +9,7 @@ import type {
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -44,7 +44,7 @@ export type MenuSubmenuSlotProps = HTMLChakraProps<"div">;
 // Root component that wraps MenuTrigger
 export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
   Omit<RaMenuProps<object>, "children"> &
-  OmitUnwantedProps<MenuRootSlotProps> & {
+  OmitInternalProps<MenuRootSlotProps> & {
     /**
      * The trigger element and menu content
      */
@@ -62,7 +62,7 @@ export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
   };
 
 // Menu trigger component
-export type MenuTriggerProps = OmitUnwantedProps<
+export type MenuTriggerProps = OmitInternalProps<
   MenuTriggerSlotProps,
   keyof RaButtonProps
 > &

@@ -12,7 +12,7 @@ import type {
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
 import type React from "react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -175,8 +175,8 @@ export type ComboBoxMultiSelectRootProps<T extends object> = Omit<
  * Root element can either be single or multi select.
  */
 export type ComboBoxRootProps<T extends object> =
-  | OmitUnwantedProps<ComboBoxSingleSelectRootProps<T>>
-  | OmitUnwantedProps<ComboBoxMultiSelectRootProps<T>>;
+  | OmitInternalProps<ComboBoxSingleSelectRootProps<T>>
+  | OmitInternalProps<ComboBoxMultiSelectRootProps<T>>;
 
 /**
  * Props for the internal ComboBox value display component (multi-select).
@@ -240,7 +240,7 @@ export type ComboBoxOptionsProps<T extends object> = RaListBoxProps<T> &
  */
 export type ComboBoxOptionGroupProps<T extends object> =
   RaListBoxSectionProps<T> &
-    OmitUnwantedProps<
+    OmitInternalProps<
       ComboBoxOptionGroupSlotProps,
       keyof RaListBoxSectionProps<T>
     > & {
@@ -251,6 +251,6 @@ export type ComboBoxOptionGroupProps<T extends object> =
  * Props for the ComboBox.Option component.
  */
 export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
-  OmitUnwantedProps<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
+  OmitInternalProps<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };

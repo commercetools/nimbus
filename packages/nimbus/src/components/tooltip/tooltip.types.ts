@@ -5,7 +5,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -23,7 +23,7 @@ export type TooltipRootSlotProps = HTMLChakraProps<"div", TooltipRecipeProps>;
 // HELPER TYPES
 // ============================================================
 
-type TooltipVariantProps = OmitUnwantedProps<
+type TooltipVariantProps = OmitInternalProps<
   TooltipRootSlotProps & RaTooltipProps
 >;
 

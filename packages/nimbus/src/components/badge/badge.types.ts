@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   RecipeProps,
   UnstyledProp,
@@ -27,7 +27,7 @@ export type BadgeRootSlotProps = HTMLChakraProps<"span", BadgeRecipeProps>;
 // MAIN PROPS
 // ============================================================
 
-export type BadgeProps = OmitUnwantedProps<BadgeRootSlotProps> & {
+export type BadgeProps = OmitInternalProps<BadgeRootSlotProps> & {
   /**
    * Content to display inside the badge
    */

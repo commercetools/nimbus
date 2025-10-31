@@ -1,7 +1,7 @@
 import type { DateValue } from "@internationalized/date";
 import type { CalendarProps as RaCalendarProps } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -80,7 +80,7 @@ type ExcludedProps = "style" | "createCalendar";
  *
  * @template T - Date value type from @internationalized/date
  */
-export type CalendarProps<T extends DateValue> = OmitUnwantedProps<
+export type CalendarProps<T extends DateValue> = OmitInternalProps<
   CalendarRootSlotProps,
   keyof RaCalendarProps<DateValue> | ExcludedProps
 > &

@@ -16,7 +16,7 @@
  * This means that we need to allow polymorphism internally, but should not
  * allow it in the external props API since it would not work.
  */
-export type OmitUnwantedProps<
+export type OmitInternalProps<
   T,
   AdditionalExclusions extends string = never,
 > = Omit<T, "as" | "asChild" | "elementType" | "css" | AdditionalExclusions>;

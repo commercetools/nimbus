@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   RecipeProps,
@@ -41,14 +41,14 @@ type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
 type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
 export type TagGroupProps = TagGroupRecipeVariantProps &
-  OmitUnwantedProps<TagGroupRootProps, "size"> & {
+  OmitInternalProps<TagGroupRootProps, "size"> & {
     ref?: Ref<typeof RaTagGroup>;
   };
 
 export type TagGroupRootComponent = FC<TagGroupProps>;
 
 export type TagGroupTagListProps<T extends object> = RaTagListProps<T> &
-  OmitUnwantedProps<TagGroupTagListSlotProps, keyof RaTagListProps<T>> & {
+  OmitInternalProps<TagGroupTagListSlotProps, keyof RaTagListProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };
 
@@ -57,7 +57,7 @@ export type TagGroupTagListComponent<T extends object> = FC<
 >;
 
 export type TagGroupTagProps = RaTagProps &
-  OmitUnwantedProps<TagGroupTagSlotProps, keyof RaTagProps> & {
+  OmitInternalProps<TagGroupTagSlotProps, keyof RaTagProps> & {
     ref?: Ref<typeof RaTag>;
   };
 

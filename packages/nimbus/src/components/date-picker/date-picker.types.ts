@@ -6,7 +6,7 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -54,7 +54,7 @@ type ExcludedProps =
 // MAIN PROPS
 // ============================================================
 
-export type DatePickerProps = OmitUnwantedProps<DatePickerRootSlotProps> &
+export type DatePickerProps = OmitInternalProps<DatePickerRootSlotProps> &
   Omit<DateInputProps, ConflictingPickerStateProps | ExcludedProps> &
   Omit<DatePickerStateOptions<DateValue>, ExcludedProps> & {
     /**

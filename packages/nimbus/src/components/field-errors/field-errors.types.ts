@@ -4,7 +4,7 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,7 +16,7 @@ type FieldErrorsRecipeProps = SlotRecipeProps<"fieldErrors"> & UnstyledProp;
 // SLOT PROPS
 // ============================================================
 
-export type FieldErrorsRootSlotProps = OmitUnwantedProps<
+export type FieldErrorsRootSlotProps = OmitInternalProps<
   HTMLChakraProps<"div", FieldErrorsRecipeProps>
 >;
 

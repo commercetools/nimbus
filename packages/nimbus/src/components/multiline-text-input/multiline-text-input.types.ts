@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
@@ -46,7 +46,7 @@ export type MultilineTextInputTextAreaSlotProps = HTMLChakraProps<
 // MAIN PROPS
 // ============================================================
 
-export type MultilineTextInputProps = OmitUnwantedProps<
+export type MultilineTextInputProps = OmitInternalProps<
   MultilineTextInputRootSlotProps,
   keyof RaTextFieldProps
 > &

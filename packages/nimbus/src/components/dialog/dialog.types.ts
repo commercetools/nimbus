@@ -1,7 +1,7 @@
 import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -60,7 +60,7 @@ export type DialogScrollBehavior = "inside" | "outside";
  * This component handles configuration through recipe variants that are passed
  * down to child components via context.
  */
-export type DialogRootProps = OmitUnwantedProps<DialogRootSlotProps> & {
+export type DialogRootProps = OmitInternalProps<DialogRootSlotProps> & {
   /**
    * The children components (Trigger, Content, etc.)
    */
@@ -115,7 +115,7 @@ export type DialogRootProps = OmitUnwantedProps<DialogRootSlotProps> & {
  *
  * The trigger element that opens the dialog when activated.
  */
-export type DialogTriggerProps = OmitUnwantedProps<DialogTriggerSlotProps> & {
+export type DialogTriggerProps = OmitInternalProps<DialogTriggerSlotProps> & {
   /**
    * The trigger content
    */
@@ -145,7 +145,7 @@ export type DialogTriggerProps = OmitUnwantedProps<DialogTriggerSlotProps> & {
  * Configuration (size, placement, etc.) is inherited from Dialog.Root via context.
  */
 export type DialogContentProps =
-  OmitUnwantedProps<DialogModalOverlaySlotProps> & {
+  OmitInternalProps<DialogModalOverlaySlotProps> & {
     /**
      * The dialog content
      */
@@ -161,7 +161,7 @@ export type DialogContentProps =
  *
  * The header section of the dialog content.
  */
-export type DialogHeaderProps = OmitUnwantedProps<DialogHeaderSlotProps> & {
+export type DialogHeaderProps = OmitInternalProps<DialogHeaderSlotProps> & {
   /**
    * The header content
    */
@@ -178,7 +178,7 @@ export type DialogHeaderProps = OmitUnwantedProps<DialogHeaderSlotProps> & {
  *
  * The main body content section of the dialog.
  */
-export type DialogBodyProps = OmitUnwantedProps<DialogBodySlotProps> & {
+export type DialogBodyProps = OmitInternalProps<DialogBodySlotProps> & {
   /**
    * The body content
    */
@@ -195,7 +195,7 @@ export type DialogBodyProps = OmitUnwantedProps<DialogBodySlotProps> & {
  *
  * The footer section of the dialog, typically containing action buttons.
  */
-export type DialogFooterProps = OmitUnwantedProps<DialogFooterSlotProps> & {
+export type DialogFooterProps = OmitInternalProps<DialogFooterSlotProps> & {
   /**
    * The footer content (usually buttons)
    */
@@ -212,7 +212,7 @@ export type DialogFooterProps = OmitUnwantedProps<DialogFooterSlotProps> & {
  *
  * The accessible title element for the dialog.
  */
-export type DialogTitleProps = OmitUnwantedProps<DialogTitleSlotProps> & {
+export type DialogTitleProps = OmitInternalProps<DialogTitleSlotProps> & {
   /**
    * The title text
    */
@@ -230,7 +230,7 @@ export type DialogTitleProps = OmitUnwantedProps<DialogTitleSlotProps> & {
  * A button that closes the dialog when activated.
  * Displays an IconButton with an X icon by default.
  */
-export type DialogCloseTriggerProps = OmitUnwantedProps<
+export type DialogCloseTriggerProps = OmitInternalProps<
   Omit<IconButtonProps, "aria-label">
 > & {
   /**

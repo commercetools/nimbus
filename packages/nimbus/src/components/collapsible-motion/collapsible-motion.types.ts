@@ -1,7 +1,7 @@
 import type { ReactNode, RefObject } from "react";
 import type { AriaButtonProps as RaButtonProps } from "react-aria";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -39,7 +39,7 @@ export type CollapsibleMotionContextValue = {
 // ============================================================
 
 export type CollapsibleMotionRootProps =
-  OmitUnwantedProps<CollapsibleMotionRootSlotProps> & {
+  OmitInternalProps<CollapsibleMotionRootSlotProps> & {
     /**
      * Content of the collapsible component
      */
@@ -69,7 +69,7 @@ export type CollapsibleMotionRootProps =
   };
 
 export type CollapsibleMotionTriggerProps =
-  OmitUnwantedProps<CollapsibleMotionTriggerSlotProps> & {
+  OmitInternalProps<CollapsibleMotionTriggerSlotProps> & {
     /**
      * Content to display in the trigger button
      */
@@ -82,7 +82,7 @@ export type CollapsibleMotionTriggerProps =
   };
 
 export type CollapsibleMotionContentProps =
-  OmitUnwantedProps<CollapsibleMotionContentSlotProps> & {
+  OmitInternalProps<CollapsibleMotionContentSlotProps> & {
     /**
      * Content to display inside the collapsible area
      */

@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -58,7 +58,7 @@ export type ScopedSearchInputOptionGroup = {
 // MAIN PROPS
 // ============================================================
 
-export type ScopedSearchInputProps = OmitUnwantedProps<
+export type ScopedSearchInputProps = OmitInternalProps<
   ScopedSearchInputRootSlotProps,
   "value" | "onSubmit"
 > & {

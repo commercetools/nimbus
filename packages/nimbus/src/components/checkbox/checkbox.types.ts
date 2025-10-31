@@ -1,4 +1,4 @@
-import type { OmitUnwantedProps } from "../../type-utils/omit-props";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
@@ -37,7 +37,7 @@ export type CheckboxIndicatorSlotProps = HTMLChakraProps<"span">;
 // MAIN PROPS
 // ============================================================
 
-export type CheckboxProps = OmitUnwantedProps<CheckboxRootSlotProps> & {
+export type CheckboxProps = OmitInternalProps<CheckboxRootSlotProps> & {
   /**
    * Ref forwarding to the label element
    */
