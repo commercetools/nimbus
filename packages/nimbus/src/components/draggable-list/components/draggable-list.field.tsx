@@ -5,6 +5,14 @@ import type {
 } from "../draggable-list.types";
 import { DraggableListRoot } from "./draggable-list.root";
 
+/**
+ * DraggableList.Field - A form field wrapper for DraggableList
+ *
+ * Combines draggable list functionality with form field labeling,
+ * description, and error handling for form integration.
+ *
+ * @supportsStyleProps
+ */
 export const DraggableListField = <T extends DraggableListFieldItemData>({
   label,
   description,
@@ -42,3 +50,5 @@ export const DraggableListField = <T extends DraggableListFieldItemData>({
     </FormField.Root>
   );
 };
+
+DraggableListField.displayName = "DraggableList.Field";

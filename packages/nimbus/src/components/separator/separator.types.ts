@@ -1,3 +1,4 @@
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   RecipeProps,
   UnstyledProp,
@@ -23,7 +24,7 @@ export type SeparatorRootSlotProps = HTMLChakraProps<
 // MAIN PROPS
 // ============================================================
 
-export type SeparatorProps = SeparatorRootSlotProps & {
+export type SeparatorProps = OmitInternalProps<SeparatorRootSlotProps> & {
   /**
    * Data attributes for testing or custom metadata
    */

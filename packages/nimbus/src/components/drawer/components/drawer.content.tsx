@@ -12,6 +12,11 @@ import type { DrawerContentProps } from "../drawer.types";
 import { extractStyleProps } from "@/utils";
 import { useDrawerRootContext } from "./drawer.context";
 
+/**
+ * Drawer.Content - The main drawer content container
+ *
+ * @supportsStyleProps
+ */
 export const DrawerContent = (props: DrawerContentProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 

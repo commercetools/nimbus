@@ -28,7 +28,7 @@ export const switchSlotRecipe = defineSlotRecipe({
       flexShrink: 0,
       userSelect: "none",
       color: "neutral.11",
-      fontSize: "var(--label-font-size)",
+      fontSize: "var(--switch-label-font-size)",
     },
     track: {
       colorPalette: "neutral",
@@ -37,9 +37,9 @@ export const switchSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       flexShrink: 0,
-      width: "var(--track-width)",
-      height: "var(--track-height)",
-      borderRadius: "calc(var(--track-height) / 2)",
+      width: "var(--switch-track-width)",
+      height: "var(--switch-track-height)",
+      borderRadius: "calc(var(--switch-track-height) / 2)",
       backgroundColor: "colorPalette.5",
       transition: "background-color 0.2s",
 
@@ -63,14 +63,14 @@ export const switchSlotRecipe = defineSlotRecipe({
       borderColor: "primary.9",
       backgroundColor: "neutral.1",
       transition: "all 0.2s",
-      boxSize: "var(--thumb-size)",
+      boxSize: "var(--switch-thumb-size)",
 
       ["&[data-selected='false']"]: {
         left: "0",
       },
 
       ["&[data-selected='true']"]: {
-        left: "calc(100% - var(--thumb-size))",
+        left: "calc(100% - var(--switch-thumb-size))",
       },
     },
   },
@@ -78,26 +78,26 @@ export const switchSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         track: {
-          "--track-height": "sizes.400",
-          "--track-width": "sizes.700",
+          "--switch-track-height": "sizes.400",
+          "--switch-track-width": "sizes.700",
         },
         thumb: {
-          "--thumb-size": "sizes.400",
+          "--switch-thumb-size": "sizes.400",
         },
         label: {
-          "--label-font-size": "fontSizes.350",
+          "--switch-label-font-size": "fontSizes.350",
         },
       },
       md: {
         track: {
-          "--track-height": "sizes.600",
-          "--track-width": "sizes.1100",
+          "--switch-track-height": "sizes.600",
+          "--switch-track-width": "sizes.1100",
         },
         thumb: {
-          "--thumb-size": "sizes.600",
+          "--switch-thumb-size": "sizes.600",
         },
         label: {
-          "--label-font-size": "fontSizes.400",
+          "--switch-label-font-size": "fontSizes.400",
         },
       },
     },

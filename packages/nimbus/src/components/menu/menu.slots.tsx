@@ -20,43 +20,44 @@ export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> =
   withProvider<HTMLDivElement, MenuRootSlotProps>("div", "root");
 
 // Menu Trigger
-export const MenuTriggerSlot = withContext<
+export const MenuTriggerSlot: SlotComponent<
   HTMLButtonElement,
   MenuTriggerSlotProps
->("button", "trigger");
+> = withContext<HTMLButtonElement, MenuTriggerSlotProps>("button", "trigger");
 
 // Menu Popover
-export const MenuPopoverSlot = withContext<
+export const MenuPopoverSlot: SlotComponent<
   HTMLDivElement,
   MenuPopoverSlotProps
->("div", "popover");
+> = withContext<HTMLDivElement, MenuPopoverSlotProps>("div", "popover");
 
 // Menu Content
-export const MenuContentSlot = withContext<
+export const MenuContentSlot: SlotComponent<
   HTMLDivElement,
   MenuContentSlotProps
->("div", "content");
+> = withContext<HTMLDivElement, MenuContentSlotProps>("div", "content");
 
 // Menu Item
-export const MenuItemSlot = withContext<HTMLDivElement, MenuItemSlotProps>(
-  "div",
-  "item"
-);
+export const MenuItemSlot: SlotComponent<HTMLDivElement, MenuItemSlotProps> =
+  withContext<HTMLDivElement, MenuItemSlotProps>("div", "item");
 
 // Menu Section
-export const MenuSectionSlot = withContext<
+export const MenuSectionSlot: SlotComponent<
   HTMLDivElement,
   MenuSectionSlotProps
->("div", "section");
+> = withContext<HTMLDivElement, MenuSectionSlotProps>("div", "section");
 
 // Menu Section Label
-export const MenuSectionLabelSlot = withContext<
+export const MenuSectionLabelSlot: SlotComponent<
   HTMLDivElement,
   MenuSectionLabelSlotProps
->("div", "sectionLabel");
+> = withContext<HTMLDivElement, MenuSectionLabelSlotProps>(
+  "div",
+  "sectionLabel"
+);
 
 // Menu Group Label
-export const MenuSubmenuSlot = withContext<
+export const MenuSubmenuSlot: SlotComponent<
   HTMLDivElement,
   MenuSubmenuSlotProps
->("div", "submenu");
+> = withContext<HTMLDivElement, MenuSubmenuSlotProps>("div", "submenu");

@@ -22,7 +22,7 @@ type LoadingSpinnerRecipeProps = {
 
 export type LoadingSpinnerRootSlotProps = Omit<
   HTMLChakraProps<"div", LoadingSpinnerRecipeProps>,
-  "as" | "asChild" | "colorPalette"
+  "as" | "asChild" | "css" | "colorPalette"
 > & {
   colorPalette?: "primary" | "white";
 };

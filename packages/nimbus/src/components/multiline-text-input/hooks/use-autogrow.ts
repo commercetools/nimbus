@@ -8,10 +8,10 @@ type UseAutogrowOptions = {
 /**
  * Hook for managing textarea autogrow behavior
  *
- * @param ref - Reference to the textarea element
+ * @param ref - Reference to the textarea element (RefObject<HTMLTextAreaElement | null>)
  * @param options - Configuration options
  * @param options.enabled - Whether autogrow is enabled
- * @returns void
+ * @returns {void} This hook does not return a value
  *
  * @internal
  */

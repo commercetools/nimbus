@@ -10,6 +10,7 @@ import type {
 } from "react-aria-components";
 import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
 import type { UPDATE_ACTIONS } from "./constants";
+import type { OmitInternalProps } from "../../type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -129,7 +130,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 
-type DataTableVariantProps = Omit<DataTableRootSlotProps, "columns" | "rows">;
+type DataTableVariantProps = OmitInternalProps<
+  DataTableRootSlotProps,
+  "columns" | "rows"
+>;
 
 // ============================================================
 // MAIN PROPS

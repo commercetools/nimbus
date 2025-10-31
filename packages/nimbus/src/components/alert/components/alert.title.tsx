@@ -3,6 +3,11 @@ import { AlertTitle as AlertTitleSlot } from "../alert.slots";
 import type { AlertTitleProps } from "../alert.types";
 import { AlertContext } from "./alert.root";
 
+/**
+ * Alert.Title - Displays the title text for the alert
+ *
+ * @supportsStyleProps
+ */
 export const AlertTitle = ({ children, ...props }: AlertTitleProps) => {
   const context = useContext(AlertContext);
 

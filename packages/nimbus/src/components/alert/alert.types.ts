@@ -1,7 +1,8 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text";
 import type { ButtonProps } from "../button";
-import type { SemanticPalettesOnly } from "@/type-utils";
+import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -32,7 +33,7 @@ export type AlertActionsSlotProps = HTMLChakraProps<"div">;
 /**
  * Props for the Alert.Root component.
  */
-export type AlertProps = AlertRootSlotProps & {
+export type AlertProps = OmitInternalProps<AlertRootSlotProps> & {
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -64,9 +65,9 @@ export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
 /**
  * Props for the Alert.Actions component.
  */
-export type AlertActionsProps = AlertActionsSlotProps;
+export type AlertActionsProps = OmitInternalProps<AlertActionsSlotProps>;
 
 /**
  * Props for the Alert.DismissButton component.
  */
-export type AlertDismissButtonProps = ButtonProps;
+export type AlertDismissButtonProps = OmitInternalProps<ButtonProps>;

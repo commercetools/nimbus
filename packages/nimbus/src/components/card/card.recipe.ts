@@ -68,4 +68,11 @@ export const cardRecipe = defineSlotRecipe({
       },
     },
   },
+
+  defaultVariants: {
+    cardPadding: "md",
+    borderStyle: "outlined",
+    elevation: "none",
+    backgroundStyle: "default",
+  },
 });

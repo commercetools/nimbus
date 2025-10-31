@@ -8,13 +8,13 @@ import type {
   ComboBoxButtonGroupSlotProps,
   ComboBoxPopoverSlotProps,
   ComboBoxMultiSelectInputSlotProps,
-  ComboBoxOptionsProps,
-  ComboBoxOptionProps,
-  ComboBoxOptionGroupProps,
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
   ComboBoxMultiSelectRootSlotProps,
   ComboBoxSingleSelectRootSlotProps,
+  ComboBoxOptionGroupSlotProps,
+  ComboBoxOptionSlotProps,
+  ComboBoxOptionsSlotProps,
 } from "./combobox.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -64,19 +64,19 @@ export const ComboBoxMultiSelectInputSlot = withContext<
 // Options - ListBox
 export const ComboBoxOptionsSlot = withContext<
   HTMLDivElement,
-  ComboBoxOptionsProps<object>
+  ComboBoxOptionsSlotProps
 >("div", "options");
 
 // OptionGroup - ListBoxSection
 export const ComboBoxOptionGroupSlot = withContext<
   HTMLDivElement,
-  ComboBoxOptionGroupProps<object>
+  ComboBoxOptionGroupSlotProps
 >("div", "optionGroup");
 
 // Option - ListBoxItem
 export const ComboBoxOptionSlot = withContext<
   HTMLDivElement,
-  ComboBoxOptionProps<object>
+  ComboBoxOptionSlotProps
 >("div", "option");
 
 // Option indicator (multi) - selected indicator

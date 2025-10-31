@@ -37,6 +37,11 @@ function getLastValueInSet(set: Set<Key>) {
   return value;
 }
 
+/**
+ * Internal multi-select root implementation for ComboBox
+ *
+ * @supportsStyleProps
+ */
 export const MultiSelectRoot = <T extends object>({
   children,
   defaultFilter,

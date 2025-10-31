@@ -6,6 +6,11 @@ import { messages } from "../tag-group.i18n";
 import type { TagGroupTagComponent } from "../tag-group.types";
 import { IconButton } from "@/components";
 
+/**
+ * TagGroup.Tag - Individual tag component that can be selected, removed, or used for display
+ *
+ * @supportsStyleProps
+ */
 export const TagGroupTag: TagGroupTagComponent = ({
   children,
   ref,

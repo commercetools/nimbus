@@ -11,6 +11,8 @@ import { extractStyleProps } from "@/utils";
  *
  * This component renders a button with proper ARIA attributes for accessibility.
  * It automatically handles the toggle functionality when clicked.
+ *
+ * @supportsStyleProps
  */
 export const CollapsibleMotionTrigger = forwardRef<
   HTMLButtonElement,

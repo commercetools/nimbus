@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   FieldErrorsMessageSlotProps,
   FieldErrorsRootSlotProps,
@@ -8,12 +9,12 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "fieldErrors",
 });
 
-export const FieldErrorsRoot = withProvider<
+export const FieldErrorsRoot: SlotComponent<
   HTMLDivElement,
   FieldErrorsRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, FieldErrorsRootSlotProps>("div", "root");
 
-export const FieldErrorsMessage = withContext<
+export const FieldErrorsMessage: SlotComponent<
   HTMLDivElement,
   FieldErrorsMessageSlotProps
->("div", "message");
+> = withContext<HTMLDivElement, FieldErrorsMessageSlotProps>("div", "message");

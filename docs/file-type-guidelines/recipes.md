@@ -289,6 +289,8 @@ variants: {
 
 ```
 
+**CSS Custom Properties:** When using CSS variables in recipes, namespace them with the component name in kebab-case (e.g., `--accordion-font-size`, `--menu-item-padding`) to prevent collisions.
+
 ### Token Categories
 
 - **Spacing**: `100`, `200`, `300`, `400`, `500`, `600`, etc.
@@ -506,6 +508,7 @@ export const menuSlotRecipe = defineSlotRecipe({
 - [ ] Variants defined (if applicable)
 - [ ] Default variants specified
 - [ ] Design tokens used (not hardcoded values)
+- [ ] **CSS custom properties namespaced with component name in kebab-case** (if used)
 - [ ] **Recipe registered in theme configuration**
 - [ ] State modifiers properly defined
 - [ ] Dark mode styles included (if needed)

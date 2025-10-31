@@ -7,6 +7,11 @@ import { useDataTableContext } from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 
+/**
+ * DataTable.Table - The main table element that wraps the header and body components
+ *
+ * @supportsStyleProps
+ */
 export const DataTableTable = function DataTableTable({
   ref: forwardedRef,
   children,

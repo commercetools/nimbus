@@ -8,6 +8,11 @@ import {
 import type { ComboBoxOptionProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
+/**
+ * ComboBox.Option - An individual selectable option within the combobox
+ *
+ * @supportsStyleProps
+ */
 export const ComboBoxOption = <T extends object>({
   children,
   ref,

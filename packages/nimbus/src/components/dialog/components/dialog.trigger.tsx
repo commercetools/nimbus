@@ -4,6 +4,11 @@ import type { DialogTriggerProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils";
 import { chakra } from "@chakra-ui/react/styled-system";
 
+/**
+ * Dialog.Trigger - The button or element that opens the dialog
+ *
+ * @supportsStyleProps
+ */
 export const DialogTrigger = ({
   ref: forwardedRef,
   children,

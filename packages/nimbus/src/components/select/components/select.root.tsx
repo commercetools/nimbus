@@ -27,11 +27,9 @@ import { selectSlotRecipe } from "../select.recipe";
 import { extractStyleProps } from "@/utils";
 
 /**
- * # Select
+ * Select.Root - The root component that provides context and state management for the select
  *
- * displays a collapsible list of options and allows a user to select one of them.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
+ * @supportsStyleProps
  */
 export const SelectRoot = function SelectRoot({
   ref: forwardedRef,

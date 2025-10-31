@@ -6,7 +6,8 @@ import type {
   DisclosurePanelProps as RaDisclosurePanelProps,
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
-import type { OmitPolymorphicProps } from "@/type-utils";
+// TODO: this needs to be an @/ import
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -31,7 +32,7 @@ export type AccordionRootSlotProps = HTMLChakraProps<
  * Props for the Accordion.Root component.
  * Controls the overall accordion container and behavior.
  */
-export type AccordionRootProps = AccordionRootSlotProps &
+export type AccordionRootProps = OmitInternalProps<AccordionRootSlotProps> &
   RaDisclosureGroupProps & {
     /** The accordion items to display */
     children: ReactNode;
@@ -42,7 +43,7 @@ export type AccordionRootProps = AccordionRootSlotProps &
 /**
  * Props for the Accordion.Item component.
  */
-export type AccordionItemProps = OmitPolymorphicProps<
+export type AccordionItemProps = OmitInternalProps<
   RaDisclosureProps & HTMLChakraProps<"div">
 > & {
   /** The accordion item content (Header and Content components) */
@@ -57,7 +58,7 @@ export type AccordionItemProps = OmitPolymorphicProps<
  * Props for the Accordion.Header component.
  * Displays the clickable header that expands/collapses content.
  */
-export type AccordionHeaderProps = OmitPolymorphicProps<
+export type AccordionHeaderProps = OmitInternalProps<
   RaButtonProps & HTMLChakraProps<"div">
 > & {
   /** The header content to display */
@@ -70,11 +71,24 @@ export type AccordionHeaderProps = OmitPolymorphicProps<
  * Props for the Accordion.Content component.
  * Contains the collapsible content area.
  */
-export type AccordionContentProps = OmitPolymorphicProps<
+export type AccordionContentProps = OmitInternalProps<
   RaDisclosurePanelProps & HTMLChakraProps<"div">
 > & {
   /** The content to display when expanded */
   children: ReactNode;
   /** Ref to the content element */
+  ref?: Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for the Accordion.HeaderRightContent component.
+ * Optional content that appears on the right side of the accordion header.
+ */
+export type AccordionHeaderRightContentProps = OmitInternalProps<
+  HTMLChakraProps<"div">
+> & {
+  /** The content to display on the right side of the header */
+  children: ReactNode;
+  /** Ref to the element */
   ref?: Ref<HTMLDivElement>;
 };

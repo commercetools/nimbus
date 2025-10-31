@@ -2,6 +2,11 @@ import { DrawerTitleSlot } from "../drawer.slots";
 import type { DrawerTitleProps } from "../drawer.types";
 import { Heading } from "@/components";
 
+/**
+ * Drawer.Title - The accessible title element for the drawer
+ *
+ * @supportsStyleProps
+ */
 export const DrawerTitle = (props: DrawerTitleProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 

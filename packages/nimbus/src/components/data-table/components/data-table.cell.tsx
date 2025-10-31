@@ -6,6 +6,11 @@ import { extractStyleProps } from "@/utils";
 import type { DataTableCellProps } from "../data-table.types";
 import { DataTableCellSlot } from "../data-table.slots";
 
+/**
+ * DataTable.Cell - Individual cell component that displays data values with proper accessibility attributes
+ *
+ * @supportsStyleProps
+ */
 export const DataTableCell = ({
   ref,
   children,
@@ -26,3 +31,5 @@ export const DataTableCell = ({
     </DataTableCellSlot>
   );
 };
+
+DataTableCell.displayName = "DataTable.Cell";

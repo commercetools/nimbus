@@ -3,6 +3,7 @@ import { MenuTrigger as RaMenuTrigger } from "react-aria-components";
 import type { MenuRootProps } from "../menu.types";
 import { MenuRootSlot } from "../menu.slots";
 import { MenuProvider } from "./menu.context";
+import { extractStyleProps } from "@/utils";
 
 /**
  * Menu.Root - Container component that provides configuration and state management
@@ -11,17 +12,13 @@ import { MenuProvider } from "./menu.context";
  */
 export const MenuRoot = (props: MenuRootProps) => {
   const recipe = useSlotRecipe({ key: "menu" });
-  const [recipeProps, functionalProps] = recipe.splitVariantProps(props);
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
-  // Separate MenuTrigger props from Menu props
-  const {
-    children,
-    trigger,
-    isOpen,
-    defaultOpen,
-    onOpenChange,
-    ...menuContextProps
-  } = functionalProps;
+  // Separate MenuTrigger props and functional props from style props
+  const { children, trigger, isOpen, defaultOpen, onOpenChange, ...restProps } =
+    restRecipeProps;
+
+  const [styleProps, menuContextProps] = extractStyleProps(restProps);
 
   const menuTriggerProps = {
     trigger,
@@ -31,7 +28,7 @@ export const MenuRoot = (props: MenuRootProps) => {
   };
 
   return (
-    <MenuRootSlot {...recipeProps} asChild>
+    <MenuRootSlot {...recipeProps} {...styleProps} asChild>
       <RaMenuTrigger {...menuTriggerProps}>
         <MenuProvider value={menuContextProps}>{children}</MenuProvider>
       </RaMenuTrigger>

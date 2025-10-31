@@ -12,6 +12,7 @@ import type {
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
 import type React from "react";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -73,9 +74,15 @@ export type ComboBoxOptionsSlotProps = HTMLChakraProps<
   RecipeProps<"options">
 >;
 
-type ComboBoxOptionGroupSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+export type ComboBoxOptionGroupSlotProps = HTMLChakraProps<
+  "div",
+  RecipeProps<"div">
+>;
 
-type ComboBoxOptionSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
+export type ComboBoxOptionSlotProps = HTMLChakraProps<
+  "div",
+  RecipeProps<"div">
+>;
 
 export type ComboBoxOptionIndicatorSlotProps = HTMLChakraProps<
   "span",
@@ -168,8 +175,8 @@ export type ComboBoxMultiSelectRootProps<T extends object> = Omit<
  * Root element can either be single or multi select.
  */
 export type ComboBoxRootProps<T extends object> =
-  | ComboBoxSingleSelectRootProps<T>
-  | ComboBoxMultiSelectRootProps<T>;
+  | OmitInternalProps<ComboBoxSingleSelectRootProps<T>>
+  | OmitInternalProps<ComboBoxMultiSelectRootProps<T>>;
 
 /**
  * Props for the internal ComboBox value display component (multi-select).
@@ -233,7 +240,10 @@ export type ComboBoxOptionsProps<T extends object> = RaListBoxProps<T> &
  */
 export type ComboBoxOptionGroupProps<T extends object> =
   RaListBoxSectionProps<T> &
-    Omit<ComboBoxOptionGroupSlotProps, keyof RaListBoxSectionProps<T>> & {
+    OmitInternalProps<
+      ComboBoxOptionGroupSlotProps,
+      keyof RaListBoxSectionProps<T>
+    > & {
       label?: ReactNode;
     };
 
@@ -241,6 +251,6 @@ export type ComboBoxOptionGroupProps<T extends object> =
  * Props for the ComboBox.Option component.
  */
 export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
-  Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
+  OmitInternalProps<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };
