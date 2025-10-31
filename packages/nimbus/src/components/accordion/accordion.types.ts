@@ -25,16 +25,6 @@ export type AccordionRootSlotProps = HTMLChakraProps<
 >;
 
 // ============================================================
-// HELPER TYPES
-// ============================================================
-
-/**
- * React Aria polymorphic props that conflict with Chakra UI props.
- * OmitCombinedProps removes these conflicting props to prevent type errors.
- */
-// Note: OmitCombinedProps is used in component props below
-
-// ============================================================
 // MAIN PROPS
 // ============================================================
 
