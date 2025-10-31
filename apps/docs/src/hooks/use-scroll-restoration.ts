@@ -1,7 +1,8 @@
 /**
  * Scroll Restoration Hook
  *
- * Saves and restores scroll positions when navigating between routes
+ * Saves and restores scroll positions when navigating between routes.
+ * Skips restoration when a hash anchor is present in the URL.
  */
 
 import { useEffect, useRef } from "react";
@@ -15,10 +16,22 @@ export function useScrollRestoration() {
   const isRestoringRef = useRef(false);
 
   useEffect(() => {
+    // Get the scroll container
+    const scrollContainer = document.getElementById("main");
+    if (!scrollContainer) {
+      return;
+    }
+
     // Save current scroll position before navigating away
     const handleBeforeUnload = () => {
-      scrollPositions.set(location.pathname, window.scrollY);
+      scrollPositions.set(location.pathname, scrollContainer.scrollTop);
     };
+
+    // Skip scroll restoration if there's a hash in the URL
+    // (let useHashNavigation handle it instead)
+    if (location.hash) {
+      return;
+    }
 
     // Restore scroll position when location changes
     if (!isRestoringRef.current) {
@@ -28,12 +41,12 @@ export function useScrollRestoration() {
         // Restore saved position
         isRestoringRef.current = true;
         requestAnimationFrame(() => {
-          window.scrollTo(0, savedPosition);
+          scrollContainer.scrollTo(0, savedPosition);
           isRestoringRef.current = false;
         });
       } else {
         // Scroll to top for new routes
-        window.scrollTo(0, 0);
+        scrollContainer.scrollTo(0, 0);
       }
     }
 
@@ -41,8 +54,8 @@ export function useScrollRestoration() {
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      scrollPositions.set(location.pathname, window.scrollY);
+      scrollPositions.set(location.pathname, scrollContainer.scrollTop);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 }

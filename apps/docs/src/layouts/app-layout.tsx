@@ -16,6 +16,7 @@ import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 //import { DocumentMetaSettings } from "@/components/document-meta-settings/document-meta-settings";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
+import { useHashNavigation } from "@/hooks/use-hash-navigation";
 
 export function AppLayout() {
   // Enable scroll restoration on navigation
@@ -23,6 +24,9 @@ export function AppLayout() {
 
   // Enable sidebar scroll restoration
   useSidebarScrollRestoration();
+
+  // Enable hash navigation (anchor scrolling)
+  useHashNavigation();
 
   // Get current location to trigger content animation on route changes
   const location = useLocation();
