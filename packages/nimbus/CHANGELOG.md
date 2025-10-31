@@ -1,5 +1,78 @@
 # @commercetools/nimbus
 
+## 2.1.0
+
+### Minor Changes
+
+- [#531](https://github.com/commercetools/nimbus/pull/531)
+  [`3312d94`](https://github.com/commercetools/nimbus/commit/3312d945d07ba79bdd79594f63accda3e81fe336)
+  Thanks [@ddouglasz](https://github.com/ddouglasz)! - implement data table
+  manager design and functionality.
+
+- [#563](https://github.com/commercetools/nimbus/pull/563)
+  [`5cc6790`](https://github.com/commercetools/nimbus/commit/5cc6790b12218c96b94e5c6bff71d9c4c2b2d75d)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Add IntlProvider to
+  NimbusProvider
+
+- [#547](https://github.com/commercetools/nimbus/pull/547)
+  [`205af3a`](https://github.com/commercetools/nimbus/commit/205af3a3eebfbc4a0bbcf990fc13cea56a0fc178)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Stop packaging slate,
+  slate-hyperscript, slate-history, and slate-react in nimbus directly, and
+  specify them as peer dependencies instead
+
+- [#520](https://github.com/commercetools/nimbus/pull/520)
+  [`77ee9f2`](https://github.com/commercetools/nimbus/commit/77ee9f2888d84c921fc54486cdf1ce7b8233ad6b)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Added a
+  TextInputField pattern component - a pre-composed field that integrates
+  TextInput with FormField for common use cases.
+
+### Patch Changes
+
+- [#577](https://github.com/commercetools/nimbus/pull/577)
+  [`f83b57f`](https://github.com/commercetools/nimbus/commit/f83b57f4c4378c2c0928bad0681441d342a3a1a8)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add patterns directory
+  to package entrypoint
+
+- [#579](https://github.com/commercetools/nimbus/pull/579)
+  [`ef90e9c`](https://github.com/commercetools/nimbus/commit/ef90e9c284c3db3dafe830ac4f9258edcafd8bdd)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Fixes bug in
+  DraggableList where list does not update when external items array changes
+
+- [#536](https://github.com/commercetools/nimbus/pull/536)
+  [`29cc2d7`](https://github.com/commercetools/nimbus/commit/29cc2d77a954a15ed64ae6947764690c36ae852b)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Introduce grouped props
+  tables and enhanced JSDoc documentation system
+
+- [#620](https://github.com/commercetools/nimbus/pull/620)
+  [`7e31d53`](https://github.com/commercetools/nimbus/commit/7e31d53eeb38307bb4fba3559850072cd44b80be)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - removed unnecessary
+  tabIndex property from Card
+
+- [#598](https://github.com/commercetools/nimbus/pull/598)
+  [`bc4a92e`](https://github.com/commercetools/nimbus/commit/bc4a92e731d82f6d81e95d0622a040b7fca83f88)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - TextInput now consumes
+  react-aria's InputContext, Button consumes isDisabled from context
+
+- [#636](https://github.com/commercetools/nimbus/pull/636)
+  [`3caf3ed`](https://github.com/commercetools/nimbus/commit/3caf3ed62e1c73a9bfdd9a060f97b9bdc1d0b310)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Introduces
+  the date-range-picker-field as a composed, happy-path component.
+
+- [#637](https://github.com/commercetools/nimbus/pull/637)
+  [`53882a2`](https://github.com/commercetools/nimbus/commit/53882a200ca72600f35ee5f06a7d1f64b5471082)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Update
+  changeset configuration to prevent unnecessary major version bumps
+
+- [#643](https://github.com/commercetools/nimbus/pull/643)
+  [`42124ce`](https://github.com/commercetools/nimbus/commit/42124cedaa62526de6a0eac3744486f00f416e66)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Changes the
+  designated changeset github action and includes the PR title in the release
+  workflow.
+- Updated dependencies
+  [[`42124ce`](https://github.com/commercetools/nimbus/commit/42124cedaa62526de6a0eac3744486f00f416e66)]:
+  - @commercetools/nimbus-icons@2.1.0
+  - @commercetools/nimbus-tokens@2.1.0
+
 ## 2.0.1
 
 ### Patch Changes

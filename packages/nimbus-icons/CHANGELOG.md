@@ -1,5 +1,15 @@
 # @commercetools/nimbus-icons
 
+## 2.1.0
+
+### Patch Changes
+
+- [#643](https://github.com/commercetools/nimbus/pull/643)
+  [`42124ce`](https://github.com/commercetools/nimbus/commit/42124cedaa62526de6a0eac3744486f00f416e66)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Changes the
+  designated changeset github action and includes the PR title in the release
+  workflow.
+
 ## 2.0.1
 
 ## 2.0.0
