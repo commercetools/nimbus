@@ -17,12 +17,12 @@ import {
 } from "@commercetools/nimbus";
 import { DocumentRenderer } from "@/components/document-renderer";
 import { useManifest } from "@/contexts/manifest-context";
-import { normalizeRoute } from "@/utils/normalize-route";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 export default function DynamicRoute() {
   const location = useLocation();
   const { routeManifest, isLoading } = useManifest();
-  const currentPath = normalizeRoute(location.pathname);
+  const { baseRoute, normalizedPath } = useRouteInfo();
   const [isRouteChecked, setIsRouteChecked] = useState(false);
 
   // Reset route check state when location changes
@@ -41,7 +41,7 @@ export default function DynamicRoute() {
   }
 
   // Special case: home route
-  if (currentPath === "home" || currentPath === "") {
+  if (baseRoute === "home" || baseRoute === "") {
     // Check if there's a home document in the manifest
     const homeRoute = routeManifest.routes.find(
       (r) => r.path === "/" || r.path === "/home"
@@ -95,7 +95,7 @@ export default function DynamicRoute() {
   }
 
   // Look up route in manifest
-  const routePath = `/${currentPath}`;
+  const routePath = `/${baseRoute}`;
   const route = routeManifest.routes.find((r) => r.path === routePath);
 
   if (!route) {
@@ -106,7 +106,7 @@ export default function DynamicRoute() {
           Page Not Found
         </Heading>
         <Text mb="400">
-          The page "{currentPath}" could not be found in the documentation.
+          The page "{normalizedPath}" could not be found in the documentation.
         </Text>
         <Link href="/">Return to Home</Link>
       </Box>

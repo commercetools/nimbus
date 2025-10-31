@@ -1,8 +1,7 @@
 import { useAtomValue } from "jotai";
-import { useLocation } from "react-router-dom";
 import { menuAtom } from "@/atoms/menu";
-import { normalizeRoute } from "@/utils/normalize-route";
 import { MenuList } from "./components/menu-list";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * Component representing the main menu.
@@ -10,8 +9,8 @@ import { MenuList } from "./components/menu-list";
  */
 export const Menu = () => {
   const menuItems = useAtomValue(menuAtom);
-  const location = useLocation();
-  const activeRoute = normalizeRoute(location.pathname);
+  const { baseRoute } = useRouteInfo();
+  const activeRoute = baseRoute;
 
   // Extract the top-level route (first part before any /)
   const topLevelRoute = activeRoute.split("/")[0];

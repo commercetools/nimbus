@@ -1,15 +1,19 @@
-import { useSearchParams } from "react-router";
+import { useRouteInfo } from "./use-route-info";
 
 /**
  * Hook to manage the active documentation view.
- * Syncs with URL query parameter (?view={key}).
+ * Syncs with URL subroutes (/{viewKey}).
  *
  * @returns The current active view key (e.g., "overview", "api", "dev") or undefined if not set
  */
 export const useActiveView = (): string | undefined => {
-  const [searchParams] = useSearchParams();
-  const viewParam = searchParams.get("view");
+  const { viewKey, manifestRoute } = useRouteInfo();
 
-  // Return the view parameter or undefined if not set
-  return viewParam || undefined;
+  if (!viewKey || !manifestRoute?.tabs) {
+    return undefined;
+  }
+
+  const isValidView = manifestRoute.tabs.some((tab) => tab.key === viewKey);
+
+  return isValidView ? viewKey : undefined;
 };

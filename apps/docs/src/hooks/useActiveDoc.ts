@@ -1,7 +1,6 @@
-import { useLocation } from "react-router-dom";
-import { normalizeRoute } from "@/utils/normalize-route";
 import { useDocData } from "./use-doc-data";
 import type { MdxFileFrontmatter } from "@/types";
+import { useRouteInfo } from "./use-route-info";
 
 type UseActiveDocReturn = {
   doc: MdxFileFrontmatter | undefined;
@@ -18,11 +17,10 @@ type UseActiveDocReturn = {
  * @returns Object containing the active document, loading state, and error state
  */
 export const useActiveDoc = (): UseActiveDocReturn => {
-  const location = useLocation();
-  const activeRoute = normalizeRoute(location.pathname);
+  const { baseRoute } = useRouteInfo();
 
   // Use useDocData to load the current route's document
-  const { doc, isLoading, error } = useDocData(activeRoute);
+  const { doc, isLoading, error } = useDocData(baseRoute);
 
   // Return loading state as-is
   if (isLoading) {

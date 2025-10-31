@@ -1,9 +1,8 @@
 import { useAtom } from "jotai";
-import { useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import { Stack, Link, Text, Box } from "@commercetools/nimbus";
 import { menuAtom } from "@/atoms/menu";
-import { normalizeRoute } from "@/utils/normalize-route";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * AppNavBarMenu - Displays first-level menu items in tab-like navigation
@@ -11,8 +10,8 @@ import { normalizeRoute } from "@/utils/normalize-route";
  */
 export const AppNavBarMenu = () => {
   const [menu] = useAtom(menuAtom);
-  const location = useLocation();
-  const activeRoute = normalizeRoute(location.pathname);
+  const { baseRoute } = useRouteInfo();
+  const activeRoute = baseRoute;
 
   if (!menu || menu.length === 0) {
     return null;
