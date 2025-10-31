@@ -42,12 +42,4 @@ export const ComponentName = {
   // Add other exports as needed
 };
 
-// Internal exports for react-docgen
-export {
-  ComponentNameRoot as _ComponentNameRoot,
-  ComponentNameTrigger as _ComponentNameTrigger,
-  ComponentNameContent as _ComponentNameContent,
-  ComponentNameItem as _ComponentNameItem,
-  // Export other internals as needed
-};
 ````

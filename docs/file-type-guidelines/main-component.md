@@ -150,13 +150,6 @@ export const Menu = {
   // ... other exports
 };
 
-// Internal exports for react-docgen
-export {
-  MenuRoot as _MenuRoot,
-  MenuTrigger as _MenuTrigger,
-  MenuItem as _MenuItem,
-  // ... other internal exports
-};
 ````
 
 ### Documenting Compound Component Parts
@@ -434,8 +427,6 @@ export const Select = {
   Option: SelectOption,
 };
 
-// For react-docgen
-export { SelectRoot as _SelectRoot, SelectTrigger as _SelectTrigger };
 ```
 
 ## React Aria Integration
@@ -683,8 +674,6 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 ### Exports
 
-- [ ] Internal exports for react-docgen (compound components only)
-- [ ] All parts properly exported with underscore prefix for react-docgen
 
 ---
 
