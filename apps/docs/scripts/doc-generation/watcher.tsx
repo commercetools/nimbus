@@ -6,6 +6,23 @@ import { parseTypes } from "./parse-types";
 const directoryToWatch: string = "./../../packages";
 
 const handleFileChange = async (filePath: string) => {
+  // Check if this is a view file (*.{key}.mdx pattern)
+  // e.g., button.api.mdx, button.dev.mdx
+  const basename = filePath.split("/").pop() || "";
+  const nameWithoutMdx = basename.replace(/\.mdx$/, "");
+
+  if (basename.endsWith(".mdx") && nameWithoutMdx.includes(".")) {
+    // This is a view file - trigger re-parsing of the main .mdx file
+    // Extract the base name by removing the last .{key} segment
+    const mainBasename = nameWithoutMdx.substring(
+      0,
+      nameWithoutMdx.lastIndexOf(".")
+    );
+    const mainMdxPath = filePath.replace(basename, `${mainBasename}.mdx`);
+    await parseMdx(mainMdxPath);
+    return;
+  }
+
   const ext = filePath.split(".").pop();
   switch (true) {
     case ext === "mdx":

@@ -1,6 +1,5 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
-import { tocAtom } from "../../../atoms/toc.ts";
-import { useAtomValue } from "jotai";
+import { useToc } from "@/hooks/useToc";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
@@ -9,7 +8,7 @@ import { scrollToAnchor } from "@/utils/scroll-to-anchor";
  * Displays a list of links to headings on the page
  */
 export const Toc = () => {
-  const activeToc = useAtomValue(tocAtom);
+  const activeToc = useToc();
   const closestHeadingId = useClosestHeading();
 
   // Define indentation levels for different heading depths
@@ -19,6 +18,15 @@ export const Toc = () => {
     3: "300",
     4: "600",
     5: "900",
+  };
+
+  // Define box-drawing characters for different heading depths
+  const boxChar: { [key: number]: string } = {
+    1: "┌ ",
+    2: "├ ",
+    3: "│ ",
+    4: "└ ",
+    5: "─ ",
   };
 
   // Handle TOC link clicks
@@ -45,7 +53,7 @@ export const Toc = () => {
   }
 
   return (
-    <Box>
+    <Box maxWidth="300px">
       <Text fontWeight="600" mb="400">
         On this page
       </Text>
@@ -70,6 +78,13 @@ export const Toc = () => {
                   py="50"
                   onClick={(e) => handleLinkClick(e, headingId)}
                 >
+                  <Box
+                    as="span"
+                    opacity={isActive ? 1 : 0.5}
+                    fontFamily="monospace"
+                  >
+                    {boxChar[item.depth] || ""}
+                  </Box>
                   {item.value}
                 </Link>
               </Box>

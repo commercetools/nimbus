@@ -12,7 +12,7 @@ export const StylePropsSupportBanner = () => {
         <Icon
           as={Check}
           color="colorPalette.9"
-          fontSize="1.25em"
+          boxSize="1.25em"
           position="relative"
           top=".0675em"
         />
@@ -23,7 +23,7 @@ export const StylePropsSupportBanner = () => {
           </Text>
           <Text fontSize="350" mt="100" color="colorPalette.11">
             This component accepts{" "}
-            <Link href="/style-props">style props</Link>{" "}
+            <Link href="/home/style-props">style props</Link>{" "}
           </Text>
         </Box>
       </Stack>

@@ -1,19 +1,19 @@
-import { useAtom } from "jotai";
 import { type MenuItemProps } from "../menu.types";
-import { activeRouteAtom } from "@/atoms/route";
 import { useEffect, useState } from "react";
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { MenuIcon } from "./menu-icon";
 import { MenuList } from "./menu-list";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * MenuItem component
  * @param {MenuItemProps} props - The props for the MenuItem component
  */
 export const MenuItem = ({ item, level }: MenuItemProps) => {
-  const [activeRoute] = useAtom(activeRouteAtom);
-  const isParentItem = activeRoute.includes(item.slug);
-  const isActiveRoute = activeRoute === item.slug;
+  const { baseRoute } = useRouteInfo();
+  const activeRoute = baseRoute;
+  const isParentItem = activeRoute.includes(item.route);
+  const isActiveRoute = activeRoute === item.route;
   const [isOpen, setIsOpen] = useState(
     isParentItem || isActiveRoute || level === 0
   );
@@ -24,18 +24,35 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
     }
   }, [isActiveRoute, isParentItem]);
 
+  // Preserve sidebar scroll position on click
+  const handleClick = () => {
+    const sidebar = document.getElementById("app-frame-left-nav");
+    if (sidebar) {
+      const scrollPos = sidebar.scrollTop;
+      // Store scroll position in sessionStorage as backup
+      sessionStorage.setItem("sidebar-scroll", scrollPos.toString());
+
+      // Also force the scroll to stay by setting it multiple times
+      requestAnimationFrame(() => {
+        if (sidebar) sidebar.scrollTop = scrollPos;
+      });
+      setTimeout(() => {
+        if (sidebar) sidebar.scrollTop = scrollPos;
+      }, 0);
+    }
+  };
+
   const marginLeft = level > 2 ? `400` : undefined;
 
   return (
-    <Box display="block" mb={level === 0 ? "600" : undefined}>
+    <Box display="block" mb={level === 0 ? "300" : undefined}>
       <Text
         colorPalette={isActiveRoute ? "primary" : "neutral"}
         display="block"
         color={level === 0 ? "colorPalette.12" : "colorPalette.11"}
         fontWeight={level === 0 ? "700" : "400"}
-        minHeight="1000"
         px="400"
-        py="200"
+        py="100"
         bg={isActiveRoute ? "colorPalette.3" : "transparent"}
         _hover={{
           bg: isActiveRoute ? "colorPalette.3" : "colorPalette.2",
@@ -46,7 +63,12 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
         transitionDuration="slow"
         ml={marginLeft}
       >
-        <Link unstyled href={item.slug}>
+        <Link
+          unstyled
+          href={`/${item.route}`}
+          textDecoration="none"
+          onClick={handleClick}
+        >
           {level > 1 && (
             <Text display="inline" mr="200" position="relative">
               └

@@ -5,7 +5,7 @@ import { DocumentStringField } from "./components/document-string-field";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 export const DocumentMetaSettings = () => {
-  const activeDocument = useActiveDoc();
+  const { doc: activeDocument } = useActiveDoc();
   if (!activeDocument) return null;
   return (
     <Stack>

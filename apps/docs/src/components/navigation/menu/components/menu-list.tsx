@@ -10,7 +10,7 @@ import { MenuItem } from "./menu-item";
  */
 export const MenuList = ({ items, level = 0 }: MenuProps): JSX.Element => {
   return (
-    <List.Root variant="plain">
+    <List.Root variant="plain" ml="100">
       {items.map((item) => (
         <List.Item key={item.id} display="block">
           <MenuItem item={item} level={level} />
