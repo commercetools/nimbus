@@ -13,7 +13,7 @@ import { extractStyleProps } from "@/utils";
  *
  * @supportsStyleProps
  */
-export const TabsRoot = (props: TabsProps) => {
+export const TabsRoot = ({ children, tabs, ...props }: TabsProps) => {
   // Standard pattern: Split recipe variants
   const recipe = useSlotRecipe({ key: "tabs" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
@@ -21,12 +21,15 @@ export const TabsRoot = (props: TabsProps) => {
   // Standard pattern: Extract style props
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
-  // Separate component-specific props from React Aria props
-  const { children, tabs, ...raTabsProps } = functionalProps;
+  // Extract orientation from recipe props for React Aria (handles both styling and behavior)
+  const { orientation, ...slotProps } = recipeProps;
 
   return (
-    <TabsRootSlot asChild {...recipeProps} {...styleProps}>
-      <RATabs {...raTabsProps}>
+    <TabsRootSlot asChild {...slotProps} {...styleProps}>
+      <RATabs
+        {...functionalProps}
+        orientation={orientation as "horizontal" | "vertical" | undefined}
+      >
         {children || (
           <>
             <TabsList tabs={tabs} />
