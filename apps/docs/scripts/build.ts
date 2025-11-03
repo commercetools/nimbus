@@ -1,46 +1,40 @@
-import fs from "fs";
+import { build } from "@commercetools/nimbus-docs-build";
 import path from "path";
-import { parseMdx } from "./doc-generation/parse-mdx";
-import { flog, parseTypes } from "./doc-generation/parse-types";
 
-// Directory to watch
-const directoryToWatch: string = "./../../packages";
-
-const findFiles = (dir: string, extension: string) => {
-  let results: string[] = [];
-  const files = fs.readdirSync(dir);
-
-  files.forEach((file) => {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      results = results.concat(findFiles(fullPath, extension));
-    } else if (path.extname(file).toLowerCase() === extension.toLowerCase()) {
-      results.push(fullPath);
-    }
-  });
-
-  return results;
+// Configuration for the documentation build
+const config = {
+  sources: {
+    packagesDir: path.resolve("../../packages"),
+    componentIndexPath: path.resolve("../../packages/nimbus/src/index.ts"),
+  },
+  output: {
+    routesDir: path.resolve("./src/data/routes"),
+    manifestPath: path.resolve("./src/data/route-manifest.json"),
+    searchIndexPath: path.resolve("./src/data/search-index.json"),
+    typesDir: path.resolve("./public/generated/types"),
+  },
+  cache: {
+    enabled: true,
+    cacheDir: path.resolve("./.cache"),
+  },
+  validation: {
+    enabled: true,
+    strict: false,
+  },
 };
 
-export const build = async () => {
-  // Aggregate all mdx files
-  const mdxFiles = findFiles(directoryToWatch, ".mdx");
-  // Aggregate all ts & tsx files
-  const tsFiles = findFiles(directoryToWatch, ".ts");
-  const tsxFiles = findFiles(directoryToWatch, ".tsx");
-  // ...combine them...
-  const codeFiles = [...tsFiles, ...tsxFiles];
+// Run the build
+console.log("🚀 Building documentation...\n");
 
-  // Process them
-  await Promise.all(mdxFiles.map(parseMdx));
-  await Promise.all(codeFiles.map(parseTypes));
+try {
+  const result = await build(config);
 
-  // wait a bit, cause it's cheaper than fixing the code
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  flog("✨ Documentation files created ✨");
-};
-
-await build();
+  console.log("\n✨ Documentation build completed successfully!");
+  console.log(`   📄 ${result.routeCount} routes generated`);
+  console.log(`   🔧 ${result.componentCount} TypeScript components parsed`);
+  console.log(`   ⚡ Build took ${(result.duration / 1000).toFixed(2)}s`);
+} catch (error) {
+  console.error("\n❌ Documentation build failed:");
+  console.error(error);
+  process.exit(1);
+}

@@ -4,27 +4,20 @@
  * Implements incremental builds by tracking file hashes and
  * only rebuilding changed content.
  */
-
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
-import { fileURLToPath } from "url";
+import type { BuildCache } from "../types/config.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const DEFAULT_CACHE_DIR = ".cache";
+const CACHE_FILENAME = "build-cache.json";
 
-const CACHE_DIR = path.join(__dirname, ".cache");
-const CACHE_FILE = path.join(CACHE_DIR, "build-cache.json");
-
-export interface CacheEntry {
-  hash: string;
-  timestamp: number;
-  outputPath: string;
-}
-
-export interface BuildCache {
-  version: string;
-  files: Map<string, CacheEntry>;
+/**
+ * Get cache file path
+ */
+function getCachePath(cacheDir?: string): string {
+  const dir = cacheDir || DEFAULT_CACHE_DIR;
+  return path.join(dir, CACHE_FILENAME);
 }
 
 /**
@@ -38,10 +31,13 @@ export async function calculateFileHash(filePath: string): Promise<string> {
 /**
  * Load build cache from disk
  */
-export async function loadCache(): Promise<BuildCache> {
+export async function loadCache(cacheDir?: string): Promise<BuildCache> {
   try {
-    await fs.mkdir(CACHE_DIR, { recursive: true });
-    const content = await fs.readFile(CACHE_FILE, "utf-8");
+    const cachePath = getCachePath(cacheDir);
+    const cacheFileDir = path.dirname(cachePath);
+    await fs.mkdir(cacheFileDir, { recursive: true });
+
+    const content = await fs.readFile(cachePath, "utf-8");
     const data = JSON.parse(content);
 
     return {
@@ -60,15 +56,20 @@ export async function loadCache(): Promise<BuildCache> {
 /**
  * Save build cache to disk
  */
-export async function saveCache(cache: BuildCache): Promise<void> {
-  await fs.mkdir(CACHE_DIR, { recursive: true });
+export async function saveCache(
+  cache: BuildCache,
+  cacheDir?: string
+): Promise<void> {
+  const cachePath = getCachePath(cacheDir);
+  const cacheFileDir = path.dirname(cachePath);
+  await fs.mkdir(cacheFileDir, { recursive: true });
 
   const data = {
     version: cache.version,
     files: Object.fromEntries(cache.files),
   };
 
-  await fs.writeFile(CACHE_FILE, JSON.stringify(data, null, 2), "utf-8");
+  await fs.writeFile(cachePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
 /**
@@ -159,9 +160,10 @@ export function getCacheStats(cache: BuildCache): {
 /**
  * Clear entire cache
  */
-export async function clearCache(): Promise<void> {
+export async function clearCache(cacheDir?: string): Promise<void> {
   try {
-    await fs.rm(CACHE_DIR, { recursive: true, force: true });
+    const dir = cacheDir || DEFAULT_CACHE_DIR;
+    await fs.rm(dir, { recursive: true, force: true });
     console.log("✓ Build cache cleared");
   } catch (error) {
     console.warn("Warning: Could not clear cache:", error);

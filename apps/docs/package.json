@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",
+    "@commercetools/nimbus-docs-build": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@emotion/react": "catalog:react",
     "@internationalized/date": "catalog:react",

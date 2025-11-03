@@ -3,16 +3,15 @@
  *
  * Generates route configuration from parsed MDX documents
  */
-
 import fs from "fs/promises";
 import type {
   MdxDocument,
   RouteManifest,
   RouteInfo,
   CategoryInfo,
-} from "./types";
-import { routeManifestSchema } from "./schemas";
-import { flog } from "./parse-mdx";
+} from "../types/mdx.js";
+import { routeManifestSchema } from "../schemas/mdx-document.js";
+import { flog } from "../utils/logger.js";
 
 /**
  * Generate route manifest from parsed documents
@@ -27,7 +26,7 @@ export async function generateRouteManifest(
   // Process each document
   for (const [, doc] of docs) {
     const { meta } = doc;
-    const category = meta.menu?.[0] || "Uncategorized";
+    const category = meta.menu[0] || "Uncategorized";
     const routePath = `/${meta.route}`;
 
     // Create route info
@@ -35,9 +34,14 @@ export async function generateRouteManifest(
       path: routePath,
       id: meta.id,
       title: meta.title,
+      description: meta.description || "",
       category,
       tags: meta.tags || [],
+      menu: meta.menu,
+      order: meta.order || 999,
       chunkName: `route-${meta.id.toLowerCase().replace(/\s+/g, "-")}`,
+      icon: meta.icon,
+      tabs: meta.tabs || [],
     };
 
     routes.push(route);

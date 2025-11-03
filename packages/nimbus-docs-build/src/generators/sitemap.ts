@@ -3,17 +3,15 @@
  *
  * Generates sitemap.xml for SEO
  */
-
 import fs from "fs/promises";
-import type { RouteManifest } from "./types";
-
-const BASE_URL = "https://nimbus.commercetools.com"; // Update with actual URL
+import type { RouteManifest } from "../types/mdx.js";
 
 /**
  * Generate sitemap.xml from route manifest
  */
 export async function generateSitemap(
   manifest: RouteManifest,
+  baseUrl: string,
   outputPath: string
 ): Promise<void> {
   const urls = manifest.routes.map((route) => {
@@ -22,7 +20,7 @@ export async function generateSitemap(
     const changefreq = "weekly";
 
     return `  <url>
-    <loc>${BASE_URL}${route.path}</loc>
+    <loc>${baseUrl}${route.path}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>

@@ -3,15 +3,9 @@
  *
  * Validates documentation content for common issues
  */
-
-import type { MdxDocument } from "./types";
-import { flog } from "./parse-mdx";
-
-interface ValidationError {
-  file: string;
-  message: string;
-  severity: "error" | "warning";
-}
+import type { MdxDocument } from "../types/mdx.js";
+import type { ValidationError } from "../types/config.js";
+import { flog } from "../utils/logger.js";
 
 /**
  * Validate all documentation content
