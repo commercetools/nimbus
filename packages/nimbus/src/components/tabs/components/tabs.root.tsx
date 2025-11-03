@@ -8,7 +8,6 @@ import type { TabsProps } from "../tabs.types";
 import { TabsList } from "./tabs.list";
 import { TabsPanels } from "./tabs.panels";
 import { extractStyleProps } from "@/utils";
-import { useBreakpointValue } from "@chakra-ui/react";
 
 /**
  * # Tabs
