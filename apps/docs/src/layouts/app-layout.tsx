@@ -17,6 +17,7 @@ import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
 import { useHashNavigation } from "@/hooks/use-hash-navigation";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
 export function AppLayout() {
   // Enable scroll restoration on navigation
@@ -30,6 +31,7 @@ export function AppLayout() {
 
   // Get current location to trigger content animation on route changes
   const location = useLocation();
+  const { baseRoute } = useRouteInfo();
 
   return (
     <AppFrame.Root>
@@ -58,11 +60,7 @@ export function AppLayout() {
       <AppFrame.MainContent>
         <Suspense fallback={<LoadingSpinner />}>
           {/* Animated wrapper that re-renders on route change */}
-          <Box
-            key={location.pathname}
-            animationName="fade-in"
-            animationDuration="slow"
-          >
+          <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
             <Outlet />
           </Box>
         </Suspense>
