@@ -65,12 +65,6 @@ export const tabsSlotRecipe = defineSlotRecipe({
   variants: {
     variant: {
       line: {},
-      enclosed: {
-        tab: {
-          borderTopLeftRadius: "200",
-          borderTopRightRadius: "200",
-        },
-      },
       pills: {
         tab: {
           borderRadius: "full",
@@ -142,15 +136,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       orientation: "horizontal",
       css: {
         list: {
-          borderBottom: "solid-25",
-          borderBottomColor: "neutral.6",
+          boxShadow: "0 1px 0 0 {colors.neutral.6}",
         },
         tab: {
-          borderBottom: "solid-50",
-          borderBottomColor: "transparent",
-          marginBottom: "-25",
+          boxShadow: "0 2px 0 0 transparent",
           _selected: {
-            borderBottomColor: "primary.9",
+            boxShadow: "0 2px 0 0 {colors.primary.9}",
           },
         },
       },
@@ -162,15 +153,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "start",
       css: {
         list: {
-          borderLeft: "solid-25",
-          borderLeftColor: "neutral.6",
+          boxShadow: "-1px 0 0 0 {colors.neutral.6}",
         },
         tab: {
-          borderLeft: "solid-50",
-          borderLeftColor: "transparent",
-          marginLeft: "-25",
+          boxShadow: "-2px 0 0 0 transparent",
           _selected: {
-            borderLeftColor: "primary.9",
+            boxShadow: "-2px 0 0 0 {colors.primary.9}",
           },
         },
       },
@@ -182,93 +170,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "end",
       css: {
         list: {
-          borderRight: "solid-25",
-          borderRightColor: "neutral.6",
+          boxShadow: "1px 0 0 0 {colors.neutral.6}",
         },
         tab: {
-          borderRight: "solid-50",
-          borderRightColor: "transparent",
-          marginRight: "-25",
+          boxShadow: "2px 0 0 0 transparent",
           _selected: {
-            borderRightColor: "primary.9",
-          },
-        },
-      },
-    },
-
-    // ==================== ENCLOSED VARIANT ====================
-    // Enclosed + Horizontal
-    {
-      variant: "enclosed",
-      orientation: "horizontal",
-      css: {
-        list: {
-          borderBottom: "solid-25",
-          borderBottomColor: "neutral.6",
-        },
-        tab: {
-          border: "solid-25",
-          borderColor: "transparent",
-          borderBottom: "none",
-          marginBottom: "-25",
-          _selected: {
-            backgroundColor: "bg",
-            borderColor: "neutral.6",
-            borderBottomColor: "bg",
-          },
-        },
-      },
-    },
-    // Enclosed + Vertical + Start (tabs on left)
-    {
-      variant: "enclosed",
-      orientation: "vertical",
-      placement: "start",
-      css: {
-        list: {
-          borderRight: "solid-25",
-          borderRightColor: "neutral.6",
-        },
-        tab: {
-          border: "solid-25",
-          borderColor: "transparent",
-          borderRight: "none",
-          marginRight: "-25",
-          borderTopLeftRadius: "200",
-          borderBottomLeftRadius: "200",
-          borderTopRightRadius: "0",
-          borderBottomRightRadius: "0",
-          _selected: {
-            backgroundColor: "bg",
-            borderColor: "neutral.6",
-            borderRightColor: "bg",
-          },
-        },
-      },
-    },
-    // Enclosed + Vertical + End (tabs on right)
-    {
-      variant: "enclosed",
-      orientation: "vertical",
-      placement: "end",
-      css: {
-        list: {
-          borderLeft: "solid-25",
-          borderLeftColor: "neutral.6",
-        },
-        tab: {
-          border: "solid-25",
-          borderColor: "transparent",
-          borderLeft: "none",
-          marginLeft: "-25",
-          borderTopLeftRadius: "0",
-          borderBottomLeftRadius: "0",
-          borderTopRightRadius: "200",
-          borderBottomRightRadius: "200",
-          _selected: {
-            backgroundColor: "bg",
-            borderColor: "neutral.6",
-            borderLeftColor: "bg",
+            boxShadow: "2px 0 0 0 {colors.primary.9}",
           },
         },
       },
@@ -310,15 +217,30 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Pills + Vertical
+    // Pills + Vertical + Start (tabs on left)
     {
       variant: "pills",
       orientation: "vertical",
+      placement: "start",
       css: {
         list: {
           gap: "200",
           boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
-          borderRadius: "full",
+          borderRadius: "400",
+          padding: "100",
+        },
+      },
+    },
+    // Pills + Vertical + End (tabs on right)
+    {
+      variant: "pills",
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        list: {
+          gap: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+          borderRadius: "400",
           padding: "100",
         },
       },

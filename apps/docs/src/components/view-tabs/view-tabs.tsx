@@ -94,6 +94,11 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
       top="0"
       zIndex="1"
       mb="200"
+      css={{
+        transform: isVisible ? "translateY(0)" : "translateY(-100%)",
+        opacity: isVisible ? 1 : 0,
+        transition: "all 0.3s ease-in-out, opacity 0.3s ease-in-out",
+      }}
     >
       <Tabs.Root selectedKey={activeView} variant="pills">
         <Tabs.List>

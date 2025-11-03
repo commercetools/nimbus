@@ -15,7 +15,7 @@ const meta: Meta<typeof Tabs.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["line", "enclosed", "pills"],
+      options: ["line", "pills"],
       description: "Visual style variant of the tabs",
     },
     orientation: {
@@ -659,35 +659,6 @@ export const Variants: Story = {
               </Heading>
               <Tabs.Root
                 variant="line"
-                orientation="vertical"
-                tabs={variantTabs}
-              />
-            </Box>
-          </Stack>
-        </Stack>
-
-        {/* Enclosed Variant */}
-        <Stack direction="column" gap="300">
-          <Heading as="h3" fontSize="500">
-            Enclosed Variant
-          </Heading>
-          <Text color="neutral.11" mb="400">
-            Tabs with borders and background, resembling traditional folder
-            tabs.
-          </Text>
-          <Stack direction="column" gap="400">
-            <Box data-testid="enclosed-variant-horizontal">
-              <Heading as="h4" fontSize="350" mb="200">
-                Horizontal
-              </Heading>
-              <Tabs.Root variant="enclosed" tabs={variantTabs} />
-            </Box>
-            <Box data-testid="enclosed-variant-vertical">
-              <Heading as="h4" fontSize="350" mb="200">
-                Vertical
-              </Heading>
-              <Tabs.Root
-                variant="enclosed"
                 orientation="vertical"
                 tabs={variantTabs}
               />
