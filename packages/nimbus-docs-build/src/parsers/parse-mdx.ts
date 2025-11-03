@@ -12,20 +12,18 @@ import { remark } from "remark";
 import remarkFlexibleToc, {
   type FlexibleTocOptions,
 } from "remark-flexible-toc";
-import { read } from "to-vfile";
 import { mdxDocumentSchema } from "../schemas/mdx-document.js";
 import type { MdxDocument, TocItem } from "../types/mdx.js";
 import { menuToPath, getPathFromMonorepoRoot } from "../utils/index.js";
 
 /**
- * Generate table of contents from MDX content
+ * Generate table of contents from MDX content (without frontmatter)
+ * @param content - The MDX content string with frontmatter already removed
  */
-const generateToc = async (filePath: string): Promise<TocItem[]> => {
+const generateToc = async (content: string): Promise<TocItem[]> => {
   const toc: NonNullable<FlexibleTocOptions["tocRef"]> = [];
 
-  await remark()
-    .use(remarkFlexibleToc, { tocRef: toc })
-    .process(await read(filePath));
+  await remark().use(remarkFlexibleToc, { tocRef: toc }).process(content);
 
   return toc || [];
 };
@@ -82,7 +80,7 @@ const parseSingleMdx = async (
       data: Record<string, unknown>;
       content: string;
     };
-    const toc = await generateToc(filePath);
+    const toc = await generateToc(mdx);
     return { mdx, toc, frontmatter };
   } catch {
     return null;
@@ -118,7 +116,7 @@ export async function parseMdxFile(
     };
 
     // Generate TOC for main file
-    const toc = await generateToc(filePath);
+    const toc = await generateToc(mdx);
 
     // Get relative path from monorepo root
     const repoPath = await getPathFromMonorepoRoot(filePath);
