@@ -7,13 +7,9 @@ import { ComboBoxPopover } from "./components/combobox.popover";
 import { ComboBoxListBox } from "./components/combobox.listbox";
 import { ComboBoxOption } from "./components/combobox.option";
 import { ComboBoxSection } from "./components/combobox.section";
-import {
-  ComboBoxRootContext,
-  useComboBoxRootContext,
-} from "./components/combobox.root-context";
 
 /**
- * ComboBox - A searchable, filterable selection component
+ * ### ComboBox - A searchable, filterable selection component
  *
  * Supports single and multi-select modes with keyboard navigation,
  * custom filtering, and accessible interactions.
@@ -53,7 +49,7 @@ import {
  */
 export const ComboBox = {
   /**
-   * # ComboBox.Root
+   * ### ComboBox.Root
    *
    * Main container providing Nimbus context + React Aria contexts.
    * Does not render UI elements directly - only provides context for children.
@@ -75,7 +71,7 @@ export const ComboBox = {
   Root: ComboBoxRoot,
 
   /**
-   * # ComboBox.Trigger
+   * ### ComboBox.Trigger
    *
    * Wrapper for the input trigger area.
    * Contains ComboBox.TagGroup, ComboBox.Input, and IconButton slots.
@@ -93,7 +89,7 @@ export const ComboBox = {
   Trigger: ComboBoxTrigger,
 
   /**
-   * # ComboBox.TagGroup
+   * ### ComboBox.TagGroup
    *
    * Displays selected tags in multi-select mode.
    * Automatically hidden in single-select mode.
@@ -107,7 +103,7 @@ export const ComboBox = {
   TagGroup: ComboBoxTagGroup,
 
   /**
-   * # ComboBox.Input
+   * ### ComboBox.Input
    *
    * Text input field for filtering and selection.
    * Reads InputContext from Nimbus context provider.
@@ -120,7 +116,7 @@ export const ComboBox = {
   Input: ComboBoxInput,
 
   /**
-   * # ComboBox.Popover
+   * ### ComboBox.Popover
    *
    * Popover wrapper for the options list.
    * Reads PopoverContext from Nimbus context provider.
@@ -137,7 +133,7 @@ export const ComboBox = {
   Popover: ComboBoxPopover,
 
   /**
-   * # ComboBox.ListBox
+   * ### ComboBox.ListBox
    *
    * Container for options and option groups.
    * Reads ListBoxContext from Nimbus context provider.
@@ -152,7 +148,7 @@ export const ComboBox = {
   ListBox: ComboBoxListBox,
 
   /**
-   * # ComboBox.Option
+   * ### ComboBox.Option
    *
    * Individual selectable option.
    *
@@ -164,7 +160,7 @@ export const ComboBox = {
   Option: ComboBoxOption,
 
   /**
-   * # ComboBox.Section
+   * ### ComboBox.Section
    *
    * Groups related options together with an optional heading.
    *
@@ -177,55 +173,4 @@ export const ComboBox = {
    * ```
    */
   Section: ComboBoxSection,
-
-  /**
-   * # ComboBox.Context
-   *
-   * React context for providing custom ComboBox state from outside ComboBox.Root.
-   * This is an advanced pattern for custom implementations that need to control
-   * ComboBox behavior externally. Most use cases should use ComboBox.Root instead.
-   *
-   * @example
-   * ```tsx
-   * const customContextValue = {
-   *   isOpen: true,
-   *   setIsOpen: () => {},
-   *   // ... other context values
-   * };
-   *
-   * <ComboBox.Context.Provider value={customContextValue}>
-   *  <ComboBox.Root>
-   *   <ComboBox.Input />
-   *   <ComboBox.Popover>
-   *     <ComboBox.ListBox />
-   *   </ComboBox.Popover>
-   *  </ComboBox.Root>
-   * </ComboBox.Context.Provider>
-   * ```
-   */
-  Context: ComboBoxRootContext,
-
-  /**
-   * # ComboBox.useContext
-   *
-   * Hook to access ComboBox context. Must be used within ComboBox.Root or ComboBox.Context.Provider.
-   * Throws an error if used outside of a context provider.
-   *
-   * @example
-   * ```tsx
-   * const MyCustomTrigger = () => {
-   *   const { isOpen, setIsOpen } = ComboBox.useContext();
-   *   return (
-   *     <button onClick={() => setIsOpen(!isOpen)}>
-   *       {isOpen ? 'Close' : 'Open'} Options
-   *     </button>
-   *   );
-   * };
-   *
-   * <ComboBox.Root>
-   *   <MyCustomTrigger />
-   * </ComboBox.Root>
-   * ```
-   */
-  useContext: useComboBoxRootContext,
 };

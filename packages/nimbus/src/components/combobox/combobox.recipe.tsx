@@ -76,7 +76,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       maxWidth: "100%",
       textAlign: "left",
       whiteSpace: "nowrap",
-      overflow: "hidden",
+      // overflow: "hidden",
       textOverflow: "ellipsis",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _disabled: { pointerEvents: "none" },

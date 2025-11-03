@@ -4,7 +4,7 @@ import type { ComboBoxPopoverProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
 /**
- * # ComboBox.Popover
+ * ### ComboBox.Popover
  *
  * Popover wrapper for the options list.
  * Uses Nimbus Popover component which reads from PopoverContext provided by the custom context provider.
@@ -27,13 +27,16 @@ import { extractStyleProps } from "@/utils";
  */
 export const ComboBoxPopover = ({
   children,
+  ref,
   ...restProps
 }: ComboBoxPopoverProps) => {
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
     <ComboBoxPopoverSlot asChild {...styleProps}>
-      <Popover {...functionalProps}>{children}</Popover>
+      <Popover ref={ref} {...functionalProps}>
+        {children}
+      </Popover>
     </ComboBoxPopoverSlot>
   );
 };

@@ -33,7 +33,6 @@ export const DraggableListItem = <T extends DraggableListItemData>({
         {({ allowsDragging, selectionBehavior, selectionMode }) => (
           <>
             {allowsDragging && (
-              // @ts-expect-error slot="drag" handles adding the required props
               <IconButton
                 slot="drag"
                 size="2xs"

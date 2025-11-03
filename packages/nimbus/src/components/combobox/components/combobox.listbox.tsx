@@ -7,14 +7,7 @@ import { extractStyleProps } from "@/utils";
  * # ComboBox.ListBox
  *
  * Container for options list.
- * Reads from ListBoxContext provided by the custom context provider.
- *
- * The ListBoxContext provides:
- * - id (for aria-controls reference)
- * - aria-labelledby
- * - items collection
- * - selection mode and state
- * - renderEmptyState function
+ * Uses useListBox hook from React Aria to build the listbox with proper ARIA attributes.
  *
  * @example
  * ```tsx
@@ -25,18 +18,18 @@ import { extractStyleProps } from "@/utils";
  *
  * @supportsStyleProps
  */
-export const ComboBoxListBox = ({
+export function ComboBoxListBox<T extends object>({
   children,
+  ref,
   ...restProps
-}: ComboBoxListBoxProps) => {
+}: ComboBoxListBoxProps<T>) {
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
-    <ComboBoxListBoxSlot asChild {...styleProps}>
-      {/* RaListBox reads renderEmptyState from ListBoxContext */}
+    <ComboBoxListBoxSlot {...styleProps} ref={ref} asChild={false}>
       <RaListBox {...functionalProps}>{children}</RaListBox>
     </ComboBoxListBoxSlot>
   );
-};
+}
 
 ComboBoxListBox.displayName = "ComboBox.ListBox";

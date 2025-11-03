@@ -39,11 +39,11 @@ import { extractStyleProps } from "@/utils";
 /**
  * @supportsStyleProps
  */
-export const ComboBoxOption = <T extends object>({
+export function ComboBoxOption<T extends object>({
   children,
   ref,
   ...props
-}: ComboBoxOptionProps<T>) => {
+}: ComboBoxOptionProps<T>) {
   const [styleProps, restProps] = extractStyleProps(props);
   const textValue = typeof children === "string" ? children : undefined;
 
@@ -79,6 +79,6 @@ export const ComboBoxOption = <T extends object>({
       </ListBoxItem>
     </ComboBoxOptionSlot>
   );
-};
+}
 
 ComboBoxOption.displayName = "ComboBox.Option";

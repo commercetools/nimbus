@@ -2476,20 +2476,19 @@ Keep these files (update if needed):
 
 Create new unified stories showing:
 
-1. **Automatic rendering** - Simple items array with defaults
-2. **Custom getTextValue** - Custom property extraction
-3. **Custom render function** - Complex item rendering
-4. **Static JSX children** - No items array
-5. **Single-select basic usage**
-6. **Multi-select with tags**
-7. **Controlled vs uncontrolled**
-8. **Custom filtering**
-9. **ComboBox in Modal** - Tests positioning in portal (REGRESSION TEST)
-10. **ComboBox in Drawer with Scroll** - Tests positioning when scrolling in
-    portal (REGRESSION TEST)
-11. **Keyboard navigation tests** (play functions)
-12. **ARIA compliance tests** (play functions)
-13. **Positioning validation tests** (play functions) - NEW
+1. **Custom getTextValue** - Custom property extraction
+2. **Custom render function** - Complex item rendering
+3. **Static JSX children** - No items array
+4. **Single-select basic usage**
+5. **Multi-select with tags**
+6. **Controlled vs uncontrolled**
+7. **Custom filtering**
+8. **ComboBox in Modal** - Tests positioning in portal (REGRESSION TEST) 9
+   **ComboBox in Drawer with Scroll** - Tests positioning when scrolling in
+   portal (REGRESSION TEST)
+9. **Keyboard navigation tests** (play functions)
+10. **Positioning validation tests** (play functions) - NEW
+11. **Accesibility tests** (play functions)
 
 ### Required Stories for Positioning Bug:
 
@@ -2899,9 +2898,8 @@ export const InDrawerWithScroll: Story = {
 Document:
 
 - New unified API (single prop: `selectionMode`)
-- Children rendering pattern (Composed Children Pattern)
 - getKey and getTextValue functions
-- Unified selectedKeys API (accepts Key or Set<Key>)
+- Unified selectedKeys API (accepts Key or Key[])
 - WAI-ARIA compliance details
 - Keyboard interactions
 - Accessibility features

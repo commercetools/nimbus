@@ -1,17 +1,37 @@
 import type { ReactNode, Ref } from "react";
-import type { ListState, Node, Key } from "react-stately";
-import type { CollectionChildren } from "@react-types/shared";
+import type { Node, Key } from "react-stately";
 import type {
+  ComboBoxRenderProps,
+  InputProps as RaInputProps,
+  ListBoxProps as RaListBoxProps,
   ListBoxItemProps as RaListBoxItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { TagGroupProps as NimbusTagGroupProps } from "@/components";
+import type { PopoverProps as NimbusPopoverProps } from "../popover";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type ComboBoxRecipeProps = SlotRecipeProps<"combobox">;
+type ComboBoxRecipeProps = {
+  // /**
+  //  * Selection Mode variant of combobox
+  //  * @default "single"
+  //  */
+  // selectionMode?: SlotRecipeProps<"combobox">["selectionMode"];
+  /**
+   * Size variant of combobox
+   * @default "md"
+   */
+  size?: SlotRecipeProps<"combobox">["size"];
+  /**
+   * Variant of combobox
+   * @default "solid"
+   */
+  variant?: SlotRecipeProps<"combobox">["variant"];
+};
 
 // ============================================================
 // SLOT PROPS
@@ -49,45 +69,21 @@ export type ComboBoxFilter<T extends object> = (
 // CONTEXT VALUE
 // ============================================================
 
-export type ComboBoxRootContextValue<T extends object> = {
-  /** React Stately list state managing collection and selection */
-  state: ListState<T>;
-
+export type ComboBoxRootContextValue<T> = {
   /** Selection mode determines single vs multi-select behavior */
   selectionMode: "single" | "multiple";
-
-  /** Current input value for filtering */
-  inputValue: string;
-
-  /** Update input value */
-  setInputValue: (value: string) => void;
-
-  /** Whether popup is open */
-  isOpen: boolean;
-
-  /** Update popup open state */
-  setIsOpen: (open: boolean) => void;
-
-  /** Unique ID for listbox element (for aria-controls) */
-  listboxId: string;
-
-  /** Unique ID for tagGroup element (for aria-controls and aria-describedby) */
-  tagGroupId: string;
-
-  /** Clear all selections */
-  clearSelection: () => void;
-
-  /** Remove specific key from selection */
-  removeKey: (key: Key) => void;
-
-  /** Handle creating a custom option from input value - returns true if created */
-  handleCreateOption: () => boolean;
 
   /** Extract key from item for TagGroup */
   getKey: (item: T) => Key;
 
   /** Extract text value from item for TagGroup */
   getTextValue: (item: T) => string;
+
+  /** Leading visual element (e.g., search icon) rendered before the input */
+  leadingElement?: ReactNode;
+
+  /** Ref to trigger element (for popover positioning) */
+  triggerRef: React.RefObject<HTMLDivElement | null>;
 
   /** Whether component is disabled */
   isDisabled: boolean;
@@ -100,30 +96,6 @@ export type ComboBoxRootContextValue<T extends object> = {
 
   /** Whether component is read-only */
   isReadOnly: boolean;
-
-  /** Accessible label for the combobox (when no visible label) */
-  "aria-label"?: string;
-
-  /** ID of external label element (typically from FormField) */
-  "aria-labelledby"?: string;
-
-  /** Leading visual element (e.g., search icon) rendered before the input */
-  leadingElement?: ReactNode;
-
-  /** Ref to trigger element (for popover positioning) */
-  triggerRef: React.RefObject<HTMLDivElement | null>;
-
-  /** Placeholder text for input */
-  placeholder?: string;
-
-  /** Handle input focus - opens menu if menuTrigger is "focus" */
-  handleFocus: () => void;
-
-  /** Handle input blur - closes menu if shouldCloseOnBlur is true */
-  handleBlur: (e: React.FocusEvent) => void;
-
-  /** Custom render function for empty state (passed to ListBox) */
-  renderEmptyState?: () => ReactNode;
 };
 
 // ============================================================
@@ -132,6 +104,9 @@ export type ComboBoxRootContextValue<T extends object> = {
 
 /**
  * Root component props for unified ComboBox
+ *
+ * @template T - Type for item data displayed in the combobox menu. Items array type is `T[]`.
+ *
  */
 export type ComboBoxRootProps<T extends object> = Omit<
   ComboBoxRootSlotProps,
@@ -141,7 +116,13 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * Render function for each item, or static JSX children.
    * Must be React Aria collection elements (Section/Item components).
    */
-  children?: CollectionChildren<T>;
+  children?:
+    | ReactNode
+    | ((
+        values: T & {
+          defaultChildren: ReactNode | undefined;
+        } & ComboBoxRenderProps
+      ) => ReactNode);
 
   /**
    * Selection mode - determines single vs multi-select behavior
@@ -559,44 +540,60 @@ export type ComboBoxTriggerProps = ComboBoxTriggerSlotProps & {
  * Displays selected items as tags (multi-select only)
  * Gets props from TagGroupContext provided by Nimbus context
  */
-export type ComboBoxTagGroupProps = ComboBoxTagGroupSlotProps;
+export type ComboBoxTagGroupProps = ComboBoxTagGroupSlotProps &
+  NimbusTagGroupProps;
 
 /**
  * Props for ComboBox.Input component
  * Text input field for filtering and typing
  * Gets props from InputContext provided by Nimbus context
  */
-export type ComboBoxInputProps = ComboBoxInputSlotProps;
+export type ComboBoxInputProps = ComboBoxInputSlotProps & RaInputProps;
 
 /**
  * Props for ComboBox.Popover component
  * Popover wrapper for options list
  * Gets props from PopoverContext provided by Nimbus context
  */
-export type ComboBoxPopoverProps = ComboBoxPopoverSlotProps & {
-  /**
-   * Children should be ComboBox.ListBox
-   */
-  children: ReactNode;
-};
+export type ComboBoxPopoverProps = NimbusPopoverProps &
+  Omit<ComboBoxPopoverSlotProps, keyof NimbusPopoverProps>;
 
 /**
  * Props for ComboBox.ListBox component
  * Container for options
  * Gets props from ListBoxContext provided by Nimbus context
+ *
+ * @template T - Type for item data displayed in the list. Items array type is `T[]`.
+ *
+ * **Type Inference Limitation:**
+ * Due to TypeScript limitations with generic types in compound components,
+ * the item type cannot be automatically inferred from ComboBox.Root.
+ * When using a render function, you may need to explicitly type the item parameter:
+ *
+ * @example
+ * ```tsx
+ * // ✅ Explicit typing (recommended for type safety)
+ * <ComboBox.ListBox>
+ *   {(item: MyItemType) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+ * </ComboBox.ListBox>
+ *
+ * // ⚠️ Without explicit typing, TypeScript defaults to 'object'
+ * <ComboBox.ListBox>
+ *   {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>} // Type error on item.name
+ * </ComboBox.ListBox>
+ * ```
  */
-export type ComboBoxListBoxProps = ComboBoxListBoxSlotProps & {
-  /**
-   * Render function for each option or static JSX children
-   * If not provided with items, uses default renderer
-   */
-  children?: ((item: object) => ReactNode) | ReactNode;
-};
+export type ComboBoxListBoxProps<T extends object> = RaListBoxProps<T> &
+  Omit<ComboBoxListBoxSlotProps, keyof RaListBoxProps<T>> & {
+    ref?: Ref<HTMLDivElement>;
+  };
 
 /**
  * Props for ComboBox.Option component
  * Individual option within the combobox listbox
  * Supports both static children and render prop pattern
+ *
+ *  @template T - Type for item data displayed in the option. Items array type is `T[]`.
  */
 export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
   Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
@@ -607,6 +604,8 @@ export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
  * Props for ComboBox.Section component
  * Groups related options together
  * Supports both static children and collection rendering
+ *
+ *  @template T - Type for item data displayed in the section. Items array type is `T[]`.
  */
 export type ComboBoxSectionProps<T extends object> = RaListBoxSectionProps<T> &
   Omit<ComboBoxSectionSlotProps, keyof RaListBoxSectionProps<T>> & {
