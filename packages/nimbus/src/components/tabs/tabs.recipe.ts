@@ -217,25 +217,10 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Pills + Vertical + Start (tabs on left)
+    // Pills + Vertical
     {
       variant: "pills",
       orientation: "vertical",
-      placement: "start",
-      css: {
-        list: {
-          gap: "200",
-          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
-          borderRadius: "400",
-          padding: "100",
-        },
-      },
-    },
-    // Pills + Vertical + End (tabs on right)
-    {
-      variant: "pills",
-      orientation: "vertical",
-      placement: "end",
       css: {
         list: {
           gap: "200",
