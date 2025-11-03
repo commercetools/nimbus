@@ -65,5 +65,5 @@ export type DateRangePickerFieldProps = Omit<
      * Size of the date range picker input
      * @default "md"
      */
-    size?: "sm" | "md" | "lg";
+    size?: "sm" | "md";
   };
