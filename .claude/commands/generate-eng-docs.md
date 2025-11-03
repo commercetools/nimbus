@@ -1,48 +1,66 @@
 ---
 name: generate-eng-docs
-description: Generate engineering documentation for a Nimbus component following the approved team template
+description:
+  Generate engineering documentation for a Nimbus component or pattern following the
+  approved team template
 command: |
-  Generate engineering documentation for the {{COMPONENT_NAME}} component following the EXACT structure approved by the team.
+  Generate engineering documentation for the {{NAME}} {{TYPE}} following the EXACT structure approved by the team.
   
+  Determine the type by checking:
+  - If path contains 'patterns/', then TYPE = 'pattern'
+  - If path contains 'components/', then TYPE = 'component'
+  - Default to 'component' if not specified
+
   Instructions:
-  1. First, analyze the component by reading these files:
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}.tsx
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}.types.ts
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}.mdx
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}.stories.tsx
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}.recipe.ts (if exists)
-     - packages/nimbus/src/components/{{COMPONENT_NAME}}/components/ (if exists)
-  
-  2. Create file: packages/nimbus/src/components/{{COMPONENT_NAME}}/{{COMPONENT_NAME}}-dev.mdx
-  
+  1. First, analyze the {{TYPE}} by reading these files:
+     For components:
+     - packages/nimbus/src/components/{{NAME}}/{{NAME}}.tsx
+     - packages/nimbus/src/components/{{NAME}}/{{NAME}}.types.ts
+     - packages/nimbus/src/components/{{NAME}}/{{NAME}}.mdx
+     - packages/nimbus/src/components/{{NAME}}/{{NAME}}.stories.tsx
+     - packages/nimbus/src/components/{{NAME}}/{{NAME}}.recipe.ts (if exists)
+     - packages/nimbus/src/components/{{NAME}}/components/ (if exists)
+     
+     For patterns:
+     - packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}.tsx
+     - packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}.types.ts
+     - packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}.mdx
+     - packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}.stories.tsx
+     - Any other relevant files in the pattern directory
+
+  2. Create file: 
+     - For components: packages/nimbus/src/components/{{NAME}}/{{NAME}}-dev.mdx
+     - For patterns: packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}-dev.mdx
+
   3. Use this EXACT structure (maintain this order and these exact headings):
-  
+
   ```mdx
   ---
-  id: Components-{{COMPONENT_NAME}}-dev
-  title: {{Component Name}} Engineering Guidelines
-  description: Engineering guideline for using the Nimbus {{Component Name}} component
+  id: {{TYPE_CAPITALIZED}}-{{NAME}}-dev
+  title: {{Name}} Engineering Guidelines
+  description: Engineering guideline for using the Nimbus {{Name}} {{TYPE}}
   documentState: InitialDraft
   order: 999
   menu:
-    - Components
-    - [Category] # Data Display, Navigation, Inputs, Feedback, etc.
-    - {{ComponentName}}Dev
+    - {{TYPE_CAPITALIZED}}
+    - [Category] # For components: Data Display, Navigation, Inputs, Feedback, etc.
+                # For patterns: Fields, Layouts, Complex Interactions, etc.
+    - {{Name}}Dev
   tags:
-    - component
+    - {{TYPE}}
     - engineering
     - migration
   ---
-  
-  # {{Component Name}} Component
-  
-  Brief introduction paragraph about the component's purpose and architecture.
-  
-  ## Component Anatomy
-  
-  [This section is OPTIONAL - only include for complex components]
-  Description of the component's structure. For compound components, show the hierarchy:
-  
+
+  # {{Name}} {{TYPE_CAPITALIZED}}
+
+  Brief introduction paragraph about the {{TYPE}}'s purpose and architecture.
+
+  ## {{TYPE_CAPITALIZED}} Anatomy
+
+  [This section is OPTIONAL - only include for complex {{TYPE}}s]
+  Description of the {{TYPE}}'s structure. For compound {{TYPE}}s, show the hierarchy:
+
   ```
   Component.Root
   ├── Component.Trigger
@@ -50,173 +68,179 @@ command: |
       ├── Component.Item
       └── Component.Separator
   ```
-  
-  ## Component Usage
-  
+
+  ## {{TYPE_CAPITALIZED}} Usage
+
   ### How to Import
-  
+
   ```tsx
-  import { {{ComponentName}} } from '@commercetools/nimbus';
+  import { {{Name}} } from '@commercetools/nimbus';
   ```
-  
+
   For TypeScript projects, import types:
   ```tsx
-  import { {{ComponentName}}, type {{ComponentName}}Props } from '@commercetools/nimbus';
+  import { {{Name}}, type {{Name}}Props } from '@commercetools/nimbus';
   ```
-  
+
   ### Basic Example
-  
+
   ```jsx-live-dev
   const App = () => (
-    <{{ComponentName}}>
+    <{{Name}}>
       Basic implementation example
-    </{{ComponentName}}>
+    </{{Name}}>
   )
   ```
-  
+
   ### Common props and Variations
-  
+
   Brief introduction to the most commonly used props.
-  
+
   #### [Variation 1 - e.g., Size Options]
-  
+
   ```jsx-live-dev
   const App = () => (
     <Stack direction="row" gap="400">
-      <{{ComponentName}} size="sm">Small</{{ComponentName}}>
-      <{{ComponentName}} size="md">Medium</{{ComponentName}}>
-      <{{ComponentName}} size="lg">Large</{{ComponentName}}>
+      <{{Name}} size="sm">Small</{{Name}}>
+      <{{Name}} size="md">Medium</{{Name}}>
+      <{{Name}} size="lg">Large</{{Name}}>
     </Stack>
   )
   ```
-  
+
   #### [Variation 2 - e.g., Variant Options]
-  
+
   ```jsx-live-dev
   const App = () => (
     <Stack direction="row" gap="400">
-      <{{ComponentName}} variant="solid">Solid</{{ComponentName}}>
-      <{{ComponentName}} variant="outline">Outline</{{ComponentName}}>
-      <{{ComponentName}} variant="ghost">Ghost</{{ComponentName}}>
+      <{{Name}} variant="solid">Solid</{{Name}}>
+      <{{Name}} variant="outline">Outline</{{Name}}>
+      <{{Name}} variant="ghost">Ghost</{{Name}}>
     </Stack>
   )
   ```
-  
-  [Add more variations as needed based on the component]
-  
+
+  [Add more variations as needed based on the {{TYPE}}]
+
   ## Testing Strategies and Best Practices
-  
+
   Brief introduction to testing approaches.
-  
+
   #### 1. Unit Testing with React Testing Library
-  
+
   ```tsx
   import { render, screen } from '@testing-library/react';
-  import { {{ComponentName}} } from '@commercetools/nimbus';
-  
-  describe('{{ComponentName}}', () => {
+  import { {{Name}} } from '@commercetools/nimbus';
+
+  describe('{{Name}}', () => {
     it('renders correctly', () => {
-      render(<{{ComponentName}}>Test content</{{ComponentName}}>);
+      render(<{{Name}}>Test content</{{Name}}>);
       expect(screen.getByText('Test content')).toBeInTheDocument();
     });
   });
   ```
-  
+
   #### 2. Storybook Integration for Testing
-  
+
   Leverage existing stories for visual testing:
-  
+
   ```tsx
   export const InteractionTest: Story = {
     play: async ({ canvasElement }) => {
       const canvas = within(canvasElement);
-      // Test interactions based on component behavior
+      // Test interactions based on {{TYPE}} behavior
     },
   };
   ```
-  
+
   #### 3. Regression tests
-  
+
   **[Placeholder for regression test strategy]**
   - Visual regression with Chromatic
   - Behavior regression with interaction tests
   - API contract testing
-  
+
   ### 4. Accessibility requirements
-  
+
   - Keyboard navigation: [Describe keyboard patterns]
   - Screen reader support: [Describe announcements]
   - ARIA attributes: [List key ARIA attributes]
   - Color contrast: Meets WCAG AA standards
-  
+
   ## Quick Reference Summary
-  
+
   ### Design Guidelines
-  
+
   - [Key design principle 1]
   - [Key design principle 2]
   - [Key design principle 3]
-  
+
   ### Code Patterns
-  
-  Common implementation patterns for the component.
-  
+
+  Common implementation patterns for the {{TYPE}}.
+
   #### Hooks
-  
-  [If component provides hooks, show usage]
-  
+
+  [If {{TYPE}} provides hooks, show usage]
+
   ```tsx
-  const use{{ComponentName}} = (options) => {
+  const use{{Name}} = (options) => {
     // Hook implementation pattern
   };
   ```
-  
+
   ### API Reference
-  
-  | Prop | Type | Default | Description |
-  |------|------|---------|-------------|
-  | `prop1` | `string` | - | Description |
-  | `prop2` | `boolean` | `false` | Description |
-  | `prop3` | `'option1' \| 'option2'` | `'option1'` | Description |
-  
-  [Include key props - full reference should link to PropsTable]
-  
-  See full API documentation: [{{Component Name}} API Reference](/components/{{component-name}})
-  
+
+  <PropsTable id="{{Name}}" />
+
   ### Need Help?
-  
+
   - 📚 **[Storybook](https://nimbus-storybook.vercel.app)** - Interactive examples
   - 💬 **[Slack Channel](https://commercetools.slack.com/channels/nimbus)** - Get support
-  - 📖 **[User Documentation](/components/{{component-name}})** - User-facing docs
+  - 📖 **[User Documentation](/{{TYPE}}s/{{NAME_KEBAB}})** - User-facing docs
   - 🎨 **[Figma](link-if-available)** - Design specifications
   ```
-  
+
   IMPORTANT: Follow this template EXACTLY. Do not add, remove, or reorder sections. The goal is maximum consistency across all engineering docs.
 ---
 
 # Generate Engineering Documentation
 
-This command generates engineering documentation following the team-approved template structure for maximum consistency.
+This command generates engineering documentation following the team-approved
+template structure for maximum consistency. It works for both components and
+patterns.
 
 ## Usage
 
+### For Components:
 ```
 /generate-eng-docs button
 ```
 
-Replace `button` with the name of any component in the Nimbus library (e.g., `menu`, `data-table`, `text-input`).
+### For Patterns:
+```
+/generate-eng-docs fields/date-range-picker-field
+```
+
+Replace the argument with:
+- Component name (e.g., `button`, `menu`, `data-table`)
+- Pattern path (e.g., `fields/date-range-picker-field`, `layouts/card-grid`)
 
 ## What it does
 
-1. Analyzes the component's source files:
+1. Automatically detects whether it's a component or pattern based on the path
+
+2. Analyzes the source files:
+
    - Implementation (.tsx)
    - Types (.types.ts)
    - User docs (.mdx)
    - Stories (.stories.tsx)
-   - Recipe (.recipe.ts)
+   - Recipe (.recipe.ts) - for components
    - Sub-components (if compound)
+   - Any pattern-specific files
 
-2. Generates documentation following the EXACT approved structure:
+3. Generates documentation following the EXACT approved structure:
    - Frontmatter with correct metadata
    - Component anatomy (optional for complex components)
    - Component usage with import and examples
@@ -226,7 +250,9 @@ Replace `button` with the name of any component in the Nimbus library (e.g., `me
 
 ## Template Structure
 
-The command enforces this exact section order:
+The command enforces this exact section order while adapting terminology
+based on whether it's a component or pattern:
+
 1. **Component Anatomy** (optional)
 2. **Component Usage**
    - How to Import
@@ -245,6 +271,9 @@ The command enforces this exact section order:
 
 ## Output
 
-Creates: `packages/nimbus/src/components/{component-name}/{component-name}-dev.mdx`
+Creates:
+- Components: `packages/nimbus/src/components/{component-name}/{component-name}-dev.mdx`
+- Patterns: `packages/nimbus/src/patterns/{category}/{pattern-name}/{pattern-name}-dev.mdx`
 
-This engineering documentation complements the user-facing docs with technical implementation details, testing approaches, and developer-focused guidance.
+This engineering documentation complements the user-facing docs with technical
+implementation details, testing approaches, and developer-focused guidance.

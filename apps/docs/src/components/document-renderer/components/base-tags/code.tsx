@@ -11,7 +11,10 @@ export const Code = (props: CodeProps) => {
 
   if (className) {
     if (className.includes("-live")) {
-      return <LiveCodeEditor {...props} />;
+      const defaultActiveTab = className.includes("-live-dev")
+        ? "editor"
+        : "preview";
+      return <LiveCodeEditor {...props} defaultActiveTab={defaultActiveTab} />;
     }
 
     const language = className.replace(/language-/, "");
