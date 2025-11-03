@@ -1,0 +1,297 @@
+---
+title: DateRangePickerField Implementation
+tab-title: Implementation
+tab-order: 3
+---
+
+# DateRangePickerField Pattern
+
+Brief introduction paragraph about the pattern's purpose and architecture.
+
+## Pattern Usage
+
+### How to Import
+
+```tsx
+import { DateRangePickerField } from '@commercetools/nimbus';
+```
+
+For TypeScript projects, import types:
+```tsx
+import { DateRangePickerField, type DateRangePickerFieldProps } from '@commercetools/nimbus';
+```
+
+### Basic Example
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange, setDateRange] = useState(null);
+  
+  return (
+    <DateRangePickerField
+      label="Date Range"
+      description="Select a start and end date"
+      value={dateRange}
+      onChange={setDateRange}
+    />
+  );
+};
+```
+
+### Common props and Variations
+
+Brief introduction to the most commonly used props.
+
+#### Size Options
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange1, setDateRange1] = useState(null);
+  const [dateRange2, setDateRange2] = useState(null);
+  
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        label="Small Size"
+        size="sm"
+        value={dateRange1}
+        onChange={setDateRange1}
+      />
+      <DateRangePickerField
+        label="Medium Size"
+        size="md"
+        value={dateRange2}
+        onChange={setDateRange2}
+      />
+    </Stack>
+  );
+};
+```
+
+#### Field States
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange1, setDateRange1] = useState(null);
+  const [dateRange2, setDateRange2] = useState(null);
+  const [dateRange3, setDateRange3] = useState(null);
+  
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        label="Required Field"
+        isRequired
+        value={dateRange1}
+        onChange={setDateRange1}
+      />
+      <DateRangePickerField
+        label="Disabled Field"
+        isDisabled
+        value={dateRange2}
+        onChange={setDateRange2}
+      />
+      <DateRangePickerField
+        label="Read Only Field"
+        isReadOnly
+        value={dateRange3}
+        onChange={setDateRange3}
+      />
+    </Stack>
+  );
+};
+```
+
+#### With Description and Info
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange, setDateRange] = useState(null);
+  
+  return (
+    <DateRangePickerField
+      label="Event Duration"
+      description="Select the start and end date for your event"
+      info="Date ranges are inclusive of both start and end dates."
+      value={dateRange}
+      onChange={setDateRange}
+    />
+  );
+};
+```
+
+#### Error Handling
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange, setDateRange] = useState(null);
+  const [touched, setTouched] = useState(false);
+  
+  const errors = dateRange ? {} : { missing: true };
+  
+  return (
+    <DateRangePickerField
+      label="Required Date Range"
+      isRequired
+      value={dateRange}
+      onChange={(value) => {
+        setDateRange(value);
+        setTouched(true);
+      }}
+      errors={errors}
+      touched={touched}
+    />
+  );
+};
+```
+
+## Testing Strategies and Best Practices
+
+Brief introduction to testing approaches.
+
+#### 1. Unit Testing with React Testing Library
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { DateRangePickerField } from '@commercetools/nimbus';
+
+describe('DateRangePickerField', () => {
+  it('renders correctly', () => {
+    render(
+      <DateRangePickerField
+        label="Test Date Range"
+        value={null}
+        onChange={() => {}}
+      />
+    );
+    expect(screen.getByLabelText('Test Date Range')).toBeInTheDocument();
+  });
+
+  it('displays errors when touched', () => {
+    render(
+      <DateRangePickerField
+        label="Required Field"
+        isRequired
+        value={null}
+        onChange={() => {}}
+        errors={{ missing: true }}
+        touched={true}
+      />
+    );
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+});
+```
+
+#### 2. Storybook Integration for Testing
+
+Leverage existing stories for visual testing:
+
+```tsx
+export const InteractionTest: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Test date input
+    const startMonth = canvas.getAllByRole('spinbutton')[0];
+    await userEvent.clear(startMonth);
+    await userEvent.type(startMonth, '12');
+    
+    // Test calendar interaction
+    const calendarButton = canvas.getByRole('button', { name: /open calendar/i });
+    await userEvent.click(calendarButton);
+    
+    // Verify calendar opened
+    await waitFor(() => {
+      const portalContent = within(document.body);
+      expect(portalContent.getByRole('dialog')).toBeInTheDocument();
+    });
+  },
+};
+```
+
+#### 3. Regression tests
+
+**[Placeholder for regression test strategy]**
+- Visual regression with Chromatic
+- Behavior regression with interaction tests
+- API contract testing
+
+### 4. Accessibility requirements
+
+- Keyboard navigation: Full date segment navigation with arrow keys, tab navigation between fields
+- Screen reader support: Proper field labeling, error announcements, date format guidance
+- ARIA attributes: `role="spinbutton"` for date segments, `role="alert"` for errors, `aria-describedby` for descriptions
+- Color contrast: Meets WCAG AA standards
+
+## Quick Reference Summary
+
+### Design Guidelines
+
+- Use DateRangePickerField for form contexts where date ranges need validation and error handling
+- Always provide clear labels and descriptions for date format expectations
+- Consider using info popovers for complex date range rules or constraints
+
+### Code Patterns
+
+Common implementation patterns for the pattern.
+
+#### Form Integration
+
+```tsx
+const useFormWithDateRange = () => {
+  const [dateRange, setDateRange] = useState(null);
+  const [touched, setTouched] = useState(false);
+  
+  const errors = useMemo(() => {
+    const result = {};
+    if (!dateRange && touched) {
+      result.missing = true;
+    }
+    return result;
+  }, [dateRange, touched]);
+  
+  return {
+    dateRange,
+    setDateRange: (value) => {
+      setDateRange(value);
+      setTouched(true);
+    },
+    errors,
+    touched
+  };
+};
+```
+
+#### Custom Error Rendering
+
+```tsx
+const CustomErrorRenderer = ({ errors }) => {
+  if (errors.missing) {
+    return "Please select a date range";
+  }
+  if (errors.invalid) {
+    return "Please enter a valid date range";
+  }
+  return null;
+};
+
+<DateRangePickerField
+  label="Date Range"
+  value={dateRange}
+  onChange={setDateRange}
+  errors={errors}
+  touched={touched}
+  renderError={CustomErrorRenderer}
+/>
+```
+
+### API Reference
+
+<PropsTable id="DateRangePickerField" />
+
+### Need Help?
+
+- 📚 **[Storybook](https://nimbus-storybook.vercel.app)** - Interactive examples
+- 💬 **[Slack Channel](https://commercetools.slack.com/channels/nimbus)** - Get support
+- 📖 **[User Documentation](/patterns/fields/date-range-picker-field)** - User-facing docs
+- 🎨 **[Figma](link-if-available)** - Design specifications

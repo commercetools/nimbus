@@ -1,11 +1,11 @@
 ---
 name: generate-eng-docs
 description:
-  Generate engineering documentation for a Nimbus component or pattern following the
-  approved team template
+  Generate engineering documentation for a Nimbus component or pattern following
+  the approved team template
 command: |
-  Generate engineering documentation for the {{NAME}} {{TYPE}} following the EXACT structure approved by the team.
-  
+  Generate engineering documentation for the {{NAME}} {{TYPE}} following the structure approved by the team.
+
   Determine the type by checking:
   - If path contains 'patterns/', then TYPE = 'pattern'
   - If path contains 'components/', then TYPE = 'component'
@@ -29,27 +29,15 @@ command: |
      - Any other relevant files in the pattern directory
 
   2. Create file: 
-     - For components: packages/nimbus/src/components/{{NAME}}/{{NAME}}-dev.mdx
-     - For patterns: packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}-dev.mdx
+     - For components: packages/nimbus/src/components/{{NAME}}/{{NAME}}.dev.mdx
+     - For patterns: packages/nimbus/src/patterns/{{CATEGORY}}/{{NAME}}/{{NAME}}.dev.mdx
 
-  3. Use this EXACT structure (maintain this order and these exact headings):
+  3. Use this structure (maintain this order and these headings):
 
   ```mdx
   ---
-  id: {{TYPE_CAPITALIZED}}-{{NAME}}-dev
-  title: {{Name}} Engineering Guidelines
-  description: Engineering guideline for using the Nimbus {{Name}} {{TYPE}}
-  documentState: InitialDraft
-  order: 999
-  menu:
-    - {{TYPE_CAPITALIZED}}
-    - [Category] # For components: Data Display, Navigation, Inputs, Feedback, etc.
-                # For patterns: Fields, Layouts, Complex Interactions, etc.
-    - {{Name}}Dev
-  tags:
-    - {{TYPE}}
-    - engineering
-    - migration
+  tab-title: Implementation
+  tab-order: 3
   ---
 
   # {{Name}} {{TYPE_CAPITALIZED}}
@@ -96,7 +84,7 @@ command: |
 
   Brief introduction to the most commonly used props.
 
-  #### [Variation 1 - e.g., Size Options]
+  #### [Variation 1 - e.g., Size Options, refer to the component source code for the supported variations, if any]
 
   ```jsx-live-dev
   const App = () => (
@@ -108,7 +96,7 @@ command: |
   )
   ```
 
-  #### [Variation 2 - e.g., Variant Options]
+  #### [Variation 2 - e.g., Variant Options, refer to the component source code for the supported variations, if any]
 
   ```jsx-live-dev
   const App = () => (
@@ -201,7 +189,7 @@ command: |
   - 🎨 **[Figma](link-if-available)** - Design specifications
   ```
 
-  IMPORTANT: Follow this template EXACTLY. Do not add, remove, or reorder sections. The goal is maximum consistency across all engineering docs.
+  IMPORTANT: Follow this template as closely as possible, but do not be disingenuous if the component source does not support the information you are describing. Do not add, remove, or reorder sections. The goal is maximum consistency across all engineering docs.
 ---
 
 # Generate Engineering Documentation
@@ -213,16 +201,19 @@ patterns.
 ## Usage
 
 ### For Components:
+
 ```
 /generate-eng-docs button
 ```
 
 ### For Patterns:
+
 ```
 /generate-eng-docs fields/date-range-picker-field
 ```
 
 Replace the argument with:
+
 - Component name (e.g., `button`, `menu`, `data-table`)
 - Pattern path (e.g., `fields/date-range-picker-field`, `layouts/card-grid`)
 
@@ -250,8 +241,8 @@ Replace the argument with:
 
 ## Template Structure
 
-The command enforces this exact section order while adapting terminology
-based on whether it's a component or pattern:
+The command enforces this exact section order while adapting terminology based
+on whether it's a component or pattern:
 
 1. **Component Anatomy** (optional)
 2. **Component Usage**
@@ -272,8 +263,11 @@ based on whether it's a component or pattern:
 ## Output
 
 Creates:
-- Components: `packages/nimbus/src/components/{component-name}/{component-name}-dev.mdx`
-- Patterns: `packages/nimbus/src/patterns/{category}/{pattern-name}/{pattern-name}-dev.mdx`
+
+- Components:
+  `packages/nimbus/src/components/{component-name}/{component-name}.dev.mdx`
+- Patterns:
+  `packages/nimbus/src/patterns/{category}/{pattern-name}/{pattern-name}.dev.mdx`
 
 This engineering documentation complements the user-facing docs with technical
 implementation details, testing approaches, and developer-focused guidance.

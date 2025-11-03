@@ -1,0 +1,235 @@
+---
+title: DateRangePicker Component
+tab-title: Implementation
+tab-order: 3
+---
+
+# DateRangePicker Component
+
+The DateRangePicker component combines DateInput fields with a RangeCalendar popover for date range selection. Users can either type date ranges directly or select from the calendar interface, providing flexible input methods for date range scenarios.
+
+## Component Anatomy
+
+The DateRangePicker component is built with several integrated parts:
+
+```
+DateRangePicker
+├── DateRangePickerRootSlot (wrapper)
+├── DateRangePickerGroupSlot (input container)
+│   ├── DateInput (start)
+│   ├── Text (separator "–")
+│   ├── DateInput (end)
+│   └── DateRangePickerTriggerSlot
+│       ├── IconButton (clear)
+│       └── IconButton (calendar toggle)
+└── DateRangePickerPopoverSlot
+    ├── DateRangePickerCalendarSlot
+    │   └── RangeCalendar
+    └── DateRangePickerTimeInput (when granularity includes time)
+```
+
+## Component Usage
+
+### How to Import
+
+```tsx
+import { DateRangePicker } from '@commercetools/nimbus';
+```
+
+For TypeScript projects, import types:
+```tsx
+import { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbus';
+```
+
+### Basic Example
+
+```jsx-live-dev
+const App = () => (
+  <DateRangePicker width="8000" />
+)
+```
+
+### Common props and Variations
+
+The DateRangePicker supports various configurations for different use cases.
+
+#### Size Options
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker size="sm" width="7000" />
+    <DateRangePicker size="md" width="8000" />
+  </Stack>
+)
+```
+
+#### Variant Options
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker variant="solid" width="8000" />
+    <DateRangePicker variant="ghost" width="8000" />
+  </Stack>
+)
+```
+
+#### Granularity Options
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker granularity="day" width="8000" />
+    <DateRangePicker granularity="minute" width="10000" />
+  </Stack>
+)
+```
+
+#### Controlled State
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState(null);
+  
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePicker 
+        value={value} 
+        onChange={setValue} 
+        width="8000" 
+      />
+      <Text fontSize="sm">
+        Selected: {value ? `${value.start} to ${value.end}` : 'None'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Testing Strategies and Best Practices
+
+The DateRangePicker component requires comprehensive testing across multiple interaction patterns.
+
+#### 1. Unit Testing with React Testing Library
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { DateRangePicker } from '@commercetools/nimbus';
+
+describe('DateRangePicker', () => {
+  it('renders start and end date inputs', () => {
+    render(<DateRangePicker />);
+    const dateInputs = screen.getAllByRole('spinbutton');
+    expect(dateInputs).toHaveLength(6); // 3 segments per date input
+  });
+
+  it('shows calendar and clear buttons', () => {
+    render(<DateRangePicker />);
+    expect(screen.getByRole('button', { name: /open calendar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /clear selection/i })).toBeInTheDocument();
+  });
+});
+```
+
+#### 2. Storybook Integration for Testing
+
+Leverage existing stories for comprehensive visual and interaction testing:
+
+```tsx
+export const InteractionTest: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Test calendar opening
+    const calendarButton = await canvas.findByRole('button', { name: /calendar/i });
+    await userEvent.click(calendarButton);
+    
+    // Verify calendar popover appears
+    await waitFor(() => {
+      const calendar = within(document.body).queryByRole('application');
+      expect(calendar).toBeInTheDocument();
+    });
+    
+    // Test date range selection in calendar
+    const dates = within(document.body).getAllByRole('gridcell');
+    await userEvent.click(dates[10]); // Start date
+    await userEvent.click(dates[15]); // End date
+    
+    // Verify selection reflected in inputs
+    const segments = canvas.getAllByRole('spinbutton');
+    expect(segments[0]).toHaveValue('10');
+  },
+};
+```
+
+#### 3. Regression tests
+
+[Placeholder for regression test strategy]
+
+Visual regression with Chromatic
+Behavior regression with interaction tests
+API contract testing
+
+### 4. Accessibility requirements
+
+- **Keyboard navigation**: Tab between inputs, arrow keys within calendar, Enter/Space for selection
+- **Screen reader support**: Announces selected dates, range information, and validation states  
+- **ARIA attributes**: Proper roles, labels, and state announcements for calendar and inputs
+- **Color contrast**: Meets WCAG AA standards for all interactive elements and text
+
+## Quick Reference Summary
+
+### Design Guidelines
+
+- **Flexible input methods**: Support both manual typing and calendar selection for user preference
+- **Clear visual feedback**: Highlight selected date ranges with appropriate visual indicators
+- **Validation integration**: Provide immediate feedback for invalid dates or ranges
+
+### Code Patterns
+
+Common implementation patterns for the DateRangePicker component.
+
+#### Hooks
+
+The DateRangePicker integrates with React Aria's date management hooks internally:
+
+```tsx
+// Internal pattern - DateRangePicker handles this automatically
+const dateRangePickerState = useSlotRecipe({ recipe: dateRangePickerSlotRecipe });
+const [recipeProps, remainingProps] = dateRangePickerState.splitVariantProps(props);
+```
+
+#### Controlled vs Uncontrolled Usage
+
+```tsx
+// Uncontrolled
+<DateRangePicker defaultValue={{ start: startDate, end: endDate }} />
+
+// Controlled  
+<DateRangePicker 
+  value={dateRange} 
+  onChange={setDateRange} 
+/>
+```
+
+#### Time Zone Integration
+
+```tsx
+<DateRangePicker 
+  granularity="minute"
+  hideTimeZone={false}
+  hourCycle={24}
+/>
+```
+
+### API Reference
+
+<PropsTable id="DateRangePicker" />
+
+### Need Help?
+
+- 📚 **[Storybook](https://nimbus-storybook.vercel.app)** - Interactive examples
+- 💬 **[Slack Channel](https://commercetools.slack.com/channels/nimbus)** - Get support  
+- 📖 **[User Documentation](/components/date-range-picker)** - User-facing docs
+- 🎨 **[Figma](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5818-15879)** - Design specifications
