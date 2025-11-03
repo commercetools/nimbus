@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, memo } from "react";
 import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 import { useRouteInfo } from "@/hooks/use-route-info";
@@ -18,8 +18,11 @@ interface ViewTabsProps {
  * Syncs with URL subroutes (/{viewKey}). Navigation is controlled entirely
  * through URL state - clicking a tab updates the URL, and the active tab
  * follows the URL.
+ *
+ * Memoized to prevent unnecessary rerenders when parent rerenders for unrelated reasons.
+ * Note: Will still rerender on route changes due to internal useRouteInfo hook.
  */
-export const ViewTabs = ({ tabs }: ViewTabsProps) => {
+export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
   const { baseRoute, viewKey } = useRouteInfo();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -118,4 +121,4 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
       </Tabs.Root>
     </Box>
   );
-};
+});

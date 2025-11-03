@@ -7,6 +7,10 @@ import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import { useActiveView } from "@/hooks/use-active-view";
 import { ViewTabs } from "@/components/view-tabs";
+import type { TabMetadata } from "@/types";
+
+// Constant empty array to prevent creating new references on every render
+const EMPTY_TABS: TabMetadata[] = [];
 
 const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
@@ -14,7 +18,7 @@ const DocumentRendererComponent = () => {
   const activeView = useActiveView();
 
   const meta = activeDoc?.meta;
-  const tabs = meta?.tabs || [];
+  const tabs = meta?.tabs || EMPTY_TABS;
   const hasMultipleViews = tabs.length > 1;
 
   // Determine which content to show based on active view

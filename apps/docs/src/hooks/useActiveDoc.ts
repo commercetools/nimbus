@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useDocData } from "./use-doc-data";
 import type { MdxFileFrontmatter } from "@/types";
 import { useRouteInfo } from "./use-route-info";
@@ -22,42 +23,46 @@ export const useActiveDoc = (): UseActiveDocReturn => {
   // Use useDocData to load the current route's document
   const { doc, isLoading, error } = useDocData(baseRoute);
 
-  // Return loading state as-is
-  if (isLoading) {
-    return { doc: undefined, isLoading: true, error: null };
-  }
+  // Memoize the return value to maintain stable references when underlying data hasn't changed
+  // This prevents unnecessary rerenders in consuming components (like ViewTabs)
+  return useMemo(() => {
+    // Return loading state as-is
+    if (isLoading) {
+      return { doc: undefined, isLoading: true, error: null };
+    }
 
-  // Return error state
-  if (error || !doc) {
+    // Return error state
+    if (error || !doc) {
+      return {
+        doc: undefined,
+        isLoading: false,
+        error: error || new Error("Document not found"),
+      };
+    }
+
+    // Type guard: doc should have meta and mdx properties
+    if (!("meta" in doc) || !("mdx" in doc)) {
+      console.error("Invalid document structure:", doc);
+      return {
+        doc: undefined,
+        isLoading: false,
+        error: new Error("Invalid document structure"),
+      };
+    }
+
+    // CRITICAL: Create defensive copy with cloned menu array
+    // This prevents any component from mutating the shared menu array
     return {
-      doc: undefined,
+      doc: {
+        meta: {
+          ...doc.meta,
+          menu: [...doc.meta.menu],
+        },
+        mdx: doc.mdx,
+        views: doc.views || {},
+      } as MdxFileFrontmatter,
       isLoading: false,
-      error: error || new Error("Document not found"),
+      error: null,
     };
-  }
-
-  // Type guard: doc should have meta and mdx properties
-  if (!("meta" in doc) || !("mdx" in doc)) {
-    console.error("Invalid document structure:", doc);
-    return {
-      doc: undefined,
-      isLoading: false,
-      error: new Error("Invalid document structure"),
-    };
-  }
-
-  // CRITICAL: Create defensive copy with cloned menu array
-  // This prevents any component from mutating the shared menu array
-  return {
-    doc: {
-      meta: {
-        ...doc.meta,
-        menu: [...doc.meta.menu],
-      },
-      mdx: doc.mdx,
-      views: doc.views || {},
-    } as MdxFileFrontmatter,
-    isLoading: false,
-    error: null,
-  };
+  }, [doc, isLoading, error]);
 };

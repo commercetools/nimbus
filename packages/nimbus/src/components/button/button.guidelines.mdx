@@ -207,7 +207,7 @@ const App = () => (
 const App = () => (
   <Stack direction="horizontal">
     <Stack>
-      {sizes.map((size) => (
+      {['2xs','xs','md'].map((size) => (
         <Stack key={size} direction="horizontal">
           <Button size={size} colorPalette="positive" variant="solid" startIcon={<Icons.Check />}>
             <Icons.Check />

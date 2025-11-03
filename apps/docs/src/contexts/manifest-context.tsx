@@ -4,6 +4,7 @@ import {
   ReactNode,
   useState,
   useEffect,
+  useMemo,
 } from "react";
 
 /**
@@ -83,10 +84,14 @@ export function ManifestProvider({ children }: { children: ReactNode }) {
     loadManifests();
   }, []);
 
+  // Memoize context value to prevent unnecessary rerenders in consumers
+  const value = useMemo(
+    () => ({ routeManifest, typesManifest, isLoading }),
+    [routeManifest, typesManifest, isLoading]
+  );
+
   return (
-    <ManifestContext.Provider
-      value={{ routeManifest, typesManifest, isLoading }}
-    >
+    <ManifestContext.Provider value={value}>
       {children}
     </ManifestContext.Provider>
   );

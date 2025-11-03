@@ -142,7 +142,7 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
       as="main"
       id="main"
       gridArea="main"
-      overflowY="auto"
+      overflowY="scroll"
       overflowX="hidden"
       scrollPaddingTop="120px"
       p="800"
