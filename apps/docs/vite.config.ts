@@ -139,14 +139,11 @@ export default defineConfig({
     hmr: true,
   },
   // Optimize dependencies
+  // NOTE: Do NOT add workspace packages here.
+  // Workspace packages must be excluded from optimization to ensure changes
+  // propagate immediately after rebuild without cache invalidation issues.
   optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "@commercetools/nimbus",
-      "@commercetools/nimbus-icons",
-      "jotai",
-    ],
+    include: ["react", "react-dom", "jotai"],
   },
   define: {
     ["process.env.REPO_ROOT"]: JSON.stringify(path.resolve(__dirname, "../..")),
