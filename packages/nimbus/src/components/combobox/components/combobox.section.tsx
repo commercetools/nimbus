@@ -33,13 +33,13 @@ import type { ComboBoxSectionProps } from "../combobox.types";
  *
  * @supportsStyleProps
  */
-export const ComboBoxSection = <T extends object>({
+export function ComboBoxSection<T extends object>({
   children,
   label,
   items,
   ref,
   ...props
-}: ComboBoxSectionProps<T> & RefAttributes<HTMLDivElement>) => {
+}: ComboBoxSectionProps<T> & RefAttributes<HTMLDivElement>) {
   // Validate that children is a function when items is provided
   if (items && typeof children !== "function") {
     throw new Error(
@@ -68,6 +68,6 @@ export const ComboBoxSection = <T extends object>({
       )}
     </RaListBoxSection>
   );
-};
+}
 
 ComboBoxSection.displayName = "ComboBox.Section";

@@ -28,10 +28,10 @@ import type { Node } from "react-stately";
  * sections preserved, use `createSectionAwareFilter` to wrap your custom
  * filter logic.
  */
-export const filterByText = <T extends object>(
+export function filterByText<T extends object>(
   nodes: Iterable<Node<T>>,
   inputValue: string
-): Iterable<Node<T>> => {
+): Iterable<Node<T>> {
   if (!inputValue.trim()) return nodes;
 
   const lowerInput = inputValue.toLowerCase();
@@ -44,4 +44,4 @@ export const filterByText = <T extends object>(
   }
 
   return filtered;
-};
+}

@@ -21,4 +21,5 @@ export type PopoverRootSlotProps = HTMLChakraProps<"div", PopoverRecipeProps>;
 // MAIN PROPS
 // ============================================================
 
-export type PopoverProps = RaPopoverProps & PopoverRootSlotProps;
+export type PopoverProps = RaPopoverProps &
+  Omit<PopoverRootSlotProps, keyof RaPopoverProps>;
