@@ -18,8 +18,13 @@ export const DataTableManager = () => {
   const context = useDataTableContext();
   const { formatMessage } = useIntl();
 
-  const { columns, visibleColumns, onColumnsChange, onSettingsChange } =
-    context;
+  const {
+    columns,
+    visibleColumns,
+    onColumnsChange,
+    onSettingsChange,
+    customSettings,
+  } = context;
   const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
@@ -208,7 +213,20 @@ export const DataTableManager = () => {
                     <LayoutSettingsPanel onSettingsChange={onSettingsChange} />
                   ),
                 },
-              ]}
+                customSettings
+                  ? {
+                      id: "custom-settings",
+                      tabLabel: (
+                        <>
+                          {customSettings?.icon ?? null}
+                          {customSettings?.label}
+                        </>
+                      ),
+                      panelContent: customSettings.panel,
+                    }
+                  : null,
+                // Filter out null values when no custom settings are provided
+              ].filter((tab): tab is NonNullable<typeof tab> => tab !== null)}
             />
           </Drawer.Body>
         </Drawer.Content>

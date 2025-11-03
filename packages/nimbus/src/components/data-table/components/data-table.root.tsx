@@ -43,6 +43,7 @@ export const DataTableRoot = function DataTableRoot<
     onPinToggle,
     onColumnsChange,
     onSettingsChange,
+    customSettings,
     children,
     ...rest
   } = props;
@@ -165,6 +166,7 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       onColumnsChange,
       onSettingsChange,
+      customSettings,
     }),
     [
       columns,
@@ -200,6 +202,7 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       onColumnsChange,
       onSettingsChange,
+      customSettings,
     ]
   );
 
