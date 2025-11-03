@@ -142,10 +142,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       orientation: "horizontal",
       css: {
         list: {
-          borderBottom: "{spacing.25} {colors.neutral.6} solid",
+          borderBottom: "solid-25",
+          borderBottomColor: "neutral.6",
         },
         tab: {
-          borderBottom: "{spacing.50} solid transparent",
+          borderBottom: "solid-50",
+          borderBottomColor: "transparent",
           marginBottom: "-25",
           _selected: {
             borderBottomColor: "primary.9",
@@ -160,10 +162,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "start",
       css: {
         list: {
-          borderLeft: "{spacing.25} {colors.neutral.6} solid",
+          borderLeft: "solid-25",
+          borderLeftColor: "neutral.6",
         },
         tab: {
-          borderLeft: "{spacing.50} solid transparent",
+          borderLeft: "solid-50",
+          borderLeftColor: "transparent",
           marginLeft: "-25",
           _selected: {
             borderLeftColor: "primary.9",
@@ -178,10 +182,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "end",
       css: {
         list: {
-          borderRight: "{spacing.25} {colors.neutral.6} solid",
+          borderRight: "solid-25",
+          borderRightColor: "neutral.6",
         },
         tab: {
-          borderRight: "{spacing.50} solid transparent",
+          borderRight: "solid-50",
+          borderRightColor: "transparent",
           marginRight: "-25",
           _selected: {
             borderRightColor: "primary.9",
@@ -197,10 +203,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       orientation: "horizontal",
       css: {
         list: {
-          borderBottom: "{spacing.25} {colors.neutral.6} solid",
+          borderBottom: "solid-25",
+          borderBottomColor: "neutral.6",
         },
         tab: {
-          border: "{spacing.25} solid transparent",
+          border: "solid-25",
+          borderColor: "transparent",
           borderBottom: "none",
           marginBottom: "-25",
           _selected: {
@@ -218,10 +226,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "start",
       css: {
         list: {
-          borderRight: "{spacing.25} {colors.neutral.6} solid",
+          borderRight: "solid-25",
+          borderRightColor: "neutral.6",
         },
         tab: {
-          border: "{spacing.25} solid transparent",
+          border: "solid-25",
+          borderColor: "transparent",
           borderRight: "none",
           marginRight: "-25",
           borderTopLeftRadius: "200",
@@ -243,10 +253,12 @@ export const tabsSlotRecipe = defineSlotRecipe({
       placement: "end",
       css: {
         list: {
-          borderLeft: "{spacing.25} {colors.neutral.6} solid",
+          borderLeft: "solid-25",
+          borderLeftColor: "neutral.6",
         },
         tab: {
-          border: "{spacing.25} solid transparent",
+          border: "solid-25",
+          borderColor: "transparent",
           borderLeft: "none",
           marginLeft: "-25",
           borderTopLeftRadius: "0",
@@ -292,6 +304,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
       css: {
         list: {
           gap: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+          borderRadius: "full",
+          padding: "100",
         },
       },
     },
@@ -302,6 +317,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
       css: {
         list: {
           gap: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+          borderRadius: "full",
+          padding: "100",
         },
       },
     },

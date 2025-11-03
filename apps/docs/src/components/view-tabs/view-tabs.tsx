@@ -86,20 +86,14 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
 
   return (
     <Box
-      mx="auto"
+      width="full"
       id="floating-nav"
-      bg="bg/75"
+      bg="bg"
       borderRadius="full"
-      padding="200"
-      backdropFilter="blur({sizes.500})"
       position="sticky"
       top="0"
       zIndex="1"
-      css={{
-        transform: isVisible ? "translateY(0)" : "translateY(-100%)",
-        opacity: isVisible ? 1 : 0,
-        transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
-      }}
+      mb="200"
     >
       <Tabs.Root selectedKey={activeView} variant="pills">
         <Tabs.List>
@@ -110,7 +104,7 @@ export const ViewTabs = ({ tabs }: ViewTabsProps) => {
               : `/${baseRoute}/${tab.key}`;
             return (
               // @ts-expect-error - href on tab is not properly typed
-              <Tabs.Tab href={href} key={tab.key} id={tab.key}>
+              <Tabs.Tab flexGrow="1" href={href} key={tab.key} id={tab.key}>
                 {tab.title}
               </Tabs.Tab>
             );
