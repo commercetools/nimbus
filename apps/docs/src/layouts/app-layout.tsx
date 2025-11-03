@@ -5,7 +5,7 @@
  */
 
 import { Suspense } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Stack, LoadingSpinner, Box } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
 import { AppNavBar } from "@/components/navigation/app-nav-bar";
@@ -29,8 +29,6 @@ export function AppLayout() {
   // Enable hash navigation (anchor scrolling)
   useHashNavigation();
 
-  // Get current location to trigger content animation on route changes
-  const location = useLocation();
   const { baseRoute } = useRouteInfo();
 
   return (
