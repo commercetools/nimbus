@@ -1,10 +1,14 @@
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import {
+  useChakraContext,
+  useSlotRecipe,
+} from "@chakra-ui/react/styled-system";
 import { Tabs as RATabs } from "react-aria-components";
 import { TabsRootSlot } from "../tabs.slots";
 import type { TabsProps } from "../tabs.types";
 import { TabsList } from "./tabs.list";
 import { TabsPanels } from "./tabs.panels";
 import { extractStyleProps } from "@/utils";
+import { useBreakpointValue } from "@chakra-ui/react";
 
 /**
  * # Tabs
@@ -14,6 +18,7 @@ import { extractStyleProps } from "@/utils";
  * @supportsStyleProps
  */
 export const TabsRoot = ({ children, tabs, ...props }: TabsProps) => {
+  const sysCtx = useChakraContext();
   // Standard pattern: Split recipe variants
   const recipe = useSlotRecipe({ key: "tabs" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
@@ -21,15 +26,15 @@ export const TabsRoot = ({ children, tabs, ...props }: TabsProps) => {
   // Standard pattern: Extract style props
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
-  // Extract orientation from recipe props for React Aria (handles both styling and behavior)
-  const { orientation, ...slotProps } = recipeProps;
+  // The react-aria Tabs do not support responsive values for the
+  // `orientation` prop. We normalize `orientation` to a string
+  // ("horizontal" or "vertical") using `system.normalizeValue` and
+  // `useBreakpointValue` to ensure a concrete value is passed.
+  const normalizedOrientation = sysCtx.normalizeValue(recipeProps.orientation);
 
   return (
-    <TabsRootSlot asChild {...slotProps} {...styleProps}>
-      <RATabs
-        {...functionalProps}
-        orientation={orientation as "horizontal" | "vertical" | undefined}
-      >
+    <TabsRootSlot asChild {...recipeProps} {...styleProps}>
+      <RATabs {...functionalProps} orientation={normalizedOrientation}>
         {children || (
           <>
             <TabsList tabs={tabs} />

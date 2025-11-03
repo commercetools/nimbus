@@ -76,7 +76,6 @@ export const tabsSlotRecipe = defineSlotRecipe({
           borderRadius: "full",
           _selected: {
             backgroundColor: "primary.3",
-            color: "primary.12",
           },
         },
       },

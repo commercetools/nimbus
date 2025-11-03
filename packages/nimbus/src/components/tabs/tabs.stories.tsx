@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
-import { Box, Tabs } from "@commercetools/nimbus";
+import { Box, Button, Heading, Stack, Tabs, Text } from "@commercetools/nimbus";
 import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 
 /**
@@ -352,13 +352,14 @@ export const WithDisabledKeys: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div>
-          <h3>Tabs with DisabledKeys Array</h3>
-          <br />
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Tabs with DisabledKeys Array
+          </Heading>
           <Tabs.Root {...args} tabs={withDisabledTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -535,13 +536,14 @@ export const Disabled: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div>
-          <h3>Tabs with Disabled State</h3>
-          <br />
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Tabs with Disabled State
+          </Heading>
           <Tabs.Root {...args} tabs={withDisabledTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -635,32 +637,92 @@ export const Variants: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div data-testid="line-variant">
-          <h3>Line Variant (Default)</h3>
-          <p style={{ marginBottom: "16px", color: "#666" }}>
+      <Stack direction="column" gap="600">
+        {/* Line Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Line Variant (Default)
+          </Heading>
+          <Text color="neutral.11" mb="400">
             Tabs with an underline indicator showing the selected tab.
-          </p>
-          <Tabs.Root variant="line" tabs={variantTabs} />
-        </div>
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="line-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="line" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="line-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="line"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
 
-        <div data-testid="enclosed-variant">
-          <h3>Enclosed Variant</h3>
-          <p style={{ marginBottom: "16px", color: "#666" }}>
+        {/* Enclosed Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Enclosed Variant
+          </Heading>
+          <Text color="neutral.11" mb="400">
             Tabs with borders and background, resembling traditional folder
             tabs.
-          </p>
-          <Tabs.Root variant="enclosed" tabs={variantTabs} />
-        </div>
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="enclosed-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="enclosed" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="enclosed-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="enclosed"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
 
-        <div data-testid="pills-variant">
-          <h3>Pills Variant</h3>
-          <p style={{ marginBottom: "16px", color: "#666" }}>
+        {/* Pills Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Pills Variant
+          </Heading>
+          <Text color="neutral.11" mb="400">
             Tabs with rounded pill-like appearance and background highlighting.
-          </p>
-          <Tabs.Root variant="pills" tabs={variantTabs} />
-        </div>
-      </div>
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="pills-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="pills" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="pills-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="pills"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+      </Stack>
     );
   },
 };
@@ -725,22 +787,28 @@ export const Sizes: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div data-testid="small-tabs">
-          <h3>Small (sm)</h3>
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300" data-testid="small-tabs">
+          <Heading as="h3" fontSize="500">
+            Small (sm)
+          </Heading>
           <Tabs.Root size="sm" tabs={smallTabs} />
-        </div>
+        </Stack>
 
-        <div data-testid="medium-tabs">
-          <h3>Medium (md) - Default</h3>
+        <Stack direction="column" gap="300" data-testid="medium-tabs">
+          <Heading as="h3" fontSize="500">
+            Medium (md) - Default
+          </Heading>
           <Tabs.Root size="md" tabs={mediumTabs} />
-        </div>
+        </Stack>
 
-        <div data-testid="large-tabs">
-          <h3>Large (lg)</h3>
+        <Stack direction="column" gap="300" data-testid="large-tabs">
+          <Heading as="h3" fontSize="500">
+            Large (lg)
+          </Heading>
           <Tabs.Root size="lg" tabs={largeTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -811,27 +879,28 @@ export const ControlledWithExternalState: Story = {
   render: () => {
     const [selected, setSelected] = useState("overview");
     return (
-      <div
-        style={{ display: "flex", flexDirection: "column", gap: "32px" }}
+      <Stack
+        direction="column"
+        gap="400"
         data-testid="controlled-tabs-container"
       >
-        <div style={{ display: "flex", gap: "16px" }}>
-          <button
-            onClick={() => setSelected("overview")}
+        <Stack direction="row" gap="300">
+          <Button
+            onPress={() => setSelected("overview")}
             data-testid="switch-overview"
           >
             Switch to Overview
-          </button>
-          <button onClick={() => setSelected("api")} data-testid="switch-api">
+          </Button>
+          <Button onClick={() => setSelected("api")} data-testid="switch-api">
             Switch to API
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setSelected("examples")}
             data-testid="switch-examples"
           >
             Switch to Examples
-          </button>
-        </div>
+          </Button>
+        </Stack>
         <Tabs.Root
           selectedKey={selected}
           onSelectionChange={(key) => setSelected(String(key))}
@@ -848,7 +917,7 @@ export const ControlledWithExternalState: Story = {
             <Tabs.Panel id="examples">Examples content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
-      </div>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
