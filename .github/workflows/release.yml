@@ -60,8 +60,6 @@ jobs:
           version: pnpm changeset:version-and-format
           commit: "ci(changesets): version packages"
           title: "ci(changesets): version packages"
-          githubReleaseName: v${{ steps.release_version.outputs.VALUE }}
-          githubTagName: v${{ steps.release_version.outputs.VALUE }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
           SKIP_POSTINSTALL_DEV_SETUP: true
