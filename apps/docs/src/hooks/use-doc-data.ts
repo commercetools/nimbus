@@ -58,11 +58,12 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         // Extract filename from chunk name
         const filename = route.chunkName.replace("route-", "");
 
-        // Construct the import path to match the glob pattern
-        const importPath = `../data/routes/${filename}.json`;
-
         // Load the main doc JSON using the pre-defined glob imports
-        const docImporter = routeModules[importPath];
+        // Find the importer by matching the filename in the key (handles both dev and prod path formats)
+        const docImporter = Object.entries(routeModules).find(([key]) =>
+          key.endsWith(`/${filename}.json`)
+        )?.[1];
+
         if (!docImporter) {
           throw new Error(`Route data file not found: ${filename}`);
         }
@@ -75,8 +76,11 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         const relatedPromises = relatedIds
           .slice(0, 3)
           .map(async (id: string) => {
-            const relatedPath = `../data/routes/${id}.json`;
-            const relatedImporter = routeModules[relatedPath];
+            // Find the importer by matching the filename in the key (handles both dev and prod path formats)
+            const relatedImporter = Object.entries(routeModules).find(([key]) =>
+              key.endsWith(`/${id}.json`)
+            )?.[1];
+
             if (!relatedImporter) {
               return null;
             }
