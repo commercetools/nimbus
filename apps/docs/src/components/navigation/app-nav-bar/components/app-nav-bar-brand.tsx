@@ -3,16 +3,7 @@ import { useAtomValue } from "jotai";
 
 import { brandNameAtom } from "@/atoms/brand.ts";
 import { nimbusPackageVersionAtom } from "@/atoms/nimbus-version";
-import {
-  /* Architecture,
-  Book,
-  CloudQueue, */
-  FilterDrama,
-  /* MenuBook,
-  Palette,
-  WbCloudy,
-  Widgets, */
-} from "@commercetools/nimbus-icons";
+import { FilterDrama } from "@commercetools/nimbus-icons";
 
 /**
  * Component for the brand section of the app navigation bar.

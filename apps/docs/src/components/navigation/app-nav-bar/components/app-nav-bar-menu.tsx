@@ -26,15 +26,7 @@ export const AppNavBarMenu = () => {
           activeRoute.startsWith(item.route + "/");
 
         return (
-          <Box
-            key={item.id}
-            /*  css={{
-              borderBottom: isActive ? "2px solid" : "none",
-              borderColor: isActive ? "colorPalette.11" : "transparent",
-              marginBottom: "-2px",
-            }} */
-            colorPalette={isActive ? "primary" : "neutral"}
-          >
+          <Box key={item.id} colorPalette={isActive ? "primary" : "neutral"}>
             <Link
               href={`/${item.route}`}
               display="block"
