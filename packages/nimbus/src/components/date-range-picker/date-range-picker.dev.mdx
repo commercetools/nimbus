@@ -87,8 +87,8 @@ Two size variants are available to match your interface density:
 ```jsx-live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <DateRangePicker size="sm" width="7000" />
-    <DateRangePicker size="md" width="8000" />
+    <DateRangePicker size="sm" />
+    <DateRangePicker size="md" />
   </Stack>
 )
 ```
@@ -102,8 +102,8 @@ Choose between solid and ghost variants to match your design context:
 ```jsx-live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <DateRangePicker variant="solid" width="8000" />
-    <DateRangePicker variant="ghost" width="8000" />
+    <DateRangePicker variant="solid" />
+    <DateRangePicker variant="ghost" />
   </Stack>
 )
 ```
@@ -117,8 +117,8 @@ The `granularity` prop controls both the level of date precision and the compone
 ```jsx-live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <DateRangePicker granularity="day" width="8000" />
-    <DateRangePicker granularity="minute" width="10000" />
+    <DateRangePicker granularity="day" />
+    <DateRangePicker granularity="minute" />
   </Stack>
 )
 ```
@@ -142,7 +142,6 @@ const App = () => {
       <DateRangePicker
         value={value}
         onChange={setValue}
-        width="8000"
       />
       <Text fontSize="sm" color="neutral.11">
         {value ? `Selected: ${value.start} to ${value.end}` : 'No selection'}
@@ -168,13 +167,11 @@ const App = () => (
       granularity="minute"
       hideTimeZone={false}
       hourCycle={24}
-      width="10000"
     />
     <DateRangePicker
       granularity="minute"
       hideTimeZone={true}
       hourCycle={12}
-      width="10000"
     />
   </Stack>
 )
@@ -233,7 +230,6 @@ const App = () => {
       <DateRangePicker
         value={dateRange}
         onChange={setDateRange}
-        width="8000"
       />
       <Text fontSize="sm" color="neutral.11">
         {appliedFilter}
@@ -259,7 +255,6 @@ const App = () => {
         value={eventRange}
         onChange={setEventRange}
         hourCycle={12}
-        width="10000"
       />
       {eventRange && (
         <Text fontSize="sm" color="neutral.11">
