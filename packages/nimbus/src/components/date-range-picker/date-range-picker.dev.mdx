@@ -8,11 +8,11 @@ tab-order: 3
 
 The DateRangePicker component enables users to select a date range through two flexible input methods: typing dates directly into input fields or selecting from a visual calendar. It's ideal for filtering data, scheduling events, and any scenario requiring start and end date selection.
 
-## Getting Started
+## Getting started
 
 ### Import
 
-```tsx
+```jsx
 import { DateRangePicker } from '@commercetools/nimbus';
 ```
 
@@ -21,7 +21,7 @@ For TypeScript projects:
 import { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbus';
 ```
 
-### Basic Usage
+### Basic usage
 
 The simplest implementation uses uncontrolled mode with default settings:
 
@@ -31,11 +31,11 @@ const App = () => (
 )
 ```
 
-### Working with Date Values
+## Working with date values
 
 The DateRangePicker relies on Adobe's `@internationalized/date` library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.
 
-#### Date Value Types
+### Date value types
 
 Three primary date types are available depending on your needs:
 
@@ -52,7 +52,7 @@ const dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);
 const zonedDate = new ZonedDateTime(2024, 1, 15, 14, 30, 'America/New_York');
 ```
 
-#### Creating Date Values
+### Creating date values
 
 Use helper functions to parse ISO strings or create dates programmatically:
 
@@ -65,7 +65,7 @@ const dateTime = parseDateTime('2024-01-15T14:30');
 const zonedDate = parseZonedDateTime('2024-01-15T14:30[America/New_York]');
 ```
 
-#### Date Range Structure
+### Date range structure
 
 The component expects and returns date ranges in this structure:
 
@@ -76,11 +76,12 @@ type DateRange = {
 }
 ```
 
-**Learn more:** See [Adobe's @internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html) for complete API reference and advanced usage.
+> [!TIP]\
+> See [Adobe's @internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html) for complete API reference and advanced usage.
 
-## Usage Examples
+## Usage examples
 
-### Size Options
+### Size options
 
 Two size variants are available to match your interface density:
 
@@ -95,7 +96,7 @@ const App = () => (
 
 Use `size="sm"` for compact layouts or dense data tables. Use `size="md"` (default) for standard forms and prominent date selection.
 
-### Visual Variants
+### Visual variants
 
 Choose between solid and ghost variants to match your design context:
 
@@ -110,7 +111,7 @@ const App = () => (
 
 The `solid` variant (default) provides clear visual boundaries. The `ghost` variant offers a minimal appearance suitable for embedded contexts.
 
-### Granularity Options
+### Granularity options
 
 The `granularity` prop controls both the level of date precision and the component's behavior:
 
@@ -129,13 +130,13 @@ const App = () => (
 
 Available granularity options: `"day"`, `"hour"`, `"minute"`, `"second"`.
 
-### Controlled State
+### Controlled state
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState<DateRange | null>(null);
 
   return (
     <Stack direction="column" gap="400">
@@ -156,7 +157,7 @@ Use controlled mode when you need to:
 - Validate or transform date selections
 - Clear or programmatically set the date range
 
-### Time Zone Handling
+### Time zone handling
 
 When working with `ZonedDateTime` values, configure time zone display and hour format:
 
@@ -180,9 +181,9 @@ const App = () => (
 - `hideTimeZone`: Controls visibility of the time zone selector
 - `hourCycle`: Set to `12` for 12-hour format with AM/PM, or `24` for 24-hour format
 
-## Component Requirements
+## Component requirements
 
-### Date Value Types
+### Date value types
 
 All date values **must** use `@internationalized/date` types:
 - `CalendarDate` for date-only scenarios
@@ -191,18 +192,20 @@ All date values **must** use `@internationalized/date` types:
 
 ### Accessibility
 
-For basic usage, the DateRangePicker handles all accessibility requirements internally-**no additional ARIA attributes are required**. However, in specific contexts you should add:
+The DateRangePicker handles all accessibility requirements internally. However, for proper tracking and analytics, **always add an `aria-label`** if your use case warrants it:
 
-- **Form labels**: Add a `<label>` element or `aria-label` when the picker's purpose isn't clear from surrounding content:
-  ```tsx
-  <label htmlFor="report-dates">Report date range</label>
-  <DateRangePicker id="report-dates" />
+```tsx
+<DateRangePicker aria-label="Report date range" />
+```
 
-  {/* Or using aria-label */}
-  <DateRangePicker aria-label="Select event date range" />
-  ```
+Using a `<label>` element or `aria-label` is also appropriate when the picker's purpose isn't clear from surrounding content:
 
-**Keyboard Navigation:**
+```tsx
+<label htmlFor="report-dates">Report date range</label>
+<DateRangePicker id="report-dates" />
+```
+
+#### Keyboard navigation
 
 The component supports full keyboard interaction:
 - `Tab` / `Shift+Tab`: Navigate between date segments and buttons
@@ -210,15 +213,15 @@ The component supports full keyboard interaction:
 - `Enter` / `Space`: Open calendar, select dates
 - `Escape`: Close calendar popover
 
-## Common Patterns
+## Common patterns
 
-### Filtering Data by Date Range
+### Filtering data by date range
 
 A common use case is filtering lists or tables by date range:
 
 ```jsx-live-dev
 const App = () => {
-  const [dateRange, setDateRange] = useState(null);
+  const [dateRange, setDateRange] = useState<DateRange | null>(null);
 
   // In a real application, you'd filter data based on dateRange
   const appliedFilter = dateRange
@@ -239,26 +242,26 @@ const App = () => {
 }
 ```
 
-### Event Scheduling with Times
+### Promotion period selection
 
-For scheduling events or appointments, combine date and time selection:
+For e-commerce scenarios like setting up promotions, sales, or limited-time offers:
 
 ```jsx-live-dev
 const App = () => {
-  const [eventRange, setEventRange] = useState(null);
+  const [promotionRange, setPromotionRange] = useState<DateRange | null>(null);
 
   return (
     <Stack direction="column" gap="400">
-      <Text fontWeight="500">Event Duration</Text>
+      <Text fontWeight="500">Promotion Period</Text>
       <DateRangePicker
         granularity="minute"
-        value={eventRange}
-        onChange={setEventRange}
-        hourCycle={12}
+        value={promotionRange}
+        onChange={setPromotionRange}
+        hourCycle={24}
       />
-      {eventRange && (
+      {promotionRange && (
         <Text fontSize="sm" color="neutral.11">
-          Event scheduled from {eventRange.start.toString()} to {eventRange.end.toString()}
+          Promotion active from {promotionRange.start.toString()} to {promotionRange.end.toString()}
         </Text>
       )}
     </Stack>
@@ -266,9 +269,11 @@ const App = () => {
 }
 ```
 
-## Testing Your Implementation
+## Testing your implementation
 
-### Basic Rendering Tests
+These examples demonstrate how to test your implementation when using DateRangePicker in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
 
 Verify the component renders with expected elements:
 
@@ -294,7 +299,7 @@ describe('DateRangePicker', () => {
 });
 ```
 
-### Interaction Tests
+### Interaction tests
 
 Test user interactions with the component:
 
@@ -329,7 +334,7 @@ describe('DateRangePicker interactions', () => {
 });
 ```
 
-### Testing with Date Values
+### Testing with date values
 
 Test date value handling using `@internationalized/date`:
 
@@ -370,7 +375,7 @@ describe('DateRangePicker with date values', () => {
 });
 ```
 
-### Testing Time Selection
+### Testing time selection
 
 When using time granularity, test time input behavior:
 
@@ -397,6 +402,12 @@ describe('DateRangePicker with time', () => {
 });
 ```
 
-## API Reference
+## API reference
 
 <PropsTable id="DateRangePicker" />
+
+## Resources
+
+- [Storybook](link-tbd)
+- [React Aria DateRangePicker](https://react-spectrum.adobe.com/react-aria/DateRangePicker.html)
+- [ARIA Date Picker Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)
