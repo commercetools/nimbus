@@ -1,0 +1,407 @@
+---
+title: DateRangePicker Component
+tab-title: Implementation
+tab-order: 3
+---
+
+# DateRangePicker
+
+The DateRangePicker component enables users to select a date range through two flexible input methods: typing dates directly into input fields or selecting from a visual calendar. It's ideal for filtering data, scheduling events, and any scenario requiring start and end date selection.
+
+## Getting Started
+
+### Import
+
+```tsx
+import { DateRangePicker } from '@commercetools/nimbus';
+```
+
+For TypeScript projects:
+```tsx
+import { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbus';
+```
+
+### Basic Usage
+
+The simplest implementation uses uncontrolled mode with default settings:
+
+```jsx-live-dev
+const App = () => (
+  <DateRangePicker />
+)
+```
+
+### Working with Date Values
+
+The DateRangePicker relies on Adobe's `@internationalized/date` library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.
+
+#### Date Value Types
+
+Three primary date types are available depending on your needs:
+
+```tsx
+import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';
+
+// Date only (no time)
+const dateOnly = new CalendarDate(2024, 1, 15);
+
+// Date with time (no timezone)
+const dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);
+
+// Date with time and timezone
+const zonedDate = new ZonedDateTime(2024, 1, 15, 14, 30, 'America/New_York');
+```
+
+#### Creating Date Values
+
+Use helper functions to parse ISO strings or create dates programmatically:
+
+```tsx
+import { parseDate, parseDateTime, parseZonedDateTime } from '@internationalized/date';
+
+// Parse ISO date strings
+const date = parseDate('2024-01-15');
+const dateTime = parseDateTime('2024-01-15T14:30');
+const zonedDate = parseZonedDateTime('2024-01-15T14:30[America/New_York]');
+```
+
+#### Date Range Structure
+
+The component expects and returns date ranges in this structure:
+
+```tsx
+type DateRange = {
+  start: CalendarDate | CalendarDateTime | ZonedDateTime;
+  end: CalendarDate | CalendarDateTime | ZonedDateTime;
+}
+```
+
+**Learn more:** See [Adobe's @internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html) for complete API reference and advanced usage.
+
+## Usage Examples
+
+### Size Options
+
+Two size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker size="sm" width="7000" />
+    <DateRangePicker size="md" width="8000" />
+  </Stack>
+)
+```
+
+Use `size="sm"` for compact layouts or dense data tables. Use `size="md"` (default) for standard forms and prominent date selection.
+
+### Visual Variants
+
+Choose between solid and ghost variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker variant="solid" width="8000" />
+    <DateRangePicker variant="ghost" width="8000" />
+  </Stack>
+)
+```
+
+The `solid` variant (default) provides clear visual boundaries. The `ghost` variant offers a minimal appearance suitable for embedded contexts.
+
+### Granularity Options
+
+The `granularity` prop controls both the level of date precision and the component's behavior:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker granularity="day" width="8000" />
+    <DateRangePicker granularity="minute" width="10000" />
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `granularity="day"` (default): Calendar closes automatically after selecting the end date. Time inputs are hidden.
+- `granularity="minute"` or other time values: Calendar remains open after date selection, displaying time input fields in the footer. This allows users to set both dates and times in one interaction.
+
+Available granularity options: `"day"`, `"hour"`, `"minute"`, `"second"`.
+
+### Controlled State
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePicker
+        value={value}
+        onChange={setValue}
+        width="8000"
+      />
+      <Text fontSize="sm" color="neutral.11">
+        {value ? `Selected: ${value.start} to ${value.end}` : 'No selection'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the date range with external state
+- Validate or transform date selections
+- Clear or programmatically set the date range
+
+### Time Zone Handling
+
+When working with `ZonedDateTime` values, configure time zone display and hour format:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateRangePicker
+      granularity="minute"
+      hideTimeZone={false}
+      hourCycle={24}
+      width="10000"
+    />
+    <DateRangePicker
+      granularity="minute"
+      hideTimeZone={true}
+      hourCycle={12}
+      width="10000"
+    />
+  </Stack>
+)
+```
+
+- `hideTimeZone`: Controls visibility of the time zone selector
+- `hourCycle`: Set to `12` for 12-hour format with AM/PM, or `24` for 24-hour format
+
+## Component Requirements
+
+### Date Value Types
+
+All date values **must** use `@internationalized/date` types:
+- `CalendarDate` for date-only scenarios
+- `CalendarDateTime` for dates with times (no timezone)
+- `ZonedDateTime` for timezone-aware dates
+
+### Accessibility
+
+For basic usage, the DateRangePicker handles all accessibility requirements internally-**no additional ARIA attributes are required**. However, in specific contexts you should add:
+
+- **Form labels**: Add a `<label>` element or `aria-label` when the picker's purpose isn't clear from surrounding content:
+  ```tsx
+  <label htmlFor="report-dates">Report date range</label>
+  <DateRangePicker id="report-dates" />
+
+  {/* Or using aria-label */}
+  <DateRangePicker aria-label="Select event date range" />
+  ```
+
+**Keyboard Navigation:**
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate between date segments and buttons
+- `Arrow keys`: Increment/decrement date segments and navigate calendar
+- `Enter` / `Space`: Open calendar, select dates
+- `Escape`: Close calendar popover
+
+## Common Patterns
+
+### Filtering Data by Date Range
+
+A common use case is filtering lists or tables by date range:
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange, setDateRange] = useState(null);
+
+  // In a real application, you'd filter data based on dateRange
+  const appliedFilter = dateRange
+    ? `Showing data from ${dateRange.start} to ${dateRange.end}`
+    : 'No date filter applied';
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePicker
+        value={dateRange}
+        onChange={setDateRange}
+        width="8000"
+      />
+      <Text fontSize="sm" color="neutral.11">
+        {appliedFilter}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Event Scheduling with Times
+
+For scheduling events or appointments, combine date and time selection:
+
+```jsx-live-dev
+const App = () => {
+  const [eventRange, setEventRange] = useState(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="500">Event Duration</Text>
+      <DateRangePicker
+        granularity="minute"
+        value={eventRange}
+        onChange={setEventRange}
+        hourCycle={12}
+        width="10000"
+      />
+      {eventRange && (
+        <Text fontSize="sm" color="neutral.11">
+          Event scheduled from {eventRange.start.toString()} to {eventRange.end.toString()}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing Your Implementation
+
+### Basic Rendering Tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { DateRangePicker } from '@commercetools/nimbus';
+
+describe('DateRangePicker', () => {
+  it('renders start and end date inputs', () => {
+    render(<DateRangePicker />);
+
+    // Each date input has 3 segments (month, day, year)
+    const dateInputs = screen.getAllByRole('spinbutton');
+    expect(dateInputs).toHaveLength(6);
+  });
+
+  it('renders calendar and clear buttons', () => {
+    render(<DateRangePicker />);
+
+    expect(screen.getByRole('button', { name: /open calendar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument();
+  });
+});
+```
+
+### Interaction Tests
+
+Test user interactions with the component:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { DateRangePicker } from '@commercetools/nimbus';
+
+describe('DateRangePicker interactions', () => {
+  it('opens calendar when button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<DateRangePicker />);
+
+    const calendarButton = screen.getByRole('button', { name: /open calendar/i });
+    await user.click(calendarButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole('grid')).toBeInTheDocument();
+    });
+  });
+
+  it('clears selection when clear button is clicked', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<DateRangePicker onChange={handleChange} />);
+
+    const clearButton = screen.getByRole('button', { name: /clear/i });
+    await user.click(clearButton);
+
+    expect(handleChange).toHaveBeenCalledWith(null);
+  });
+});
+```
+
+### Testing with Date Values
+
+Test date value handling using `@internationalized/date`:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { CalendarDate } from '@internationalized/date';
+import { DateRangePicker } from '@commercetools/nimbus';
+
+describe('DateRangePicker with date values', () => {
+  it('displays provided date range', () => {
+    const dateRange = {
+      start: new CalendarDate(2024, 1, 15),
+      end: new CalendarDate(2024, 1, 20),
+    };
+
+    render(<DateRangePicker value={dateRange} />);
+
+    // Verify the dates are displayed in the input segments
+    expect(screen.getByText('1', { selector: '[role="spinbutton"]' })).toBeInTheDocument(); // Month
+    expect(screen.getByText('15', { selector: '[role="spinbutton"]' })).toBeInTheDocument(); // Start day
+    expect(screen.getByText('20', { selector: '[role="spinbutton"]' })).toBeInTheDocument(); // End day
+  });
+
+  it('calls onChange with correct date types', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<DateRangePicker onChange={handleChange} />);
+
+    // Interact with date picker...
+    // After selection:
+    expect(handleChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        start: expect.any(CalendarDate),
+        end: expect.any(CalendarDate),
+      })
+    );
+  });
+});
+```
+
+### Testing Time Selection
+
+When using time granularity, test time input behavior:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { DateRangePicker } from '@commercetools/nimbus';
+
+describe('DateRangePicker with time', () => {
+  it('shows time inputs when granularity includes time', async () => {
+    const user = userEvent.setup();
+    render(<DateRangePicker granularity="minute" />);
+
+    // Open calendar
+    const calendarButton = screen.getByRole('button', { name: /open calendar/i });
+    await user.click(calendarButton);
+
+    // Time inputs should appear in the popover footer
+    await waitFor(() => {
+      expect(screen.getByText(/start time/i)).toBeInTheDocument();
+      expect(screen.getByText(/end time/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+## API Reference
+
+<PropsTable id="DateRangePicker" />
