@@ -9,7 +9,7 @@ import {
   type TagGroupProps,
   Text,
 } from "@commercetools/nimbus";
-import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 /**
  * Storybook metadata configuration

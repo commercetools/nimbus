@@ -3,7 +3,7 @@ import { Box, Button, type ButtonProps, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
-import { SEMANTIC_PALETTES } from "@/internal-utils/constants";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof Button> = {
   title: "Components/Buttons/Button",
@@ -178,7 +178,7 @@ export const ColorPalettes: Story = {
   render: () => {
     return (
       <Stack>
-        {SEMANTIC_PALETTES.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack
             key={colorPalette as string}
             direction="row"
@@ -286,7 +286,7 @@ export const SmokeTest: Story = {
   render: (args) => {
     return (
       <Stack gap="1200">
-        {SEMANTIC_PALETTES.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack key={colorPalette as string} direction="column" gap="400">
             {sizes.map((size) => (
               <Stack direction="row" key={size as string}>

@@ -3,7 +3,7 @@
  * These colors convey meaning and purpose in the UI (primary actions,
  * informational messages, success states, warnings, and errors).
  */
-export const SEMANTIC_PALETTES = [
+export const SEMANTIC_COLOR_PALETTES = [
   "primary",
   "neutral",
   "info",
@@ -17,7 +17,7 @@ export const SEMANTIC_PALETTES = [
  * These colors represent the commercetools brand and should be used
  * consistently across brand materials.
  */
-export const BRAND_PALETTES = ["ctviolet", "ctteal", "ctyellow"] as const;
+export const BRAND_COLOR_PALETTES = ["ctviolet", "ctteal", "ctyellow"] as const;
 
 /**
  * System color palettes providing a wide range of decorative options.
@@ -25,7 +25,7 @@ export const BRAND_PALETTES = ["ctviolet", "ctteal", "ctyellow"] as const;
  * used for data visualization, categorization, and visual variety.
  * Note: blackAlpha and whiteAlpha do not adapt to color mode.
  */
-export const SYSTEM_PALETTES = [
+export const SYSTEM_COLOR_PALETTES = [
   "sky",
   "mint",
   "lime",
@@ -57,18 +57,8 @@ export const SYSTEM_PALETTES = [
  * Combined array of all available color palettes in the design system.
  * Used to derive the ColorPalette union type for type-safe palette references.
  */
-export const ALL_PALETTES = [
-  ...SEMANTIC_PALETTES,
-  ...BRAND_PALETTES,
-  ...SYSTEM_PALETTES,
-] as const;
-
-/**
- * Grouped palette configurations for organized display.
- * Each group includes a descriptive name and its associated palette array.
- */
-export const COLOR_PALETTE_GROUPS = [
-  { name: "Semantic Color Palettes", palettes: SEMANTIC_PALETTES },
-  { name: "Brand Color Palettes", palettes: BRAND_PALETTES },
-  { name: "System Color Palettes", palettes: SYSTEM_PALETTES },
+export const ALL_COLOR_PALETTES = [
+  ...SEMANTIC_COLOR_PALETTES,
+  ...BRAND_COLOR_PALETTES,
+  ...SYSTEM_COLOR_PALETTES,
 ] as const;

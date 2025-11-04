@@ -8,7 +8,7 @@ import {
   Text,
   Group,
 } from "@commercetools/nimbus";
-import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge, type BadgeProps, Stack } from "@commercetools/nimbus";
 import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
-import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 const sizes: BadgeProps["size"][] = ["2xs", "xs", "md"];
 

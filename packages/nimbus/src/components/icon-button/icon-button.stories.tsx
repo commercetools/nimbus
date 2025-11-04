@@ -8,7 +8,7 @@ import {
 import { Apps as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef } from "react";
 import { expect, fn, within, userEvent } from "storybook/test";
-import { SEMANTIC_PALETTES } from "@/internal-utils/constants";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof IconButton> = {
   title: "Components/Buttons/IconButton",
@@ -143,7 +143,7 @@ export const ColorPalettes: Story = {
   render: (args) => {
     return (
       <Stack>
-        {SEMANTIC_PALETTES.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack
             key={colorPalette as string}
             direction="row"

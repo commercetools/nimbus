@@ -1,4 +1,7 @@
-import { SEMANTIC_PALETTES, ALL_PALETTES } from "@/internal-utils/constants";
+import {
+  SEMANTIC_COLOR_PALETTES,
+  ALL_COLOR_PALETTES,
+} from "@/constants/color-palettes";
 /**
  * Shared type re-exports from external dependencies.
  *
@@ -28,13 +31,13 @@ export type { Key } from "react-aria-components";
  * Union type of all available color palette names.
  * Derived from ALL_PALETTES constant to ensure type safety when referencing palettes.
  */
-export type NimbusColorPalette = (typeof ALL_PALETTES)[number];
+export type NimbusColorPalette = (typeof ALL_COLOR_PALETTES)[number];
 
 /**
  * Union type of all available semantic palette names.
  * Derived from SEMANTIC_PALETTES constant to ensure type safety when referencing palettes.
  */
-type SemanticColorPalette = (typeof SEMANTIC_PALETTES)[number];
+type SemanticColorPalette = (typeof SEMANTIC_COLOR_PALETTES)[number];
 
 /**
  * Utility Type that narrows the colorPalette prop in chakra-ui recipes to only accept semantic color palettes

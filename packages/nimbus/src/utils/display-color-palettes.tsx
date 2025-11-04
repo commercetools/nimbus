@@ -1,7 +1,21 @@
 import { Fragment, type ReactNode } from "react";
 import { Flex, Stack, Text } from "@commercetools/nimbus";
 import type { NimbusColorPalette } from "@/type-utils";
-import { COLOR_PALETTE_GROUPS } from "./constants";
+import {
+  BRAND_COLOR_PALETTES,
+  SEMANTIC_COLOR_PALETTES,
+  SYSTEM_COLOR_PALETTES,
+} from "@/constants";
+
+/**
+ * Grouped palette configurations for organized display.
+ * Each group includes a descriptive name and its associated palette array.
+ */
+const COLOR_PALETTE_GROUPS = [
+  { name: "Semantic Color Palettes", palettes: SEMANTIC_COLOR_PALETTES },
+  { name: "Brand Color Palettes", palettes: BRAND_COLOR_PALETTES },
+  { name: "System Color Palettes", palettes: SYSTEM_COLOR_PALETTES },
+] as const;
 
 /**
  * Props for the DisplayColorPalettes component.
