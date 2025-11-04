@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { Flex, Stack, Text } from "@commercetools/nimbus";
+import { Flex, Stack, Text } from "@/components";
 import type { NimbusColorPalette } from "@/type-utils";
 import {
   BRAND_COLOR_PALETTES,
