@@ -2,11 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge, type BadgeProps, Stack } from "@commercetools/nimbus";
 import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
+import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
 
 const sizes: BadgeProps["size"][] = ["2xs", "xs", "md"];
-const colors: Array<
-  "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
-> = ["primary", "tomato", "grass", "amber", "blue", "slate"];
 
 /**
  * Storybook metadata configuration
@@ -76,20 +74,21 @@ export const Sizes: Story = {
 };
 
 /**
- * Showcase Possible Colors
+ * Showcase Possible Color Palettes
  */
-export const Colors: Story = {
+export const ColorPalettes: Story = {
   args: {
-    children: "Demo Badge",
     size: "xs",
   },
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {colors.map((color) => (
-          <Badge key={color as string} {...args} colorPalette={color} />
-        ))}
-      </Stack>
+      <DisplayColorPalettes>
+        {(palette) => (
+          <Badge key={String(palette)} {...args} colorPalette={palette}>
+            {palette}
+          </Badge>
+        )}
+      </DisplayColorPalettes>
     );
   },
 };

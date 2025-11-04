@@ -1,3 +1,4 @@
+import { SEMANTIC_PALETTES, ALL_PALETTES } from "@/test-utils/constants";
 /**
  * Shared type re-exports from external dependencies.
  *
@@ -23,12 +24,19 @@ export type { TimeValue } from "react-aria";
  */
 export type { Key } from "react-aria-components";
 
-type SemanticColorPalette =
-  | "primary"
-  | "neutral"
-  | "info"
-  | "positive"
-  | "warning"
-  | "critical";
+/**
+ * Union type of all available color palette names.
+ * Derived from ALL_PALETTES constant to ensure type safety when referencing palettes.
+ */
+export type NimbusColorPalette = (typeof ALL_PALETTES)[number];
 
+/**
+ * Union type of all available semantic palette names.
+ * Derived from SEMANTIC_PALETTES constant to ensure type safety when referencing palettes.
+ */
+type SemanticColorPalette = (typeof SEMANTIC_PALETTES)[number];
+
+/**
+ * Utility Type that narrows the colorPalette prop in chakra-ui recipes to only accept semantic color palettes
+ */
 export type SemanticPalettesOnly = ConditionalValue<SemanticColorPalette>;

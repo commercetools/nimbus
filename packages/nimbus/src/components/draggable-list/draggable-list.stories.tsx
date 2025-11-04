@@ -8,7 +8,7 @@ import {
   Text,
   Group,
 } from "@commercetools/nimbus";
-
+import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**
@@ -916,50 +916,28 @@ export const FieldWithInfoBox: Story = {
   },
 };
 
-export const CustomColors: Story = {
-  render: () => {
-    const colorPalettes = [
-      "sky",
-      "mint",
-      "lime",
-      "yellow",
-      "orange",
-      "gold",
-      "bronze",
-      "grass",
-      "green",
-      "jade",
-      "teal",
-      "cyan",
-      "blue",
-      "indigo",
-      "iris",
-      "violet",
-      "purple",
-      "plum",
-      "pink",
-      "crimson",
-      "ruby",
-    ];
-    return (
-      <Flex flexWrap="wrap" gap="400">
-        {colorPalettes.map((palette) => {
-          const itemsForPalette = fieldItems.map((item) => ({
-            ...item,
-            key: `${palette}-${item.key}`,
-          }));
-          return (
-            <DraggableList.Field
-              key={palette}
-              label={palette}
-              items={itemsForPalette}
-              removableItems
-              width="3600"
-              colorPalette={palette}
-            />
-          );
-        })}
-      </Flex>
-    );
-  },
+/**
+ * Showcase Possible Color Palettes
+ */
+export const ColorPalettes: Story = {
+  render: () => (
+    <DisplayColorPalettes>
+      {(palette) => {
+        const itemsForPalette = fieldItems.map((item) => ({
+          ...item,
+          key: `${palette}-${item.key}`,
+        }));
+        return (
+          <DraggableList.Field
+            key={palette}
+            label={palette}
+            items={itemsForPalette}
+            removableItems
+            width="3600"
+            colorPalette={palette}
+          />
+        );
+      }}
+    </DisplayColorPalettes>
+  ),
 };

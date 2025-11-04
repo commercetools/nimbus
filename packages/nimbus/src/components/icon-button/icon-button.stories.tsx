@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconButton, type IconButtonProps, Stack } from "@commercetools/nimbus";
+import {
+  IconButton,
+  type IconButtonProps,
+  Stack,
+  Tooltip,
+} from "@commercetools/nimbus";
 import { Apps as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef } from "react";
 import { expect, fn, within, userEvent } from "storybook/test";
@@ -32,8 +37,10 @@ const variants: IconButtonProps["variant"][] = [
 const colorPalettes: IconButtonProps["colorPalette"][] = [
   "primary",
   "neutral",
-  "critical",
   "info",
+  "positive",
+  "warning",
+  "critical",
 ] as const;
 
 /**
@@ -152,12 +159,17 @@ export const ColorPalettes: Story = {
             alignItems="center"
           >
             {variants.map((variant) => (
-              <IconButton
-                key={variant as string}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
+              <Tooltip.Root>
+                <IconButton
+                  key={variant as string}
+                  {...args}
+                  variant={variant}
+                  colorPalette={colorPalette}
+                />
+                <Tooltip.Content>
+                  {`${colorPalette} - ${variant}`}
+                </Tooltip.Content>
+              </Tooltip.Root>
             ))}
           </Stack>
         ))}

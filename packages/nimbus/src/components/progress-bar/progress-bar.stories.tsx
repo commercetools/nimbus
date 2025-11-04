@@ -10,13 +10,11 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
+import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
 const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];
 const layouts: ProgressBarProps["layout"][] = ["minimal", "inline", "stacked"];
-const colors: Array<
-  "amber" | "blue" | "grass" | "slate" | "tomato" | "primary"
-> = ["primary", "tomato", "grass", "amber", "blue", "slate"];
 
 /**
  * Storybook metadata configuration
@@ -176,43 +174,45 @@ export const Layouts: Story = {
 };
 
 /**
- * Showcase Possible Colors
+ * Showcase Possible Color Palettes
  */
-export const Colors: Story = {
+export const ColorPalettes: Story = {
   args: {
     value: 70,
-    label: "Progress",
     layout: "stacked",
     size: "md",
   },
   render: (args) => {
     return (
-      <Stack direction="column" gap="400" alignItems="stretch">
-        {colors.map((color) => (
-          <Stack>
+      <DisplayColorPalettes>
+        {(palette) => (
+          <Stack flexDirection="row" w="100%">
             <Box
               p="400"
               outline="1px solid"
               outlineOffset="-1px"
-              outlineColor={color}
+              outlineColor={palette}
+              w="45%"
             >
               <ProgressBar
-                key={color as string}
+                key={palette as string}
                 {...args}
-                colorPalette={color}
+                label={palette}
+                colorPalette={palette}
               />
             </Box>
-            <Box bg={color} p="400">
+            <Box bg={palette} p="400" w="45%">
               <ProgressBar
                 variant="contrast"
-                key={color as string}
+                key={palette as string}
                 {...args}
-                colorPalette={color}
+                label={`${palette} - contrast`}
+                colorPalette={palette}
               />
             </Box>
           </Stack>
-        ))}
-      </Stack>
+        )}
+      </DisplayColorPalettes>
     );
   },
 };

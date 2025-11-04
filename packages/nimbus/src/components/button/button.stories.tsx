@@ -35,6 +35,8 @@ const colorPalettes: ButtonProps["colorPalette"][] = [
   "primary",
   "neutral",
   "info",
+  "positive",
+  "warning",
   "critical",
 ] as const;
 
@@ -177,11 +179,11 @@ export const Variants: Story = {
   },
 };
 
+/**
+ * Showcase Possible Color Palettes
+ */
 export const ColorPalettes: Story = {
-  args: {
-    children: "Demo Button",
-  },
-  render: (args) => {
+  render: () => {
     return (
       <Stack>
         {colorPalettes.map((colorPalette) => (
@@ -193,11 +195,11 @@ export const ColorPalettes: Story = {
           >
             {variants.map((variant) => (
               <Button
+                minW="4000"
                 key={variant as string}
-                {...args}
                 variant={variant}
                 colorPalette={colorPalette}
-              />
+              >{`${colorPalette} - ${variant}`}</Button>
             ))}
           </Stack>
         ))}
