@@ -22,7 +22,8 @@ async function writeRouteFiles(
 
   // Write per-route JSON files
   for (const [, doc] of docs) {
-    const routeId = doc.meta.id.toLowerCase().replace(/\s+/g, "-");
+    // Use route field (derived from menu path) for consistent filenames across the system
+    const routeId = doc.meta.route.replace(/\//g, "-");
     const outputPath = path.join(outputDir, `${routeId}.json`);
 
     // Write per-route JSON

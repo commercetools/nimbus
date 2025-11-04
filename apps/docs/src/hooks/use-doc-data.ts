@@ -20,13 +20,6 @@ const routeModules = import.meta.glob<DocData>("../data/routes/*.json", {
   import: "default",
 });
 
-// Debug: Log module keys on initialization
-console.log(
-  "🔍 [INIT] routeModules keys:",
-  Object.keys(routeModules).slice(0, 10)
-);
-console.log("🔍 [INIT] Total modules:", Object.keys(routeModules).length);
-
 /**
  * Hook to load component documentation data.
  * Uses the manifest to resolve the file path, then dynamically imports the JSON data.
@@ -65,80 +58,19 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         // Extract filename from chunk name
         const filename = route.chunkName.replace("route-", "");
 
-        // Debug logging to see what's available
-        console.log("🔍 Looking for filename:", filename);
-        console.log("🔍 Route chunkName:", route.chunkName);
-        console.log(
-          "🔍 Total available modules:",
-          Object.keys(routeModules).length
-        );
-        console.log(
-          "🔍 First 5 module keys:",
-          Object.keys(routeModules).slice(0, 5)
-        );
-
         // Load the main doc JSON using the pre-defined glob imports
         // Find the importer by matching the filename in the key (handles both dev and prod path formats)
-        let docImporter = Object.entries(routeModules).find(([key]) => {
-          const matches = key.endsWith(`/${filename}.json`);
-          if (filename.includes("components-inputs-button")) {
-            console.log(`🔍 Checking key: ${key}, matches: ${matches}`);
-          }
-          return matches;
-        })?.[1];
+        const docImporter = Object.entries(routeModules).find(([key]) =>
+          key.endsWith(`/${filename}.json`)
+        )?.[1];
 
-        // Fallback 1: Try ID-based filename (legacy naming: Forms-Button → forms-button)
-        if (!docImporter && route.id) {
-          const idBasedFilename = route.id.toLowerCase().replace(/_/g, "-");
-          console.warn(
-            `⚠️  Trying ID-based filename as fallback: ${idBasedFilename}`
-          );
-          docImporter = Object.entries(routeModules).find(([key]) =>
-            key.endsWith(`/${idBasedFilename}.json`)
-          )?.[1];
-        }
-
-        // Fallback 2: If file still not found in glob, try dynamic import as last resort
-        let docData: DocData;
         if (!docImporter) {
-          console.warn(
-            `⚠️  File not in glob, attempting dynamic import for: ${filename}`
-          );
-          try {
-            docData = await import(`../data/routes/${filename}.json`);
-          } catch (dynamicImportError) {
-            // Try ID-based filename with dynamic import too
-            if (route.id) {
-              const idBasedFilename = route.id.toLowerCase().replace(/_/g, "-");
-              try {
-                console.warn(
-                  `⚠️  Trying dynamic import with ID-based filename: ${idBasedFilename}`
-                );
-                docData = await import(
-                  `../data/routes/${idBasedFilename}.json`
-                );
-              } catch {
-                console.error("❌ No importer found for filename:", filename);
-                console.error("❌ Also tried ID-based:", idBasedFilename);
-                console.error(
-                  "❌ All available keys:",
-                  Object.keys(routeModules)
-                );
-                throw new Error(`Route data file not found: ${filename}`);
-              }
-            } else {
-              console.error("❌ No importer found for filename:", filename);
-              console.error(
-                "❌ All available keys:",
-                Object.keys(routeModules)
-              );
-              console.error("❌ Dynamic import failed:", dynamicImportError);
-              throw new Error(`Route data file not found: ${filename}`);
-            }
-          }
-        } else {
-          docData = await docImporter();
+          console.error("❌ No importer found for filename:", filename);
+          console.error("❌ All available keys:", Object.keys(routeModules));
+          throw new Error(`Route data file not found: ${filename}`);
         }
+
+        const docData = await docImporter();
         setDoc(docData);
 
         // Load related docs if specified (limit to 3)
@@ -151,17 +83,15 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
               key.endsWith(`/${id}.json`)
             )?.[1];
 
-            // Try glob first, fallback to dynamic import if needed
+            if (!relatedImporter) {
+              console.warn(`⚠️  Related doc not found in glob: ${id}`);
+              return null;
+            }
+
             try {
-              if (relatedImporter) {
-                return await relatedImporter();
-              }
-              // Fallback to dynamic import
-              console.warn(
-                `⚠️  Related doc not in glob, attempting dynamic import for: ${id}`
-              );
-              return await import(`../data/routes/${id}.json`);
-            } catch {
+              return await relatedImporter();
+            } catch (error) {
+              console.error(`Failed to load related doc: ${id}`, error);
               return null;
             }
           });
