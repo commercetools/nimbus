@@ -39,7 +39,7 @@ export async function generateRouteManifest(
       tags: meta.tags || [],
       menu: meta.menu,
       order: meta.order || 999,
-      chunkName: `route-${meta.id.toLowerCase().replace(/\s+/g, "-")}`,
+      chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
       tabs: meta.tabs || [],
     };

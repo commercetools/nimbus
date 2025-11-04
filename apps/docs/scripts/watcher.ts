@@ -28,6 +28,10 @@ const documentation: Map<string, MdxDocument> = new Map();
 async function writeRouteFile(doc: MdxDocument): Promise<void> {
   const chunkName = doc.meta.route.replace(/\//g, "-");
   const filePath = path.join(ROUTES_DIR, `${chunkName}.json`);
+
+  // Ensure routes directory exists
+  await fs.mkdir(ROUTES_DIR, { recursive: true });
+
   await fs.writeFile(filePath, JSON.stringify(doc, null, 2));
   flog(`[MDX] Updated route: ${chunkName}.json`);
 }
