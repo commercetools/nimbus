@@ -1,4 +1,4 @@
-import { SEMANTIC_PALETTES, ALL_PALETTES } from "@/test-utils/constants";
+import { SEMANTIC_PALETTES, ALL_PALETTES } from "@/internal-utils/constants";
 /**
  * Shared type re-exports from external dependencies.
  *

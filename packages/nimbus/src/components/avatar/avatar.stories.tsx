@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from "@commercetools/nimbus";
 import { within, expect, waitFor } from "storybook/test";
-import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
 
 /**
  * Storybook metadata configuration
@@ -117,7 +117,6 @@ export const ColorPalettes: Story = {
           <Tooltip.Root>
             <Button unstyled asChild>
               <Avatar
-                key={palette as string}
                 {...args}
                 colorPalette={palette}
                 alt={`${palette} avatar`}

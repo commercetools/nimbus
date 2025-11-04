@@ -8,7 +8,7 @@ import {
   Text,
   Group,
 } from "@commercetools/nimbus";
-import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**
@@ -929,7 +929,6 @@ export const ColorPalettes: Story = {
         }));
         return (
           <DraggableList.Field
-            key={palette}
             label={palette}
             items={itemsForPalette}
             removableItems

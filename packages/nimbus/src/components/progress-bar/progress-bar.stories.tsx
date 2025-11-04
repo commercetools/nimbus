@@ -10,7 +10,7 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
-import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
 
 const sizes: ProgressBarProps["size"][] = ["2xs", "md"];
 const variants: ProgressBarProps["variant"][] = ["solid", "contrast"];
@@ -195,7 +195,7 @@ export const ColorPalettes: Story = {
               w="45%"
             >
               <ProgressBar
-                key={palette as string}
+                // key={palette as string}
                 {...args}
                 label={palette}
                 colorPalette={palette}
@@ -204,7 +204,7 @@ export const ColorPalettes: Story = {
             <Box bg={palette} p="400" w="45%">
               <ProgressBar
                 variant="contrast"
-                key={palette as string}
+                // key={`${palette}-contrast`}
                 {...args}
                 label={`${palette} - contrast`}
                 colorPalette={palette}

@@ -9,7 +9,7 @@ import {
   type TagGroupProps,
   Text,
 } from "@commercetools/nimbus";
-import { DisplayColorPalettes } from "@/test-utils/display-color-palettes";
+import { DisplayColorPalettes } from "@/internal-utils/display-color-palettes";
 
 /**
  * Storybook metadata configuration
@@ -303,7 +303,7 @@ export const ColorPalettes: Story = {
   render: () => (
     <DisplayColorPalettes>
       {(palette) => (
-        <TagGroup.Root key={palette as string} aria-label="animals">
+        <TagGroup.Root aria-label="animals">
           <TagGroup.TagList items={[{ name: palette, id: palette }]}>
             {(item) => (
               <TagGroup.Tag colorPalette={palette}>{item.name}</TagGroup.Tag>

@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { Flex, Stack, Text } from "@commercetools/nimbus";
 import type { NimbusColorPalette } from "@/type-utils";
 import { COLOR_PALETTE_GROUPS } from "./constants";
 
 /**
- * Props for the DisplayColors component.
+ * Props for the DisplayColorPalettes component.
  */
 type DisplayColorPalettesProps = {
   /**
@@ -13,9 +13,9 @@ type DisplayColorPalettesProps = {
    * components to be rendered with different colorPalette props.
    *
    * @example
-   * <DisplayColors>
+   * <DisplayColorPalettes>
    *   {(palette) => <Badge colorPalette={palette}>{palette}</Badge>}
-   * </DisplayColors>
+   * </DisplayColorPalettes>
    */
   children: (palette: NimbusColorPalette) => ReactNode;
 };
@@ -30,13 +30,13 @@ type DisplayColorPalettesProps = {
  *
  * @example
  * ```tsx
- * <DisplayColors>
+ * <DisplayColorPalettes>
  *   {(palette) => (
  *     <Badge colorPalette={palette}>
  *       {palette}
  *     </Badge>
  *   )}
- * </DisplayColors>
+ * </DisplayColorPalettes>
  * ```
  */
 export const DisplayColorPalettes = ({
@@ -47,7 +47,9 @@ export const DisplayColorPalettes = ({
       <Stack key={name}>
         <Text as="label">{name}</Text>
         <Flex gap="400" alignItems="center" flexWrap="wrap">
-          {palettes.map((palette) => children(palette))}
+          {palettes.map((palette) => (
+            <Fragment key={palette}>{children(palette)}</Fragment>
+          ))}
         </Flex>
       </Stack>
     ))}
