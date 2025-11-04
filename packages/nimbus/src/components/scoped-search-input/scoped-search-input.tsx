@@ -1,8 +1,8 @@
 import { useCallback, useId, useRef } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useIntl } from "react-intl";
-import { Select } from "@/components/select";
-import { SearchInput } from "@/components/search-input";
+import { Select } from "@/components/select/select";
+import { SearchInput } from "@/components/search-input/search-input";
 import { extractStyleProps } from "@/utils";
 import { scopedSearchInputSlotRecipe } from "./scoped-search-input.recipe";
 import {

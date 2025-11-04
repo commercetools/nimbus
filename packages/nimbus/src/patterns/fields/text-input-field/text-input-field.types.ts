@@ -1,7 +1,7 @@
-import type { TextInputProps } from "@/components/text-input";
-import type { FormFieldProps } from "@/components/form-field";
+import type { TextInputProps } from "@/components/text-input/text-input.types";
+import type { FormFieldProps } from "@/components/form-field/form-field.types";
 import type { ReactNode } from "react";
-import type { FieldErrorsData } from "@/components/field-errors";
+import type { FieldErrorsData } from "@/components/field-errors/field-errors.types";
 
 /**
  * Props for the TextInputField component.

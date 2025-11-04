@@ -1,4 +1,4 @@
-import type { ToggleButtonProps } from "../toggle-button";
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
 
 // ============================================================
 // MAIN PROPS

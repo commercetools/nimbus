@@ -1,6 +1,6 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { TextProps } from "../text";
-import type { ButtonProps } from "../button";
+import type { TextProps } from "../text/text";
+import type { ButtonProps } from "../button/button.types";
 import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 

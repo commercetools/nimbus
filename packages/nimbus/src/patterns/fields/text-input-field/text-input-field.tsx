@@ -1,4 +1,4 @@
-import { TextInput } from "@/components/text-input";
+import { TextInput } from "@/components/text-input/text-input";
 import type { TextInputFieldProps } from "./text-input-field.types";
 import { FormField, FieldErrors } from "@/components";
 

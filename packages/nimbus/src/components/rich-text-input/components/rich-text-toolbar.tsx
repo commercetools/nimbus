@@ -6,13 +6,13 @@ import {
   VisuallyHidden,
   Separator,
   ToggleButtonGroup,
-  IconToggleButton,
   IconButton,
   Text,
   Box,
   Tooltip,
 } from "@/components";
-import { Group } from "@/components/group";
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { Group } from "@/components/group/group";
 import {
   FormatBold,
   FormatItalic,

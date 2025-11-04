@@ -1,4 +1,4 @@
-import { FormField } from "@/components/form-field";
+import { FormField } from "@/components/form-field/form-field";
 import type {
   DraggableListFieldProps,
   DraggableListFieldItemData,

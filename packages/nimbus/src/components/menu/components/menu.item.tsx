@@ -3,7 +3,7 @@ import { MenuItemSlot } from "../menu.slots";
 import type { MenuItemProps } from "../menu.types";
 import { extractStyleProps } from "@/utils";
 import { ChevronRight } from "@commercetools/nimbus-icons";
-import { Icon } from "@/components/icon";
+import { Icon } from "@/components/icon/icon";
 
 /**
  * Menu.Item - An individual menu item that can be selected

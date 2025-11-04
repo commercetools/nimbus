@@ -1,4 +1,4 @@
-import { DateRangePicker } from "@/components/date-range-picker";
+import { DateRangePicker } from "@/components/date-range-picker/date-range-picker";
 import { FormField, FieldErrors } from "@/components";
 import type { DateRangePickerFieldProps } from "./date-range-picker-field.types";
 
