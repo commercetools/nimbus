@@ -114,17 +114,17 @@ function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
       css={{
         // Custom scrollbar styling
         "&::-webkit-scrollbar": {
-          width: "8px",
+          width: "200",
         },
         "&::-webkit-scrollbar-track": {
-          background: "var(--colors-neutral-2)",
+          background: "{colors.neutral.2}",
         },
         "&::-webkit-scrollbar-thumb": {
-          background: "var(--colors-neutral-6)",
-          borderRadius: "4px",
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
         },
         "&::-webkit-scrollbar-thumb:hover": {
-          background: "var(--colors-neutral-7)",
+          background: "{colors.neutral.4}",
         },
       }}
     >
@@ -150,17 +150,17 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
       css={{
         // Custom scrollbar styling
         "&::-webkit-scrollbar": {
-          width: "8px",
+          width: "200",
         },
         "&::-webkit-scrollbar-track": {
-          background: "var(--colors-neutral-2)",
+          background: "{colors.neutral.2}",
         },
         "&::-webkit-scrollbar-thumb": {
-          background: "var(--colors-neutral-6)",
-          borderRadius: "4px",
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
         },
         "&::-webkit-scrollbar-thumb:hover": {
-          background: "var(--colors-neutral-7)",
+          background: "{colors.neutral.4}",
         },
       }}
     >
@@ -186,17 +186,17 @@ function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
       css={{
         // Custom scrollbar styling
         "&::-webkit-scrollbar": {
-          width: "8px",
+          width: "200",
         },
         "&::-webkit-scrollbar-track": {
-          background: "var(--colors-neutral-2)",
+          background: "{colors.neutral.2}",
         },
         "&::-webkit-scrollbar-thumb": {
-          background: "var(--colors-neutral-6)",
-          borderRadius: "4px",
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
         },
         "&::-webkit-scrollbar-thumb:hover": {
-          background: "var(--colors-neutral-7)",
+          background: "{colors.neutral.4}",
         },
       }}
     >
