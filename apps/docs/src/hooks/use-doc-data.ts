@@ -79,7 +79,7 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
 
         // Load the main doc JSON using the pre-defined glob imports
         // Find the importer by matching the filename in the key (handles both dev and prod path formats)
-        const docImporter = Object.entries(routeModules).find(([key]) => {
+        let docImporter = Object.entries(routeModules).find(([key]) => {
           const matches = key.endsWith(`/${filename}.json`);
           if (filename.includes("components-inputs-button")) {
             console.log(`🔍 Checking key: ${key}, matches: ${matches}`);
@@ -87,13 +87,24 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
           return matches;
         })?.[1];
 
+        // Fallback: If file not found in glob (can happen in Vercel builds due to timing),
+        // try dynamic import as a last resort
+        let docData: DocData;
         if (!docImporter) {
-          console.error("❌ No importer found for filename:", filename);
-          console.error("❌ All available keys:", Object.keys(routeModules));
-          throw new Error(`Route data file not found: ${filename}`);
+          console.warn(
+            `⚠️  File not in glob, attempting dynamic import for: ${filename}`
+          );
+          try {
+            docData = await import(`../data/routes/${filename}.json`);
+          } catch (dynamicImportError) {
+            console.error("❌ No importer found for filename:", filename);
+            console.error("❌ All available keys:", Object.keys(routeModules));
+            console.error("❌ Dynamic import also failed:", dynamicImportError);
+            throw new Error(`Route data file not found: ${filename}`);
+          }
+        } else {
+          docData = await docImporter();
         }
-
-        const docData = await docImporter();
         setDoc(docData);
 
         // Load related docs if specified (limit to 3)
@@ -106,11 +117,16 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
               key.endsWith(`/${id}.json`)
             )?.[1];
 
-            if (!relatedImporter) {
-              return null;
-            }
+            // Try glob first, fallback to dynamic import if needed
             try {
-              return await relatedImporter();
+              if (relatedImporter) {
+                return await relatedImporter();
+              }
+              // Fallback to dynamic import
+              console.warn(
+                `⚠️  Related doc not in glob, attempting dynamic import for: ${id}`
+              );
+              return await import(`../data/routes/${id}.json`);
             } catch {
               return null;
             }
