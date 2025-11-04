@@ -1,8 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconButton, type IconButtonProps, Stack } from "@commercetools/nimbus";
+import {
+  IconButton,
+  type IconButtonProps,
+  Stack,
+  Tooltip,
+} from "@commercetools/nimbus";
 import { Apps as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef } from "react";
 import { expect, fn, within, userEvent } from "storybook/test";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof IconButton> = {
   title: "Components/Buttons/IconButton",
@@ -28,13 +34,6 @@ const variants: IconButtonProps["variant"][] = [
   "ghost",
   "link",
 ];
-
-const colorPalettes: IconButtonProps["colorPalette"][] = [
-  "primary",
-  "neutral",
-  "critical",
-  "info",
-] as const;
 
 /**
  * Story type for TypeScript support
@@ -144,7 +143,7 @@ export const ColorPalettes: Story = {
   render: (args) => {
     return (
       <Stack>
-        {colorPalettes.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack
             key={colorPalette as string}
             direction="row"
@@ -152,12 +151,16 @@ export const ColorPalettes: Story = {
             alignItems="center"
           >
             {variants.map((variant) => (
-              <IconButton
-                key={variant as string}
-                {...args}
-                variant={variant}
-                colorPalette={colorPalette}
-              />
+              <Tooltip.Root key={variant as string}>
+                <IconButton
+                  {...args}
+                  variant={variant}
+                  colorPalette={colorPalette}
+                />
+                <Tooltip.Content>
+                  {`${colorPalette} - ${variant}`}
+                </Tooltip.Content>
+              </Tooltip.Root>
             ))}
           </Stack>
         ))}
