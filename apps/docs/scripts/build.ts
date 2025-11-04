@@ -11,7 +11,7 @@ const config = {
     routesDir: path.resolve("./src/data/routes"),
     manifestPath: path.resolve("./src/data/route-manifest.json"),
     searchIndexPath: path.resolve("./src/data/search-index.json"),
-    typesDir: path.resolve("./public/generated/types"),
+    typesDir: path.resolve("./src/data/types"),
   },
   cache: {
     enabled: true,

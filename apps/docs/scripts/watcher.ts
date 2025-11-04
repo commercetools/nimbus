@@ -16,7 +16,7 @@ const PACKAGES_DIR = path.resolve("../../packages");
 const ROUTES_DIR = path.resolve("./src/data/routes");
 const MANIFEST_PATH = path.resolve("./src/data/route-manifest.json");
 const SEARCH_INDEX_PATH = path.resolve("./src/data/search-index.json");
-const TYPES_DIR = path.resolve("./public/generated/types");
+const TYPES_DIR = path.resolve("./src/data/types");
 const COMPONENT_INDEX_PATH = path.resolve("../../packages/nimbus/src/index.ts");
 
 // In-memory storage for generating manifest and search index

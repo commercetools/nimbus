@@ -96,8 +96,8 @@ export async function parseTypesToFiles(
     // Write individual component type file
     await fs.writeFile(filePath, JSON.stringify(componentDoc, null, 2));
 
-    // Add to manifest
-    manifest[componentName] = filename;
+    // Add to manifest (without .json extension, similar to routes)
+    manifest[componentName] = componentName;
   }
 
   // Write manifest file
