@@ -20,6 +20,13 @@ const routeModules = import.meta.glob<DocData>("../data/routes/*.json", {
   import: "default",
 });
 
+// Debug: Log module keys on initialization
+console.log(
+  "🔍 [INIT] routeModules keys:",
+  Object.keys(routeModules).slice(0, 10)
+);
+console.log("🔍 [INIT] Total modules:", Object.keys(routeModules).length);
+
 /**
  * Hook to load component documentation data.
  * Uses the manifest to resolve the file path, then dynamically imports the JSON data.
@@ -58,13 +65,31 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         // Extract filename from chunk name
         const filename = route.chunkName.replace("route-", "");
 
+        // Debug logging to see what's available
+        console.log("🔍 Looking for filename:", filename);
+        console.log("🔍 Route chunkName:", route.chunkName);
+        console.log(
+          "🔍 Total available modules:",
+          Object.keys(routeModules).length
+        );
+        console.log(
+          "🔍 First 5 module keys:",
+          Object.keys(routeModules).slice(0, 5)
+        );
+
         // Load the main doc JSON using the pre-defined glob imports
         // Find the importer by matching the filename in the key (handles both dev and prod path formats)
-        const docImporter = Object.entries(routeModules).find(([key]) =>
-          key.endsWith(`/${filename}.json`)
-        )?.[1];
+        const docImporter = Object.entries(routeModules).find(([key]) => {
+          const matches = key.endsWith(`/${filename}.json`);
+          if (filename.includes("components-inputs-button")) {
+            console.log(`🔍 Checking key: ${key}, matches: ${matches}`);
+          }
+          return matches;
+        })?.[1];
 
         if (!docImporter) {
+          console.error("❌ No importer found for filename:", filename);
+          console.error("❌ All available keys:", Object.keys(routeModules));
           throw new Error(`Route data file not found: ${filename}`);
         }
 
