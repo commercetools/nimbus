@@ -31,9 +31,7 @@
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
     "test": "pnpm vitest run",
     "test:unit": "pnpm vitest run --project=unit",
-    "test:storybook": "pnpm vitest run --project=storybook",
-    "validate:content": "pnpm exec tsx packages/nimbus/scripts/validate-content.ts",
-    "validate:content:fix": "pnpm exec tsx packages/nimbus/scripts/validate-content.ts --fix"
+    "test:storybook": "pnpm vitest run --project=storybook"
   },
   "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
   "pnpm": {
@@ -70,24 +68,12 @@
     "eslint-plugin-prettier": "catalog:tooling",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
-    "gray-matter": "catalog:",
-    "mdast-util-toc": "catalog:",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
-    "react-docgen-typescript": "catalog:",
-    "remark": "catalog:",
-    "remark-flexible-toc": "catalog:",
-    "remark-gfm": "catalog:",
-    "remark-mdx": "catalog:",
-    "remark-parse": "catalog:",
-    "sharp": "catalog:",
-    "to-vfile": "catalog:",
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "unified": "catalog:",
     "vite-bundle-analyzer": "catalog:tooling",
-    "vitest": "catalog:tooling",
-    "zod": "catalog:"
+    "vitest": "catalog:tooling"
   }
 }
