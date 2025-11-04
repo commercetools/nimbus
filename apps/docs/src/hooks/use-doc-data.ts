@@ -13,6 +13,13 @@ type UseDocDataReturn = {
   error: Error | null;
 };
 
+// Use import.meta.glob to statically analyze and bundle all route JSON files at build time
+// This enables Vite to properly handle dynamic imports in production
+const routeModules = import.meta.glob<DocData>("../data/routes/*.json", {
+  eager: false,
+  import: "default",
+});
+
 /**
  * Hook to load component documentation data.
  * Uses the manifest to resolve the file path, then dynamically imports the JSON data.
@@ -51,21 +58,34 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         // Extract filename from chunk name
         const filename = route.chunkName.replace("route-", "");
 
-        // Load the main doc JSON
-        const docData = await import(`../data/routes/${filename}.json`);
-        setDoc(docData.default || docData);
+        // Construct the import path to match the glob pattern
+        const importPath = `../data/routes/${filename}.json`;
+
+        // Load the main doc JSON using the pre-defined glob imports
+        const docImporter = routeModules[importPath];
+        if (!docImporter) {
+          throw new Error(`Route data file not found: ${filename}`);
+        }
+
+        const docData = await docImporter();
+        setDoc(docData);
 
         // Load related docs if specified (limit to 3)
-        const relatedIds = (docData.default?.relatedDocs ||
-          docData.relatedDocs ||
-          []) as string[];
+        const relatedIds = (docData?.relatedDocs || []) as string[];
         const relatedPromises = relatedIds
           .slice(0, 3)
-          .map((id: string) =>
-            import(`../data/routes/${id}.json`)
-              .then((data) => data.default || data)
-              .catch(() => null)
-          );
+          .map(async (id: string) => {
+            const relatedPath = `../data/routes/${id}.json`;
+            const relatedImporter = routeModules[relatedPath];
+            if (!relatedImporter) {
+              return null;
+            }
+            try {
+              return await relatedImporter();
+            } catch {
+              return null;
+            }
+          });
 
         const relatedData = await Promise.all(relatedPromises);
         setRelatedDocs(relatedData.filter((d): d is DocData => d !== null));
