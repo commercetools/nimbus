@@ -43,12 +43,30 @@ export function mdxHmrPlugin(): Plugin {
           // Trigger rebuild of affected route data
           await rebuildRouteData(file);
 
-          // Invalidate route manifest module
-          const routeManifestModule =
-            server.moduleGraph.getModuleById(ROUTE_MANIFEST_PATH);
-          if (routeManifestModule) {
-            server.moduleGraph.invalidateModule(routeManifestModule);
+          // Invalidate multiple modules for granular updates
+          const modulesToInvalidate = [
+            // Route manifest
+            ROUTE_MANIFEST_PATH,
+            // Specific route data file (derived from file path)
+            path.join(
+              REPO_ROOT,
+              "apps/docs/src/data/routes",
+              `${path.basename(file, ".mdx")}.json`
+            ),
+          ];
+
+          let invalidatedCount = 0;
+          for (const modulePath of modulesToInvalidate) {
+            const module = server.moduleGraph.getModuleById(modulePath);
+            if (module) {
+              server.moduleGraph.invalidateModule(module);
+              invalidatedCount++;
+            }
           }
+
+          console.log(
+            `🔄 Invalidated ${invalidatedCount} module(s) for ${route}`
+          );
 
           // Send HMR update
           server.ws.send({
@@ -80,14 +98,24 @@ export function mdxHmrPlugin(): Plugin {
         return `
           if (import.meta.hot) {
             import.meta.hot.on("mdx-update", (data) => {
-              console.log('[MDX HMR] Content updated:', data.route);
+              console.log('[MDX HMR] Content updated:', data.route, 'at', new Date(data.timestamp).toLocaleTimeString());
 
               // Check if current route matches updated route
               const currentPath = window.location.pathname;
               if (currentPath === data.route || currentPath.startsWith(data.route + '/')) {
-                // Reload the current route's data
-                window.location.reload();
+                console.log('[MDX HMR] Current route matches, invalidating modules...');
+
+                // Invalidate the specific route data file and manifest
+                // This will trigger React components to re-fetch the data
+                import.meta.hot.invalidate();
+              } else {
+                console.log('[MDX HMR] Update is for different route, no action needed');
               }
+            });
+
+            // Also listen for full manifest updates
+            import.meta.hot.accept(() => {
+              console.log('[MDX HMR] Module accepted, letting React handle the update');
             });
           }
         `;

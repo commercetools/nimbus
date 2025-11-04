@@ -52,6 +52,9 @@ const ManifestContext = createContext<ManifestContextValue | undefined>(
 /**
  * ManifestProvider loads and provides both route and types manifests to the entire app.
  * Both manifests are loaded once at app startup for optimal performance.
+ *
+ * HMR Support: When manifest files change during development, this component
+ * automatically reloads them using cache-busting timestamps.
  */
 export function ManifestProvider({ children }: { children: ReactNode }) {
   const [routeManifest, setRouteManifest] = useState<RouteManifest | null>(
@@ -61,11 +64,14 @@ export function ManifestProvider({ children }: { children: ReactNode }) {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
+  // Version state for HMR - increment to trigger re-load
+  const [manifestVersion, setManifestVersion] = useState(0);
 
   useEffect(() => {
-    // Load both manifests on mount
+    // Load both manifests on mount and when manifestVersion changes (HMR)
     const loadManifests = async () => {
       try {
+        // Dynamic import - Vite's module graph will provide fresh data after HMR invalidation
         const [routeData, typesData] = await Promise.all([
           import("../data/route-manifest.json"),
           import("../data/types/manifest.json"),
@@ -81,6 +87,33 @@ export function ManifestProvider({ children }: { children: ReactNode }) {
     };
 
     loadManifests();
+  }, [manifestVersion]);
+
+  // HMR: Accept updates to manifest files and trigger reload
+  useEffect(() => {
+    if (import.meta.hot) {
+      // Accept changes to manifest files - new modules passed as callback parameter
+      import.meta.hot.accept(
+        ["../data/route-manifest.json", "../data/types/manifest.json"],
+        ([newRouteModule, newTypesModule]) => {
+          console.log("[HMR] Manifest files updated, applying changes...");
+
+          // If new modules provided directly, use them
+          if (newRouteModule) {
+            setRouteManifest(newRouteModule.default || newRouteModule);
+          }
+          if (newTypesModule) {
+            setTypesManifest(newTypesModule.default || newTypesModule);
+          }
+
+          // If modules not provided, increment version to re-import
+          if (!newRouteModule || !newTypesModule) {
+            setIsLoading(true);
+            setManifestVersion((v) => v + 1);
+          }
+        }
+      );
+    }
   }, []);
 
   // Memoize context value to prevent unnecessary rerenders in consumers
