@@ -155,6 +155,7 @@ export const Blockquote = (props: BlockquoteProps) => {
             return cloneElement(child as ReactElement, {
               children: [
                 <Box
+                  key="blockquote-flavor-icon"
                   position="relative"
                   top="-50"
                   mr="100"
@@ -165,7 +166,7 @@ export const Blockquote = (props: BlockquoteProps) => {
                 >
                   {cleanQuoteFlavor(firstChild.trim())}
                 </Box>,
-                ...child.props.children.slice(2),
+                ...Children.toArray(child.props.children.slice(2)),
               ],
               mt: "400",
               //mb: "200",
