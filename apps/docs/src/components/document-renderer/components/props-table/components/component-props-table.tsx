@@ -1,11 +1,14 @@
 import { Box, Stack, Text, LoadingSpinner } from "@commercetools/nimbus";
 import { useState, useEffect, useMemo } from "react";
 import type { ComponentDoc } from "react-docgen-typescript";
-import { loadComponentType } from "../../../../../atoms/types.ts";
-import { useManifest } from "../../../../../contexts/manifest-context";
-import type { PropItem } from "../types";
-import { groupProps } from "../utils";
-import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
+import { loadComponentType } from "@/atoms/types";
+import { useManifest } from "@/contexts/manifest-context";
+import type { PropItem } from "@/components/document-renderer/components/props-table/types";
+import { groupProps } from "@/components/document-renderer/components/props-table/utils";
+import {
+  PROP_GROUPS,
+  DEFAULT_EXPANDED,
+} from "@/components/document-renderer/components/props-table/constants";
 import { StylePropsSupportBanner } from "./style-props-banner";
 import { CollapsiblePropsCategory } from "./collapsible-props-category";
 
