@@ -5,13 +5,12 @@
  * All routes are dynamically resolved from MDX file menu properties.
  */
 
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import { AppWithRouter } from "./components/app-with-router";
+import { Routes, Route, useNavigate, Navigate, Outlet } from "react-router-dom";
 import { DynamicLayout } from "./layouts/dynamic-layout";
 import { ManifestProvider } from "./contexts/manifest-context";
 import { BreadcrumbProvider } from "./contexts/breadcrumb-context";
 import { ErrorBoundary } from "./components/error-boundary";
-import { NimbusProvider } from "@commercetools/nimbus";
+import { NimbusProvider, Box } from "@commercetools/nimbus";
 import DynamicRoute from "./routes/dynamic-route";
 
 function App() {
@@ -24,7 +23,11 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={<AppWithRouter />}
+              element={
+                <Box fontSize="350">
+                  <Outlet />
+                </Box>
+              }
               errorElement={<ErrorBoundary />}
             >
               <Route
