@@ -87,8 +87,18 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
           return matches;
         })?.[1];
 
-        // Fallback: If file not found in glob (can happen in Vercel builds due to timing),
-        // try dynamic import as a last resort
+        // Fallback 1: Try ID-based filename (legacy naming: Forms-Button → forms-button)
+        if (!docImporter && route.id) {
+          const idBasedFilename = route.id.toLowerCase().replace(/_/g, "-");
+          console.warn(
+            `⚠️  Trying ID-based filename as fallback: ${idBasedFilename}`
+          );
+          docImporter = Object.entries(routeModules).find(([key]) =>
+            key.endsWith(`/${idBasedFilename}.json`)
+          )?.[1];
+        }
+
+        // Fallback 2: If file still not found in glob, try dynamic import as last resort
         let docData: DocData;
         if (!docImporter) {
           console.warn(
@@ -97,10 +107,34 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
           try {
             docData = await import(`../data/routes/${filename}.json`);
           } catch (dynamicImportError) {
-            console.error("❌ No importer found for filename:", filename);
-            console.error("❌ All available keys:", Object.keys(routeModules));
-            console.error("❌ Dynamic import also failed:", dynamicImportError);
-            throw new Error(`Route data file not found: ${filename}`);
+            // Try ID-based filename with dynamic import too
+            if (route.id) {
+              const idBasedFilename = route.id.toLowerCase().replace(/_/g, "-");
+              try {
+                console.warn(
+                  `⚠️  Trying dynamic import with ID-based filename: ${idBasedFilename}`
+                );
+                docData = await import(
+                  `../data/routes/${idBasedFilename}.json`
+                );
+              } catch {
+                console.error("❌ No importer found for filename:", filename);
+                console.error("❌ Also tried ID-based:", idBasedFilename);
+                console.error(
+                  "❌ All available keys:",
+                  Object.keys(routeModules)
+                );
+                throw new Error(`Route data file not found: ${filename}`);
+              }
+            } else {
+              console.error("❌ No importer found for filename:", filename);
+              console.error(
+                "❌ All available keys:",
+                Object.keys(routeModules)
+              );
+              console.error("❌ Dynamic import failed:", dynamicImportError);
+              throw new Error(`Route data file not found: ${filename}`);
+            }
           }
         } else {
           docData = await docImporter();
