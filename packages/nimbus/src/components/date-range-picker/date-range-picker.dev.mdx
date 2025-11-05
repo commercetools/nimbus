@@ -132,7 +132,7 @@ For scenarios requiring programmatic control or coordination with other componen
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <Stack direction="column" gap="400">
@@ -217,7 +217,7 @@ A common use case is filtering lists or tables by date range:
 
 ```jsx-live-dev
 const App = () => {
-  const [dateRange, setDateRange] = useState<DateRange | null>(null);
+  const [dateRange, setDateRange] = useState<DateRangePickerProps["value"]>(null);
 
   // In a real application, you'd filter data based on dateRange
   const appliedFilter = dateRange
@@ -244,7 +244,7 @@ For e-commerce scenarios like setting up promotions, sales, or limited-time offe
 
 ```jsx-live-dev
 const App = () => {
-  const [promotionRange, setPromotionRange] = useState<DateRange | null>(null);
+  const [promotionRange, setPromotionRange] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <Stack direction="column" gap="400">

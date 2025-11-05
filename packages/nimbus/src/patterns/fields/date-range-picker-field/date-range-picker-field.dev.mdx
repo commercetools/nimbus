@@ -78,7 +78,7 @@ The simplest implementation with a label and controlled state:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <DateRangePickerField
@@ -102,7 +102,7 @@ Add helper text below the input to provide context:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <DateRangePickerField
@@ -121,7 +121,7 @@ Show error messages when the field is touched and has validation errors:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
   const [touched, setTouched] = useState<boolean>(false);
 
   // Simulate validation errors
@@ -150,7 +150,7 @@ Provide additional context through an info button and popover:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <DateRangePickerField
@@ -170,8 +170,8 @@ Two size options are available to match your form density:
 
 ```jsx-live-dev
 const App = () => {
-  const [valueSm, setValueSm] = useState<DateRange | null>(null);
-  const [valueMd, setValueMd] = useState<DateRange | null>(null);
+  const [valueSm, setValueSm] = useState<DateRangePickerProps["value"]>(null);
+  const [valueMd, setValueMd] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <Stack direction="column" gap="400">
@@ -200,7 +200,7 @@ Include time selection by setting the granularity prop:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <DateRangePickerField
@@ -222,7 +222,7 @@ Control field interactivity and validation with state props:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRange | null>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
     <Stack direction="column" gap="400">
