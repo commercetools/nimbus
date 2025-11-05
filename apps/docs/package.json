@@ -8,10 +8,8 @@
     "build:docs": "npx tsx ./scripts/build.ts",
     "build:app": "vite build",
     "copy-index": "cp dist/index.html dist/404.html",
-    "build:analyze": "pnpm build:app && open dist/stats.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
-    "preview": "vite preview",
-    "analyze": "open dist/stats.html"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",
@@ -68,7 +66,6 @@
     "eslint-plugin-react-hooks": "catalog:tooling",
     "eslint-plugin-react-refresh": "catalog:tooling",
     "globals": "catalog:tooling",
-    "rollup-plugin-visualizer": "^6.0.5",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
     "vite": "catalog:tooling",

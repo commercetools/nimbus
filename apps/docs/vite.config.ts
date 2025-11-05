@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react-swc";
 import { fileSystemApiPlugin } from "./vite-plugins/vite-plugin-fs-api";
 import { mdxHmrPlugin } from "./vite-plugins/vite-plugin-mdx-hmr";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { visualizer } from "rollup-plugin-visualizer";
 import viteCompression from "vite-plugin-compression";
 import path from "path";
 
@@ -25,13 +24,6 @@ export default defineConfig({
     tsconfigPaths(),
     fileSystemApiPlugin(),
     mdxHmrPlugin(),
-    // Bundle analyzer (only in analyze mode)
-    visualizer({
-      open: false,
-      filename: "dist/stats.html",
-      gzipSize: true,
-      brotliSize: true,
-    }),
     // Gzip and Brotli compression
     viteCompression({
       algorithm: "gzip",
