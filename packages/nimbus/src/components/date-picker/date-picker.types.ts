@@ -1,4 +1,4 @@
-import type { DateInputProps } from "../date-input";
+import type { DateInputProps } from "../date-input/date-input.types";
 import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
 import type {

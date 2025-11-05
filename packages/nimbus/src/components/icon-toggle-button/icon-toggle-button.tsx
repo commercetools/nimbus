@@ -1,4 +1,4 @@
-import { ToggleButton } from "@/components/toggle-button";
+import { ToggleButton } from "@/components/toggle-button/toggle-button";
 import type { IconToggleButtonProps } from "./icon-toggle-button.types";
 
 /**

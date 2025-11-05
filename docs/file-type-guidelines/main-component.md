@@ -462,6 +462,133 @@ export const Button = (props: ButtonProps) => {
 };
 ```
 
+## Cross-Component Imports (CRITICAL)
+
+### The Problem: Circular Chunk Dependencies
+
+Nimbus uses Vite to create **separate chunks for each component** via their
+`index.ts` barrel exports. This enables tree-shaking for consumers but creates a
+critical constraint for internal development:
+
+**When Component A imports from Component B's barrel export (`index.ts`), it
+creates a dependency on Component B's entire chunk, which can cause:**
+
+1. **Circular chunk dependencies** - Rollup warnings during build
+2. **Increased bundle size** - Loading entire component chunks unnecessarily
+3. **Build failures** - Circular dependencies can prevent builds
+
+### The Solution: Direct File Imports
+
+**Rule:** When importing components or types from a DIFFERENT component
+directory, import directly from the implementation file, NOT the barrel export.
+
+#### Type Imports Across Components
+
+```typescript
+// ❌ WRONG - Imports from barrel export
+import type { ToggleButtonProps } from "../toggle-button";
+
+// ✅ CORRECT - Imports from implementation file
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+```
+
+**Real example:** `icon-toggle-button.types.ts` needs to extend
+`ToggleButtonProps`:
+
+```typescript
+// icon-toggle-button.types.ts
+// ✅ CORRECT
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+
+export type IconToggleButtonProps = ToggleButtonProps & {
+  // Additional props...
+};
+```
+
+#### Component Imports Across Components
+
+```typescript
+// ❌ WRONG - Imports from barrel export
+import { IconToggleButton } from "@/components/icon-toggle-button";
+import { Button } from "@/components";
+
+// ✅ CORRECT - Imports from implementation file
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { Button } from "@/components/button/button";
+```
+
+**Real example:** `rich-text-toolbar.tsx` needs `IconToggleButton`:
+
+```typescript
+// rich-text-toolbar.tsx
+// ✅ CORRECT - Direct import from implementation file
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { Button } from "@/components/button/button";
+
+// Other Nimbus components imported from main barrel export are fine
+// because rich-text-toolbar doesn't have its own barrel export (it's internal)
+import {
+  ToggleButtonGroup,
+  IconButton,
+  Text,
+  Separator,
+} from "@/components";
+```
+
+### When to Use Direct Imports
+
+✅ **USE direct file imports when:**
+
+- Importing components from a DIFFERENT component directory
+- Type-only imports across components
+- Compound component parts accessing other components
+- Any import that could create a chunk-to-chunk dependency
+
+❌ **DON'T use direct imports when:**
+
+- Importing within the SAME component directory (use relative paths:
+  `./button.slots`, `./button.types`)
+- Importing from utilities, hooks, or other non-component modules (they don't
+  have separate chunks)
+- Your component doesn't have its own `index.ts` barrel export (internal
+  components like `rich-text-toolbar.tsx` can import from `@/components`)
+
+### Import Pattern Reference
+
+```typescript
+// WITHIN same component directory - use relative paths
+import { ButtonSlot } from "./button.slots";
+import type { ButtonProps } from "./button.types";
+import { useButtonState } from "./hooks/use-button-state";
+
+// ACROSS component directories - use direct file imports
+import { Icon } from "@/components/icon/icon";
+import type { IconProps } from "@/components/icon/icon.types";
+import { Badge } from "@/components/badge/badge";
+
+// Non-component modules - use barrel exports (no chunking issues)
+import { extractStyleProps } from "@/utils";
+import { useBreakpoint } from "@/hooks";
+```
+
+### Why Consumer Imports Still Work
+
+**Consumers of Nimbus still use barrel exports normally:**
+
+```typescript
+// Consumer code - this is fine!
+import { Button, Badge, Icon } from "@commercetools/nimbus";
+```
+
+This works because:
+
+1. Consumers import from the **main package entry point**
+   (`dist/index.es.js`), not individual component chunks
+2. The package build resolves all internal dependencies
+3. Consumers' bundlers handle tree-shaking based on what they import
+
+**The direct import pattern is ONLY for internal Nimbus development.**
+
 ## Internationalization (i18n)
 
 ### When Needed
@@ -673,7 +800,6 @@ export const CustomButton = (props: CustomButtonProps) => {
       components only)
 
 ### Exports
-
 
 ---
 

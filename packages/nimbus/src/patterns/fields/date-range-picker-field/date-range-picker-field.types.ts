@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { DateRangePickerProps } from "@/components/date-range-picker";
+import type { DateRangePickerProps } from "@/components/date-range-picker/date-range-picker.types";
 import type { FieldErrorsData } from "@/components";
 
 /**

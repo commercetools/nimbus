@@ -3,7 +3,7 @@ import type {
   MenuTriggerProps as RaMenuTriggerProps,
   MenuProps as RaMenuProps,
 } from "react-aria-components";
-import type { ButtonProps } from "../button";
+import type { ButtonProps } from "../button/button.types";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
