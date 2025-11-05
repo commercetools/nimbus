@@ -7,6 +7,7 @@ import {
   parseTypesToFiles,
   generateRouteManifest,
   generateSearchIndex,
+  getPathFromMonorepoRoot,
   flog,
   type MdxDocument,
 } from "@commercetools/nimbus-docs-build";
@@ -21,6 +22,9 @@ const COMPONENT_INDEX_PATH = path.resolve("../../packages/nimbus/src/index.ts");
 
 // In-memory storage for generating manifest and search index
 const documentation: Map<string, MdxDocument> = new Map();
+
+// Map size monitoring configuration
+const MAX_EXPECTED_DOCS = 1000; // Adjust based on project size
 
 /**
  * Write individual route JSON file
@@ -51,6 +55,19 @@ async function deleteRouteFile(doc: MdxDocument): Promise<void> {
 }
 
 /**
+ * Check Map health and warn if size exceeds expected threshold
+ */
+function checkMapHealth(): void {
+  const size = documentation.size;
+  if (size > MAX_EXPECTED_DOCS) {
+    console.warn(
+      `[WARNING] Documentation Map has ${size} entries (expected < ${MAX_EXPECTED_DOCS}). ` +
+        `Possible memory leak or unexpected file growth.`
+    );
+  }
+}
+
+/**
  * Debounced function to write manifest and search index
  */
 const writeManifestAndSearch = debounce(async () => {
@@ -62,6 +79,9 @@ const writeManifestAndSearch = debounce(async () => {
 
   // Generate search index (function writes to file internally)
   await generateSearchIndex(documentation, SEARCH_INDEX_PATH);
+
+  // Monitor Map size after operations
+  checkMapHealth();
 }, 500);
 
 /**
@@ -89,6 +109,10 @@ async function handleMdxChange(filePath: string): Promise<void> {
     const doc = await parseMdxFile(targetPath);
 
     if (doc) {
+      // Check if this is an update or new entry
+      const existingDoc = documentation.get(doc.meta.repoPath);
+      const isUpdate = !!existingDoc;
+
       // Store in memory
       documentation.set(doc.meta.repoPath, doc);
 
@@ -101,10 +125,12 @@ async function handleMdxChange(filePath: string): Promise<void> {
       const viewCount = doc.meta.tabs.length;
       if (viewCount > 1) {
         flog(
-          `[MDX] Parsed ${path.basename(targetPath)} with ${viewCount} views: ${doc.meta.tabs.map((t) => t.key).join(", ")}`
+          `[MDX] ${isUpdate ? "Updated" : "Added"} ${path.basename(targetPath)} with ${viewCount} views: ${doc.meta.tabs.map((t) => t.key).join(", ")} (Map size: ${documentation.size})`
         );
       } else {
-        flog(`[MDX] Parsed ${path.basename(targetPath)}`);
+        flog(
+          `[MDX] ${isUpdate ? "Updated" : "Added"} ${path.basename(targetPath)} (Map size: ${documentation.size})`
+        );
       }
     }
   } catch (error) {
@@ -116,21 +142,35 @@ async function handleMdxChange(filePath: string): Promise<void> {
  * Handle MDX file deletion
  */
 async function handleMdxDelete(filePath: string): Promise<void> {
-  // Find and remove from documentation
-  let docToDelete: MdxDocument | undefined;
+  try {
+    // Get the same repoPath format that was used when storing the document
+    const repoPathToDelete = await getPathFromMonorepoRoot(filePath);
 
-  for (const [repoPath, doc] of documentation.entries()) {
-    if (repoPath.includes(path.basename(filePath))) {
-      docToDelete = doc;
-      documentation.delete(repoPath);
-      break;
+    // Find document by exact repoPath match
+    const docToDelete = documentation.get(repoPathToDelete);
+
+    if (docToDelete) {
+      // Delete from in-memory map
+      documentation.delete(repoPathToDelete);
+
+      // Delete route file
+      await deleteRouteFile(docToDelete);
+
+      // Regenerate manifest and search index
+      await writeManifestAndSearch();
+
+      flog(
+        `[MDX] Removed ${path.basename(filePath)} from documentation (Map size: ${documentation.size})`
+      );
+    } else {
+      // Not found - might be a view file (e.g., button.dev.mdx)
+      // View files trigger re-parsing of main file, so no explicit deletion needed
+      flog(
+        `[MDX] Skipped deletion for ${path.basename(filePath)} (not found in documentation map)`
+      );
     }
-  }
-
-  if (docToDelete) {
-    await deleteRouteFile(docToDelete);
-    await writeManifestAndSearch();
-    flog(`[MDX] Removed ${path.basename(filePath)} from documentation`);
+  } catch (error) {
+    console.error(`Error handling MDX deletion for ${filePath}:`, error);
   }
 }
 
