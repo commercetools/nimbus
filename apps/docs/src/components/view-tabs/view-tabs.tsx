@@ -96,7 +96,6 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
       position="sticky"
       top="0"
       zIndex="1"
-      mb="200"
       css={{
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
         opacity: isVisible ? 1 : 0,

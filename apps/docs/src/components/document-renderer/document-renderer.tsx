@@ -7,6 +7,7 @@ import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import { useActiveView } from "@/hooks/use-active-view";
 import { ViewTabs } from "@/components/view-tabs";
+import { DocMetadata } from "@/components/doc-metadata";
 import type { TabMetadata } from "@/types";
 
 // Constant empty array to prevent creating new references on every render
@@ -70,12 +71,23 @@ const DocumentRendererComponent = () => {
       <title>{pageTitle}</title>
       <Box width="full" maxWidth="4xl">
         <Stack gap="400">
-          {lifecycleInfo && (
+          {!hasMultipleViews && lifecycleInfo && (
             <Flex alignItems="center" justifyContent="flex-end">
               <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
                 {lifecycleInfo.label}
               </Badge>
             </Flex>
+          )}
+
+          {/* Show metadata introduction if multiple views are available */}
+          {hasMultipleViews && (
+            <DocMetadata
+              title={meta.title}
+              description={meta.description}
+              tags={meta.tags}
+              lifecycleState={meta.lifecycleState}
+              figmaLink={meta.figmaLink}
+            />
           )}
 
           {/* Show tabs if multiple views are available */}
