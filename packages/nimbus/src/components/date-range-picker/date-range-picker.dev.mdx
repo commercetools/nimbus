@@ -139,7 +139,7 @@ const App = () => {
         value={value}
         onChange={setValue}
       />
-      <Text fontSize="sm" color="neutral.11">
+      <Text fontSize="sm">
         {value ? `Selected: ${value.start} to ${value.end}` : 'No selection'}
       </Text>
     </Stack>
@@ -229,7 +229,7 @@ const App = () => {
         value={dateRange}
         onChange={setDateRange}
       />
-      <Text fontSize="sm" color="neutral.11">
+      <Text fontSize="sm">
         {appliedFilter}
       </Text>
     </Stack>
@@ -247,7 +247,6 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <Text fontWeight="500">Promotion Period</Text>
       <DateRangePicker
         granularity="minute"
         value={promotionRange}
@@ -255,7 +254,7 @@ const App = () => {
         hourCycle={24}
       />
       {promotionRange && (
-        <Text fontSize="sm" color="neutral.11">
+        <Text fontSize="sm">
           Promotion active from {promotionRange.start.toString()} to {promotionRange.end.toString()}
         </Text>
       )}

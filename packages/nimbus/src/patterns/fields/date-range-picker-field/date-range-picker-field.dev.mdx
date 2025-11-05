@@ -176,14 +176,12 @@ const App = () => {
     <Stack direction="column" gap="400">
       <DateRangePickerField
         label="Small Size"
-        description="Compact layout for dense forms"
         size="sm"
         value={valueSm}
         onChange={setValueSm}
       />
       <DateRangePickerField
         label="Medium Size"
-        description="Standard size for most forms"
         size="md"
         value={valueMd}
         onChange={setValueMd}
@@ -227,21 +225,18 @@ const App = () => {
     <Stack direction="column" gap="400">
       <DateRangePickerField
         label="Required Field"
-        description="This field must be filled"
         isRequired
         value={value}
         onChange={setValue}
       />
       <DateRangePickerField
         label="Disabled Field"
-        description="This field cannot be modified"
         isDisabled
         value={value}
         onChange={setValue}
       />
       <DateRangePickerField
         label="Read-Only Field"
-        description="Display-only mode"
         isReadOnly
         value={value}
         onChange={setValue}
