@@ -106,7 +106,7 @@ export const BreadcrumbNav = () => {
           size="2xs"
           variant="ghost"
           onClick={handleCopyLink}
-          colorPalette={isCopied ? "success" : "neutral"}
+          colorPalette={isCopied ? "positive" : "neutral"}
         >
           <Icon as={isCopied ? CheckCircle : LinkIcon} />
           {isCopied ? "Link copied!" : "Copy link"}
