@@ -41,7 +41,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
         color: "primary.11",
       },
       _selected: {
-        color: "primary.11",
+        color: "primary.9",
         borderColor: "primary.9",
       },
       _disabled: {
