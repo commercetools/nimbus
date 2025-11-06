@@ -9,10 +9,6 @@ tab-order: 3
 ### Import
 
 ```tsx
-// Basic import
-import { DateRangePicker } from '@commercetools/nimbus';
-
-// TypeScript
 import { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbus';
 ```
 
@@ -60,6 +56,30 @@ const dateTime = parseDateTime('2024-01-15T14:30');
 const zonedDate = parseZonedDateTime('2024-01-15T14:30[America/New_York]');
 ```
 
+### Converting to ISO strings
+
+Use `.toString()` to convert date objects for API/backend consumption:
+
+```tsx
+// Convert individual dates
+const date = new CalendarDate(2024, 1, 15);
+date.toString(); // "2024-01-15"
+
+const dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);
+dateTime.toString(); // "2024-01-15T14:30:00"
+
+// Convert date ranges for API calls
+const dateRange = {
+  start: new CalendarDate(2024, 1, 15),
+  end: new CalendarDate(2024, 1, 20)
+};
+
+const apiPayload = {
+  startDate: dateRange.start.toString(), // "2024-01-15"
+  endDate: dateRange.end.toString()      // "2024-01-20"
+};
+```
+
 ### Date range structure
 
 The component expects and returns date ranges in this structure:
@@ -69,6 +89,9 @@ type DateRange = {
   start: CalendarDate | CalendarDateTime | ZonedDateTime;
   end: CalendarDate | CalendarDateTime | ZonedDateTime;
 }
+
+// Note: While TypeScript allows mixing types, always use the same type for both
+// start and end to avoid semantic issues.
 ```
 
 > [!TIP]\
@@ -78,7 +101,7 @@ type DateRange = {
 
 ### Size options
 
-Two size variants are available to match your interface density:
+The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx-live-dev
 const App = () => (
@@ -89,11 +112,9 @@ const App = () => (
 )
 ```
 
-Use `size="sm"` for compact layouts or dense data tables. Use `size="md"` (default) for standard forms and prominent date selection.
-
 ### Visual variants
 
-Choose between solid and ghost variants to match your design context:
+Choose between `solid` and `ghost` variants to match your design context:
 
 ```jsx-live-dev
 const App = () => (
@@ -103,8 +124,6 @@ const App = () => (
   </Stack>
 )
 ```
-
-The `solid` variant (default) provides clear visual boundaries. The `ghost` variant offers a minimal appearance suitable for embedded contexts.
 
 ### Granularity options
 
@@ -121,9 +140,34 @@ const App = () => (
 
 **Behavioral differences:**
 - `granularity="day"` (default): Calendar closes automatically after selecting the end date. Time inputs are hidden.
-- `granularity="minute"` or other time values: Calendar remains open after date selection, displaying time input fields in the footer. This allows users to set both dates and times in one interaction.
+- `granularity="hour" | "minute" | "second"`: Calendar remains open after date selection, displaying time input fields in the footer. This allows users to set both dates and times in one interaction.
 
-Available granularity options: `"day"`, `"hour"`, `"minute"`, `"second"`.
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedRange, setSelectedRange] = useState<string>('No selection');
+
+  return (
+    <>
+      <DateRangePicker
+        defaultValue={{
+          start: new CalendarDate(2025, 1, 15),
+          end: new CalendarDate(2025, 1, 20),
+        }}
+        onChange={(range) => {
+          setSelectedRange(range ? `${range.start} to ${range.end}` : 'No selection');
+        }}
+      />
+      <Text fontSize="sm">{selectedRange}</Text>
+    </>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected value without managing state yourself.
 
 ### Controlled state
 
@@ -187,17 +231,41 @@ All date values **must** use `@internationalized/date` types:
 
 ### Accessibility
 
-The DateRangePicker handles all accessibility requirements internally. However, for proper tracking and analytics, **always add an `aria-label`** if your use case warrants it:
+The DateRangePicker handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `DateRangePickerField` pattern component (recommended)
+- Associating a `<label>` element with the `DateRangePicker` using `aria-labelledby`:
 
 ```tsx
-<DateRangePicker aria-label="Report date range" />
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DateRangePicker aria-labelledby="label-id" />
 ```
 
-Using a `<label>` element or `aria-label` is also appropriate when the picker's purpose isn't clear from surrounding content:
+- Associating a `<label>` element with the `DateRangePicker` using `htmlFor`:
 
 ```tsx
-<label htmlFor="report-dates">Report date range</label>
-<DateRangePicker id="report-dates" />
+<label htmlFor="date-range-picker-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DateRangePicker id="date-range-picker-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<DateRangePicker aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-date-range-picker";
+
+export const Example = () => (
+  <DateRangePicker id={PERSISTENT_ID} />
+);
 ```
 
 #### Keyboard navigation
@@ -207,6 +275,10 @@ The component supports full keyboard interaction:
 - `Arrow keys`: Increment/decrement date segments and navigate calendar
 - `Enter` / `Space`: Open calendar, select dates
 - `Escape`: Close calendar popover
+
+## API reference
+
+<PropsTable id="DateRangePicker" />
 
 ## Common patterns
 
@@ -395,10 +467,6 @@ describe('DateRangePicker with time', () => {
   });
 });
 ```
-
-## API reference
-
-<PropsTable id="DateRangePicker" />
 
 ## Resources
 

@@ -4,13 +4,8 @@ tab-title: Implementation
 tab-order: 3
 ---
 
-## Why use DateRangePickerField?
 
-**The problem**: Manually composing DateRangePicker with FormField requires repetitive boilerplate code for labels, error handling, and accessibility attributes.
-
-**The solution**: DateRangePickerField handles all FormField integration automatically with a simple, consistent API.
-
-### Comparison: field pattern vs manual composition
+## Comparison: field pattern vs manual composition
 
 **With DateRangePickerField:**
 ```tsx
@@ -57,17 +52,13 @@ tab-order: 3
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
-- You're not using the error/touched pattern
+- You require a different error handling implementation
 
 ## Getting started
 
 ### Import
 
 ```tsx
-// Basic import
-import { DateRangePickerField } from '@commercetools/nimbus';
-
-// TypeScript
 import { DateRangePickerField, type DateRangePickerFieldProps } from '@commercetools/nimbus';
 ```
 
@@ -165,7 +156,7 @@ const App = () => {
 
 ### Size variants
 
-Two size options are available to match your form density:
+The `sm` and `md` size variants are available to match your form density:
 
 ```jsx-live-dev
 const App = () => {
@@ -284,16 +275,27 @@ DateRangePickerField provides comprehensive accessibility through [FormField](co
 - `Enter` / `Space`: Open calendar
 - `Escape`: Close calendar
 
-Depending on your use case, add an `aria-label` at the root level to support proper tracking and analytics:
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
-<DateRangePickerField
-  label="Report Period"
-  aria-label="Report date range"
-  value={value}
-  onChange={setValue}
-/>
+const PERSISTENT_ID = "report-date-range-picker";
+
+export const Example = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      id={PERSISTENT_ID}
+      label="Report Period"
+      description="Select the date range for your report"
+      value={value}
+      onChange={setValue}
+    />
+  );
+};
 ```
+
+**Note:** The `label` prop already provides an accessible name, so `aria-label` is not needed.
 
 ## Form integration
 
@@ -344,6 +346,10 @@ const MyForm = () => {
 - **OnBlur**: Mark field as touched on blur
 - **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="DateRangePickerField" />
 
 ### Custom error rendering
 
@@ -455,10 +461,6 @@ describe('DateRangePickerField error handling', () => {
   });
 });
 ```
-
-## API reference
-
-<PropsTable id="DateRangePickerField" />
 
 ## Resources
 
