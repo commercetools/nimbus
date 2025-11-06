@@ -35,7 +35,7 @@ type Story = StoryObj<typeof Select.Root>;
  */
 
 const selectSizes: SelectRootProps["size"][] = ["sm", "md"];
-const selectVariants: SelectRootProps["variant"][] = ["outline", "ghost"];
+const selectVariants: SelectRootProps["variant"][] = ["solid", "ghost"];
 
 const optionGroupOptions = [
   {

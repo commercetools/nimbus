@@ -187,7 +187,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           width: "7200",
         },
         value: {
-          ...selectSlotRecipe.variants?.variant.outline.trigger,
+          ...selectSlotRecipe.variants?.variant.solid.trigger,
           width: "100%",
         },
       },

@@ -182,7 +182,7 @@ export const selectSlotRecipe = defineSlotRecipe({
 
     // Visual style variants
     variant: {
-      outline: {
+      solid: {
         root: {
           bg: "primary.1",
           "&:hover": {
@@ -220,6 +220,6 @@ export const selectSlotRecipe = defineSlotRecipe({
   // Default variant values when not explicitly specified
   defaultVariants: {
     size: "md",
-    variant: "outline",
+    variant: "solid",
   },
 });
