@@ -65,8 +65,14 @@ export function useDocData(path: string | undefined): UseDocDataReturn {
         )?.[1];
 
         if (!docImporter) {
-          console.error("❌ No importer found for filename:", filename);
-          console.error("❌ All available keys:", Object.keys(routeModules));
+          console.error(
+            "❌ useDocData - No importer found for filename:",
+            filename
+          );
+          console.error(
+            "❌ useDocData - All available keys:",
+            Object.keys(routeModules)
+          );
           throw new Error(`Route data file not found: ${filename}`);
         }
 
