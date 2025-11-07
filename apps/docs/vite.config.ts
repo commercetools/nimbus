@@ -112,7 +112,7 @@ export default defineConfig({
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split(".");
           const ext = info[info.length - 1];
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+          if (/png|jpe?g|svg|gif|webp|avif|tiff|bmp|ico/i.test(ext)) {
             return `assets/images/[name]-[hash][extname]`;
           } else if (/woff2?|ttf|eot/i.test(ext)) {
             return `assets/fonts/[name]-[hash][extname]`;
