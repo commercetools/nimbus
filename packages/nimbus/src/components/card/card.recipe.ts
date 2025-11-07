@@ -58,7 +58,7 @@ export const cardRecipe = defineSlotRecipe({
     backgroundStyle: {
       default: {
         root: {
-          backgroundColor: "colorPalette.contrast",
+          backgroundColor: "bg",
         },
       },
       muted: {

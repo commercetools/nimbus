@@ -39,7 +39,7 @@ const links = [
 export const Frontpage = () => {
   return (
     <Stack gap="400">
-      <Card.Root borderStyle="outlined" cardPadding="md" elevation="elevated">
+      <Card.Root borderStyle="outlined">
         <Flex direction="column" width="100%" align="center" py="800">
           <Heading size="7xl" m="auto" letterSpacing={"-.025em"}>
             Nimbus
@@ -62,7 +62,7 @@ export const Frontpage = () => {
             href={link.href?.substring(1)}
             textDecoration="none"
           >
-            <Card.Root borderStyle="outlined" cardPadding="lg" width="full">
+            <Card.Root borderStyle="outlined" width="full">
               <Card.Content>
                 <Stack direction="row" gap="400" alignItems="center">
                   <Box>
