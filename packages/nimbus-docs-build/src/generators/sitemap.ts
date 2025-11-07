@@ -4,7 +4,9 @@
  * Generates sitemap.xml for SEO
  */
 import fs from "fs/promises";
+import path from "path";
 import type { RouteManifest } from "../types/mdx.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 /**
  * Generate sitemap.xml from route manifest
@@ -32,6 +34,8 @@ export async function generateSitemap(
 ${urls.join("\n")}
 </urlset>`;
 
-  await fs.writeFile(outputPath, sitemap, "utf-8");
+  const outputDir = path.dirname(outputPath);
+  const validatedPath = validateFilePath(outputDir, path.basename(outputPath));
+  await fs.writeFile(validatedPath, sitemap, "utf-8");
   console.log(`✓ Generated sitemap with ${urls.length} URLs`);
 }

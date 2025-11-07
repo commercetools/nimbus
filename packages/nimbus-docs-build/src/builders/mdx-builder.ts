@@ -4,11 +4,11 @@
  * Handles MDX file discovery, parsing, and per-route JSON generation
  */
 import fs from "fs/promises";
-import path from "path";
 import { parseAllMdx } from "../parsers/parse-mdx.js";
 import type { MdxDocument } from "../types/mdx.js";
 import { flog } from "../utils/logger.js";
 import { findFiles } from "../utils/file-utils.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 /**
  * Write per-route JSON files for all documents
@@ -24,7 +24,7 @@ async function writeRouteFiles(
   for (const [, doc] of docs) {
     // Use route field (derived from menu path) for consistent filenames across the system
     const routeId = doc.meta.route.replace(/\//g, "-");
-    const outputPath = path.join(outputDir, `${routeId}.json`);
+    const outputPath = validateFilePath(outputDir, `${routeId}.json`);
 
     // Write per-route JSON
     await fs.writeFile(outputPath, JSON.stringify(doc, null, 2));

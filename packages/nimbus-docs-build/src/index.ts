@@ -64,6 +64,7 @@ export {
   getPathFromMonorepoRoot,
   findFiles,
   findFilesByExtensions,
+  validateFilePath,
 } from "./utils/index.js";
 
 // Schemas and types

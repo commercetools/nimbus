@@ -4,6 +4,7 @@
  * Generates route configuration from parsed MDX documents
  */
 import fs from "fs/promises";
+import path from "path";
 import type {
   MdxDocument,
   RouteManifest,
@@ -12,6 +13,7 @@ import type {
 } from "../types/mdx.js";
 import { routeManifestSchema } from "../schemas/mdx-document.js";
 import { flog } from "../utils/logger.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 /**
  * Generate route manifest from parsed documents
@@ -90,7 +92,9 @@ export async function generateRouteManifest(
   const validatedManifest = routeManifestSchema.parse(manifest);
 
   // Write to disk
-  await fs.writeFile(outputPath, JSON.stringify(validatedManifest, null, 2));
+  const outputDir = path.dirname(outputPath);
+  const validatedPath = validateFilePath(outputDir, path.basename(outputPath));
+  await fs.writeFile(validatedPath, JSON.stringify(validatedManifest, null, 2));
 
   flog(`[Routes] Generated manifest with ${routes.length} routes`);
 

@@ -8,6 +8,7 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import type { BuildCache } from "../types/config.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 const DEFAULT_CACHE_DIR = ".cache";
 const CACHE_FILENAME = "build-cache.json";
@@ -17,11 +18,16 @@ const CACHE_FILENAME = "build-cache.json";
  */
 function getCachePath(cacheDir?: string): string {
   const dir = cacheDir || DEFAULT_CACHE_DIR;
-  return path.join(dir, CACHE_FILENAME);
+  // Validate cache directory path to prevent traversal
+  const baseDir = process.cwd();
+  return validateFilePath(baseDir, dir, CACHE_FILENAME);
 }
 
 /**
  * Calculate file hash for cache validation
+ *
+ * @param filePath - Absolute path to file (should be pre-validated by caller)
+ * @note Callers must ensure filePath is validated to prevent path traversal
  */
 export async function calculateFileHash(filePath: string): Promise<string> {
   const content = await fs.readFile(filePath, "utf-8");

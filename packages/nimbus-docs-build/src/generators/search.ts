@@ -4,8 +4,10 @@
  * Generates a searchable index from documentation
  */
 import fs from "fs/promises";
+import path from "path";
 import type { MdxDocument } from "../types/mdx.js";
 import { flog } from "../utils/logger.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 /**
  * Strip markdown formatting from text
@@ -41,7 +43,9 @@ export async function generateSearchIndex(
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
 
-  await fs.writeFile(outputPath, JSON.stringify(searchItems, null, 2));
+  const outputDir = path.dirname(outputPath);
+  const validatedPath = validateFilePath(outputDir, path.basename(outputPath));
+  await fs.writeFile(validatedPath, JSON.stringify(searchItems, null, 2));
 
   flog(`[Search] Generated index with ${searchItems.length} items`);
 }

@@ -9,6 +9,7 @@ import {
   generateSearchIndex,
   getPathFromMonorepoRoot,
   flog,
+  validateFilePath,
   type MdxDocument,
 } from "@commercetools/nimbus-docs-build";
 
@@ -31,7 +32,7 @@ const MAX_EXPECTED_DOCS = 1000; // Adjust based on project size
  */
 async function writeRouteFile(doc: MdxDocument): Promise<void> {
   const chunkName = doc.meta.route.replace(/\//g, "-");
-  const filePath = path.join(ROUTES_DIR, `${chunkName}.json`);
+  const filePath = validateFilePath(ROUTES_DIR, `${chunkName}.json`);
 
   // Ensure routes directory exists
   await fs.mkdir(ROUTES_DIR, { recursive: true });
@@ -45,7 +46,7 @@ async function writeRouteFile(doc: MdxDocument): Promise<void> {
  */
 async function deleteRouteFile(doc: MdxDocument): Promise<void> {
   const chunkName = doc.meta.route.replace(/\//g, "-");
-  const filePath = path.join(ROUTES_DIR, `${chunkName}.json`);
+  const filePath = validateFilePath(ROUTES_DIR, `${chunkName}.json`);
   try {
     await fs.unlink(filePath);
     flog(`[MDX] Deleted route: ${chunkName}.json`);

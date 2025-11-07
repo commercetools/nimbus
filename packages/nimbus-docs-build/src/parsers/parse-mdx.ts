@@ -15,6 +15,7 @@ import remarkFlexibleToc, {
 import { mdxDocumentSchema } from "../schemas/mdx-document.js";
 import type { MdxDocument, TocItem } from "../types/mdx.js";
 import { menuToPath, getPathFromMonorepoRoot } from "../utils/index.js";
+import { validateFilePath } from "../utils/validate-file-path.js";
 
 /**
  * Generate table of contents from MDX content (without frontmatter)
@@ -54,7 +55,7 @@ const getViewMdxFiles = async (
         const key = match ? match[1] : "";
         return {
           key,
-          filePath: path.join(dir, file),
+          filePath: validateFilePath(dir, file),
         };
       });
 
@@ -66,6 +67,9 @@ const getViewMdxFiles = async (
 
 /**
  * Parse a single MDX file and return its content, frontmatter, and TOC
+ *
+ * @param filePath - Absolute path to MDX file (should be pre-validated by caller)
+ * @note Callers must ensure filePath is validated to prevent path traversal
  */
 const parseSingleMdx = async (
   filePath: string
@@ -90,6 +94,9 @@ const parseSingleMdx = async (
 /**
  * Parse a single MDX file and return structured document data
  * Supports multi-view documentation (e.g., button.dev.mdx, button.api.mdx)
+ *
+ * @param filePath - Absolute path to MDX file (should be from trusted source like file discovery)
+ * @note This function reads from discovered MDX files within the packages directory
  */
 export async function parseMdxFile(
   filePath: string
