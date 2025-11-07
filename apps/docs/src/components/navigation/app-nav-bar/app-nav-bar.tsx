@@ -17,6 +17,8 @@ export const AppNavBar = () => {
       justifyContent="space-between"
       px="400"
       py="100"
+      // TODO: Remove this once we have a proper layout
+      maxWidth="1280px"
     >
       {/* Left: Logo + Main Menu */}
       <Stack direction="row" gap="400" alignItems="center" flexShrink="0">

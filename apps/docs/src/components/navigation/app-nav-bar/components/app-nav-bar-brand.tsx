@@ -1,4 +1,4 @@
-import { Box, Text, Stack, Badge, Link, Icon } from "@commercetools/nimbus";
+import { Box, Stack, Badge, Link, Icon } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 
 import { brandNameAtom } from "@/atoms/brand.ts";
