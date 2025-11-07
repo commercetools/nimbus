@@ -1,0 +1,59 @@
+/**
+ * Post-processing pipeline for react-docgen-typescript output.
+ * Applies metadata enrichment and filtering in a single in-memory pass.
+ */
+import type { ComponentDoc, PropItem } from "react-docgen-typescript";
+import { shouldFilterProp } from "./filter-props.js";
+
+/**
+ * Enrich component with metadata based on JSDoc tags and props.
+ * This adds aggregate information about the component at the top level.
+ *
+ * @param component - The component doc from react-docgen-typescript
+ * @returns Component-level metadata
+ */
+const enrichComponent = (component: ComponentDoc): Record<string, unknown> => {
+  // Check if component has @supportsStyleProps JSDoc tag
+  const supportsStyleProps = "supportsStyleProps" in (component.tags || {});
+
+  return {
+    supportsStyleProps,
+  };
+};
+
+/**
+ * Process parsed component types in a single pass:
+ * 1. Filter out unwanted props
+ * 2. Analyze filtered props to generate component-level metadata
+ * 3. Return component with metadata and filtered props
+ *
+ * This is a single-pass, in-memory operation with no disk I/O.
+ *
+ * @param rawParsedTypes - Raw output from react-docgen-typescript
+ * @param customPropFilter - Optional custom prop filter function
+ * @returns Processed component docs with filtered props and enriched metadata
+ */
+export const processComponentTypes = (
+  rawParsedTypes: ComponentDoc[],
+  customPropFilter?: (prop: PropItem) => boolean
+): ComponentDoc[] => {
+  return rawParsedTypes.map((component) => {
+    // Use custom filter if provided, otherwise use default
+    const filterFn = customPropFilter || shouldFilterProp;
+
+    // Step 1: Filter props
+    const filteredProps = Object.fromEntries(
+      Object.entries(component.props).filter(([, prop]) => filterFn(prop))
+    );
+
+    // Step 2: Generate component-level metadata from JSDoc tags and filtered props
+    const metadata = enrichComponent(component);
+
+    // Step 3: Return component with metadata and filtered props
+    return {
+      ...component,
+      ...metadata,
+      props: filteredProps,
+    };
+  });
+};

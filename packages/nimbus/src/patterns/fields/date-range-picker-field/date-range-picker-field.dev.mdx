@@ -1,0 +1,470 @@
+---
+title: DateRangePickerField Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+
+## Comparison: field pattern vs manual composition
+
+**With DateRangePickerField:**
+```tsx
+<DateRangePickerField
+  label="Event Date Range"
+  description="Select start and end dates"
+  value={dateRange}
+  onChange={setDateRange}
+  onBlur={() => formik.setFieldTouched('dateRange', true)}
+  errors={formik.errors.dateRange}
+  touched={formik.touched.dateRange}
+/>
+```
+
+**Manual composition:**
+```tsx
+<FormField.Root isInvalid={!!(formik.errors.dateRange && formik.touched.dateRange)}>
+  <FormField.Label>Event Date Range</FormField.Label>
+  <FormField.Input>
+    <DateRangePicker
+      value={dateRange}
+      onChange={setDateRange}
+      width="full"
+    />
+  </FormField.Input>
+  <FormField.Description>
+    Select start and end dates
+  </FormField.Description>
+  {formik.touched.dateRange && formik.errors.dateRange && (
+    <FormField.Error>{formik.errors.dateRange}</FormField.Error>
+  )}
+</FormField.Root>
+```
+
+### When to use which
+
+**Use DateRangePickerField when:**
+- Building standard forms with typical field layouts
+- You want consistent field patterns across your app
+- You need built-in error handling with FieldErrors
+- You want to minimize boilerplate code
+
+**Use DateRangePicker with manual FormField composition when:**
+- You need custom field layouts
+- You're building complex, non-standard forms
+- You need granular control over FormField sub-components
+- You require a different error handling implementation
+
+## Getting started
+
+### Import
+
+```tsx
+import { DateRangePickerField, type DateRangePickerFieldProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation with a label and controlled state:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Select Date Range"
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
+```
+
+### Working with date values
+
+DateRangePickerField uses the same `@internationalized/date` library as DateRangePicker.
+
+## Usage examples
+
+### With description
+
+Add helper text below the input to provide context:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Event Duration"
+      description="Select the start and end dates for your event"
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
+```
+
+### With validation errors
+
+Show error messages when the field is touched and has validation errors:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [touched, setTouched] = useState<boolean>(false);
+
+  // Simulate validation errors
+  const errors = !value && touched ? { missing: true } : undefined;
+
+  return (
+    <DateRangePickerField
+      label="Required Date Range"
+      description="Please select a date range"
+      value={value}
+      onChange={setValue}
+      onBlur={() => setTouched(true)}
+      errors={errors}
+      touched={touched}
+      isRequired
+    />
+  );
+}
+```
+
+**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+
+### With info popover
+
+Provide additional context through an info button and popover:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Report Period"
+      description="Select the date range for your report"
+      info="Date ranges are inclusive. Both the start and end dates will be included in the report results."
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
+```
+
+### Size variants
+
+The `sm` and `md` size variants are available to match your form density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSm, setValueSm] = useState<DateRangePickerProps["value"]>(null);
+  const [valueMd, setValueMd] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        label="Small Size"
+        size="sm"
+        value={valueSm}
+        onChange={setValueSm}
+      />
+      <DateRangePickerField
+        label="Medium Size"
+        size="md"
+        value={valueMd}
+        onChange={setValueMd}
+      />
+    </Stack>
+  );
+}
+```
+
+### With time selection
+
+Include time selection by setting the granularity prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Meeting Schedule"
+      description="Select date range with specific times"
+      granularity="minute"
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
+```
+
+When `granularity="minute"` (or other time values), the calendar remains open after date selection to allow time input.
+
+### Disabled, read-only, and required states
+
+Control field interactivity and validation with state props:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        label="Required Field"
+        isRequired
+        value={value}
+        onChange={setValue}
+      />
+      <DateRangePickerField
+        label="Disabled Field"
+        isDisabled
+        value={value}
+        onChange={setValue}
+      />
+      <DateRangePickerField
+        label="Read-Only Field"
+        isReadOnly
+        value={value}
+        onChange={setValue}
+      />
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Error handling
+
+DateRangePickerField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+**Error object format** (`FieldErrorsData`):
+```tsx
+type FieldErrorsData = {
+  [key: string]: boolean | string | ReactNode;
+};
+
+// Examples:
+const errors = {
+  missing: true,              // Built-in message: "This field is required"
+  format: true,               // Built-in message: "Please enter a valid format"
+  custom: "Custom error text" // Custom message
+};
+```
+
+### Accessibility
+
+DateRangePickerField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+**Keyboard Navigation:**
+- Inherited from DateRangePicker component
+- `Tab` / `Shift+Tab`: Navigate between segments and buttons
+- `Arrow keys`: Increment/decrement date segments
+- `Enter` / `Space`: Open calendar
+- `Escape`: Close calendar
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "report-date-range-picker";
+
+export const Example = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      id={PERSISTENT_ID}
+      label="Report Period"
+      description="Select the date range for your report"
+      value={value}
+      onChange={setValue}
+    />
+  );
+};
+```
+
+**Note:** The `label` prop already provides an accessible name, so `aria-label` is not needed.
+
+## Form integration
+
+DateRangePickerField integrates seamlessly with Formik:
+
+```tsx
+import { useFormik } from 'formik';
+import { DateRangePickerField } from '@commercetools/nimbus';
+
+const MyForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      dateRange: null,
+    },
+    validate: (values) => {
+      const errors = {};
+      if (!values.dateRange) {
+        errors.dateRange = { missing: true };
+      }
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('Submitted:', values);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <DateRangePickerField
+        name="dateRange"
+        label="Event Dates"
+        description="Select your event dates"
+        value={formik.values.dateRange}
+        onChange={(value) => formik.setFieldValue('dateRange', value)}
+        onBlur={() => formik.setFieldTouched('dateRange', true)}
+        errors={formik.errors.dateRange}
+        touched={formik.touched.dateRange}
+        isRequired
+      />
+      <Button type="submit">Submit</Button>
+    </form>
+  );
+};
+```
+
+**Key integration points:**
+- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
+- **OnBlur**: Mark field as touched on blur
+- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
+- **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="DateRangePickerField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<DateRangePickerField
+  label="Custom Validation"
+  value={value}
+  onChange={setValue}
+  errors={{ tooLong: true, overlap: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'tooLong':
+        return 'Date range cannot exceed 90 days';
+      case 'overlap':
+        return 'This date range overlaps with an existing booking';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
+
+## Testing your implementation
+
+### Basic rendering tests
+
+Verify the field renders with proper FormField structure:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { DateRangePickerField } from '@commercetools/nimbus';
+
+describe('DateRangePickerField', () => {
+  it('renders label and description', () => {
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        description="Select your event dates"
+      />
+    );
+
+    expect(screen.getByText('Event Dates')).toBeInTheDocument();
+    expect(screen.getByText('Select your event dates')).toBeInTheDocument();
+  });
+
+  it('renders DateRangePicker with date segments', () => {
+    render(<DateRangePickerField label="Dates" />);
+
+    // 6 segments: start (month, day, year) + end (month, day, year)
+    const segments = screen.getAllByRole('spinbutton');
+    expect(segments).toHaveLength(6);
+  });
+
+  it('shows required indicator when isRequired', () => {
+    render(<DateRangePickerField label="Required Field" isRequired />);
+
+    expect(screen.getByText('*')).toBeInTheDocument();
+  });
+});
+```
+
+### Error handling tests
+
+Test error display with touched state:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { DateRangePickerField } from '@commercetools/nimbus';
+
+describe('DateRangePickerField error handling', () => {
+  it('does not show errors when field is not touched', () => {
+    render(
+      <DateRangePickerField
+        label="Dates"
+        errors={{ missing: true }}
+        touched={false}
+      />
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('shows errors when field is touched and has errors', () => {
+    render(
+      <DateRangePickerField
+        label="Dates"
+        errors={{ missing: true }}
+        touched={true}
+      />
+    );
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText(/field is required/i)).toBeInTheDocument();
+  });
+
+  it('displays custom error messages', () => {
+    render(
+      <DateRangePickerField
+        label="Dates"
+        errors={{ custom: "Date range cannot exceed 30 days" }}
+        touched={true}
+      />
+    );
+
+    expect(screen.getByText("Date range cannot exceed 30 days")).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](link-tbd)
+- [DateRangePicker Component](components/inputs/daterangepicker)
+- [FormField Component](components/inputs/formfield)
+- [React Aria DateRangePicker](https://react-spectrum.adobe.com/react-aria/DateRangePicker.html)

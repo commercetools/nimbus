@@ -1,0 +1,218 @@
+/**
+ * AppFrame - Holy Grail Layout Component
+ *
+ * Implements a 3-column layout with sticky header
+ * All built with Nimbus components
+ */
+
+import type { ReactNode } from "react";
+import { Box, Grid } from "@commercetools/nimbus";
+
+export interface AppFrameRootProps {
+  children: ReactNode;
+}
+
+export interface AppFrameBreadcrumbBarProps {
+  children: ReactNode;
+}
+
+export interface AppFrameTopBarProps {
+  children: ReactNode;
+}
+
+export interface AppFrameLeftNavProps {
+  children: ReactNode;
+}
+
+export interface AppFrameMainContentProps {
+  children: ReactNode;
+}
+
+export interface AppFrameRightAsideProps {
+  children: ReactNode;
+}
+
+/**
+ * Root component - Holy Grail grid layout with breadcrumb bar at top
+ */
+function AppFrameRoot({ children }: AppFrameRootProps) {
+  return (
+    <Grid
+      gridTemplateAreas={`
+        "breadcrumbs breadcrumbs breadcrumbs"
+        "header header header"
+        "nav main aside"
+      `}
+      gridTemplateRows="auto auto 1fr"
+      gridTemplateColumns="minmax(200px, 256px) 80ch 1fr"
+      height="100vh"
+      width="100vw"
+      overflow="hidden"
+    >
+      {children}
+    </Grid>
+  );
+}
+
+/**
+ * Breadcrumb Bar - Sticky bar at the very top
+ * Slides down with animation when transitioning away from /home route
+ */
+function AppFrameBreadcrumbBar({ children }: AppFrameBreadcrumbBarProps) {
+  return (
+    <Box
+      gridArea="breadcrumbs"
+      position="sticky"
+      top={0}
+      zIndex={1000}
+      bg="bg"
+      borderBottom="solid-25"
+      borderColor="neutral.3"
+      px="400"
+      py="200"
+    >
+      {children}
+    </Box>
+  );
+}
+
+/**
+ * Top Bar - Sticky header below breadcrumbs
+ */
+function AppFrameTopBar({ children }: AppFrameTopBarProps) {
+  return (
+    <Box
+      id="app-frame-top-bar"
+      gridArea="header"
+      position="sticky"
+      top={0}
+      zIndex={999}
+      bg="bg"
+      borderBottom="solid-25"
+      borderColor="neutral.3"
+    >
+      {children}
+    </Box>
+  );
+}
+
+/**
+ * Left Navigation - Scrollable sidebar
+ */
+function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
+  return (
+    <Box
+      id="app-frame-left-nav"
+      as="nav"
+      gridArea="nav"
+      overflowY="auto"
+      overflowX="hidden"
+      borderRight="solid-25"
+      borderColor="neutral.3"
+      bg="bg"
+      py="400"
+      css={{
+        // Custom scrollbar styling
+        "&::-webkit-scrollbar": {
+          width: "200",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "{colors.neutral.2}",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          background: "{colors.neutral.4}",
+        },
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+/**
+ * Main Content Area - Scrollable
+ */
+function AppFrameMainContent({ children }: AppFrameMainContentProps) {
+  return (
+    <Box
+      as="main"
+      id="main"
+      gridArea="main"
+      overflowY="scroll"
+      overflowX="hidden"
+      scrollPaddingTop="120px"
+      p="800"
+      bg="bg"
+      css={{
+        // Custom scrollbar styling
+        "&::-webkit-scrollbar": {
+          width: "200",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "{colors.neutral.2}",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          background: "{colors.neutral.4}",
+        },
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+/**
+ * Right Aside - Scrollable sidebar
+ */
+function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
+  return (
+    <Box
+      as="aside"
+      gridArea="aside"
+      overflowY="auto"
+      overflowX="hidden"
+      bg="bg"
+      pl="800"
+      pr="800"
+      py="400"
+      css={{
+        // Custom scrollbar styling
+        "&::-webkit-scrollbar": {
+          width: "200",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "{colors.neutral.2}",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "{colors.neutral.3}",
+          borderRadius: "100",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          background: "{colors.neutral.4}",
+        },
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+/**
+ * AppFrame Compound Component
+ */
+export const AppFrame = {
+  Root: AppFrameRoot,
+  BreadcrumbBar: AppFrameBreadcrumbBar,
+  TopBar: AppFrameTopBar,
+  LeftNav: AppFrameLeftNav,
+  MainContent: AppFrameMainContent,
+  RightAside: AppFrameRightAside,
+};

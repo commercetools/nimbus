@@ -12,8 +12,7 @@ import {
 import { ComboBox, Input, ListBox, ListBoxItem } from "react-aria-components";
 
 import { Key } from "react";
-import { useAtom } from "jotai";
-import { activeRouteAtom } from "@/atoms/route";
+import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
 import { SearchableDocItem } from "@/atoms/searchable-docs";
@@ -23,7 +22,7 @@ export type SearchResultItemProps = {
 };
 
 export const AppNavBarSearch = () => {
-  const [, setActiveRoute] = useAtom(activeRouteAtom);
+  const navigate = useNavigate();
   const { query, setQuery, results, open, setOpen } = useSearch();
 
   useHotkeys(
@@ -40,7 +39,7 @@ export const AppNavBarSearch = () => {
     const selectedItem = results.find((item) => item.id === key);
     if (selectedItem) {
       setOpen(false);
-      setActiveRoute(selectedItem.route);
+      navigate(`/${selectedItem.route}`);
       setQuery("");
     }
   };
@@ -56,17 +55,13 @@ export const AppNavBarSearch = () => {
         <Dialog.Trigger>
           <Box position="relative">
             <TextInput
-              size="md"
-              width="320px"
+              size="sm"
               type="search"
-              placeholder="Search for a component..."
+              placeholder="Search documentation..."
               onFocus={(e) => e.target.blur()}
-              aria-label="Search for a component"
+              aria-label="Search the documentation"
+              trailingElement={<Kbd fontSize=".75em">⌘+K</Kbd>}
             />
-
-            <Box position="absolute" top="150" right="250" color="neutral.11">
-              <Kbd>⌘+K</Kbd>
-            </Box>
           </Box>
         </Dialog.Trigger>
         <Dialog.Content width="3xl">

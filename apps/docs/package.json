@@ -7,12 +7,13 @@
     "build": "pnpm run build:docs && pnpm run build:app && pnpm run copy-index",
     "build:docs": "npx tsx ./scripts/build.ts",
     "build:app": "vite build",
-    "copy-index": "cp ./dist/index.html ./dist/404.html",
+    "copy-index": "cp dist/index.html dist/404.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
     "preview": "vite preview"
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",
+    "@commercetools/nimbus-docs-build": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@emotion/react": "catalog:react",
     "@internationalized/date": "catalog:react",
@@ -42,6 +43,8 @@
     "react-dom": "catalog:react",
     "react-intl": "catalog:react",
     "react-live": "^4.1.7",
+    "react-router": "^7.9.4",
+    "react-router-dom": "^7.9.4",
     "react-syntax-highlighter": "^15.6.6",
     "remark": "^15.0.1",
     "remark-flexible-toc": "^1.2.3",
@@ -65,6 +68,7 @@
     "globals": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "vite": "catalog:tooling"
+    "vite": "catalog:tooling",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

@@ -63,20 +63,21 @@ export const tabsSlotRecipe = defineSlotRecipe({
   },
 
   variants: {
+    variant: {
+      line: {},
+      pills: {
+        tab: {
+          borderRadius: "full",
+          _selected: {
+            backgroundColor: "primary.3",
+          },
+        },
+      },
+    },
     orientation: {
       horizontal: {
         root: {
           flexDirection: "column",
-        },
-        list: {
-          borderBottom: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderBottom: "{spacing.50} solid transparent",
-          marginRight: "-25",
-          _selected: {
-            borderBottomColor: "primary.9",
-          },
         },
       },
       vertical: {
@@ -126,8 +127,61 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
   },
 
-  // Compound variants for different orientation/placement combinations
+  // Compound variants for different variant/orientation/placement combinations
   compoundVariants: [
+    // ==================== LINE VARIANT ====================
+    // Line + Horizontal
+    {
+      variant: "line",
+      orientation: "horizontal",
+      css: {
+        list: {
+          boxShadow: "0 1px 0 0 {colors.neutral.6}",
+        },
+        tab: {
+          boxShadow: "0 2px 0 0 transparent",
+          _selected: {
+            boxShadow: "0 2px 0 0 {colors.primary.9}",
+          },
+        },
+      },
+    },
+    // Line + Vertical + Start (tabs on left, border on left)
+    {
+      variant: "line",
+      orientation: "vertical",
+      placement: "start",
+      css: {
+        list: {
+          boxShadow: "-1px 0 0 0 {colors.neutral.6}",
+        },
+        tab: {
+          boxShadow: "-2px 0 0 0 transparent",
+          _selected: {
+            boxShadow: "-2px 0 0 0 {colors.primary.9}",
+          },
+        },
+      },
+    },
+    // Line + Vertical + End (tabs on right, border on right)
+    {
+      variant: "line",
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        list: {
+          boxShadow: "1px 0 0 0 {colors.neutral.6}",
+        },
+        tab: {
+          boxShadow: "2px 0 0 0 transparent",
+          _selected: {
+            boxShadow: "2px 0 0 0 {colors.primary.9}",
+          },
+        },
+      },
+    },
+
+    // ==================== PLACEMENT-ONLY VARIANTS ====================
     // Horizontal + Start (default)
     {
       orientation: "horizontal",
@@ -148,46 +202,38 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Vertical + Start (tabs on left, border on left)
+
+    // ==================== PILLS VARIANT ====================
+    // Pills + Horizontal
     {
-      orientation: "vertical",
-      placement: "start",
+      variant: "pills",
+      orientation: "horizontal",
       css: {
-        root: {
-          flexDirection: "row",
-        },
         list: {
-          borderLeft: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderLeft: "{spacing.50} solid transparent",
-          marginLeft: "-25",
-          _selected: {
-            borderLeftColor: "primary.9",
-          },
+          gap: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+          borderRadius: "full",
+          padding: "100",
         },
       },
     },
-    // Vertical + End (tabs on right, border on right)
+    // Pills + Vertical
     {
+      variant: "pills",
       orientation: "vertical",
-      placement: "end",
       css: {
         list: {
-          borderRight: "{spacing.25} {colors.neutral.6} solid",
-        },
-        tab: {
-          borderRight: "{spacing.50} solid transparent",
-          marginRight: "-25",
-          _selected: {
-            borderRightColor: "primary.9",
-          },
+          gap: "200",
+          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+          borderRadius: "400",
+          padding: "100",
         },
       },
     },
   ],
 
   defaultVariants: {
+    variant: "line",
     orientation: "horizontal",
     placement: "start",
     size: "md",

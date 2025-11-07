@@ -1,6 +1,7 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
-import { Box, Tabs } from "@commercetools/nimbus";
+import { Box, Button, Heading, Stack, Tabs, Text } from "@commercetools/nimbus";
 import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 
 /**
@@ -12,6 +13,11 @@ const meta: Meta<typeof Tabs.Root> = {
   title: "Components/Tabs",
   component: Tabs.Root,
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["line", "pills"],
+      description: "Visual style variant of the tabs",
+    },
     orientation: {
       control: "select",
       options: ["horizontal", "vertical"],
@@ -346,13 +352,14 @@ export const WithDisabledKeys: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div>
-          <h3>Tabs with DisabledKeys Array</h3>
-          <br />
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Tabs with DisabledKeys Array
+          </Heading>
           <Tabs.Root {...args} tabs={withDisabledTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -529,13 +536,14 @@ export const Disabled: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div>
-          <h3>Tabs with Disabled State</h3>
-          <br />
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Tabs with Disabled State
+          </Heading>
           <Tabs.Root {...args} tabs={withDisabledTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -608,6 +616,88 @@ export const Disabled: Story = {
   },
 };
 
+export const Variants: Story = {
+  render: () => {
+    const variantTabs = [
+      {
+        id: "overview",
+        tabLabel: "Overview",
+        panelContent: "This is the overview content for the selected variant.",
+      },
+      {
+        id: "details",
+        tabLabel: "Details",
+        panelContent: "This is the details content for the selected variant.",
+      },
+      {
+        id: "settings",
+        tabLabel: "Settings",
+        panelContent: "This is the settings content for the selected variant.",
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {/* Line Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Line Variant (Default)
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            Tabs with an underline indicator showing the selected tab.
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="line-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="line" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="line-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="line"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+
+        {/* Pills Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Pills Variant
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            Tabs with rounded pill-like appearance and background highlighting.
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="pills-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="pills" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="pills-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="pills"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  },
+};
+
 export const Sizes: Story = {
   render: () => {
     const smallTabs = [
@@ -668,22 +758,28 @@ export const Sizes: Story = {
     ];
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <div data-testid="small-tabs">
-          <h3>Small (sm)</h3>
+      <Stack direction="column" gap="400">
+        <Stack direction="column" gap="300" data-testid="small-tabs">
+          <Heading as="h3" fontSize="500">
+            Small (sm)
+          </Heading>
           <Tabs.Root size="sm" tabs={smallTabs} />
-        </div>
+        </Stack>
 
-        <div data-testid="medium-tabs">
-          <h3>Medium (md) - Default</h3>
+        <Stack direction="column" gap="300" data-testid="medium-tabs">
+          <Heading as="h3" fontSize="500">
+            Medium (md) - Default
+          </Heading>
           <Tabs.Root size="md" tabs={mediumTabs} />
-        </div>
+        </Stack>
 
-        <div data-testid="large-tabs">
-          <h3>Large (lg)</h3>
+        <Stack direction="column" gap="300" data-testid="large-tabs">
+          <Heading as="h3" fontSize="500">
+            Large (lg)
+          </Heading>
           <Tabs.Root size="lg" tabs={largeTabs} />
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -741,6 +837,141 @@ export const Sizes: Story = {
       const largeTab2 = canvas.getByRole("tab", { name: "Large Tab 2" });
       await userEvent.click(largeTab2);
       await expect(largeTab2).toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
+/**
+ * Regression test for controlled tabs with external state
+ * Tests that selectedKey and onSelectionChange props are properly forwarded to React Aria
+ * This ensures tabs can be controlled from external state (e.g., URL routing)
+ */
+export const ControlledWithExternalState: Story = {
+  render: () => {
+    const [selected, setSelected] = useState("overview");
+    return (
+      <Stack
+        direction="column"
+        gap="400"
+        data-testid="controlled-tabs-container"
+      >
+        <Stack direction="row" gap="300">
+          <Button
+            onPress={() => setSelected("overview")}
+            data-testid="switch-overview"
+          >
+            Switch to Overview
+          </Button>
+          <Button onClick={() => setSelected("api")} data-testid="switch-api">
+            Switch to API
+          </Button>
+          <Button
+            onClick={() => setSelected("examples")}
+            data-testid="switch-examples"
+          >
+            Switch to Examples
+          </Button>
+        </Stack>
+        <Tabs.Root
+          selectedKey={selected}
+          onSelectionChange={(key) => setSelected(String(key))}
+          data-testid="controlled-tabs"
+        >
+          <Tabs.List>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="api">API</Tabs.Tab>
+            <Tabs.Tab id="examples">Examples</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="api">API content</Tabs.Panel>
+            <Tabs.Panel id="examples">Examples content</Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Initial state renders correctly", async () => {
+      const overviewTab = await canvas.findByRole("tab", { name: "Overview" });
+      await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+      const panel = await canvas.findByRole("tabpanel");
+      await expect(panel).toHaveTextContent("Overview content");
+    });
+
+    await step(
+      "External button controls tab selection (controlled behavior)",
+      async () => {
+        const apiButton = canvas.getByTestId("switch-api");
+        await userEvent.click(apiButton);
+
+        // Tab should update based on external state
+        const apiTab = await canvas.findByRole("tab", { name: "API" });
+        await expect(apiTab).toHaveAttribute("aria-selected", "true");
+
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("API content");
+      }
+    );
+
+    await step(
+      "Tab click updates external state (onSelectionChange works)",
+      async () => {
+        const examplesTab = await canvas.findByRole("tab", {
+          name: "Examples",
+        });
+        await userEvent.click(examplesTab);
+
+        await expect(examplesTab).toHaveAttribute("aria-selected", "true");
+
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("Examples content");
+      }
+    );
+
+    await step(
+      "External state change followed by tab click (no navigation loop)",
+      async () => {
+        // Simulate external state change (like URL change)
+        const overviewButton = canvas.getByTestId("switch-overview");
+        await userEvent.click(overviewButton);
+
+        const overviewTab = await canvas.findByRole("tab", {
+          name: "Overview",
+        });
+        await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+        // Now click another tab - should not cause loop
+        const apiTab = await canvas.findByRole("tab", { name: "API" });
+        await userEvent.click(apiTab);
+
+        await expect(apiTab).toHaveAttribute("aria-selected", "true");
+
+        // Verify content changed
+        const panel = await canvas.findByRole("tabpanel");
+        await expect(panel).toHaveTextContent("API content");
+      }
+    );
+
+    await step("State synchronization is bidirectional", async () => {
+      // External → Tab
+      const examplesButton = canvas.getByTestId("switch-examples");
+      await userEvent.click(examplesButton);
+
+      const examplesTab = await canvas.findByRole("tab", { name: "Examples" });
+      await expect(examplesTab).toHaveAttribute("aria-selected", "true");
+
+      // Tab → External (verified by external button working next)
+      const overviewTab = await canvas.findByRole("tab", { name: "Overview" });
+      await userEvent.click(overviewTab);
+      await expect(overviewTab).toHaveAttribute("aria-selected", "true");
+
+      // External button should still work after tab click
+      await userEvent.click(examplesButton);
+      await expect(examplesTab).toHaveAttribute("aria-selected", "true");
     });
   },
 };
