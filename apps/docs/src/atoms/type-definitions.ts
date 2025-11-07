@@ -12,7 +12,7 @@ const typeCache = new Map<string, ComponentDoc>();
  * @param manifest - The types manifest from ManifestProvider context
  * @returns The component's type definition or null if not found
  */
-export async function loadComponentType(
+export async function loadComponentTypeDefinitions(
   componentId: string,
   manifest: Record<string, string> | null
 ): Promise<ComponentDoc | null> {

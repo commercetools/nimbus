@@ -1,7 +1,7 @@
 import { Box, Stack, Text, LoadingSpinner } from "@commercetools/nimbus";
 import { useState, useEffect, useMemo } from "react";
 import type { ComponentDoc } from "react-docgen-typescript";
-import { loadComponentType } from "@/atoms/types";
+import { loadComponentTypeDefinitions } from "@/atoms/type-definitions";
 import { useManifest } from "@/contexts/manifest-context";
 import type { PropItem } from "@/components/document-renderer/components/props-table/types";
 import { groupProps } from "@/components/document-renderer/components/props-table/utils";
@@ -35,7 +35,7 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
     setIsLoading(true);
     setError(null);
 
-    loadComponentType(id, typesManifest)
+    loadComponentTypeDefinitions(id, typesManifest)
       .then((data) => {
         if (!cancelled) {
           setPropsTableData(data);
