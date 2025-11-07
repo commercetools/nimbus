@@ -103,9 +103,7 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
             <Table.Body>
               {items.map((item) => {
                 const doc = findDocForExport(item.name);
-                // Note: lifecycleState is not in the route manifest
-                // Would need to be added to manifest if needed
-                const lifecycleState = undefined;
+                const lifecycleState = doc?.lifecycleState;
                 const lifecycleInfo = lifecycleState
                   ? lifecycleStateDescriptions[lifecycleState]
                   : null;

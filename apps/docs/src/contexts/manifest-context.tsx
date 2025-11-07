@@ -16,6 +16,7 @@ export type RouteManifest = {
     id: string;
     title: string;
     description: string;
+    lifecycleState?: string;
     category: string;
     tags: string[];
     menu: string[];

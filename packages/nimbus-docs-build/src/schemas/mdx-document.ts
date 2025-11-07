@@ -95,6 +95,7 @@ export const routeInfoSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
+  lifecycleState: z.enum(lifecycleStates).optional(),
   category: z.string(),
   tags: z.array(z.string()),
   menu: z.array(z.string()),

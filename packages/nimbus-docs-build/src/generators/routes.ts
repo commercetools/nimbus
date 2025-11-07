@@ -37,6 +37,7 @@ export async function generateRouteManifest(
       id: meta.id,
       title: meta.title,
       description: meta.description || "",
+      lifecycleState: meta.lifecycleState,
       category,
       tags: meta.tags || [],
       menu: meta.menu,
