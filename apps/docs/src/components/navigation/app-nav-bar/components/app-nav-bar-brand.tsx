@@ -17,16 +17,17 @@ export const AppNavBarBrand = () => {
   return (
     <Box cursor="pointer" py="200">
       <Stack direction="row" gap="400" alignItems="center">
-        <Text
+        <Link
+          href="home"
+          textDecoration="none"
+          color="primary.11"
           textStyle="2xl"
           fontWeight="700"
           display="inline-flex"
           alignItems="center"
         >
-          <Link href="home" textDecoration="none" color="primary.11">
-            <Icon as={FilterDrama} mr="100" /> {brandName}
-          </Link>
-        </Text>
+          <Icon as={FilterDrama} mr="100" /> {brandName}
+        </Link>
         <Badge size="2xs" colorPalette="primary">
           v{nimbusPackageVersion}
         </Badge>
