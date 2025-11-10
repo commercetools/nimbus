@@ -86,6 +86,62 @@ DateRangePickerField uses the same `@internationalized/date` library as DateRang
 
 ## Usage examples
 
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSmall, setValueSmall] = useState<DateRangePickerProps["value"]>(null);
+  const [valueMedium, setValueMedium] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        size="sm"
+        label="Small size"
+        value={valueSmall}
+        onChange={setValueSmall}
+      />
+      <DateRangePickerField
+        size="md"
+        label="Medium size (default)"
+        value={valueMedium}
+        onChange={setValueMedium}
+      />
+    </Stack>
+  );
+}
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSolid, setValueSolid] = useState<DateRangePickerProps["value"]>(null);
+  const [valueGhost, setValueGhost] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateRangePickerField
+        variant="solid"
+        label="Solid variant (default)"
+        value={valueSolid}
+        onChange={setValueSolid}
+      />
+      <DateRangePickerField
+        variant="ghost"
+        label="Ghost variant"
+        value={valueGhost}
+        onChange={setValueGhost}
+      />
+    </Stack>
+  );
+}
+```
+
 ### With description
 
 Add helper text below the input to provide context:
@@ -154,30 +210,62 @@ const App = () => {
 }
 ```
 
-### Size variants
+### Required field
 
-The `sm` and `md` size variants are available to match your form density:
+Mark fields as required with the `isRequired` prop:
 
 ```jsx-live-dev
 const App = () => {
-  const [valueSm, setValueSm] = useState<DateRangePickerProps["value"]>(null);
-  const [valueMd, setValueMd] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
   return (
-    <Stack direction="column" gap="400">
-      <DateRangePickerField
-        label="Small Size"
-        size="sm"
-        value={valueSm}
-        onChange={setValueSm}
-      />
-      <DateRangePickerField
-        label="Medium Size"
-        size="md"
-        value={valueMd}
-        onChange={setValueMd}
-      />
-    </Stack>
+    <DateRangePickerField
+      label="Event Dates"
+      description="Select your event dates"
+      value={value}
+      onChange={setValue}
+      isRequired
+    />
+  );
+}
+```
+
+### Disabled state
+
+Prevent user interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Unavailable Dates"
+      description="This field cannot be modified"
+      value={value}
+      onChange={setValue}
+      isDisabled
+    />
+  );
+}
+```
+
+### Read-only state
+
+Display a non-editable value with the `isReadOnly` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+
+  return (
+    <DateRangePickerField
+      label="Scheduled Period"
+      description="This period is set and cannot be changed"
+      value={value}
+      onChange={setValue}
+      isReadOnly
+    />
   );
 }
 ```
@@ -203,39 +291,6 @@ const App = () => {
 ```
 
 When `granularity="minute"` (or other time values), the calendar remains open after date selection to allow time input.
-
-### Disabled, read-only, and required states
-
-Control field interactivity and validation with state props:
-
-```jsx-live-dev
-const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
-
-  return (
-    <Stack direction="column" gap="400">
-      <DateRangePickerField
-        label="Required Field"
-        isRequired
-        value={value}
-        onChange={setValue}
-      />
-      <DateRangePickerField
-        label="Disabled Field"
-        isDisabled
-        value={value}
-        onChange={setValue}
-      />
-      <DateRangePickerField
-        label="Read-Only Field"
-        isReadOnly
-        value={value}
-        onChange={setValue}
-      />
-    </Stack>
-  );
-}
-```
 
 ## Component requirements
 
@@ -344,7 +399,7 @@ const MyForm = () => {
 **Key integration points:**
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## API reference
@@ -377,9 +432,11 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
+These examples demonstrate how to test your implementation when using DateRangePickerField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
 ### Basic rendering tests
 
-Verify the field renders with proper FormField structure:
+Verify the component renders with expected elements:
 
 ```tsx
 import { render, screen } from '@testing-library/react';
@@ -414,9 +471,137 @@ describe('DateRangePickerField', () => {
 });
 ```
 
-### Error handling tests
+### Interaction tests
 
-Test error display with touched state:
+Test user interactions with the component:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { DateRangePickerField } from '@commercetools/nimbus';
+
+describe('DateRangePickerField interactions', () => {
+  it('opens calendar when trigger button is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        value={null}
+        onChange={() => {}}
+      />
+    );
+
+    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    await user.click(calendarButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+  });
+
+  it('allows keyboard navigation through date segments', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        value={null}
+        onChange={() => {}}
+      />
+    );
+
+    // Get first date segment (start date month)
+    const segments = screen.getAllByRole('spinbutton');
+    const firstSegment = segments[0];
+
+    await user.click(firstSegment);
+    expect(firstSegment).toHaveFocus();
+
+    // Navigate to next segment with arrow key
+    await user.keyboard('{ArrowRight}');
+    expect(segments[1]).toHaveFocus();
+  });
+
+  it('calls onChange when date is selected from calendar', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        value={null}
+        onChange={handleChange}
+      />
+    );
+
+    // Open calendar
+    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    await user.click(calendarButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+
+    // Select a date (this will vary based on current month)
+    const dateButtons = screen.getAllByRole('button');
+    const selectableDate = dateButtons.find(btn =>
+      btn.getAttribute('data-focused') === 'true'
+    );
+
+    if (selectableDate) {
+      await user.click(selectableDate);
+      expect(handleChange).toHaveBeenCalled();
+    }
+  });
+
+  it('calls onBlur when focus leaves the field', async () => {
+    const user = userEvent.setup();
+    const handleBlur = jest.fn();
+
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        value={null}
+        onChange={() => {}}
+        onBlur={handleBlur}
+      />
+    );
+
+    const segments = screen.getAllByRole('spinbutton');
+    await user.click(segments[0]);
+    await user.tab(); // Move focus away from all segments
+
+    expect(handleBlur).toHaveBeenCalled();
+  });
+
+  it('does not allow interaction when disabled', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <DateRangePickerField
+        label="Event Dates"
+        value={null}
+        onChange={handleChange}
+        isDisabled
+      />
+    );
+
+    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    expect(calendarButton).toBeDisabled();
+
+    // Attempt to open calendar (should not work)
+    await user.click(calendarButton);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+});
+```
+
+### Testing validation and errors
+
+Test error handling and validation behavior:
 
 ```tsx
 import { render, screen } from '@testing-library/react';
@@ -464,7 +649,8 @@ describe('DateRangePickerField error handling', () => {
 
 ## Resources
 
-- [Storybook](link-tbd)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-daterangepickerfield--docs)
 - [DateRangePicker Component](components/inputs/daterangepicker)
 - [FormField Component](components/inputs/formfield)
+- [FieldErrors Component](components/forms/fielderrors)
 - [React Aria DateRangePicker](https://react-spectrum.adobe.com/react-aria/DateRangePicker.html)

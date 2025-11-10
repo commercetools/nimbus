@@ -390,10 +390,6 @@ The component supports standard text input keyboard interaction:
 - `Home` / `End`: Move to start/end of text
 - `Ctrl+A` / `Cmd+A`: Select all text
 
-## API reference
-
-<PropsTable id="TextInputField" />
-
 ### Custom error rendering
 
 Use the `renderError` prop to customize how specific error keys are displayed:
@@ -490,8 +486,12 @@ const MyForm = () => {
 **Key integration points:**
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="TextInputField" />
 
 ## Testing your implementation
 
@@ -753,8 +753,8 @@ describe('TextInputField input types', () => {
 
 ## Resources
 
-- [Storybook](link-tbd)
-- [TextInput Base Component](components/inputs/textinput)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-textinputfield--docs)
+- [TextInput Component](components/inputs/textinput)
 - [FormField Component](components/inputs/formfield)
 - [FieldErrors Component](components/forms/fielderrors)
 - [React Aria TextField](https://react-spectrum.adobe.com/react-aria/TextField.html)
