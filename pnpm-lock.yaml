@@ -402,8 +402,8 @@ importers:
         specifier: ^15.0.1
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.2.3
-        version: 1.2.3(unified@11.0.5)
+        specifier: ^1.2.4
+        version: 1.2.4(unified@11.0.5)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.1
@@ -665,8 +665,8 @@ importers:
         specifier: ^15.0.1
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.2.3
-        version: 1.2.3(unified@11.0.5)
+        specifier: ^1.2.4
+        version: 1.2.4(unified@11.0.5)
       to-vfile:
         specifier: ^8.0.0
         version: 8.0.0
@@ -2650,8 +2650,8 @@ packages:
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
-  '@types/node@20.19.23':
-    resolution: {integrity: sha512-yIdlVVVHXpmqRhtyovZAcSy0MiPcYWGkoO4CGe/+jpP0hmNuihm4XhHbADpK++MsiLHP5MVlv+bcgdF99kSiFQ==}
+  '@types/node@20.19.24':
+    resolution: {integrity: sha512-FE5u0ezmi6y9OZEzlJfg37mqqf6ZDSF2V/NLjUyGrR9uTZ7Sb9F7bLNZ03S4XVUNRWGA7Ck4c1kK+YnuWjl+DA==}
 
   '@types/node@24.8.0':
     resolution: {integrity: sha512-5x08bUtU8hfboMTrJ7mEO4CpepS9yBwAqcL52y86SWNmbPX8LVbNs3EP4cNrIZgdjk2NAlP2ahNihozpoZIxSg==}
@@ -5525,8 +5525,8 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.2.3:
-    resolution: {integrity: sha512-GA9+wUpFRXZ5Hh6xsEyZc1+E1lD8DgQS3CHn2qJNbB3M/zlPUgSvNp7+SagdYsWwW8MwaVZc4XjFuo6pcJdYjw==}
+  remark-flexible-toc@1.2.4:
+    resolution: {integrity: sha512-vHQdchXWnPZ2/CQm5iS8Av+Qgi9IXDbhfTueys3h5KF6iNP8UG5qZwJmcrhUWiJcGiZQPZWpRpTIisBQ6gqixA==}
     peerDependencies:
       unified: ^11
 
@@ -9126,7 +9126,7 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
-  '@types/node@20.19.23':
+  '@types/node@20.19.24':
     dependencies:
       undici-types: 6.21.0
     optional: true
@@ -11119,7 +11119,7 @@ snapshots:
 
   happy-dom@20.0.8:
     dependencies:
-      '@types/node': 20.19.23
+      '@types/node': 20.19.24
       '@types/whatwg-mimetype': 3.0.2
       whatwg-mimetype: 3.0.0
     optional: true
@@ -12846,7 +12846,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.2.3(unified@11.0.5):
+  remark-flexible-toc@1.2.4(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
       github-slugger: 2.0.0
