@@ -9,7 +9,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { Select, type Key } from '@commercetools/nimbus';
+import { Select, type SelectProps } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
@@ -96,14 +96,29 @@ const App = () => (
 )
 ```
 
+### Disabled state
+
+Use `isDisabled` to disable the select:
+
+```jsx-live-dev
+const App = () => (
+  <Select.Root isDisabled aria-label="Disabled select">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="1">Option 1</Select.Option>
+      <Select.Option id="2">Option 2</Select.Option>
+    </Select.Options>
+  </Select.Root>
+)
+```
+
 ### Visual variants
 
-Choose between `solid` and `ghost` variants to match your design context:
+Choose between `outline` and `ghost` variants to match your design context:
 
 ```jsx-live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Select.Root variant="solid" aria-label="Solid select">
+    <Select.Root variant="outline" aria-label="Outline select">
       <Select.Options placeholder="Select...">
         <Select.Option id="1">Option 1</Select.Option>
         <Select.Option id="2">Option 2</Select.Option>
@@ -128,7 +143,7 @@ const App = () => {
   const [selectedValue, setSelectedValue] = useState<string>('Selected: banana');
 
   return (
-    <>
+  <Stack direction="column" gap="400">
       <Select.Root
         defaultSelectedKey="banana"
         onSelectionChange={(key) => {
@@ -143,7 +158,7 @@ const App = () => {
         </Select.Options>
       </Select.Root>
       <Text fontSize="sm">{selectedValue}</Text>
-    </>
+    </Stack>
   );
 }
 ```
@@ -204,10 +219,42 @@ const App = () => (
 
 ### Dynamic options with items
 
-`Select.Options` supports the `items` prop (inherited from React Aria's `ListBox` component). When using `items`, children must be a render function.
+`Select.Options` supports the `items` prop, a pattern unique to React Aria Components (inherited from React Aria's `ListBox` component). This pattern provides an efficient way to render dynamic or large lists of options.
+
+**When to use `items` vs static children:**
+
+- **Use `items` when:**
+  - Rendering options from dynamic data (API responses, filtered lists, computed arrays)
+  - Working with large lists (better performance through virtualization support)
+  - Options change frequently based on user input or state
+  - You need to map over data structures
+
+- **Use static children when:**
+  - Options are known at compile time
+  - You have a small, fixed set of options
+  - You prefer the simpler JSX syntax for readability
+
+**Static children example:**
+
+```jsx-live-dev
+const App = () => (
+  <Select.Root aria-label="Select a fruit">
+    <Select.Options placeholder="Choose a fruit">
+      <Select.Option id="apple">Apple</Select.Option>
+      <Select.Option id="banana">Banana</Select.Option>
+      <Select.Option id="orange">Orange</Select.Option>
+    </Select.Options>
+  </Select.Root>
+)
+```
+
+**Dynamic items example:**
+
+When using `items`, children must be a render function that receives each item and returns a `Select.Option`. This example demonstrates using `items` with data that could come from an API, state, or computed values:
 
 ```jsx-live-dev
 const App = () => {
+  // In a real app, this data might come from an API, props, or state.
   const fruits = [
     { id: 'apple', name: 'Apple' },
     { id: 'banana', name: 'Banana' },
@@ -225,6 +272,11 @@ const App = () => {
   );
 }
 ```
+
+The `items` pattern enables React Aria to optimize rendering and provides better support for features like virtualization, which can improve performance with large option lists.
+
+> [!TIP]\
+> See [React Aria's ListBox documentation](https://react-spectrum.adobe.com/react-aria/ListBox.html#sections) for complete API reference and advanced usage, including static and dynamic items.
 
 ### Clearable selection
 
@@ -277,7 +329,6 @@ Selection values **must** be keys (strings or numbers) that match the `id` prop 
 
 The Select handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
 
-- Using the `SelectField` pattern component (if available)
 - Associating a `<label>` element with the `Select.Root` using `aria-labelledby`:
 
 ```tsx
@@ -432,7 +483,7 @@ describe('Select', () => {
       </Select.Root>
     );
 
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Select an option/ })).toBeInTheDocument();
   });
 
   it('displays placeholder text', () => {
@@ -470,11 +521,14 @@ describe('Select interactions', () => {
       </Select.Root>
     );
 
-    const button = screen.getByRole('button');
-    await user.click(button);
+    const select = screen.getByRole('button', { name: /Select an option/ });
+    await user.click(select);
 
+    // The popover is rendered via a react portal outside of the select root
+    // and can only be found by querying the document directly
     await waitFor(() => {
-      expect(screen.getByRole('listbox')).toBeInTheDocument();
+      const listbox = document.querySelector('[role="listbox"]');
+      expect(listbox).toBeInTheDocument();
     });
   });
 
@@ -493,10 +547,15 @@ describe('Select interactions', () => {
       </Select.Root>
     );
 
-    const button = screen.getByRole('button');
-    await user.click(button);
+    const select = screen.getByRole('button', { name: /Select an option/ });
+    await user.click(select);
 
-    const options = await screen.findAllByRole('option');
+    // Options are in the portal, query the document directly
+    await waitFor(() => {
+      const options = document.querySelectorAll('[role="option"]');
+      expect(options.length).toBeGreaterThan(0);
+    });
+    const options = document.querySelectorAll('[role="option"]');
     await user.click(options[1]);
 
     expect(handleSelectionChange).toHaveBeenCalledWith('2');
@@ -511,7 +570,7 @@ Test controlled selection state:
 ```tsx
 import { render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { Select, type Key } from '@commercetools/nimbus';
+import { Select } from '@commercetools/nimbus';
 
 describe('Select with controlled state', () => {
   it('displays selected value', () => {
@@ -533,7 +592,9 @@ describe('Select with controlled state', () => {
 
     render(<TestComponent />);
 
-    expect(screen.getByText('Option 2')).toBeInTheDocument();
+    // The selected value appears in the button label
+    const button = screen.getByRole('button', { name: /Select an option/ });
+    expect(button).toHaveTextContent('Option 2');
   });
 });
 ```
@@ -562,13 +623,63 @@ describe('Select with option groups', () => {
       </Select.Root>
     );
 
-    const button = screen.getByRole('button');
-    await user.click(button);
+    const select = screen.getByRole('button', { name: /Select an option/ });
+    await user.click(select);
 
     await waitFor(() => {
       expect(screen.getByText('Fruits')).toBeInTheDocument();
       expect(screen.getByText('Vegetables')).toBeInTheDocument();
     });
+  });
+});
+```
+
+### Testing disabled state
+
+Test that the select is properly disabled:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Select } from '@commercetools/nimbus';
+
+describe('Select disabled state', () => {
+  it('renders disabled select', () => {
+    render(
+      <Select.Root isDisabled aria-label="Select an option">
+        <Select.Options>
+          <Select.Option id="1">Option 1</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+
+    const select = screen.getByRole('button', { name: /Select an option/ });
+    expect(select).toBeDisabled();
+  });
+});
+```
+
+### Testing invalid state
+
+Test that the select is properly marked as invalid:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Select } from '@commercetools/nimbus';
+
+describe('Select invalid state', () => {
+  it('renders invalid select', () => {
+    render(
+      <Select.Root isInvalid aria-label="Select an option">
+        <Select.Options>
+          <Select.Option id="1">Option 1</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+
+    // Invalid state is on the root element.
+    const button = screen.getByRole('button', { name: /Select an option/ });
+    const selectRoot = button.closest('[data-invalid="true"]');
+    expect(selectRoot).toBeInTheDocument();
   });
 });
 ```

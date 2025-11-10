@@ -22,7 +22,7 @@ import {
   SelectLeadingElementSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
-import { type SelectRootProps } from "./../select.types";
+import { type SelectProps } from "./../select.types";
 import { selectSlotRecipe } from "../select.recipe";
 import { extractStyleProps } from "@/utils";
 
@@ -39,7 +39,7 @@ export const SelectRoot = function SelectRoot({
   isDisabled,
   isClearable = true,
   ...props
-}: SelectRootProps) {
+}: SelectProps) {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
