@@ -102,42 +102,42 @@ List items are aligned to the left, center and the right. Choose what suits the 
 
 ```jsx-live
 const App = () => (
-  <Stack direction="horizontal" gap="800" alignItems="flex-start">
-      <Stack gap="200">
+  <Stack direction="horizontal" gap="600" alignItems="flex-start">
+    <Stack gap="200" flex="1">
       <Text fontWeight="bold" textAlign="left">Left</Text>
-    <List.Root asChild>
-      <ul>
-        <List.Item textAlign="left">Red pandas</List.Item>
-        <List.Item textAlign="left">Pangolins</List.Item>
-        <List.Item textAlign="left">Opossums</List.Item>
-        <List.Item textAlign="left">Aye-ayes</List.Item>
-        <List.Item textAlign="left">Okapi</List.Item>
-      </ul>
-    </List.Root>
-        </Stack>
-        <Stack gap="200">
-      <Text fontWeight="bold" textAlign="center">Center</Text>
-    <List.Root asChild>
-      <ul>
-        <List.Item textAlign="center">Red pandas</List.Item>
-        <List.Item textAlign="center">Pangolins</List.Item>
-        <List.Item textAlign="center">Opossums</List.Item>
-        <List.Item textAlign="center">Aye-ayes</List.Item>
-        <List.Item textAlign="center">Okapi</List.Item>
-      </ul>
-    </List.Root>
+      <List.Root asChild>
+        <ul>
+          <List.Item textAlign="left">Red pandas</List.Item>
+          <List.Item textAlign="left">Pangolins</List.Item>
+          <List.Item textAlign="left">Opossums</List.Item>
+          <List.Item textAlign="left">Aye-ayes</List.Item>
+          <List.Item textAlign="left">Okapi</List.Item>
+        </ul>
+      </List.Root>
     </Stack>
-    <Stack gap="200">
+    <Stack gap="200" flex="1">
+      <Text fontWeight="bold" textAlign="center">Center</Text>
+      <List.Root asChild>
+        <ul>
+          <List.Item textAlign="center">Red pandas</List.Item>
+          <List.Item textAlign="center">Pangolins</List.Item>
+          <List.Item textAlign="center">Opossums</List.Item>
+          <List.Item textAlign="center">Aye-ayes</List.Item>
+          <List.Item textAlign="center">Okapi</List.Item>
+        </ul>
+      </List.Root>
+    </Stack>
+    <Stack gap="200" flex="1">
       <Text fontWeight="bold" textAlign="right">Right</Text>
-     <List.Root asChild>
-      <ul>
-        <List.Item textAlign="right">Red pandas</List.Item>
-        <List.Item textAlign="right">Pangolins</List.Item>
-        <List.Item textAlign="right">Opossums</List.Item>
-        <List.Item textAlign="right">Aye-ayes</List.Item>
-        <List.Item textAlign="right">Okapi</List.Item>
-      </ul>
-    </List.Root>
+      <List.Root asChild>
+        <ul>
+          <List.Item textAlign="right">Red pandas</List.Item>
+          <List.Item textAlign="right">Pangolins</List.Item>
+          <List.Item textAlign="right">Opossums</List.Item>
+          <List.Item textAlign="right">Aye-ayes</List.Item>
+          <List.Item textAlign="right">Okapi</List.Item>
+        </ul>
+      </List.Root>
     </Stack>
   </Stack>
 )
