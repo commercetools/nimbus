@@ -1,1 +1,454 @@
-{}
+{
+  "Nimbus.Alert.dismiss": {
+    "developer_comment": "aria-label for the dismiss button in an alert",
+    "string": "Fermer"
+  },
+  "Nimbus.Avatar.avatarLabel": {
+    "developer_comment": "aria-label for avatar component with user's full name",
+    "string": "Image d'avatar pour {fullName}"
+  },
+  "Nimbus.Calendar.nextMonth": {
+    "developer_comment": "aria-label for next month navigation button",
+    "string": "Mois suivant"
+  },
+  "Nimbus.Calendar.nextYear": {
+    "developer_comment": "aria-label for next year navigation button",
+    "string": "Année suivante"
+  },
+  "Nimbus.Calendar.previousMonth": {
+    "developer_comment": "aria-label for previous month navigation button",
+    "string": "Mois précédent"
+  },
+  "Nimbus.Calendar.previousYear": {
+    "developer_comment": "aria-label for previous year navigation button",
+    "string": "Année précédente"
+  },
+  "Nimbus.ComboBox.clearSelection": {
+    "developer_comment": "aria-label for the clear selection button",
+    "string": "Effacer la sélection"
+  },
+  "Nimbus.ComboBox.comboboxDialog": {
+    "developer_comment": "aria-label for the combobox dialog overlay",
+    "string": "Liste déroulante combinée"
+  },
+  "Nimbus.ComboBox.filterOptions": {
+    "developer_comment": "aria-label for the combobox filter input field",
+    "string": "Filtrer les options de la liste déroulante combinée"
+  },
+  "Nimbus.ComboBox.options": {
+    "developer_comment": "aria-label for the combobox options list",
+    "string": "Options de la liste déroulante combinée"
+  },
+  "Nimbus.ComboBox.selectedValues": {
+    "developer_comment": "aria-label for the selected values tag group in multi-select",
+    "string": "Valeurs sélectionnées"
+  },
+  "Nimbus.ComboBox.toggleCombobox": {
+    "developer_comment": "aria-label for the combobox toggle button",
+    "string": "Activer/désactiver la liste déroulante combinée"
+  },
+  "Nimbus.DataTable.dataTable": {
+    "developer_comment": "aria-label for the data table element",
+    "string": "Tableau de données"
+  },
+  "Nimbus.DataTable.dataTableBody": {
+    "developer_comment": "aria-label for the data table body element",
+    "string": "Corps du tableau de données"
+  },
+  "Nimbus.DataTable.dataTableHeader": {
+    "developer_comment": "aria-label for the data table header element",
+    "string": "En-tête du tableau de données"
+  },
+  "Nimbus.DataTable.expandRows": {
+    "developer_comment": "aria-label for the expand rows column header",
+    "string": "Agrandir les lignes"
+  },
+  "Nimbus.DataTable.pinRows": {
+    "developer_comment": "aria-label for the pin rows column header",
+    "string": "Épingler les lignes"
+  },
+  "Nimbus.DataTable.resizeColumn": {
+    "developer_comment": "aria-label for the column resizer",
+    "string": "Modifier la taille de la colonne"
+  },
+  "Nimbus.DataTable.selectRow": {
+    "developer_comment": "aria-label for the row selection checkbox",
+    "string": "Sélectionner une ligne"
+  },
+  "Nimbus.DatePicker.Time.enterTime": {
+    "developer_comment": "aria-label for time input field in date picker",
+    "string": "Saisir l'heure"
+  },
+  "Nimbus.DatePicker.Time.enterTimeHour": {
+    "developer_comment": "aria-label for hour-only time input in date picker",
+    "string": "Saisir l'heure (heure)"
+  },
+  "Nimbus.DatePicker.Time.enterTimeHourMinute": {
+    "developer_comment": "aria-label for hour and minute time input in date picker",
+    "string": "Saisir l'heure (heure et minute)"
+  },
+  "Nimbus.DatePicker.Time.enterTimeHourMinuteSecond": {
+    "developer_comment": "aria-label for full time input with seconds in date picker",
+    "string": "Saisir l'heure (heure, minute et seconde)"
+  },
+  "Nimbus.DatePicker.Time.startTime": {
+    "developer_comment": "Label for start time in date picker",
+    "string": "Heure de début"
+  },
+  "Nimbus.DatePicker.clearInput": {
+    "developer_comment": "aria-label for clear input button in date picker",
+    "string": "Effacer la valeur saisie"
+  },
+  "Nimbus.DateRangePicker.clearInput": {
+    "developer_comment": "aria-label for clear input button in date range picker",
+    "string": "Effacer la valeur saisie"
+  },
+  "Nimbus.DateRangePicker.clearSelection": {
+    "developer_comment": "aria-label for clear button in date range picker",
+    "string": "Effacer la plage de dates"
+  },
+  "Nimbus.DateRangePicker.endTime": {
+    "developer_comment": "aria-label for end time input (default)",
+    "string": "Heure de fin"
+  },
+  "Nimbus.DateRangePicker.endTimeHour": {
+    "developer_comment": "aria-label for end time input (hour granularity)",
+    "string": "Heure de fin (heure)"
+  },
+  "Nimbus.DateRangePicker.endTimeHourMinute": {
+    "developer_comment": "aria-label for end time input (minute granularity)",
+    "string": "Heure de fin (heure et minute)"
+  },
+  "Nimbus.DateRangePicker.endTimeHourMinuteSecond": {
+    "developer_comment": "aria-label for end time input (second granularity)",
+    "string": " Heure de fin (heure, minute et seconde)"
+  },
+  "Nimbus.DateRangePicker.endTimeLabel": {
+    "developer_comment": "visible label for end time input field",
+    "string": "Heure de fin"
+  },
+  "Nimbus.DateRangePicker.openCalendar": {
+    "developer_comment": "aria-label for calendar toggle button in date range picker",
+    "string": "Ouvrir le calendrier"
+  },
+  "Nimbus.DateRangePicker.startTime": {
+    "developer_comment": "aria-label for start time input (default)",
+    "string": "Heure de début"
+  },
+  "Nimbus.DateRangePicker.startTimeHour": {
+    "developer_comment": "aria-label for start time input (hour granularity)",
+    "string": "Heure de début (heure)"
+  },
+  "Nimbus.DateRangePicker.startTimeHourMinute": {
+    "developer_comment": "aria-label for start time input (minute granularity)",
+    "string": "Heure de début  (heure et minute)"
+  },
+  "Nimbus.DateRangePicker.startTimeHourMinuteSecond": {
+    "developer_comment": "aria-label for start time input (second granularity)",
+    "string": "Heure de début (heure, minute et seconde)"
+  },
+  "Nimbus.DateRangePicker.startTimeLabel": {
+    "developer_comment": "visible label for start time input field",
+    "string": "Heure de début"
+  },
+  "Nimbus.Dialog.closeTrigger": {
+    "developer_comment": "aria-label for the default close trigger button",
+    "string": "Fermer la boîte de dialogue"
+  },
+  "Nimbus.DraggableList.emptyMessage": {
+    "developer_comment": "message displayed when drag-and-drop enabled list is empty",
+    "string": "Déposer les articles ici"
+  },
+  "Nimbus.DraggableList.removeButtonLabel": {
+    "developer_comment": "label for button that removes an item from the list",
+    "string": "Supprimer l'article"
+  },
+  "Nimbus.Drawer.closeTrigger": {
+    "developer_comment": "aria-label for the default close trigger button",
+    "string": "Fermer le volet"
+  },
+  "Nimbus.FieldErrors.duplicateValue": {
+    "developer_comment": "Error message for duplicate value validation",
+    "string": "Cette clé est déjà utilisée. Elle doit être unique."
+  },
+  "Nimbus.FieldErrors.emptyValue": {
+    "developer_comment": "Error message for empty value when content is required",
+    "string": "Ce champ ne peut pas être vide."
+  },
+  "Nimbus.FieldErrors.invalidFormat": {
+    "developer_comment": "Error message for format validation",
+    "string": "Veuillez entrer un format valide."
+  },
+  "Nimbus.FieldErrors.invalidFractionalNumber": {
+    "developer_comment": "Error message when fractional number is used",
+    "string": "Un nombre entier est requis."
+  },
+  "Nimbus.FieldErrors.invalidFromServer": {
+    "developer_comment": "Error message for server-side validation errors",
+    "string": "Échec de la validation du serveur. Veuillez vérifier votre saisie."
+  },
+  "Nimbus.FieldErrors.invalidNegativeNumber": {
+    "developer_comment": "Error message when negative number is used",
+    "string": "Nombre négatif non pris en charge."
+  },
+  "Nimbus.FieldErrors.invalidValue": {
+    "developer_comment": "Error message for invalid value or format",
+    "string": "La valeur fournie n'est pas valide"
+  },
+  "Nimbus.FieldErrors.missingRequiredField": {
+    "developer_comment": "Error message for missing required value",
+    "string": "Ce champ est requis. Veuillez indiquer une valeur."
+  },
+  "Nimbus.FieldErrors.resourceNotFound": {
+    "developer_comment": "Error message when a resource is not found",
+    "string": "Impossible de trouver la ressource demandée."
+  },
+  "Nimbus.FieldErrors.valueAboveMaximum": {
+    "developer_comment": "Error message for values above maximum threshold",
+    "string": "La valeur doit être égale ou inférieure au maximum."
+  },
+  "Nimbus.FieldErrors.valueBelowMinimum": {
+    "developer_comment": "Error message for values below minimum threshold",
+    "string": "La valeur doit être supérieure ou égale au minimum."
+  },
+  "Nimbus.FieldErrors.valueBlocked": {
+    "developer_comment": "Error message for blocked or restricted values",
+    "string": "Cette valeur n'est pas autorisée."
+  },
+  "Nimbus.FieldErrors.valueOutOfRange": {
+    "developer_comment": "Error message for values outside acceptable range",
+    "string": "La valeur doit être dans la plage acceptable."
+  },
+  "Nimbus.FieldErrors.valueTooLong": {
+    "developer_comment": "Error message for maximum length validation",
+    "string": "Cette valeur est trop longue."
+  },
+  "Nimbus.FieldErrors.valueTooShort": {
+    "developer_comment": "Error message for minimum length validation",
+    "string": "Cette valeur est trop courte."
+  },
+  "Nimbus.LoadingSpinner.default": {
+    "developer_comment": "Default loading message for loading spinners",
+    "string": "Chargement des données"
+  },
+  "Nimbus.LocalizedField.hideCurrencies": {
+    "developer_comment": "Label for hiding all currency inputs when toggle button is pressed",
+    "string": "Masquer toutes les devises"
+  },
+  "Nimbus.LocalizedField.hideLanguages": {
+    "developer_comment": "Label for hiding all language inputs when toggle button is pressed",
+    "string": "Masquer toutes les langues"
+  },
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": {
+    "developer_comment": "aria label for button that triggers more info dialog",
+    "string": "Plus d'informations"
+  },
+  "Nimbus.LocalizedField.missingRequiredField": {
+    "developer_comment": "Error message for missing required value",
+    "string": "Ce champ est requis. Indiquez au moins une valeur."
+  },
+  "Nimbus.LocalizedField.showCurrencies": {
+    "developer_comment": "Label for showing all currency inputs when toggle button is pressed",
+    "string": "Afficher toutes les devises"
+  },
+  "Nimbus.LocalizedField.showLanguages": {
+    "developer_comment": "Label for showing all language inputs when toggle button is pressed",
+    "string": "Afficher toutes les langues"
+  },
+  "Nimbus.MoneyInput.amountInputLabel": {
+    "developer_comment": "aria-label for amount input",
+    "string": "Montant"
+  },
+  "Nimbus.MoneyInput.currencySelectLabel": {
+    "developer_comment": "aria-label for currency selection dropdown",
+    "string": "Devise"
+  },
+  "Nimbus.MoneyInput.highPrecisionPrice": {
+    "developer_comment": "tooltip text for high precision price badge",
+    "string": "Prix haute précision"
+  },
+  "Nimbus.NumberInput.decrement": {
+    "developer_comment": "aria-label for the decrement button in number input",
+    "string": "Décrément"
+  },
+  "Nimbus.NumberInput.increment": {
+    "developer_comment": "aria-label for the increment button in number input",
+    "string": "Incrément"
+  },
+  "Nimbus.Pagination.currentPage": {
+    "developer_comment": "aria-label for the current page input field",
+    "string": "Page actuelle"
+  },
+  "Nimbus.Pagination.goToNextPage": {
+    "developer_comment": "aria-label for the next page button",
+    "string": "Aller à la page suivante"
+  },
+  "Nimbus.Pagination.goToPreviousPage": {
+    "developer_comment": "aria-label for the previous page button",
+    "string": "Aller à la page précédente"
+  },
+  "Nimbus.Pagination.itemsPerPage": {
+    "developer_comment": "aria-label for the items per page selector",
+    "string": "Articles par page"
+  },
+  "Nimbus.Pagination.itemsPerPageText": {
+    "developer_comment": "text label displayed next to the page size selector",
+    "string": "Articles par page"
+  },
+  "Nimbus.Pagination.ofTotalPages": {
+    "developer_comment": "text showing total pages count after current page input",
+    "string": "de {totalPages}"
+  },
+  "Nimbus.Pagination.page": {
+    "developer_comment": "text label displayed before the page number",
+    "string": "Page"
+  },
+  "Nimbus.Pagination.pagination": {
+    "developer_comment": "aria-label for the pagination navigation element",
+    "string": "Pagination"
+  },
+  "Nimbus.PasswordInput.hide": {
+    "developer_comment": "aria-label & tooltip for hide password button",
+    "string": "Masquer le mot de passe"
+  },
+  "Nimbus.PasswordInput.show": {
+    "developer_comment": "aria-label & tooltip for show password button",
+    "string": "Afficher le mot de passe"
+  },
+  "Nimbus.RangeCalendar.nextMonth": {
+    "developer_comment": "aria-label for next month navigation button",
+    "string": "Mois suivant"
+  },
+  "Nimbus.RangeCalendar.nextYear": {
+    "developer_comment": "aria-label for next year navigation button",
+    "string": "Année suivante"
+  },
+  "Nimbus.RangeCalendar.previousMonth": {
+    "developer_comment": "aria-label for previous month navigation button",
+    "string": "Mois précédent"
+  },
+  "Nimbus.RangeCalendar.previousYear": {
+    "developer_comment": "aria-label for previous year navigation button",
+    "string": "Année précédente"
+  },
+  "Nimbus.RichTextInput.bold": {
+    "developer_comment": "aria-label and tooltip for the bold formatting button",
+    "string": "Gras"
+  },
+  "Nimbus.RichTextInput.bulletedList": {
+    "developer_comment": "aria-label for the bulleted list button",
+    "string": "Liste à puces"
+  },
+  "Nimbus.RichTextInput.code": {
+    "developer_comment": "label for the code formatting menu item",
+    "string": "Code"
+  },
+  "Nimbus.RichTextInput.headingFive": {
+    "developer_comment": "label for heading 5 text style",
+    "string": "En-tête 5"
+  },
+  "Nimbus.RichTextInput.headingFour": {
+    "developer_comment": "label for heading 4 text style",
+    "string": "En-tête 4"
+  },
+  "Nimbus.RichTextInput.headingOne": {
+    "developer_comment": "label for heading 1 text style",
+    "string": "En-tête 1"
+  },
+  "Nimbus.RichTextInput.headingThree": {
+    "developer_comment": "label for heading 3 text style",
+    "string": "En-tête 3"
+  },
+  "Nimbus.RichTextInput.headingTwo": {
+    "developer_comment": "label for heading 2 text style",
+    "string": "En-tête 2"
+  },
+  "Nimbus.RichTextInput.italic": {
+    "developer_comment": "aria-label and tooltip for the italic formatting button",
+    "string": "Italique"
+  },
+  "Nimbus.RichTextInput.listFormatting": {
+    "developer_comment": "aria-label for the list formatting toggle group",
+    "string": "Formatage de la liste"
+  },
+  "Nimbus.RichTextInput.moreFormattingOptions": {
+    "developer_comment": "aria-label for the more formatting options menu button",
+    "string": "Plus d'options de formatage"
+  },
+  "Nimbus.RichTextInput.moreStyles": {
+    "developer_comment": "tooltip text for the more formatting options menu",
+    "string": "Plus de styles"
+  },
+  "Nimbus.RichTextInput.numberedList": {
+    "developer_comment": "aria-label for the numbered list button",
+    "string": "Liste numérotée"
+  },
+  "Nimbus.RichTextInput.paragraph": {
+    "developer_comment": "label for paragraph text style",
+    "string": "Paragraphe"
+  },
+  "Nimbus.RichTextInput.quote": {
+    "developer_comment": "label for block quote text style",
+    "string": "Citation"
+  },
+  "Nimbus.RichTextInput.redo": {
+    "developer_comment": "aria-label and tooltip for the redo button",
+    "string": "Rétablir"
+  },
+  "Nimbus.RichTextInput.strikethrough": {
+    "developer_comment": "label for the strikethrough menu item",
+    "string": "Barré"
+  },
+  "Nimbus.RichTextInput.subscript": {
+    "developer_comment": "label for the subscript formatting menu item",
+    "string": "Indice"
+  },
+  "Nimbus.RichTextInput.superscript": {
+    "developer_comment": "label for the superscript formatting menu item",
+    "string": "Exposant"
+  },
+  "Nimbus.RichTextInput.textFormatting": {
+    "developer_comment": "aria-label for the text formatting toolbar",
+    "string": "Formatage du texte"
+  },
+  "Nimbus.RichTextInput.textStyle": {
+    "developer_comment": "tooltip text for the text style menu",
+    "string": "Style de texte"
+  },
+  "Nimbus.RichTextInput.textStyleMenu": {
+    "developer_comment": "aria-label for the text style menu trigger button",
+    "string": "Menu style de texte"
+  },
+  "Nimbus.RichTextInput.underline": {
+    "developer_comment": "aria-label and tooltip for the underline formatting button",
+    "string": "Souligné"
+  },
+  "Nimbus.RichTextInput.undo": {
+    "developer_comment": "aria-label and tooltip for the undo button",
+    "string": "Annuler"
+  },
+  "Nimbus.ScopedSearchInput.searchLabel": {
+    "developer_comment": "Default aria-label for search input",
+    "string": "Rechercher"
+  },
+  "Nimbus.ScopedSearchInput.selectLabel": {
+    "developer_comment": "Default aria-label for select dropdown",
+    "string": "Filtrer par"
+  },
+  "Nimbus.SearchInput.clearInput": {
+    "developer_comment": "aria-label for search input clear button",
+    "string": "Effacer les données de recherche"
+  },
+  "Nimbus.Select.clearSelection": {
+    "developer_comment": "aria-label for select clear button",
+    "string": "Effacer la sélection"
+  },
+  "Nimbus.SplitButton.noActionsAvailable": {
+    "developer_comment": "fallback message when split button has no menu items",
+    "string": "Aucune action disponible"
+  },
+  "Nimbus.TagGroup.removeTag": {
+    "developer_comment": "aria-label for remove tag button",
+    "string": "Supprimer la balise"
+  }
+}
