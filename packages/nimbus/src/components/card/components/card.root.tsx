@@ -3,7 +3,6 @@ import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { CardRoot as CardRootSlot } from "../card.slots";
 import type { CardProps } from "../card.types";
 import { Stack } from "../../stack";
-import { mergeProps, useFocusRing } from "react-aria";
 import { extractStyleProps } from "@/utils";
 
 type CardContextValue = {
@@ -28,7 +27,6 @@ export const CardRoot = ({ ref, children, ...props }: CardProps) => {
   // Standard pattern: Second extract style props from remaining
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
-  const { isFocused, isFocusVisible, focusProps } = useFocusRing();
   const [headerNode, setHeader] = useState<ReactNode>(null);
   const [contentNode, setContent] = useState<ReactNode>(null);
 
@@ -47,10 +45,7 @@ export const CardRoot = ({ ref, children, ...props }: CardProps) => {
         ref={ref}
         {...recipeProps}
         {...styleProps}
-        {...mergeProps(functionalProps, focusProps)}
-        data-focus={isFocused || undefined}
-        data-focus-visible={isFocusVisible || undefined}
-        tabIndex={0}
+        {...functionalProps}
       >
         {/* Always render them in this order/layout to protect consumers */}
         <Stack direction="column" gap="200">
