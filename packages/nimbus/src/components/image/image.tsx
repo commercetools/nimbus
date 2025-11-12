@@ -11,6 +11,8 @@ export type ImageProps = ChakraImageProps;
  * A component to display images with support for fallback.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/image}
+ *
+ * @supportsStyleProps
  */
 export const Image = (props: ImageProps) => {
   return <ChakraImage {...props} />;
