@@ -42,24 +42,20 @@ Text styles here are recommended for most body styled text, and made to fit well
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
-      <Text textStyle="md">
-        Paragraph md - Primary body text, long descriptions, standard content blocks.
-      </Text>
+      <Text as="span" textStyle="md">Paragraph md</Text>
+      <Text as="span"> - Primary body text, long descriptions, standard content blocks.</Text>
     </Box>
     <Box>
-      <Text textStyle="sm">
-        Paragraph sm - Secondary text, metadata, table content.
-      </Text>
+      <Text as="span" textStyle="sm">Paragraph sm</Text>
+      <Text as="span"> - Secondary text, metadata, table content.</Text>
     </Box>
     <Box>
-      <Text textStyle="xs">
-        Paragraph xs - Tertiary content, small notes, timestamps.
-      </Text>
+      <Text as="span" textStyle="xs">Paragraph xs</Text>
+      <Text as="span"> - Tertiary content, small notes, timestamps.</Text>
     </Box>
     <Box>
-      <Text textStyle="caption">
-        CAPTION - Used for specialized, tracked metadata. (Includes letter-spacing: 1px).
-      </Text>
+      <Text as="span" textStyle="caption">CAPTION</Text>
+      <Text as="span"> - Used for specialized, tracked metadata. (Includes letter-spacing: 1px).</Text>
     </Box>
   </Stack>
 )
@@ -74,13 +70,34 @@ Text tones use color to semantically convey status, intent, or hierarchy. The de
 ```jsx-live
 const App = () => (
   <Stack direction="column" gap="400">
-    <Text color="fg">Default tone - Standard body copy, primary content.</Text>
-    <Text color="fg.subtle">Secondary - Helper text, metadata, inactive or less important UI elements.</Text>
-    <Text color="primary.11">Primary - Mainly used for links or branded messages.</Text>
-    <Text color="info.11">Info - Non-critical feedback, system messages.</Text>
-    <Text color="positive.11">Positive - Successful actions, positive status indicators (e.g., "Complete," "Saved").</Text>
-    <Text color="critical.11">Critical - Validation errors, destructive warnings, critical status indicators.</Text>
-    <Text color="warning.11">Warning - Warnings, temporary issues, actions requiring review.</Text>
+    <Box>
+      <Text as="span" color="fg">Default tone</Text>
+      <Text as="span"> - Standard body copy, primary content.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="fg.subtle">Secondary</Text>
+      <Text as="span"> - Helper text, metadata, inactive or less important UI elements.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="primary.11">Primary</Text>
+      <Text as="span"> - Mainly used for links or branded messages.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="info.11">Info</Text>
+      <Text as="span"> - Non-critical feedback, system messages.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="positive.11">Positive</Text>
+      <Text as="span"> - Successful actions, positive status indicators (e.g., "Complete," "Saved").</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="critical.11">Critical</Text>
+      <Text as="span"> - Validation errors, destructive warnings, critical status indicators.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="warning.11">Warning</Text>
+      <Text as="span"> - Warnings, temporary issues, actions requiring review.</Text>
+    </Box>
   </Stack>
 )
 ```
