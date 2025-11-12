@@ -22,12 +22,6 @@ export type { DateValue } from "@internationalized/date";
 export type { TimeValue } from "react-aria";
 
 /**
- * Key type for collection items from react-aria-components
- * Used by: Select, ComboBox, Menu, TagGroup, DataTable, and other collection components
- */
-export type { Key } from "react-aria-components";
-
-/**
  * Union type of all available color palette names.
  * Derived from ALL_PALETTES constant to ensure type safety when referencing palettes.
  */

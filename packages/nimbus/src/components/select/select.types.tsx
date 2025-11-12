@@ -46,7 +46,7 @@ export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
 // MAIN PROPS
 // ============================================================
 
-export type SelectRootProps = OmitInternalProps<SelectRootSlotProps> &
+export type SelectProps = OmitInternalProps<SelectRootSlotProps> &
   RaSelectProps & {
     /**
      * Whether the select is in a loading state
