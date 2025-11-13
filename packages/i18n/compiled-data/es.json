@@ -1,2 +1,688 @@
 {
+  "Nimbus.Alert.dismiss": [
+    {
+      "type": 0,
+      "value": "Desechar"
+    }
+  ],
+  "Nimbus.Avatar.avatarLabel": [
+    {
+      "type": 0,
+      "value": "Imagen de avatar para "
+    },
+    {
+      "type": 1,
+      "value": "fullName"
+    }
+  ],
+  "Nimbus.Calendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Próximo mes"
+    }
+  ],
+  "Nimbus.Calendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Próximo año"
+    }
+  ],
+  "Nimbus.Calendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Mes anterior"
+    }
+  ],
+  "Nimbus.Calendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Año anterior"
+    }
+  ],
+  "Nimbus.ComboBox.clearSelection": [
+    {
+      "type": 0,
+      "value": "Borrar selección"
+    }
+  ],
+  "Nimbus.ComboBox.comboboxDialog": [
+    {
+      "type": 0,
+      "value": "Diálogo Combobox"
+    }
+  ],
+  "Nimbus.ComboBox.filterOptions": [
+    {
+      "type": 0,
+      "value": "Filtrar opciones Combobox"
+    }
+  ],
+  "Nimbus.ComboBox.options": [
+    {
+      "type": 0,
+      "value": "Opciones Combobox"
+    }
+  ],
+  "Nimbus.ComboBox.selectedValues": [
+    {
+      "type": 0,
+      "value": "Valores seleccionados"
+    }
+  ],
+  "Nimbus.ComboBox.toggleCombobox": [
+    {
+      "type": 0,
+      "value": "Conmutar combobox"
+    }
+  ],
+  "Nimbus.DataTable.dataTable": [
+    {
+      "type": 0,
+      "value": "Tabla de datos"
+    }
+  ],
+  "Nimbus.DataTable.dataTableBody": [
+    {
+      "type": 0,
+      "value": "Cuerpo de la tabla de datos"
+    }
+  ],
+  "Nimbus.DataTable.dataTableHeader": [
+    {
+      "type": 0,
+      "value": "Encabezamiento de la tabla de datos"
+    }
+  ],
+  "Nimbus.DataTable.expandRows": [
+    {
+      "type": 0,
+      "value": "Extender filas"
+    }
+  ],
+  "Nimbus.DataTable.pinRows": [
+    {
+      "type": 0,
+      "value": "Fijar filas"
+    }
+  ],
+  "Nimbus.DataTable.resizeColumn": [
+    {
+      "type": 0,
+      "value": "Ajustar tamaño de columna"
+    }
+  ],
+  "Nimbus.DataTable.selectRow": [
+    {
+      "type": 0,
+      "value": "Seleccionar fila"
+    }
+  ],
+  "Nimbus.DatePicker.Time.enterTime": [
+    {
+      "type": 0,
+      "value": "Indicar tiempo"
+    }
+  ],
+  "Nimbus.DatePicker.Time.enterTimeHour": [
+    {
+      "type": 0,
+      "value": "Indicar tiempo (hora)"
+    }
+  ],
+  "Nimbus.DatePicker.Time.enterTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Indicar tiempo (hora y minuto)"
+    }
+  ],
+  "Nimbus.DatePicker.Time.enterTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Indicar tiempo (hora, minuto y segundo)"
+    }
+  ],
+  "Nimbus.DatePicker.Time.startTime": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo"
+    }
+  ],
+  "Nimbus.DatePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Eliminar valor de entrada"
+    }
+  ],
+  "Nimbus.DateRangePicker.clearInput": [
+    {
+      "type": 0,
+      "value": "Eliminar valor de entrada"
+    }
+  ],
+  "Nimbus.DateRangePicker.clearSelection": [
+    {
+      "type": 0,
+      "value": "Borrar rango de fechas"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTime": [
+    {
+      "type": 0,
+      "value": "Finalizar tiempo"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHour": [
+    {
+      "type": 0,
+      "value": "Finalizar tiempo (hora)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Finalizar tiempo (hora y minuto)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Finalizar tiempo (hora, minuto, segundo)"
+    }
+  ],
+  "Nimbus.DateRangePicker.endTimeLabel": [
+    {
+      "type": 0,
+      "value": "Finalizar tiempo"
+    }
+  ],
+  "Nimbus.DateRangePicker.openCalendar": [
+    {
+      "type": 0,
+      "value": "Abrir calendario"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTime": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHour": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo (hora)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHourMinute": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo (hora y minuto)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeHourMinuteSecond": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo (hora, minuto y segundo)"
+    }
+  ],
+  "Nimbus.DateRangePicker.startTimeLabel": [
+    {
+      "type": 0,
+      "value": "Iniciar tiempo"
+    }
+  ],
+  "Nimbus.Dialog.closeTrigger": [
+    {
+      "type": 0,
+      "value": "Cerrar diálogo"
+    }
+  ],
+  "Nimbus.DraggableList.emptyMessage": [
+    {
+      "type": 0,
+      "value": "Soltar artículos aquí"
+    }
+  ],
+  "Nimbus.DraggableList.removeButtonLabel": [
+    {
+      "type": 0,
+      "value": "Eliminar artículo"
+    }
+  ],
+  "Nimbus.Drawer.closeTrigger": [
+    {
+      "type": 0,
+      "value": "Cerrar bandeja"
+    }
+  ],
+  "Nimbus.FieldErrors.duplicateValue": [
+    {
+      "type": 0,
+      "value": "Este valor ya está en uso. Debe ser único."
+    }
+  ],
+  "Nimbus.FieldErrors.emptyValue": [
+    {
+      "type": 0,
+      "value": "Este campo no puede estar vacío."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFormat": [
+    {
+      "type": 0,
+      "value": "Introduce un valor válido."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFractionalNumber": [
+    {
+      "type": 0,
+      "value": "Se requiere un número entero."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidFromServer": [
+    {
+      "type": 0,
+      "value": "Ha fallado la validación del servidor. Comprueba tus entradas."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidNegativeNumber": [
+    {
+      "type": 0,
+      "value": "Los números negativos no están permitidos."
+    }
+  ],
+  "Nimbus.FieldErrors.invalidValue": [
+    {
+      "type": 0,
+      "value": "El valor proporcionado no es válido."
+    }
+  ],
+  "Nimbus.FieldErrors.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "Este campo es obligatorio. Proporciona un valor."
+    }
+  ],
+  "Nimbus.FieldErrors.resourceNotFound": [
+    {
+      "type": 0,
+      "value": "No se ha encontrado el recurso solicitado."
+    }
+  ],
+  "Nimbus.FieldErrors.valueAboveMaximum": [
+    {
+      "type": 0,
+      "value": "El valor debe ser igual o inferior al máximo."
+    }
+  ],
+  "Nimbus.FieldErrors.valueBelowMinimum": [
+    {
+      "type": 0,
+      "value": "El valor debe ser igual o superior al mínimo."
+    }
+  ],
+  "Nimbus.FieldErrors.valueBlocked": [
+    {
+      "type": 0,
+      "value": "Este valor no está permitido."
+    }
+  ],
+  "Nimbus.FieldErrors.valueOutOfRange": [
+    {
+      "type": 0,
+      "value": "El valor debe estar en un rango aceptable."
+    }
+  ],
+  "Nimbus.FieldErrors.valueTooLong": [
+    {
+      "type": 0,
+      "value": "Este valor es demasiado largo."
+    }
+  ],
+  "Nimbus.FieldErrors.valueTooShort": [
+    {
+      "type": 0,
+      "value": "Este valor es demasiado corto."
+    }
+  ],
+  "Nimbus.LoadingSpinner.default": [
+    {
+      "type": 0,
+      "value": "Cargando datos"
+    }
+  ],
+  "Nimbus.LocalizedField.hideCurrencies": [
+    {
+      "type": 0,
+      "value": "Ocultar todas las monedas"
+    }
+  ],
+  "Nimbus.LocalizedField.hideLanguages": [
+    {
+      "type": 0,
+      "value": "Ocultar todas las monedas"
+    }
+  ],
+  "Nimbus.LocalizedField.infoBoxTriggerAriaLabel": [
+    {
+      "type": 0,
+      "value": "más información"
+    }
+  ],
+  "Nimbus.LocalizedField.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "Este valor es necesario. Proporciona al menos un valor."
+    }
+  ],
+  "Nimbus.LocalizedField.showCurrencies": [
+    {
+      "type": 0,
+      "value": "Mostrar todas las monedas"
+    }
+  ],
+  "Nimbus.LocalizedField.showLanguages": [
+    {
+      "type": 0,
+      "value": "Mostrar todos los idiomas"
+    }
+  ],
+  "Nimbus.MoneyInput.amountInputLabel": [
+    {
+      "type": 0,
+      "value": "Cantidad"
+    }
+  ],
+  "Nimbus.MoneyInput.currencySelectLabel": [
+    {
+      "type": 0,
+      "value": "Moneda"
+    }
+  ],
+  "Nimbus.MoneyInput.highPrecisionPrice": [
+    {
+      "type": 0,
+      "value": "Precio de alta precisión"
+    }
+  ],
+  "Nimbus.NumberInput.decrement": [
+    {
+      "type": 0,
+      "value": "Merma"
+    }
+  ],
+  "Nimbus.NumberInput.increment": [
+    {
+      "type": 0,
+      "value": "Aumento"
+    }
+  ],
+  "Nimbus.Pagination.currentPage": [
+    {
+      "type": 0,
+      "value": "Página actual"
+    }
+  ],
+  "Nimbus.Pagination.goToNextPage": [
+    {
+      "type": 0,
+      "value": "Ir a la siguiente página"
+    }
+  ],
+  "Nimbus.Pagination.goToPreviousPage": [
+    {
+      "type": 0,
+      "value": "Ir a la página anterior"
+    }
+  ],
+  "Nimbus.Pagination.itemsPerPage": [
+    {
+      "type": 0,
+      "value": "Artículos por página"
+    }
+  ],
+  "Nimbus.Pagination.itemsPerPageText": [
+    {
+      "type": 0,
+      "value": "artículos por página"
+    }
+  ],
+  "Nimbus.Pagination.ofTotalPages": [
+    {
+      "type": 0,
+      "value": "de "
+    },
+    {
+      "type": 1,
+      "value": "totalPages"
+    }
+  ],
+  "Nimbus.Pagination.page": [
+    {
+      "type": 0,
+      "value": "página"
+    }
+  ],
+  "Nimbus.Pagination.pagination": [
+    {
+      "type": 0,
+      "value": "paginación"
+    }
+  ],
+  "Nimbus.PasswordInput.hide": [
+    {
+      "type": 0,
+      "value": "Ocultar contraseña"
+    }
+  ],
+  "Nimbus.PasswordInput.show": [
+    {
+      "type": 0,
+      "value": "Mostrar contraseña"
+    }
+  ],
+  "Nimbus.RangeCalendar.nextMonth": [
+    {
+      "type": 0,
+      "value": "Mes próximo"
+    }
+  ],
+  "Nimbus.RangeCalendar.nextYear": [
+    {
+      "type": 0,
+      "value": "Año próximo"
+    }
+  ],
+  "Nimbus.RangeCalendar.previousMonth": [
+    {
+      "type": 0,
+      "value": "Mes anterior"
+    }
+  ],
+  "Nimbus.RangeCalendar.previousYear": [
+    {
+      "type": 0,
+      "value": "Año anterior"
+    }
+  ],
+  "Nimbus.RichTextInput.bold": [
+    {
+      "type": 0,
+      "value": "Negrita"
+    }
+  ],
+  "Nimbus.RichTextInput.bulletedList": [
+    {
+      "type": 0,
+      "value": "Lista no numerada"
+    }
+  ],
+  "Nimbus.RichTextInput.code": [
+    {
+      "type": 0,
+      "value": "Código"
+    }
+  ],
+  "Nimbus.RichTextInput.headingFive": [
+    {
+      "type": 0,
+      "value": "Encabezamiento 5"
+    }
+  ],
+  "Nimbus.RichTextInput.headingFour": [
+    {
+      "type": 0,
+      "value": "Encabezamiento 4"
+    }
+  ],
+  "Nimbus.RichTextInput.headingOne": [
+    {
+      "type": 0,
+      "value": "Encabezamiento 1"
+    }
+  ],
+  "Nimbus.RichTextInput.headingThree": [
+    {
+      "type": 0,
+      "value": "Encabezamiento 3"
+    }
+  ],
+  "Nimbus.RichTextInput.headingTwo": [
+    {
+      "type": 0,
+      "value": "Encabezamiento 2"
+    }
+  ],
+  "Nimbus.RichTextInput.italic": [
+    {
+      "type": 0,
+      "value": "Cursiva"
+    }
+  ],
+  "Nimbus.RichTextInput.listFormatting": [
+    {
+      "type": 0,
+      "value": "Formatear lista"
+    }
+  ],
+  "Nimbus.RichTextInput.moreFormattingOptions": [
+    {
+      "type": 0,
+      "value": "Más opciones de formato"
+    }
+  ],
+  "Nimbus.RichTextInput.moreStyles": [
+    {
+      "type": 0,
+      "value": "Más estilos"
+    }
+  ],
+  "Nimbus.RichTextInput.numberedList": [
+    {
+      "type": 0,
+      "value": "Lista numerada"
+    }
+  ],
+  "Nimbus.RichTextInput.paragraph": [
+    {
+      "type": 0,
+      "value": "Párrafo"
+    }
+  ],
+  "Nimbus.RichTextInput.quote": [
+    {
+      "type": 0,
+      "value": "Presupuesto"
+    }
+  ],
+  "Nimbus.RichTextInput.redo": [
+    {
+      "type": 0,
+      "value": "Repetir"
+    }
+  ],
+  "Nimbus.RichTextInput.strikethrough": [
+    {
+      "type": 0,
+      "value": "Tachado"
+    }
+  ],
+  "Nimbus.RichTextInput.subscript": [
+    {
+      "type": 0,
+      "value": "Subíndice"
+    }
+  ],
+  "Nimbus.RichTextInput.superscript": [
+    {
+      "type": 0,
+      "value": "Índice superior"
+    }
+  ],
+  "Nimbus.RichTextInput.textFormatting": [
+    {
+      "type": 0,
+      "value": "Formatear texto"
+    }
+  ],
+  "Nimbus.RichTextInput.textStyle": [
+    {
+      "type": 0,
+      "value": "Estilo de texto"
+    }
+  ],
+  "Nimbus.RichTextInput.textStyleMenu": [
+    {
+      "type": 0,
+      "value": "Menú de estilo de texto"
+    }
+  ],
+  "Nimbus.RichTextInput.underline": [
+    {
+      "type": 0,
+      "value": "Subrayar"
+    }
+  ],
+  "Nimbus.RichTextInput.undo": [
+    {
+      "type": 0,
+      "value": "Deshacer"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.searchLabel": [
+    {
+      "type": 0,
+      "value": "Buscar"
+    }
+  ],
+  "Nimbus.ScopedSearchInput.selectLabel": [
+    {
+      "type": 0,
+      "value": "Filtrar por"
+    }
+  ],
+  "Nimbus.SearchInput.clearInput": [
+    {
+      "type": 0,
+      "value": "Borrar entrada de búsqueda"
+    }
+  ],
+  "Nimbus.Select.clearSelection": [
+    {
+      "type": 0,
+      "value": "Borrar selección"
+    }
+  ],
+  "Nimbus.SplitButton.noActionsAvailable": [
+    {
+      "type": 0,
+      "value": "No hay acciones disponibles"
+    }
+  ],
+  "Nimbus.TagGroup.removeTag": [
+    {
+      "type": 0,
+      "value": "Retirar etiqueta"
+    }
+  ]
 }
