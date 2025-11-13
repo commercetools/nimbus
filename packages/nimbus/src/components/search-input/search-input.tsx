@@ -24,6 +24,9 @@ import { messages } from "./search-input.i18n";
  *
  * A search input component that allows users to enter search queries with built-in
  * clear functionality. Built on React Aria's SearchField for accessibility.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/search-input}
+ * @supportsStyleProps
  */
 export const SearchInput = (props: SearchInputProps) => {
   const { ref: forwardedRef, ...restProps } = props;

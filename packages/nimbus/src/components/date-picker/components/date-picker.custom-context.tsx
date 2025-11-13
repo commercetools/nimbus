@@ -10,6 +10,12 @@ import type { PressEvent, TimeValue } from "react-aria";
 import { useIntl } from "react-intl";
 import { messages } from "../date-picker.i18n";
 
+/**
+ * DatePickerCustomContext - Custom context provider for DatePicker
+ *
+ * Provides React Aria context overrides for button and time input slots,
+ * enabling coordinated behavior between DatePicker parts.
+ */
 export const DatePickerCustomContext = ({
   children,
 }: {

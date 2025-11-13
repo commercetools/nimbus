@@ -2,35 +2,41 @@ import { Flex, Box, Stack } from "@commercetools/nimbus";
 import { DevOnly } from "@/components/utils/dev-only";
 import { Suspense } from "react";
 
-import { ModeToggleButton } from "./components/mode-toggle-button/index.ts";
+import { ColorThemeMenu, ColorModeToggle } from "@/components/top-bar";
 import { AppNavBarSearch } from "./components/app-nav-bar-search/app-nav-bar-search.tsx";
 import { AppNavBarCreateButton } from "./components/app-nav-bar-create-button.tsx";
 import { AppNavBarBrand } from "./components/app-nav-bar-brand.tsx";
+import { AppNavBarMenuWithSuspense } from "./components/app-nav-bar-menu.tsx";
 
 export const AppNavBar = () => {
   return (
     <Flex
-      p="400"
-      borderBottom="solid-25"
-      borderColor="neutral.3"
+      id="app-nav-bar"
+      width="full"
       alignItems="center"
+      justifyContent="space-between"
+      px="400"
+      py="100"
+      // TODO: Remove this once we have a proper layout
+      maxWidth="1280px"
     >
-      <Stack direction="row" gap="800" alignItems="center">
+      {/* Left: Logo + Main Menu */}
+      <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <AppNavBarBrand />
-        <DevOnly>
-          <AppNavBarCreateButton />
-        </DevOnly>
+        <AppNavBarMenuWithSuspense />
       </Stack>
-      <Box flexGrow="1" />
-      <Flex flexGrow="1">
+
+      {/* Right: Search + Dev Controls + Color Mode + Color Theme */}
+      <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <Suspense fallback={<Box>Loading search...</Box>}>
           <AppNavBarSearch />
         </Suspense>
-      </Flex>
-      <Box flexGrow="1" />
-      <Box>
-        <ModeToggleButton />
-      </Box>
+        <DevOnly>
+          <AppNavBarCreateButton />
+        </DevOnly>
+        <ColorModeToggle />
+        <ColorThemeMenu />
+      </Stack>
     </Flex>
   );
 };

@@ -12,6 +12,11 @@ import type { DialogContentProps } from "../dialog.types";
 import { extractStyleProps } from "@/utils";
 import { useDialogRootContext } from "./dialog.context";
 
+/**
+ * Dialog.Content - The main dialog content container
+ *
+ * @supportsStyleProps
+ */
 export const DialogContent = (props: DialogContentProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 

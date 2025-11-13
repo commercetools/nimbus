@@ -3,6 +3,7 @@ import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig } from "vite";
 import type { LibraryFormats } from "vite";
+import type { RollupLog, LoggingFunction } from "rollup";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
@@ -11,6 +12,11 @@ import { analyzer } from "vite-bundle-analyzer";
 
 // Turns every index file inside src/components, along with the main `src/index.ts` and `setup-jsdom-polyfills` entrypoints, into separate entry-points/files for better tree-shaking in consuming apps.
 // Defining entrypoints and chunking files is recommended over using `output.preserveModules` - https://rollupjs.org/configuration-options/#input
+//
+// IMPORTANT: Because each component's index.ts becomes a separate chunk, cross-component imports
+// within Nimbus MUST import directly from implementation files (e.g., button.tsx, button.types.ts)
+// rather than barrel exports (index.ts) to avoid circular chunk dependencies.
+// See docs/component-guidelines.md "Cross-Chunk Import Pattern" for details.
 const createEntries = async () => {
   // Only index files are turned into entrypoints, as we don't want to include test files, storybook stories, etc.
   const entries = new Map<string, string>();
@@ -121,6 +127,26 @@ export default defineConfig(async () => {
           chunkFileNames: () => {
             return `chunks/[name]-[hash].[format].js`;
           },
+        },
+        // Suppress barrel export reexport warnings for compound components
+        // These warnings occur due to Nimbus's architectural pattern where compound
+        // components (Menu, Accordion, etc.) import from their own ./components/index.ts barrel.
+        // Example: accordion.tsx imports from ./components/index.ts, which re-exports accordion.header.tsx
+        // This is intentional and safe - it's the documented pattern for compound components.
+        // See docs/file-type-guidelines/compound-components.md for details.
+        onwarn(warning: RollupLog, warn: LoggingFunction) {
+          if (
+            warning.message?.includes("reexported through module") &&
+            warning.message?.includes("/components/index.ts")
+          ) {
+            // Suppress warnings specifically for:
+            // 1. Compound component internal barrels: src/components/{component}/components/index.ts
+            // 2. Main components barrel: src/components/index.ts
+            // Both are intentional architectural patterns in Nimbus.
+            return;
+          }
+          // Pass all other warnings through
+          warn(warning);
         },
         // Shake that tree, rollup
         treeshake: true,

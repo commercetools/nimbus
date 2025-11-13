@@ -9,6 +9,7 @@ import Fuse from "fuse.js";
 export const useSearch = () => {
   const [query, setQuery] = useAtom(searchQueryAtom);
   const searchableDocs = useAtomValue(searchableDocItemsAtom);
+  const [open, setOpen] = useState(false);
 
   const fuse = useMemo(() => {
     const fuseOptions = {
@@ -20,15 +21,26 @@ export const useSearch = () => {
       findAllMatches: true,
       useExtendedSearch: false,
       minMatchCharLength: 1,
-      keys: ["title", "description", "content"],
+      threshold: 0.4, // More lenient for better fuzzy matching
+      keys: [
+        { name: "title", weight: 3 }, // Title is most important
+        { name: "description", weight: 2 },
+        { name: "content", weight: 1 },
+        { name: "tags", weight: 1.5 },
+      ],
     };
 
     return new Fuse(searchableDocs || [], fuseOptions);
   }, [searchableDocs]);
 
-  const results = fuse.search(query).map((v) => v.item);
+  // Perform search with fuzzy matching
+  const results = useMemo(() => {
+    if (!query.trim()) {
+      return [];
+    }
 
-  const [open, setOpen] = useState(false);
+    return fuse.search(query).map((result) => result.item);
+  }, [query, fuse]);
 
   return {
     results,

@@ -13,6 +13,14 @@ import type {
   DraggableListItemProps,
 } from "../draggable-list.types";
 
+/**
+ * DraggableList.Item - An individual draggable item within the list
+ *
+ * Handles drag interactions and provides visual feedback during dragging.
+ * Supports optional removal with remove button.
+ *
+ * @supportsStyleProps
+ */
 export const DraggableListItem = <T extends DraggableListItemData>({
   children,
   id,
@@ -68,3 +76,5 @@ export const DraggableListItem = <T extends DraggableListItemData>({
     </DraggableListItemSlot>
   );
 };
+
+DraggableListItem.displayName = "DraggableList.Item";

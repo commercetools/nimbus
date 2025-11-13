@@ -3,8 +3,9 @@ import type {
   MoneyInputValue,
   CustomEvent,
   CurrencyCode,
-} from "../money-input";
+} from "../money-input/money-input.types";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -104,7 +105,7 @@ export type LocalizedFieldChangeEvent = {
 // ============================================================
 
 export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
-  Omit<
+  OmitInternalProps<
     LocalizedFieldRootSlotProps,
     "onChange" | "onBlur" | "onFocus" | "size"
   > & {

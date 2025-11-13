@@ -2,6 +2,7 @@ export type TMenuItem = {
   id: string;
   label: string;
   slug: string;
+  route: string; // The actual route from docs.json
   icon?: string;
   children?: TMenuItem[];
 };

@@ -11,6 +11,11 @@ import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
 import { messages } from "../combobox.i18n";
 
+/**
+ * Internal button group for multi-select ComboBox (clear and toggle buttons)
+ *
+ * @supportsStyleProps
+ */
 export const ComboBoxButtonGroup = ({
   selectedKeys,
   onSelectionChange,

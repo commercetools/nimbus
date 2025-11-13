@@ -11,6 +11,11 @@ export type DataTableFooterProps = {
   ref?: React.Ref<HTMLDivElement>;
 };
 
+/**
+ * DataTable.Footer - Optional footer section for displaying summary information, pagination, or actions
+ *
+ * @supportsStyleProps
+ */
 export const DataTableFooter = function DataTableFooter({
   ref: forwardedRef,
   children,

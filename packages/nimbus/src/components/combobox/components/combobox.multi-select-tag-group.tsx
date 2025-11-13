@@ -41,6 +41,11 @@ function checkItemValidity(
   }
 }
 
+/**
+ * Internal tag group component for multi-select ComboBox
+ *
+ * @supportsStyleProps
+ */
 export const MultiSelectTagGroup =
   /* eslint-disable @typescript-eslint/no-explicit-any */
   <T extends Record<string, any>>({

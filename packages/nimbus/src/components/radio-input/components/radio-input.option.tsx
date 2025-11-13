@@ -8,6 +8,14 @@ import type { RadioInputOptionProps } from "../radio-input.types";
 import { RadioInputOptionSlot } from "../radio-input.slots";
 import { useFocusRing } from "react-aria";
 
+/**
+ * # RadioInput.Option
+ *
+ * An individual radio option within a RadioInput group that can be selected.
+ * Provides visual feedback for selection state and supports keyboard interaction.
+ *
+ * @supportsStyleProps
+ */
 export const RadioInputOption = ({
   children,
   value,
@@ -47,4 +55,4 @@ export const RadioInputOption = ({
   );
 };
 
-RadioInputOption.displayName = "RadioInputOption";
+RadioInputOption.displayName = "RadioInput.Option";

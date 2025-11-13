@@ -1,5 +1,6 @@
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { MoneyInputValue, CurrencyCode } from "./utils";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 export type { MoneyInputValue, CurrencyCode, MoneyValue } from "./utils";
 
@@ -42,7 +43,6 @@ export type CustomEvent = {
 
 // Props to exclude from slot props that conflict with our custom event handling
 export type ExcludedSlotProps =
-  | "asChild"
   | "onChange"
   | "onBlur"
   | "onFocus"
@@ -90,7 +90,7 @@ export type ExcludedSlotProps =
 // ============================================================
 // MAIN PROPS
 // ============================================================
-export type MoneyInputProps = Omit<
+export type MoneyInputProps = OmitInternalProps<
   MoneyInputRootSlotProps,
   ExcludedSlotProps
 > & {

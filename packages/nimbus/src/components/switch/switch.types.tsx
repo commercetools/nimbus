@@ -1,3 +1,4 @@
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
 
@@ -24,7 +25,6 @@ export type SwitchThumbSlotProps = HTMLChakraProps<"span">;
 // ============================================================
 
 type ExcludedSwitchProps =
-  | "asChild"
   | "isIndeterminate"
   | "colorScheme"
   | "validationState"
@@ -35,7 +35,7 @@ type ExcludedSwitchProps =
 // MAIN PROPS
 // ============================================================
 
-export type SwitchProps = Omit<
+export type SwitchProps = OmitInternalProps<
   SwitchRootSlotProps,
   ExcludedSwitchProps | "onChange"
 > &

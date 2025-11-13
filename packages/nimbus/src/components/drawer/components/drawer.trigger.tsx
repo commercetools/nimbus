@@ -4,6 +4,11 @@ import type { DrawerTriggerProps } from "../drawer.types";
 import { extractStyleProps } from "@/utils";
 import { chakra } from "@chakra-ui/react/styled-system";
 
+/**
+ * Drawer.Trigger - The trigger element that opens the drawer when activated
+ *
+ * @supportsStyleProps
+ */
 export const DrawerTrigger = ({
   ref: forwardedRef,
   children,

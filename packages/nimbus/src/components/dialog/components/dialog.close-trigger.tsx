@@ -5,6 +5,11 @@ import { IconButton } from "@/components";
 import { messages } from "../dialog.i18n";
 import { useIntl } from "react-intl";
 
+/**
+ * Dialog.CloseTrigger - A button that closes the dialog
+ *
+ * @supportsStyleProps
+ */
 export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
   const { ref: forwardedRef, "aria-label": ariaLabel, ...restProps } = props;
   const intl = useIntl();

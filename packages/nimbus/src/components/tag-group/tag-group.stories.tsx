@@ -9,6 +9,7 @@ import {
   type TagGroupProps,
   Text,
 } from "@commercetools/nimbus";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 /**
  * Storybook metadata configuration
@@ -292,4 +293,24 @@ export const Sizes: Story = {
       </Stack>
     );
   },
+};
+
+/**
+ * Showcase Color Palettes
+ */
+export const ColorPalettes: Story = {
+  args: {},
+  render: () => (
+    <DisplayColorPalettes>
+      {(palette) => (
+        <TagGroup.Root aria-label="animals">
+          <TagGroup.TagList items={[{ name: palette, id: palette }]}>
+            {(item) => (
+              <TagGroup.Tag colorPalette={palette}>{item.name}</TagGroup.Tag>
+            )}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      )}
+    </DisplayColorPalettes>
+  ),
 };

@@ -13,13 +13,9 @@ const viteProcess = spawn(
   }
 );
 
-const mdxWatcher = spawn(
-  "pnpm",
-  ["tsx", "./scripts/doc-generation/watcher.tsx"],
-  {
-    stdio: "inherit",
-  }
-);
+const mdxWatcher = spawn("pnpm", ["tsx", "./scripts/watcher.ts"], {
+  stdio: "inherit",
+});
 
 function waitForExit() {
   return new Promise((resolve) => {

@@ -7,6 +7,11 @@ import { AlertContext } from "./alert.root";
 import { useIntl } from "react-intl";
 import { messages } from "../alert.i18n";
 
+/**
+ * Alert.DismissButton - Button to dismiss or close the alert
+ *
+ * @supportsStyleProps
+ */
 export const AlertDismissButton = ({
   children,
   ...props

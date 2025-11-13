@@ -32,7 +32,7 @@ export const moneyInputRecipe = defineSlotRecipe({
         },
         "& .nimbus-money-input__amountInput": {
           // remove outline on left side of input so that it looks like there is a continuous outline around the label and input.
-          clipPath: `inset(-4px -4px -4px -1px)`,
+          clipPath: `inset(-4px -4px -4px -4px)`,
         },
       },
     },

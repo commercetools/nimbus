@@ -10,6 +10,8 @@ import type { CollapsibleMotionContentProps } from "../collapsible-motion.types"
  *
  * This component renders the content that will expand and collapse.
  * It handles accessibility attributes through React Aria.
+ *
+ * @supportsStyleProps
  */
 export const CollapsibleMotionContent = forwardRef<
   HTMLDivElement,

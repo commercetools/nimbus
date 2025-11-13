@@ -5,6 +5,14 @@ import type { DatePickerTimeInputProps } from "../date-picker.types";
 import { FormattedMessage } from "react-intl";
 import { messages } from "../date-picker.i18n";
 
+/**
+ * DatePickerTimeInput - Time input component displayed in DatePicker popover footer
+ *
+ * Only renders when granularity requires time selection (hour, minute, second).
+ * Automatically focuses when user selects a date from the calendar.
+ *
+ * @supportsStyleProps
+ */
 export const DatePickerTimeInput = ({
   hideTimeZone,
   hourCycle,

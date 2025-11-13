@@ -2,11 +2,9 @@ import { TagGroupRootSlot } from "../tag-group.slots";
 import type { TagGroupRootComponent } from "../tag-group.types";
 
 /**
- * # TagGroup
+ * TagGroup.Root - The root component that provides context and state management for the tag group
  *
- * A tag group is a focusable list of labels, categories, keywords, filters, or other items, with support for keyboard navigation, selection, and removal.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/data-display/tag-group}
+ * @supportsStyleProps
  */
 export const TagGroupRoot: TagGroupRootComponent = ({
   children,

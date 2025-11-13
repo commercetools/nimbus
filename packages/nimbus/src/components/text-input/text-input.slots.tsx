@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
+import type { SlotComponent } from "@/type-utils";
 import type {
   TextInputRootSlotProps,
   TextInputLeadingElementSlotProps,
@@ -10,22 +11,28 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "textInput",
 });
 
-export const TextInputRootSlot = withProvider<
+export const TextInputRootSlot: SlotComponent<
   HTMLDivElement,
   TextInputRootSlotProps
->("div", "root");
+> = withProvider<HTMLDivElement, TextInputRootSlotProps>("div", "root");
 
-export const TextInputLeadingElementSlot = withContext<
+export const TextInputLeadingElementSlot: SlotComponent<
   HTMLDivElement,
   TextInputLeadingElementSlotProps
->("div", "leadingElement");
+> = withContext<HTMLDivElement, TextInputLeadingElementSlotProps>(
+  "div",
+  "leadingElement"
+);
 
-export const TextInputInputSlot = withContext<
+export const TextInputInputSlot: SlotComponent<
   HTMLInputElement,
   TextInputInputSlotProps
->("input", "input");
+> = withContext<HTMLInputElement, TextInputInputSlotProps>("input", "input");
 
-export const TextInputTrailingElementSlot = withContext<
+export const TextInputTrailingElementSlot: SlotComponent<
   HTMLDivElement,
   TextInputTrailingElementSlotProps
->("div", "trailingElement");
+> = withContext<HTMLDivElement, TextInputTrailingElementSlotProps>(
+  "div",
+  "trailingElement"
+);

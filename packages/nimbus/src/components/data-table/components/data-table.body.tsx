@@ -12,6 +12,11 @@ const DefaultEmptyStateMessage = () => (
   </Box>
 );
 
+/**
+ * DataTable.Body - The table body section that renders all data rows with selection and expansion capabilities
+ *
+ * @supportsStyleProps
+ */
 export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ref,
   ...props

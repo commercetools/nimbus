@@ -29,6 +29,8 @@ import { messages } from "./date-range-picker.i18n";
  * ============================================================
  * Combines a DateInput with a RangeCalendar popover for date range selection.
  * Users can either type a date range directly or select from the calendar.
+ *
+ * @supportsStyleProps
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
   const intl = useIntl();

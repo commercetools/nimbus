@@ -34,14 +34,20 @@ For compound components, the main file (`component-name.tsx`) must contain
 
 ```typescript
 // ✅ CORRECT - menu.tsx contains only exports
+// Import from barrel export index for consistent module resolution
+import { MenuRoot, MenuTrigger, MenuContent } from "./components";
+
 export const Menu = {
   Root: MenuRoot,
   Trigger: MenuTrigger,
+  Content: MenuContent,
   // ...
 };
 ```
 
-**IMPORTANT**: Each part must have JSDoc documentation in the main file. See [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts) for detailed documentation requirements.
+**IMPORTANT**:
+- Sub-components must be imported from the barrel export index (`./components/index.ts`), not from individual files
+- Each part must have JSDoc documentation in the main file. See [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts) for detailed documentation requirements.
 
 ### 2. Root Component is MANDATORY
 
@@ -458,9 +464,10 @@ For comprehensive type patterns and examples for compound components, see:
 
 - [ ] `components/` directory exists
 - [ ] Main file contains exports only
+- [ ] **Sub-components imported from barrel export (`./components/index.ts`)**
 - [ ] **`.Root` component exists and is first property**
 - [ ] Root component in `components/component-name.root.tsx`
-- [ ] All sub-components in separate files
+- [ ] All sub-components in separate files following pattern: `components/component-name.{part}.tsx`
 - [ ] Components index file exports all parts
 
 ### Documentation (in main file)

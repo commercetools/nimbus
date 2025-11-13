@@ -1,39 +1,68 @@
-import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { documentationAtom } from "@/atoms/documentation";
-import { activeRouteAtom } from "@/atoms/route";
+import { useDocData } from "./use-doc-data";
 import type { MdxFileFrontmatter } from "@/types";
+import { useRouteInfo } from "./use-route-info";
+
+type UseActiveDocReturn = {
+  doc: MdxFileFrontmatter | undefined;
+  isLoading: boolean;
+  error: Error | null;
+};
 
 /**
  * Hook to get the currently active document.
  *
- * This hook uses direct lookup from the documentation object instead of
- * relying on the derived activeDocAtom, which eliminates race conditions
- * during navigation when async atoms can be out of sync.
+ * This hook uses the useDocData hook to load the current route's document data
+ * on demand, eliminating the need for a monolithic documentation object.
  *
- * @returns The active document's frontmatter, or undefined if not found
+ * @returns Object containing the active document, loading state, and error state
  */
-export const useActiveDoc = (): MdxFileFrontmatter | undefined => {
-  const documentation = useAtomValue(documentationAtom);
-  const activeRoute = useAtomValue(activeRouteAtom);
+export const useActiveDoc = (): UseActiveDocReturn => {
+  const { baseRoute } = useRouteInfo();
 
-  const activeDoc = useMemo(() => {
-    const doc = Object.values(documentation).find(
-      (doc) => doc.meta.route === activeRoute
-    );
+  // Use useDocData to load the current route's document
+  const { doc, isLoading, error } = useDocData(baseRoute);
 
-    if (!doc) return undefined;
+  // Memoize the return value to maintain stable references when underlying data hasn't changed
+  // This prevents unnecessary rerenders in consuming components (like ViewTabs)
+  return useMemo(() => {
+    // Return loading state as-is
+    if (isLoading) {
+      return { doc: undefined, isLoading: true, error: null };
+    }
+
+    // Return error state
+    if (error || !doc) {
+      return {
+        doc: undefined,
+        isLoading: false,
+        error: error || new Error("Document not found"),
+      };
+    }
+
+    // Type guard: doc should have meta and mdx properties
+    if (!("meta" in doc) || !("mdx" in doc)) {
+      console.error("Invalid document structure:", doc);
+      return {
+        doc: undefined,
+        isLoading: false,
+        error: new Error("Invalid document structure"),
+      };
+    }
 
     // CRITICAL: Create defensive copy with cloned menu array
     // This prevents any component from mutating the shared menu array
     return {
-      ...doc,
-      meta: {
-        ...doc.meta,
-        menu: [...doc.meta.menu],
-      },
+      doc: {
+        meta: {
+          ...doc.meta,
+          menu: [...doc.meta.menu],
+        },
+        mdx: doc.mdx,
+        views: doc.views || {},
+      } as MdxFileFrontmatter,
+      isLoading: false,
+      error: null,
     };
-  }, [documentation, activeRoute]);
-
-  return activeDoc;
+  }, [doc, isLoading, error]);
 };

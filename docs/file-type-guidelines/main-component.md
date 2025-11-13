@@ -57,15 +57,15 @@ Button.displayName = 'Button';
 
 ````typescript
 // menu.tsx - EXPORTS ONLY, NO IMPLEMENTATION
-import { MenuRoot } from "./components/menu.root";
-import { MenuTrigger } from "./components/menu.trigger";
-import { MenuItem } from "./components/menu.item";
-// ... other imports
+// Import from barrel export index to ensure consistent module resolution
+import { MenuRoot, MenuTrigger, MenuItem } from "./components";
 
 /**
  * Menu
  * ============================================================
  * An accessible dropdown menu component
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/navigation/menu}
  *
  * @example
  * ```tsx
@@ -150,13 +150,6 @@ export const Menu = {
   // ... other exports
 };
 
-// Internal exports for react-docgen
-export {
-  MenuRoot as _MenuRoot,
-  MenuTrigger as _MenuTrigger,
-  MenuItem as _MenuItem,
-  // ... other internal exports
-};
 ````
 
 ### Documenting Compound Component Parts
@@ -285,6 +278,8 @@ component part documentation:
  * A foundational dialog component for overlays that require user attention.
  * Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/dialog}
+ *
  * @example
  * ```tsx
  * <Dialog.Root>
@@ -411,14 +406,19 @@ Badge.displayName = 'Badge';
 
 ```typescript
 // select.tsx - EXPORTS ONLY
-import { SelectRoot } from "./components/select-root";
-import { SelectTrigger } from "./components/select-trigger";
-import { SelectOption } from "./components/select-option";
+import {
+  SelectRoot,
+  SelectTrigger,
+  SelectContent,
+  SelectOption,
+} from "./components";
 
 /**
  * Select
  * ============================================================
  * Dropdown selection component with accessibility
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
  */
 export const Select = {
   Root: SelectRoot,
@@ -427,8 +427,6 @@ export const Select = {
   Option: SelectOption,
 };
 
-// For react-docgen
-export { SelectRoot as _SelectRoot, SelectTrigger as _SelectTrigger };
 ```
 
 ## React Aria Integration
@@ -463,6 +461,133 @@ export const Button = (props: ButtonProps) => {
   );
 };
 ```
+
+## Cross-Component Imports (CRITICAL)
+
+### The Problem: Circular Chunk Dependencies
+
+Nimbus uses Vite to create **separate chunks for each component** via their
+`index.ts` barrel exports. This enables tree-shaking for consumers but creates a
+critical constraint for internal development:
+
+**When Component A imports from Component B's barrel export (`index.ts`), it
+creates a dependency on Component B's entire chunk, which can cause:**
+
+1. **Circular chunk dependencies** - Rollup warnings during build
+2. **Increased bundle size** - Loading entire component chunks unnecessarily
+3. **Build failures** - Circular dependencies can prevent builds
+
+### The Solution: Direct File Imports
+
+**Rule:** When importing components or types from a DIFFERENT component
+directory, import directly from the implementation file, NOT the barrel export.
+
+#### Type Imports Across Components
+
+```typescript
+// ❌ WRONG - Imports from barrel export
+import type { ToggleButtonProps } from "../toggle-button";
+
+// ✅ CORRECT - Imports from implementation file
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+```
+
+**Real example:** `icon-toggle-button.types.ts` needs to extend
+`ToggleButtonProps`:
+
+```typescript
+// icon-toggle-button.types.ts
+// ✅ CORRECT
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+
+export type IconToggleButtonProps = ToggleButtonProps & {
+  // Additional props...
+};
+```
+
+#### Component Imports Across Components
+
+```typescript
+// ❌ WRONG - Imports from barrel export
+import { IconToggleButton } from "@/components/icon-toggle-button";
+import { Button } from "@/components";
+
+// ✅ CORRECT - Imports from implementation file
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { Button } from "@/components/button/button";
+```
+
+**Real example:** `rich-text-toolbar.tsx` needs `IconToggleButton`:
+
+```typescript
+// rich-text-toolbar.tsx
+// ✅ CORRECT - Direct import from implementation file
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { Button } from "@/components/button/button";
+
+// Other Nimbus components imported from main barrel export are fine
+// because rich-text-toolbar doesn't have its own barrel export (it's internal)
+import {
+  ToggleButtonGroup,
+  IconButton,
+  Text,
+  Separator,
+} from "@/components";
+```
+
+### When to Use Direct Imports
+
+✅ **USE direct file imports when:**
+
+- Importing components from a DIFFERENT component directory
+- Type-only imports across components
+- Compound component parts accessing other components
+- Any import that could create a chunk-to-chunk dependency
+
+❌ **DON'T use direct imports when:**
+
+- Importing within the SAME component directory (use relative paths:
+  `./button.slots`, `./button.types`)
+- Importing from utilities, hooks, or other non-component modules (they don't
+  have separate chunks)
+- Your component doesn't have its own `index.ts` barrel export (internal
+  components like `rich-text-toolbar.tsx` can import from `@/components`)
+
+### Import Pattern Reference
+
+```typescript
+// WITHIN same component directory - use relative paths
+import { ButtonSlot } from "./button.slots";
+import type { ButtonProps } from "./button.types";
+import { useButtonState } from "./hooks/use-button-state";
+
+// ACROSS component directories - use direct file imports
+import { Icon } from "@/components/icon/icon";
+import type { IconProps } from "@/components/icon/icon.types";
+import { Badge } from "@/components/badge/badge";
+
+// Non-component modules - use barrel exports (no chunking issues)
+import { extractStyleProps } from "@/utils";
+import { useBreakpoint } from "@/hooks";
+```
+
+### Why Consumer Imports Still Work
+
+**Consumers of Nimbus still use barrel exports normally:**
+
+```typescript
+// Consumer code - this is fine!
+import { Button, Badge, Icon } from "@commercetools/nimbus";
+```
+
+This works because:
+
+1. Consumers import from the **main package entry point**
+   (`dist/index.es.js`), not individual component chunks
+2. The package build resolves all internal dependencies
+3. Consumers' bundlers handle tree-shaking based on what they import
+
+**The direct import pattern is ONLY for internal Nimbus development.**
 
 ## Internationalization (i18n)
 
@@ -523,7 +648,8 @@ See [i18n Guidelines](./i18n.md) for complete documentation.
 
 ### JSDoc Comments
 
-Include comprehensive JSDoc for the main export:
+Include comprehensive JSDoc for the main export with a mandatory link to the
+live documentation:
 
 ````typescript
 /**
@@ -531,14 +657,14 @@ Include comprehensive JSDoc for the main export:
  * ============================================================
  * Brief description of what the component does
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/category/component-name}
+ *
  * @example
  * ```tsx
  * <ComponentName variant="primary" size="md">
  *   Content
  * </ComponentName>
  * ```
- *
- * @see https://react-spectrum.adobe.com/react-aria/ComponentName.html
  */
 export const ComponentName = {
   // ...
@@ -647,6 +773,8 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 - [ ] Main component file exists
 - [ ] For compound: exports only, no implementation
+- [ ] **For compound: sub-components imported from barrel export
+      (`./components/index.ts`)**
 - [ ] For compound: `.Root` is FIRST property
 - [ ] For single: implementation present
 - [ ] DisplayName set for all exported components
@@ -658,6 +786,9 @@ export const CustomButton = (props: CustomButtonProps) => {
 ### JSDoc Documentation
 
 - [ ] Main component has JSDoc with description and example
+- [ ] **Main component JSDoc includes `@see` link to live documentation site**
+- [ ] **`@see` link uses `{@link URL}` format**
+- [ ] **`@see` link placed before `@example` block**
 - [ ] **For compound components: Each part has JSDoc documentation in main
       file**
 - [ ] **Each part's JSDoc includes heading (# ComponentName.Part)**
@@ -669,9 +800,6 @@ export const CustomButton = (props: CustomButtonProps) => {
       components only)
 
 ### Exports
-
-- [ ] Internal exports for react-docgen (compound components only)
-- [ ] All parts properly exported with underscore prefix for react-docgen
 
 ---
 
