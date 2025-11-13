@@ -322,6 +322,127 @@ export const VerticalOrientation: Story = {
   },
 };
 
+export const VerticalPlacement: Story = {
+  render: () => {
+    const placementTabs = [
+      {
+        id: "overview",
+        tabLabel: "Overview",
+        panelContent: "Overview content for the selected placement.",
+      },
+      {
+        id: "details",
+        tabLabel: "Details",
+        panelContent: "Details content for the selected placement.",
+      },
+      {
+        id: "settings",
+        tabLabel: "Settings",
+        panelContent: "Settings content for the selected placement.",
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="800">
+        {/* Placement Start */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Vertical - Placement Start (Default)
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            Tabs on the left, panels on the right. Border indicator on the left
+            side.
+          </Text>
+          <Box data-testid="vertical-placement-start">
+            <Tabs.Root
+              orientation="vertical"
+              placement="start"
+              tabs={placementTabs}
+            />
+          </Box>
+        </Stack>
+
+        {/* Placement End */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Vertical - Placement End
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            Tabs on the right, panels on the left. Border indicator on the right
+            side.
+          </Text>
+          <Box data-testid="vertical-placement-end">
+            <Tabs.Root
+              orientation="vertical"
+              placement="end"
+              tabs={placementTabs}
+            />
+          </Box>
+        </Stack>
+
+        {/* Pills Variant with Placement */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Vertical Pills - Placement End
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            Pills variant also respects placement. Tabs on the right, panels on
+            the left.
+          </Text>
+          <Box data-testid="vertical-pills-placement-end">
+            <Tabs.Root
+              orientation="vertical"
+              placement="end"
+              variant="pills"
+              tabs={placementTabs}
+            />
+          </Box>
+        </Stack>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All placement variants render correctly", async () => {
+      // Verify all three placement examples are present
+      const startContainer = canvas.getByTestId("vertical-placement-start");
+      const endContainer = canvas.getByTestId("vertical-placement-end");
+      const pillsContainer = canvas.getByTestId("vertical-pills-placement-end");
+
+      await expect(startContainer).toBeInTheDocument();
+      await expect(endContainer).toBeInTheDocument();
+      await expect(pillsContainer).toBeInTheDocument();
+    });
+
+    await step("Tab interaction works in all placements", async () => {
+      // Test placement="start"
+      const startContainer = canvas.getByTestId("vertical-placement-start");
+      const startTab = within(startContainer).getByRole("tab", {
+        name: "Details",
+      });
+      await userEvent.click(startTab);
+      await expect(startTab).toHaveAttribute("aria-selected", "true");
+
+      // Test placement="end"
+      const endContainer = canvas.getByTestId("vertical-placement-end");
+      const endTab = within(endContainer).getByRole("tab", {
+        name: "Settings",
+      });
+      await userEvent.click(endTab);
+      await expect(endTab).toHaveAttribute("aria-selected", "true");
+
+      // Test pills variant with placement="end"
+      const pillsContainer = canvas.getByTestId("vertical-pills-placement-end");
+      const pillsTab = within(pillsContainer).getByRole("tab", {
+        name: "Details",
+      });
+      await userEvent.click(pillsTab);
+      await expect(pillsTab).toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
 export const WithDisabledKeys: Story = {
   args: {
     "data-testid": "disabled-keys-tabs",

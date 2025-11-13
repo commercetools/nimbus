@@ -1,7 +1,7 @@
 ---
 id: Components-Tabs
 title: Tabs
-description: A simple navigation components between panels
+description: Organizes content into distinct sections, enabling users to switch views within a single container.
 documentState: InitialDraft
 order: 999
 menu:
@@ -12,40 +12,355 @@ tags:
   - component
   - navigation
   - tabs
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev
 ---
 
 # Tabs
 
+Organizes content into distinct sections, enabling users to switch views within a single container.
+
 ## Overview
 
-Tabs component
+Tabs are a navigational component used to organize and switch between different sections of content within the same contextual view, allowing users to access multiple related pages or views without navigating away from the main screen.
+
+### Resources
+
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev)
+[React Aria Docs](https://react-spectrum.adobe.com/react-aria/Tabs.html)
+
+## Variables
+
+Get familiar with the features.
+
+### Direction for tabs
+
+Tabs can be oriented horizontally or vertically to suit different layout requirements.
+
+#### Horizontal tabs
+
+Organize and display distinct, related sections of content immediately beneath a common navigation bar or header, serving primarily to group content contextually while conserving vertical screen space.
 
 ```jsx-live
 const App = () => (
-  <Tabs.Root size="md" defaultSelectedKeys={["tab1"]}>
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="bold" mb="300">Large</Text>
+      <Tabs.Root size="lg">
+        <Tabs.List>
+          <Tabs.Tab id="general">General info</Tabs.Tab>
+          <Tabs.Tab id="history">History</Tabs.Tab>
+          <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
+          <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels pt="400">
+          <Tabs.Panel id="general">General information content goes here.</Tabs.Panel>
+          <Tabs.Panel id="history">History content goes here.</Tabs.Panel>
+          <Tabs.Panel id="subscription">Subscription content goes here.</Tabs.Panel>
+          <Tabs.Panel id="downloads">Downloads content goes here.</Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </Box>
+
+    <Box>
+      <Text fontWeight="bold" mb="300">Medium</Text>
+      <Tabs.Root size="md">
+        <Tabs.List>
+          <Tabs.Tab id="general">General info</Tabs.Tab>
+          <Tabs.Tab id="history">History</Tabs.Tab>
+          <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
+          <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels pt="400">
+          <Tabs.Panel id="general">General information content goes here.</Tabs.Panel>
+          <Tabs.Panel id="history">History content goes here.</Tabs.Panel>
+          <Tabs.Panel id="subscription">Subscription content goes here.</Tabs.Panel>
+          <Tabs.Panel id="downloads">Downloads content goes here.</Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </Box>
+
+    <Box>
+      <Text fontWeight="bold" mb="300">Small</Text>
+      <Tabs.Root size="sm">
+        <Tabs.List>
+          <Tabs.Tab id="general">General info</Tabs.Tab>
+          <Tabs.Tab id="history">History</Tabs.Tab>
+          <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
+          <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels pt="400">
+          <Tabs.Panel id="general">General information content goes here.</Tabs.Panel>
+          <Tabs.Panel id="history">History content goes here.</Tabs.Panel>
+          <Tabs.Panel id="subscription">Subscription content goes here.</Tabs.Panel>
+          <Tabs.Panel id="downloads">Downloads content goes here.</Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </Box>
+  </Stack>
+)
+```
+
+#### Vertical tabs
+
+Maximize horizontal reading space and accommodate a larger number of consistently visible options than traditional horizontal tabs allow.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="1000">
+    <Box flex="1">
+      <Text fontWeight="bold" mb="300">Vertical left</Text>
+      <Tabs.Root orientation="vertical" placement="start">
+        <Tabs.List>
+          <Tabs.Tab id="foryou">
+            <Icons.SentimentSatisfied />
+            For you
+          </Tabs.Tab>
+          <Tabs.Tab id="recent">
+            <Icons.Schedule />
+            Recent
+          </Tabs.Tab>
+          <Tabs.Tab id="starred">
+            <Icons.Star />
+            Starred
+          </Tabs.Tab>
+          <Tabs.Tab id="apps">
+            <Icons.Apps />
+            Apps
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels>
+          <Tabs.Panel id="foryou">For you content</Tabs.Panel>
+          <Tabs.Panel id="recent">Recent content</Tabs.Panel>
+          <Tabs.Panel id="starred">Starred content</Tabs.Panel>
+          <Tabs.Panel id="apps">Apps content</Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </Box>
+
+    <Box flex="1">
+      <Text fontWeight="bold" mb="300">Vertical right</Text>
+      <Tabs.Root orientation="vertical" placement="end">
+        <Tabs.List>
+          <Tabs.Tab id="foryou">
+            <Icons.SentimentSatisfied />
+            For you
+          </Tabs.Tab>
+          <Tabs.Tab id="recent">
+            <Icons.Schedule />
+            Recent
+          </Tabs.Tab>
+          <Tabs.Tab id="starred">
+            <Icons.Star />
+            Starred
+          </Tabs.Tab>
+          <Tabs.Tab id="apps">
+            <Icons.Apps />
+            Apps
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels>
+          <Tabs.Panel id="foryou">For you content</Tabs.Panel>
+          <Tabs.Panel id="recent">Recent content</Tabs.Panel>
+          <Tabs.Panel id="starred">Starred content</Tabs.Panel>
+          <Tabs.Panel id="apps">Apps content</Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </Box>
+  </Stack>
+)
+```
+
+## Guidelines
+
+Provides a structured, predictable pattern for displaying multiple panes of related content in the same area. It minimizes screen clutter by allowing content sections to be easily hidden and revealed, typically used for navigation within a product or configuration panel.
+
+### Best practices
+
+- **Consistency and context:** Ensure all content within the tab panels is closely related to the parent context (e.g., all tabs relate to "User Settings" or "Product Details").
+- **Concise labels:** Keep tab labels short (one or two words is ideal) and descriptive, clearly indicating the content of the corresponding panel.
+- **Maintain visibility:** Ensure the current active tab is clearly distinguishable from inactive tabs using strong visual cues (e.g., accent color, bold text, contrasting underline).
+- **Maintain content position:** Do not use tabs to reorganize or filter the content of a single continuous list. The content associated with each tab should be unique and distinct.
+- **Limit number of tabs:** Avoid creating a large number of tabs (ideally 3–7 visible tabs) to prevent horizontal scrolling or overcrowding, which harms usability. Use a dropdown menu or alternative navigation pattern for overflow.
+- **Avoid sub-navigation:** Do not place secondary navigation elements (like another row of tabs) directly inside the tab panel unless absolutely necessary.
+
+### Usage
+
+Tabs are used to organize related content into distinct, switchable sections, allowing users to efficiently access different views within the same area without leaving the context of the main page.
+
+> [!TIP]\
+> When to use
+
+- **Organizing related views:** To switch between different views of the same object (e.g., "Details," "Inventory," "History" tabs on a Product page).
+- **Configuration settings:** For grouping diverse settings categories (e.g., "General," "Billing," "Security" sections within a settings page).
+- **Conserving vertical space:** To maximize vertical screen space by presenting options horizontally.
+
+> [!CAUTION]\
+> When not to use
+
+- **Primary site navigation:** Do not use tabs for navigating between major, top-level sections of an application (use main navigation menus or links instead).
+- **Too many options:** If the number of tabs causes horizontal scrolling or requires hiding options in an overflow menu on desktop.
+- **Linear workflows:** Avoid using tabs to guide users through a mandatory, step-by-step process.
+
+### Tab labeling
+
+> [!TIP]\
+> **Do**
+>
+> - Choose concise, descriptive labels (1-2 words) that accurately preview the content within the panel to aid quick visual scanning.
+> - Ensure all tab content is closely related to the parent screen's context, maintaining a single-page feel.
+> - Implement an overflow strategy (like a "More" menu) if the tab count exceeds 7, rather than allowing horizontal scrolling, which is poor usability.
+> - Verify that content inside the hidden tab panels remains available to screen readers, aligning with accessibility best practices.
+
+```jsx-live
+const App = () => (
+  <Tabs.Root defaultSelectedKey="history">
     <Tabs.List>
-      <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
-      <Tabs.Tab id="tab2">Tab 2</Tabs.Tab>
-      <Tabs.Tab id="tab3">Tab 3</Tabs.Tab>
+      <Tabs.Tab id="general">General info</Tabs.Tab>
+      <Tabs.Tab id="history">History</Tabs.Tab>
+      <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
+      <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
     </Tabs.List>
+    <Tabs.Panels pt="400">
+      <Tabs.Panel id="general">
+        <Stack direction="column" gap="200">
+          <Text>Name: Jon Doe</Text>
+          <Text>Email: Jon.Doe@domain.com</Text>
+        </Stack>
+      </Tabs.Panel>
+      <Tabs.Panel id="history">
+        <List.Root>
+          <List.Item>03.15.25 - Jon Doe created an account.</List.Item>
+          <List.Item>04.03.25 - Jon Doe updated profile information.</List.Item>
+          <List.Item>06.06.25 - Jon Doe made their first purchase.</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+      <Tabs.Panel id="subscription">
+        <Stack direction="column" gap="200">
+          <Text>Current subscription: Coffee delivery subscription $15/mo</Text>
+        </Stack>
+      </Tabs.Panel>
+      <Tabs.Panel id="downloads">
+        <Stack direction="column" gap="200">
+          <Text>No downloads available</Text>
+        </Stack>
+      </Tabs.Panel>
+    </Tabs.Panels>
   </Tabs.Root>
 )
 ```
 
-### Pills variant
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use tabs for site-wide or primary application navigation; reserve them for internal to pages, contextual navigation.
+> - Don't place tabs on the screen if they cause the content area below them to feel disconnected or unrelated.
+> - Don't use tabs to reorganize the content of a single continuous list; the content under each tab should be unique and distinct.
+> - Don't use overly long, descriptive sentences as tab labels, as they clutter the interface and harm quick visual scanning.
 
 ```jsx-live
 const App = () => (
-  <Tabs.Root variant="pills" size="md" defaultSelectedKeys={["tab7"]}>
+  <Tabs.Root defaultSelectedKey="fruit">
     <Tabs.List>
-      <Tabs.Tab id="tab7">Tab 7</Tabs.Tab>
-      <Tabs.Tab id="tab8">Tab 8</Tabs.Tab>
-      <Tabs.Tab id="tab9">Tab 9</Tabs.Tab>
+      <Tabs.Tab id="grocerylist">Grocery list</Tabs.Tab>
+      <Tabs.Tab id="fruit">Fruit</Tabs.Tab>
+      <Tabs.Tab id="veggies">Veggies</Tabs.Tab>
+      <Tabs.Tab id="junkfood">Junk food</Tabs.Tab>
     </Tabs.List>
+    <Tabs.Panels pt="400">
+      <Tabs.Panel id="grocerylist">
+        <List.Root>
+          <List.Item>Peaches</List.Item>
+          <List.Item>Durian</List.Item>
+          <List.Item>Mangosteen</List.Item>
+          <List.Item>Carrots</List.Item>
+          <List.Item>Broccoli</List.Item>
+          <List.Item>Spinach</List.Item>
+          <List.Item>Potato chips</List.Item>
+          <List.Item>Cookies</List.Item>
+          <List.Item>Candy bars</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+      <Tabs.Panel id="fruit">
+        <List.Root>
+          <List.Item>Peaches</List.Item>
+          <List.Item>Durian</List.Item>
+          <List.Item>Mangosteen</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+      <Tabs.Panel id="veggies">
+        <List.Root>
+          <List.Item>Carrots</List.Item>
+          <List.Item>Broccoli</List.Item>
+          <List.Item>Spinach</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+      <Tabs.Panel id="junkfood">
+        <List.Root>
+          <List.Item>Potato chips</List.Item>
+          <List.Item>Cookies</List.Item>
+          <List.Item>Candy bars</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+    </Tabs.Panels>
   </Tabs.Root>
 )
 ```
 
-### Props
+## Specs
 
 <PropsTable id="Tabs" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Tabs.Root defaultSelectedKey="history">
+    <Tabs.List>
+      <Tabs.Tab id="general">General info</Tabs.Tab>
+      <Tabs.Tab id="history">History</Tabs.Tab>
+      <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
+      <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
+    </Tabs.List>
+    <Tabs.Panels pt="400">
+      <Tabs.Panel id="general">
+        <Stack direction="column" gap="200">
+          <Text>Name: Jon Doe</Text>
+          <Text>Email: Jon.Doe@domain.com</Text>
+        </Stack>
+      </Tabs.Panel>
+      <Tabs.Panel id="history">
+        <List.Root>
+          <List.Item>03.15.25 - Jon Doe created an account.</List.Item>
+          <List.Item>04.03.25 - Jon Doe updated profile information.</List.Item>
+          <List.Item>06.06.25 - Jon Doe made their first purchase.</List.Item>
+        </List.Root>
+      </Tabs.Panel>
+      <Tabs.Panel id="subscription">
+        <Stack direction="column" gap="200">
+          <Text>Current subscription: Coffee delivery subscription $15/mo</Text>
+        </Stack>
+      </Tabs.Panel>
+      <Tabs.Panel id="downloads">
+        <Stack direction="column" gap="200">
+          <Text>No downloads available</Text>
+        </Stack>
+      </Tabs.Panel>
+    </Tabs.Panels>
+  </Tabs.Root>
+)
+```
+
+### Accessibility Standards
+
+- **Keyboard navigation:** The Tab key should move focus to the entire tab list. The Left/Right Arrow keys must be used to navigate between tabs once the tab list is focused. Enter or Space selects the focused tab.
+- **ARIA roles and states:**
+  - The container must use `role="tablist"`.
+  - Individual tabs must use `role="tab"` and `aria-selected="true/false"`.
+  - The content area must use `role="tabpanel"` and be linked to its respective tab via `aria-labelledby`.
+- **Focus management:** Ensure that when a tab is activated, focus moves logically to the associated tab panel or the first interactive element within it.
+- **Contrast:** The contrast ratio between the active tab text and its background must be high, and the focus indicator must be easily visible.

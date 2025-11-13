@@ -169,6 +169,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
       orientation: "vertical",
       placement: "end",
       css: {
+        root: {
+          flexDirection: "row-reverse",
+        },
         list: {
           boxShadow: "1px 0 0 0 {colors.neutral.6}",
         },
@@ -182,6 +185,16 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
 
     // ==================== PLACEMENT-ONLY VARIANTS ====================
+    // Vertical + End (applies to all variants including pills)
+    {
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        root: {
+          flexDirection: "row-reverse",
+        },
+      },
+    },
     // Horizontal + Start (default)
     {
       orientation: "horizontal",
