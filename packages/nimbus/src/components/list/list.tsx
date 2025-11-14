@@ -1,8 +1,4 @@
-import { List as ChakraList } from "@chakra-ui/react/list";
-
-const ListRoot = ChakraList.Root;
-const ListItem = ChakraList.Item;
-const ListIndicator = ChakraList.Indicator;
+import { ListRoot, ListItem, ListIndicator } from "./components";
 
 /**
  * # List
