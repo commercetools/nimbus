@@ -17,6 +17,8 @@ export const tabsSlotRecipe = defineSlotRecipe({
     list: {
       display: "flex",
       flexShrink: 0,
+      overflowX: "auto",
+      maxWidth: "100%",
     },
     tab: {
       appearance: "none",
@@ -36,7 +38,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
       paddingBottom: "var(--tabs-padding-bottom)",
       paddingLeft: "var(--tabs-padding-left)",
       fontSize: "var(--tabs-font-size)",
-      overflowX: "auto",
+      flexShrink: 0,
       _hover: {
         color: "primary.11",
       },
@@ -139,9 +141,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
           boxShadow: "0 1px 0 0 {colors.neutral.6}",
         },
         tab: {
-          boxShadow: "0 2px 0 0 transparent",
+          boxShadow: "inset 0 -2px 0 0 transparent",
           _selected: {
-            boxShadow: "0 2px 0 0 {colors.primary.9}",
+            boxShadow: "inset 0 -2px 0 0 {colors.primary.9}",
           },
         },
       },
@@ -156,9 +158,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
           boxShadow: "-1px 0 0 0 {colors.neutral.6}",
         },
         tab: {
-          boxShadow: "-2px 0 0 0 transparent",
+          boxShadow: "inset 2px 0 0 0 transparent",
           _selected: {
-            boxShadow: "-2px 0 0 0 {colors.primary.9}",
+            boxShadow: "inset 2px 0 0 0 {colors.primary.9}",
           },
         },
       },
@@ -173,9 +175,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
           boxShadow: "1px 0 0 0 {colors.neutral.6}",
         },
         tab: {
-          boxShadow: "2px 0 0 0 transparent",
+          boxShadow: "inset -2px 0 0 0 transparent",
           _selected: {
-            boxShadow: "2px 0 0 0 {colors.primary.9}",
+            boxShadow: "inset -2px 0 0 0 {colors.primary.9}",
           },
         },
       },

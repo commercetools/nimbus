@@ -842,6 +842,82 @@ export const Sizes: Story = {
 };
 
 /**
+ * Story demonstrating overflow behavior when there are many tabs
+ * The tab list should scroll horizontally without individual scrollbars on each tab
+ */
+export const ManyTabs: Story = {
+  args: {
+    "data-testid": "many-tabs",
+  },
+  render: (args) => {
+    const manyTabs = Array.from({ length: 20 }, (_, i) => ({
+      id: `tab-${i + 1}`,
+      tabLabel: `Tab ${i + 1}`,
+      panelContent: `Content for tab ${i + 1}`,
+    }));
+
+    return (
+      <Box maxWidth="600px">
+        <Tabs.Root {...args} tabs={manyTabs} />
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders many tabs correctly", async () => {
+      const tabsContainer = await canvas.findByTestId("many-tabs");
+      await expect(tabsContainer).toBeInTheDocument();
+
+      // Check that first and last tabs are rendered
+      await expect(
+        await canvas.findByRole("tab", { name: "Tab 1" })
+      ).toBeInTheDocument();
+      await expect(
+        await canvas.findByRole("tab", { name: "Tab 20" })
+      ).toBeInTheDocument();
+    });
+
+    await step(
+      "Tab list scrolls horizontally, not individual tabs",
+      async () => {
+        const tabList = canvas.getByRole("tablist");
+        const firstTab = canvas.getByRole("tab", { name: "Tab 1" });
+
+        // Tab list should have overflow-x auto
+        const listStyle = window.getComputedStyle(tabList);
+        await expect(listStyle.overflowX).toBe("auto");
+
+        // Individual tabs should not have overflow-x auto
+        const tabStyle = window.getComputedStyle(firstTab);
+        await expect(tabStyle.overflowX).not.toBe("auto");
+      }
+    );
+
+    await step("Can navigate and select tabs even with overflow", async () => {
+      const tab5 = canvas.getByRole("tab", { name: "Tab 5" });
+      await userEvent.click(tab5);
+      await expect(tab5).toHaveAttribute("aria-selected", "true");
+
+      const panel = canvas.getByRole("tabpanel");
+      await expect(panel).toHaveTextContent("Content for tab 5");
+    });
+
+    await step("Tabs maintain their width and don't shrink", async () => {
+      // All tabs should have similar widths (not compressed)
+      const tab1 = canvas.getByRole("tab", { name: "Tab 1" });
+      const tab2 = canvas.getByRole("tab", { name: "Tab 2" });
+
+      const tab1Width = tab1.getBoundingClientRect().width;
+      const tab2Width = tab2.getBoundingClientRect().width;
+
+      // Tabs should have similar widths (within 5px tolerance)
+      await expect(Math.abs(tab1Width - tab2Width)).toBeLessThan(5);
+    });
+  },
+};
+
+/**
  * Regression test for controlled tabs with external state
  * Tests that selectedKey and onSelectionChange props are properly forwarded to React Aria
  * This ensures tabs can be controlled from external state (e.g., URL routing)
