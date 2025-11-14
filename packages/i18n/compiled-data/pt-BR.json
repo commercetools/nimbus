@@ -75,6 +75,30 @@
       "value": "Escolher combobox"
     }
   ],
+  "Nimbus.DataTable.comfortable": [
+    {
+      "type": 0,
+      "value": "Comfortable"
+    }
+  ],
+  "Nimbus.DataTable.comfortableAriaLabel": [
+    {
+      "type": 0,
+      "value": "Comfortable section"
+    }
+  ],
+  "Nimbus.DataTable.compact": [
+    {
+      "type": 0,
+      "value": "Compact"
+    }
+  ],
+  "Nimbus.DataTable.compactAriaLabel": [
+    {
+      "type": 0,
+      "value": "Compact section"
+    }
+  ],
   "Nimbus.DataTable.dataTable": [
     {
       "type": 0,
@@ -99,10 +123,64 @@
       "value": "Expandir linhas"
     }
   ],
+  "Nimbus.DataTable.fullText": [
+    {
+      "type": 0,
+      "value": "Full text"
+    }
+  ],
+  "Nimbus.DataTable.fullTextAriaLabel": [
+    {
+      "type": 0,
+      "value": "Full text section"
+    }
+  ],
+  "Nimbus.DataTable.hiddenColumns": [
+    {
+      "type": 0,
+      "value": "Hidden columns"
+    }
+  ],
+  "Nimbus.DataTable.hiddenColumnsAriaLabel": [
+    {
+      "type": 0,
+      "value": "Hidden columns list"
+    }
+  ],
+  "Nimbus.DataTable.hideColumn": [
+    {
+      "type": 0,
+      "value": "Hide column"
+    }
+  ],
+  "Nimbus.DataTable.layoutSettings": [
+    {
+      "type": 0,
+      "value": "Layout settings"
+    }
+  ],
+  "Nimbus.DataTable.layoutSettingsAriaLabel": [
+    {
+      "type": 0,
+      "value": "Layout settings section"
+    }
+  ],
+  "Nimbus.DataTable.noHiddenColumns": [
+    {
+      "type": 0,
+      "value": "No Hidden columns"
+    }
+  ],
   "Nimbus.DataTable.pinRows": [
     {
       "type": 0,
       "value": "Fixar linhas"
+    }
+  ],
+  "Nimbus.DataTable.reset": [
+    {
+      "type": 0,
+      "value": "Reset columns"
     }
   ],
   "Nimbus.DataTable.resizeColumn": [
@@ -111,10 +189,76 @@
       "value": "Redimensionar colunas"
     }
   ],
+  "Nimbus.DataTable.rowDensity": [
+    {
+      "type": 0,
+      "value": "Row density"
+    }
+  ],
+  "Nimbus.DataTable.rowDensityAriaLabel": [
+    {
+      "type": 0,
+      "value": "Row density section"
+    }
+  ],
+  "Nimbus.DataTable.searchHiddenColumns": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
   "Nimbus.DataTable.selectRow": [
     {
       "type": 0,
       "value": "Selecionar linha"
+    }
+  ],
+  "Nimbus.DataTable.settings": [
+    {
+      "type": 0,
+      "value": "Table settings"
+    }
+  ],
+  "Nimbus.DataTable.textPreviews": [
+    {
+      "type": 0,
+      "value": "Text previews"
+    }
+  ],
+  "Nimbus.DataTable.textPreviewsAriaLabel": [
+    {
+      "type": 0,
+      "value": "Text previews section"
+    }
+  ],
+  "Nimbus.DataTable.textVisibility": [
+    {
+      "type": 0,
+      "value": "Text visibility"
+    }
+  ],
+  "Nimbus.DataTable.textVisibilityAriaLabel": [
+    {
+      "type": 0,
+      "value": "Text visibility section"
+    }
+  ],
+  "Nimbus.DataTable.visibleColumns": [
+    {
+      "type": 0,
+      "value": "Visible columns"
+    }
+  ],
+  "Nimbus.DataTable.visibleColumnsAria": [
+    {
+      "type": 0,
+      "value": "Visible columns list"
+    }
+  ],
+  "Nimbus.DataTable.visibleColumnsList": [
+    {
+      "type": 0,
+      "value": "Visible columns"
     }
   ],
   "Nimbus.DatePicker.Time.enterTime": [
