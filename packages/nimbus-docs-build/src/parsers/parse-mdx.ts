@@ -2,7 +2,7 @@
  * MDX Parser for Documentation Build System
  *
  * Parses MDX files with frontmatter, generates table of contents,
- * and supports multi-view documentation (e.g., *.dev.mdx, *.api.mdx)
+ * and supports multi-view documentation (e.g., *.guide.mdx, *.dev.mdx, *.a11y.mdx)
  */
 
 import fs from "fs/promises";
@@ -93,7 +93,7 @@ const parseSingleMdx = async (
 
 /**
  * Parse a single MDX file and return structured document data
- * Supports multi-view documentation (e.g., button.dev.mdx, button.api.mdx)
+ * Supports multi-view documentation (e.g., button.guide.mdx, button.dev.mdx, button.a11y.mdx)
  *
  * @param filePath - Absolute path to MDX file (should be from trusted source like file discovery)
  * @note This function reads from discovered MDX files within the packages directory
@@ -136,7 +136,7 @@ export async function parseMdxFile(
     const mainTabOrder =
       (meta["tab-order"] as number) || (meta["tabOrder"] as number) || 0;
 
-    // Discover all view files (e.g., button.dev.mdx, button.api.mdx)
+    // Discover all view files (e.g., button.guide.mdx, button.dev.mdx, button.a11y.mdx)
     const viewFiles = await getViewMdxFiles(filePath);
 
     // Build tabs array and views object

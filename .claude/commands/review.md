@@ -17,6 +17,7 @@ First, determine what needs to be reviewed based on the user's request:
 4. **Component Review**: If user mentions a component name (e.g., "Button",
    "Dialog"), locate and review all related files:
    - Main component file (`packages/nimbus/src/components/{ComponentName}/`)
+   - Subcomponents (`packages/nimbus/src/components/{ComponentName}/components`)
    - Stories (`*.stories.tsx`)
    - Recipes (`*.recipe.tsx`)
    - Slots (`*.slots.tsx`)

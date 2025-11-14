@@ -289,7 +289,52 @@ variants: {
 
 ```
 
-**CSS Custom Properties:** When using CSS variables in recipes, namespace them with the component name in kebab-case (e.g., `--accordion-font-size`, `--menu-item-padding`) to prevent collisions.
+**CSS Custom Properties:** When using CSS variables in recipes, namespace them
+with the component name in kebab-case (e.g., `--accordion-font-size`,
+`--menu-item-padding`) to prevent collisions.
+
+**Token Resolution in CSS Custom Properties:** CSS custom property values that
+reference design tokens MUST use the full token path syntax: `category.value`.
+This is required for Chakra UI's build-time token resolution system to correctly
+substitute token values.
+
+```typescript
+// Token resolution syntax for CSS custom properties
+variants: {
+  size: {
+    sm: {
+      root: {
+        "--component-font-size": "fontSizes.350",
+        "--component-height": "sizes.150",
+        "--component-radius": "radii.200",
+      },
+    },
+    md: {
+      root: {
+        "--component-font-size": "fontSizes.400",
+        "--component-height": "sizes.200",
+        "--component-radius": "radii.300",
+      },
+    },
+  },
+}
+
+// Using the custom properties in styles
+base: {
+  root: {
+    fontSize: "var(--component-font-size)",
+    height: "var(--component-height)",
+    borderRadius: "var(--component-radius)",
+  },
+}
+```
+
+Common token categories for CSS custom properties:
+
+- **Font sizes**: `fontSizes.350`, `fontSizes.400`, etc.
+- **Spacing/Sizes**: `sizes.150`, `sizes.200`, etc.
+- **Colors**: `colors.primary.9`, `colors.neutral.6`, etc.
+- **Radii**: `radii.200`, `radii.300`, etc.
 
 ### Token Categories
 
@@ -508,7 +553,10 @@ export const menuSlotRecipe = defineSlotRecipe({
 - [ ] Variants defined (if applicable)
 - [ ] Default variants specified
 - [ ] Design tokens used (not hardcoded values)
-- [ ] **CSS custom properties namespaced with component name in kebab-case** (if used)
+- [ ] **CSS custom properties namespaced with component name in kebab-case** (if
+      used)
+- [ ] **CSS custom properties use token path syntax with curly braces** (e.g.,
+      `{fontSizes.400}`, not `"400"`)
 - [ ] **Recipe registered in theme configuration**
 - [ ] State modifiers properly defined
 - [ ] Dark mode styles included (if needed)

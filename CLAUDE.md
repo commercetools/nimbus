@@ -1,25 +1,87 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## RFC 2119 Compliance
+
+**All documentation in this repository (CLAUDE.md files and .md/.mdx files) MUST be interpreted according to [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).**
+
+Key words used in this documentation:
+- **MUST** / **REQUIRED** / **SHALL**: Absolute requirement
+- **MUST NOT** / **SHALL NOT**: Absolute prohibition
+- **SHOULD** / **RECOMMENDED**: May be ignored in particular circumstances, but full implications must be understood
+- **SHOULD NOT** / **NOT RECOMMENDED**: May be acceptable in particular circumstances, but full implications must be understood
+- **MAY** / **OPTIONAL**: Truly optional, discretionary
 
 ## Project Overview
 
-Nimbus is a multi-package design system monorepo containing React UI components,
-design tokens, icons, and documentation. It uses pnpm workspaces and is built
-with TypeScript, React Aria Components, and Chakra UI v3.
+Nimbus is a multi-package design system monorepo containing React UI components, design tokens, icons, and documentation. It uses pnpm workspaces and is built with TypeScript, React Aria Components, and Chakra UI v3.
 
 **Key Architecture:**
 
-- **Monorepo Structure**: Uses pnpm workspaces with packages and apps
-  directories
-- **Component Library**: React components with WCAG 2.1 AA compliant
-  implementation using React Aria patterns
+- **Monorepo Structure**: Uses pnpm workspaces with packages and apps directories
+- **Component Library**: React components with WCAG 2.1 AA compliant implementation using React Aria patterns
 - **Design System**: Design token-based theming system with Chakra UI v3 recipes
-- **Internationalization**: Centralized i18n package with react-intl integration
-  and Transifex support
-- **Documentation**: JSDoc-extracted API documentation site and Storybook for
-  component development
+- **Internationalization**: Centralized i18n package with react-intl integration and Transifex support
+- **Documentation**: JSDoc-extracted API documentation site and Storybook for component development
+
+## Package & App-Specific Guidelines
+
+For detailed development guidelines, see the CLAUDE.md file in each package or app:
+
+### Packages
+
+- **[Nimbus Components](packages/nimbus/CLAUDE.md)** - React component library development
+  - Component architecture and file structure
+  - React Aria integration patterns
+  - Storybook development workflow
+  - Recipe registration and styling
+  - Testing strategy (stories vs unit tests)
+  - Cross-chunk imports and build modes
+
+- **[Design Tokens](packages/tokens/CLAUDE.md)** - Token system development
+  - Style Dictionary configuration
+  - DTCG format and token definitions
+  - Figma sync workflow
+  - Token generation process
+
+- **[Icons](packages/nimbus-icons/CLAUDE.md)** - Icon generation
+  - SVG to React component transformation
+  - Adding Material Design icons
+  - Custom icon requirements
+  - Build process
+
+- **[Internationalization](packages/i18n/CLAUDE.md)** - Translation workflow
+  - Message extraction from Nimbus
+  - Transifex integration
+  - Compilation for runtime
+  - Adding new locales
+
+### Apps
+
+- **[Documentation Site](apps/docs/CLAUDE.md)** - Docs app development
+  - MDX documentation format
+  - Build system integration
+  - PropsTable component
+  - jsx-live code blocks
+
+### Detailed Technical Documentation
+
+For comprehensive technical guidelines organized by topic:
+
+- **[docs/nimbus/](docs/nimbus/)** - Component development deep dive (32 guideline files)
+  - [Component Guidelines](docs/nimbus/component-guidelines.md) - Main navigation hub
+  - [File Type Guidelines](docs/nimbus/file-type-guidelines/) - Detailed patterns per file type
+  - [Component Templates](docs/nimbus/component-templates/) - Boilerplate code
+  - [File Review Protocol](docs/nimbus/file-review-protocol.md) - Review checklist
+
+- **[docs/docs-app/](docs/docs-app/)** - Documentation site patterns
+  - [MDX Format](docs/docs-app/mdx-format.md) - Writing component docs
+  - [Build System](docs/docs-app/build-system.md) - How MDX processing works
+  - [PropsTable](docs/docs-app/props-table.md) - TypeScript prop extraction
+  - [jsx-live Blocks](docs/docs-app/jsx-live-blocks.md) - Interactive examples
+
+- **[docs/README.md](docs/README.md)** - Documentation navigation hub
 
 ## Development Commands
 
@@ -55,7 +117,7 @@ pnpm start:storybook
 ### Build Commands
 
 ```bash
-# Full build (tokens -> packages -> docs)
+# Full build (tokens → packages → docs)
 pnpm build
 
 # Build packages only
@@ -66,22 +128,6 @@ pnpm build:docs
 
 # Build/Generate design tokens
 pnpm build:tokens
-# or
-pnpm generate:tokens
-```
-
-### Internationalization (i18n)
-
-```bash
-# Compile translation files for runtime
-cd packages/i18n
-pnpm build
-
-# Or from root
-pnpm --filter @commercetools/nimbus-i18n build
-
-# Or use the formatjs CLI directly from root
-pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/data packages/i18n/compiled-data
 ```
 
 ### Testing
@@ -124,11 +170,6 @@ pnpm typecheck
 
 # Strict type checking (fails on errors)
 pnpm typecheck:strict
-
-# Package-specific commands
-pnpm --filter @commercetools/nimbus typecheck
-pnpm --filter @commercetools/nimbus build
-pnpm --filter @commercetools/nimbus-tokens build
 ```
 
 ### Workspace-Specific Development
@@ -138,21 +179,19 @@ pnpm --filter @commercetools/nimbus-tokens build
 pnpm --filter @commercetools/nimbus [command]
 pnpm --filter @commercetools/nimbus-tokens [command]
 pnpm --filter @commercetools/nimbus-icons [command]
-
-# Common patterns for nimbus package development
-pnpm --filter @commercetools/nimbus build
-pnpm --filter @commercetools/nimbus typecheck
-pnpm --filter @commercetools/nimbus storybook
-pnpm --filter @commercetools/nimbus build-theme-typings
+pnpm --filter @commercetools/nimbus-i18n [command]
+pnpm --filter docs [command]
 
 # Run commands for all packages
 pnpm -r --filter './packages/*' build
 pnpm -r --filter './packages/*' typecheck
 
-# Component-specific testing patterns
-pnpm test packages/nimbus/src/components/button/button.stories.tsx
-pnpm test packages/nimbus/src/components/menu/menu.stories.tsx
-pnpm test packages/nimbus/src/components/pagination/pagination.stories.tsx
+# Common package-specific patterns
+pnpm --filter @commercetools/nimbus build
+pnpm --filter @commercetools/nimbus-tokens build
+pnpm --filter @commercetools/nimbus-icons build
+pnpm --filter @commercetools/nimbus-i18n build
+pnpm --filter docs build
 ```
 
 ### Release Management
@@ -168,251 +207,136 @@ pnpm changeset:version-and-format
 pnpm changeset:status
 ```
 
-## Code Architecture
+## Monorepo Architecture
 
 ### Package Structure
 
-- **packages/nimbus**: Core UI component library with React Aria Components
-- **packages/tokens**: Design tokens (colors, spacing, typography, animations)
-- **packages/nimbus-icons**: SVG icons wrapped as React components (Material
-  Icons + custom)
-- **packages/color-tokens**: Brand-specific color definitions
-- **packages/i18n**: Translation messages and internationalization support
-- **apps/docs**: Documentation SPA with interactive examples and auto-generated
-  content
+- **packages/nimbus** - Core UI component library with React Aria Components
+- **packages/tokens** - Design tokens (colors, spacing, typography, animations)
+- **packages/nimbus-icons** - SVG icons wrapped as React components (Material Icons + custom)
+- **packages/color-tokens** - Brand-specific color definitions
+- **packages/i18n** - Translation messages and internationalization support
+- **packages/nimbus-docs-build** - Documentation build system (MDX parsing, TypeScript extraction)
+- **apps/docs** - Documentation SPA with interactive examples and auto-generated content
 
-### Component File Structure
+### Build Dependencies (CRITICAL)
 
-For detailed component file organization and structure patterns, see:
-@docs/component-guidelines.md
+⚠️ **YOU MUST follow this exact build order or builds will fail:**
 
-### Component Development Guidelines
+1. **Design tokens** (`packages/tokens`) - **MUST build FIRST**
+   ```bash
+   pnpm --filter @commercetools/nimbus-tokens build
+   ```
+2. **Packages** (`packages/*`) - Depend on tokens
+   ```bash
+   pnpm build:packages
+   ```
+3. **Documentation build** (`packages/nimbus-docs-build`) - Extracts data from Nimbus
+4. **Documentation app** (`apps/docs`) - Depends on packages and docs-build
+   ```bash
+   pnpm build:docs
+   ```
 
-**For comprehensive component creation instructions, implementation patterns,
-file structure guidelines, and architectural decisions, see:**
+**Why:** Components depend on tokens for styling. Breaking this order causes build failures.
 
-- **Documentation Overview** - Main documentation hub and navigation
-  @docs/readme.md
-- **Component Guidelines** - Main hub for all component development
-  @docs/component-guidelines.md
-- **Architecture Decisions** - Decision matrix for component design
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Component Templates** - Ready-to-use boilerplate code
-  @docs/component-templates/
+## Testing Strategy
 
-**IMPORTANT: All file reviews MUST follow the File Review Protocol below. Never
-provide feedback without first validating against the appropriate guidelines.**
+Vitest with two distinct test types:
 
-### Development Standards
+### Component Tests (`*.stories.tsx`)
+- **Environment:** Browser-based (Chromium + Playwright)
+- **Tests:** ALL component behavior via play functions
+- ⚠️ **CRITICAL:** Tests run against built bundle (`dist/`), not source
+- **Workflow:** MUST build before testing
+  ```bash
+  pnpm --filter @commercetools/nimbus build && pnpm test:storybook
+  ```
 
-This project follows strict development standards detailed in the documentation:
+### Unit Tests (`*.spec.ts`)
+- **Environment:** JSDOM-based (fast, no build required)
+- **For:** Utilities and hooks only
+- **NOT for components** - use stories instead
+- **Workflow:** `pnpm test:unit`
 
-- **Styling**: Chakra UI v3 with design token-based recipes
-  @docs/file-type-guidelines/recipes.md
-- **Testing**:
-  - Storybook interaction tests (browser-based, required for interactive
-    components) @docs/file-type-guidelines/stories.md
-  - Unit tests (JSDOM-based, fast isolated tests)
-    @docs/file-type-guidelines/unit-testing.md
-- **TypeScript**: Strict typing with comprehensive interfaces
-  @docs/file-type-guidelines/types.md
-- **Documentation**: JSDoc comments required for all code
-  @docs/file-type-guidelines/documentation.md
-- **Accessibility**: WCAG 2.1 AA compliance using React Aria
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Internationalization**: react-intl integration for translatable UI text
-  @docs/file-type-guidelines/i18n.md
-
-## File Review Protocol
-
-For comprehensive file review procedures, see @docs/file-review-protocol.md
-
-**Quick Reference:**
-
-1. Identify file type by extension/location
-2. Load corresponding guidelines document
-3. Run validation checklist systematically
-4. Report compliance status before content feedback
-
-### Key Architectural Patterns
-
-For comprehensive architectural patterns, component decision matrices, React
-Aria integration strategies, and styling system architecture, see:
-
-- **Multi-layered Architecture & React Aria Integration**:
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Component Structure Patterns**: @docs/component-guidelines.md
-- **Styling System Details**: @docs/file-type-guidelines/recipes.md
-
-### Critical Development Rules
-
-For complete development rules, patterns, and requirements, see:
-
-- **Recipe Registration & Styling Rules**: @docs/file-type-guidelines/recipes.md
-- **Testing Requirements**: @docs/file-type-guidelines/stories.md
-- **Compound Component Patterns**:
-  @docs/file-type-guidelines/compound-components.md
-- **Type Safety Guidelines**: @docs/file-type-guidelines/types.md
-- **Internationalization**: @docs/file-type-guidelines/i18n.md
-- **Cross-Chunk Imports (CRITICAL)**: When importing components or types across
-  different component directories, import directly from implementation files
-  (e.g., `button.tsx`, `button.types.ts`) rather than barrel exports
-  (`index.ts`) to avoid circular chunk dependencies. See
-  @docs/file-type-guidelines/main-component.md "Cross-Component Imports" for
-  details.
-
-**IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
-provide feedback without first validating against the appropriate guidelines.**
+### Development vs Testing Modes
+- **Dev** (`pnpm start:storybook`): Uses source with HMR, changes reflect immediately
+- **Test** (`pnpm test:storybook`): Uses built bundle, tests production behavior
+- Auto-detects via `VITEST_WORKER_ID` environment variable
 
 ## MCP Server Tools
 
-This project includes integrated MCP (Model Context Protocol) tooling that
-provides automated development workflows. Leverage these tools for automated
-tasks:
+MCP (Model Context Protocol) tools are pre-configured and ready to use.
 
-### Available MCP Servers
-
-- **context7**: Primary interface for querying library documentation for React
-  Aria, Chakra UI, and other libraries before implementing features.
-- **playwright**: Browser automation for visual testing and web interaction to
-  verify UI changes and test user flows.
-- **sequential-thinking**: For complex planning and multi-step reasoning when
-  tackling large features or architecture design decisions that require
-  systematic analysis.
+### Available Servers
+- **context7** - Query library documentation (React Aria, Chakra UI, etc.)
+- **playwright** - Browser automation for visual testing
+- **sequential-thinking** - Complex planning and multi-step reasoning
 
 ### Usage Guidelines
-
-- **Always** use context7 to find relevant documentation before implementing new
-  components or patterns
-- **Proactively** use playwright to visually verify UI changes and capture
-  screenshots for documentation
-- **Leverage** sequential-thinking for breaking down complex tasks into
-  manageable steps
-- These tools are pre-configured and ready to use - no additional setup required
+- You MUST use context7 before implementing new components or patterns
+- You SHOULD use playwright to verify UI changes visually
+- You MAY use sequential-thinking for breaking down complex tasks
 
 ### Agent-Driven Development Workflow
 
-**Use specialized agents proactively in an iterative cycle for all component
-development:**
+You SHOULD use specialized agents proactively in this cycle:
 
-1. **Research Phase** (nimbus-researcher): Gather requirements, patterns,
-   library documentation, and architectural guidance before writing any code
-2. **Implementation Phase** (nimbus-coder): Write code strictly according to the
-   guidelines and patterns identified in research
-3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus
-   standards and guidelines
-4. **Iteration**: If review identifies non-compliance or improvement areas,
-   return to implementation phase and repeat until all standards are met
+1. **Research** (nimbus-researcher) - Gather requirements, patterns, library docs before writing code
+2. **Implementation** (nimbus-coder) - Write code according to guidelines from research
+3. **Review** (nimbus-reviewer) - Validate code compliance against Nimbus standards
+4. **Iteration** - If non-compliant, return to implementation and repeat
 
-Invoke agents autonomously when task complexity warrants it - don't wait for
-explicit user requests. The goal is to leverage automation intelligently by
-recognizing when a task's scope or requirements align with an agent's
-capabilities.
+Invoke agents autonomously when warranted - don't wait for explicit requests.
 
-## Development Workflow Best Practices
+## Quick Decision Matrix
 
-### Testing Strategy
+**Which command do I need?**
+- First time setup? → `pnpm nimbus:init`
+- Start developing? → `pnpm start` (docs + Storybook)
+- Changed component code? → `pnpm --filter @commercetools/nimbus build && pnpm test:storybook`
+- Changed tokens? → `pnpm --filter @commercetools/nimbus-tokens build && pnpm build:packages`
+- Changed MDX docs? → `pnpm --filter @commercetools/nimbus-docs-build build && pnpm start:docs`
+- Build failing? → `pnpm nimbus:reset && pnpm install && pnpm --filter @commercetools/nimbus-tokens build`
 
-The testing system uses Vitest with two distinct test types:
+## Troubleshooting
 
-**Component Testing (Storybook stories with play functions):**
+### Build Failures
+**Symptom:** Build fails with dependency errors
 
-- Stories serve as both maintainer documentation AND tests via play functions
-- Browser testing runs in headless Chromium with Playwright
-- **ALL component behavior, interactions, and visual states are tested in
-  Storybook**
-- **Critical**: Interactive components MUST have play functions that test user
-  interactions
+**You MUST:**
+1. Verify build order: tokens → packages → docs
+2. Try clean install: `pnpm nimbus:reset && pnpm install && pnpm --filter @commercetools/nimbus-tokens build`
 
-**Unit Testing (utilities and hooks only):**
+### Tests Failing
+**Symptom:** Storybook tests fail after changes
 
-- Fast JSDOM-based tests for utilities, hooks, and non-component logic
-- All component testing happens in Storybook stories with play functions
-- Unit tests focus exclusively on pure functions, custom hooks, and business
-  logic
-
-### Testing Workflow
-
-**CRITICAL: Storybook tests run against the built bundle, NOT source files.**
-
-#### Development vs Testing Mode
-
-The Storybook configuration has two distinct modes:
-
-- **Development mode** (`pnpm start:storybook`): Uses source alias for HMR
-  - Alias: `@commercetools/nimbus` → `packages/nimbus/src`
-  - Enables instant feedback while editing components
-  - Changes reflect immediately without rebuilding
-
-- **Testing mode** (`pnpm test:storybook`): Uses built bundle
-  - Alias: None - imports from `packages/nimbus/dist`
-  - Tests run against production-like code
-  - Ensures tests validate actual published behavior
-
-#### Testing Your Changes
-
-To test component changes in Storybook tests, follow this workflow:
-
+**You MUST:** Build first - tests run against `dist/`, not source
 ```bash
-# 1. Make your changes to component source files
-# 2. Build the package to update the dist folder
-pnpm --filter @commercetools/nimbus build
-
-# 3. Run Storybook tests
-pnpm test:storybook
-
-# Or run specific test file
-pnpm test packages/nimbus/src/components/button/button.stories.tsx
+pnpm --filter @commercetools/nimbus build && pnpm test:storybook
 ```
 
-**Why build is required:**
+### HMR Not Working
+**Symptom:** Changes not reflecting in Storybook
 
-- Tests import from `@commercetools/nimbus` which resolves to `dist/` during
-  testing
-- Without building, tests run against stale code from previous build
-- This matches how consumers use the package (from `node_modules`)
+**You SHOULD:**
+1. Ensure using dev mode: `pnpm start:storybook`
+2. Verify files are in `src/` directory
+3. Restart dev server or clear browser cache
 
-#### Detection Logic
+### Package Not Found
+**Symptom:** Import errors for Nimbus packages
 
-The system detects test mode via environment variables:
-
-- **`VITEST_WORKER_ID`**: Automatically set by Vitest when running tests
-- **`VITEST=true`**: Manual override for forcing test mode
-
-**Manual Override Example:**
+**You MUST:** Install and build
 ```bash
-# Force test mode (use built bundle) even in development
-VITEST=true pnpm start:storybook
-
-# Normal development mode (use source files with HMR)
-pnpm start:storybook
+pnpm install && pnpm build:packages
 ```
 
-#### Developer Visibility
+## Additional Resources
 
-Storybook logs which mode is active on startup:
-- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
-- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+- **[Nimbus Component Development](packages/nimbus/CLAUDE.md)** - Comprehensive component guidelines
+- **[Detailed Technical Docs](docs/)** - In-depth development patterns
+- **[Root Package README](./README.md)** - Project overview
 
-This helps confirm whether your changes require a build before testing.
+---
 
-#### Common Pitfalls
-
-- ❌ **Making changes and immediately running tests** - Tests will use old code
-- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
-- ✅ **Build first, then test** - Ensures tests validate actual changes
-- ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
-
-### Build Dependencies
-
-Understanding build order is crucial:
-
-1. **Design tokens** (`packages/tokens`) - Must build first
-2. **Packages** (`packages/*`) - Depend on tokens
-3. **Documentation** (`apps/docs`) - Depends on packages
-4. **i18n compilation** - Translation data for runtime
-
-### Component Development Workflow
-
-For detailed development workflows, implementation steps, and common pitfalls,
-see: @docs/component-guidelines.md
+For package-specific development patterns, build processes, and detailed technical guidelines, see the CLAUDE.md file in the respective package or app directory.

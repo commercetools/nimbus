@@ -94,11 +94,13 @@ await generateRouteManifest(docs, './dist/manifest.json');
 
 ### Multi-View Documentation
 
-Supports multiple views for a single documentation page:
+Supports multiple documentation pages for a single item with flexible structure that adapts to the type of item (components, hooks, utils, etc.).
 
-- `button.mdx` - Main documentation (overview)
-- `button.dev.mdx` - Developer-specific view
-- `button.api.mdx` - API reference view
+Established pattern for React components:
+- `button.mdx` - Overview page (required)
+- `button.guide.mdx` - Guidance for designers/UX professionals (optional)
+- `button.dev.mdx` - Developer-focused implementation details (optional)
+- `button.a11y.mdx` - Accessibility documentation (optional)
 
 ### Incremental Builds
 
