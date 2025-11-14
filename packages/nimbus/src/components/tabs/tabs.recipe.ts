@@ -146,28 +146,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Line + Vertical + Start (tabs on left, border on left)
+    // Line + Vertical + Start (tabs on left, border on right between tabs and content)
     {
       variant: "line",
       orientation: "vertical",
       placement: "start",
-      css: {
-        list: {
-          boxShadow: "-1px 0 0 0 {colors.neutral.6}",
-        },
-        tab: {
-          boxShadow: "-2px 0 0 0 transparent",
-          _selected: {
-            boxShadow: "-2px 0 0 0 {colors.primary.9}",
-          },
-        },
-      },
-    },
-    // Line + Vertical + End (tabs on right, border on right)
-    {
-      variant: "line",
-      orientation: "vertical",
-      placement: "end",
       css: {
         list: {
           boxShadow: "1px 0 0 0 {colors.neutral.6}",
@@ -180,8 +163,35 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
+    // Line + Vertical + End (tabs on right, border on left between tabs and content)
+    {
+      variant: "line",
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        list: {
+          boxShadow: "-1px 0 0 0 {colors.neutral.6}",
+        },
+        tab: {
+          boxShadow: "-2px 0 0 0 transparent",
+          _selected: {
+            boxShadow: "-2px 0 0 0 {colors.primary.9}",
+          },
+        },
+      },
+    },
 
     // ==================== PLACEMENT-ONLY VARIANTS ====================
+    // Vertical + End (applies to all variants including pills)
+    {
+      orientation: "vertical",
+      placement: "end",
+      css: {
+        root: {
+          flexDirection: "row-reverse",
+        },
+      },
+    },
     // Horizontal + Start (default)
     {
       orientation: "horizontal",
