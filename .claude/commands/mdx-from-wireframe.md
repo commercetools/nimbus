@@ -54,7 +54,6 @@ Before writing examples, check the actual component implementation:
    ```
 
 2. **Determine component structure:**
-
    - Is it a single component export (e.g., `Toolbar`, `Button`)?
    - Is it a compound component (e.g., `Menu.Root`, `Menu.Trigger`)?
    - What props does it accept?
@@ -106,7 +105,7 @@ Detailed explanation of purpose and behavior.
 
 ### Resources
 
-Deep dive on details and access design library.
+Deep dive into implementation details and access the Nimbus design library.
 
 [Figma library](figmaLink) [React Aria Docs](reactAriaLink) # If applicable
 
@@ -204,7 +203,6 @@ everyone.
    globally
 
 3. **Available components (no imports needed):**
-
    - All Nimbus components (Button, Stack, Text, Box, Grid, etc.)
    - All Nimbus icons via `Icons.IconName`
    - React hooks (useState, useEffect, etc.)
