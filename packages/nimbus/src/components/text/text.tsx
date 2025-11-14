@@ -15,6 +15,8 @@ export type TextProps = Omit<ChakraTextProps, "slot"> & {
  * the Text component is used to display text
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/text}
+ *
+ * @supportsStyleProps
  */
 export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
   const [contextProps, ref] = useContextProps(
