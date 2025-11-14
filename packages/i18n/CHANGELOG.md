@@ -1,5 +1,14 @@
 # @commercetools/nimbus-i18n
 
+## 2.1.1
+
+### Patch Changes
+
+- [#675](https://github.com/commercetools/nimbus/pull/675)
+  [`d05ba77`](https://github.com/commercetools/nimbus/commit/d05ba775de145158e89bd83211f3211265b426d6)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Add additional en
+  datatable strings
+
 ## 2.1.0
 
 ### Patch Changes

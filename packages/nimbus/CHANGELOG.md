@@ -1,5 +1,59 @@
 # @commercetools/nimbus
 
+## 2.1.1
+
+### Patch Changes
+
+- [#612](https://github.com/commercetools/nimbus/pull/612)
+  [`f92fb51`](https://github.com/commercetools/nimbus/commit/f92fb515479f0565429f8bbfc0749f2aea5fbc12)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update
+  DateRangePickerField types
+
+- [#648](https://github.com/commercetools/nimbus/pull/648)
+  [`3dca992`](https://github.com/commercetools/nimbus/commit/3dca992703186af8c45a57ed16402f19bb8cfd5f)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Fix cross-chunk
+  circular dependencies by importing directly from implementation files
+
+  Previously, components importing from other components' barrel exports
+  (index.ts) created circular chunk dependencies during the build process. This
+  has been fixed by updating all cross-component imports to import directly from
+  implementation files (e.g., `button.tsx`, `button.types.ts`) instead of barrel
+  exports.
+
+  Changes:
+  - Updated 29 cross-component imports across 15 files in components and
+    patterns directories
+  - Added comprehensive documentation about the cross-chunk import pattern in
+    docs/component-guidelines.md and docs/file-type-guidelines/main-component.md
+  - Clarified vite.config.ts warning suppression to specifically target
+    intentional compound component barrel export patterns
+  - Added inline documentation in vite.config.ts explaining the relationship
+    between build configuration and import requirements
+
+  This change prevents potential circular dependency warnings, ensures
+  predictable module initialization order, and maintains optimal code splitting
+  behavior.
+
+- [#664](https://github.com/commercetools/nimbus/pull/664)
+  [`7fb5136`](https://github.com/commercetools/nimbus/commit/7fb5136ce4748e35aa5fbe4fa6a35664d7ab6b63)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - removed unnecessary
+  tabIndex property from Card
+
+- [#655](https://github.com/commercetools/nimbus/pull/655)
+  [`bf19ab6`](https://github.com/commercetools/nimbus/commit/bf19ab6376c825292a1a7584afd943412e09f080)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix an issue with card
+  backgrounds in dark-mode
+
+- [#649](https://github.com/commercetools/nimbus/pull/649)
+  [`edc52bd`](https://github.com/commercetools/nimbus/commit/edc52bd01e948d450cfca9a7514e779b06acb28d)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Update docs image
+  for TagGroup in use.
+
+- Updated dependencies
+  [[`f92fb51`](https://github.com/commercetools/nimbus/commit/f92fb515479f0565429f8bbfc0749f2aea5fbc12)]:
+  - @commercetools/nimbus-icons@2.1.1
+  - @commercetools/nimbus-tokens@2.1.1
+
 ## 2.1.0
 
 ### Minor Changes
