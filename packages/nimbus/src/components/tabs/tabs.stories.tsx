@@ -350,8 +350,7 @@ export const VerticalPlacement: Story = {
             Vertical - Placement Start (Default)
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs on the left, panels on the right. Border indicator on the left
-            side.
+            Tabs on the left, panels on the right.
           </Text>
           <Box data-testid="vertical-placement-start">
             <Tabs.Root
@@ -368,8 +367,7 @@ export const VerticalPlacement: Story = {
             Vertical - Placement End
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs on the right, panels on the left. Border indicator on the right
-            side.
+            Tabs on the right, panels on the left.
           </Text>
           <Box data-testid="vertical-placement-end">
             <Tabs.Root
