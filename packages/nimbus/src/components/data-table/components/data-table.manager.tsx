@@ -4,7 +4,10 @@ import { IconButton, Drawer, Tabs, Tooltip } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
 import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
-import { useDataTableContext } from "./data-table.context";
+import {
+  useDataTableContext,
+  useCustomSettingsContext,
+} from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
@@ -23,11 +26,13 @@ export const DataTableManager = () => {
     visibleColumns,
     onColumnsChange,
     onSettingsChange,
-    customSettings,
+    // customSettings,
   } = context;
   const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
+
+  const { customSettings } = useCustomSettingsContext();
 
   // Store columns in a ref to avoid recreating the callback
   const columnsRef = useRef(columns);
