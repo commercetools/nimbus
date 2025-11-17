@@ -365,9 +365,16 @@ const errors = {
 
 ### Accessibility
 
-The TextInputField handles most accessibility requirements internally. The `label` prop is required and ensures proper labeling for screen readers.
+TextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
 
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "example-text-input";

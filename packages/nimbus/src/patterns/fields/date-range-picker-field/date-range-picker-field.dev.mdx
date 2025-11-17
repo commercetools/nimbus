@@ -323,13 +323,6 @@ DateRangePickerField provides comprehensive accessibility through [FormField](co
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
 
-**Keyboard Navigation:**
-- Inherited from DateRangePicker component
-- `Tab` / `Shift+Tab`: Navigate between segments and buttons
-- `Arrow keys`: Increment/decrement date segments
-- `Enter` / `Space`: Open calendar
-- `Escape`: Close calendar
-
 If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
@@ -351,6 +344,14 @@ export const Example = () => {
 ```
 
 **Note:** The `label` prop already provides an accessible name, so `aria-label` is not needed.
+
+#### Keyboard navigation
+
+The component supports keyboard interaction inherited from DateRangePicker:
+- `Tab` / `Shift+Tab`: Navigate between segments and buttons
+- `Arrow keys`: Increment/decrement date segments
+- `Enter` / `Space`: Open calendar
+- `Escape`: Close calendar
 
 ## Form integration
 
