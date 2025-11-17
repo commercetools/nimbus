@@ -48,4 +48,9 @@ export type TextInputFieldProps = Omit<TextInputProps, "type"> &
      */
     errors?: FieldErrorsData;
     renderError?: (errorKey: string) => ReactNode;
+    /**
+     * Size of the text input
+     * @default "md"
+     */
+    size?: "sm" | "md";
   };

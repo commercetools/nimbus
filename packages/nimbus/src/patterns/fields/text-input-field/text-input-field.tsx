@@ -39,6 +39,7 @@ export const TextInputField = ({
   isDisabled = false,
   isReadOnly = false,
   isInvalid = false,
+  size = "md",
   value,
   placeholder,
   type = "text",
@@ -50,6 +51,7 @@ export const TextInputField = ({
   return (
     <FormField.Root
       id={id}
+      size={size}
       isRequired={isRequired}
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
@@ -59,6 +61,7 @@ export const TextInputField = ({
       <FormField.Input>
         <TextInput
           {...rest}
+          size={size}
           type={type}
           placeholder={placeholder}
           onChange={onChange}
