@@ -75,7 +75,7 @@ const App = () => {
 };
 ```
 
-### With Form Fields
+### With form fields
 
 When used in combination with form field patterns there is more support for any label, description, and error states needed.
 
@@ -123,7 +123,6 @@ Scoped search guidelines establish how the component is used to manage multi-dom
 - **Default scope clarity**: Always define a clear, logical default scope (e.g., "All" or the most common category) and clearly display it before the user interacts with the component.
 - **Persistent scope**: Ensure the scope selector remains visible and accessible next to the input field, clearly communicating the current search context at all times.
 - **Intuitive scope options**: Keep scope options concise and meaningful to the area that they are being placed in.
-- **Immediate scope application**: The scope selection should take effect immediately upon input. If the user selects "Customers," the search results should instantly reflect only customer data.
 - **Display results contextually**: When the search results page loads, reiterate the search parameters clearly: "Showing 15 results for 'Jackets' within the 'Products' scope."
 - **Handle zero results gracefully**: If the user selects a very narrow scope and gets zero results, suggest alternative, broader scopes they can try without leaving the current page.
 - **Clear iconography**: If the scope selector uses icons, ensure they are universally understood and directly relate to the content they filter.
@@ -135,7 +134,7 @@ The scoped search component is used to enable users to perform precise searches 
 > [!TIP]\
 > When to use
 
-- **Multi-Domain Data**: When the application contains large, distinct data types that users often need to query separately (e.g., searching for "Jackets" within Products vs. searching for "Jackets" within Customers).
+- **Multi-domain data**: When the application contains large, distinct data types that users often need to query separately (e.g., searching for "Jackets" within Products vs. searching for "Jackets" within Customers).
 - **Precision is key**: When users require highly precise results and filtering the search domain reduces irrelevant noise (common in back-office solutions).
 - **Restricted permissions**: To restrict searches based on user permissions (e.g., a manager can search "All Teams," but a team member can only search "My Team").
 
@@ -240,9 +239,9 @@ const App = () => {
 };
 ```
 
-### Accessibility Standards
+### Accessibility standards
 
-- **Keyboard Flow**: Ensure the Tab order moves logically between the scope selector and the text input field.
-- **ARIA Roles**: The scope selector (if a dropdown) must use the appropriate ARIA roles (role="combobox", aria-expanded).
-- **Labeling**: Provide clear programmatic labels for both the search input (aria-label or visible `<label>`) and the scope selector to explain their function to screen readers.
-- **State Communication**: Use aria-live regions if search results appear dynamically, to announce the updated results count after a scope change or query submission.
+- **Keyboard flow**: Ensure the Tab order moves logically between the scope selector and the text input field.
+- **ARIA roles**: The scope selector (if a dropdown) must use the appropriate ARIA roles (role="combobox", aria-expanded).
+- **Labeling**: Provide clear programmatic labels for both the search input (`aria-label` or visible `<label>`) and the scope selector to explain their function to screen readers.
+- **State communication**: Use aria-live regions if search results appear dynamically, to announce the updated results count after a scope change or query submission.
