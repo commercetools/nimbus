@@ -114,3 +114,8 @@ export {
   DraggableListItem as _DraggableListItem,
   DraggableListField as _DraggableListField,
 };
+
+// this is for testing in isolation only
+export { DraggableListRoot };
+export { DraggableListItem };
+export { DraggableListField };
