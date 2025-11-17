@@ -325,7 +325,7 @@ const App = () => {
       currencies={["USD", "EUR", "GBP"]}
       value={value}
       onValueChange={setValue}
-      isCurrencyInputDisabled={true}
+      isCurrencyInputDisabled
       placeholder="0.00"
     />
   );
@@ -391,7 +391,9 @@ type MoneyInputValue = {
   currencyCode: CurrencyCode | "";  // ISO currency code or empty string
 }
 
-type CurrencyCode = "USD" | "EUR" | "GBP" | "JPY" | ... // 100+ currencies
+// CurrencyCode supports 221 ISO 4217 currency codes including:
+// "USD", "EUR", "GBP", "JPY", "CNY", "INR", "AUD", "CAD", "CHF", "KWD", etc.
+type CurrencyCode = keyof typeof currencies;
 ```
 
 **Important**:
@@ -399,6 +401,7 @@ type CurrencyCode = "USD" | "EUR" | "GBP" | "JPY" | ... // 100+ currencies
 - Use a dot (`.`) as the decimal separator
 - Empty amount should be `""` (empty string)
 - The component handles currency-specific formatting automatically
+- Supported currencies are defined in `@commercetools/nimbus/src/components/money-input/utils/currencies.ts`
 
 ### Dual input nature
 
@@ -430,9 +433,16 @@ const errors = {
 
 ### Accessibility
 
-The MoneyInputField handles most accessibility requirements internally through FormField and MoneyInput. The `label` prop is required and ensures proper labeling for screen readers.
+MoneyInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
 
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id:
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "product-price-input";
@@ -456,31 +466,6 @@ The component supports keyboard interaction for both inputs:
 - **Amount input**: Arrow up/down to increment/decrement, number keys to type
 - `Home` / `End`: Move to start/end of amount
 - `Escape`: Close currency dropdown
-
-### Custom error rendering
-
-Use the `renderError` prop to customize how specific error keys are displayed:
-
-```tsx
-<MoneyInputField
-  label="Product Price"
-  currencies={["USD", "EUR", "GBP"]}
-  value={value}
-  onValueChange={setValue}
-  errors={{ tooLow: true, invalidAmount: true }}
-  touched={true}
-  renderError={(key) => {
-    switch (key) {
-      case 'tooLow':
-        return 'Price must be at least $10.00';
-      case 'invalidAmount':
-        return 'Please enter a valid monetary amount';
-      default:
-        return null; // Fall back to FieldErrors built-in messages
-    }
-  }}
-/>
-```
 
 ## Form integration
 
@@ -547,6 +532,31 @@ const MyForm = () => {
 ## API reference
 
 <PropsTable id="MoneyInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<MoneyInputField
+  label="Product Price"
+  currencies={["USD", "EUR", "GBP"]}
+  value={value}
+  onValueChange={setValue}
+  errors={{ tooLow: true, invalidAmount: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'tooLow':
+        return 'Price must be at least $10.00';
+      case 'invalidAmount':
+        return 'Please enter a valid monetary amount';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
 
 ## Testing your implementation
 

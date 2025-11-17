@@ -390,30 +390,6 @@ The component supports standard text input keyboard interaction:
 - `Home` / `End`: Move to start/end of text
 - `Ctrl+A` / `Cmd+A`: Select all text
 
-### Custom error rendering
-
-Use the `renderError` prop to customize how specific error keys are displayed:
-
-```tsx
-<TextInputField
-  label="Email address"
-  value={value}
-  onChange={setValue}
-  errors={{ invalidEmail: true, tooShort: true }}
-  touched={true}
-  renderError={(key) => {
-    switch (key) {
-      case 'invalidEmail':
-        return 'Please enter a valid email address (e.g., user@example.com)';
-      case 'tooShort':
-        return 'Email must be at least 5 characters long';
-      default:
-        return null; // Fall back to FieldErrors built-in messages
-    }
-  }}
-/>
-```
-
 ## Form integration
 
 TextInputField integrates seamlessly with Formik:
@@ -492,6 +468,30 @@ const MyForm = () => {
 ## API reference
 
 <PropsTable id="TextInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<TextInputField
+  label="Email address"
+  value={value}
+  onChange={setValue}
+  errors={{ invalidEmail: true, tooShort: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'invalidEmail':
+        return 'Please enter a valid email address (e.g., user@example.com)';
+      case 'tooShort':
+        return 'Email must be at least 5 characters long';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
 
 ## Testing your implementation
 
