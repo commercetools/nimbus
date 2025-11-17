@@ -45,7 +45,7 @@ tab-order: 3
 ### When to use which
 
 **Use MoneyInputField when:**
-- Building standard forms with monetary fields
+- Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
@@ -61,8 +61,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { MoneyInputField, type MoneyInputFieldProps } from '@commercetools/nimbus';
-import type { MoneyInputValue } from '@commercetools/nimbus';
+import { MoneyInputField, type MoneyInputFieldProps, type MoneyInputValue } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
@@ -285,7 +284,7 @@ const App = () => {
 
 ### With high precision amounts
 
-MoneyInput automatically detects and displays a badge for high precision amounts:
+MoneyInput automatically detects when an amount has more decimal places than the currency standard and displays a badge. The badge is shown by default but can be disabled:
 
 ```jsx-live-dev
 const App = () => {
@@ -301,13 +300,12 @@ const App = () => {
       currencies={["USD", "EUR", "GBP"]}
       value={value}
       onValueChange={setValue}
-      hasHighPrecisionBadge={true}
     />
   );
 }
 ```
 
-The high precision badge appears when the amount has more decimal places than the currency standard (e.g., USD typically uses 2 decimals, so "99.999" triggers the badge).
+The high precision badge appears automatically when the amount has more decimal places than the currency standard (e.g., USD typically uses 2 decimals, so "99.999" triggers the badge). Use `hasHighPrecisionBadge={false}` to disable the badge if needed.
 
 ### With currency selector disabled
 
