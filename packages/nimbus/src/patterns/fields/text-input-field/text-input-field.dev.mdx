@@ -365,9 +365,16 @@ const errors = {
 
 ### Accessibility
 
-The TextInputField handles most accessibility requirements internally. The `label` prop is required and ensures proper labeling for screen readers.
+TextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
 
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "example-text-input";
@@ -389,30 +396,6 @@ The component supports standard text input keyboard interaction:
 - `Arrow keys`: Navigate within the text
 - `Home` / `End`: Move to start/end of text
 - `Ctrl+A` / `Cmd+A`: Select all text
-
-### Custom error rendering
-
-Use the `renderError` prop to customize how specific error keys are displayed:
-
-```tsx
-<TextInputField
-  label="Email address"
-  value={value}
-  onChange={setValue}
-  errors={{ invalidEmail: true, tooShort: true }}
-  touched={true}
-  renderError={(key) => {
-    switch (key) {
-      case 'invalidEmail':
-        return 'Please enter a valid email address (e.g., user@example.com)';
-      case 'tooShort':
-        return 'Email must be at least 5 characters long';
-      default:
-        return null; // Fall back to FieldErrors built-in messages
-    }
-  }}
-/>
-```
 
 ## Form integration
 
@@ -492,6 +475,30 @@ const MyForm = () => {
 ## API reference
 
 <PropsTable id="TextInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<TextInputField
+  label="Email address"
+  value={value}
+  onChange={setValue}
+  errors={{ invalidEmail: true, tooShort: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'invalidEmail':
+        return 'Please enter a valid email address (e.g., user@example.com)';
+      case 'tooShort':
+        return 'Email must be at least 5 characters long';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
 
 ## Testing your implementation
 

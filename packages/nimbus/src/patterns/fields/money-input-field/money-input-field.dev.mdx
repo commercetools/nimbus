@@ -1,0 +1,771 @@
+---
+title: MoneyInputField Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: field pattern vs manual composition
+
+**With MoneyInputField:**
+```tsx
+<MoneyInputField
+  label="Product Price"
+  description="Enter price with currency"
+  currencies={["USD", "EUR", "GBP"]}
+  value={{ amount: "99.99", currencyCode: "USD" }}
+  onValueChange={setValue}
+  errors={errors}
+  touched={touched}
+  isRequired
+/>
+```
+
+**Manual composition:**
+```tsx
+<FormField.Root isInvalid={!!(errors && touched)} isRequired>
+  <FormField.Label>Product Price</FormField.Label>
+  <FormField.Input>
+    <MoneyInput
+      currencies={["USD", "EUR", "GBP"]}
+      value={{ amount: "99.99", currencyCode: "USD" }}
+      onValueChange={setValue}
+    />
+  </FormField.Input>
+  <FormField.Description>
+    Enter price with currency
+  </FormField.Description>
+  {touched && errors && (
+    <FormField.Error>
+      <FieldErrors errors={errors} />
+    </FormField.Error>
+  )}
+</FormField.Root>
+```
+
+### When to use which
+
+**Use MoneyInputField when:**
+- Building standard forms with typical field layouts
+- You want consistent field patterns across your app
+- You need built-in error handling with FieldErrors
+- You want to minimize boilerplate code
+
+**Use MoneyInput with manual FormField composition when:**
+- You need custom field layouts
+- You're building complex, non-standard forms
+- You need granular control over FormField sub-components
+- You require a different error handling implementation
+
+## Getting started
+
+### Import
+
+```tsx
+import { MoneyInputField, type MoneyInputFieldProps, type MoneyInputValue } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation with a label and controlled state:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Product Price"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+    />
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSmall, setValueSmall] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+  const [valueMedium, setValueMedium] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInputField
+        size="sm"
+        label="Small input"
+        currencies={["USD", "EUR", "GBP"]}
+        value={valueSmall}
+        onValueChange={setValueSmall}
+        placeholder="0.00"
+      />
+      <MoneyInputField
+        size="md"
+        label="Medium input (default)"
+        currencies={["USD", "EUR", "GBP"]}
+        value={valueMedium}
+        onValueChange={setValueMedium}
+        placeholder="0.00"
+      />
+    </Stack>
+  );
+}
+```
+
+### With description
+
+Add helper text below the input to provide context:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Product Price"
+      description="Enter the price including the appropriate currency"
+      currencies={["USD", "EUR", "GBP", "JPY"]}
+      value={value}
+      onValueChange={setValue}
+      placeholder="0.00"
+    />
+  );
+}
+```
+
+### With validation errors
+
+Show error messages when the field is touched and has validation errors:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+  const [touched, setTouched] = useState<boolean>(false);
+
+  // Simulate validation: require amount
+  const errors = touched && !value.amount ? { missing: true } : undefined;
+
+  return (
+    <MoneyInputField
+      label="Product Price"
+      description="Enter a valid price"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      onBlur={() => setTouched(true)}
+      errors={errors}
+      touched={touched}
+      isRequired
+      placeholder="0.00"
+    />
+  );
+}
+```
+
+**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+
+### With info popover
+
+Provide additional context through an info button and popover:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Product Price"
+      description="Enter the retail price"
+      info="Prices should be competitive and reflect current market rates. Consider including any applicable taxes."
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      placeholder="0.00"
+    />
+  );
+}
+```
+
+### Required field
+
+Mark fields as required with the `isRequired` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Product Price"
+      description="This field is required"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      isRequired
+      placeholder="0.00"
+    />
+  );
+}
+```
+
+### Disabled state
+
+Prevent user interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "99.99",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Default Price"
+      description="This field cannot be modified"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      isDisabled
+    />
+  );
+}
+```
+
+### Read-only state
+
+Display a non-editable value with the `isReadOnly` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "199.99",
+    currencyCode: "EUR"
+  });
+
+  return (
+    <MoneyInputField
+      label="System Price"
+      description="This value is automatically calculated"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      isReadOnly
+    />
+  );
+}
+```
+
+### With high precision amounts
+
+MoneyInput automatically detects when an amount has more decimal places than the currency standard and displays a badge. The badge is shown by default but can be disabled:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "99.99999",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Wholesale Price"
+      description="High precision price with 5 decimal places"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+    />
+  );
+}
+```
+
+The high precision badge appears automatically when the amount has more decimal places than the currency standard (e.g., USD typically uses 2 decimals, so "99.999" triggers the badge). Use `hasHighPrecisionBadge={false}` to disable the badge if needed.
+
+### With currency selector disabled
+
+Keep the currency fixed while allowing amount changes:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <MoneyInputField
+      label="Price (USD only)"
+      description="Currency is fixed to USD"
+      currencies={["USD", "EUR", "GBP"]}
+      value={value}
+      onValueChange={setValue}
+      isCurrencyInputDisabled
+      placeholder="0.00"
+    />
+  );
+}
+```
+
+### Different currency standards
+
+MoneyInput automatically formats amounts based on the selected currency:
+
+```jsx-live-dev
+const App = () => {
+  const [usd, setUsd] = useState<MoneyInputValue>({
+    amount: "99.99",
+    currencyCode: "USD"
+  });
+  const [jpy, setJpy] = useState<MoneyInputValue>({
+    amount: "9999",
+    currencyCode: "JPY"
+  });
+  const [kwd, setKwd] = useState<MoneyInputValue>({
+    amount: "99.999",
+    currencyCode: "KWD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInputField
+        label="US Dollars (2 decimals)"
+        description="Standard 2 decimal places"
+        currencies={["USD"]}
+        value={usd}
+        onValueChange={setUsd}
+      />
+      <MoneyInputField
+        label="Japanese Yen (0 decimals)"
+        description="Whole numbers only"
+        currencies={["JPY"]}
+        value={jpy}
+        onValueChange={setJpy}
+      />
+      <MoneyInputField
+        label="Kuwaiti Dinar (3 decimals)"
+        description="High precision with 3 decimal places"
+        currencies={["KWD"]}
+        value={kwd}
+        onValueChange={setKwd}
+      />
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Value type
+
+MoneyInputField uses the `MoneyInputValue` type:
+
+```tsx
+type MoneyInputValue = {
+  amount: string;           // String representation with decimal (e.g., "123.45")
+  currencyCode: CurrencyCode | "";  // ISO currency code or empty string
+}
+
+// CurrencyCode supports 221 ISO 4217 currency codes including:
+// "USD", "EUR", "GBP", "JPY", "CNY", "INR", "AUD", "CAD", "CHF", "KWD", etc.
+type CurrencyCode = keyof typeof currencies;
+```
+
+**Important**:
+- The `amount` is always a string, not a number
+- Use a dot (`.`) as the decimal separator
+- Empty amount should be `""` (empty string)
+- The component handles currency-specific formatting automatically
+- Supported currencies are defined in `@commercetools/nimbus/src/components/money-input/utils/currencies.ts`
+
+### Dual input nature
+
+MoneyInputField contains **two focusable inputs**:
+1. **Currency selector** (combobox) - For choosing the currency
+2. **Amount input** (spinbutton) - For entering the monetary value
+
+Both inputs receive separate IDs based on the field's `id` or `name` prop:
+- Amount: `${id}.amount` or `${name}.amount`
+- Currency: `${id}.currencyCode` or `${name}.currencyCode`
+
+### Error handling
+
+MoneyInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+**Error object format** (`FieldErrorsData`):
+```tsx
+type FieldErrorsData = {
+  [key: string]: boolean | string | ReactNode;
+};
+
+// Examples:
+const errors = {
+  missing: true,              // Built-in message: "This field is required"
+  invalidFormat: true,        // Built-in message: "Please enter a valid format"
+  custom: "Custom error text" // Custom message
+};
+```
+
+### Accessibility
+
+MoneyInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "product-price-input";
+
+export const Example = () => (
+  <MoneyInputField
+    id={PERSISTENT_ID}
+    label="Product Price"
+    currencies={["USD", "EUR", "GBP"]}
+    value={value}
+    onValueChange={setValue}
+  />
+);
+```
+
+#### Keyboard navigation
+
+The component supports keyboard interaction for both inputs:
+- `Tab` / `Shift+Tab`: Move focus between currency selector and amount input
+- **Currency selector**: Arrow keys navigate options, Enter/Space to select
+- **Amount input**: Arrow up/down to increment/decrement, number keys to type
+- `Home` / `End`: Move to start/end of amount
+- `Escape`: Close currency dropdown
+
+## Form integration
+
+MoneyInputField integrates seamlessly with Formik:
+
+```tsx
+import { useFormik } from 'formik';
+import { MoneyInputField, Button, Stack } from '@commercetools/nimbus';
+import type { MoneyInputValue } from '@commercetools/nimbus';
+
+const MyForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      price: { amount: "", currencyCode: "USD" } as MoneyInputValue,
+    },
+    validate: (values) => {
+      const errors: Record<string, any> = {};
+
+      if (!values.price.amount) {
+        errors.price = { missing: true };
+      } else {
+        const amount = parseFloat(values.price.amount);
+        if (isNaN(amount) || amount <= 0) {
+          errors.price = { invalidAmount: true };
+        }
+      }
+
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('Submitted:', values);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <Stack direction="column" gap="400">
+        <MoneyInputField
+          name="price"
+          label="Product Price"
+          description="Enter the product price with currency"
+          currencies={["USD", "EUR", "GBP", "JPY"]}
+          value={formik.values.price}
+          onValueChange={(value) => formik.setFieldValue('price', value)}
+          onBlur={() => formik.setFieldTouched('price', true)}
+          errors={formik.errors.price}
+          touched={formik.touched.price}
+          isRequired
+          placeholder="0.00"
+        />
+        <Button type="submit">Submit</Button>
+      </Stack>
+    </form>
+  );
+};
+```
+
+**Key integration points:**
+- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
+- **OnBlur**: Mark field as touched on blur
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="MoneyInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<MoneyInputField
+  label="Product Price"
+  currencies={["USD", "EUR", "GBP"]}
+  value={value}
+  onValueChange={setValue}
+  errors={{ tooLow: true, invalidAmount: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'tooLow':
+        return 'Price must be at least $10.00';
+      case 'invalidAmount':
+        return 'Please enter a valid monetary amount';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MoneyInputField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { MoneyInputField } from '@commercetools/nimbus';
+
+describe('MoneyInputField', () => {
+  it('renders label and both inputs', () => {
+    render(
+      <MoneyInputField
+        label="Product Price"
+        currencies={["USD", "EUR", "GBP"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+      />
+    );
+
+    // Verify label is rendered
+    expect(screen.getByText('Product Price')).toBeInTheDocument();
+
+    // Verify currency selector is rendered
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+
+    // Verify amount input is rendered
+    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
+  });
+
+  it('renders description text', () => {
+    render(
+      <MoneyInputField
+        label="Price"
+        description="Enter product price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Enter product price')).toBeInTheDocument();
+  });
+
+  it('shows required indicator', () => {
+    render(
+      <MoneyInputField
+        label="Required price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+        isRequired
+      />
+    );
+
+    const amountInput = screen.getByRole('spinbutton');
+    expect(amountInput).toHaveAttribute('aria-required', 'true');
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with both inputs:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MoneyInputField } from '@commercetools/nimbus';
+
+describe('MoneyInputField interactions', () => {
+  it('calls onValueChange when user types amount', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD", "EUR"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={handleChange}
+      />
+    );
+
+    const amountInput = screen.getByRole('spinbutton');
+    await user.type(amountInput, '99.99');
+
+    expect(handleChange).toHaveBeenCalled();
+    expect(handleChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ amount: expect.stringContaining('99.99') })
+    );
+  });
+
+  it('calls onValueChange when user changes currency', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD", "EUR", "GBP"]}
+        value={{ amount: "99.99", currencyCode: "USD" }}
+        onValueChange={handleChange}
+      />
+    );
+
+    const currencySelect = screen.getByRole('combobox');
+    await user.click(currencySelect);
+
+    // Wait for listbox and select EUR
+    await waitFor(() => {
+      expect(screen.getByRole('listbox')).toBeInTheDocument();
+    });
+
+    const eurOption = screen.getByRole('option', { name: /EUR/ });
+    await user.click(eurOption);
+
+    expect(handleChange).toHaveBeenCalledWith(
+      expect.objectContaining({ currencyCode: 'EUR' })
+    );
+  });
+
+  it('does not call onValueChange when disabled', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={handleChange}
+        isDisabled
+      />
+    );
+
+    const amountInput = screen.getByRole('spinbutton');
+    expect(amountInput).toBeDisabled();
+
+    await user.type(amountInput, '99.99');
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+});
+```
+
+### Testing validation and errors
+
+Test error handling and validation behavior:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { MoneyInputField } from '@commercetools/nimbus';
+
+describe('MoneyInputField validation', () => {
+  it('does not show errors when untouched', () => {
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+        errors={{ missing: true }}
+        touched={false}
+      />
+    );
+
+    expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
+  });
+
+  it('shows errors when touched', () => {
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+        errors={{ missing: true }}
+        touched={true}
+      />
+    );
+
+    expect(screen.getByText(/required/i)).toBeInTheDocument();
+  });
+
+  it('applies invalid styling when isInvalid is true', () => {
+    render(
+      <MoneyInputField
+        label="Price"
+        currencies={["USD"]}
+        value={{ amount: "", currencyCode: "USD" }}
+        onValueChange={() => {}}
+        isInvalid
+      />
+    );
+
+    const amountInput = screen.getByRole('spinbutton');
+    expect(amountInput).toHaveAttribute('data-invalid', 'true');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-moneyinputfield--docs)
+- [MoneyInput Component](components/inputs/moneyinput)
+- [FormField Component](components/inputs/formfield)
+- [FieldErrors Component](components/forms/fielderrors)
+- [React Aria NumberField](https://react-spectrum.adobe.com/react-aria/NumberField.html)
