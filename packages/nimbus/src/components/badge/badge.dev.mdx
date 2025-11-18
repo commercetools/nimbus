@@ -46,10 +46,10 @@ Badges support color palettes to convey semantic meaning or match a theme:
 const App = () => (
   <Stack direction="row" gap="400">
     <Badge colorPalette="primary">Primary</Badge>
-    <Badge colorPalette="secondary">Secondary</Badge>
     <Badge colorPalette="positive">Positive</Badge>
-    <Badge colorPalette="negative">Negative</Badge>
+    <Badge colorPalette="info">Info</Badge>
     <Badge colorPalette="warning">Warning</Badge>
+    <Badge colorPalette="critical">Critical</Badge>
   </Stack>
 )
 ```
@@ -65,7 +65,7 @@ const App = () => (
       <Icons.SentimentSatisfied />
       Verified
     </Badge>
-    <Badge colorPalette="negative">
+    <Badge colorPalette="critical">
       <Icons.Error />
       Error
     </Badge>
