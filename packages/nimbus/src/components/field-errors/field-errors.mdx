@@ -307,5 +307,5 @@ const App = () => (
  - **WCAG contrast:** The default critical color palette provides sufficient contrast for the error text to meet WCAG AA standards. This must be maintained when using custom colors.
  - **Actionable messaging:** Error messages should use clear, plain language that focuses on what the user needs to do to fix the problem, not just what went wrong (e.g., "Password must be at least 8 characters" instead of "Length validation failed").
  - **Association:** When integrated with the FormField component, errors are automatically associated with their input fields via ARIA, helping screen readers clearly link the error message to the field that caused it.
- - **Color Is Supplemental:** Color (red tones) is used as a supplemental indicator; the text content itself provides the error information, meeting WCAG requirements for users with color vision deficiencies.
+ - **Color is supplemental:** Color (red tones) is used as a supplemental indicator; the text content itself provides the error information, meeting WCAG requirements for users with color vision deficiencies.
  - **Visibility control:** Always tie `isVisible` to the field's interaction state (touched or blurred) to prevent users from hearing confusing announcements before they've had a chance to input data.
