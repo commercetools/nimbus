@@ -1,0 +1,142 @@
+---
+title: Badge Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Badge, type BadgeProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses the default size and color:
+
+```jsx-live-dev
+const App = () => (
+  <Badge>Default Badge</Badge>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `2xs`, `xs`, and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Badge size="2xs">2xs Badge</Badge>
+    <Badge size="xs">xs Badge</Badge>
+    <Badge size="md">md Badge</Badge>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Badges support color palettes to convey semantic meaning or match a theme:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Badge colorPalette="primary">Primary</Badge>
+    <Badge colorPalette="secondary">Secondary</Badge>
+    <Badge colorPalette="positive">Positive</Badge>
+    <Badge colorPalette="negative">Negative</Badge>
+    <Badge colorPalette="warning">Warning</Badge>
+  </Stack>
+)
+```
+
+### With icons
+
+Badges can contain icons alongside text for enhanced visual communication:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Badge>
+      <Icons.SentimentSatisfied />
+      Verified
+    </Badge>
+    <Badge colorPalette="negative">
+      <Icons.Error />
+      Error
+    </Badge>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Badge component handles most accessibility requirements internally. However, you should ensure that the badge content is accessible.
+
+- **Color Contrast**: The default color mappings (shade 3 for background, shade 11 for text) are designed to meet WCAG contrast requirements.
+- **Screen Readers**: The badge text is read normally by screen readers. If the badge conveys status (like "Error"), ensure the text or a visually hidden label clarifies this context if it's not obvious from the surrounding content.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-badge";
+
+export const Example = () => (
+  <Badge id={PERSISTENT_ID}>Status</Badge>
+);
+```
+
+#### Keyboard navigation
+
+Badges are non-interactive elements and do not receive focus or support keyboard interaction.
+
+## API reference
+
+<PropsTable id="Badge" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Badge in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Badge } from '@commercetools/nimbus';
+
+describe('Badge', () => {
+  it('renders content correctly', () => {
+    render(<Badge>Status: Active</Badge>);
+    expect(screen.getByText('Status: Active')).toBeInTheDocument();
+  });
+});
+```
+
+### Testing with specific props
+
+When using variants, you can verify the component renders with the expected content:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Badge } from '@commercetools/nimbus';
+
+describe('Badge with variants', () => {
+  it('renders with specific size', () => {
+    render(<Badge size="xs">Small Badge</Badge>);
+    expect(screen.getByText('Small Badge')).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-badge--docs)
+
