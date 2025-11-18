@@ -1,7 +1,8 @@
 ---
 id: Components-ScopedSearchInput
 title: ScopedSearchInput
-description: Combines a select dropdown with a search input for filtered search functionality.
+description: Enables users to define where their search query is applied using a closely paired scope selector.
+documentState: InitialDraft
 order: 999
 menu:
   - Components
@@ -12,42 +13,216 @@ tags:
   - input
   - search
   - select
+  - scoped
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-35198&m=dev
 ---
 
-# ScopedSearchInput
+# Scoped search input
 
-A combined input component that integrates a select dropdown with a search input field, enabling users to filter search by category or field type.
+Enables users to define where their search query is applied using a closely paired scope selector.
 
 ## Overview
 
-ScopedSearchInput provides a unified control for scenarios where users need to specify both what they're searching for (via the search input) and where to search (via the select dropdown). Common use cases include:
+The scoped search input combines an input field with a functional scope selector (often a dropdown or button group), ensuring users can precisely target their query to a specific data segment, such as searching only 'Products' or only 'Customers', yielding more accurate and relevant results.
 
-- Filtering search results by field (name, email, etc.)
-- Category-specific search
-- Advanced search interfaces
+### Resources
 
-### Key Features
+Deep dive into implementation details and access the Nimbus design library.
 
-- **Unified Value**: Single value object containing both text and selected option
-- **Flexible Options**: Support for flat lists and grouped options
-- **Keyboard Accessible**: Full keyboard navigation support
-- **Controlled Only**: Predictable state management with controlled API
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-35198&m=dev)
+[React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)
 
 ## Variables
 
-Get familiar with the component features.
+Get familiar with the features.
 
-### Basic Usage
+### Size
+
+There are two sizes, the default is medium (md) and supporting a more compact size (sm).
 
 ```jsx-live
 const App = () => {
-  const [value, setValue] = useState({
-    text: '',
-    option: 'all',
-  });
+  const [valueSm, setValueSm] = useState({ text: '', option: 'all' });
+  const [valueMd, setValueMd] = useState({ text: '', option: 'all' });
 
   const options = [
-    { label: 'All Fields', value: 'all' },
+    { label: 'All fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ScopedSearchInput
+        size="md"
+        value={valueMd}
+        onValueChange={setValueMd}
+        onSubmit={(val) => console.log('Search:', val)}
+        options={options}
+        searchPlaceholder="Search..."
+      />
+      <ScopedSearchInput
+        size="sm"
+        value={valueSm}
+        onValueChange={setValueSm}
+        onSubmit={(val) => console.log('Search:', val)}
+        options={options}
+        searchPlaceholder="Search..."
+      />
+    </Stack>
+  );
+};
+```
+
+### With form fields
+
+When used in combination with form field patterns there is more support for any label, description, and error states needed.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  return (
+    <Box width="600px">
+      <FormField.Root isRequired>
+        <FormField.Label>Label</FormField.Label>
+        <FormField.Input>
+          <ScopedSearchInput
+            value={value}
+            onValueChange={setValue}
+            onSubmit={(val) => console.log('Search:', val)}
+            options={options}
+            searchPlaceholder="Search..."
+          />
+        </FormField.Input>
+        <FormField.Description>Descriptive text</FormField.Description>
+        <FormField.InfoBox>
+          Info box content
+        </FormField.InfoBox>
+      </FormField.Root>
+    </Box>
+  );
+};
+```
+
+## Guidelines
+
+Scoped search guidelines establish how the component is used to manage multi-domain data, ensuring consistency and accessibility in defining the search context.
+
+### Best practices
+
+- **Set a smart default**: Choose the default scope that will be used by the vast majority of users. This saves the user an extra click most of the time.
+- **Instant application of scope**: When the user changes the scope (e.g., switches from "All" to "Orders"), that choice should be applied immediately without requiring the user to re-type the search query.
+- **Default scope clarity**: Always define a clear, logical default scope (e.g., "All" or the most common category) and clearly display it before the user interacts with the component.
+- **Persistent scope**: Ensure the scope selector remains visible and accessible next to the input field, clearly communicating the current search context at all times.
+- **Intuitive scope options**: Keep scope options concise and meaningful to the area that they are being placed in.
+- **Display results contextually**: When the search results page loads, reiterate the search parameters clearly: "Showing 15 results for 'Jackets' within the 'Products' scope."
+- **Handle zero results gracefully**: If the user selects a very narrow scope and gets zero results, suggest alternative, broader scopes they can try without leaving the current page.
+- **Clear iconography**: If the scope selector uses icons, ensure they are universally understood and directly relate to the content they filter.
+
+### Usage
+
+The scoped search component is used to enable users to perform precise searches by filtering the query to a specific, predefined domain or content area, leading to more relevant results.
+
+> [!TIP]\
+> When to use
+
+- **Multi-domain data**: When the application contains large, distinct data types that users often need to query separately (e.g., searching for "Jackets" within Products vs. searching for "Jackets" within Customers).
+- **Precision is key**: When users require highly precise results and filtering the search domain reduces irrelevant noise (common in back-office solutions).
+- **Restricted permissions**: To restrict searches based on user permissions (e.g., a manager can search "All Teams," but a team member can only search "My Team").
+
+> [!CAUTION]\
+> When not to use
+
+- **Homogeneous data**: When all data belongs to a single, unified domain and scoping would offer minimal benefit (e.g., searching within a simple, short blog archive).
+- **Global search default**: If the vast majority of users always search "everything," avoid forcing them to define a scope. A single global search with filters applied after the results load is often better.
+- **Limited screen space**: If screen real estate is minimal, avoid the dual-component structure of scoped search; consider a single input with filtering options revealed on search results page.
+
+### Scoped search do's and don'ts
+
+> [!TIP]\
+> **Do**
+>
+> - Ensure the scope selector is accessible and its current state is conveyed via ARIA.
+> - Use concise labels for scope options, the short and descriptive is best.
+> - Do set a smart default for scopes.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All fields', value: 'all' },
+    { label: 'Products', value: 'products' },
+    { label: 'Customers', value: 'customers' },
+  ];
+
+  return (
+    <ScopedSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={options}
+      searchPlaceholder="Search..."
+    />
+  );
+};
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use confusing or abstract icons for scopes
+> - Don't reset the scope back to the default after every search or page refresh.
+> - Don't mix global and scoped results.
+> - Don't offer too many scopes.
+> - Don't force users to select a scope, determine a reasonable default for users.
+> - Don't use highly technical or internal terms for scope labels (e.g., "Database Table A" instead of "Products").
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'complex-query' });
+
+  const options = [
+    { label: 'Products that were published in the last month but no other time', value: 'complex-query' },
+    { label: 'Categories', value: 'categories' },
+    { label: 'Products not published this month', value: 'not-published' },
+    { label: 'Products published by Kevin that have been recalled in May', value: 'oh-kevin' },
+  ];
+
+  return (
+    <ScopedSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={options}
+      searchPlaceholder="Search..."
+    />
+  );
+};
+```
+
+## Specs
+
+<PropsTable id="ScopedSearchInput" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All fields', value: 'all' },
     { label: 'Name', value: 'name' },
     { label: 'Email', value: 'email' },
   ];
@@ -58,162 +233,15 @@ const App = () => {
       onValueChange={setValue}
       onSubmit={(val) => console.log('Search:', val)}
       options={options}
-      searchPlaceholder="Enter search term..."
+      searchPlaceholder="Search..."
     />
   );
 };
 ```
 
-### Size Variants
+### Accessibility standards
 
-```jsx-live
-const App = () => {
-  const [valueSm, setValueSm] = useState({ text: '', option: 'all' });
-  const [valueMd, setValueMd] = useState({ text: '', option: 'all' });
-
-  const options = [
-    { label: 'All', value: 'all' },
-    { label: 'Name', value: 'name' },
-  ];
-
-  return (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      <ScopedSearchInput
-        size="sm"
-        value={valueSm}
-        onValueChange={setValueSm}
-        onSubmit={console.log}
-        options={options}
-      />
-      <ScopedSearchInput
-        size="md"
-        value={valueMd}
-        onValueChange={setValueMd}
-        onSubmit={console.log}
-        options={options}
-      />
-    </Stack>
-  );
-};
-```
-
-### Grouped Options
-
-```jsx-live
-const App = () => {
-  const [value, setValue] = useState({ text: '', option: 'email' });
-
-  const groupedOptions = [
-    {
-      label: 'Contact Info',
-      options: [
-        { label: 'Email', value: 'email' },
-        { label: 'Phone', value: 'phone' },
-      ],
-    },
-    {
-      label: 'Personal',
-      options: [
-        { label: 'Name', value: 'name' },
-        { label: 'Address', value: 'address' },
-      ],
-    },
-  ];
-
-  return (
-    <ScopedSearchInput
-      value={value}
-      onValueChange={setValue}
-      onSubmit={console.log}
-      options={groupedOptions}
-    />
-  );
-};
-```
-
-### States
-
-```jsx-live
-const App = () => {
-  const [value, setValue] = useState({ text: 'test', option: 'all' });
-
-  const options = [
-    { label: 'All', value: 'all' },
-    { label: 'Name', value: 'name' },
-  ];
-
-  return (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      <ScopedSearchInput
-        value={{ text: '', option: 'all' }}
-        onValueChange={setValue}
-        onSubmit={console.log}
-        options={options}
-        searchPlaceholder="Disabled..."
-        isDisabled
-      />
-      <ScopedSearchInput
-        value={value}
-        onValueChange={setValue}
-        onSubmit={console.log}
-        options={options}
-        searchPlaceholder="Invalid state..."
-        isInvalid
-      />
-    </Stack>
-  );
-};
-```
-
-## Guidelines
-
-Use this component when users need to filter search by specific fields or categories.
-
-### Best Practices
-
-- **Clear Options**: Provide descriptive labels for select options
-- **Appropriate Placeholder**: Use placeholder text that guides users
-- **Handle Empty States**: Use `ScopedSearchInput.isEmpty()` to check for empty search
-- **Submit Feedback**: Provide visual feedback after search submission
-
-## Specs
-
-<PropsTable id="ScopedSearchInput" />
-
-### Static Methods
-
-**`ScopedSearchInput.isEmpty(value)`**
-
-Returns `true` if the search text is empty or contains only whitespace.
-
-```tsx
-const value = { text: '  ', option: 'all' };
-ScopedSearchInput.isEmpty(value); // true
-```
-
-## Accessibility
-
-This component follows WCAG 2.1 AA guidelines and uses React Aria for keyboard navigation.
-
-### Keyboard Navigation
-
-| Key | Action |
-|-----|--------|
-| `Tab` | Move focus between select, search input, and buttons |
-| `Enter` (select) | Open dropdown |
-| `Enter` (search) | Submit search |
-| `Arrow Up/Down` | Navigate dropdown options |
-| `Escape` | Close dropdown |
-
-### ARIA Attributes
-
-- `aria-controls`: Links select to search input
-- `aria-label`: Provides accessible names for both inputs
-- `aria-describedby`: Links to error or description text
-- `aria-invalid`: Indicates error state
-
-### Screen Reader Support
-
-- Select announces current selection and available options
-- Search input announces text changes
-- Submit and clear actions are properly announced
+- **Keyboard flow**: Ensure the Tab order moves logically between the scope selector and the text input field.
+- **ARIA roles**: The scope selector (if a dropdown) must use the appropriate ARIA roles (role="combobox", aria-expanded).
+- **Labeling**: Provide clear programmatic labels for both the search input (`aria-label` or visible `<label>`) and the scope selector to explain their function to screen readers.
+- **State communication**: Use aria-live regions if search results appear dynamically, to announce the updated results count after a scope change or query submission.

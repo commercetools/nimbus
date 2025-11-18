@@ -89,7 +89,7 @@ cases.
 
 ### Resources
 
-Deep dive on details and access design library.
+Deep dive into implementation details and access the Nimbus design library.
 
 [Figma library](figmaLink) [React ARIA Docs](reactAriaLink) # If applicable
 [ARIA Pattern](ariaPatternLink) # If applicable
