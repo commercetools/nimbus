@@ -1,0 +1,65 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Separator\n============================================================\nA visual separator that divides content sections\n\nFeatures:\n\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLDivElement' attributes (including aria- & data-attributes)\n- supports 'variants', 'orientation', etc. configured in the recipe\n- allows overriding styles by using style-props\n- supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)\n- built with React Aria for accessibility",
+  "displayName": "Separator",
+  "methods": [],
+  "props": {
+    "unstyled": {
+      "defaultValue": null,
+      "description": "If `true`, the element will opt out of the theme styles.",
+      "name": "unstyled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "UnstyledProp"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "orientation": {
+      "defaultValue": {
+        "value": "horizontal"
+      },
+      "description": "",
+      "name": "orientation",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "SeparatorVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "SeparatorVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"horizontal\" | \"vertical\">"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/separator/separator.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

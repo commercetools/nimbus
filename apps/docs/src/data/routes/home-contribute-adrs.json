@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "id": "Architecture-Decision-Records",
+    "title": "ADR: Using Architecture Decision Records",
+    "description": "An explanation of what Architecture Decision Records are and how we use them",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/architecture-decisions/adr-0000-architecture-decision-records.mdx",
+    "menu": [
+      "Home",
+      "Contribute",
+      "ADR's"
+    ],
+    "route": "home/contribute/adrs",
+    "tags": [
+      "architecture",
+      "documentation",
+      "process"
+    ],
+    "toc": [
+      {
+        "value": "Context",
+        "href": "#context",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Decision",
+        "href": "#decision",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "What is an Architecture Decision Record?",
+        "href": "#what-is-an-architecture-decision-record",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "ADR Format",
+        "href": "#adr-format",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "ADR Workflow",
+        "href": "#adr-workflow",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Consequences",
+        "href": "#consequences",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Examples of Decisions that Warrant an ADR",
+        "href": "#examples-of-decisions-that-warrant-an-adr",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Summary",
+        "href": "#summary",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Gavel",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# ADR: Using Architecture Decision Records\n\n## Context\n\nAs our UI component library grows, we need a structured way to document\nimportant architectural decisions. This ensures that:\n\n- Team members understand the context and reasoning behind important decisions\n- Future contributors can reference past decisions rather than revisiting\n  settled issues\n- We maintain a useful historical record of how the project has evolved\n\n## Decision\n\nWe will use Architecture Decision Records (ADRs) to document significant\narchitectural decisions in the project.\n\n### What is an Architecture Decision Record?\n\nAn ADR is a document that captures an important architectural decision made\nalong with its context and consequences. Each ADR includes:\n\n1. **Title**: A descriptive title that clearly identifies the decision\n2. **Context**: The situation that calls for a decision, including technical,\n   social, and project constraints\n3. **Decision**: The decision that was made\n4. **Consequences**: What happens after the decision is applied, including both\n   positive and negative consequences\n\n### ADR Format\n\nEach ADR will follow this standard format:\n\n```markdown\n# ADR: [Title]\n\n## Context\n\n[Description of the situation and problem being solved]\n\n## Decision\n\n[Description of the decision that was made]\n\n## Consequences\n\n[Description of the results of the decision]\n\n## [Optional] Examples or Additional Sections\n\n[Any additional information to help clarify the decision]\n\n## Summary\n\n[Brief wrap-up of the key points]\n```\n\n### ADR Workflow\n\n1. **Creation**: When a significant architectural decision is made, the\n   responsible team member creates a new ADR file\n2. **Numbering**: ADRs are numbered sequentially (ADR-0001, ADR-0002, etc.)\n3. **Review**: ADRs can be reviewed by the team before being finalized\n4. **Amendments**: If a decision changes, we create a new ADR that supersedes\n   the old one, rather than modifying existing ADRs\n\n## Consequences\n\n- **Better Documentation**: Our architectural decisions and their reasoning are\n  clearly documented\n- **Historical Record**: We maintain a history of why our codebase looks the way\n  it does\n- **Onboarding Aid**: New team members can quickly understand important\n  architectural decisions\n- **Decision Quality**: The process of writing an ADR helps us think more\n  carefully about our decisions\n- **Additional Work**: Creating and maintaining ADRs requires time and effort\n\n## Examples of Decisions that Warrant an ADR\n\n- Adopting a new UI pattern (e.g., compound components)\n- Establishing file/folder organization standards\n- Changing our approach to styling\n- Adding or removing major dependencies\n- Creating standardized API patterns\n\n## Summary\n\nArchitecture Decision Records provide a lightweight yet formal way to document\nsignificant architectural decisions. By maintaining ADRs, we preserve knowledge\nabout why our codebase is structured the way it is and help future contributors\nunderstand the context behind important decisions.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# ADR: Using Architecture Decision Records\n\n## Context\n\nAs our UI component library grows, we need a structured way to document\nimportant architectural decisions. This ensures that:\n\n- Team members understand the context and reasoning behind important decisions\n- Future contributors can reference past decisions rather than revisiting\n  settled issues\n- We maintain a useful historical record of how the project has evolved\n\n## Decision\n\nWe will use Architecture Decision Records (ADRs) to document significant\narchitectural decisions in the project.\n\n### What is an Architecture Decision Record?\n\nAn ADR is a document that captures an important architectural decision made\nalong with its context and consequences. Each ADR includes:\n\n1. **Title**: A descriptive title that clearly identifies the decision\n2. **Context**: The situation that calls for a decision, including technical,\n   social, and project constraints\n3. **Decision**: The decision that was made\n4. **Consequences**: What happens after the decision is applied, including both\n   positive and negative consequences\n\n### ADR Format\n\nEach ADR will follow this standard format:\n\n```markdown\n# ADR: [Title]\n\n## Context\n\n[Description of the situation and problem being solved]\n\n## Decision\n\n[Description of the decision that was made]\n\n## Consequences\n\n[Description of the results of the decision]\n\n## [Optional] Examples or Additional Sections\n\n[Any additional information to help clarify the decision]\n\n## Summary\n\n[Brief wrap-up of the key points]\n```\n\n### ADR Workflow\n\n1. **Creation**: When a significant architectural decision is made, the\n   responsible team member creates a new ADR file\n2. **Numbering**: ADRs are numbered sequentially (ADR-0001, ADR-0002, etc.)\n3. **Review**: ADRs can be reviewed by the team before being finalized\n4. **Amendments**: If a decision changes, we create a new ADR that supersedes\n   the old one, rather than modifying existing ADRs\n\n## Consequences\n\n- **Better Documentation**: Our architectural decisions and their reasoning are\n  clearly documented\n- **Historical Record**: We maintain a history of why our codebase looks the way\n  it does\n- **Onboarding Aid**: New team members can quickly understand important\n  architectural decisions\n- **Decision Quality**: The process of writing an ADR helps us think more\n  carefully about our decisions\n- **Additional Work**: Creating and maintaining ADRs requires time and effort\n\n## Examples of Decisions that Warrant an ADR\n\n- Adopting a new UI pattern (e.g., compound components)\n- Establishing file/folder organization standards\n- Changing our approach to styling\n- Adding or removing major dependencies\n- Creating standardized API patterns\n\n## Summary\n\nArchitecture Decision Records provide a lightweight yet formal way to document\nsignificant architectural decisions. By maintaining ADRs, we preserve knowledge\nabout why our codebase is structured the way it is and help future contributors\nunderstand the context behind important decisions.\n",
+      "toc": [
+        {
+          "value": "Context",
+          "href": "#context",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Decision",
+          "href": "#decision",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "What is an Architecture Decision Record?",
+          "href": "#what-is-an-architecture-decision-record",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ADR Format",
+          "href": "#adr-format",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ADR Workflow",
+          "href": "#adr-workflow",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Consequences",
+          "href": "#consequences",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Examples of Decisions that Warrant an ADR",
+          "href": "#examples-of-decisions-that-warrant-an-adr",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Summary",
+          "href": "#summary",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

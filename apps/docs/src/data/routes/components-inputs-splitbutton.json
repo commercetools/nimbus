@@ -1,0 +1,408 @@
+{
+  "meta": {
+    "id": "Components-SplitButton",
+    "title": "SplitButton",
+    "description": "A split button merges a main action with a dropdown for related, less common actions.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/split-button/split-button.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "SplitButton"
+    ],
+    "route": "components/inputs/splitbutton",
+    "tags": [
+      "component",
+      "splitButton",
+      "inputs",
+      "controls"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visuals",
+        "href": "#visuals",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Solid",
+        "href": "#solid",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Outlined",
+        "href": "#outlined",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Ghost",
+        "href": "#ghost",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Icons",
+        "href": "#icons",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Split buttons in use",
+        "href": "#split-buttons-in-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility Standards",
+        "href": "#accessibility-standards",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5748-39095&t=N9rn8aDkNAPrLOn4-1",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# SplitButton\n\nA split button merges a main action with a dropdown for related, less common actions.\n\n## Overview\n\nA split button merges a main action that is immediate with a secondary dropdown menu that holds related actions that are used less often. This component provides quick access to essential functions while offering a complete list of options, all while saving space.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5602-17630&p=f&focus-id=6765-49694&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visuals\n\n#### Solid\n\nMost common styling of the split button. Try to keep only one solid primary toned button in an area for user clarity for the most important task. Too many in an area can cause confusion.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n#### Outlined\n\nOutlined styled buttons are for secondary or less important actions.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"outline\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n#### Ghost\n \nGhost styled buttons are helpful for UI simplification. You will find these in smaller sizes within places like toolbars.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"ghost\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n### Icons\n\nKeep consistency in mind for icons and consider other patterns that are nearby. \n\n```jsx-live\nconst App = () => (\n    <SplitButton\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More document actions\"\n      icon={<Icons.Share />}\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  )\n\n```\n\n### Size\n\nThere are three sizes to split buttons, the default size is medium (md), extra small (xs), and 2x-small (2xs).\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"center\">\n    <SplitButton tone=\"primary\" size=\"md\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n    <SplitButton tone=\"primary\" size=\"xs\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n    <SplitButton tone=\"primary\" size=\"2xs\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  </Stack>\n)\n```\n\n## Guidelines\n\nThe SplitButton provides a space-efficient way to present a primary action\nalongside related secondary actions, maintaining visual hierarchy while offering\ncomprehensive functionality.\n\n### Best practices\n\n- **Clear primary action:** The main button segment must perform the most common or default action immediately upon being clicked. The label must be clear and action-oriented.\n  - **If there is no default action** and you still want to use a button with a dropdown menu, consider using the menu component with a regular button (with a dropdown icon) as a trigger. In this case, the dropdown menu will open always when clicking the button and no default action will be triggered. Especially useful when all actions are equally important\n- **Visual distinction:** Clearly separate the primary action button from the dropdown trigger. This visually communicates that the two segments perform different functions.\n- **Dropdown content:** Keep the list of secondary actions concise and logically ordered (by frequency or relevance).\n- **State persistence:** When a user selects a secondary action from the dropdown, consider making that action the new primary button action if the user is likely to repeat it, or if it fits the new context.\n- **Sizing and responsiveness:** Ensure both the primary button and the dropdown trigger have adequate touch target sizes. The dropdown menu should be positioned to avoid obscuring important content and should adapt well on mobile devices.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n- **Primary action focus:** Use a split button when one specific action (e.g., \"Save,\" \"Download\") is performed significantly more often than its related alternatives (e.g., \"Save and Share,\" \"Download as PDF\").\n- **Contextual actions:** The dropdown menu must contain actions that are directly related to the primary button's function.\n- **Space efficiency:** Use split buttons in toolbars or dense interfaces where presenting every option as a full button would lead to clutter.\n\n> [!CAUTION]\\\n> When not to use\n- **When all actions are equally important:** Don't use a split button if all the related actions are performed with equal frequency or importance. Grouping them this way implies hierarchy where none exists, and a simple button group or vertical menu list might be clearer.\n- **When actions are unrelated:** Avoid grouping actions that have no logical connection under the same component. The primary button and all dropdown options must share a clear, single context.\n- **When the primary action changes frequently:** If the default action changes based on complex context or user state, constantly swapping the main button label can confuse the user and create visual instability. Use a standard dropdown menu where all options, including the default, are consistently located inside.\n- **When discovery is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.\n- **For primary navigation:** A split button is an action control, not a primary navigation tool. Using it to link to major sections can confuse users about whether they are performing an action or moving to a new page.\n- **When screen space is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.\n- **When the dropdown contains complex controls:** Avoid filling the dropdown with complex inputs, multi-step forms, or large amounts of text. A split button dropdown should only contain simple, single-click actions.\n\n### Split buttons in use\n\n> [!TIP]\\\n> Do\n>- Do prioritize the primary action. Ensure the main, large section performs the most common or default action immediately upon being clicked.\n>- Do group related actions. Include only closely related actions in the secondary dropdown menu.\n>- Do keep the dropdown menu concise. It should contain simple, single-click actions, not complex forms or long text.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n      <Menu.Item id=\"schedule-publish\">Schedule publish date</Menu.Item>\n      <Menu.Item id=\"revert\">Revert to last save</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n> [!CAUTION]\\\n> Don't\n>- Don’t add icons that don’t make sense with the action. If one uses an icon, all options should have a corresponding icon. Don’t use icons on both sides. \n>- Don't dynamically swap the primary button's function based on minor changes in the user's state.\n>- Don't group actions that have different contexts or objectives.\n>- Don't use a split button as a primary site navigation tool.\n>- Don't hide legally required or critical options in the dropdown.\n>- Don't use the dropdown to house long forms, multi-step processes, or complex configuration settings.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"ridiculous actions\"\n      icon={<Icons.Snowshoeing/>}\n    >\n      <Menu.Item id=\"download\">Download Report</Menu.Item>\n      <Menu.Item id=\"edit-permissions\">Edit user permissions</Menu.Item>\n      <Menu.Item id=\"go-home\">Go to Homepage</Menu.Item>\n      <Menu.Item id=\"send-email\">⭐️ Send email update</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n## Specs\n\nLorem ipsum\n\n### Properties\n\n<PropsTable id=\"SplitButton\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n## Accessibility Standards\n\n- **Keyboard Navigation:** The component must be fully keyboard accessible. The Tab key should focus on the primary button first.\n- **Dual Focus:** The primary action and the dropdown trigger must be treated as two distinct focusable elements or as a single component where the arrow key can be used to open the menu once the button is focused.\n- **ARIA Roles:** The primary button uses role=\"button\". The dropdown trigger should use role=\"button\" combined with aria-haspopup=\"true\" to indicate that it controls a pop-up menu.\n- **Labeling:** Provide clear, unique aria-label text for both the primary action and the dropdown trigger to ensure screen readers convey the intended function of each segment.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# SplitButton\n\nA split button merges a main action with a dropdown for related, less common actions.\n\n## Overview\n\nA split button merges a main action that is immediate with a secondary dropdown menu that holds related actions that are used less often. This component provides quick access to essential functions while offering a complete list of options, all while saving space.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5602-17630&p=f&focus-id=6765-49694&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visuals\n\n#### Solid\n\nMost common styling of the split button. Try to keep only one solid primary toned button in an area for user clarity for the most important task. Too many in an area can cause confusion.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n#### Outlined\n\nOutlined styled buttons are for secondary or less important actions.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"outline\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n#### Ghost\n \nGhost styled buttons are helpful for UI simplification. You will find these in smaller sizes within places like toolbars.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"ghost\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n### Icons\n\nKeep consistency in mind for icons and consider other patterns that are nearby. \n\n```jsx-live\nconst App = () => (\n    <SplitButton\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More document actions\"\n      icon={<Icons.Share />}\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  )\n\n```\n\n### Size\n\nThere are three sizes to split buttons, the default size is medium (md), extra small (xs), and 2x-small (2xs).\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"center\">\n    <SplitButton tone=\"primary\" size=\"md\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n    <SplitButton tone=\"primary\" size=\"xs\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n    <SplitButton tone=\"primary\" size=\"2xs\" onAction={(id) => {}} aria-label=\"publish options\">\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  </Stack>\n)\n```\n\n## Guidelines\n\nThe SplitButton provides a space-efficient way to present a primary action\nalongside related secondary actions, maintaining visual hierarchy while offering\ncomprehensive functionality.\n\n### Best practices\n\n- **Clear primary action:** The main button segment must perform the most common or default action immediately upon being clicked. The label must be clear and action-oriented.\n  - **If there is no default action** and you still want to use a button with a dropdown menu, consider using the menu component with a regular button (with a dropdown icon) as a trigger. In this case, the dropdown menu will open always when clicking the button and no default action will be triggered. Especially useful when all actions are equally important\n- **Visual distinction:** Clearly separate the primary action button from the dropdown trigger. This visually communicates that the two segments perform different functions.\n- **Dropdown content:** Keep the list of secondary actions concise and logically ordered (by frequency or relevance).\n- **State persistence:** When a user selects a secondary action from the dropdown, consider making that action the new primary button action if the user is likely to repeat it, or if it fits the new context.\n- **Sizing and responsiveness:** Ensure both the primary button and the dropdown trigger have adequate touch target sizes. The dropdown menu should be positioned to avoid obscuring important content and should adapt well on mobile devices.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n- **Primary action focus:** Use a split button when one specific action (e.g., \"Save,\" \"Download\") is performed significantly more often than its related alternatives (e.g., \"Save and Share,\" \"Download as PDF\").\n- **Contextual actions:** The dropdown menu must contain actions that are directly related to the primary button's function.\n- **Space efficiency:** Use split buttons in toolbars or dense interfaces where presenting every option as a full button would lead to clutter.\n\n> [!CAUTION]\\\n> When not to use\n- **When all actions are equally important:** Don't use a split button if all the related actions are performed with equal frequency or importance. Grouping them this way implies hierarchy where none exists, and a simple button group or vertical menu list might be clearer.\n- **When actions are unrelated:** Avoid grouping actions that have no logical connection under the same component. The primary button and all dropdown options must share a clear, single context.\n- **When the primary action changes frequently:** If the default action changes based on complex context or user state, constantly swapping the main button label can confuse the user and create visual instability. Use a standard dropdown menu where all options, including the default, are consistently located inside.\n- **When discovery is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.\n- **For primary navigation:** A split button is an action control, not a primary navigation tool. Using it to link to major sections can confuse users about whether they are performing an action or moving to a new page.\n- **When screen space is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.\n- **When the dropdown contains complex controls:** Avoid filling the dropdown with complex inputs, multi-step forms, or large amounts of text. A split button dropdown should only contain simple, single-click actions.\n\n### Split buttons in use\n\n> [!TIP]\\\n> Do\n>- Do prioritize the primary action. Ensure the main, large section performs the most common or default action immediately upon being clicked.\n>- Do group related actions. Include only closely related actions in the secondary dropdown menu.\n>- Do keep the dropdown menu concise. It should contain simple, single-click actions, not complex forms or long text.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n      <Menu.Item id=\"schedule-publish\">Schedule publish date</Menu.Item>\n      <Menu.Item id=\"revert\">Revert to last save</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n> [!CAUTION]\\\n> Don't\n>- Don’t add icons that don’t make sense with the action. If one uses an icon, all options should have a corresponding icon. Don’t use icons on both sides. \n>- Don't dynamically swap the primary button's function based on minor changes in the user's state.\n>- Don't group actions that have different contexts or objectives.\n>- Don't use a split button as a primary site navigation tool.\n>- Don't hide legally required or critical options in the dropdown.\n>- Don't use the dropdown to house long forms, multi-step processes, or complex configuration settings.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"ridiculous actions\"\n      icon={<Icons.Snowshoeing/>}\n    >\n      <Menu.Item id=\"download\">Download Report</Menu.Item>\n      <Menu.Item id=\"edit-permissions\">Edit user permissions</Menu.Item>\n      <Menu.Item id=\"go-home\">Go to Homepage</Menu.Item>\n      <Menu.Item id=\"send-email\">⭐️ Send email update</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n## Specs\n\nLorem ipsum\n\n### Properties\n\n<PropsTable id=\"SplitButton\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  return (\n    <SplitButton\n      variant=\"solid\"\n      tone=\"primary\"\n      onAction={(actionId) => alert(`Action: ${actionId}`)}\n      aria-label=\"More publish options\"\n    >\n      <Menu.Item id=\"publish\">Publish</Menu.Item>\n      <Menu.Item id=\"publish-next\">Publish and open next</Menu.Item>\n      <Menu.Item id=\"save\">Save as draft</Menu.Item>\n    </SplitButton>\n  );\n}\n```\n\n## Accessibility Standards\n\n- **Keyboard Navigation:** The component must be fully keyboard accessible. The Tab key should focus on the primary button first.\n- **Dual Focus:** The primary action and the dropdown trigger must be treated as two distinct focusable elements or as a single component where the arrow key can be used to open the menu once the button is focused.\n- **ARIA Roles:** The primary button uses role=\"button\". The dropdown trigger should use role=\"button\" combined with aria-haspopup=\"true\" to indicate that it controls a pop-up menu.\n- **Labeling:** Provide clear, unique aria-label text for both the primary action and the dropdown trigger to ensure screen readers convey the intended function of each segment.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visuals",
+          "href": "#visuals",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Solid",
+          "href": "#solid",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Outlined",
+          "href": "#outlined",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ghost",
+          "href": "#ghost",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icons",
+          "href": "#icons",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Split buttons in use",
+          "href": "#split-buttons-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Standards",
+          "href": "#accessibility-standards",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

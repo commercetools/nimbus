@@ -1,0 +1,498 @@
+{
+  "tags": {
+    "example": "```tsx\n<LocalizedField\n  type=\"text\"\n  label=\"Product Name\"\n  defaultLocaleOrCurrency=\"en\"\n  valuesByLocaleOrCurrency={{ en: \"Product\", de: \"Produkt\" }}\n  onChange={(e) => console.log(e.target.locale, e.target.value)}\n/>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "LocalizedField component with utility methods for managing localized input fields.\n\nThis component provides a fieldset for managing multiple locale-specific or currency-specific\ninput fields with expand/collapse functionality and integrated validation display.\n\n**Utility Methods** (for compatibility with UI Kit):\n- `getId` / `getName`: Format field attributes with locale suffix\n- `isTouched`: Check if any locale field has been touched\n- `isEmpty`: Check if all locale fields are empty\n- `createLocalizedString`: Create empty localized string object\n- `omitEmptyTranslations`: Remove empty translations from localized object\n- `RequiredValueErrorMessage`: Standard error message component\n- `toFieldErrors`: Convert errors to field error format\n- `convertToMoneyValues` / `parseMoneyValues`: Money value conversion utilities\n- `getHighPrecisionCurrencies` / `getEmptyCurrencies`: Currency utilities",
+  "displayName": "LocalizedField",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": null,
+      "description": "",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"sm\" | \"md\"",
+        "value": [
+          {
+            "value": "\"sm\""
+          },
+          {
+            "value": "\"md\""
+          }
+        ]
+      }
+    },
+    "form": {
+      "defaultValue": null,
+      "description": "",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "type": {
+      "defaultValue": null,
+      "description": "Input type variant (text, multiLine, richText, money)\nType of input displayed in locale fields\ndefault: 'text'",
+      "name": "type",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"text\" | \"multiLine\" | \"money\" | \"richText\"> & (\"text\" | \"multiLine\" | \"money\" | \"richText\")"
+      }
+    },
+    "defaultLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Locale or currency whose input field is displayed when field group is collapsed",
+      "name": "defaultLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "valuesByLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Input values for each locale or currency",
+      "name": "valuesByLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "LocalizedString | LocalizedCurrency"
+      }
+    },
+    "placeholdersByLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Input placeholders for each locale or currency",
+      "name": "placeholdersByLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "LocalizedString"
+      }
+    },
+    "descriptionsByLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Field decriptions for each locale or currency",
+      "name": "descriptionsByLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "LocaleFieldData"
+      }
+    },
+    "warningsByLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Field warnings for each locale or currency",
+      "name": "warningsByLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "LocaleFieldData"
+      }
+    },
+    "errorsByLocaleOrCurrency": {
+      "defaultValue": null,
+      "description": "Field errors for each locale or currency",
+      "name": "errorsByLocaleOrCurrency",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "LocaleFieldData"
+      }
+    },
+    "label": {
+      "defaultValue": null,
+      "description": "Label for field group (all locales).\nIf a label is not provided, you must provide an `aria-label`",
+      "name": "label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "hint": {
+      "defaultValue": null,
+      "description": "Hint/help tooltip (infoBox) for field group (all locales)",
+      "name": "hint",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "description": {
+      "defaultValue": null,
+      "description": "Description for field group (all locales)",
+      "name": "description",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "warning": {
+      "defaultValue": null,
+      "description": "Warning for field group (all locales)",
+      "name": "warning",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "warnings": {
+      "defaultValue": null,
+      "description": "For compatibility with UI Kit FieldWarnings\nA map of warnings. Warning messages for known warnings are rendered automatically.\n<br/>\nUnknown warnings will be forwarded to renderWarning.",
+      "name": "warnings",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Record<string, boolean>"
+      }
+    },
+    "renderWarning": {
+      "defaultValue": null,
+      "description": "For compatibility with UI Kit FieldWarnings\nCalled with custom warnings, as renderWarning(key, warning). This function can return a message which will be wrapped in a WarningMessage.\n<br />\nIt can also return null to show no warning.",
+      "name": "renderWarning",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: string, warning?: boolean) => ReactNode"
+      }
+    },
+    "error": {
+      "defaultValue": null,
+      "description": "Error for field group (all locales)",
+      "name": "error",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "errors": {
+      "defaultValue": null,
+      "description": "For compatibility with UI Kit FieldErrors\nA map of errors. Error messages for known errors are rendered automatically.\n<br />\nUnknown errors will be forwarded to `renderError`",
+      "name": "errors",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Record<string, boolean>"
+      }
+    },
+    "renderError": {
+      "defaultValue": null,
+      "description": "For compatibility with UI Kit FieldErrors\nCalled with custom errors. This function can return a message which will be wrapped in an ErrorMessage. It can also return null to show no error.",
+      "name": "renderError",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: string, error?: boolean) => ReactNode"
+      }
+    },
+    "touched": {
+      "defaultValue": null,
+      "description": "Indicates whether the field was touched.\nErrors will only be shown when the field was touched.",
+      "name": "touched",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isRequired": {
+      "defaultValue": null,
+      "description": "True if the field is a required field",
+      "name": "isRequired",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "True if the field is disabled",
+      "name": "isDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isReadOnly": {
+      "defaultValue": null,
+      "description": "True if the field is read only",
+      "name": "isReadOnly",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onChange": {
+      "defaultValue": null,
+      "description": "Change handler for each locale's input",
+      "name": "onChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "(e: LocalizedFieldChangeEvent) => void"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Blur handler for each locale's input",
+      "name": "onBlur",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element> | CustomEvent, locale: string) => void"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Focus handler for each locale's input",
+      "name": "onFocus",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element> | CustomEvent, locale: string) => void"
+      }
+    },
+    "defaultExpanded": {
+      "defaultValue": null,
+      "description": "Controls whether field group is expanded on mount.\nDefault: `false` (closed)",
+      "name": "defaultExpanded",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "displayAllLocalesOrCurrencies": {
+      "defaultValue": null,
+      "description": "Controls whether all locale or currency input fields should be displayed.\nRemoves show/hide toggle controls and displays all locales if `true`.\nDefault: `false`",
+      "name": "displayAllLocalesOrCurrencies",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "data-test": {
+      "defaultValue": null,
+      "description": "HTML `data-` attributes for locale fields.\nEach field's `data-` attribute will be suffixed with its' locale, e.g.:\n`${name}.${lang}` i.e. `foo.en`",
+      "name": "data-test",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "data-testid": {
+      "defaultValue": null,
+      "description": "",
+      "name": "data-testid",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "data-track-component": {
+      "defaultValue": null,
+      "description": "",
+      "name": "data-track-component",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/localized-field/localized-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

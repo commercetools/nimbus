@@ -1,0 +1,857 @@
+{
+  "meta": {
+    "id": "Components-IconButton",
+    "title": "IconButton",
+    "description": "displays a button with an icon only as child",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/icon-button/icon-button.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "IconButton"
+    ],
+    "route": "components/inputs/iconbutton",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Hierarchy",
+        "href": "#hierarchy",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Most common: Ghost",
+        "href": "#most-common-ghost",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Use sparingly: Solid",
+        "href": "#use-sparingly-solid",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Least used: Outline",
+        "href": "#least-used-outline",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium (40px)",
+        "href": "#medium-40px",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "X-Small (32px)",
+        "href": "#x-small-32px",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "XX-Small (24px)",
+        "href": "#xx-small-24px",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Color Palette",
+        "href": "#color-palette",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Primary",
+        "href": "#primary",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Critical",
+        "href": "#critical",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Tooltip",
+        "href": "#tooltip",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Writing guidelines",
+        "href": "#writing-guidelines",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Preferred words",
+        "href": "#preferred-words",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Avoid these words",
+        "href": "#avoid-these-words",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Common & effective placements:",
+        "href": "#common--effective-placements",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Placement considerations:",
+        "href": "#placement-considerations",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Color palette and style usage",
+        "href": "#color-palette-and-style-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Most common: Ghost",
+        "href": "#most-common-ghost-1",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Solid and outline",
+        "href": "#solid-and-outline",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Critical color palette",
+        "href": "#critical-color-palette",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Icon placement",
+        "href": "#icon-placement",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Button groupings",
+        "href": "#button-groupings",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Tooltips",
+        "href": "#tooltips",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          6,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          6,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          6,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          6,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          6,
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/New-Design-System?node-id=58-132&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Icon Button\n\nProvides a compact and visually efficient way to represent actions, especially\nwhen space is limited or the action is universally understood.\n\n## Overview\n\nThese specifications define the standard styles and variations for icon buttons\nwithin our design system, covering different visual treatments for diverse use\ncases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2570&m=dev)\n\n## Hierarchy\n\n#### Most common: Ghost\n\nGhost icon buttons are used most often, the represent familiar actions that\ndon't compete with a primary action on the page.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### Use sparingly: Solid\n\nSolid icon buttons are sparingly used, but represent commonly understood primary\nactions by the user.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### Least used: Outline\n\nOutline icon buttons are used as secondary buttons, used often in button groups\nto represent icon toggles and within data tables.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"outline\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\n#### Medium (40px)\n\nThese are the default and preferred size for icon buttons.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"md\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### X-Small (32px)\n\nPlaced in a small dense content areas, e.g., in pop-over or inside a data table.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"xs\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### XX-Small (24px)\n\n2XS is used sparingly mostly inside other components e.g, inside inputs or\nfilter badges.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"2xs\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n### Color Palette\n\n#### Primary\n\nThis is the default color palette for the icon button. This styling should be used most\ncommonly for all actions.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"primary\">\n      <Icons.ViewColumn/>\n    </IconButton>\n  );\n};\n```\n\n#### Critical\n\nUse this icon button when the user is approaching a permanent destructive\naction. See guidelines for more information.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"critical\">\n      <Icons.Delete/>\n    </IconButton>\n  );\n};\n```\n\n#### Tooltip\n\nFor accessibility compliance (and good user experience for all) icon buttons\nthat do not have a label must have a tooltip. Go to tooltips for more information about the component.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <IconButton variant=\"ghost\" colorPalette=\"primary\">\n        <Icons.Edit/>\n      </IconButton>\n      <Tooltip.Content>\n        Edit\n      </Tooltip.Content>\n    </Tooltip.Root>\n  );\n};\n```\n\n## Guidelines\n\nIcon buttons are interactive elements that empower users to trigger actions and\nnavigate within your product. They serve as clear calls to action, guiding users\nthrough key flows and enabling them to interact with content in meaningful ways.\nThese guidelines ensure consistent styling and behavior for all buttons,\ncontributing to a cohesive and predictable user experience.\n\n### Writing guidelines\n\n- Use\n  [Material Icons](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)\n  in outline style before adding a new custom icon.\n- Use standard icons.\n- Provide tooltips.\n- Combine with text when needed.\n- Be consistent.\n- Test with users.\n\n#### Preferred words\n\n| **Example**                                                | **Description**                                                                                                                                                                                 |\n| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| <Icon id=\"Edit\" color=\"primary.11\" boxSize=\"24px\" />          | Use for \"edit\".                                                                                                                                                                                 |\n| <Icon id=\"FileUpload\" color=\"primary.11\" boxSize=\"24px\" />    | Upload.                                                                                                                                                                                         |\n| <Icon id=\"FileDownload\" color=\"primary.11\" boxSize=\"24px\" />  | Download.                                                                                                                                                                                       |\n| <Icon id=\"ViewColumn\" color=\"primary.11\" boxSize=\"24px\" />    | \"Table settings\" Shows customizable elements for tables.                                                                                                                                        |\n| <Icon id=\"MoreVert\" color=\"primary.11\" boxSize=\"24px\" />      | \"More options\" shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |\n| <Icon id=\"DragIndicator\" color=\"primary.11\" boxSize=\"24px\" /> | \"Drag\" allows a user to drag elements to reorder.                                                                                                                                               |\n| <Icon id=\"Clear\" color=\"primary.11\" boxSize=\"24px\" />         | Use for \"remove\". This removes the relationship but does **not** delete this item completely.                                                                                                   |\n| <Icon id=\"Delete\" color=\"primary.11\" boxSize=\"24px\" />        | Use for \"delete\". This is a destructive action, removes item completely.                                                                                                                        |\n\n#### Avoid these words\n\n| **Avoid Icon/Concept**                                                                                                                                                                                                                                                                                                              | **Use this instead**                                                    |\n| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |\n| <Icon id=\"Check\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CheckCircle\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                                                                                                    | Use a button with \"Save\" instead of an icon button.                     |\n| <Icon id=\"MoreHoriz\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                                                                                                                                                            | Use the vertical dot version to show more options.                      |\n| <Icon id=\"HighlightOff\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DeleteForever\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DoNotDisturb\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                              | If using for the same function as \"delete\" use consistent icon above.   |\n| <Icon id=\"Upload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CloudUpload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"Upgrade\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DriveFolderUpload\" color=\"primary.11\" boxSize=\"24px\" />                                                                                          | If using for the same function as \"upload\" use consistent icon above.   |\n| <Icon id=\"ArrowCircleDown\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"Download\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"SimCardDownload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CloudDownload\" color=\"primary.11\" boxSize=\"24px\" />                                                                                | If using for the same function as \"download\" use consistent icon above. |\n\n### Usage\n\n#### Common & effective placements:\n\n- **Toolbars**: Icon buttons are perfect for toolbars due to their compact size.\n  They allow for many actions to be readily available without cluttering the\n  interface.\n- **Navigation** bars/headers: Often used for actions like search, settings, or\n  menu access. Placement here makes these key functions easily accessible\n  throughout the app.\n- **Within** lists/grids: Icon buttons can be placed next to list items or grid\n  elements to provide actions specific to that item (e.g., edit, delete, share).\n- **Contextual** menus: Icon buttons can be used within dropdown menus or\n  context menus to provide a visual representation of available actions.\n\n#### Placement considerations:\n\n- **Related to content**: Place icon buttons close to the content they affect.\n  For example, an edit button should be near the text it's used to edit.\n- **Consistency**: Maintain consistent placement of similar icon buttons. Users\n  expect to find common actions in the same place.\n- **Groupings**: If you have multiple related icon buttons, grouping them\n  together visually. Helps users understand the relationships between the\n  actions.\n- **Avoid clutter**: Don't overcrowd your UI with too many icon buttons.\n\n> [!TIP]\\\n> When to use\n\n- Space is limited.\n- Actions are universally recognized.\n- Reinforcing meaning.\n- Adding visual appeal.\n- Supporting multiple languages.\n- Interfaces are simple and consistent.\n\n> [!CAUTION]\\\n> When not to use\n\n- Actions are ambiguous.\n- Context is crucial.\n- Actions are critical.\n- Space is plentiful.\n- Interfaces are complex.\n- Testing reveals confusion.\n\n### Color palette and style usage\n\nIcons that are on the left are the best placement. Icons are used to lead the\nuser to the right action quickly by scanning. Ok ways to break this rule are\nwith drop downs and right pointing arrows.\n\n#### Most common: Ghost\n\nThey are often seen next to tables, fields, and toolbars.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.ViewColumn />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Clear />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n#### Solid and outline\n\nSolid icon buttons are most commonly seen in navigation. Outline buttons are\nmost commonly seen in groups of two representing views that can be toggled.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"outline\">\n        <Icons.Add />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n#### Critical color palette\n\nReserved for destructive actions, such as deleting something or removing a\nconnection.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"critical\" variant=\"outline\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"critical\" variant=\"solid\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"critical\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n### Icon placement\n\nThe ideal placement of an icon button depends heavily on its function and the\noverall UI design. Think about the button's function, the content it relates to,\nand how users will expect to find it. Consistency and user testing are key to\noptimizing icon button placement.\n\n> [!TIP]\\\n> **Do**\n>\n> - Tools are grouped together, and adhere to current common page pattern\n>   design.\n\n\n<img src=\"/images/icon-button/icon-placement-do.png\" alt=\"icon placement do guideline\" width=\"447px\" />\n\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Navigation is higher hierarchy than icon button tools, this is not a common\n>   pattern.\n\n<img src=\"/images/icon-button/icon-placement-dont.png\" alt=\"icon placement do guideline\" width=\"447px\" />\n\n### Button groupings\n\nButton groups are UI elements that organize multiple buttons together, often\nvisually as a single unit. They serve to present users with a set of related\nchoices or actions in a compact and organized way.\n\n> [!TIP]\\\n> **Do**\n>\n> - If you use a stack of icon buttons for actions, use max 4 and hide the rest\n>   within a \"more\" icon.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"0\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.PushPin />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.MoreVert />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid having all the options as solid primary filled buttons.\n> - Try not to have icon buttons sandwiched between buttons.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.MoreVert />\n      </IconButton>\n      <Button colorPalette=\"primary\" variant=\"solid\">\n        Save changes\n      </Button>\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.ManageSearch />\n      </IconButton>\n      <Button colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Undo />\n        Revert\n      </Button>\n    </Stack>\n  )\n}\n```\n\n> [!TIP]\\\n> **Do**\n>\n> - When offering a toggle experience, connect these icon buttons\n> - Include a tooltip explaining the options.\n> - Selected option is using the \"Solid\" state.\n\n```jsx-live\nconst App = () => {\n  return (\n    <ToggleButtonGroup.Root colorPalette=\"primary\" selectedKeys={[\"left\"]}>\n      <ToggleButtonGroup.Button id=\"left\">\n        <Icons.AccountTree />\n      </ToggleButtonGroup.Button>\n      <ToggleButtonGroup.Button id=\"right\">\n        <Icons.Search />\n      </ToggleButtonGroup.Button>\n    </ToggleButtonGroup.Root>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - If offering a toggle like option view, do not show options as separate\n> - Does not include tooltips or labels, makes it confusing to users to\n>   understand this is a either/or choice.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.AccountTree />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"outline\">\n        <Icons.Search />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!TIP]\\\n> **Do**\n>\n> - When pairing icon buttons together, use the ghost style.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid having two primary solid icon buttons in the same area.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n### Tooltips\n\nMake sure to place tooltips in areas where they will be seen easily.\n\n> [!TIP]\\\n> **Do**\n>\n> - Place tooltips so that it makes information easy to read.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack width=\"185px\">\n      <Tooltip.Root delay={0} closeDelay={0} isOpen>\n        <IconButton variant=\"ghost\" colorPalette=\"primary\" alignSelf=\"end\">\n          <Icons.ViewColumn />\n        </IconButton>\n        <Tooltip.Content placement=\"top\" offset={-37} crossOffset={-100}>\n          Table settings\n        </Tooltip.Content>\n      </Tooltip.Root>\n      <Select.Root\n        aria-label=\"Select a category\"\n        selectedKey=\"\"\n      >\n        <Select.Options>\n          <Select.Option id=\"productColumns\" value=\"productColumns\">\n            Product columns\n          </Select.Option>\n          <Select.Option id=\"variantColumns\" value=\"variantColumns\">\n            Variant columns\n          </Select.Option>\n          <Select.Option id=\"layoutSettings\" value=\"layoutSettings\">\n            Layout settings\n          </Select.Option>\n        </Select.Options>\n      </Select.Root>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Be aware of overlap of element placements.\n> - Place tooltips so that it makes information easy to read.\n> - Don't use tooltips to cover the icon button.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack width=\"144px\">\n      <Tooltip.Root delay={0} closeDelay={0} isOpen>\n        <IconButton variant=\"ghost\" colorPalette=\"primary\" alignSelf=\"end\">\n          <Icons.ViewColumn />\n        </IconButton>\n        <Tooltip.Content placement=\"top\" offset={-70} crossOffset={-40}>\n          Table settings\n        </Tooltip.Content>\n      </Tooltip.Root>\n      <Select.Root\n        aria-label=\"Select a category\"\n        selectedKey=\"\"\n      >\n        <Select.Options>\n          <Select.Option id=\"productColumns\" value=\"productColumns\">\n            Product columns\n          </Select.Option>\n          <Select.Option id=\"variantColumns\" value=\"variantColumns\">\n            Variant columns\n          </Select.Option>\n          <Select.Option id=\"layoutSettings\" value=\"layoutSettings\">\n            Layout settings\n          </Select.Option>\n        </Select.Options>\n      </Select.Root>\n      <Box>\n        <Tooltip.Root delay={0} closeDelay={0} isOpen>\n          <IconButton variant=\"ghost\" colorPalette=\"primary\">\n            <Icons.ViewColumn />\n          </IconButton>\n          <Tooltip.Content placement=\"bottom\" crossOffset={50} offset={-25}>\n            Table settings\n          </Tooltip.Content>\n        </Tooltip.Root>\n      </Box>\n    </Stack>\n  )\n}\n```\n\n## Properties\n\n<PropsTable id=\"IconButton\" />\n\n## Accessibility\n\nThe component uses `onPress*` props to handle all user interactions—mouse\nclicks, touch taps, and keyboard presses—consistently. These props (`onPress`,\n`onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience\nregardless of the user's input method or device.\n\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton colorPalette=\"primary\" variant=\"solid\" onPress={() => alert('Button pressed!')}>\n      <Icons.Edit />\n    </IconButton>\n  )\n}\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **Sufficient Color Contrast:** Ensure enough contrast between the icon and its\n  background. WCAG requires a contrast ratio of at least 3:1 for graphical\n  elements and 4.5:1 for text. Tools like WebAIM's color contrast checker can\n  help you verify this.\n- **Non-text Content:** Icons are considered non-text content. WCAG requires\n  that all non-text content has a text alternative that serves the equivalent\n  purpose. This usually means providing an alternative text (alt text) for the\n  icon.\n- **Visual Cues:** Don't rely solely on color to convey information. Use\n  additional visual cues like shapes, patterns, or text labels to ensure that\n  the icon's meaning is clear to everyone, including people with color\n  blindness.\n\n#### 2. Operable:\n\n- **Keyboard Accessibility:** Icon buttons must be operable using a keyboard.\n  Users should be able to navigate to the button using the Tab key and activate\n  it using the Enter or Space key.\n- **Target Size:** Ensure that the icon button is large enough to be easily\n  clickable, especially on touchscreens. WCAG recommends a minimum target size\n  of 24x24 CSS pixels.\n- **Focus Indicator:** Provide a clear visual indicator when the icon button\n  receives keyboard focus. This helps users understand which element is\n  currently active.\n\n#### 3. Understandable:\n\n- **Clear Labels:** If the icon's meaning isn't universally understood, provide\n  a text label or tooltip to clarify its purpose. This is especially important\n  for less common icons.\n- **Consistent Design:** Use icons consistently throughout your website. This\n  helps users learn the meaning of each icon and makes it easier for them to\n  navigate your site.\n\n#### 4. Robust:\n\n- **Assistive Technology Compatibility:** Ensure that icon buttons are\n  compatible with assistive technologies like screen readers. This often\n  involves using proper HTML markup and ARIA attributes to provide semantic\n  information about the button.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Icon Button\n\nProvides a compact and visually efficient way to represent actions, especially\nwhen space is limited or the action is universally understood.\n\n## Overview\n\nThese specifications define the standard styles and variations for icon buttons\nwithin our design system, covering different visual treatments for diverse use\ncases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2570&m=dev)\n\n## Hierarchy\n\n#### Most common: Ghost\n\nGhost icon buttons are used most often, the represent familiar actions that\ndon't compete with a primary action on the page.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### Use sparingly: Solid\n\nSolid icon buttons are sparingly used, but represent commonly understood primary\nactions by the user.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### Least used: Outline\n\nOutline icon buttons are used as secondary buttons, used often in button groups\nto represent icon toggles and within data tables.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"outline\" colorPalette=\"primary\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\n#### Medium (40px)\n\nThese are the default and preferred size for icon buttons.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"md\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### X-Small (32px)\n\nPlaced in a small dense content areas, e.g., in pop-over or inside a data table.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"xs\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n#### XX-Small (24px)\n\n2XS is used sparingly mostly inside other components e.g, inside inputs or\nfilter badges.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"solid\" colorPalette=\"primary\" size=\"2xs\">\n      <Icons.Edit/>\n    </IconButton>\n  );\n};\n```\n\n### Color Palette\n\n#### Primary\n\nThis is the default color palette for the icon button. This styling should be used most\ncommonly for all actions.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"primary\">\n      <Icons.ViewColumn/>\n    </IconButton>\n  );\n};\n```\n\n#### Critical\n\nUse this icon button when the user is approaching a permanent destructive\naction. See guidelines for more information.\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton variant=\"ghost\" colorPalette=\"critical\">\n      <Icons.Delete/>\n    </IconButton>\n  );\n};\n```\n\n#### Tooltip\n\nFor accessibility compliance (and good user experience for all) icon buttons\nthat do not have a label must have a tooltip. Go to tooltips for more information about the component.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <IconButton variant=\"ghost\" colorPalette=\"primary\">\n        <Icons.Edit/>\n      </IconButton>\n      <Tooltip.Content>\n        Edit\n      </Tooltip.Content>\n    </Tooltip.Root>\n  );\n};\n```\n\n## Guidelines\n\nIcon buttons are interactive elements that empower users to trigger actions and\nnavigate within your product. They serve as clear calls to action, guiding users\nthrough key flows and enabling them to interact with content in meaningful ways.\nThese guidelines ensure consistent styling and behavior for all buttons,\ncontributing to a cohesive and predictable user experience.\n\n### Writing guidelines\n\n- Use\n  [Material Icons](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)\n  in outline style before adding a new custom icon.\n- Use standard icons.\n- Provide tooltips.\n- Combine with text when needed.\n- Be consistent.\n- Test with users.\n\n#### Preferred words\n\n| **Example**                                                | **Description**                                                                                                                                                                                 |\n| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| <Icon id=\"Edit\" color=\"primary.11\" boxSize=\"24px\" />          | Use for \"edit\".                                                                                                                                                                                 |\n| <Icon id=\"FileUpload\" color=\"primary.11\" boxSize=\"24px\" />    | Upload.                                                                                                                                                                                         |\n| <Icon id=\"FileDownload\" color=\"primary.11\" boxSize=\"24px\" />  | Download.                                                                                                                                                                                       |\n| <Icon id=\"ViewColumn\" color=\"primary.11\" boxSize=\"24px\" />    | \"Table settings\" Shows customizable elements for tables.                                                                                                                                        |\n| <Icon id=\"MoreVert\" color=\"primary.11\" boxSize=\"24px\" />      | \"More options\" shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |\n| <Icon id=\"DragIndicator\" color=\"primary.11\" boxSize=\"24px\" /> | \"Drag\" allows a user to drag elements to reorder.                                                                                                                                               |\n| <Icon id=\"Clear\" color=\"primary.11\" boxSize=\"24px\" />         | Use for \"remove\". This removes the relationship but does **not** delete this item completely.                                                                                                   |\n| <Icon id=\"Delete\" color=\"primary.11\" boxSize=\"24px\" />        | Use for \"delete\". This is a destructive action, removes item completely.                                                                                                                        |\n\n#### Avoid these words\n\n| **Avoid Icon/Concept**                                                                                                                                                                                                                                                                                                              | **Use this instead**                                                    |\n| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |\n| <Icon id=\"Check\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CheckCircle\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                                                                                                    | Use a button with \"Save\" instead of an icon button.                     |\n| <Icon id=\"MoreHoriz\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                                                                                                                                                            | Use the vertical dot version to show more options.                      |\n| <Icon id=\"HighlightOff\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DeleteForever\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DoNotDisturb\" color=\"primary.11\" boxSize=\"24px\" />                                                                                                                                              | If using for the same function as \"delete\" use consistent icon above.   |\n| <Icon id=\"Upload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CloudUpload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"Upgrade\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"DriveFolderUpload\" color=\"primary.11\" boxSize=\"24px\" />                                                                                          | If using for the same function as \"upload\" use consistent icon above.   |\n| <Icon id=\"ArrowCircleDown\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"Download\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"SimCardDownload\" color=\"primary.11\" boxSize=\"24px\" /><Icon id=\"CloudDownload\" color=\"primary.11\" boxSize=\"24px\" />                                                                                | If using for the same function as \"download\" use consistent icon above. |\n\n### Usage\n\n#### Common & effective placements:\n\n- **Toolbars**: Icon buttons are perfect for toolbars due to their compact size.\n  They allow for many actions to be readily available without cluttering the\n  interface.\n- **Navigation** bars/headers: Often used for actions like search, settings, or\n  menu access. Placement here makes these key functions easily accessible\n  throughout the app.\n- **Within** lists/grids: Icon buttons can be placed next to list items or grid\n  elements to provide actions specific to that item (e.g., edit, delete, share).\n- **Contextual** menus: Icon buttons can be used within dropdown menus or\n  context menus to provide a visual representation of available actions.\n\n#### Placement considerations:\n\n- **Related to content**: Place icon buttons close to the content they affect.\n  For example, an edit button should be near the text it's used to edit.\n- **Consistency**: Maintain consistent placement of similar icon buttons. Users\n  expect to find common actions in the same place.\n- **Groupings**: If you have multiple related icon buttons, grouping them\n  together visually. Helps users understand the relationships between the\n  actions.\n- **Avoid clutter**: Don't overcrowd your UI with too many icon buttons.\n\n> [!TIP]\\\n> When to use\n\n- Space is limited.\n- Actions are universally recognized.\n- Reinforcing meaning.\n- Adding visual appeal.\n- Supporting multiple languages.\n- Interfaces are simple and consistent.\n\n> [!CAUTION]\\\n> When not to use\n\n- Actions are ambiguous.\n- Context is crucial.\n- Actions are critical.\n- Space is plentiful.\n- Interfaces are complex.\n- Testing reveals confusion.\n\n### Color palette and style usage\n\nIcons that are on the left are the best placement. Icons are used to lead the\nuser to the right action quickly by scanning. Ok ways to break this rule are\nwith drop downs and right pointing arrows.\n\n#### Most common: Ghost\n\nThey are often seen next to tables, fields, and toolbars.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.ViewColumn />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Clear />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n#### Solid and outline\n\nSolid icon buttons are most commonly seen in navigation. Outline buttons are\nmost commonly seen in groups of two representing views that can be toggled.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"outline\">\n        <Icons.Add />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n#### Critical color palette\n\nReserved for destructive actions, such as deleting something or removing a\nconnection.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" justifyContent=\"center\">\n      <IconButton colorPalette=\"critical\" variant=\"outline\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"critical\" variant=\"solid\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"critical\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n### Icon placement\n\nThe ideal placement of an icon button depends heavily on its function and the\noverall UI design. Think about the button's function, the content it relates to,\nand how users will expect to find it. Consistency and user testing are key to\noptimizing icon button placement.\n\n> [!TIP]\\\n> **Do**\n>\n> - Tools are grouped together, and adhere to current common page pattern\n>   design.\n\n\n<img src=\"/images/icon-button/icon-placement-do.png\" alt=\"icon placement do guideline\" width=\"447px\" />\n\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Navigation is higher hierarchy than icon button tools, this is not a common\n>   pattern.\n\n<img src=\"/images/icon-button/icon-placement-dont.png\" alt=\"icon placement do guideline\" width=\"447px\" />\n\n### Button groupings\n\nButton groups are UI elements that organize multiple buttons together, often\nvisually as a single unit. They serve to present users with a set of related\nchoices or actions in a compact and organized way.\n\n> [!TIP]\\\n> **Do**\n>\n> - If you use a stack of icon buttons for actions, use max 4 and hide the rest\n>   within a \"more\" icon.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"0\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.PushPin />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.MoreVert />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid having all the options as solid primary filled buttons.\n> - Try not to have icon buttons sandwiched between buttons.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.MoreVert />\n      </IconButton>\n      <Button colorPalette=\"primary\" variant=\"solid\">\n        Save changes\n      </Button>\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.ManageSearch />\n      </IconButton>\n      <Button colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Undo />\n        Revert\n      </Button>\n    </Stack>\n  )\n}\n```\n\n> [!TIP]\\\n> **Do**\n>\n> - When offering a toggle experience, connect these icon buttons\n> - Include a tooltip explaining the options.\n> - Selected option is using the \"Solid\" state.\n\n```jsx-live\nconst App = () => {\n  return (\n    <ToggleButtonGroup.Root colorPalette=\"primary\" selectedKeys={[\"left\"]}>\n      <ToggleButtonGroup.Button id=\"left\">\n        <Icons.AccountTree />\n      </ToggleButtonGroup.Button>\n      <ToggleButtonGroup.Button id=\"right\">\n        <Icons.Search />\n      </ToggleButtonGroup.Button>\n    </ToggleButtonGroup.Root>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - If offering a toggle like option view, do not show options as separate\n> - Does not include tooltips or labels, makes it confusing to users to\n>   understand this is a either/or choice.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.AccountTree />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"outline\">\n        <Icons.Search />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!TIP]\\\n> **Do**\n>\n> - When pairing icon buttons together, use the ghost style.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"ghost\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid having two primary solid icon buttons in the same area.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack direction=\"horizontal\" gap=\"100\">\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Edit />\n      </IconButton>\n      <IconButton colorPalette=\"primary\" variant=\"solid\">\n        <Icons.Delete />\n      </IconButton>\n    </Stack>\n  )\n}\n```\n\n### Tooltips\n\nMake sure to place tooltips in areas where they will be seen easily.\n\n> [!TIP]\\\n> **Do**\n>\n> - Place tooltips so that it makes information easy to read.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack width=\"185px\">\n      <Tooltip.Root delay={0} closeDelay={0} isOpen>\n        <IconButton variant=\"ghost\" colorPalette=\"primary\" alignSelf=\"end\">\n          <Icons.ViewColumn />\n        </IconButton>\n        <Tooltip.Content placement=\"top\" offset={-37} crossOffset={-100}>\n          Table settings\n        </Tooltip.Content>\n      </Tooltip.Root>\n      <Select.Root\n        aria-label=\"Select a category\"\n        selectedKey=\"\"\n      >\n        <Select.Options>\n          <Select.Option id=\"productColumns\" value=\"productColumns\">\n            Product columns\n          </Select.Option>\n          <Select.Option id=\"variantColumns\" value=\"variantColumns\">\n            Variant columns\n          </Select.Option>\n          <Select.Option id=\"layoutSettings\" value=\"layoutSettings\">\n            Layout settings\n          </Select.Option>\n        </Select.Options>\n      </Select.Root>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Be aware of overlap of element placements.\n> - Place tooltips so that it makes information easy to read.\n> - Don't use tooltips to cover the icon button.\n\n```jsx-live\nconst App = () => {\n  return (\n    <Stack width=\"144px\">\n      <Tooltip.Root delay={0} closeDelay={0} isOpen>\n        <IconButton variant=\"ghost\" colorPalette=\"primary\" alignSelf=\"end\">\n          <Icons.ViewColumn />\n        </IconButton>\n        <Tooltip.Content placement=\"top\" offset={-70} crossOffset={-40}>\n          Table settings\n        </Tooltip.Content>\n      </Tooltip.Root>\n      <Select.Root\n        aria-label=\"Select a category\"\n        selectedKey=\"\"\n      >\n        <Select.Options>\n          <Select.Option id=\"productColumns\" value=\"productColumns\">\n            Product columns\n          </Select.Option>\n          <Select.Option id=\"variantColumns\" value=\"variantColumns\">\n            Variant columns\n          </Select.Option>\n          <Select.Option id=\"layoutSettings\" value=\"layoutSettings\">\n            Layout settings\n          </Select.Option>\n        </Select.Options>\n      </Select.Root>\n      <Box>\n        <Tooltip.Root delay={0} closeDelay={0} isOpen>\n          <IconButton variant=\"ghost\" colorPalette=\"primary\">\n            <Icons.ViewColumn />\n          </IconButton>\n          <Tooltip.Content placement=\"bottom\" crossOffset={50} offset={-25}>\n            Table settings\n          </Tooltip.Content>\n        </Tooltip.Root>\n      </Box>\n    </Stack>\n  )\n}\n```\n\n## Properties\n\n<PropsTable id=\"IconButton\" />\n\n## Accessibility\n\nThe component uses `onPress*` props to handle all user interactions—mouse\nclicks, touch taps, and keyboard presses—consistently. These props (`onPress`,\n`onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience\nregardless of the user's input method or device.\n\n\n```jsx-live\nconst App = () => {\n  return (\n    <IconButton colorPalette=\"primary\" variant=\"solid\" onPress={() => alert('Button pressed!')}>\n      <Icons.Edit />\n    </IconButton>\n  )\n}\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **Sufficient Color Contrast:** Ensure enough contrast between the icon and its\n  background. WCAG requires a contrast ratio of at least 3:1 for graphical\n  elements and 4.5:1 for text. Tools like WebAIM's color contrast checker can\n  help you verify this.\n- **Non-text Content:** Icons are considered non-text content. WCAG requires\n  that all non-text content has a text alternative that serves the equivalent\n  purpose. This usually means providing an alternative text (alt text) for the\n  icon.\n- **Visual Cues:** Don't rely solely on color to convey information. Use\n  additional visual cues like shapes, patterns, or text labels to ensure that\n  the icon's meaning is clear to everyone, including people with color\n  blindness.\n\n#### 2. Operable:\n\n- **Keyboard Accessibility:** Icon buttons must be operable using a keyboard.\n  Users should be able to navigate to the button using the Tab key and activate\n  it using the Enter or Space key.\n- **Target Size:** Ensure that the icon button is large enough to be easily\n  clickable, especially on touchscreens. WCAG recommends a minimum target size\n  of 24x24 CSS pixels.\n- **Focus Indicator:** Provide a clear visual indicator when the icon button\n  receives keyboard focus. This helps users understand which element is\n  currently active.\n\n#### 3. Understandable:\n\n- **Clear Labels:** If the icon's meaning isn't universally understood, provide\n  a text label or tooltip to clarify its purpose. This is especially important\n  for less common icons.\n- **Consistent Design:** Use icons consistently throughout your website. This\n  helps users learn the meaning of each icon and makes it easier for them to\n  navigate your site.\n\n#### 4. Robust:\n\n- **Assistive Technology Compatibility:** Ensure that icon buttons are\n  compatible with assistive technologies like screen readers. This often\n  involves using proper HTML markup and ARIA attributes to provide semantic\n  information about the button.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hierarchy",
+          "href": "#hierarchy",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Most common: Ghost",
+          "href": "#most-common-ghost",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Use sparingly: Solid",
+          "href": "#use-sparingly-solid",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Least used: Outline",
+          "href": "#least-used-outline",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium (40px)",
+          "href": "#medium-40px",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "X-Small (32px)",
+          "href": "#x-small-32px",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "XX-Small (24px)",
+          "href": "#xx-small-24px",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color Palette",
+          "href": "#color-palette",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Primary",
+          "href": "#primary",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Critical",
+          "href": "#critical",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tooltip",
+          "href": "#tooltip",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Writing guidelines",
+          "href": "#writing-guidelines",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Preferred words",
+          "href": "#preferred-words",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Avoid these words",
+          "href": "#avoid-these-words",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common & effective placements:",
+          "href": "#common--effective-placements",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placement considerations:",
+          "href": "#placement-considerations",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color palette and style usage",
+          "href": "#color-palette-and-style-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Most common: Ghost",
+          "href": "#most-common-ghost-1",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Solid and outline",
+          "href": "#solid-and-outline",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Critical color palette",
+          "href": "#critical-color-palette",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icon placement",
+          "href": "#icon-placement",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Button groupings",
+          "href": "#button-groupings",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tooltips",
+          "href": "#tooltips",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

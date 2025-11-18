@@ -1,0 +1,404 @@
+{
+  "meta": {
+    "id": "Components-ComboBox",
+    "title": "ComboBox",
+    "description": "A combo box combines a text input with a dropdown list, allowing users to filter a list of options to items matching a query.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/combobox/combobox.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "ComboBox"
+    ],
+    "route": "components/inputs/combobox",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Appearances",
+        "href": "#appearances",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Selection types",
+        "href": "#selection-types",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Intuitive interactions",
+        "href": "#intuitive-interactions",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Features",
+        "href": "#features",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          6,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          6,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# ComboBox input\n\nA combobox is an input that combines a text field with a pop-up list of options. It allows users to select a value from a predefined list or enter their own custom value.\n\n## Overview\n\nThe combobox component provides both selection and text input capabilities. It displays a list of options that users can choose from, while also allowing them to type directly into the text field. This functionality improves user experience by assisting with value selection and, in some cases, prevents invalid entries.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1852-4333&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Size\nThe medium size of the combobox is default, the small sizes are meant for more compact uses.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root size=\"md\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root size=\"sm\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n#### Appearances\nCombobox supports solid and ghost styles.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root variant=\"solid\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root variant=\"ghost\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n#### Selection types\nSingle and multi-select is supported by comboboxes.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"surprise-me\", name: \"Surprise me\", description: \"A mix of delights\" },\n    { id: \"toys-only\", name: \"Toys only\", description: \"Balls, stuffies, and tug toys\" },\n    { id: \"treats-only\", name: \"Treats only\", description: \"Chews, bites, and crunchy snacks\" },\n    { id: \"heavy-chewers\", name: \"Heavy chewers\", description: \"Only difficult to destroy toys\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root \n        selectionMode=\"multiple\"\n        defaultItems={options} \n        placeholder=\"Search...\"\n        itemId=\"id\"\n        itemValue=\"name\"\n      >\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n## Guidelines\n\nA combobox combines a text input with a dropdown list, allowing users to type a value or select from predefined options.\n\n### Best practices\n\n- **Provide Instant Feedback:** Filter results in real-time as users type.\n- **Handle No Results Graciously:** Display a clear message when no matching options are found.\n- **Optimize for Keyboard Navigation:** Ensure full functionality using only the keyboard.\n- **Consider Performance:** For very long lists, implement virtualization or lazy loading to prevent performance issues.\n- **Offer Clear/Reset Option:** Provide a way for users to clear their selection if needed.\n- **Match Input to Options:** If the user types a value that exactly matches an option, automatically select it.\n\n### Usage\n\nUsers interact with a combobox by typing to filter options or by selecting from the dropdown list, expecting the component to dynamically narrow choices and allow either a selection or custom entry.\n\n> [!TIP]\\\n> When to use\n\n- Allowing custom input alongside predefined options.\n- Filtering long lists.\n- Providing suggestions as a user types.\n\n> [!CAUTION]\\\n> When not to use\n\n- Only predefined options are allowed.\n- The list of options is very short (e.g., 2-5 options).\n- Multi-selection is the primary goal without typing.\n- Real-time validation of complex custom input is difficult.\n\n### Intuitive interactions\n\nA well-designed combobox enhances user efficiency and accuracy by offering flexible input methods with clear, dynamic feedback.\n\n> [!TIP]\\\n> **Do**\n>\n> - Provide a clear and concise label.\n> - Filter options dynamically as the user types.\n> - Support both keyboard and mouse interactions.\n> - Offer clear feedback for all states (focus, hover, active, disabled, invalid).\n> - Ensure accessibility with appropriate ARIA attributes.\n> - Pre-populate with common values if applicable.\n\n<img src=\"/images/combobox/combobox-do.png\" alt=\"combobox do guideline\" width=\"316px\" />\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Use for simple dropdowns where no custom input is needed (use a select component instead).\n> - Neglect to provide feedback when no options match the input.\n> - Force users to type an exact match if a selection from the list is expected.\n> - Rely solely on visual cues; provide ARIA attributes for screen readers.\n> - Display an overwhelming number of options without filtering or pagination.\n\n<img src=\"/images/combobox/combobox-dont.png\" alt=\"combobox do guideline\" width=\"316px\" />\n\n## Specs\n\n### Features\n\n- **Dynamic Filtering:** Options are filtered in real-time as users type\n- **Keyboard Navigation:** Full keyboard support with arrow keys and enter\n- **Custom Values:** Allows users to enter values not in the predefined list\n- **Multi-Selection:** Supports both single and multiple selection modes\n- **Accessibility:** Built-in ARIA attributes and screen reader support\n- **Loading States:** Shows loading indicators during async operations\n\n## Properties\n\n<PropsTable id=\"ComboBox\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <ComboBox.Root \n      selectionMode=\"multiple\"\n      defaultItems={options} \n      placeholder=\"Search...\"\n      aria-label=\"Food category selection\"\n      isRequired\n    >\n      {(item) => (\n        <ComboBox.Option id={item.id} textValue={item.name}>\n          <Stack gap=\"100\">\n            <Text textStyle=\"sm\">{item.name}</Text>\n            <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n          </Stack>\n        </ComboBox.Option>\n      )}\n    </ComboBox.Root>\n  )\n}\n```\n\n### Accessibility standards\n\n- Always provide a visible label for the input.\n- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.\n- Ensure proper ARIA roles (`combobox`, `listbox`, `option`) and attributes (`aria-expanded`, `aria-autocomplete`, `aria-activedescendant`) are used.\n- Ensure sufficient color contrast for all elements (text, borders, icons).\n- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.\n- Clearly indicate the focused and selected states.\n\n### Resources\n\n- [Adobe Spectrum ComboBox](https://spectrum.adobe.com/page/combo-box/)\n- [React Spectrum ComboBox](https://react-spectrum.adobe.com/react-spectrum/ComboBox.html)\n- [W3C ARIA Authoring Practices Guide (APG) - Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# ComboBox input\n\nA combobox is an input that combines a text field with a pop-up list of options. It allows users to select a value from a predefined list or enter their own custom value.\n\n## Overview\n\nThe combobox component provides both selection and text input capabilities. It displays a list of options that users can choose from, while also allowing them to type directly into the text field. This functionality improves user experience by assisting with value selection and, in some cases, prevents invalid entries.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1852-4333&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Size\nThe medium size of the combobox is default, the small sizes are meant for more compact uses.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root size=\"md\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root size=\"sm\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n#### Appearances\nCombobox supports solid and ghost styles.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root variant=\"solid\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root variant=\"ghost\" defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n#### Selection types\nSingle and multi-select is supported by comboboxes.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"surprise-me\", name: \"Surprise me\", description: \"A mix of delights\" },\n    { id: \"toys-only\", name: \"Toys only\", description: \"Balls, stuffies, and tug toys\" },\n    { id: \"treats-only\", name: \"Treats only\", description: \"Chews, bites, and crunchy snacks\" },\n    { id: \"heavy-chewers\", name: \"Heavy chewers\", description: \"Only difficult to destroy toys\" }\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"flex-start\">\n      <ComboBox.Root defaultItems={options} placeholder=\"Search...\">\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n      \n      <ComboBox.Root \n        selectionMode=\"multiple\"\n        defaultItems={options} \n        placeholder=\"Search...\"\n        itemId=\"id\"\n        itemValue=\"name\"\n      >\n        {(item) => (\n          <ComboBox.Option id={item.id} textValue={item.name}>\n            <Stack gap=\"100\">\n              <Text textStyle=\"sm\">{item.name}</Text>\n              <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n            </Stack>\n          </ComboBox.Option>\n        )}\n      </ComboBox.Root>\n    </Stack>\n  )\n}\n```\n\n## Guidelines\n\nA combobox combines a text input with a dropdown list, allowing users to type a value or select from predefined options.\n\n### Best practices\n\n- **Provide Instant Feedback:** Filter results in real-time as users type.\n- **Handle No Results Graciously:** Display a clear message when no matching options are found.\n- **Optimize for Keyboard Navigation:** Ensure full functionality using only the keyboard.\n- **Consider Performance:** For very long lists, implement virtualization or lazy loading to prevent performance issues.\n- **Offer Clear/Reset Option:** Provide a way for users to clear their selection if needed.\n- **Match Input to Options:** If the user types a value that exactly matches an option, automatically select it.\n\n### Usage\n\nUsers interact with a combobox by typing to filter options or by selecting from the dropdown list, expecting the component to dynamically narrow choices and allow either a selection or custom entry.\n\n> [!TIP]\\\n> When to use\n\n- Allowing custom input alongside predefined options.\n- Filtering long lists.\n- Providing suggestions as a user types.\n\n> [!CAUTION]\\\n> When not to use\n\n- Only predefined options are allowed.\n- The list of options is very short (e.g., 2-5 options).\n- Multi-selection is the primary goal without typing.\n- Real-time validation of complex custom input is difficult.\n\n### Intuitive interactions\n\nA well-designed combobox enhances user efficiency and accuracy by offering flexible input methods with clear, dynamic feedback.\n\n> [!TIP]\\\n> **Do**\n>\n> - Provide a clear and concise label.\n> - Filter options dynamically as the user types.\n> - Support both keyboard and mouse interactions.\n> - Offer clear feedback for all states (focus, hover, active, disabled, invalid).\n> - Ensure accessibility with appropriate ARIA attributes.\n> - Pre-populate with common values if applicable.\n\n<img src=\"/images/combobox/combobox-do.png\" alt=\"combobox do guideline\" width=\"316px\" />\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Use for simple dropdowns where no custom input is needed (use a select component instead).\n> - Neglect to provide feedback when no options match the input.\n> - Force users to type an exact match if a selection from the list is expected.\n> - Rely solely on visual cues; provide ARIA attributes for screen readers.\n> - Display an overwhelming number of options without filtering or pagination.\n\n<img src=\"/images/combobox/combobox-dont.png\" alt=\"combobox do guideline\" width=\"316px\" />\n\n## Specs\n\n### Features\n\n- **Dynamic Filtering:** Options are filtered in real-time as users type\n- **Keyboard Navigation:** Full keyboard support with arrow keys and enter\n- **Custom Values:** Allows users to enter values not in the predefined list\n- **Multi-Selection:** Supports both single and multiple selection modes\n- **Accessibility:** Built-in ARIA attributes and screen reader support\n- **Loading States:** Shows loading indicators during async operations\n\n## Properties\n\n<PropsTable id=\"ComboBox\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const options = [\n    { id: \"seasonal\", name: \"Seasonal\", description: \"Grower's choice\" },\n    { id: \"greens\", name: \"Greens\", description: \"Leafy and nutritious\" },\n    { id: \"fruit\", name: \"Fruit\", description: \"Sweet and tart\" },\n    { id: \"root-vegetables\", name: \"Root Vegetables\", description: \"Firm and hearty\" }\n  ];\n\n  return (\n    <ComboBox.Root \n      selectionMode=\"multiple\"\n      defaultItems={options} \n      placeholder=\"Search...\"\n      aria-label=\"Food category selection\"\n      isRequired\n    >\n      {(item) => (\n        <ComboBox.Option id={item.id} textValue={item.name}>\n          <Stack gap=\"100\">\n            <Text textStyle=\"sm\">{item.name}</Text>\n            <Text textStyle=\"xs\" color=\"neutral.11\">{item.description}</Text>\n          </Stack>\n        </ComboBox.Option>\n      )}\n    </ComboBox.Root>\n  )\n}\n```\n\n### Accessibility standards\n\n- Always provide a visible label for the input.\n- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.\n- Ensure proper ARIA roles (`combobox`, `listbox`, `option`) and attributes (`aria-expanded`, `aria-autocomplete`, `aria-activedescendant`) are used.\n- Ensure sufficient color contrast for all elements (text, borders, icons).\n- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.\n- Clearly indicate the focused and selected states.\n\n### Resources\n\n- [Adobe Spectrum ComboBox](https://spectrum.adobe.com/page/combo-box/)\n- [React Spectrum ComboBox](https://react-spectrum.adobe.com/react-spectrum/ComboBox.html)\n- [W3C ARIA Authoring Practices Guide (APG) - Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Appearances",
+          "href": "#appearances",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection types",
+          "href": "#selection-types",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Intuitive interactions",
+          "href": "#intuitive-interactions",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Features",
+          "href": "#features",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

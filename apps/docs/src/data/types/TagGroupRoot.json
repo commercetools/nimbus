@@ -1,0 +1,266 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "TagGroup.Root - The root component that provides context and state management for the tag group",
+  "displayName": "TagGroupRoot",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"lg\""
+      },
+      "description": "Size variant of the tag group",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tag-group/tag-group.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\">"
+      }
+    },
+    "escapeKeyBehavior": {
+      "defaultValue": {
+        "value": "'clearSelection'"
+      },
+      "description": "Whether pressing the escape key should clear selection in the TagGroup or not.\n\nMost experiences should not modify this option as it eliminates a keyboard user's ability to\neasily clear selection. Only use if the escape key is being handled externally or should not\ntrigger selection clearing contextually.",
+      "name": "escapeKeyBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+        "name": "AriaTagGroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+          "name": "AriaTagGroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"none\" | \"clearSelection\"",
+        "value": [
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"clearSelection\""
+          }
+        ]
+      }
+    },
+    "shouldSelectOnPressUp": {
+      "defaultValue": null,
+      "description": "Whether selection should occur on press up instead of press down.",
+      "name": "shouldSelectOnPressUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+        "name": "AriaTagGroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+          "name": "AriaTagGroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+      "name": "disabledKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<Key>"
+      }
+    },
+    "selectionMode": {
+      "defaultValue": null,
+      "description": "The type of selection that is allowed in the collection.",
+      "name": "selectionMode",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionMode",
+        "value": [
+          {
+            "value": "\"single\""
+          },
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"multiple\""
+          }
+        ]
+      }
+    },
+    "disallowEmptySelection": {
+      "defaultValue": null,
+      "description": "Whether the collection allows empty selection.",
+      "name": "disallowEmptySelection",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "selectedKeys": {
+      "defaultValue": null,
+      "description": "The currently selected keys in the collection (controlled).",
+      "name": "selectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "defaultSelectedKeys": {
+      "defaultValue": null,
+      "description": "The initial selected keys in the collection (uncontrolled).",
+      "name": "defaultSelectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the selection changes.",
+      "name": "onSelectionChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(keys: Selection) => void"
+      }
+    },
+    "selectionBehavior": {
+      "defaultValue": null,
+      "description": "How multiple selection should behave in the collection.",
+      "name": "selectionBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+        "name": "AriaTagGroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+          "name": "AriaTagGroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionBehavior",
+        "value": [
+          {
+            "value": "\"toggle\""
+          },
+          {
+            "value": "\"replace\""
+          }
+        ]
+      }
+    },
+    "onRemove": {
+      "defaultValue": null,
+      "description": "Handler that is called when a user deletes a tag.",
+      "name": "onRemove",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+        "name": "AriaTagGroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+tag@3.7.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/tag/dist/types.d.ts",
+          "name": "AriaTagGroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(keys: Set<Key>) => void"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tag-group/tag-group.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<(props: TagGroupProps & RefAttributes<HTMLDivElement>) => ReactElement<unknown, string | JSXElementConstructor<any>>>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

@@ -1,0 +1,457 @@
+{
+  "meta": {
+    "id": "Components-ProgressBar",
+    "title": "ProgressBar",
+    "description": "A linear visual indicator that displays the loading or completion state of an ongoing process with determinate or indeterminate progress.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/progress-bar/progress-bar.mdx",
+    "menu": [
+      "Components",
+      "Feedback",
+      "ProgressBar"
+    ],
+    "route": "components/feedback/progressbar",
+    "tags": [
+      "component",
+      "progress",
+      "loading"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visuals",
+        "href": "#visuals",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "On white background",
+        "href": "#on-white-background",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "On dark background",
+        "href": "#on-dark-background",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Layouts",
+        "href": "#layouts",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Animation logic",
+        "href": "#animation-logic",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Dynamic",
+        "href": "#dynamic",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Static",
+        "href": "#static",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Indeterminate",
+        "href": "#indeterminate",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          4,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Progress bar uses",
+        "href": "#progress-bar-uses",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5748-36984&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# ProgressBar\n\nA linear visual indicator that displays the loading or completion state of an\nongoing process. It can represent either determinate or indeterminate progress.\n\n## Overview\n\nA progress bar's primary usage is to visually communicate to the user that a\nprocess is ongoing. If used in combination with a flow or tasks, a progress bar\ncan give a visual indicator of where they currently are in the process and\nestimate how much is left to complete the task.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5748-36984&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visuals\n\n#### On white background\n\nMost common, progress bar is used on white backgrounds.\n\n```jsx-live\nconst App = () => (\n  <ProgressBar\n    value={50}\n    label=\"\"\n    colorPalette=\"primary\"\n  />\n)\n```\n\n#### On dark background\n\nIf being used on a dark background, use the contrast variant.\n\n```jsx-live\nconst App = () => (\n  <Box bg=\"neutral.9\" p=\"600\">\n    <ProgressBar\n      value={50}\n      label=\"\"\n      variant=\"contrast\"\n      colorPalette=\"primary\"\n    />\n  </Box>\n)\n```\n\n### Size\n\nThere are two sizes to progress bar: the default size is medium (md) and\n2x-small (2xs).\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"50\" alignItems=\"stretch\">\n    <ProgressBar\n      value={75}\n      label=\"\"\n      size=\"2xs\"\n      colorPalette=\"primary\"\n    />\n    <ProgressBar\n      value={75}\n      label=\"\"\n      size=\"md\"\n      colorPalette=\"primary\"\n    />\n  </Stack>\n)\n```\n\n### Layouts\n\nCustomizable layouts for different use cases, and to fit the UI best.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"200\" alignItems=\"stretch\">\n    <ProgressBar\n      value={50}\n      label=\"Stacked label\"\n      layout=\"stacked\"\n      colorPalette=\"primary\"\n    />\n    <ProgressBar\n      value={50}\n      label=\"Inline label\"\n      layout=\"inline\"\n      colorPalette=\"primary\"\n    />\n  </Stack>\n)\n```\n\n### Animation logic\n\nTwo options for loading animations based on timing.\n\n#### Dynamic\n\nA determinate progress bar indicates a specific percentage of completion. This\nis useful when the total time or size of a task is known. For dynamic loading,\nthe color gradient is animated.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(0);\n  const [isRunning, setIsRunning] = React.useState(false);\n\n  React.useEffect(() => {\n    if (!isRunning) return;\n\n    const interval = setInterval(() => {\n      setValue((prev) => {\n        if (prev >= 100) {\n          setIsRunning(false);\n          return 100;\n        }\n        return prev + 10;\n      });\n    }, 500);\n\n    return () => clearInterval(interval);\n  }, [isRunning]);\n\n  const handleStart = () => {\n    setValue(0);\n    setIsRunning(true);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={value}\n        label=\"Loading...\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        onClick={handleStart}\n        isDisabled={isRunning}\n        width=\"fit-content\"\n        colorPalette=\"primary\"\n        variant=\"solid\"\n      >\n        Start\n      </Button>\n    </Stack>\n  )\n}\n```\n\n#### Static\n\nA static loading bar allows a viewer to know where they are currently in the\nprocess. Static progress bars do not have an animated color gradient.\n\n```jsx-live\nconst App = () => {\n  const [currentLesson, setCurrentLesson] = React.useState(5);\n  const totalLessons = 10;\n  const progress = (currentLesson / totalLessons) * 100;\n\n  const handleNextLesson = () => {\n    if (currentLesson < totalLessons) {\n      setCurrentLesson(prev => prev + 1);\n    }\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={progress}\n        label=\"Lessons completed\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        variant=\"outline\"\n        width=\"fit-content\"\n        onClick={handleNextLesson}\n        isDisabled={currentLesson >= totalLessons}\n      >\n        Next lesson\n      </Button>\n    </Stack>\n  )\n}\n```\n\n#### Indeterminate\n\nAn indeterminate progress bar shows that an operation is in progress without\nindicating how much of it is complete. This is useful for tasks with an unknown\nduration.\n\n```jsx-live\nconst App = () => (\n  <ProgressBar\n    isIndeterminate={true}\n    label=\"Uploading your files...\"\n    colorPalette=\"primary\"\n  />\n)\n```\n\n## Guidelines\n\nProgress bar guidelines aim to provide clear and consistent visual feedback to\nusers during processing delays, ensuring they understand the system is active\nand preventing frustration by indicating that they need to wait.\n\n### Best practices\n\n- **Communicate the process:** Always provide a clear label describing the\n  process the progress bar is tracking, like 'uploading file' or 'submitting\n  form'.\n- **Show progress with numbers:** Include a percentage or a fraction (e.g., 50%\n  or 10/20) to give users a precise understanding of the progress.\n- **Provide feedback on status:** Use text to indicate the current state, such\n  as 'uploading,' 'complete,' or 'error.'\n- **Keep it moving:** The progress bar should not stop or go backward. If a task\n  is paused, the bar should also pause, and the label should reflect the new\n  status.\n- **Use the right type:** Use a determinate bar for tasks with a known end\n  point. Use an indeterminate bar for tasks with an unknown duration.\n- **Be accessible:** Ensure the progress bar is accessible to screen readers by\n  using proper ARIA attributes like `aria-valuenow`, `aria-valuemin`,\n  `aria-valuemax`, and `aria-label`.\n\n### Usage\n\nProgress bars communicate the status of ongoing operations to users, reducing\nuncertainty and improving perceived performance.\n\n> [!TIP]\\\n> When to use\n\n- **When a process takes a few seconds or longer:** A progress bar is useful for\n  tasks that are not instantaneous. For short delays, a spinner or loading\n  skeleton may be more appropriate.\n- **When the progress of a task can be quantified:** A progress bar is best for\n  tasks with a known beginning and end, where a percentage or specific value can\n  be tracked.\n- **To manage user expectations:** When users know a process is underway and can\n  see its progress, it reduces anxiety and provides a sense of control.\n- **To provide a visual indicator of progress:** A progress bar is a clear\n  visual cue that something is happening in the background, preventing users\n  from thinking the application has frozen or crashed.\n\n> [!CAUTION]\\\n> When not to use\n\n- **For instantaneous tasks:** Do not use a progress bar for a task that takes\n  less than a second to complete. The visual appearance and disappearance of the\n  bar can be distracting.\n- **When the process cannot be measured:** Avoid using a determinate progress\n  bar if the total time or progress is unknown. This can lead to misleading\n  information and a poor user experience. An indeterminate progress bar or a\n  spinner is a better choice in this case.\n- **When providing an indefinite loading state:** For a task with an unknown or\n  infinite duration, use a spinner to indicate that a process is running without\n  implying a specific completion time.\n\n### Progress bar uses\n\nBe clear when using progress bar within the interface. It is important to let\nthe user know what is happening within working processes.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use a determinate progress bar when the total time or size is known. This\n>   provides a clear sense of progress and completion.\n> - Do provide a label for context. Labels help users understand what the\n>   progress bar represents.\n> - Do use a progress bar for user-initiated tasks. It gives the user a sense of\n>   control and feedback on their actions.\n> - Do ensure the progress bar is responsive. It should adapt to different\n>   screen sizes without distorting the design.\n\n```jsx-live\nconst App = () => {\n  const [indexingKey, setIndexingKey] = React.useState(0);\n  const [progress, setProgress] = React.useState(0);\n\n  React.useEffect(() => {\n    if (indexingKey === 0) return;\n\n    setProgress(0);\n    const interval = setInterval(() => {\n      setProgress((prev) => {\n        if (prev >= 100) {\n          clearInterval(interval);\n          return 100;\n        }\n        return prev + 5;\n      });\n    }, 300);\n\n    return () => clearInterval(interval);\n  }, [indexingKey]);\n\n  const handleIndexClick = () => {\n    setIndexingKey((prev) => prev + 1);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <Alert.Root tone=\"info\" variant=\"outlined\">\n        <Alert.Description>\n          Indexing your project catalog. You can keep using the Merchant Center in the meantime but your changes will be applied only after the process has finished. We will notify you once we are done.\n        </Alert.Description>\n      </Alert.Root>\n      {indexingKey > 0 && (\n        <ProgressBar\n          value={progress}\n          label=\"Indexing projects...\"\n          colorPalette=\"primary\"\n        />\n      )}\n      <Button\n        variant=\"solid\"\n        colorPalette=\"primary\"\n        width=\"fit-content\"\n        onClick={handleIndexClick}\n      >\n        Index the project catalog\n      </Button>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use a determinate progress bar for tasks with an unknown duration. Use\n>   an indeterminate bar instead to avoid misleading the user.\n> - Don't show a progress bar without providing the context needed to understand\n>   what is being loaded.\n> - Don't use multiple progress bars for a single task. One bar should be\n>   sufficient to represent the overall progress.\n> - Don't show erratic animation with a progress bar, simplify tasks so that it\n>   can be estimated in a single bar or use an indeterminate animation instead.\n> - Don't use a progress bar for system-initiated background tasks. These tasks\n>   should be handled without user intervention or visible indicators.\n\n```jsx-live\nconst App = () => {\n  const [isRunning, setIsRunning] = React.useState(false);\n  const [value, setValue] = React.useState(0);\n\n  React.useEffect(() => {\n    if (!isRunning) return;\n\n    setValue(0);\n    const interval = setInterval(() => {\n      setValue((prev) => {\n        // Simulate erratic progress\n        const change = Math.random() > 0.5 ? 15 : -10;\n        const newValue = prev + change;\n        if (newValue > 100) return 100;\n        if (newValue < 0) return 0;\n        return newValue;\n      });\n    }, 800);\n\n    return () => clearInterval(interval);\n  }, [isRunning]);\n\n  const handleStart = () => {\n    setValue(0);\n    setIsRunning(true);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={value}\n        label=\"Don't do: erratic progress loading\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        onClick={handleStart}\n        isDisabled={isRunning}\n        width=\"fit-content\"\n        colorPalette=\"primary\"\n        variant=\"solid\"\n      >\n        Start\n      </Button>\n    </Stack>\n  )\n}\n```\n\n## Specs\n\n<PropsTable id=\"ProgressBar\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n### Accessibility standards\n\n- **Use ARIA attributes:** Use `aria-valuenow`, `aria-valuemin`, and\n  `aria-valuemax` to specify the current value, minimum value, and maximum value\n  of a determinate progress bar.\n- **Provide an accessible label:** Use `aria-label` or `aria-labelledby` to give\n  the progress bar a descriptive name.\n- **Announce changes:** Use aria-live regions to announce changes in progress to\n  screen reader users.\n- **Provide clear status:** Use text to indicate the current state (e.g.,\n  'uploading', 'complete') for users who cannot see the visual component.\n- **Do not rely on color alone:** Use icons or text labels to indicate status,\n  such as an error state, for users with color vision deficiency.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# ProgressBar\n\nA linear visual indicator that displays the loading or completion state of an\nongoing process. It can represent either determinate or indeterminate progress.\n\n## Overview\n\nA progress bar's primary usage is to visually communicate to the user that a\nprocess is ongoing. If used in combination with a flow or tasks, a progress bar\ncan give a visual indicator of where they currently are in the process and\nestimate how much is left to complete the task.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5748-36984&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visuals\n\n#### On white background\n\nMost common, progress bar is used on white backgrounds.\n\n```jsx-live\nconst App = () => (\n  <ProgressBar\n    value={50}\n    label=\"\"\n    colorPalette=\"primary\"\n  />\n)\n```\n\n#### On dark background\n\nIf being used on a dark background, use the contrast variant.\n\n```jsx-live\nconst App = () => (\n  <Box bg=\"neutral.9\" p=\"600\">\n    <ProgressBar\n      value={50}\n      label=\"\"\n      variant=\"contrast\"\n      colorPalette=\"primary\"\n    />\n  </Box>\n)\n```\n\n### Size\n\nThere are two sizes to progress bar: the default size is medium (md) and\n2x-small (2xs).\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"50\" alignItems=\"stretch\">\n    <ProgressBar\n      value={75}\n      label=\"\"\n      size=\"2xs\"\n      colorPalette=\"primary\"\n    />\n    <ProgressBar\n      value={75}\n      label=\"\"\n      size=\"md\"\n      colorPalette=\"primary\"\n    />\n  </Stack>\n)\n```\n\n### Layouts\n\nCustomizable layouts for different use cases, and to fit the UI best.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"200\" alignItems=\"stretch\">\n    <ProgressBar\n      value={50}\n      label=\"Stacked label\"\n      layout=\"stacked\"\n      colorPalette=\"primary\"\n    />\n    <ProgressBar\n      value={50}\n      label=\"Inline label\"\n      layout=\"inline\"\n      colorPalette=\"primary\"\n    />\n  </Stack>\n)\n```\n\n### Animation logic\n\nTwo options for loading animations based on timing.\n\n#### Dynamic\n\nA determinate progress bar indicates a specific percentage of completion. This\nis useful when the total time or size of a task is known. For dynamic loading,\nthe color gradient is animated.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(0);\n  const [isRunning, setIsRunning] = React.useState(false);\n\n  React.useEffect(() => {\n    if (!isRunning) return;\n\n    const interval = setInterval(() => {\n      setValue((prev) => {\n        if (prev >= 100) {\n          setIsRunning(false);\n          return 100;\n        }\n        return prev + 10;\n      });\n    }, 500);\n\n    return () => clearInterval(interval);\n  }, [isRunning]);\n\n  const handleStart = () => {\n    setValue(0);\n    setIsRunning(true);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={value}\n        label=\"Loading...\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        onClick={handleStart}\n        isDisabled={isRunning}\n        width=\"fit-content\"\n        colorPalette=\"primary\"\n        variant=\"solid\"\n      >\n        Start\n      </Button>\n    </Stack>\n  )\n}\n```\n\n#### Static\n\nA static loading bar allows a viewer to know where they are currently in the\nprocess. Static progress bars do not have an animated color gradient.\n\n```jsx-live\nconst App = () => {\n  const [currentLesson, setCurrentLesson] = React.useState(5);\n  const totalLessons = 10;\n  const progress = (currentLesson / totalLessons) * 100;\n\n  const handleNextLesson = () => {\n    if (currentLesson < totalLessons) {\n      setCurrentLesson(prev => prev + 1);\n    }\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={progress}\n        label=\"Lessons completed\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        variant=\"outline\"\n        width=\"fit-content\"\n        onClick={handleNextLesson}\n        isDisabled={currentLesson >= totalLessons}\n      >\n        Next lesson\n      </Button>\n    </Stack>\n  )\n}\n```\n\n#### Indeterminate\n\nAn indeterminate progress bar shows that an operation is in progress without\nindicating how much of it is complete. This is useful for tasks with an unknown\nduration.\n\n```jsx-live\nconst App = () => (\n  <ProgressBar\n    isIndeterminate={true}\n    label=\"Uploading your files...\"\n    colorPalette=\"primary\"\n  />\n)\n```\n\n## Guidelines\n\nProgress bar guidelines aim to provide clear and consistent visual feedback to\nusers during processing delays, ensuring they understand the system is active\nand preventing frustration by indicating that they need to wait.\n\n### Best practices\n\n- **Communicate the process:** Always provide a clear label describing the\n  process the progress bar is tracking, like 'uploading file' or 'submitting\n  form'.\n- **Show progress with numbers:** Include a percentage or a fraction (e.g., 50%\n  or 10/20) to give users a precise understanding of the progress.\n- **Provide feedback on status:** Use text to indicate the current state, such\n  as 'uploading,' 'complete,' or 'error.'\n- **Keep it moving:** The progress bar should not stop or go backward. If a task\n  is paused, the bar should also pause, and the label should reflect the new\n  status.\n- **Use the right type:** Use a determinate bar for tasks with a known end\n  point. Use an indeterminate bar for tasks with an unknown duration.\n- **Be accessible:** Ensure the progress bar is accessible to screen readers by\n  using proper ARIA attributes like `aria-valuenow`, `aria-valuemin`,\n  `aria-valuemax`, and `aria-label`.\n\n### Usage\n\nProgress bars communicate the status of ongoing operations to users, reducing\nuncertainty and improving perceived performance.\n\n> [!TIP]\\\n> When to use\n\n- **When a process takes a few seconds or longer:** A progress bar is useful for\n  tasks that are not instantaneous. For short delays, a spinner or loading\n  skeleton may be more appropriate.\n- **When the progress of a task can be quantified:** A progress bar is best for\n  tasks with a known beginning and end, where a percentage or specific value can\n  be tracked.\n- **To manage user expectations:** When users know a process is underway and can\n  see its progress, it reduces anxiety and provides a sense of control.\n- **To provide a visual indicator of progress:** A progress bar is a clear\n  visual cue that something is happening in the background, preventing users\n  from thinking the application has frozen or crashed.\n\n> [!CAUTION]\\\n> When not to use\n\n- **For instantaneous tasks:** Do not use a progress bar for a task that takes\n  less than a second to complete. The visual appearance and disappearance of the\n  bar can be distracting.\n- **When the process cannot be measured:** Avoid using a determinate progress\n  bar if the total time or progress is unknown. This can lead to misleading\n  information and a poor user experience. An indeterminate progress bar or a\n  spinner is a better choice in this case.\n- **When providing an indefinite loading state:** For a task with an unknown or\n  infinite duration, use a spinner to indicate that a process is running without\n  implying a specific completion time.\n\n### Progress bar uses\n\nBe clear when using progress bar within the interface. It is important to let\nthe user know what is happening within working processes.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use a determinate progress bar when the total time or size is known. This\n>   provides a clear sense of progress and completion.\n> - Do provide a label for context. Labels help users understand what the\n>   progress bar represents.\n> - Do use a progress bar for user-initiated tasks. It gives the user a sense of\n>   control and feedback on their actions.\n> - Do ensure the progress bar is responsive. It should adapt to different\n>   screen sizes without distorting the design.\n\n```jsx-live\nconst App = () => {\n  const [indexingKey, setIndexingKey] = React.useState(0);\n  const [progress, setProgress] = React.useState(0);\n\n  React.useEffect(() => {\n    if (indexingKey === 0) return;\n\n    setProgress(0);\n    const interval = setInterval(() => {\n      setProgress((prev) => {\n        if (prev >= 100) {\n          clearInterval(interval);\n          return 100;\n        }\n        return prev + 5;\n      });\n    }, 300);\n\n    return () => clearInterval(interval);\n  }, [indexingKey]);\n\n  const handleIndexClick = () => {\n    setIndexingKey((prev) => prev + 1);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <Alert.Root tone=\"info\" variant=\"outlined\">\n        <Alert.Description>\n          Indexing your project catalog. You can keep using the Merchant Center in the meantime but your changes will be applied only after the process has finished. We will notify you once we are done.\n        </Alert.Description>\n      </Alert.Root>\n      {indexingKey > 0 && (\n        <ProgressBar\n          value={progress}\n          label=\"Indexing projects...\"\n          colorPalette=\"primary\"\n        />\n      )}\n      <Button\n        variant=\"solid\"\n        colorPalette=\"primary\"\n        width=\"fit-content\"\n        onClick={handleIndexClick}\n      >\n        Index the project catalog\n      </Button>\n    </Stack>\n  )\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use a determinate progress bar for tasks with an unknown duration. Use\n>   an indeterminate bar instead to avoid misleading the user.\n> - Don't show a progress bar without providing the context needed to understand\n>   what is being loaded.\n> - Don't use multiple progress bars for a single task. One bar should be\n>   sufficient to represent the overall progress.\n> - Don't show erratic animation with a progress bar, simplify tasks so that it\n>   can be estimated in a single bar or use an indeterminate animation instead.\n> - Don't use a progress bar for system-initiated background tasks. These tasks\n>   should be handled without user intervention or visible indicators.\n\n```jsx-live\nconst App = () => {\n  const [isRunning, setIsRunning] = React.useState(false);\n  const [value, setValue] = React.useState(0);\n\n  React.useEffect(() => {\n    if (!isRunning) return;\n\n    setValue(0);\n    const interval = setInterval(() => {\n      setValue((prev) => {\n        // Simulate erratic progress\n        const change = Math.random() > 0.5 ? 15 : -10;\n        const newValue = prev + change;\n        if (newValue > 100) return 100;\n        if (newValue < 0) return 0;\n        return newValue;\n      });\n    }, 800);\n\n    return () => clearInterval(interval);\n  }, [isRunning]);\n\n  const handleStart = () => {\n    setValue(0);\n    setIsRunning(true);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"stretch\">\n      <ProgressBar\n        value={value}\n        label=\"Don't do: erratic progress loading\"\n        colorPalette=\"primary\"\n      />\n      <Button\n        onClick={handleStart}\n        isDisabled={isRunning}\n        width=\"fit-content\"\n        colorPalette=\"primary\"\n        variant=\"solid\"\n      >\n        Start\n      </Button>\n    </Stack>\n  )\n}\n```\n\n## Specs\n\n<PropsTable id=\"ProgressBar\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n### Accessibility standards\n\n- **Use ARIA attributes:** Use `aria-valuenow`, `aria-valuemin`, and\n  `aria-valuemax` to specify the current value, minimum value, and maximum value\n  of a determinate progress bar.\n- **Provide an accessible label:** Use `aria-label` or `aria-labelledby` to give\n  the progress bar a descriptive name.\n- **Announce changes:** Use aria-live regions to announce changes in progress to\n  screen reader users.\n- **Provide clear status:** Use text to indicate the current state (e.g.,\n  'uploading', 'complete') for users who cannot see the visual component.\n- **Do not rely on color alone:** Use icons or text labels to indicate status,\n  such as an error state, for users with color vision deficiency.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visuals",
+          "href": "#visuals",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "On white background",
+          "href": "#on-white-background",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "On dark background",
+          "href": "#on-dark-background",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Layouts",
+          "href": "#layouts",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Animation logic",
+          "href": "#animation-logic",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic",
+          "href": "#dynamic",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Static",
+          "href": "#static",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indeterminate",
+          "href": "#indeterminate",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            4,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Progress bar uses",
+          "href": "#progress-bar-uses",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

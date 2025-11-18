@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "id": "Group",
+    "title": "Group",
+    "description": "Groups related elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/group/group.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Group"
+    ],
+    "route": "components/inputs/group",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic Usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Keyboard Navigation",
+        "href": "#keyboard-navigation",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Group\n\nGroups related elements together for better organization and layout.\n\n## Overview\n\nThe Group component provides a flexible way to group related UI elements with consistent spacing and alignment. It's particularly useful for creating forms, toolbars, and other collections of interactive elements.\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\n```jsx-live\nconst App = () => (\n  <Group>\n    <Button>First</Button>\n    <Button>Second</Button>\n    <Button>Third</Button>\n  </Group>\n)\n```\n\n## Specs\n\n<PropsTable id=\"Group\" />\n\n## Accessibility\n\nThis component follows WCAG 2.1 AA guidelines.\n\n### Keyboard Navigation\n\nGroup is a layout component that does not interfere with the keyboard navigation of its children.",
+  "views": {
+    "overview": {
+      "mdx": "\n# Group\n\nGroups related elements together for better organization and layout.\n\n## Overview\n\nThe Group component provides a flexible way to group related UI elements with consistent spacing and alignment. It's particularly useful for creating forms, toolbars, and other collections of interactive elements.\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\n```jsx-live\nconst App = () => (\n  <Group>\n    <Button>First</Button>\n    <Button>Second</Button>\n    <Button>Third</Button>\n  </Group>\n)\n```\n\n## Specs\n\n<PropsTable id=\"Group\" />\n\n## Accessibility\n\nThis component follows WCAG 2.1 AA guidelines.\n\n### Keyboard Navigation\n\nGroup is a layout component that does not interfere with the keyboard navigation of its children.",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard Navigation",
+          "href": "#keyboard-navigation",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

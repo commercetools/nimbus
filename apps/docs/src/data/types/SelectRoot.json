@@ -1,0 +1,843 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Select.Root - The root component that provides context and state management for the select",
+  "displayName": "SelectRoot",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": null,
+      "description": "Size variant of the select",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\">"
+      }
+    },
+    "form": {
+      "defaultValue": null,
+      "description": "The `<form>` element to associate the input with.\nThe value of this attribute must be the id of a `<form>` in the same document.\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#form).",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "AriaSelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "A slot name for the component. Slots allow the component to receive props from a parent component.\nAn explicit `null` value indicates that the local props completely override all props received from a parent.",
+      "name": "slot",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "SlotProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "SlotProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "StyleOrFunction<PopoverRenderProps>"
+      }
+    },
+    "defaultValue": {
+      "defaultValue": null,
+      "description": "The default value (uncontrolled).",
+      "name": "defaultValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "autoFocus": {
+      "defaultValue": null,
+      "description": "Whether the element should receive focus on render.",
+      "name": "autoFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusableProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "className": {
+      "defaultValue": null,
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ClassNameOrFunction<PopoverRenderProps>"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Defines a string value that labels the current element.",
+      "name": "aria-label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element receives focus.",
+      "name": "onFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element loses focus.",
+      "name": "onBlur",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the value changes.",
+      "name": "onChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(value: string) => void"
+      }
+    },
+    "onKeyDown": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is pressed.",
+      "name": "onKeyDown",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "onKeyUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is released.",
+      "name": "onKeyUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "The name of the input, used when submitting an HTML form.",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "AriaSelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "The current value (controlled).",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "variant": {
+      "defaultValue": null,
+      "description": "Visual style variant of the select",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"outline\" | \"ghost\">"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the input is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "InputBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "InputBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onFocusChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element's focus status changes.",
+      "name": "onFocusChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isFocused: boolean) => void"
+      }
+    },
+    "excludeFromTabOrder": {
+      "defaultValue": null,
+      "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+      "name": "excludeFromTabOrder",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "FocusableDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Sets the open state of the menu.",
+      "name": "isOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": null,
+      "description": "Sets the default open state of the menu.",
+      "name": "defaultOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Method that is called when the open state of the menu changes.",
+      "name": "onOpenChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+      "name": "disabledKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<Key>"
+      }
+    },
+    "selectionMode": {
+      "defaultValue": {
+        "value": "'single'"
+      },
+      "description": "Whether single or multiple selection is enabled.",
+      "name": "selectionMode",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"single\""
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the selection changes.\n@deprecated",
+      "name": "onSelectionChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: Key) => void"
+      }
+    },
+    "isRequired": {
+      "defaultValue": null,
+      "description": "Whether user input is required on the input before form submission.",
+      "name": "isRequired",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": null,
+      "description": "Whether the input value is invalid.",
+      "name": "isInvalid",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "validationBehavior": {
+      "defaultValue": {
+        "value": "'native'"
+      },
+      "description": "Whether to use native HTML form validation to prevent form submission\nwhen the value is missing or invalid, or mark the field as required\nor invalid via ARIA.",
+      "name": "validationBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RACValidation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RACValidation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"native\" | \"aria\"",
+        "value": [
+          {
+            "value": "\"native\""
+          },
+          {
+            "value": "\"aria\""
+          }
+        ]
+      }
+    },
+    "validate": {
+      "defaultValue": null,
+      "description": "A function that returns an error message if a given value is invalid.\nValidation errors are displayed to the user when the form is submitted\nif `validationBehavior=\"native\"`. For realtime validation, use the `isInvalid`\nprop instead.",
+      "name": "validate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(value: boolean) => true | ValidationError"
+      }
+    },
+    "placeholder": {
+      "defaultValue": null,
+      "description": "Temporary text that occupies the text input when it is empty.\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder).",
+      "name": "placeholder",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "InputProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "InputProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "autoComplete": {
+      "defaultValue": null,
+      "description": "Describes the type of autocomplete functionality the input should provide if any. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefautocomplete).",
+      "name": "autoComplete",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "AriaSelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "AriaSelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "selectedKey": {
+      "defaultValue": null,
+      "description": "The currently selected key in the collection (controlled).\n@deprecated",
+      "name": "selectedKey",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Key"
+      }
+    },
+    "defaultSelectedKey": {
+      "defaultValue": null,
+      "description": "The initial selected key in the collection (uncontrolled).\n@deprecated",
+      "name": "defaultSelectedKey",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+        "name": "SelectProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+select@3.11.0_react@19.2.0/node_modules/@react-types/select/src/index.d.ts",
+          "name": "SelectProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Key"
+      }
+    },
+    "isLoading": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the select is in a loading state",
+      "name": "isLoading",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "leadingElement": {
+      "defaultValue": null,
+      "description": "Optional element to display at the start of the input field\nRespects text direction (left in LTR, right in RTL)",
+      "name": "leadingElement",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "isClearable": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether to show a clear button when a value is selected",
+      "name": "isClearable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/select.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

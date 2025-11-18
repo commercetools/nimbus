@@ -1,0 +1,240 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DataTable.Header - The table header section that renders column headers with sorting capabilities",
+  "displayName": "DataTableHeader",
+  "methods": [],
+  "props": {
+    "columns": {
+      "defaultValue": null,
+      "description": "A list of table columns.",
+      "name": "columns",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "TableHeaderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "TableHeaderProps"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/system.gen.d.ts",
+          "name": "SystemProperties"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<T> & ConditionalValue<AnyString | Columns<String | Number> | readonly NonNullable<Columns<String | Number>>[]>"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "dependencies": {
+      "defaultValue": null,
+      "description": "Values that should invalidate the item cache when using dynamic collections.",
+      "name": "dependencies",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "CollectionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "CollectionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "readonly any[]"
+      }
+    },
+    "className": {
+      "defaultValue": null,
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ClassNameOrFunction<PopoverRenderProps>"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "StyleOrFunction<PopoverRenderProps>"
+      }
+    },
+    "onHoverStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction starts.",
+      "name": "onHoverStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: HoverEvent) => void"
+      }
+    },
+    "onHoverEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction ends.",
+      "name": "onHoverEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: HoverEvent) => void"
+      }
+    },
+    "onHoverChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the hover state changes.",
+      "name": "onHoverChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isHovering: boolean) => void"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "asChild": {
+      "defaultValue": null,
+      "description": "",
+      "name": "asChild",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLTableSectionElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

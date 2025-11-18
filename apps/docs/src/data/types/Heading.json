@@ -1,0 +1,99 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/typography/heading}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Heading\n\nrenders a heading",
+  "displayName": "Heading",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"xl\"\n\"xl\""
+      },
+      "description": "Size variant",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/heading/heading.tsx",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/heading/heading.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"xs\" | \"3xl\" | \"4xl\" | \"5xl\" | \"6xl\" | \"7xl\"",
+        "value": [
+          {
+            "value": "\"sm\""
+          },
+          {
+            "value": "\"md\""
+          },
+          {
+            "value": "\"lg\""
+          },
+          {
+            "value": "\"xl\""
+          },
+          {
+            "value": "\"2xl\""
+          },
+          {
+            "value": "\"xs\""
+          },
+          {
+            "value": "\"3xl\""
+          },
+          {
+            "value": "\"4xl\""
+          },
+          {
+            "value": "\"5xl\""
+          },
+          {
+            "value": "\"6xl\""
+          },
+          {
+            "value": "\"7xl\""
+          }
+        ]
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the underlying heading element.",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/heading/heading.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLHeadingElement>"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "Slot attribute for custom element slotting.",
+      "name": "slot",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/heading/heading.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

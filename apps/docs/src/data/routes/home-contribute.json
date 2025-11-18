@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "id": "Home-Contribute-1746704391512",
+    "title": "Contributing",
+    "description": "Contribute to the nimbus development",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/home-contribute.mdx",
+    "menu": [
+      "Home",
+      "Contribute"
+    ],
+    "route": "home/contribute",
+    "tags": [
+      "guide",
+      "contributing",
+      "development"
+    ],
+    "toc": [],
+    "icon": "Computer",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Contributing\n\nContribute to the nimbus development.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Contributing\n\nContribute to the nimbus development.\n",
+      "toc": []
+    }
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# MoneyInput\n\nA specialized input component for entering monetary amounts with currency selection.\nSupports high precision values and automatic locale-based formatting.\n\n## Usage\n\n### Modern API (Recommended)\n\nUse the modern event handlers for better type safety and cleaner code:\n\n```tsx\nfunction MyComponent() {\n  const [value, setValue] = useState<TValue>({\n    amount: \"\",\n    currencyCode: \"USD\",\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      currencies={[\"USD\", \"EUR\", \"GBP\"]}\n      onValueChange={setValue} // Recommended: handles complete value changes\n      onAmountChange={(amount) => console.log(\"Amount:\", amount)}\n      onCurrencyChange={(currency) => console.log(\"Currency:\", currency)}\n    />\n  );\n}\n```\n\n### Legacy API (Deprecated)\n\nFor backward compatibility only - migrate to modern API when possible:\n\n```tsx\nfunction LegacyComponent() {\n  const [value, setValue] = useState<TValue>({ amount: \"\", currencyCode: \"USD\" });\n\n  const handleChange = (event: TCustomEvent) => {\n    const { name, value } = event.target;\n    if (name?.endsWith(\".amount\")) {\n      setValue(prev => ({ ...prev, amount: value as string }));\n    } else if (name?.endsWith(\".currencyCode\")) {\n      setValue(prev => ({ ...prev, currencyCode: value as CurrencyCode }));\n    }\n  };\n\n  return (\n    <MoneyInput\n      value={value}\n      currencies={[\"USD\", \"EUR\"]}\n      onChange={handleChange} // Deprecated - use onValueChange instead\n    />\n  );\n}\n```\n\n## Features\n\n- **Type-safe currency handling** with CurrencyCode enum\n- **High precision support** for values exceeding standard currency precision\n- **Automatic locale formatting** using React Aria NumberField\n- **Accessibility compliant** following WCAG 2.1 AA standards\n- **Dual API support** for backward compatibility and modern development",
+  "displayName": "MoneyInput",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "Size variant of the money input",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\">"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "Used as HTML id property. An id is auto-generated when it is not specified.",
+      "name": "id",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "The prefix used to create a HTML `name` property for the amount input field (`${name}.amount`) and the currency dropdown (`${name}.currencyCode`).",
+      "name": "name",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "Value of the input. Consists of the currency code and an amount. `amount` is a string representing the amount. A dot has to be used as the decimal separator.",
+      "name": "value",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "MoneyInputValue"
+      }
+    },
+    "currencies": {
+      "defaultValue": null,
+      "description": "List of possible currencies. When not provided or empty, the component renders a label with the value's currency instead of a dropdown.",
+      "name": "currencies",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string[]"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Called when input is blurred",
+      "name": "onBlur",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(event: CustomEvent) => void"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Called when input is focused",
+      "name": "onFocus",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(event: CustomEvent) => void"
+      }
+    },
+    "onChange": {
+      "defaultValue": null,
+      "description": "Called with the event of the input or dropdown when either the currency or the amount have changed.\n@deprecated Use onValueChange, onAmountChange, or onCurrencyChange for better type safety and developer experience.",
+      "name": "onChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(event: CustomEvent) => void"
+      }
+    },
+    "onValueChange": {
+      "defaultValue": null,
+      "description": "Modern API: Called when the complete value (amount + currency) changes.\nThis is the recommended handler for most use cases.",
+      "name": "onValueChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(value: MoneyInputValue) => void"
+      }
+    },
+    "onAmountChange": {
+      "defaultValue": null,
+      "description": "Modern API: Called when only the amount changes.\nUse this for granular control over amount changes.",
+      "name": "onAmountChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(amount: string) => void"
+      }
+    },
+    "onCurrencyChange": {
+      "defaultValue": null,
+      "description": "Modern API: Called when only the currency changes.\nUse this for granular control over currency changes.",
+      "name": "onCurrencyChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(currencyCode: \"ADP\" | \"AED\" | \"AFA\" | \"AFN\" | \"ALL\" | \"AMD\" | \"ANG\" | \"AOA\" | \"ARS\" | \"ATS\" | \"AUD\" | \"AWG\" | \"AYM\" | \"AZM\" | \"AZN\" | \"BAM\" | \"BBD\" | \"BDT\" | \"BEF\" | \"BGL\" | \"BGN\" | \"BHD\" | \"BIF\" | ... 197 more ... | \"ZWR\") => void"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Indicates that the input cannot be modified (e.g not authorized, or changes currently saving).",
+      "name": "isDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isReadOnly": {
+      "defaultValue": null,
+      "description": "Indicates that the field is displaying read-only content",
+      "name": "isReadOnly",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": null,
+      "description": "Indicates that input has errors",
+      "name": "isInvalid",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isRequired": {
+      "defaultValue": null,
+      "description": "Indicates that the field is required",
+      "name": "isRequired",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "hasHighPrecisionBadge": {
+      "defaultValue": null,
+      "description": "Shows high precision badge in case current value uses high precision.",
+      "name": "hasHighPrecisionBadge",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isCurrencyInputDisabled": {
+      "defaultValue": null,
+      "description": "Indicates that the currency input cannot be modified.",
+      "name": "isCurrencyInputDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "placeholder": {
+      "defaultValue": null,
+      "description": "Placeholder text for the amount input",
+      "name": "placeholder",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/money-input/money-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

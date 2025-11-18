@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "example": "Single-select with clear button\n```tsx\n<ComboBox.Root items={items} selectionMode=\"single\">\n<ComboBox.Trigger>\n<ComboBox.Input />\n<IconButton slot=\"toggle\"><Icons.KeyboardArrowDown /></IconButton>\n<IconButton slot=\"clear\"><Icons.Close /></IconButton>\n</ComboBox.Trigger>\n<ComboBox.Popover>\n<ComboBox.ListBox>\n{(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n</ComboBox.ListBox>\n</ComboBox.Popover>\n</ComboBox.Root>\n```\nMulti-select with tags and clear button\n```tsx\n<ComboBox.Root items={items} selectionMode=\"multiple\">\n<ComboBox.Trigger>\n<ComboBox.TagGroup />\n<ComboBox.Input />\n<IconButton slot=\"toggle\"><Icons.KeyboardArrowDown /></IconButton>\n<IconButton slot=\"clear\"><Icons.Close /></IconButton>\n</ComboBox.Trigger>\n<ComboBox.Popover>\n<ComboBox.ListBox>\n{(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n</ComboBox.ListBox>\n</ComboBox.Popover>\n</ComboBox.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "### ComboBox - A searchable, filterable selection component\n\nSupports single and multi-select modes with keyboard navigation,\ncustom filtering, and accessible interactions.",
+  "displayName": "__object",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "id": "Compound-Component-Extraction",
+    "title": "ADR: Standardizing Compound Component Extraction to a `components` Directory",
+    "description": "Architecture decision record on organizing compound component implementations",
+    "order": 2,
+    "repoPath": "packages/nimbus/src/docs/architecture-decisions/adr-0002-compound-component-extraction.mdx",
+    "menu": [
+      "Home",
+      "Contribute",
+      "ADR's",
+      "ADR0002 Compound Component Extraction"
+    ],
+    "route": "home/contribute/adrs/adr0002-compound-component-extraction",
+    "tags": [
+      "architecture",
+      "components",
+      "directory-structure",
+      "organization"
+    ],
+    "toc": [
+      {
+        "value": "Context",
+        "href": "#context",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Decision",
+        "href": "#decision",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Why this is better:",
+        "href": "#why-this-is-better",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Consequences",
+        "href": "#consequences",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Examples",
+        "href": "#examples",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Summary",
+        "href": "#summary",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# ADR: Standardizing Compound Component Extraction to a `components` Directory\n\n## Context\n\nTo enhance the organization, maintainability, and scalability of our components\nthat utilize the compound component pattern, we are establishing a consistent\ndirectory structure for their implementation. This ADR outlines the principle of\nextracting the core root component and its associated compound sub-components\ninto a dedicated `components` subdirectory.\n\n## Decision\n\nFor any component (`<ComponentName>`) that follows the compound component\npattern (where sub-components like `<ComponentName.Part>`,\n`<ComponentName.Control>`, etc., are defined as properties of the main\ncomponent), we will adopt the following directory structure:\n\n- The main component's directory will be\n  `packages/nimbus/src/components/<component-name>/`.\n- A subdirectory named `components` will be created within the main component's\n  directory: `packages/nimbus/src/components/<component-name>/components/`.\n- The implementation files for the root component (`<ComponentName.Root>`) and\n  all its compound sub-components (`<ComponentName.Part>`,\n  `<ComponentName.Control>`, etc.) will reside within this `components`\n  subdirectory.\n- The main `<component-name>.tsx` file within the `<component-name>` directory\n  will be responsible for:\n  - Importing the root component and all sub-components from the `components`\n    subdirectory.\n  - Re-exporting them as properties of the main `ComponentName` object.\n\nStorybook files (`<component-name>.stories.tsx`) will be updated to reflect this\nstructure, primarily by referencing the appropriate root component (e.g.,\n`ComponentName.Root` or `ComponentName`) in the `Meta` configuration.\n\n## Why this is better:\n\n- **Consistent Code Organization:** This standardized structure will make it\n  easier for developers to locate the implementation files for any component\n  utilizing the compound pattern.\n- **Improved Maintainability:** Isolating the implementation of each part of a\n  compound component within its own file reduces the complexity of individual\n  files and minimizes the risk of unintended side effects during modifications.\n- **Enhanced Scalability:** As components grow and incorporate more\n  sub-components, this structure provides a clear and manageable way to organize\n  the increasing number of files.\n- **Clear Separation of Concerns:** Each file within the `components` directory\n  will focus on the implementation details of a specific part of the compound\n  component.\n\n## Consequences\n\n- **New Directory Structure:** Developers will need to be aware of this new\n  directory structure for all future and refactored compound components.\n- **Import Path Updates:** When working directly with the individual root or\n  sub-component implementations, import paths will need to reflect their\n  location within the `components` subdirectory. However, the main `index.tsx`\n  re-export should abstract this for most consumers using the compound component\n  API.\n- **Storybook Updates:** The `Meta` configuration in Storybook files for\n  compound components will need to point to the appropriate root component.\n\n## Examples\n\n**With `components` Subdirectory:**\n\n```\npackages/nimbus/src/components/component-name/index.tsx\npackages/nimbus/src/components/component-name/component-name.tsx\npackages/nimbus/src/components/component-name/components/component-name.root.tsx\npackages/nimbus/src/components/component-name/components/component-name.part.tsx\npackages/nimbus/src/components/component-name/components/component-name.control.tsx\npackages/nimbus/src/components/component-name/component-name.stories.tsx\n```\n\n## Summary\n\nAdopting this standardized directory structure for compound components will lead\nto a more organized, maintainable, and scalable UI Kit. By consistently\nseparating the implementation details of the root and sub-components into a\ndedicated `components` subdirectory, we establish a clear pattern for future\ndevelopment and refactoring efforts.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# ADR: Standardizing Compound Component Extraction to a `components` Directory\n\n## Context\n\nTo enhance the organization, maintainability, and scalability of our components\nthat utilize the compound component pattern, we are establishing a consistent\ndirectory structure for their implementation. This ADR outlines the principle of\nextracting the core root component and its associated compound sub-components\ninto a dedicated `components` subdirectory.\n\n## Decision\n\nFor any component (`<ComponentName>`) that follows the compound component\npattern (where sub-components like `<ComponentName.Part>`,\n`<ComponentName.Control>`, etc., are defined as properties of the main\ncomponent), we will adopt the following directory structure:\n\n- The main component's directory will be\n  `packages/nimbus/src/components/<component-name>/`.\n- A subdirectory named `components` will be created within the main component's\n  directory: `packages/nimbus/src/components/<component-name>/components/`.\n- The implementation files for the root component (`<ComponentName.Root>`) and\n  all its compound sub-components (`<ComponentName.Part>`,\n  `<ComponentName.Control>`, etc.) will reside within this `components`\n  subdirectory.\n- The main `<component-name>.tsx` file within the `<component-name>` directory\n  will be responsible for:\n  - Importing the root component and all sub-components from the `components`\n    subdirectory.\n  - Re-exporting them as properties of the main `ComponentName` object.\n\nStorybook files (`<component-name>.stories.tsx`) will be updated to reflect this\nstructure, primarily by referencing the appropriate root component (e.g.,\n`ComponentName.Root` or `ComponentName`) in the `Meta` configuration.\n\n## Why this is better:\n\n- **Consistent Code Organization:** This standardized structure will make it\n  easier for developers to locate the implementation files for any component\n  utilizing the compound pattern.\n- **Improved Maintainability:** Isolating the implementation of each part of a\n  compound component within its own file reduces the complexity of individual\n  files and minimizes the risk of unintended side effects during modifications.\n- **Enhanced Scalability:** As components grow and incorporate more\n  sub-components, this structure provides a clear and manageable way to organize\n  the increasing number of files.\n- **Clear Separation of Concerns:** Each file within the `components` directory\n  will focus on the implementation details of a specific part of the compound\n  component.\n\n## Consequences\n\n- **New Directory Structure:** Developers will need to be aware of this new\n  directory structure for all future and refactored compound components.\n- **Import Path Updates:** When working directly with the individual root or\n  sub-component implementations, import paths will need to reflect their\n  location within the `components` subdirectory. However, the main `index.tsx`\n  re-export should abstract this for most consumers using the compound component\n  API.\n- **Storybook Updates:** The `Meta` configuration in Storybook files for\n  compound components will need to point to the appropriate root component.\n\n## Examples\n\n**With `components` Subdirectory:**\n\n```\npackages/nimbus/src/components/component-name/index.tsx\npackages/nimbus/src/components/component-name/component-name.tsx\npackages/nimbus/src/components/component-name/components/component-name.root.tsx\npackages/nimbus/src/components/component-name/components/component-name.part.tsx\npackages/nimbus/src/components/component-name/components/component-name.control.tsx\npackages/nimbus/src/components/component-name/component-name.stories.tsx\n```\n\n## Summary\n\nAdopting this standardized directory structure for compound components will lead\nto a more organized, maintainable, and scalable UI Kit. By consistently\nseparating the implementation details of the root and sub-components into a\ndedicated `components` subdirectory, we establish a clear pattern for future\ndevelopment and refactoring efforts.\n",
+      "toc": [
+        {
+          "value": "Context",
+          "href": "#context",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Decision",
+          "href": "#decision",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Why this is better:",
+          "href": "#why-this-is-better",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Consequences",
+          "href": "#consequences",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Examples",
+          "href": "#examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Summary",
+          "href": "#summary",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

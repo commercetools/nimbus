@@ -1,0 +1,529 @@
+{
+  "meta": {
+    "id": "Components-ToggleButtonGroup",
+    "title": "ToggleButtonGroup",
+    "description": "A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/toggle-button-group/toggle-button-group.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "ToggleButtonGroup"
+    ],
+    "route": "components/inputs/togglebuttongroup",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium",
+        "href": "#medium",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "X-Small",
+        "href": "#x-small",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Labels and icons",
+        "href": "#labels-and-icons",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Just labels",
+        "href": "#just-labels",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Just icons",
+        "href": "#just-icons",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Selecting views",
+        "href": "#selecting-views",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Filter information",
+        "href": "#filter-information",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2693-2416&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Button Group\n\nA set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.\n\n## Overview\n\nButton groups can be used several ways, with and without icons, and spanning from two selections to several.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2693-2416&m=dev)\n\n[`ToggleButtonGroup` on `react-aria`](https://react-spectrum.adobe.com/react-aria/ToggleButtonGroup.html#togglebuttongroup)\n\n[Relevant W3C Aria pattern](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nToggle Button Groups come in different sizes to fit various layout needs.\n\n#### Medium\n\nThis is the default size.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Medium size example (default)\" selectedKeys={[\"md-day\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"md-day\"><Icons.ViewDay />Day</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"md-week\"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"md-month\"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### X-Small\n\nThis size is for compact placements.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root size=\"xs\" aria-label=\"X-Small size example\" selectedKeys={[\"xs-day\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"xs-day\"><Icons.ViewDay />Day</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"xs-week\"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"xs-month\"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Visual options\n\nToggle Button Groups can be configured with labels, icons, or both.\n\n#### Labels and icons\n\nButton groups with icons and labels are used to present a set of related actions in a compact and visually clear way, where icons provide quick recognition and labels offer explicit understanding of each option. This combination enhances user efficiency by making common choices readily available and easily identifiable.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Labels and icons example\" selectedKeys={[\"li-shipped\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"li-processing\">\n      <Icons.RotateRight /> Processing\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-shipped\">\n      <Icons.LocalShipping /> Shipped\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-cancelled\">\n      <Icons.Dangerous /> Cancelled\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-refunded\">\n      <Icons.CurrencyExchange /> Refunded\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### Just labels\n\nButton groups with just labels provide explicit understanding of each option. This approach prioritizes readability and ease of comprehension, making it suitable for scenarios where icons might be ambiguous or when the actions are best described through text.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Just labels example\" selectedKeys={[\"label-inactive\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"label-active\">\n      Active promotions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"label-inactive\">\n      Inactive promotions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"label-draft\">\n      Draft promotions\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### Just icons\n\nMessages potential problems or situations that require user attention to prevent issues. They require the user to take action to make needed corrections or confirmation. Use tooltips for accessibility.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Just icons example\" selectedKeys={[\"icon-copy\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-edit\" aria-label=\"Edit view\">\n        <Icons.Edit />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Edit</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-copy\" aria-label=\"Copy view\">\n        <Icons.ContentCopy />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Copy</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-delete\" aria-label=\"Delete view\">\n        <Icons.Delete />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Delete</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n## Guidelines\n\nButton group guidelines focus on presenting sets of related actions in a clear, organized, and accessible manner, enabling users to easily understand and choose between the available options, often emphasizing visual connection and logical arrangement.\n\n### Best practices\n\n-   **Order logically:** Arrange buttons by importance or user flow.\n-   **Use clear labels:** Keep button text concise and understandable, if using icons, utilize tooltip labels.\n-   **Limit button count:** Avoid overwhelming users with too many options.\n-   **Space appropriately:** Place button groups close to controlled content.\n-   **Ensure accessibility:** Make them navigable and understandable by everyone.\n\n### Usage\n\nA button group is best used when you need to present users with a set of closely related, mutually exclusive (e.g., a user selecting data table views), or complementary actions that are important enough to be displayed directly in the interface for quick access. Think of scenarios where users need to make a choice between a few options or perform a series of connected tasks within a specific context.\n\n> [!TIP]\\\n> When to use\n-   **Grouping related actions:** Organize similar tasks together. Use button groups to cluster actions that are logically connected, like order processing steps or product editing options.\n-   **Providing mutually exclusive choices:** Offer clear alternatives. When users need to select only one option from a set, like filtering by order status or choosing a report timeframe.\n-   **Streamlining workflows:** Enable quick task completion. For frequently performed actions on a single item or within a specific context, like managing inventory or editing customer details.\n-   **Conserving screen space:** Present options compactly. When screen real estate is limited, button groups offer a space-efficient way to display multiple relevant actions.\n-   **Enhancing visual clarity:** Improve comprehension of options. Visually connecting related buttons helps users understand the available choices and their relationships.\n-   **Facilitating efficient navigation:** Offer quick jumps within a section. For navigating between closely related views or steps within a specific management area.\n\n> [!CAUTION]\\\n> When not to use\n-   **Do not use a button group as a tab navigation:** There is a specific [tab component](#), please use this component instead. There is better accessibility support, and consistency with other designs and uses.\n-   **Unrelated actions:** Don't group unrelated actions together. If buttons perform completely different tasks, a button group can be confusing.\n-   **Overcrowding the UI:** Avoid too many buttons within a group. Too much choice confuses users and makes decision making more difficult.\n-   **Do not use for multi-stepped processes:** Button groups are for single click actions, not for guiding users through complex sequences.\n-   **Avoid if actions aren't logically linked:** If there is no clear relationship between the buttons, grouping them may be misleading.\n\n### Selecting views\n\nTo allow users to switch between different display views (e.g., grid view, list view, map view). Make sure that users can easily recognize icons and pair with hover tooltips.\n\n> [!TIP]\\\n> **Do**\n>\n> -   Do use clear differentiated, and familiar icons for users to be able to toggle options.\n> -   Do use tooltips to easily explain what a tool is to a user.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Select view\" selectedKeys={[\"view-list\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-grid\" aria-label=\"Grid View\">\n        <Icons.Apps />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Grid View</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-list\" aria-label=\"List View\">\n        <Icons.List />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>List View</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-map\" aria-label=\"Map View\">\n        <Icons.ViewWeek />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Week View</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> -   Do not use icons that users will not easily recognize or pairings of icons that seem too visually similar.\n> -   Always pair icon buttons with tooltip labels for all users.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Select view (Bad Example)\" selectedKeys={[\"view-confusing2\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"view-confusing1\" aria-label=\"Confusing Icon 1\">\n      <Icons.Apartment />\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"view-confusing2\" aria-label=\"Confusing Icon 2\">\n      <Icons.ProductionQuantityLimits />\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"view-confusing3\" aria-label=\"Confusing Icon 3\">\n      <Icons.Tour />\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Filter information\n\nIn data tables or lists, button groups can be used to filter or sort content.\n\n> [!TIP]\\\n> **Do**\n>\n> -   When using button groups to show filtered lists, pair closely with information to make sure that users know that this interaction shows tagged information instead of changing the state of any selected data. This can sometimes look like an item count included with the button group items.\n> -   It is not good practice to mix styles in button groupings.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Filter status\" selectedKeys={[\"filter-accepted\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"filter-drafts\">\n      Drafts (6)\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-accepted\">\n      Accepted (2)\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-rejected\">\n      Rejected (10)\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> -   Do not confuse the user with unclear options.\n> -   Do not use unfamiliar and lengthly labels.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Filter status (Bad Example)\" selectedKeys={[\"filter-granted\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"filter-compositions\">\n      Compositions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-granted\">\n      Granted\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-veto\">\n      Veto\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n## Properties\n\nComponent properties allow for customization and control.\n\n<PropsTable id=\"ToggleButtonGroup\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Labels and icons example\" selectedKeys={[\"li-shipped\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-processing\">\n        <Icons.RotateRight /> Processing\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Processing Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-shipped\">\n        <Icons.LocalShipping /> Shipped\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Shipped Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-cancelled\">\n        <Icons.Dangerous /> Cancelled\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Cancelled Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-refunded\">\n        <Icons.CurrencyExchange /> Refunded\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Refunded Status</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n-   **1.1.1 Non-text Content (Level A):**\n    -   Provide text alternatives for any non-text content (e.g., icons within buttons) via `aria-label` on the button or surrounding `Tooltip`.\n    -   Ensure icons have sufficient visual clarity.\n-   **1.4.1 Use of Color (Level A):**\n    -   Avoid relying solely on color to indicate the selected state. Default styles typically use background color and potentially borders or font weight changes.\n-   **1.4.3 Contrast (Minimum) (Level AA):**\n    -   Ensure sufficient color contrast between button text/icons and their background, in both selected and unselected states.\n    -   Ensure sufficient contrast between adjacent buttons.\n\n#### 2. Operable:\n\n-   **2.1.1 Keyboard (Level A):**\n    -   Make the entire group focusable using the Tab key.\n    -   Allow navigation between buttons within the group using arrow keys (Left/Right or Up/Down depending on orientation).\n    -   Allow selection using the Enter or Space key.\n-   **2.4.4 Link Purpose (In Context) (Level A):** (Applies conceptually to button purpose)\n    -   Button labels (text or `aria-label` for icons) should clearly describe the action or choice.\n-   **2.4.7 Focus Visible (Level AA):**\n    -   Provide a clear and visible focus indicator for the currently focused button within the group.\n\n#### 3. Understandable:\n\n-   **3.2.1 On Focus (Level A):**\n    -   Ensure that moving focus between buttons does not trigger unexpected actions.\n-   **3.3.2 Labels or Instructions (Level A):**\n    -   Provide a clear `aria-label` for the `ToggleButtonGroup.Root` element to describe the purpose of the group to assistive technologies.\n\n#### 4. Robust:\n\n-   **4.1.2 Name, Role, Value (Level A):**\n    -   Use appropriate ARIA roles (e.g., `radiogroup` for single selection, `group` for multiple selection, `radio` or `checkbox` for items depending on mode) to ensure compatibility with assistive technologies. Nimbus components built on React Aria generally handle this automatically.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Button Group\n\nA set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.\n\n## Overview\n\nButton groups can be used several ways, with and without icons, and spanning from two selections to several.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2693-2416&m=dev)\n\n[`ToggleButtonGroup` on `react-aria`](https://react-spectrum.adobe.com/react-aria/ToggleButtonGroup.html#togglebuttongroup)\n\n[Relevant W3C Aria pattern](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nToggle Button Groups come in different sizes to fit various layout needs.\n\n#### Medium\n\nThis is the default size.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Medium size example (default)\" selectedKeys={[\"md-day\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"md-day\"><Icons.ViewDay />Day</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"md-week\"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"md-month\"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### X-Small\n\nThis size is for compact placements.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root size=\"xs\" aria-label=\"X-Small size example\" selectedKeys={[\"xs-day\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"xs-day\"><Icons.ViewDay />Day</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"xs-week\"><Icons.CalendarViewWeek />Week</ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"xs-month\"><Icons.CalendarViewMonth />Month</ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Visual options\n\nToggle Button Groups can be configured with labels, icons, or both.\n\n#### Labels and icons\n\nButton groups with icons and labels are used to present a set of related actions in a compact and visually clear way, where icons provide quick recognition and labels offer explicit understanding of each option. This combination enhances user efficiency by making common choices readily available and easily identifiable.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Labels and icons example\" selectedKeys={[\"li-shipped\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"li-processing\">\n      <Icons.RotateRight /> Processing\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-shipped\">\n      <Icons.LocalShipping /> Shipped\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-cancelled\">\n      <Icons.Dangerous /> Cancelled\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"li-refunded\">\n      <Icons.CurrencyExchange /> Refunded\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### Just labels\n\nButton groups with just labels provide explicit understanding of each option. This approach prioritizes readability and ease of comprehension, making it suitable for scenarios where icons might be ambiguous or when the actions are best described through text.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Just labels example\" selectedKeys={[\"label-inactive\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"label-active\">\n      Active promotions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"label-inactive\">\n      Inactive promotions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"label-draft\">\n      Draft promotions\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n#### Just icons\n\nMessages potential problems or situations that require user attention to prevent issues. They require the user to take action to make needed corrections or confirmation. Use tooltips for accessibility.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Just icons example\" selectedKeys={[\"icon-copy\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-edit\" aria-label=\"Edit view\">\n        <Icons.Edit />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Edit</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-copy\" aria-label=\"Copy view\">\n        <Icons.ContentCopy />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Copy</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"icon-delete\" aria-label=\"Delete view\">\n        <Icons.Delete />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Delete</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n## Guidelines\n\nButton group guidelines focus on presenting sets of related actions in a clear, organized, and accessible manner, enabling users to easily understand and choose between the available options, often emphasizing visual connection and logical arrangement.\n\n### Best practices\n\n-   **Order logically:** Arrange buttons by importance or user flow.\n-   **Use clear labels:** Keep button text concise and understandable, if using icons, utilize tooltip labels.\n-   **Limit button count:** Avoid overwhelming users with too many options.\n-   **Space appropriately:** Place button groups close to controlled content.\n-   **Ensure accessibility:** Make them navigable and understandable by everyone.\n\n### Usage\n\nA button group is best used when you need to present users with a set of closely related, mutually exclusive (e.g., a user selecting data table views), or complementary actions that are important enough to be displayed directly in the interface for quick access. Think of scenarios where users need to make a choice between a few options or perform a series of connected tasks within a specific context.\n\n> [!TIP]\\\n> When to use\n-   **Grouping related actions:** Organize similar tasks together. Use button groups to cluster actions that are logically connected, like order processing steps or product editing options.\n-   **Providing mutually exclusive choices:** Offer clear alternatives. When users need to select only one option from a set, like filtering by order status or choosing a report timeframe.\n-   **Streamlining workflows:** Enable quick task completion. For frequently performed actions on a single item or within a specific context, like managing inventory or editing customer details.\n-   **Conserving screen space:** Present options compactly. When screen real estate is limited, button groups offer a space-efficient way to display multiple relevant actions.\n-   **Enhancing visual clarity:** Improve comprehension of options. Visually connecting related buttons helps users understand the available choices and their relationships.\n-   **Facilitating efficient navigation:** Offer quick jumps within a section. For navigating between closely related views or steps within a specific management area.\n\n> [!CAUTION]\\\n> When not to use\n-   **Do not use a button group as a tab navigation:** There is a specific [tab component](#), please use this component instead. There is better accessibility support, and consistency with other designs and uses.\n-   **Unrelated actions:** Don't group unrelated actions together. If buttons perform completely different tasks, a button group can be confusing.\n-   **Overcrowding the UI:** Avoid too many buttons within a group. Too much choice confuses users and makes decision making more difficult.\n-   **Do not use for multi-stepped processes:** Button groups are for single click actions, not for guiding users through complex sequences.\n-   **Avoid if actions aren't logically linked:** If there is no clear relationship between the buttons, grouping them may be misleading.\n\n### Selecting views\n\nTo allow users to switch between different display views (e.g., grid view, list view, map view). Make sure that users can easily recognize icons and pair with hover tooltips.\n\n> [!TIP]\\\n> **Do**\n>\n> -   Do use clear differentiated, and familiar icons for users to be able to toggle options.\n> -   Do use tooltips to easily explain what a tool is to a user.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Select view\" selectedKeys={[\"view-list\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-grid\" aria-label=\"Grid View\">\n        <Icons.Apps />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Grid View</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-list\" aria-label=\"List View\">\n        <Icons.List />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>List View</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"view-map\" aria-label=\"Map View\">\n        <Icons.ViewWeek />\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Week View</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> -   Do not use icons that users will not easily recognize or pairings of icons that seem too visually similar.\n> -   Always pair icon buttons with tooltip labels for all users.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Select view (Bad Example)\" selectedKeys={[\"view-confusing2\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"view-confusing1\" aria-label=\"Confusing Icon 1\">\n      <Icons.Apartment />\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"view-confusing2\" aria-label=\"Confusing Icon 2\">\n      <Icons.ProductionQuantityLimits />\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"view-confusing3\" aria-label=\"Confusing Icon 3\">\n      <Icons.Tour />\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Filter information\n\nIn data tables or lists, button groups can be used to filter or sort content.\n\n> [!TIP]\\\n> **Do**\n>\n> -   When using button groups to show filtered lists, pair closely with information to make sure that users know that this interaction shows tagged information instead of changing the state of any selected data. This can sometimes look like an item count included with the button group items.\n> -   It is not good practice to mix styles in button groupings.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Filter status\" selectedKeys={[\"filter-accepted\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"filter-drafts\">\n      Drafts (6)\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-accepted\">\n      Accepted (2)\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-rejected\">\n      Rejected (10)\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> -   Do not confuse the user with unclear options.\n> -   Do not use unfamiliar and lengthly labels.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Filter status (Bad Example)\" selectedKeys={[\"filter-granted\"]} colorPalette=\"primary\">\n    <ToggleButtonGroup.Button id=\"filter-compositions\">\n      Compositions\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-granted\">\n      Granted\n    </ToggleButtonGroup.Button>\n    <ToggleButtonGroup.Button id=\"filter-veto\">\n      Veto\n    </ToggleButtonGroup.Button>\n  </ToggleButtonGroup.Root>\n);\n```\n\n## Properties\n\nComponent properties allow for customization and control.\n\n<PropsTable id=\"ToggleButtonGroup\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <ToggleButtonGroup.Root aria-label=\"Labels and icons example\" selectedKeys={[\"li-shipped\"]} colorPalette=\"primary\">\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-processing\">\n        <Icons.RotateRight /> Processing\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Processing Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-shipped\">\n        <Icons.LocalShipping /> Shipped\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Shipped Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-cancelled\">\n        <Icons.Dangerous /> Cancelled\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Cancelled Status</Tooltip.Content>\n    </Tooltip.Root>\n    <Tooltip.Root delay={0} closeDelay={0}>\n      <ToggleButtonGroup.Button id=\"li-refunded\">\n        <Icons.CurrencyExchange /> Refunded\n      </ToggleButtonGroup.Button>\n      <Tooltip.Content>Refunded Status</Tooltip.Content>\n    </Tooltip.Root>\n  </ToggleButtonGroup.Root>\n);\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n-   **1.1.1 Non-text Content (Level A):**\n    -   Provide text alternatives for any non-text content (e.g., icons within buttons) via `aria-label` on the button or surrounding `Tooltip`.\n    -   Ensure icons have sufficient visual clarity.\n-   **1.4.1 Use of Color (Level A):**\n    -   Avoid relying solely on color to indicate the selected state. Default styles typically use background color and potentially borders or font weight changes.\n-   **1.4.3 Contrast (Minimum) (Level AA):**\n    -   Ensure sufficient color contrast between button text/icons and their background, in both selected and unselected states.\n    -   Ensure sufficient contrast between adjacent buttons.\n\n#### 2. Operable:\n\n-   **2.1.1 Keyboard (Level A):**\n    -   Make the entire group focusable using the Tab key.\n    -   Allow navigation between buttons within the group using arrow keys (Left/Right or Up/Down depending on orientation).\n    -   Allow selection using the Enter or Space key.\n-   **2.4.4 Link Purpose (In Context) (Level A):** (Applies conceptually to button purpose)\n    -   Button labels (text or `aria-label` for icons) should clearly describe the action or choice.\n-   **2.4.7 Focus Visible (Level AA):**\n    -   Provide a clear and visible focus indicator for the currently focused button within the group.\n\n#### 3. Understandable:\n\n-   **3.2.1 On Focus (Level A):**\n    -   Ensure that moving focus between buttons does not trigger unexpected actions.\n-   **3.3.2 Labels or Instructions (Level A):**\n    -   Provide a clear `aria-label` for the `ToggleButtonGroup.Root` element to describe the purpose of the group to assistive technologies.\n\n#### 4. Robust:\n\n-   **4.1.2 Name, Role, Value (Level A):**\n    -   Use appropriate ARIA roles (e.g., `radiogroup` for single selection, `group` for multiple selection, `radio` or `checkbox` for items depending on mode) to ensure compatibility with assistive technologies. Nimbus components built on React Aria generally handle this automatically.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium",
+          "href": "#medium",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "X-Small",
+          "href": "#x-small",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels and icons",
+          "href": "#labels-and-icons",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Just labels",
+          "href": "#just-labels",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Just icons",
+          "href": "#just-icons",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selecting views",
+          "href": "#selecting-views",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Filter information",
+          "href": "#filter-information",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

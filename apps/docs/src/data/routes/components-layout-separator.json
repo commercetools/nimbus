@@ -1,0 +1,318 @@
+{
+  "meta": {
+    "id": "Layout-Separator",
+    "title": "Separator",
+    "description": "A visual divider that separates content sections.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/separator/separator.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Separator"
+    ],
+    "route": "components/layout/separator",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Label options",
+        "href": "#label-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Horizontal",
+        "href": "#horizontal",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical",
+        "href": "#vertical",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Supports radix colors",
+        "href": "#supports-radix-colors",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Separator\n\nA separator is a visual or semantic line that groups and divides content,\nestablishing rhythm and hierarchy within a layout.\n\n## Overview\n\nSeparators enhance clarity by visually breaking up content. They can be\nhorizontal or vertical.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-25167)\n\n## Variables\n\nGet familiar with the features.\n\n### Label options\n\n#### Horizontal\n\nHorizontal separators can be used to divide content or tools. It can span the\nentire page width or small areas.\n\n```jsx-live\nconst App = () => (\n  <Box width=\"1600\">\n    <Separator />\n  </Box>\n)\n```\n\n#### Vertical\n\nVertical separators can be used to divide columns of content or tools.\n\n```jsx-live\nconst App = () => (\n  <Box height=\"1600\">\n    <Separator orientation=\"vertical\" />\n  </Box>\n)\n```\n\n#### Supports radix colors\n\nThe default color is `neutral` but can be customized with supported token\ncolors.\n\n```jsx-live\nconst App = () => {\n  const customColors = ['slate', 'positive', 'teal', 'pink', 'mint'];\n\n return (\n    <Flex height=\"1600\" flexDirection=\"horizontal\" gap=\"200\">\n      {customColors.map((color) => (\n        <Separator key={color} orientation=\"vertical\" colorPalette={color} />\n      ))}\n    </Flex>\n  );\n}\n```\n\n## Guidelines\n\nDesign guidelines offer a set of standardized rules and recommendations that\nensure consistency, usability, and accessibility across all design elements and\ninteractions.\n\n### Best practices\n\n- **Be subtle:** Separators should be noticeable but not visually jarring.\n- **Prioritize white space:** Use separators only when white space alone is\n  insufficient to define content groups.\n- **Use sparingly:** Overuse of separators creates visual noise and diminishes\n  their impact.\n- **Place logically:** Position separators to reinforce content relationships\n  and hierarchy.\n\n### Usage\n\nSeparators help organize content and guide the user's eye.\n\n> [!TIP]\\\n> When to use\n\n- Separate distinct sections of content on a page.\n- Divide items in a list, especially when items are similar.\n- Group related components within a panel or dialog.\n- Separate elements in a toolbar or navigation menu.\n- Indicate where content might expand or collapse.\n\n> [!CAUTION]\\\n> When not to use\n\n- Separate individual items when white space provides sufficient visual\n  distinction.\n- Overuse within a small area, which can lead to visual clutter.\n- As a primary decorative element.\n- When a component already has inherent visual separation (e.g., card borders).\n\n## Properties\n\n<PropsTable id=\"Separator\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <Box width=\"1600\">\n    <Separator />\n  </Box>\n)\n```\n\n### Accessibility standards\n\n**Role attribute:** The component applies `role=\"separator\"` to define it as a\nnon-focusable, decorative divider.\n\n**Semantic separation:** Ensure separators genuinely aid in content organization\nfor all users, including those relying on assistive technologies.\n\n**Visual contrast:** While decorative, ensure the separator has sufficient\ncontrast against its background to be perceivable by users with low vision,\naligning with WCAG 2.1 1.4.11 for non-text contrast (3:1 contrast ratio).\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Separator\n\nA separator is a visual or semantic line that groups and divides content,\nestablishing rhythm and hierarchy within a layout.\n\n## Overview\n\nSeparators enhance clarity by visually breaking up content. They can be\nhorizontal or vertical.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-25167)\n\n## Variables\n\nGet familiar with the features.\n\n### Label options\n\n#### Horizontal\n\nHorizontal separators can be used to divide content or tools. It can span the\nentire page width or small areas.\n\n```jsx-live\nconst App = () => (\n  <Box width=\"1600\">\n    <Separator />\n  </Box>\n)\n```\n\n#### Vertical\n\nVertical separators can be used to divide columns of content or tools.\n\n```jsx-live\nconst App = () => (\n  <Box height=\"1600\">\n    <Separator orientation=\"vertical\" />\n  </Box>\n)\n```\n\n#### Supports radix colors\n\nThe default color is `neutral` but can be customized with supported token\ncolors.\n\n```jsx-live\nconst App = () => {\n  const customColors = ['slate', 'positive', 'teal', 'pink', 'mint'];\n\n return (\n    <Flex height=\"1600\" flexDirection=\"horizontal\" gap=\"200\">\n      {customColors.map((color) => (\n        <Separator key={color} orientation=\"vertical\" colorPalette={color} />\n      ))}\n    </Flex>\n  );\n}\n```\n\n## Guidelines\n\nDesign guidelines offer a set of standardized rules and recommendations that\nensure consistency, usability, and accessibility across all design elements and\ninteractions.\n\n### Best practices\n\n- **Be subtle:** Separators should be noticeable but not visually jarring.\n- **Prioritize white space:** Use separators only when white space alone is\n  insufficient to define content groups.\n- **Use sparingly:** Overuse of separators creates visual noise and diminishes\n  their impact.\n- **Place logically:** Position separators to reinforce content relationships\n  and hierarchy.\n\n### Usage\n\nSeparators help organize content and guide the user's eye.\n\n> [!TIP]\\\n> When to use\n\n- Separate distinct sections of content on a page.\n- Divide items in a list, especially when items are similar.\n- Group related components within a panel or dialog.\n- Separate elements in a toolbar or navigation menu.\n- Indicate where content might expand or collapse.\n\n> [!CAUTION]\\\n> When not to use\n\n- Separate individual items when white space provides sufficient visual\n  distinction.\n- Overuse within a small area, which can lead to visual clutter.\n- As a primary decorative element.\n- When a component already has inherent visual separation (e.g., card borders).\n\n## Properties\n\n<PropsTable id=\"Separator\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <Box width=\"1600\">\n    <Separator />\n  </Box>\n)\n```\n\n### Accessibility standards\n\n**Role attribute:** The component applies `role=\"separator\"` to define it as a\nnon-focusable, decorative divider.\n\n**Semantic separation:** Ensure separators genuinely aid in content organization\nfor all users, including those relying on assistive technologies.\n\n**Visual contrast:** While decorative, ensure the separator has sufficient\ncontrast against its background to be perceivable by users with low vision,\naligning with WCAG 2.1 1.4.11 for non-text contrast (3:1 contrast ratio).\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Label options",
+          "href": "#label-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal",
+          "href": "#horizontal",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical",
+          "href": "#vertical",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Supports radix colors",
+          "href": "#supports-radix-colors",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

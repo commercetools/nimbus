@@ -1,0 +1,671 @@
+{
+  "meta": {
+    "id": "Components-Checkbox",
+    "title": "Checkbox",
+    "description": "Displays a checkbox.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/checkbox/checkbox.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Checkbox"
+    ],
+    "route": "components/inputs/checkbox",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Selection",
+        "href": "#selection",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Unchecked",
+        "href": "#unchecked",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Select",
+        "href": "#select",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Indeterminate",
+        "href": "#indeterminate",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Validation",
+        "href": "#validation",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Default",
+        "href": "#default",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Invalid",
+        "href": "#invalid",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Disabled",
+        "href": "#disabled",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical and horizontal lists",
+        "href": "#vertical-and-horizontal-lists",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical",
+        "href": "#vertical",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Horizontal",
+        "href": "#horizontal",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Logical grouping",
+        "href": "#logical-grouping",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Positive framing",
+        "href": "#positive-framing",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1.3.1 Info and relationships (Level A):",
+        "href": "#131-info-and-relationships-level-a",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1.4.1 Use of color (Level A):",
+        "href": "#141-use-of-color-level-a",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2.1.1 Keyboard (Level A):",
+        "href": "#211-keyboard-level-a",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2.4.4 Link purpose (In Context) (Level A):",
+        "href": "#244-link-purpose-in-context-level-a",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2.4.7 Focus visible (Level AA):",
+        "href": "#247-focus-visible-level-aa",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3.3.2 Labels or instructions (Level A):",
+        "href": "#332-labels-or-instructions-level-a",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Checkbox\n\nCheckbox allows for toggling of features, allowing users to select more than one\noption where needed. Checkboxes support selected, unselected, indeterminate, and\ndisabled states.\n\n## Overview\n\nCheckboxes are commonly used in forms, settings panels, and other interactive\ncontexts where users can choose one or more options from a set. See below\nvariables for further choices.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4)\n\n## Variables\n\nGet familiar with the features.\n\n### Selection\n\n#### Unchecked\n\nRepresents the default or unchosen state.\n\n```jsx-live\nconst App = () => <Checkbox>Label</Checkbox>\n```\n\n#### Select\n\nVisually confirms a user’s choice and is essential for form submissions and\ninteractive elements.\n\n```jsx-live\nconst App = () => <Checkbox isSelected>Label</Checkbox>\n```\n\n#### Indeterminate\n\nIf some, but not all, of the sub-options are selected, it will visually indicate\nthat the selection is partial or mixed.\n\n```jsx-live\nconst App = () => <Checkbox isIndeterminate>Label</Checkbox>\n```\n\n### Validation\n\n#### Default\n\nThis is the standard initial state of the checkbox that doesn’t have a reason to\nbe invalid or disabled for the user.\n\n```jsx-live\nconst App = () => <Checkbox isSelected ml=\"600\">Default tone</Checkbox>\n```\n\n#### Invalid\n\nAn invalid validation state for a checkbox indicates that the user's input (or\nlack thereof) for that checkbox is not acceptable according to the application's\nrules.\n\n```jsx-live\nconst App = () => <Checkbox isInvalid>Invalid</Checkbox>\n```\n\n#### Disabled\n\nThis is the styling of disabled elements. The icon is dimmed but the label\nremains legible.\n\n```jsx-live\nconst App = () => <Checkbox isDisabled>Disabled</Checkbox>\n```\n\n### Vertical and horizontal lists\n\n#### Vertical\n\nVertical lists are the most common and generally recommended approach for\ncheckbox lists unless there's a specific reason to use a different layout.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Horizontal\n\nThese lists are best when they are concise, visually distinct, and don't require\nmuch scanning. Used often in filters.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n## Guidelines\n\nEnsure users can clearly perceive and interact with binary selection options,\nproviding visual and programmatic cues for their checked or unchecked state,\nalong with accessible labels for understanding their purpose.\n\n### Best practices\n\n- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable\n  notifications' over 'Disable notifications’.\n- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's\n  purpose.\n- **Logical Grouping:** Group related checkboxes together visually and\n  logically.\n- **Visual Feedback:** Provide clear visual feedback when the checkbox is\n  checked or unchecked.\n- **Error Handling:** If a checkbox is required, provide clear error messages if\n  the user forgets to check it.\n\n### Usage\n\n- **Single Checkbox:** Used for binary choices (e.g., \"I agree to the terms and\n  conditions\").\n- **Checkbox Groups:** Allow users to select multiple options from a list.\n- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like\n  selecting multiple items in a table.\n\n### Logical grouping\n\nMaintain a clear and predictable order for checkboxes to facilitate efficient\nscanning and selection.\n\n> [!TIP]\\\n> **Do**\n>\n> - Capitalize the first letter of the label.\n> - Use short and clear labeling.\n> - Group information easily for the user to make the correct selection to\n>   accomplish their goals.\n\n```jsx-live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Checkbox isIndeterminate>All general fields</Checkbox>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected isDisabled>Product key</Checkbox>\n        <Checkbox isSelected>Name</Checkbox>\n        <Checkbox>Product type key</Checkbox>\n        <Checkbox>Description</Checkbox>\n        <Checkbox>Category keys</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t overwhelm the user with options that are uncategorized.\n> - There is no reason to use all caps or punctuation.\n\n```jsx-live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Product key</Checkbox>\n        <Checkbox isSelected>NAME...</Checkbox>\n        <Checkbox>Valid from</Checkbox>\n        <Checkbox>Discount prices</Checkbox>\n        <Checkbox>Asset name!</Checkbox>\n      </Stack>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Price key?</Checkbox>\n        <Checkbox isSelected>Price value.</Checkbox>\n        <Checkbox>PRICE COUNTRY</Checkbox>\n        <Checkbox isSelected>Valid until</Checkbox>\n        <Checkbox>Category keys.</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### Positive framing\n\nFrame checkbox actions with affirmative language to promote clarity and user\nconfidence.\n\n> [!TIP]\\\n> **Do**\n>\n> - Simple labels provide clear options for users.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"center\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n    <Checkbox isSelected>Include product and variant information</Checkbox>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t contradict available options. This information should be simplified\n>   further.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"top\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n\n    <Stack direction=\"column\">\n      <Checkbox isIndeterminate>Don’t include Product- and Variant- level information in every row.</Checkbox>\n      <Checkbox isSelected ml=\"600\">Don’t include Variant level information, but keep Product- level information.</Checkbox>\n    </Stack>\n  </Stack>\n)\n```\n\n## Specs\n\n<PropsTable id=\"Checkbox\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <Checkbox>Test me</Checkbox>\n```\n\n### Accessibility standards\n\n#### 1.3.1 Info and relationships (Level A):\n\n- Programmatically determine or provide information and relationships conveyed\n  through presentation in text.\n- Use the `<label>` element and the for attribute to associate every checkbox\n  with a clear, descriptive label.\n- Ensure screen readers can access and interpret the checkbox label.\n- Group related checkboxes using `<fieldset>` and `<legend>` to provide context.\n- Label the checkbox group using `<legend>`.\n\n#### 1.4.1 Use of color (Level A):\n\n- Avoid relying solely on color to convey information or checkbox state.\n- Ensure the checked/unchecked state is programmatically determinable and\n  conveyed through visual appearance (e.g., the checkbox's state).\n\n#### 2.1.1 Keyboard (Level A):\n\n- Make all checkbox functionality operable through a keyboard interface.\n- Enable users to navigate to the checkbox using the Tab key.\n- Allow users to change the checkbox state using the Spacebar or Enter key.\n\n#### 2.4.4 Link purpose (In Context) (Level A):\n\n- Make the purpose of the checkbox clear from the surrounding context or its\n  label.\n- Avoid generic labels like \"Option\" or \"Select.\"\n- Provide specific and descriptive labels.\n\n#### 2.4.7 Focus visible (Level AA):\n\n- Provide a visible keyboard focus indicator for checkboxes.\n- Visually indicate when a checkbox has focus (e.g., highlight, outline, change\n  in appearance).\n- Avoid relying solely on color change for focus indication.\n\n#### 3.3.2 Labels or instructions (Level A):\n\n- Provide clear labels or instructions for checkboxes.\n- Reinforce the information provided by the `<label>` element.\n- Aid users with cognitive disabilities by providing clear instructions.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Checkbox\n\nCheckbox allows for toggling of features, allowing users to select more than one\noption where needed. Checkboxes support selected, unselected, indeterminate, and\ndisabled states.\n\n## Overview\n\nCheckboxes are commonly used in forms, settings panels, and other interactive\ncontexts where users can choose one or more options from a set. See below\nvariables for further choices.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4)\n\n## Variables\n\nGet familiar with the features.\n\n### Selection\n\n#### Unchecked\n\nRepresents the default or unchosen state.\n\n```jsx-live\nconst App = () => <Checkbox>Label</Checkbox>\n```\n\n#### Select\n\nVisually confirms a user’s choice and is essential for form submissions and\ninteractive elements.\n\n```jsx-live\nconst App = () => <Checkbox isSelected>Label</Checkbox>\n```\n\n#### Indeterminate\n\nIf some, but not all, of the sub-options are selected, it will visually indicate\nthat the selection is partial or mixed.\n\n```jsx-live\nconst App = () => <Checkbox isIndeterminate>Label</Checkbox>\n```\n\n### Validation\n\n#### Default\n\nThis is the standard initial state of the checkbox that doesn’t have a reason to\nbe invalid or disabled for the user.\n\n```jsx-live\nconst App = () => <Checkbox isSelected ml=\"600\">Default tone</Checkbox>\n```\n\n#### Invalid\n\nAn invalid validation state for a checkbox indicates that the user's input (or\nlack thereof) for that checkbox is not acceptable according to the application's\nrules.\n\n```jsx-live\nconst App = () => <Checkbox isInvalid>Invalid</Checkbox>\n```\n\n#### Disabled\n\nThis is the styling of disabled elements. The icon is dimmed but the label\nremains legible.\n\n```jsx-live\nconst App = () => <Checkbox isDisabled>Disabled</Checkbox>\n```\n\n### Vertical and horizontal lists\n\n#### Vertical\n\nVertical lists are the most common and generally recommended approach for\ncheckbox lists unless there's a specific reason to use a different layout.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Horizontal\n\nThese lists are best when they are concise, visually distinct, and don't require\nmuch scanning. Used often in filters.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n## Guidelines\n\nEnsure users can clearly perceive and interact with binary selection options,\nproviding visual and programmatic cues for their checked or unchecked state,\nalong with accessible labels for understanding their purpose.\n\n### Best practices\n\n- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable\n  notifications' over 'Disable notifications’.\n- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's\n  purpose.\n- **Logical Grouping:** Group related checkboxes together visually and\n  logically.\n- **Visual Feedback:** Provide clear visual feedback when the checkbox is\n  checked or unchecked.\n- **Error Handling:** If a checkbox is required, provide clear error messages if\n  the user forgets to check it.\n\n### Usage\n\n- **Single Checkbox:** Used for binary choices (e.g., \"I agree to the terms and\n  conditions\").\n- **Checkbox Groups:** Allow users to select multiple options from a list.\n- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like\n  selecting multiple items in a table.\n\n### Logical grouping\n\nMaintain a clear and predictable order for checkboxes to facilitate efficient\nscanning and selection.\n\n> [!TIP]\\\n> **Do**\n>\n> - Capitalize the first letter of the label.\n> - Use short and clear labeling.\n> - Group information easily for the user to make the correct selection to\n>   accomplish their goals.\n\n```jsx-live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Checkbox isIndeterminate>All general fields</Checkbox>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected isDisabled>Product key</Checkbox>\n        <Checkbox isSelected>Name</Checkbox>\n        <Checkbox>Product type key</Checkbox>\n        <Checkbox>Description</Checkbox>\n        <Checkbox>Category keys</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t overwhelm the user with options that are uncategorized.\n> - There is no reason to use all caps or punctuation.\n\n```jsx-live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Product key</Checkbox>\n        <Checkbox isSelected>NAME...</Checkbox>\n        <Checkbox>Valid from</Checkbox>\n        <Checkbox>Discount prices</Checkbox>\n        <Checkbox>Asset name!</Checkbox>\n      </Stack>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Price key?</Checkbox>\n        <Checkbox isSelected>Price value.</Checkbox>\n        <Checkbox>PRICE COUNTRY</Checkbox>\n        <Checkbox isSelected>Valid until</Checkbox>\n        <Checkbox>Category keys.</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### Positive framing\n\nFrame checkbox actions with affirmative language to promote clarity and user\nconfidence.\n\n> [!TIP]\\\n> **Do**\n>\n> - Simple labels provide clear options for users.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"center\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n    <Checkbox isSelected>Include product and variant information</Checkbox>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t contradict available options. This information should be simplified\n>   further.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"top\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n\n    <Stack direction=\"column\">\n      <Checkbox isIndeterminate>Don’t include Product- and Variant- level information in every row.</Checkbox>\n      <Checkbox isSelected ml=\"600\">Don’t include Variant level information, but keep Product- level information.</Checkbox>\n    </Stack>\n  </Stack>\n)\n```\n\n## Specs\n\n<PropsTable id=\"Checkbox\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <Checkbox>Test me</Checkbox>\n```\n\n### Accessibility standards\n\n#### 1.3.1 Info and relationships (Level A):\n\n- Programmatically determine or provide information and relationships conveyed\n  through presentation in text.\n- Use the `<label>` element and the for attribute to associate every checkbox\n  with a clear, descriptive label.\n- Ensure screen readers can access and interpret the checkbox label.\n- Group related checkboxes using `<fieldset>` and `<legend>` to provide context.\n- Label the checkbox group using `<legend>`.\n\n#### 1.4.1 Use of color (Level A):\n\n- Avoid relying solely on color to convey information or checkbox state.\n- Ensure the checked/unchecked state is programmatically determinable and\n  conveyed through visual appearance (e.g., the checkbox's state).\n\n#### 2.1.1 Keyboard (Level A):\n\n- Make all checkbox functionality operable through a keyboard interface.\n- Enable users to navigate to the checkbox using the Tab key.\n- Allow users to change the checkbox state using the Spacebar or Enter key.\n\n#### 2.4.4 Link purpose (In Context) (Level A):\n\n- Make the purpose of the checkbox clear from the surrounding context or its\n  label.\n- Avoid generic labels like \"Option\" or \"Select.\"\n- Provide specific and descriptive labels.\n\n#### 2.4.7 Focus visible (Level AA):\n\n- Provide a visible keyboard focus indicator for checkboxes.\n- Visually indicate when a checkbox has focus (e.g., highlight, outline, change\n  in appearance).\n- Avoid relying solely on color change for focus indication.\n\n#### 3.3.2 Labels or instructions (Level A):\n\n- Provide clear labels or instructions for checkboxes.\n- Reinforce the information provided by the `<label>` element.\n- Aid users with cognitive disabilities by providing clear instructions.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection",
+          "href": "#selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Unchecked",
+          "href": "#unchecked",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Select",
+          "href": "#select",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indeterminate",
+          "href": "#indeterminate",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation",
+          "href": "#validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Default",
+          "href": "#default",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invalid",
+          "href": "#invalid",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled",
+          "href": "#disabled",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical and horizontal lists",
+          "href": "#vertical-and-horizontal-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical",
+          "href": "#vertical",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal",
+          "href": "#horizontal",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Logical grouping",
+          "href": "#logical-grouping",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Positive framing",
+          "href": "#positive-framing",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1.3.1 Info and relationships (Level A):",
+          "href": "#131-info-and-relationships-level-a",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1.4.1 Use of color (Level A):",
+          "href": "#141-use-of-color-level-a",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2.1.1 Keyboard (Level A):",
+          "href": "#211-keyboard-level-a",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2.4.4 Link purpose (In Context) (Level A):",
+          "href": "#244-link-purpose-in-context-level-a",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2.4.7 Focus visible (Level AA):",
+          "href": "#247-focus-visible-level-aa",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3.3.2 Labels or instructions (Level A):",
+          "href": "#332-labels-or-instructions-level-a",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

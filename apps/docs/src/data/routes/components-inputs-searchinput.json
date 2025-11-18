@@ -1,0 +1,542 @@
+{
+  "meta": {
+    "id": "Components-SearchInput",
+    "title": "SearchInput",
+    "description": "A search input component that allows users to enter search queries with built-in clear functionality.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/search-input/search-input.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "SearchInput"
+    ],
+    "route": "components/inputs/searchinput",
+    "tags": [
+      "component",
+      "search",
+      "input"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Key Features",
+        "href": "#key-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variant",
+        "href": "#variant",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "States",
+        "href": "#states",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Interactive Example",
+        "href": "#interactive-example",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "When to use",
+        "href": "#when-to-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Placeholder text",
+        "href": "#placeholder-text",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Clear button behavior",
+        "href": "#clear-button-behavior",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Keyboard Navigation",
+        "href": "#keyboard-navigation",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Screen Reader Support",
+        "href": "#screen-reader-support",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "ARIA Attributes",
+        "href": "#aria-attributes",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "WCAG Compliance",
+        "href": "#wcag-compliance",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          4,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          4,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# SearchInput\n\nA search input component that allows users to enter search queries with built-in clear functionality.\n\n## Overview\n\nThe SearchInput component provides a specialized text input for search operations, featuring a search icon, clear button, and keyboard shortcuts. Built on React Aria's SearchField for accessibility, it handles common search patterns like clear on Escape and submit on Enter.\n\n### Key Features\n\n- **Built-in search icon**: Visual indicator that this field is for searching\n- **Clear button**: Appears when text is entered, allows quick clearing of input\n- **Keyboard shortcuts**: Escape to clear, Enter to submit\n- **Accessible**: WCAG 2.1 AA compliant with proper ARIA attributes\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThe SearchInput component is available in two sizes to accommodate different layouts.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <SearchInput size=\"md\" placeholder=\"Medium (default)\" />\n    <SearchInput size=\"sm\" placeholder=\"Small\" />\n  </Stack>\n)\n```\n\n### Variant\n\nThe component supports different visual styles.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <SearchInput variant=\"solid\" placeholder=\"Solid (default)\" />\n    <SearchInput variant=\"ghost\" placeholder=\"Ghost\" />\n  </Stack>\n)\n```\n\n### States\n\nThe SearchInput component supports various interactive states.\n\n**Disabled**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isDisabled placeholder=\"Disabled search input\" />\n)\n```\n\n**Invalid**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isInvalid placeholder=\"Invalid search input\" />\n)\n```\n\n**Read-only**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isReadOnly defaultValue=\"Read-only search query\" />\n)\n```\n\n### Interactive Example\n\nThe component supports controlled and uncontrolled modes with event handlers.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(\"\");\n  const [submitted, setSubmitted] = useState(\"\");\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <SearchInput\n        placeholder=\"Type and press Enter...\"\n        value={value}\n        onChange={setValue}\n        onSubmit={(value) => setSubmitted(value)}\n      />\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontSize=\"sm\" color=\"neutral.11\">Current: {value || \"(empty)\"}</Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">Submitted: {submitted || \"(none)\"}</Text>\n      </Stack>\n    </Stack>\n  )\n}\n```\n\n## Guidelines\n\nSearchInput guidelines focus on creating clear, accessible, and user-friendly search experiences by emphasizing proper placeholder text, clear visual feedback, and keyboard accessibility.\n\n### Best practices\n\n- **Clear placeholder text**: Use concise, descriptive placeholder text that indicates what users can search for (e.g., \"Search products...\", \"Search by name or ID\")\n- **Visible clear button**: The clear button should appear when text is entered and be easily clickable\n- **Keyboard accessibility**: Ensure users can tab to the input, type, press Escape to clear, and Enter to submit\n- **Loading states**: Consider showing loading indicators when search is in progress\n- **Immediate feedback**: Show search results as users type (debounced) or on submission\n- **Error handling**: Display clear error messages when searches fail\n\n### When to use\n\n> [!TIP]\\\n> When to use\n\n- **Search functionality**: When users need to search through a list, database, or collection\n- **Quick filtering**: For filtering large datasets or tables in real-time\n- **Navigation**: As a site-wide or section-wide search tool\n- **Autocomplete**: When combined with suggestions or autocomplete functionality\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple filtering**: If filtering is better handled by dropdowns or checkboxes\n- **Form submission**: Don't use for general text inputs that aren't search-related\n- **Complex queries**: When users need advanced search features like boolean operators or multiple fields\n\n### Placeholder text\n\nGood placeholder text helps users understand what they can search for and provides examples when appropriate.\n\n> [!TIP]\\\n> **Do**\n\n- Use action-oriented text: \"Search products...\", \"Find a customer...\"\n- Provide examples when helpful: \"Search by name, SKU, or ID\"\n- Keep it concise and clear\n\n```jsx-live\nconst App = () => (\n  <SearchInput placeholder=\"Search products by name or SKU...\" />\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n\n- Use vague text like \"Search...\" without context\n- Make placeholder text too long or detailed\n- Rely solely on placeholder for instructions (use labels when needed)\n\n```jsx-live\nconst App = () => (\n  <SearchInput placeholder=\"Type here to search\" />\n)\n```\n\n### Clear button behavior\n\nThe clear button appears automatically when text is entered and disappears when the field is empty.\n\n> [!TIP]\\\n> **Best practices**\n\n- The clear button is always present in the DOM but hidden when empty (prevents layout shift)\n- Clicking the clear button clears the input and triggers the `onClear` event\n- The clear button is not in the tab order (tabindex=\"-1\") to streamline keyboard navigation\n- Users can press Escape to clear the input\n\n## Specs\n\n<PropsTable id=\"SearchInput\" />\n\n## Accessibility\n\nThis component is built with React Aria's SearchField and follows WCAG 2.1 AA guidelines.\n\n### Keyboard Navigation\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus to/from the search input |\n| `Enter` | Submit the search query (triggers `onSubmit`) |\n| `Escape` | Clear the input (triggers `onClear`) |\n\n### Screen Reader Support\n\n- Properly announces as a search field (`role=\"searchbox\"`)\n- Clear button announces its purpose\n- State changes are announced (disabled, invalid, read-only)\n- Value changes are conveyed to assistive technologies\n\n### ARIA Attributes\n\n- `role=\"searchbox\"` - Identifies the input as a search field\n- `aria-label` or `aria-labelledby` - Provides accessible name\n- `aria-invalid` - Indicates invalid state\n- `aria-disabled` - Announces disabled state\n- `aria-readonly` - Announces read-only state\n\n### WCAG Compliance\n\n#### 1. Perceivable\n\n- **1.3.1 Info and Relationships**: Proper semantic structure with search role\n- **1.4.3 Contrast**: Text and icons meet contrast requirements\n- **1.4.11 Non-text Contrast**: Clear button and search icon have sufficient contrast\n\n#### 2. Operable\n\n- **2.1.1 Keyboard**: Full keyboard navigation support\n- **2.1.2 No Keyboard Trap**: Users can navigate away freely\n- **2.4.7 Focus Visible**: Clear focus indicators\n- **2.5.3 Label in Name**: Accessible name matches visible label\n\n#### 3. Understandable\n\n- **3.2.1 On Focus**: No unexpected context changes\n- **3.2.2 On Input**: Predictable behavior when typing\n- **3.3.1 Error Identification**: Invalid state clearly communicated\n- **3.3.2 Labels or Instructions**: Clear placeholder and label support\n\n#### 4. Robust\n\n- **4.1.2 Name, Role, Value**: Proper semantic markup and ARIA attributes\n- **4.1.3 Status Messages**: State changes announced appropriately",
+  "views": {
+    "overview": {
+      "mdx": "\n# SearchInput\n\nA search input component that allows users to enter search queries with built-in clear functionality.\n\n## Overview\n\nThe SearchInput component provides a specialized text input for search operations, featuring a search icon, clear button, and keyboard shortcuts. Built on React Aria's SearchField for accessibility, it handles common search patterns like clear on Escape and submit on Enter.\n\n### Key Features\n\n- **Built-in search icon**: Visual indicator that this field is for searching\n- **Clear button**: Appears when text is entered, allows quick clearing of input\n- **Keyboard shortcuts**: Escape to clear, Enter to submit\n- **Accessible**: WCAG 2.1 AA compliant with proper ARIA attributes\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThe SearchInput component is available in two sizes to accommodate different layouts.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <SearchInput size=\"md\" placeholder=\"Medium (default)\" />\n    <SearchInput size=\"sm\" placeholder=\"Small\" />\n  </Stack>\n)\n```\n\n### Variant\n\nThe component supports different visual styles.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <SearchInput variant=\"solid\" placeholder=\"Solid (default)\" />\n    <SearchInput variant=\"ghost\" placeholder=\"Ghost\" />\n  </Stack>\n)\n```\n\n### States\n\nThe SearchInput component supports various interactive states.\n\n**Disabled**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isDisabled placeholder=\"Disabled search input\" />\n)\n```\n\n**Invalid**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isInvalid placeholder=\"Invalid search input\" />\n)\n```\n\n**Read-only**\n\n```jsx-live\nconst App = () => (\n  <SearchInput isReadOnly defaultValue=\"Read-only search query\" />\n)\n```\n\n### Interactive Example\n\nThe component supports controlled and uncontrolled modes with event handlers.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = useState(\"\");\n  const [submitted, setSubmitted] = useState(\"\");\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <SearchInput\n        placeholder=\"Type and press Enter...\"\n        value={value}\n        onChange={setValue}\n        onSubmit={(value) => setSubmitted(value)}\n      />\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontSize=\"sm\" color=\"neutral.11\">Current: {value || \"(empty)\"}</Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">Submitted: {submitted || \"(none)\"}</Text>\n      </Stack>\n    </Stack>\n  )\n}\n```\n\n## Guidelines\n\nSearchInput guidelines focus on creating clear, accessible, and user-friendly search experiences by emphasizing proper placeholder text, clear visual feedback, and keyboard accessibility.\n\n### Best practices\n\n- **Clear placeholder text**: Use concise, descriptive placeholder text that indicates what users can search for (e.g., \"Search products...\", \"Search by name or ID\")\n- **Visible clear button**: The clear button should appear when text is entered and be easily clickable\n- **Keyboard accessibility**: Ensure users can tab to the input, type, press Escape to clear, and Enter to submit\n- **Loading states**: Consider showing loading indicators when search is in progress\n- **Immediate feedback**: Show search results as users type (debounced) or on submission\n- **Error handling**: Display clear error messages when searches fail\n\n### When to use\n\n> [!TIP]\\\n> When to use\n\n- **Search functionality**: When users need to search through a list, database, or collection\n- **Quick filtering**: For filtering large datasets or tables in real-time\n- **Navigation**: As a site-wide or section-wide search tool\n- **Autocomplete**: When combined with suggestions or autocomplete functionality\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple filtering**: If filtering is better handled by dropdowns or checkboxes\n- **Form submission**: Don't use for general text inputs that aren't search-related\n- **Complex queries**: When users need advanced search features like boolean operators or multiple fields\n\n### Placeholder text\n\nGood placeholder text helps users understand what they can search for and provides examples when appropriate.\n\n> [!TIP]\\\n> **Do**\n\n- Use action-oriented text: \"Search products...\", \"Find a customer...\"\n- Provide examples when helpful: \"Search by name, SKU, or ID\"\n- Keep it concise and clear\n\n```jsx-live\nconst App = () => (\n  <SearchInput placeholder=\"Search products by name or SKU...\" />\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n\n- Use vague text like \"Search...\" without context\n- Make placeholder text too long or detailed\n- Rely solely on placeholder for instructions (use labels when needed)\n\n```jsx-live\nconst App = () => (\n  <SearchInput placeholder=\"Type here to search\" />\n)\n```\n\n### Clear button behavior\n\nThe clear button appears automatically when text is entered and disappears when the field is empty.\n\n> [!TIP]\\\n> **Best practices**\n\n- The clear button is always present in the DOM but hidden when empty (prevents layout shift)\n- Clicking the clear button clears the input and triggers the `onClear` event\n- The clear button is not in the tab order (tabindex=\"-1\") to streamline keyboard navigation\n- Users can press Escape to clear the input\n\n## Specs\n\n<PropsTable id=\"SearchInput\" />\n\n## Accessibility\n\nThis component is built with React Aria's SearchField and follows WCAG 2.1 AA guidelines.\n\n### Keyboard Navigation\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus to/from the search input |\n| `Enter` | Submit the search query (triggers `onSubmit`) |\n| `Escape` | Clear the input (triggers `onClear`) |\n\n### Screen Reader Support\n\n- Properly announces as a search field (`role=\"searchbox\"`)\n- Clear button announces its purpose\n- State changes are announced (disabled, invalid, read-only)\n- Value changes are conveyed to assistive technologies\n\n### ARIA Attributes\n\n- `role=\"searchbox\"` - Identifies the input as a search field\n- `aria-label` or `aria-labelledby` - Provides accessible name\n- `aria-invalid` - Indicates invalid state\n- `aria-disabled` - Announces disabled state\n- `aria-readonly` - Announces read-only state\n\n### WCAG Compliance\n\n#### 1. Perceivable\n\n- **1.3.1 Info and Relationships**: Proper semantic structure with search role\n- **1.4.3 Contrast**: Text and icons meet contrast requirements\n- **1.4.11 Non-text Contrast**: Clear button and search icon have sufficient contrast\n\n#### 2. Operable\n\n- **2.1.1 Keyboard**: Full keyboard navigation support\n- **2.1.2 No Keyboard Trap**: Users can navigate away freely\n- **2.4.7 Focus Visible**: Clear focus indicators\n- **2.5.3 Label in Name**: Accessible name matches visible label\n\n#### 3. Understandable\n\n- **3.2.1 On Focus**: No unexpected context changes\n- **3.2.2 On Input**: Predictable behavior when typing\n- **3.3.1 Error Identification**: Invalid state clearly communicated\n- **3.3.2 Labels or Instructions**: Clear placeholder and label support\n\n#### 4. Robust\n\n- **4.1.2 Name, Role, Value**: Proper semantic markup and ARIA attributes\n- **4.1.3 Status Messages**: State changes announced appropriately",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Key Features",
+          "href": "#key-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variant",
+          "href": "#variant",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "States",
+          "href": "#states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interactive Example",
+          "href": "#interactive-example",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "When to use",
+          "href": "#when-to-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placeholder text",
+          "href": "#placeholder-text",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Clear button behavior",
+          "href": "#clear-button-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard Navigation",
+          "href": "#keyboard-navigation",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Screen Reader Support",
+          "href": "#screen-reader-support",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ARIA Attributes",
+          "href": "#aria-attributes",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "WCAG Compliance",
+          "href": "#wcag-compliance",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            4,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            4,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

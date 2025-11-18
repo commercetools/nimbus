@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "id": "useHotkeys",
+    "title": "useHotkeys",
+    "description": "use keyboard shortcuts to do stuff",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/hooks/use-hotkeys/use-hotkeys.mdx",
+    "menu": [
+      "Hooks",
+      "useHotkeys"
+    ],
+    "route": "hooks/usehotkeys",
+    "tags": [
+      "keys",
+      "shortcut",
+      "keyboard"
+    ],
+    "toc": [
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Simple Hotkey",
+        "href": "#simple-hotkey",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Key Naming",
+        "href": "#key-naming",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "More stuff",
+        "href": "#more-stuff",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# useHotkeys\n\nThis hook allows you to listen to hotkeys in a declarative way and execute a\ncallback function once the user pressed down the given hotkey.\n\n## Basic usage\n\nImport the `useHotkeys` hook from the package:\n\n```js\nimport { useHotkeys } from \"@commercetools/nimbus\";\n```\n\n## Simple Hotkey\n\nThe most basic usage for the hook is to assign a hotkey you want to listen to\nand a callback to get executed once the user hits that key.\n\n```jsx-live\nimport { useHotkeys } from \"@commercetools/nimbus\";\n\nconst App = () => {\n  useHotkeys(\"a\", () => alert(\"Key a was pressed\"));\n\n  return <span>Press the a key to see it work.</span>;\n};\n```\n\n## Key Naming\n\nKey names should match the standard `KeyboardEvent.code` values\n(case-insensitive). For example:\n\n- Use `\"Escape\"` or `\"escape\"` for the Escape key\n- Use `\"Enter\"` for the Enter key\n- Use `\"Space\"` for the Space key\n\nFor a complete list of key codes, see the\n[MDN KeyboardEvent.code documentation](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values).\n\n## More stuff\n\nUse the documentation of the underlying library for now:\n\nhttps://react-hotkeys-hook.vercel.app/docs/intro\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# useHotkeys\n\nThis hook allows you to listen to hotkeys in a declarative way and execute a\ncallback function once the user pressed down the given hotkey.\n\n## Basic usage\n\nImport the `useHotkeys` hook from the package:\n\n```js\nimport { useHotkeys } from \"@commercetools/nimbus\";\n```\n\n## Simple Hotkey\n\nThe most basic usage for the hook is to assign a hotkey you want to listen to\nand a callback to get executed once the user hits that key.\n\n```jsx-live\nimport { useHotkeys } from \"@commercetools/nimbus\";\n\nconst App = () => {\n  useHotkeys(\"a\", () => alert(\"Key a was pressed\"));\n\n  return <span>Press the a key to see it work.</span>;\n};\n```\n\n## Key Naming\n\nKey names should match the standard `KeyboardEvent.code` values\n(case-insensitive). For example:\n\n- Use `\"Escape\"` or `\"escape\"` for the Escape key\n- Use `\"Enter\"` for the Enter key\n- Use `\"Space\"` for the Space key\n\nFor a complete list of key codes, see the\n[MDN KeyboardEvent.code documentation](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values).\n\n## More stuff\n\nUse the documentation of the underlying library for now:\n\nhttps://react-hotkeys-hook.vercel.app/docs/intro\n",
+      "toc": [
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Simple Hotkey",
+          "href": "#simple-hotkey",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Key Naming",
+          "href": "#key-naming",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "More stuff",
+          "href": "#more-stuff",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

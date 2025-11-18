@@ -1,0 +1,672 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Select.Options - The trigger button and dropdown container for select options",
+  "displayName": "SelectOptions",
+  "methods": [],
+  "props": {
+    "selectionBehavior": {
+      "defaultValue": {
+        "value": "\"toggle\""
+      },
+      "description": "How multiple selection should behave in the collection.",
+      "name": "selectionBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionBehavior",
+        "value": [
+          {
+            "value": "\"toggle\""
+          },
+          {
+            "value": "\"replace\""
+          }
+        ]
+      }
+    },
+    "dragAndDropHooks": {
+      "defaultValue": null,
+      "description": "The drag and drop hooks returned by `useDragAndDrop` used to enable drag and drop behavior for the ListBox.",
+      "name": "dragAndDropHooks",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "DragAndDropHooks<NoInfer<T>>"
+      }
+    },
+    "renderEmptyState": {
+      "defaultValue": null,
+      "description": "Provides content to display when there are no items in the list.",
+      "name": "renderEmptyState",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(props: ListBoxRenderProps) => ReactNode"
+      }
+    },
+    "layout": {
+      "defaultValue": {
+        "value": "'stack'"
+      },
+      "description": "Whether the items are arranged in a stack or grid.",
+      "name": "layout",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"grid\" | \"stack\"",
+        "value": [
+          {
+            "value": "\"grid\""
+          },
+          {
+            "value": "\"stack\""
+          }
+        ]
+      }
+    },
+    "orientation": {
+      "defaultValue": {
+        "value": "'vertical'"
+      },
+      "description": "The primary orientation of the items. Usually this is the\ndirection that the collection scrolls.",
+      "name": "orientation",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "Orientation",
+        "value": [
+          {
+            "value": "\"horizontal\""
+          },
+          {
+            "value": "\"vertical\""
+          }
+        ]
+      }
+    },
+    "autoFocus": {
+      "defaultValue": null,
+      "description": "Whether to auto focus the listbox or an option.",
+      "name": "autoFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | FocusStrategy"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Defines a string value that labels the current element.",
+      "name": "aria-label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element receives focus.",
+      "name": "onFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element loses focus.",
+      "name": "onBlur",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onFocusChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element's focus status changes.",
+      "name": "onFocusChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isFocused: boolean) => void"
+      }
+    },
+    "escapeKeyBehavior": {
+      "defaultValue": {
+        "value": "'clearSelection'"
+      },
+      "description": "Whether pressing the escape key should clear selection in the listbox or not.\n\nMost experiences should not modify this option as it eliminates a keyboard user's ability to\neasily clear selection. Only use if the escape key is being handled externally or should not\ntrigger selection clearing contextually.",
+      "name": "escapeKeyBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "AriaListBoxPropsBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "AriaListBoxPropsBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"none\" | \"clearSelection\"",
+        "value": [
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"clearSelection\""
+          }
+        ]
+      }
+    },
+    "onAction": {
+      "defaultValue": null,
+      "description": "Handler that is called when a user performs an action on an item. The exact user event depends on\nthe collection's `selectionBehavior` prop and the interaction modality.",
+      "name": "onAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "AriaListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "AriaListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: Key) => void"
+      }
+    },
+    "shouldSelectOnPressUp": {
+      "defaultValue": null,
+      "description": "Whether selection should occur on press up instead of press down.",
+      "name": "shouldSelectOnPressUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "AriaListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "AriaListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "items": {
+      "defaultValue": null,
+      "description": "Item objects in the collection.",
+      "name": "items",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<T>"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+      "name": "disabledKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<Key>"
+      }
+    },
+    "selectionMode": {
+      "defaultValue": null,
+      "description": "The type of selection that is allowed in the collection.",
+      "name": "selectionMode",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionMode",
+        "value": [
+          {
+            "value": "\"single\""
+          },
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"multiple\""
+          }
+        ]
+      }
+    },
+    "disallowEmptySelection": {
+      "defaultValue": null,
+      "description": "Whether the collection allows empty selection.",
+      "name": "disallowEmptySelection",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "selectedKeys": {
+      "defaultValue": null,
+      "description": "The currently selected keys in the collection (controlled).",
+      "name": "selectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "defaultSelectedKeys": {
+      "defaultValue": null,
+      "description": "The initial selected keys in the collection (uncontrolled).",
+      "name": "defaultSelectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the selection changes.",
+      "name": "onSelectionChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(keys: Selection) => void"
+      }
+    },
+    "shouldFocusOnHover": {
+      "defaultValue": null,
+      "description": "Whether options should be focused when the user hovers over them.",
+      "name": "shouldFocusOnHover",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "AriaListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "AriaListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "shouldFocusWrap": {
+      "defaultValue": null,
+      "description": "Whether focus should wrap around when the end/start is reached.",
+      "name": "shouldFocusWrap",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+listbox@3.7.4_react@19.2.0/node_modules/@react-types/listbox/src/index.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "dependencies": {
+      "defaultValue": null,
+      "description": "Values that should invalidate the item cache when using dynamic collections.",
+      "name": "dependencies",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "CollectionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "CollectionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "readonly any[]"
+      }
+    },
+    "className": {
+      "defaultValue": null,
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ClassNameOrFunction<PopoverRenderProps>"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "StyleOrFunction<PopoverRenderProps>"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "A slot name for the component. Slots allow the component to receive props from a parent component.\nAn explicit `null` value indicates that the local props completely override all props received from a parent.",
+      "name": "slot",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "SlotProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "SlotProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/select/components/select.options.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

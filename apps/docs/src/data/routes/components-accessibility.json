@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "id": "Components-Accessibility",
+    "title": "Accessibility",
+    "description": "Components designed to enhance accessibility and ARIA compliance.",
+    "order": 11,
+    "repoPath": "packages/nimbus/src/docs/accessibility.mdx",
+    "menu": [
+      "Components",
+      "Accessibility"
+    ],
+    "route": "components/accessibility",
+    "tags": [
+      "document"
+    ],
+    "toc": [],
+    "icon": "Blind",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Accessibility\n\nComponents designed to enhance accessibility and ARIA compliance.\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": []
+    }
+  }
+}

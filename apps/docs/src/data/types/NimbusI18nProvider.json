@@ -1,0 +1,42 @@
+{
+  "tags": {
+    "example": "```tsx\n<NimbusI18nProvider locale=\"de-DE\">\n  <DatePicker />\n</NimbusI18nProvider>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "NimbusI18nProvider component that provides internationalization context for React Aria components.\nThis is a proxy component that wraps React Aria's I18nProvider.",
+  "displayName": "NimbusI18nProvider",
+  "methods": [],
+  "props": {
+    "locale": {
+      "defaultValue": null,
+      "description": "BCP47 language code for internationalization (e.g., 'en-US', 'de-DE', 'es-ES')\nThis affects how dates, numbers, and other locale-specific content is formatted.",
+      "name": "locale",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/nimbus-i18n-provider/nimbus-i18n-provider.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "Child components to be wrapped with i18n context",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/nimbus-i18n-provider/nimbus-i18n-provider.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

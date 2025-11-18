@@ -1,0 +1,159 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/pagination}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Pagination\n\nA component that allows users to navigate through pages and control page size.\nCombines a page size selector and page navigator for comprehensive pagination control.",
+  "displayName": "Pagination",
+  "methods": [],
+  "props": {
+    "totalItems": {
+      "defaultValue": null,
+      "description": "Total number of items across all pages",
+      "name": "totalItems",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "number"
+      }
+    },
+    "currentPage": {
+      "defaultValue": {
+        "value": "1"
+      },
+      "description": "Current active page number (1-based indexing)",
+      "name": "currentPage",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "pageSize": {
+      "defaultValue": {
+        "value": "10"
+      },
+      "description": "Number of items to display per page",
+      "name": "pageSize",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "pageSizeOptions": {
+      "defaultValue": {
+        "value": "[10, 20, 50, 100]"
+      },
+      "description": "Available page size options for user selection",
+      "name": "pageSizeOptions",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number[]"
+      }
+    },
+    "onPageChange": {
+      "defaultValue": null,
+      "description": "Callback fired when the page number changes",
+      "name": "onPageChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(page: number) => void"
+      }
+    },
+    "onPageSizeChange": {
+      "defaultValue": null,
+      "description": "Callback fired when the page size changes",
+      "name": "onPageSizeChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(pageSize: number) => void"
+      }
+    },
+    "aria-label": {
+      "defaultValue": {
+        "value": "\"Pagination navigation\""
+      },
+      "description": "Custom aria-label for the pagination navigation",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "enablePageInput": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show page number input for direct navigation",
+      "name": "enablePageInput",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "enablePageSizeSelector": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show page size selector dropdown",
+      "name": "enablePageSizeSelector",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/pagination/pagination.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

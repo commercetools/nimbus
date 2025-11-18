@@ -1,0 +1,667 @@
+{
+  "meta": {
+    "id": "Components-FormField",
+    "title": "FormField",
+    "description": "displays miscellaneous inputs in a FormField context",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/form-field/form-field.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "FormField"
+    ],
+    "route": "components/inputs/formfield",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Label options",
+        "href": "#label-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Simple",
+        "href": "#simple",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With help text",
+        "href": "#with-help-text",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With error message",
+        "href": "#with-error-message",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Required with info icon and help text",
+        "href": "#required-with-info-icon-and-help-text",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Label on the left with info icon and help text",
+        "href": "#label-on-the-left-with-info-icon-and-help-text",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium",
+        "href": "#medium",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Small",
+        "href": "#small",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Labels",
+        "href": "#labels",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Helper text vs info icon",
+        "href": "#helper-text-vs-info-icon",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Formatting",
+        "href": "#formatting",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Validation",
+        "href": "#validation",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Labels",
+        "href": "#labels-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Helper text and info button",
+        "href": "#helper-text-and-info-button",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          5,
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2635&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Form Field\n\nForm fields are the building blocks of user interaction, collecting essential\ndata, facilitating actions, and enabling customization within digital\ninterfaces.\n\n## Overview\n\nComposed of several elements, a label, optional helper icon, a text input. There\nis also an optional helper text feature that presents at the bottom of the\nfield.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2635&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Label options\n\n#### Simple\n\nLabel is used to describe the form.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n    </FormField.Root>\n  )\n}\n```\n\n#### With help text\n\nLabel paired with form and description to give users extra clarification.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>Help Text</FormField.Description>\n    </FormField.Root>\n  )\n}\n```\n\n#### With error message\n\nExplain errors to the user in an eye catching way.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isInvalid>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Error>\n        Error message\n      </FormField.Error>\n    </FormField.Root>\n  )\n}\n```\n\n#### Required with info icon and help text\n\nThis is the default placement of labels. Info button should always open an info\ndialog, not just a tooltip on hover.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n#### Label on the left with info icon and help text\n\nThese can be used to make the page a little more condensed for the user.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root direction=\"row\" isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n### Size\n\n#### Medium\n\nThis is the default size for form fields.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired size=\"md\">\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n#### Small\n\nUse to condense forms.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired size=\"sm\">\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" size=\"sm\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n## Guidelines\n\nDesign guidelines offer a set of standardized rules and recommendations that\nensure consistency, usability, and accessibility across all design elements and\ninteractions.\n\nRelated guidelines [text-fields](#).\n\n### Best practices\n\n- **Clarity and simplicity:**\n  - Minimize the number of fields. Only ask for essential information.\n  - Use clear, concise labels that accurately describe the required input.\n  - Choose what position (top or left) the labels will be and make it consistent\n    in the area to help with scanning.\n- **Labels:**\n  - Place labels above or to the left of input fields.\n  - Keep labels short and descriptive.\n  - Avoid using placeholders as labels.\n- **Error handling:**\n  - Display error messages clearly and prominently.\n  - Use specific and helpful error messages and provide suggestions for\n    correcting errors.\n\n#### Labels\n\nFor label text, use a short, catch-all description (1-3 words) of the\ninformation that a user needs to provide. Label text that gets too long can be\noverwhelming and distracting, especially in complex interactions and long forms.\nSupplementary information or requirements about what to input can be shown in\nhelp text below the field, or in a tooltip.\n\n- **Use sentence case:** This follows our consistent style, unless statement\n  contains words that are branded proper nouns.\n- **Don’t add a colon (:) at the end of a field label:** The design of the\n  component already communicates the relationship between the label and the\n  input field.\n- **Use clear and concise language:** Try to keep labels to 1-3 words. Avoid\n  jargon or technical terms that the user might not understand.\n- **Be specific, brief, and descriptive:** Ensure labels are easily scannable\n  and reflect the function of the element. If you need instructional text, use a\n  helper label beneath.\n- **Avoid ambiguity:** Labels should leave no room for misinterpretation.\n- **Internalization friendly:** Be aware that translation lengthens by 20% on\n  average, but also avoid creating a sentence using the label combined with the\n  response from a user. (e.g., Label: My favorite color is... Response...Green.\n  Sentence structures between languages vary greatly.)\n\n### Helper text vs info icon\n\nUse the right informative tool to aid your user to understand what is needed.\nSee [info button](#) for more guidelines.\n\n- **Info Button:**\n  - **Complex or lengthy information:** When you need to provide more than a\n    short sentence or two of explanation. By default the info button will open a\n    dialog overlay. It can be used to show a tooltip on hover, but the amount of\n    information a popover and a help text can contain is similar. If there is a\n    want to simplify the UI, this can be used, but test to make sure that this\n    information needs to be shown without interaction from a user.\n  - **Progressive disclosure:** To avoid cluttering the form with too much text\n    upfront, revealing details only when the user actively seeks them.\n  - **Contextual help:** When the help information is very specific to a\n    particular field or a user's current state within the form.  \n- **Help Text:**\n  - **Short, concise explanations:** For simple clarifications or hints about\n    the expected input. Try to keep helper text below 150 characters.\n  - **Formatting guidance:** To provide examples of the required format (e.g.,\n    date formats, phone number patterns).\n  - **Input requirements:** To specify character limits, password rules, or\n    other constraints.\n  - **Immediate visibility:** When it's crucial for the user to see the guidance\n    without any extra action like a click or a hover to display.\n\n### Usage\n\nBe sure to give enough information to the user to understand the form without\nbeing overwhelmed. Prioritize clarity and function over personality and over\nexplanation. To increase understanding, test your forms with users to understand\nwhere confusion might occur.\n\n### Formatting\n\nBe consistent with your use of form fields label placements and size.\n\n> [!TIP]\\\n> **Do**\n>\n> - Have one placement for labels in the same form, and consistently choose one\n>   size for the entire form.\n> - Help text is used to show the user what the accepted formatting will be.\n>   Placeholder text can be used when needed but help text is preferred for\n>   accessibility.\n> - OK to capitalize proper nouns in labels instead of using sentence case.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\">\n    <FormField.Root isRequired>\n      <FormField.Label>First name</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"9600\" />\n      </FormField.Input>\n    </FormField.Root>\n    <FormField.Root isRequired>\n      <FormField.Label>Social Security Number</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Format: XXX-XX-XXXX\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Use sentence case for labels. Do not capitalize every word.\n> - Do not combine top and side labels within the form.\n> - Only use description text and helper icons when it is needed.\n> - Placeholder text should give hints to the user about what is expected, not\n>   be used for quirky brand copy.\n> - Do not mix form sizes.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\">\n    <FormField.Root size=\"md\" isRequired>\n      <FormField.Label>First Name</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"What should we call you?\" width=\"9600\" />\n      </FormField.Input>\n    </FormField.Root>\n    <FormField.Root direction=\"row\" size=\"sm\" isRequired>\n      <FormField.Label>Last name</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"What's in a name?\" width=\"8000\" />\n      </FormField.Input>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n### Validation\n\nCommunicate clearly with users about how to correct form validation issues.\n\n> [!TIP]\\\n> **Do**\n>\n> - Have succinct reasons why the error happened for the user to correct.\n> - Keep previously entered information so a user can check their work to spot\n>   mistakes easier.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired isInvalid>\n      <FormField.Label>Social Security Number (SSN)</FormField.Label>\n      <FormField.Input>\n        <TextInput value=\"555-55-5555\" width=\"9600\" />\n      </FormField.Input>\n      <FormField.Error>\n        This information does not match\n      </FormField.Error>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t forget to use error messaging. Convey clearly how a user can make\n>   corrections to move forward through the form.\n> - Don’t clear the previously input information if applicable, to help the user\n>   understand the mistake, and provide the best user experience.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired isInvalid>\n      <FormField.Label>Social Security Number (SSN)</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"XXX-XX-XXXX\" width=\"9600\" />\n      </FormField.Input>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n### Labels\n\nClear labels are essential for a smooth user experience. They reduce confusion,\nimprove accessibility for everyone, and build user confidence by making\ninterfaces intuitive and easy to navigate. Simply put, clear labels mean happy\nusers.\n\n> [!TIP]\\\n> **Do**\n>\n> - Label is concise and clear.\n\n```jsx-live\nconst App = () => (\n  <FormField.Root isRequired>\n    <FormField.Label>First name</FormField.Label>\n    <FormField.Input>\n      <TextInput width=\"9600\" placeholder=\"John\" />\n    </FormField.Input>\n    <FormField.InfoBox>\n      Info box content.\n    </FormField.InfoBox>\n  </FormField.Root>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Navigation is higher hierarchy than icon button tools, this is not a common\n>   pattern.\n\n```jsx-live\nconst App = () => (\n  <FormField.Root isRequired>\n    <FormField.Label>What do we call you?</FormField.Label>\n    <FormField.Input>\n      <TextInput width=\"9600\" placeholder=\"John or Johnny or Jon?\" />\n    </FormField.Input>\n    <FormField.InfoBox>\n      Info box content.\n    </FormField.InfoBox>\n  </FormField.Root>\n)\n```\n\n### Helper text and info button\n\nUse the right informative tool to aid your user to understand what is needed.\nHelp text should be short and is preferred when crucial information is needed.\nUse info button when supplemental information is too long for a help text,\ntooltips will by default open a dialog overlay, and can contain more detailed\ninformation, content types and formatting. See [dialog](#) for more guidelines\nconcerning the content inside the modal.\n\n> [!TIP]\\\n> **Do**\n>\n> - Maximum of 1-2 short sentences, around 20-30 words. Keep helper text below\n>   150 characters.\n> - If a long explanation is needed to explain anything related to this field,\n>   use the tooltip instead of the helper text.\n> - A good example of balanced information. Helper text is being used to inform\n>   all users without interaction. The info button contains supplementary\n>   information.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired>\n      <FormField.Label>Product discount rank</FormField.Label>\n      <FormField.Input>\n        <TextInput  width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Sort order values can only be a value between 1 and 2,147,483,647.\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not overload help text and do not use bullet points. Keep help text below\n>   150 characters.\n> - If information is important for users, use the help text to show to users\n>   without interaction.\n> - Do not duplicate information in the help text and inside the info button.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired>\n      <FormField.Label>Product discount rank</FormField.Label>\n      <FormField.Input>\n        <TextInput  width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Only one Product discount can be applied per product. The Sort order\n        determines which Product discount applies to your product. Discounts\n        with a Sort order value closer to 1 are considered first. Sort order\n        values can only be a value between 0 and 1.\n        <br/><br/>\n        <Text fontWeight=\"700\">For example:</Text>\n        <br/>\n        <Text>• Product discount 1 has a Sort order value: 0.05</Text>\n        <Text>• Product discount 2 has a Sort order value: 0.07</Text>\n        <Text>• Both Product discounts are active and apply to the same\n        product.</Text>\n        <Text>• Product discount 2 will apply and Product discount 1 will not\n        because 0.07 is closer to 1 than 0.05.</Text>\n\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n## Specs\n\n<PropsTable id=\"FormField\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>Help Text</FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content (Level A):** Provide text alternatives for any\n  non-text content within or associated with form fields (e.g., icons, images).\n  Use alt text for images and provide text equivalents for other non-text\n  content.\n- **1.3.1 Info and Relationships (Level A):**\n  - Use the `<label>` element to programmatically associate labels with form\n    fields.\n  - Ensure that assistive technologies can determine the relationship between\n    labels and their corresponding inputs.\n  - Group related form fields using `<fieldset>` and provide a `<legend>` to\n    create logical sections.\n  - Use ARIA attributes (e.g., `aria-describedby`, `aria-labelledby`) to\n    establish relationships between form fields and related elements.\n- **1.4.1 Use of Color (Level A):**\n  - Avoid relying solely on color to convey information or indicate the state of\n    form fields (e.g., required fields, error states).\n  - Provide redundant visual cues, such as icons, text, or patterns, to\n    supplement color-based indicators.\n- **1.4.3 Contrast (Minimum) (Level AA):**\n  - Ensure sufficient color contrast between form field labels, input fields,\n    borders, and background colors.\n  - Use a contrast checking tool to verify that the contrast ratio meets the\n    minimum requirements.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard (Level A):**\n  - Make all form field functionality operable using the keyboard.\n  - Enable users to navigate between form fields using the Tab key.\n  - Allow users to activate form field controls (e.g., buttons, checkboxes,\n    radio buttons) using the Spacebar or Enter key.\n  - Ensure that keyboard focus is not trapped within form fields.\n- **2.4.7 Focus Visible (Level AA):**\n  - Provide a clear and visible focus indicator for form fields when they\n    receive keyboard focus.\n  - Visually distinguish the focus state from the default state using outlines,\n    highlights, or other visual cues.\n  - Avoid relying solely on color changes to indicate focus.\n\n#### 3. Understandable:\n\n- **3.2.1 On Focus (Level A):**\n  - Prevent form fields from unexpectedly changing the context of the page when\n    they receive focus.\n  - Ensure that any context changes are initiated by user actions, such as\n    submitting the form.\n- **3.3.1 Error Identification (Level A):**\n  - Identify and describe input errors in text when they are automatically\n    detected.\n  - Display clear and concise error messages near the corresponding form fields.\n- **3.3.2 Labels or Instructions (Level A):**\n  - Provide clear, concise, and descriptive labels or instructions for all form\n    fields.\n  - Write labels that accurately reflect the purpose of the form fields.\n  - Provide instructions about the expected input format or requirements.\n  - Avoid using placeholder text as a replacement for visible labels.\n- **3.3.3 Error Suggestion (Level AA):**\n  - If an input error is automatically detected and suggestions for correction\n    are known, then1 provide the suggestions to the user, unless it would\n    jeopardize the security or purpose of the content.\n\n#### 4. Robust:\n\n- **4.1.2 Name, Role, Value (Level A):**\n  - Use semantic HTML elements (e.g., `<input>, <textarea>, <select>`) to define\n    the role, name, and value of form fields.\n  - Ensure that assistive technologies can correctly interpret form fields and\n    their attributes.\n  - Use ARIA attributes when necessary to provide additional information to\n    assistive technologies, especially for complex or custom form fields.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Form Field\n\nForm fields are the building blocks of user interaction, collecting essential\ndata, facilitating actions, and enabling customization within digital\ninterfaces.\n\n## Overview\n\nComposed of several elements, a label, optional helper icon, a text input. There\nis also an optional helper text feature that presents at the bottom of the\nfield.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2635&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Label options\n\n#### Simple\n\nLabel is used to describe the form.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n    </FormField.Root>\n  )\n}\n```\n\n#### With help text\n\nLabel paired with form and description to give users extra clarification.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>Help Text</FormField.Description>\n    </FormField.Root>\n  )\n}\n```\n\n#### With error message\n\nExplain errors to the user in an eye catching way.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isInvalid>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Error>\n        Error message\n      </FormField.Error>\n    </FormField.Root>\n  )\n}\n```\n\n#### Required with info icon and help text\n\nThis is the default placement of labels. Info button should always open an info\ndialog, not just a tooltip on hover.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n#### Label on the left with info icon and help text\n\nThese can be used to make the page a little more condensed for the user.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root direction=\"row\" isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n### Size\n\n#### Medium\n\nThis is the default size for form fields.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired size=\"md\">\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n#### Small\n\nUse to condense forms.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired size=\"sm\">\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" size=\"sm\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>\n        Help Text\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n## Guidelines\n\nDesign guidelines offer a set of standardized rules and recommendations that\nensure consistency, usability, and accessibility across all design elements and\ninteractions.\n\nRelated guidelines [text-fields](#).\n\n### Best practices\n\n- **Clarity and simplicity:**\n  - Minimize the number of fields. Only ask for essential information.\n  - Use clear, concise labels that accurately describe the required input.\n  - Choose what position (top or left) the labels will be and make it consistent\n    in the area to help with scanning.\n- **Labels:**\n  - Place labels above or to the left of input fields.\n  - Keep labels short and descriptive.\n  - Avoid using placeholders as labels.\n- **Error handling:**\n  - Display error messages clearly and prominently.\n  - Use specific and helpful error messages and provide suggestions for\n    correcting errors.\n\n#### Labels\n\nFor label text, use a short, catch-all description (1-3 words) of the\ninformation that a user needs to provide. Label text that gets too long can be\noverwhelming and distracting, especially in complex interactions and long forms.\nSupplementary information or requirements about what to input can be shown in\nhelp text below the field, or in a tooltip.\n\n- **Use sentence case:** This follows our consistent style, unless statement\n  contains words that are branded proper nouns.\n- **Don’t add a colon (:) at the end of a field label:** The design of the\n  component already communicates the relationship between the label and the\n  input field.\n- **Use clear and concise language:** Try to keep labels to 1-3 words. Avoid\n  jargon or technical terms that the user might not understand.\n- **Be specific, brief, and descriptive:** Ensure labels are easily scannable\n  and reflect the function of the element. If you need instructional text, use a\n  helper label beneath.\n- **Avoid ambiguity:** Labels should leave no room for misinterpretation.\n- **Internalization friendly:** Be aware that translation lengthens by 20% on\n  average, but also avoid creating a sentence using the label combined with the\n  response from a user. (e.g., Label: My favorite color is... Response...Green.\n  Sentence structures between languages vary greatly.)\n\n### Helper text vs info icon\n\nUse the right informative tool to aid your user to understand what is needed.\nSee [info button](#) for more guidelines.\n\n- **Info Button:**\n  - **Complex or lengthy information:** When you need to provide more than a\n    short sentence or two of explanation. By default the info button will open a\n    dialog overlay. It can be used to show a tooltip on hover, but the amount of\n    information a popover and a help text can contain is similar. If there is a\n    want to simplify the UI, this can be used, but test to make sure that this\n    information needs to be shown without interaction from a user.\n  - **Progressive disclosure:** To avoid cluttering the form with too much text\n    upfront, revealing details only when the user actively seeks them.\n  - **Contextual help:** When the help information is very specific to a\n    particular field or a user's current state within the form.  \n- **Help Text:**\n  - **Short, concise explanations:** For simple clarifications or hints about\n    the expected input. Try to keep helper text below 150 characters.\n  - **Formatting guidance:** To provide examples of the required format (e.g.,\n    date formats, phone number patterns).\n  - **Input requirements:** To specify character limits, password rules, or\n    other constraints.\n  - **Immediate visibility:** When it's crucial for the user to see the guidance\n    without any extra action like a click or a hover to display.\n\n### Usage\n\nBe sure to give enough information to the user to understand the form without\nbeing overwhelmed. Prioritize clarity and function over personality and over\nexplanation. To increase understanding, test your forms with users to understand\nwhere confusion might occur.\n\n### Formatting\n\nBe consistent with your use of form fields label placements and size.\n\n> [!TIP]\\\n> **Do**\n>\n> - Have one placement for labels in the same form, and consistently choose one\n>   size for the entire form.\n> - Help text is used to show the user what the accepted formatting will be.\n>   Placeholder text can be used when needed but help text is preferred for\n>   accessibility.\n> - OK to capitalize proper nouns in labels instead of using sentence case.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\">\n    <FormField.Root isRequired>\n      <FormField.Label>First name</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"9600\" />\n      </FormField.Input>\n    </FormField.Root>\n    <FormField.Root isRequired>\n      <FormField.Label>Social Security Number</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Format: XXX-XX-XXXX\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Use sentence case for labels. Do not capitalize every word.\n> - Do not combine top and side labels within the form.\n> - Only use description text and helper icons when it is needed.\n> - Placeholder text should give hints to the user about what is expected, not\n>   be used for quirky brand copy.\n> - Do not mix form sizes.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\">\n    <FormField.Root size=\"md\" isRequired>\n      <FormField.Label>First Name</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"What should we call you?\" width=\"9600\" />\n      </FormField.Input>\n    </FormField.Root>\n    <FormField.Root direction=\"row\" size=\"sm\" isRequired>\n      <FormField.Label>Last name</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"What's in a name?\" width=\"8000\" />\n      </FormField.Input>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n### Validation\n\nCommunicate clearly with users about how to correct form validation issues.\n\n> [!TIP]\\\n> **Do**\n>\n> - Have succinct reasons why the error happened for the user to correct.\n> - Keep previously entered information so a user can check their work to spot\n>   mistakes easier.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired isInvalid>\n      <FormField.Label>Social Security Number (SSN)</FormField.Label>\n      <FormField.Input>\n        <TextInput value=\"555-55-5555\" width=\"9600\" />\n      </FormField.Input>\n      <FormField.Error>\n        This information does not match\n      </FormField.Error>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t forget to use error messaging. Convey clearly how a user can make\n>   corrections to move forward through the form.\n> - Don’t clear the previously input information if applicable, to help the user\n>   understand the mistake, and provide the best user experience.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired isInvalid>\n      <FormField.Label>Social Security Number (SSN)</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"XXX-XX-XXXX\" width=\"9600\" />\n      </FormField.Input>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n### Labels\n\nClear labels are essential for a smooth user experience. They reduce confusion,\nimprove accessibility for everyone, and build user confidence by making\ninterfaces intuitive and easy to navigate. Simply put, clear labels mean happy\nusers.\n\n> [!TIP]\\\n> **Do**\n>\n> - Label is concise and clear.\n\n```jsx-live\nconst App = () => (\n  <FormField.Root isRequired>\n    <FormField.Label>First name</FormField.Label>\n    <FormField.Input>\n      <TextInput width=\"9600\" placeholder=\"John\" />\n    </FormField.Input>\n    <FormField.InfoBox>\n      Info box content.\n    </FormField.InfoBox>\n  </FormField.Root>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Navigation is higher hierarchy than icon button tools, this is not a common\n>   pattern.\n\n```jsx-live\nconst App = () => (\n  <FormField.Root isRequired>\n    <FormField.Label>What do we call you?</FormField.Label>\n    <FormField.Input>\n      <TextInput width=\"9600\" placeholder=\"John or Johnny or Jon?\" />\n    </FormField.Input>\n    <FormField.InfoBox>\n      Info box content.\n    </FormField.InfoBox>\n  </FormField.Root>\n)\n```\n\n### Helper text and info button\n\nUse the right informative tool to aid your user to understand what is needed.\nHelp text should be short and is preferred when crucial information is needed.\nUse info button when supplemental information is too long for a help text,\ntooltips will by default open a dialog overlay, and can contain more detailed\ninformation, content types and formatting. See [dialog](#) for more guidelines\nconcerning the content inside the modal.\n\n> [!TIP]\\\n> **Do**\n>\n> - Maximum of 1-2 short sentences, around 20-30 words. Keep helper text below\n>   150 characters.\n> - If a long explanation is needed to explain anything related to this field,\n>   use the tooltip instead of the helper text.\n> - A good example of balanced information. Helper text is being used to inform\n>   all users without interaction. The info button contains supplementary\n>   information.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired>\n      <FormField.Label>Product discount rank</FormField.Label>\n      <FormField.Input>\n        <TextInput  width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Sort order values can only be a value between 1 and 2,147,483,647.\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not overload help text and do not use bullet points. Keep help text below\n>   150 characters.\n> - If information is important for users, use the help text to show to users\n>   without interaction.\n> - Do not duplicate information in the help text and inside the info button.\n\n```jsx-live\nconst App = () => (\n  <Stack>\n    <FormField.Root isRequired>\n      <FormField.Label>Product discount rank</FormField.Label>\n      <FormField.Input>\n        <TextInput  width=\"9600\" />\n      </FormField.Input>\n      <FormField.Description>\n        Only one Product discount can be applied per product. The Sort order\n        determines which Product discount applies to your product. Discounts\n        with a Sort order value closer to 1 are considered first. Sort order\n        values can only be a value between 0 and 1.\n        <br/><br/>\n        <Text fontWeight=\"700\">For example:</Text>\n        <br/>\n        <Text>• Product discount 1 has a Sort order value: 0.05</Text>\n        <Text>• Product discount 2 has a Sort order value: 0.07</Text>\n        <Text>• Both Product discounts are active and apply to the same\n        product.</Text>\n        <Text>• Product discount 2 will apply and Product discount 1 will not\n        because 0.07 is closer to 1 than 0.05.</Text>\n\n      </FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  </Stack>\n)\n```\n\n## Specs\n\n<PropsTable id=\"FormField\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [val, setVal] = useState('Input value');\n\n  return (\n    <FormField.Root isRequired>\n      <FormField.Label>Label</FormField.Label>\n      <FormField.Input>\n        <TextInput width=\"full\" value={val} onChange={(v)=>setVal(v)} placeholder=\"Enter something...\" />\n      </FormField.Input>\n      <FormField.Description>Help Text</FormField.Description>\n      <FormField.InfoBox>\n        Info box content.\n      </FormField.InfoBox>\n    </FormField.Root>\n  )\n}\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content (Level A):** Provide text alternatives for any\n  non-text content within or associated with form fields (e.g., icons, images).\n  Use alt text for images and provide text equivalents for other non-text\n  content.\n- **1.3.1 Info and Relationships (Level A):**\n  - Use the `<label>` element to programmatically associate labels with form\n    fields.\n  - Ensure that assistive technologies can determine the relationship between\n    labels and their corresponding inputs.\n  - Group related form fields using `<fieldset>` and provide a `<legend>` to\n    create logical sections.\n  - Use ARIA attributes (e.g., `aria-describedby`, `aria-labelledby`) to\n    establish relationships between form fields and related elements.\n- **1.4.1 Use of Color (Level A):**\n  - Avoid relying solely on color to convey information or indicate the state of\n    form fields (e.g., required fields, error states).\n  - Provide redundant visual cues, such as icons, text, or patterns, to\n    supplement color-based indicators.\n- **1.4.3 Contrast (Minimum) (Level AA):**\n  - Ensure sufficient color contrast between form field labels, input fields,\n    borders, and background colors.\n  - Use a contrast checking tool to verify that the contrast ratio meets the\n    minimum requirements.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard (Level A):**\n  - Make all form field functionality operable using the keyboard.\n  - Enable users to navigate between form fields using the Tab key.\n  - Allow users to activate form field controls (e.g., buttons, checkboxes,\n    radio buttons) using the Spacebar or Enter key.\n  - Ensure that keyboard focus is not trapped within form fields.\n- **2.4.7 Focus Visible (Level AA):**\n  - Provide a clear and visible focus indicator for form fields when they\n    receive keyboard focus.\n  - Visually distinguish the focus state from the default state using outlines,\n    highlights, or other visual cues.\n  - Avoid relying solely on color changes to indicate focus.\n\n#### 3. Understandable:\n\n- **3.2.1 On Focus (Level A):**\n  - Prevent form fields from unexpectedly changing the context of the page when\n    they receive focus.\n  - Ensure that any context changes are initiated by user actions, such as\n    submitting the form.\n- **3.3.1 Error Identification (Level A):**\n  - Identify and describe input errors in text when they are automatically\n    detected.\n  - Display clear and concise error messages near the corresponding form fields.\n- **3.3.2 Labels or Instructions (Level A):**\n  - Provide clear, concise, and descriptive labels or instructions for all form\n    fields.\n  - Write labels that accurately reflect the purpose of the form fields.\n  - Provide instructions about the expected input format or requirements.\n  - Avoid using placeholder text as a replacement for visible labels.\n- **3.3.3 Error Suggestion (Level AA):**\n  - If an input error is automatically detected and suggestions for correction\n    are known, then1 provide the suggestions to the user, unless it would\n    jeopardize the security or purpose of the content.\n\n#### 4. Robust:\n\n- **4.1.2 Name, Role, Value (Level A):**\n  - Use semantic HTML elements (e.g., `<input>, <textarea>, <select>`) to define\n    the role, name, and value of form fields.\n  - Ensure that assistive technologies can correctly interpret form fields and\n    their attributes.\n  - Use ARIA attributes when necessary to provide additional information to\n    assistive technologies, especially for complex or custom form fields.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Label options",
+          "href": "#label-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Simple",
+          "href": "#simple",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With help text",
+          "href": "#with-help-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With error message",
+          "href": "#with-error-message",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Required with info icon and help text",
+          "href": "#required-with-info-icon-and-help-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Label on the left with info icon and help text",
+          "href": "#label-on-the-left-with-info-icon-and-help-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium",
+          "href": "#medium",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Small",
+          "href": "#small",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels",
+          "href": "#labels",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Helper text vs info icon",
+          "href": "#helper-text-vs-info-icon",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Formatting",
+          "href": "#formatting",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation",
+          "href": "#validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels",
+          "href": "#labels-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Helper text and info button",
+          "href": "#helper-text-and-info-button",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

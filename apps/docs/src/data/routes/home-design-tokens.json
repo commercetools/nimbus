@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "id": "DesignTokens",
+    "title": "Design Tokens",
+    "description": "Style definitions (colors, fonts, spacing, etc.) for consistent UI components.",
+    "order": 2,
+    "repoPath": "packages/nimbus/src/docs/tokens.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens"
+    ],
+    "route": "home/design-tokens",
+    "tags": [
+      "tokens",
+      "design"
+    ],
+    "toc": [],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Design Tokens\n\n<CategoryOverview />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Design Tokens\n\n<CategoryOverview />\n",
+      "toc": []
+    }
+  }
+}

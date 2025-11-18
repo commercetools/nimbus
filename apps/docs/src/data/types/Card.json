@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/data-display/card}",
+    "example": "```tsx\n<Card.Root>\n  <Card.Header>Card Title</Card.Header>\n  <Card.Content>Card content goes here</Card.Content>\n</Card.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Card\n============================================================\nA versatile container component that presents self-contained information\nin a visually distinct way. Cards group related content and actions\ntogether, making it easy to scan and interact with information.",
+  "displayName": "Card",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

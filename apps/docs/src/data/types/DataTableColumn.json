@@ -1,0 +1,464 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DataTable.Column - Individual column header component that handles sorting interactions",
+  "displayName": "DataTableColumn",
+  "methods": [],
+  "props": {
+    "id": {
+      "defaultValue": null,
+      "description": "The unique id of the item.",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Key"
+      }
+    },
+    "allowsSorting": {
+      "defaultValue": null,
+      "description": "Whether the column allows sorting.",
+      "name": "allowsSorting",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isRowHeader": {
+      "defaultValue": null,
+      "description": "Whether a column is a [row header](https://www.w3.org/TR/wai-aria-1.1/#rowheader) and should be announced by assistive technology during row navigation.",
+      "name": "isRowHeader",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "textValue": {
+      "defaultValue": null,
+      "description": "A string representation of the item's contents, used for features like typeahead.",
+      "name": "textValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "width": {
+      "defaultValue": null,
+      "description": "The width of the column. This prop only applies when the `<Table>` is wrapped in a `<ResizableTableContainer>`.",
+      "name": "width",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ColumnSize"
+      }
+    },
+    "defaultWidth": {
+      "defaultValue": null,
+      "description": "The default width of the column. This prop only applies when the `<Table>` is wrapped in a `<ResizableTableContainer>`.",
+      "name": "defaultWidth",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ColumnSize"
+      }
+    },
+    "minWidth": {
+      "defaultValue": null,
+      "description": "The minimum width of the column. This prop only applies when the `<Table>` is wrapped in a `<ResizableTableContainer>`.",
+      "name": "minWidth",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ColumnStaticSize"
+      }
+    },
+    "maxWidth": {
+      "defaultValue": null,
+      "description": "The maximum width of the column. This prop only applies when the `<Table>` is wrapped in a `<ResizableTableContainer>`.",
+      "name": "maxWidth",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ColumnProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ColumnProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ColumnStaticSize"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "className": {
+      "defaultValue": null,
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ClassNameOrFunction<PopoverRenderProps>"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "StyleOrFunction<PopoverRenderProps>"
+      }
+    },
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "asChild": {
+      "defaultValue": null,
+      "description": "",
+      "name": "asChild",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "abbr": {
+      "defaultValue": null,
+      "description": "",
+      "name": "abbr",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "ThHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "ThHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "align": {
+      "defaultValue": null,
+      "description": "",
+      "name": "align",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "TableHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "TableHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"left\" | \"right\" | \"center\"",
+        "value": [
+          {
+            "value": "\"left\""
+          },
+          {
+            "value": "\"right\""
+          },
+          {
+            "value": "\"center\""
+          }
+        ]
+      }
+    },
+    "colSpan": {
+      "defaultValue": null,
+      "description": "",
+      "name": "colSpan",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "ThHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "ThHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "headers": {
+      "defaultValue": null,
+      "description": "",
+      "name": "headers",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "ThHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "ThHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "rowSpan": {
+      "defaultValue": null,
+      "description": "",
+      "name": "rowSpan",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "ThHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "ThHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "scope": {
+      "defaultValue": null,
+      "description": "",
+      "name": "scope",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "ThHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "ThHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLTableCellElement>"
+      }
+    },
+    "column": {
+      "defaultValue": null,
+      "description": "",
+      "name": "column",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "DataTableColumnItem<Record<string, unknown>>"
+      }
+    },
+    "unstyled": {
+      "defaultValue": null,
+      "description": "",
+      "name": "unstyled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isInternalColumn": {
+      "defaultValue": null,
+      "description": "",
+      "name": "isInternalColumn",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

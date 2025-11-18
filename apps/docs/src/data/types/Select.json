@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "example": "```tsx\n<Select.Root>\n  <Select.Options placeholder=\"Select an option\">\n    <Select.Option id=\"1\">Option 1</Select.Option>\n    <Select.Option id=\"2\">Option 2</Select.Option>\n    <Select.Option id=\"3\">Option 3</Select.Option>\n  </Select.Options>\n</Select.Root>\n```",
+    "see": "https://nimbus-documentation.vercel.app/components/inputs/select"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Select\n============================================================\nA versatile select component for choosing one or more options from a list.\nFeatures full keyboard accessibility and WCAG 2.1 AA compliance.",
+  "displayName": "Select",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

@@ -1,0 +1,223 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "CollapsibleMotion.Trigger - The trigger button that toggles the collapsible content\n\nThis component renders a button with proper ARIA attributes for accessibility.\nIt automatically handles the toggle functionality when clicked.",
+  "displayName": "CollapsibleMotionTrigger",
+  "methods": [],
+  "props": {
+    "form": {
+      "defaultValue": null,
+      "description": "",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formAction": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | ((formData: FormData) => void | Promise<void>)"
+      }
+    },
+    "formEncType": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formEncType",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formMethod": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formMethod",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formNoValidate": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formNoValidate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "formTarget": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formTarget",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "type": {
+      "defaultValue": null,
+      "description": "",
+      "name": "type",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "HTMLInputTypeAttribute"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | number | readonly string[]"
+      }
+    },
+    "asChild": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to render as a child component",
+      "name": "asChild",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/collapsible-motion/collapsible-motion.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+      "name": "ref",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "RefAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/combobox/combobox.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "id": "TokensBlurs",
+    "title": "Blurs",
+    "description": "The list of available blur tokens",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/blurs.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Other",
+      "Blurs"
+    ],
+    "route": "home/design-tokens/other/blurs",
+    "tags": [
+      "blur"
+    ],
+    "toc": [],
+    "icon": "BlurOn",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" demoProperty=\"blur\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Blurs\n\nThe list of available blur tokens:\n\n<GenericTokenTableDemo category=\"blurs\" demoProperty=\"blur\" />\n",
+      "toc": []
+    }
+  }
+}

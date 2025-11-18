@@ -1,0 +1,253 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/inputs/scoped-search-input}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "ScopedSearchInput\n============================================================\nA combined input component that integrates a select dropdown with a search input field,\nenabling users to filter search by category or field type.",
+  "displayName": "ScopedSearchInput",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": null,
+      "description": "Size variant of the scoped search input",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\">"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "Current value (text + selected option)",
+      "name": "value",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ScopedSearchInputValue"
+      }
+    },
+    "onValueChange": {
+      "defaultValue": null,
+      "description": "Callback when complete value changes",
+      "name": "onValueChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(value: ScopedSearchInputValue) => void"
+      }
+    },
+    "onTextChange": {
+      "defaultValue": null,
+      "description": "Callback when only search text changes",
+      "name": "onTextChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(text: string) => void"
+      }
+    },
+    "onOptionChange": {
+      "defaultValue": null,
+      "description": "Callback when only option changes",
+      "name": "onOptionChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(option: string) => void"
+      }
+    },
+    "onSubmit": {
+      "defaultValue": null,
+      "description": "Callback when search is submitted",
+      "name": "onSubmit",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "(value: ScopedSearchInputValue) => void"
+      }
+    },
+    "options": {
+      "defaultValue": null,
+      "description": "Available scope options or option groups",
+      "name": "options",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[]"
+      }
+    },
+    "selectPlaceholder": {
+      "defaultValue": null,
+      "description": "Placeholder for scope selector",
+      "name": "selectPlaceholder",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "searchPlaceholder": {
+      "defaultValue": null,
+      "description": "Placeholder for search input",
+      "name": "searchPlaceholder",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "selectAriaLabel": {
+      "defaultValue": null,
+      "description": "Aria label for scope selector",
+      "name": "selectAriaLabel",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "searchAriaLabel": {
+      "defaultValue": null,
+      "description": "Aria label for search input",
+      "name": "searchAriaLabel",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "isClearable": {
+      "defaultValue": null,
+      "description": "Whether to show clear button",
+      "name": "isClearable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the input is disabled",
+      "name": "isDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isReadOnly": {
+      "defaultValue": null,
+      "description": "Whether the input is read-only",
+      "name": "isReadOnly",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": null,
+      "description": "Whether the input has validation errors",
+      "name": "isInvalid",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isRequired": {
+      "defaultValue": null,
+      "description": "Whether the input is required",
+      "name": "isRequired",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/scoped-search-input/scoped-search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

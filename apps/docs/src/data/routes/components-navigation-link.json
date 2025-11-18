@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "id": "Components-link",
+    "title": "Link",
+    "description": "To allow a user to navigate to a different page or resource",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/link/link.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Link"
+    ],
+    "route": "components/navigation/link",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size and text styling",
+        "href": "#size-and-text-styling",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Length of text",
+        "href": "#length-of-text",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Actions",
+        "href": "#actions",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Links inside alerts",
+        "href": "#links-inside-alerts",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          8
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          8,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          8,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          8,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          8,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Link\n\nA link is a clickable element that navigates users to another page, section of\nthe page, or resource, and is visually distinguished by styling.\n\n## Overview\n\nThe link is flexible to many uses and matching text styles for common\nplacements. Most commonly used in dialog boxes, alerts, and within body copy.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-spectrum/Link.html#link)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/link/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726)\n\n## Variables\n\nGet familiar with the features.\n\n### Size and text styling\n\nLinks should be within text, and should take on that styling when used, and\nprovide the additional link stylings to let the user know that the text is\ninteractive.\n\n## Guidelines\n\nLink guidelines ensure that interactive text or elements are clearly\nidentifiable, describe their destination or function, are keyboard accessible,\nand maintain sufficient visual contrast for all users.\n\n### Best practices\n\n- **Links are meant to be used in inline placements, buttons are standalone\n  elements.** Additionally, if you need an icon next to your link, use a link\n  styled button instead of using a link and an icon.\n- **Use links for navigation** rather than to complete an action. Links are\n  tertiary actions should give users access to information or navigate to other\n  pages when helpful to the user.\n  - Stylized navigation like footers and nav items are more often buttons rather\n    than links.\n- **Use clear and concise text:** Use link text that accurately and concisely\n  describes the destination or purpose of the link. Avoid generic phrases like\n  \"click here\". Remember that translation will add 20% more length on average.\n- **Accessibility:** Default color contrast passes accessibility guidelines, if\n  customizing, please ensure your links pass color contrast guidelines. Use ARIA\n  attributes to provide additional context to assistive technologies.\n\n### Usage\n\nLinked text, the clickable text that forms a hyperlink, should be used\nstrategically to enhance navigation and provide access to relevant information.\n\n> [!TIP]\\\n> When to use\n\n- **Navigation:** Users expect links to move them from to one location to\n  another within a product. When moving outside the product or when opening a\n  new page, use the\n  [link styled button](/components/inputs/button#tertiary-actions).\n- **Tertiary actions that need explanation:** when showing a user an error or\n  explanation it is nice to offer a link for the user.\n- **Contextual information:** To provide access to related content, definitions,\n  or supporting materials.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Redundancy:** If the same destination can be reached through more intuitive\n  navigation (e.g., menus, breadcrumbs).\n- **Disrupting flow:** Overuse of links within paragraphs can disrupt the\n  reading flow and make it difficult for users to focus on the main content.\n- **Ambiguity:** If the link text is unclear or doesn't accurately describe the\n  destination, it can lead to confusion and frustration.\n- **Accessibility issues:** If links are not properly styled or labeled, they\n  can be inaccessible to users with disabilities.\n\n### Length of text\n\nKeep text links short and accurately describe the action that will be taken.\n\n> [!TIP]\\\n> **Do**\n>\n> - Explain where the link will go clearly, but keep it short as possible.\n\n```jsx-live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Manage permissions\n  </Link>\n );\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not make an entire sentence a hyperlink.\n\n```jsx-live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Click here to know all there is to know about making custom views in the Merchant Center.\n  </Link>\n );\n```\n\n### Actions\n\nUsers expect links to navigate rather than submit actions. Do not use links to\ndo what a button would accomplish better.\n\n> [!TIP]\\\n> **Do**\n>\n> - Implementations like this are more familiar to the user. They will expect to navigate to the page where they can accomplish this action.\n\n```jsx-live\nconst App = () =>  (\n   <Box>\n    There has been an issue with your payment.{\" \"}\n    <Link href=\"#\" fontColor=\"primary\">\n      Update payment\n    </Link>\n  </Box>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not use links for actions that buttons are more commonly used for.\n\n```jsx-live\nconst App = () => (\n   <Stack direction=\"horizontal\" alignItems=\"center\" gap=\"400\" >\n     <Link href=\"#\" fontColor=\"primary\">\n      Save\n     </Link>\n     <Link href=\"#\" fontColor=\"primary\">\n      Delete\n     </Link>\n  </Stack>\n);\n```\n\n### Links inside alerts\n\nText links inherit colors depending on placement.\n\n> [!TIP]\\\n> **Do**\n>\n> - If possible lead the user to where they can fix or learn more about what\n>   happened so they might correct the action to complete their task.\n\n```jsx-live\nconst App = () =>  (\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     Something went wrong. <Link>Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not link the entire message, do not have multiple sentences in a link.\n> - Do not use default link colors when you can use inherited colors to provide\n>   the best consistency for a user.\n\n```jsx-live\nconst App = () =>(\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     <Link color=\"primary\">Something went wrong. Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n\n### Specs\n\n<PropsTable id=\"Link\" />\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () =>  (\n  <Link href=\"#\" size=\"md\" fontColor=\"primary\">\n    Click me... with your keyboard\n  </Link>\n );\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content (Level A):**\n  - Provide text alternatives for any non-text content within or associated with\n    links (e.g., icons embedded in links).\n  - Use alt text for images within links and provide text equivalents for other\n    non-text content.\n- **1.4.1 Use of Color (Level A):**\n  - Avoid relying solely on color to distinguish links from surrounding text.\n  - Provide additional visual cues, such as underlines, bold text, or icons, to\n    indicate links.\n  - Ensure that links remain distinguishable even when color is not available.\n- **1.4.3 Contrast (Minimum) (Level AA):**\n  - Ensure sufficient color contrast between link text and the surrounding text\n    and background.\n  - Use a contrast checking tool to verify that the contrast ratio meets the\n    minimum requirements.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard (Level A):**\n  - Make all links fully operable using the keyboard.\n  - Enable users to navigate to links using the Tab key.\n  - Allow users to activate links using the Enter key.\n- **2.4.4 Link Purpose (In Context) (Level A):**\n  - Write link text that clearly describes the destination or purpose of the\n    link.\n  - Avoid generic link text such as \"click here\" or \"read more\" without\n    sufficient context.\n  - Ensure that the link's purpose is clear from the surrounding context.\n- **2.4.7 Focus Visible (Level AA):**\n  - Provide a clear and visible focus indicator for links when they receive\n    keyboard focus.\n  - Visually distinguish the focus state from the default state using outlines,\n    highlights, or other visual cues.\n  - Avoid relying solely on color changes to indicate focus.\n\n#### 3. Understandable:\n\n- **3.1.2 Language of Parts (Level AA):**\n  - If a link leads to content in a different language, use the lang attribute\n    to indicate the language of the linked content.\n- **3.2.1 On Focus (Level A):**\n  - Prevent links from unexpectedly changing the context of the page when they\n    receive focus.\n  - Ensure that any context changes are initiated by the user activating the\n    link.\n\n#### 4. Robust:\n\n- **4.1.2 Name, Role, Value (Level A):**\n  - Use the `<a>` element correctly to define links.\n  - Ensure that assistive technologies can correctly interpret links and their\n    attributes.\n  - Use ARIA attributes (e.g., `aria-label`, `aria-describedby`) when necessary\n    to provide additional information to assistive technologies, especially for\n    complex links or custom implementations.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Link\n\nA link is a clickable element that navigates users to another page, section of\nthe page, or resource, and is visually distinguished by styling.\n\n## Overview\n\nThe link is flexible to many uses and matching text styles for common\nplacements. Most commonly used in dialog boxes, alerts, and within body copy.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-spectrum/Link.html#link)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/link/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726)\n\n## Variables\n\nGet familiar with the features.\n\n### Size and text styling\n\nLinks should be within text, and should take on that styling when used, and\nprovide the additional link stylings to let the user know that the text is\ninteractive.\n\n## Guidelines\n\nLink guidelines ensure that interactive text or elements are clearly\nidentifiable, describe their destination or function, are keyboard accessible,\nand maintain sufficient visual contrast for all users.\n\n### Best practices\n\n- **Links are meant to be used in inline placements, buttons are standalone\n  elements.** Additionally, if you need an icon next to your link, use a link\n  styled button instead of using a link and an icon.\n- **Use links for navigation** rather than to complete an action. Links are\n  tertiary actions should give users access to information or navigate to other\n  pages when helpful to the user.\n  - Stylized navigation like footers and nav items are more often buttons rather\n    than links.\n- **Use clear and concise text:** Use link text that accurately and concisely\n  describes the destination or purpose of the link. Avoid generic phrases like\n  \"click here\". Remember that translation will add 20% more length on average.\n- **Accessibility:** Default color contrast passes accessibility guidelines, if\n  customizing, please ensure your links pass color contrast guidelines. Use ARIA\n  attributes to provide additional context to assistive technologies.\n\n### Usage\n\nLinked text, the clickable text that forms a hyperlink, should be used\nstrategically to enhance navigation and provide access to relevant information.\n\n> [!TIP]\\\n> When to use\n\n- **Navigation:** Users expect links to move them from to one location to\n  another within a product. When moving outside the product or when opening a\n  new page, use the\n  [link styled button](/components/inputs/button#tertiary-actions).\n- **Tertiary actions that need explanation:** when showing a user an error or\n  explanation it is nice to offer a link for the user.\n- **Contextual information:** To provide access to related content, definitions,\n  or supporting materials.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Redundancy:** If the same destination can be reached through more intuitive\n  navigation (e.g., menus, breadcrumbs).\n- **Disrupting flow:** Overuse of links within paragraphs can disrupt the\n  reading flow and make it difficult for users to focus on the main content.\n- **Ambiguity:** If the link text is unclear or doesn't accurately describe the\n  destination, it can lead to confusion and frustration.\n- **Accessibility issues:** If links are not properly styled or labeled, they\n  can be inaccessible to users with disabilities.\n\n### Length of text\n\nKeep text links short and accurately describe the action that will be taken.\n\n> [!TIP]\\\n> **Do**\n>\n> - Explain where the link will go clearly, but keep it short as possible.\n\n```jsx-live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Manage permissions\n  </Link>\n );\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not make an entire sentence a hyperlink.\n\n```jsx-live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Click here to know all there is to know about making custom views in the Merchant Center.\n  </Link>\n );\n```\n\n### Actions\n\nUsers expect links to navigate rather than submit actions. Do not use links to\ndo what a button would accomplish better.\n\n> [!TIP]\\\n> **Do**\n>\n> - Implementations like this are more familiar to the user. They will expect to navigate to the page where they can accomplish this action.\n\n```jsx-live\nconst App = () =>  (\n   <Box>\n    There has been an issue with your payment.{\" \"}\n    <Link href=\"#\" fontColor=\"primary\">\n      Update payment\n    </Link>\n  </Box>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not use links for actions that buttons are more commonly used for.\n\n```jsx-live\nconst App = () => (\n   <Stack direction=\"horizontal\" alignItems=\"center\" gap=\"400\" >\n     <Link href=\"#\" fontColor=\"primary\">\n      Save\n     </Link>\n     <Link href=\"#\" fontColor=\"primary\">\n      Delete\n     </Link>\n  </Stack>\n);\n```\n\n### Links inside alerts\n\nText links inherit colors depending on placement.\n\n> [!TIP]\\\n> **Do**\n>\n> - If possible lead the user to where they can fix or learn more about what\n>   happened so they might correct the action to complete their task.\n\n```jsx-live\nconst App = () =>  (\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     Something went wrong. <Link>Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not link the entire message, do not have multiple sentences in a link.\n> - Do not use default link colors when you can use inherited colors to provide\n>   the best consistency for a user.\n\n```jsx-live\nconst App = () =>(\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     <Link color=\"primary\">Something went wrong. Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n\n### Specs\n\n<PropsTable id=\"Link\" />\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () =>  (\n  <Link href=\"#\" size=\"md\" fontColor=\"primary\">\n    Click me... with your keyboard\n  </Link>\n );\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content (Level A):**\n  - Provide text alternatives for any non-text content within or associated with\n    links (e.g., icons embedded in links).\n  - Use alt text for images within links and provide text equivalents for other\n    non-text content.\n- **1.4.1 Use of Color (Level A):**\n  - Avoid relying solely on color to distinguish links from surrounding text.\n  - Provide additional visual cues, such as underlines, bold text, or icons, to\n    indicate links.\n  - Ensure that links remain distinguishable even when color is not available.\n- **1.4.3 Contrast (Minimum) (Level AA):**\n  - Ensure sufficient color contrast between link text and the surrounding text\n    and background.\n  - Use a contrast checking tool to verify that the contrast ratio meets the\n    minimum requirements.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard (Level A):**\n  - Make all links fully operable using the keyboard.\n  - Enable users to navigate to links using the Tab key.\n  - Allow users to activate links using the Enter key.\n- **2.4.4 Link Purpose (In Context) (Level A):**\n  - Write link text that clearly describes the destination or purpose of the\n    link.\n  - Avoid generic link text such as \"click here\" or \"read more\" without\n    sufficient context.\n  - Ensure that the link's purpose is clear from the surrounding context.\n- **2.4.7 Focus Visible (Level AA):**\n  - Provide a clear and visible focus indicator for links when they receive\n    keyboard focus.\n  - Visually distinguish the focus state from the default state using outlines,\n    highlights, or other visual cues.\n  - Avoid relying solely on color changes to indicate focus.\n\n#### 3. Understandable:\n\n- **3.1.2 Language of Parts (Level AA):**\n  - If a link leads to content in a different language, use the lang attribute\n    to indicate the language of the linked content.\n- **3.2.1 On Focus (Level A):**\n  - Prevent links from unexpectedly changing the context of the page when they\n    receive focus.\n  - Ensure that any context changes are initiated by the user activating the\n    link.\n\n#### 4. Robust:\n\n- **4.1.2 Name, Role, Value (Level A):**\n  - Use the `<a>` element correctly to define links.\n  - Ensure that assistive technologies can correctly interpret links and their\n    attributes.\n  - Use ARIA attributes (e.g., `aria-label`, `aria-describedby`) when necessary\n    to provide additional information to assistive technologies, especially for\n    complex links or custom implementations.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size and text styling",
+          "href": "#size-and-text-styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Length of text",
+          "href": "#length-of-text",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Actions",
+          "href": "#actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Links inside alerts",
+          "href": "#links-inside-alerts",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            8,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

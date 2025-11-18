@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "id": "Components-Feedback",
+    "title": "Feedback",
+    "description": "Components for providing user feedback.",
+    "order": 5,
+    "repoPath": "packages/nimbus/src/docs/feedback.mdx",
+    "menu": [
+      "Components",
+      "Feedback"
+    ],
+    "route": "components/feedback",
+    "tags": [
+      "document"
+    ],
+    "toc": [],
+    "icon": "CommentBank",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Feedback\n\nComponents for providing user feedback.\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Feedback\n\nComponents for providing user feedback.\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": []
+    }
+  }
+}

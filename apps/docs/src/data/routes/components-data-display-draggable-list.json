@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "id": "Components-DraggableList",
+    "title": "DraggableList",
+    "description": "A drag-and-drop list component for reordering items with keyboard navigation and accessibility support.",
+    "lifecycleState": "Beta",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/draggable-list/draggable-list.mdx",
+    "menu": [
+      "Components",
+      "Data Display",
+      "Draggable List"
+    ],
+    "route": "components/data-display/draggable-list",
+    "tags": [
+      "component",
+      "lists",
+      "drag and drop",
+      "interactive"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Interactions",
+        "href": "#interactions",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Draggable list in use",
+        "href": "#draggable-list-in-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Draggable list\n\nThe draggable list allows users to easily reorder or manage a sequence of items via a direct drag-and-drop interaction.\n\n## Overview\nThe draggable list component presents structured, ordered content where the sequence itself is meaningful. It uses visual and functional cues to enable users to physically manipulate the list order by dragging an item to a new insertion point, providing immediate visual feedback throughout the process.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=8571-40126) \n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-draggablelist--docs)\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/dnd.html)\n\n\n## Variables\n\nGet familiar with the features.\n\n\n### Interactions\n**Drag, drop and remove**\n\nItems within draggable lists can be lifted and reordered, with an option to have items removable or disabled.\n\n```jsx-live\nconst App = () => {\n  const items = [\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ];\n\n  return (\n    <DraggableList.Root\n      aria-label=\"Task list\"\n      items={items}\n      removableItems\n    />\n  );\n}\n```\n\n**Cross list drag and drop**\n\nWith two sections allowing users to pass items between and allowing for reordering. While dragging the new location will highlight conveying to the user that they can drop this item in that section. \n\n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        removableItems\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        removableItems\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n### Size\n\n**Size variants**\n\nDraggable list supports two sizes. Use the smaller size to show a more compact experience.\n\n\n```jsx-live\nconst App = () => {\n  const items = [\n    { key: \"1\", label: \"Small food\" },\n  ];\n\n  const mediumItems = [\n    { key: \"1\", label: \"Medium food\" },\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"800\">\n      <DraggableList.Root\n        aria-label=\"Small food list\"\n        items={items}\n        size=\"sm\"\n      />\n      <DraggableList.Root\n        aria-label=\"Medium food list\"\n        items={mediumItems}\n        size=\"md\"\n      />\n    </Stack>\n  );\n}\n```\n\n## Guidelines\n\nDraggable list guidelines ensure that reordering is intuitive and accessible by providing a clear drag handle, visual feedback on the insertion point, and a necessary keyboard alternative for manipulation.\n\n\n### Best practices\n\n - **Clear drag handle:** the distinct drag handle icon on each list item will explicitly communicate that the item is movable and defines the primary target for the drag action.\n - **Show insertion point:** As the user drags the item, clearly indicate the exact target position where the item will be dropped. This is often done by visually highlighting the gap or line where the item will be inserted.\n - **Maintain performance:** Ensure the drag-and-drop animation is smooth and responsive without lag, especially in long lists.\n - **Limited scope:** Only allow items to be dragged within the confines of the current list; do not allow dragging to other unrelated sections unless explicitly necessary for the application's core function.\n - **Use the right cursor:** The mouse cursor will change to a hand or grab cursor when hovering over the drag handle to visually reinforce interactivity.\n - **Lift the item (visual pickup):** When the user clicks the handle to start dragging, the appearance will immediately change to separate it visually from the rest of the list.\n - **Maintain stability:** Keep the other list items stable while one is being dragged. Do not introduce excessive animations or visual clutter that makes it hard to see the remaining order.\n - **Provide an accessible alternative:** Always include keyboard-operable \"Move Up\" and \"Move Down\" buttons for each list item, as drag-and-drop actions are inaccessible to many keyboard-only and assistive technology users.\n\n### Usage\n\nThe draggable list component is used when the explicit, user-defined order of items directly impacts the application's logic or user outcome, such as sequencing workflow steps or organizing a custom list.\n\n> [!TIP]\\\n> When to use\n\n- **User-defined order:** When the order of items directly impacts the application's logic or user outcome.\n- **Short to medium lists:** For lists that are manageable without extensive scrolling where dragging is quick.\n- **Spatial relationship is key:** When the user benefits from seeing the new sequence immediately take effect visually.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple filtering/sorting:** If the only goal is to change the list's view (e.g., sort alphabetically, filter by date), use standard sort/filter controls instead.\n- **Very long lists:** Dragging items across many screen heights or dozens of items is tedious and inefficient.\n- **Actions are primary:** If the main interaction is performing an action on the item (e.g., edit, delete) rather than changing its position. Use a standard list component with action buttons.\n\n\n### Draggable list in use \n\n> [!TIP]\\\n> **Do**\n>\n> - Do save the new order instantly or provide a clear \"Save Order\" button after the drop action is completed.\n> - Do ensure all relevant metadata (e.g., numbering) updates automatically after a successful drop. \n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't make the entire list item the draggable area; this interferes with clicking links, checkboxes, or actions within the item.\n> - Don't interrupt the drag action with tooltips, modals, or sudden page refreshes.\n> - Don't forget to provide accessible alternatives for reordering (see Accessibility).\n\n\n```jsx-live\nconst App = () => {\n  const initialLeft = [\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ];\n\n  const initialRight = [\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ];\n\n  const [leftItems, setLeftItems] = useState(initialLeft);\n  const [rightItems, setRightItems] = useState(initialRight);\n\n  const handleLeftUpdate = (items) => {\n    setLeftItems(items);\n    setTimeout(() => {\n      setLeftItems(initialLeft);\n      setRightItems(initialRight);\n    }, 500);\n  };\n\n  const handleRightUpdate = (items) => {\n    setRightItems(items);\n    setTimeout(() => {\n      setLeftItems(initialLeft);\n      setRightItems(initialRight);\n    }, 500);\n  };\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={handleLeftUpdate}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={handleRightUpdate}\n      />\n    </Flex>\n  );\n}\n```\n\n## Specs\n\n<PropsTable id=\"DraggableList\" />\n\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n### Accessibility standards\n\n - **Keyboard reordering is essential:** Since drag-and-drop is a complex pointer gesture, a keyboard-accessible method for reordering is mandatory (WCAG 2.5.1 Pointer Gestures). This usually involves providing \"Move Up\" and \"Move Down\" buttons or a position input field next to the list item.\n - **ARIA roles:** Use appropriate ARIA roles to convey the list and item structure to screen readers. For interactive lists, `role=\"listbox\"` for the container and `role=\"option\"` for items might be suitable, or use standard semantic lists (`<ul>`, `<li>`) enhanced with ARIA attributes.\n - **Focus management:** Ensure the drag handle or the dedicated keyboard buttons are included in the Tab order and have clear focus indicators.\n - **Status updates:** Announce the result of the reordering to screen reader users using an `aria-live` region (e.g., \"Item moved to position 4\").",
+  "views": {
+    "overview": {
+      "mdx": "\n# Draggable list\n\nThe draggable list allows users to easily reorder or manage a sequence of items via a direct drag-and-drop interaction.\n\n## Overview\nThe draggable list component presents structured, ordered content where the sequence itself is meaningful. It uses visual and functional cues to enable users to physically manipulate the list order by dragging an item to a new insertion point, providing immediate visual feedback throughout the process.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=8571-40126) \n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-draggablelist--docs)\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/dnd.html)\n\n\n## Variables\n\nGet familiar with the features.\n\n\n### Interactions\n**Drag, drop and remove**\n\nItems within draggable lists can be lifted and reordered, with an option to have items removable or disabled.\n\n```jsx-live\nconst App = () => {\n  const items = [\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ];\n\n  return (\n    <DraggableList.Root\n      aria-label=\"Task list\"\n      items={items}\n      removableItems\n    />\n  );\n}\n```\n\n**Cross list drag and drop**\n\nWith two sections allowing users to pass items between and allowing for reordering. While dragging the new location will highlight conveying to the user that they can drop this item in that section. \n\n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        removableItems\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        removableItems\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n### Size\n\n**Size variants**\n\nDraggable list supports two sizes. Use the smaller size to show a more compact experience.\n\n\n```jsx-live\nconst App = () => {\n  const items = [\n    { key: \"1\", label: \"Small food\" },\n  ];\n\n  const mediumItems = [\n    { key: \"1\", label: \"Medium food\" },\n  ];\n\n  return (\n    <Stack direction=\"horizontal\" gap=\"800\">\n      <DraggableList.Root\n        aria-label=\"Small food list\"\n        items={items}\n        size=\"sm\"\n      />\n      <DraggableList.Root\n        aria-label=\"Medium food list\"\n        items={mediumItems}\n        size=\"md\"\n      />\n    </Stack>\n  );\n}\n```\n\n## Guidelines\n\nDraggable list guidelines ensure that reordering is intuitive and accessible by providing a clear drag handle, visual feedback on the insertion point, and a necessary keyboard alternative for manipulation.\n\n\n### Best practices\n\n - **Clear drag handle:** the distinct drag handle icon on each list item will explicitly communicate that the item is movable and defines the primary target for the drag action.\n - **Show insertion point:** As the user drags the item, clearly indicate the exact target position where the item will be dropped. This is often done by visually highlighting the gap or line where the item will be inserted.\n - **Maintain performance:** Ensure the drag-and-drop animation is smooth and responsive without lag, especially in long lists.\n - **Limited scope:** Only allow items to be dragged within the confines of the current list; do not allow dragging to other unrelated sections unless explicitly necessary for the application's core function.\n - **Use the right cursor:** The mouse cursor will change to a hand or grab cursor when hovering over the drag handle to visually reinforce interactivity.\n - **Lift the item (visual pickup):** When the user clicks the handle to start dragging, the appearance will immediately change to separate it visually from the rest of the list.\n - **Maintain stability:** Keep the other list items stable while one is being dragged. Do not introduce excessive animations or visual clutter that makes it hard to see the remaining order.\n - **Provide an accessible alternative:** Always include keyboard-operable \"Move Up\" and \"Move Down\" buttons for each list item, as drag-and-drop actions are inaccessible to many keyboard-only and assistive technology users.\n\n### Usage\n\nThe draggable list component is used when the explicit, user-defined order of items directly impacts the application's logic or user outcome, such as sequencing workflow steps or organizing a custom list.\n\n> [!TIP]\\\n> When to use\n\n- **User-defined order:** When the order of items directly impacts the application's logic or user outcome.\n- **Short to medium lists:** For lists that are manageable without extensive scrolling where dragging is quick.\n- **Spatial relationship is key:** When the user benefits from seeing the new sequence immediately take effect visually.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple filtering/sorting:** If the only goal is to change the list's view (e.g., sort alphabetically, filter by date), use standard sort/filter controls instead.\n- **Very long lists:** Dragging items across many screen heights or dozens of items is tedious and inefficient.\n- **Actions are primary:** If the main interaction is performing an action on the item (e.g., edit, delete) rather than changing its position. Use a standard list component with action buttons.\n\n\n### Draggable list in use \n\n> [!TIP]\\\n> **Do**\n>\n> - Do save the new order instantly or provide a clear \"Save Order\" button after the drop action is completed.\n> - Do ensure all relevant metadata (e.g., numbering) updates automatically after a successful drop. \n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't make the entire list item the draggable area; this interferes with clicking links, checkboxes, or actions within the item.\n> - Don't interrupt the drag action with tooltips, modals, or sudden page refreshes.\n> - Don't forget to provide accessible alternatives for reordering (see Accessibility).\n\n\n```jsx-live\nconst App = () => {\n  const initialLeft = [\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ];\n\n  const initialRight = [\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ];\n\n  const [leftItems, setLeftItems] = useState(initialLeft);\n  const [rightItems, setRightItems] = useState(initialRight);\n\n  const handleLeftUpdate = (items) => {\n    setLeftItems(items);\n    setTimeout(() => {\n      setLeftItems(initialLeft);\n      setRightItems(initialRight);\n    }, 500);\n  };\n\n  const handleRightUpdate = (items) => {\n    setRightItems(items);\n    setTimeout(() => {\n      setLeftItems(initialLeft);\n      setRightItems(initialRight);\n    }, 500);\n  };\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={handleLeftUpdate}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={handleRightUpdate}\n      />\n    </Flex>\n  );\n}\n```\n\n## Specs\n\n<PropsTable id=\"DraggableList\" />\n\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [leftItems, setLeftItems] = useState([\n    { key: \"1\", label: \"Food\" },\n    { key: \"2\", label: \"Cosmetics\" },\n    { key: \"3\", label: \"Furniture\" },\n    { key: \"4\", label: \"Electronics\" },\n    { key: \"5\", label: \"Clothing\" },\n  ]);\n\n  const [rightItems, setRightItems] = useState([\n    { key: \"6\", label: \"Sport\" },\n    { key: \"7\", label: \"Home\" },\n  ]);\n\n  return (\n    <Flex gap=\"400\">\n      <DraggableList.Root\n        aria-label=\"Left column\"\n        items={leftItems}\n        onUpdateItems={setLeftItems}\n      />\n      <DraggableList.Root\n        aria-label=\"Right column\"\n        items={rightItems}\n        onUpdateItems={setRightItems}\n      />\n    </Flex>\n  );\n}\n```\n\n### Accessibility standards\n\n - **Keyboard reordering is essential:** Since drag-and-drop is a complex pointer gesture, a keyboard-accessible method for reordering is mandatory (WCAG 2.5.1 Pointer Gestures). This usually involves providing \"Move Up\" and \"Move Down\" buttons or a position input field next to the list item.\n - **ARIA roles:** Use appropriate ARIA roles to convey the list and item structure to screen readers. For interactive lists, `role=\"listbox\"` for the container and `role=\"option\"` for items might be suitable, or use standard semantic lists (`<ul>`, `<li>`) enhanced with ARIA attributes.\n - **Focus management:** Ensure the drag handle or the dedicated keyboard buttons are included in the Tab order and have clear focus indicators.\n - **Status updates:** Announce the result of the reordering to screen reader users using an `aria-live` region (e.g., \"Item moved to position 4\").",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interactions",
+          "href": "#interactions",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Draggable list in use",
+          "href": "#draggable-list-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

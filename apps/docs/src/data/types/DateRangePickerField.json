@@ -1,0 +1,224 @@
+{
+  "tags": {
+    "example": "```tsx\n<DateRangePickerField\n  label=\"Date Range\"\n  description=\"Select a start and end date\"\n  value={dateRange}\n  onChange={handleChange}\n  errors={errors}\n  touched={touched}\n  isRequired\n/>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# DateRangePickerField\n\nA form field component that combines DateRangePicker with Form Field features\nlike labels, descriptions, error handling, and validation feedback.\n\nThis component follows the same API pattern as other field components in the UI-Kit,\nproviding a consistent interface for date range selection within forms.",
+  "displayName": "DateRangePickerField",
+  "methods": [],
+  "props": {
+    "id": {
+      "defaultValue": null,
+      "description": "",
+      "name": "id",
+      "required": true,
+      "type": {
+        "name": "FormFieldProps"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "",
+      "name": "isDisabled",
+      "required": false,
+      "type": {
+        "name": "FormFieldProps"
+      }
+    },
+    "isRequired": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "",
+      "name": "isRequired",
+      "required": false,
+      "type": {
+        "name": "FormFieldProps"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "",
+      "name": "isInvalid",
+      "required": false,
+      "type": {
+        "name": "FormFieldProps"
+      }
+    },
+    "isReadOnly": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "",
+      "name": "isReadOnly",
+      "required": false,
+      "type": {
+        "name": "FormFieldProps"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "Used as HTML name of the input component.",
+      "name": "name",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "label": {
+      "defaultValue": null,
+      "description": "Title of the label",
+      "name": "label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "description": {
+      "defaultValue": null,
+      "description": "Provides a description for the field.\nAppears below the input to provide additional context or instructions.",
+      "name": "description",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "info": {
+      "defaultValue": null,
+      "description": "Info content that appears in a popover when the info button is clicked.\nInfo button will only be visible when this prop is passed.",
+      "name": "info",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "errors": {
+      "defaultValue": null,
+      "description": "Error object - only truthy values will be rendered\nCompatible with UI-Kit FieldErrors format",
+      "name": "errors",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "FieldErrorsData"
+      }
+    },
+    "renderError": {
+      "defaultValue": null,
+      "description": "Custom error renderer function",
+      "name": "renderError",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(errorKey: string) => ReactNode"
+      }
+    },
+    "touched": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Indicates whether the field was touched. Errors will only be shown when the field was touched.",
+      "name": "touched",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "direction": {
+      "defaultValue": {
+        "value": "column"
+      },
+      "description": "Direction of the form field layout",
+      "name": "direction",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"row\" | \"column\"",
+        "value": [
+          {
+            "value": "\"row\""
+          },
+          {
+            "value": "\"column\""
+          }
+        ]
+      }
+    },
+    "size": {
+      "defaultValue": {
+        "value": "md"
+      },
+      "description": "Size of the date range picker input",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"sm\" | \"md\"",
+        "value": [
+          {
+            "value": "\"sm\""
+          },
+          {
+            "value": "\"md\""
+          }
+        ]
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

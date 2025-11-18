@@ -1,0 +1,737 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DraggableList.Field - A form field wrapper for DraggableList\n\nCombines draggable list functionality with form field labeling,\ndescription, and error handling for form integration.",
+  "displayName": "DraggableListField",
+  "methods": [],
+  "props": {
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "asChild": {
+      "defaultValue": null,
+      "description": "",
+      "name": "asChild",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "",
+      "name": "size",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "DraggableListVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "DraggableListVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\">"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "A slot name for the component. Slots allow the component to receive props from a parent component.\nAn explicit `null` value indicates that the local props completely override all props received from a parent.",
+      "name": "slot",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "SlotProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "SlotProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the root container element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Defines a string value that labels the current element.",
+      "name": "aria-label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "renderEmptyState": {
+      "defaultValue": {
+        "value": "\"drop items here\""
+      },
+      "description": "Content to display when the list is empty",
+      "name": "renderEmptyState",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "keyboardNavigationBehavior": {
+      "defaultValue": {
+        "value": "'arrow'"
+      },
+      "description": "Whether keyboard navigation to focusable elements within grid list items is\nvia the left/right arrow keys or the tab key.",
+      "name": "keyboardNavigationBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+        "name": "AriaGridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+          "name": "AriaGridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"tab\" | \"arrow\"",
+        "value": [
+          {
+            "value": "\"tab\""
+          },
+          {
+            "value": "\"arrow\""
+          }
+        ]
+      }
+    },
+    "escapeKeyBehavior": {
+      "defaultValue": {
+        "value": "'clearSelection'"
+      },
+      "description": "Whether pressing the escape key should clear selection in the grid list or not.\n\nMost experiences should not modify this option as it eliminates a keyboard user's ability to\neasily clear selection. Only use if the escape key is being handled externally or should not\ntrigger selection clearing contextually.",
+      "name": "escapeKeyBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+        "name": "AriaGridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+          "name": "AriaGridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"none\" | \"clearSelection\"",
+        "value": [
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"clearSelection\""
+          }
+        ]
+      }
+    },
+    "onAction": {
+      "defaultValue": null,
+      "description": "Handler that is called when a user performs an action on an item. The exact user event depends on\nthe collection's `selectionBehavior` prop and the interaction modality.",
+      "name": "onAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+        "name": "GridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+          "name": "GridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: Key) => void"
+      }
+    },
+    "disabledBehavior": {
+      "defaultValue": {
+        "value": "\"all\""
+      },
+      "description": "Whether `disabledKeys` applies to all interactions, or only selection.",
+      "name": "disabledBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+        "name": "GridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+          "name": "GridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "DisabledBehavior",
+        "value": [
+          {
+            "value": "\"all\""
+          },
+          {
+            "value": "\"selection\""
+          }
+        ]
+      }
+    },
+    "shouldSelectOnPressUp": {
+      "defaultValue": null,
+      "description": "Whether selection should occur on press up instead of press down.",
+      "name": "shouldSelectOnPressUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+        "name": "GridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+gridlist@3.14.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/gridlist/dist/types.d.ts",
+          "name": "GridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "items": {
+      "defaultValue": null,
+      "description": "Item objects in the collection.",
+      "name": "items",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<T>"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "The item keys that are disabled. These items cannot be selected, focused, or otherwise interacted with.",
+      "name": "disabledKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+        "name": "CollectionBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/collections.d.ts",
+          "name": "CollectionBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<Key>"
+      }
+    },
+    "selectionMode": {
+      "defaultValue": null,
+      "description": "The type of selection that is allowed in the collection.",
+      "name": "selectionMode",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionMode",
+        "value": [
+          {
+            "value": "\"single\""
+          },
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"multiple\""
+          }
+        ]
+      }
+    },
+    "disallowEmptySelection": {
+      "defaultValue": null,
+      "description": "Whether the collection allows empty selection.",
+      "name": "disallowEmptySelection",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "selectedKeys": {
+      "defaultValue": null,
+      "description": "The currently selected keys in the collection (controlled).",
+      "name": "selectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "defaultSelectedKeys": {
+      "defaultValue": null,
+      "description": "The initial selected keys in the collection (uncontrolled).",
+      "name": "defaultSelectedKeys",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "\"all\" | Iterable<Key>"
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the selection changes.",
+      "name": "onSelectionChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+        "name": "MultipleSelection"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/selection.d.ts",
+          "name": "MultipleSelection"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(keys: Selection) => void"
+      }
+    },
+    "disallowTypeAhead": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether typeahead navigation is disabled.",
+      "name": "disallowTypeAhead",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "GridListProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "GridListProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "selectionBehavior": {
+      "defaultValue": {
+        "value": "\"toggle\""
+      },
+      "description": "How multiple selection should behave in the collection.",
+      "name": "selectionBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "SelectionBehavior",
+        "value": [
+          {
+            "value": "\"toggle\""
+          },
+          {
+            "value": "\"replace\""
+          }
+        ]
+      }
+    },
+    "dragAndDropHooks": {
+      "defaultValue": null,
+      "description": "The drag and drop hooks returned by `useDragAndDrop` used to enable drag and drop behavior for the ListBox.",
+      "name": "dragAndDropHooks",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "DragAndDropHooks<NoInfer<T>>"
+      }
+    },
+    "layout": {
+      "defaultValue": {
+        "value": "'stack'"
+      },
+      "description": "Whether the items are arranged in a stack or grid.",
+      "name": "layout",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"grid\" | \"stack\"",
+        "value": [
+          {
+            "value": "\"grid\""
+          },
+          {
+            "value": "\"stack\""
+          }
+        ]
+      }
+    },
+    "dependencies": {
+      "defaultValue": null,
+      "description": "Values that should invalidate the item cache when using dynamic collections.",
+      "name": "dependencies",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "CollectionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "CollectionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "readonly any[]"
+      }
+    },
+    "getKey": {
+      "defaultValue": {
+        "value": "useCallback((item) => (item.key ?? item.id), [])"
+      },
+      "description": "Function to extract a unique key from each item when items do not have a `key` or `id` field.\nDefaults to using `item.key` or `item.id`.\n\n**Important:** Wrap this function in `useCallback` to prevent unnecessary re-synchronization\nof the list state. If this function's identity changes on every render, it will trigger\nthe internal sync effect, potentially causing performance issues.\n@param item - The item to extract the key from\n@returns The unique key for the item\n@example ```tsx\n// ✅ Good: Memoized with useCallback\nconst getKey = useCallback((item) => item.name, []);\n<DraggableList.Root items={items} getKey={getKey} />\n\n// ❌ Bad: Inline function creates new identity on every render\n<DraggableList.Root items={items} getKey={(item) => item.name} />\n```",
+      "name": "getKey",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(item: T) => Key"
+      }
+    },
+    "onUpdateItems": {
+      "defaultValue": null,
+      "description": "Callback fired when the list is updated by drag-and-drop or item removal\n@param updatedItems - The new array of items after the update",
+      "name": "onUpdateItems",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(updatedItems: T[]) => void"
+      }
+    },
+    "removableItems": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show a remove button for each item.\nWhen an item is removed, `onUpdateItems` is called with the updated list.",
+      "name": "removableItems",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "label": {
+      "defaultValue": null,
+      "description": "The form field label (required)\n\nIf a visible label is not necessary, use `DraggableList.Root`",
+      "name": "label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "description": {
+      "defaultValue": null,
+      "description": "Optional description text displayed below the label",
+      "name": "description",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "error": {
+      "defaultValue": null,
+      "description": "Error message to display when validation fails",
+      "name": "error",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "infoBox": {
+      "defaultValue": null,
+      "description": "Optional info box content for additional context",
+      "name": "infoBox",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

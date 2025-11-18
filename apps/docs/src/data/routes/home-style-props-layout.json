@@ -1,0 +1,422 @@
+{
+  "meta": {
+    "id": "Style Props-Layout",
+    "title": "Layout",
+    "description": "JSX style props to control the width, height, and spacing of elements",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/layout.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Layout"
+    ],
+    "route": "home/style-props/layout",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Aspect Ratio",
+        "href": "#aspect-ratio",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Break",
+        "href": "#break",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Break After",
+        "href": "#break-after",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Break Before",
+        "href": "#break-before",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Break Inside",
+        "href": "#break-inside",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Box Decoration Break",
+        "href": "#box-decoration-break",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Box Sizing",
+        "href": "#box-sizing",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Columns",
+        "href": "#columns",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Float",
+        "href": "#float",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Clear",
+        "href": "#clear",
+        "depth": 2,
+        "numbering": [
+          1,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Isolation",
+        "href": "#isolation",
+        "depth": 2,
+        "numbering": [
+          1,
+          8
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Object Fit",
+        "href": "#object-fit",
+        "depth": 2,
+        "numbering": [
+          1,
+          9
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Object Position",
+        "href": "#object-position",
+        "depth": 2,
+        "numbering": [
+          1,
+          10
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Overflow",
+        "href": "#overflow",
+        "depth": 2,
+        "numbering": [
+          1,
+          11
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Overscroll Behavior",
+        "href": "#overscroll-behavior",
+        "depth": 2,
+        "numbering": [
+          1,
+          12
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Position",
+        "href": "#position",
+        "depth": 2,
+        "numbering": [
+          1,
+          13
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Top / Right / Bottom / Left",
+        "href": "#top--right--bottom--left",
+        "depth": 2,
+        "numbering": [
+          1,
+          14
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visibility",
+        "href": "#visibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          15
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Z-Index",
+        "href": "#z-index",
+        "depth": 2,
+        "numbering": [
+          1,
+          16
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Layout\n\nJSX style props to control the width, height, and spacing of elements\n\n## Aspect Ratio\n\nUse the `aspectRatio` prop to set the desired aspect ratio of an element.\n\n```jsx\n// raw value\n<Box aspectRatio=\"1.2\" />\n\n// token\n<Box aspectRatio=\"square\" />\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `aspectRatio` | `aspect-ratio` | `aspectRatios` |\n\n## Break\n\n### Break After\n\nUse the `breakAfter` prop to set how page, column, or region breaks should\nbehave after an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakAfter=\"page\">Item 2</Box>\n</Box>\n```\n\n| Prop         | CSS Property  | Token Category |\n| ------------ | ------------- | -------------- |\n| `breakAfter` | `break-after` | -              |\n\n### Break Before\n\nUse the `breakBefore` prop to set how page, column, or region breaks should\nbehave before an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakBefore=\"page\">Item 2</Box>\n</Box>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `breakBefore` | `break-before` | -              |\n\n### Break Inside\n\nUse the `breakInside` prop to set how page, column, or region breaks should\nbehave inside an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakInside=\"avoid\">Item 2</Box>\n</Box>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `breakInside` | `break-inside` | -              |\n\n## Box Decoration Break\n\nUse the `boxDecorationBreak` prop to set how box decorations should behave when\nthe box breaks across multiple lines, columns, or pages.\n\n```jsx /boxDecorationBreak/\n<Box bgImage=\"linear-gradient(red, blue)\" boxDecorationBreak=\"clone\">\n  Chakra is <br /> great!\n</Box>\n```\n\n| Prop                 | CSS Property           | Token Category |\n| -------------------- | ---------------------- | -------------- |\n| `boxDecorationBreak` | `box-decoration-break` | -              |\n\n## Box Sizing\n\nUse the `boxSizing` prop to set the box sizing of an element.\n\n```jsx /boxSizing/\n<Box boxSizing=\"border-box\" padding=\"4\" width=\"8\" height=\"8\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `boxSizing` | `box-sizing` | -              |\n\n## Columns\n\nUse the `columns` prop to set the number of columns for an element.\n\n```jsx\n<Box columns={2} />\n```\n\n| Prop      | CSS Property | Token Category |\n| --------- | ------------ | -------------- |\n| `columns` | `columns`    | -              |\n\n## Float\n\nUse the `float` prop to set the float of an element.\n\n```jsx /float/\n<Box>\n  <Text>As much mud in the streets...</Text>\n  <Box float=\"left\">Float me</Box>\n</Box>\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `float` | `float`      | -              |\n\n## Clear\n\nUse the `clear` prop to set whether an element must be moved below (cleared)\nfloating elements that precede it.\n\n```jsx\n<Box>\n  <Box float=\"left\">Left</Box>\n  <Box float=\"right\">Right</Box>\n  <Box clear=\"none\">\n    As much mud in the streets as if the waters had but newly retired from the\n    face of the earth, and it would not be wonderful to meet a Megalosaurus,\n    forty feet long or so, waddling like an elephantine lizard up Holborn Hill.\n  </Box>\n</Box>\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `clear` | `clear`      | -              |\n\n## Isolation\n\nUse the `isolation` prop to set whether an element should explicitly create a\nnew stacking context.\n\n```jsx\n<Box isolation=\"isolate\">\n  <Box bg=\"red.500\" width=\"10\" height=\"10\" />\n</Box>\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `isolation` | `isolation`  | -              |\n\n## Object Fit\n\nUse the `objectFit` prop to set how an image or video should be resized to fit\nits container.\n\n```jsx\n<Image src=\"...\" objectFit=\"cover\" width=\"10\" height=\"10\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `objectFit` | `object-fit` | -              |\n\n## Object Position\n\nUse the `objectPosition` prop to set how an element should be positioned within\nits container.\n\n```jsx\n<Image src=\"...\" objectPosition=\"center\" width=\"10\" height=\"10\" />\n```\n\n| Prop             | CSS Property      | Token Category |\n| ---------------- | ----------------- | -------------- |\n| `objectPosition` | `object-position` | -              |\n\n## Overflow\n\nUse the `overflow` prop to control how content that exceeds an element's\ndimensions is handled. This property determines whether to clip the content, add\nscrollbars, or display the overflow content.\n\n```jsx\n<Box overflow=\"hidden\" maxHeight=\"120px\" />\n<Box overflow=\"auto\" maxHeight=\"120px\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `overflow` | `overflow`   | -              |\n\n## Overscroll Behavior\n\nUse the `overscrollBehavior` prop to control what the browser does when reaching\nthe boundary of a scrolling area.\n\n```jsx\n<Box maxHeight=\"120px\" overscrollBehavior=\"contain\" />\n```\n\n| Prop                 | CSS Property          | Token Category |\n| -------------------- | --------------------- | -------------- |\n| `overscrollBehavior` | `overscroll-behavior` | -              |\n\n## Position\n\nUse the `position` utilities to set the position of an element.\n\n```jsx\n<Box position=\"absolute\" />\n<Box pos=\"absolute\" /> // shorthand\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `position` | `position`   | -              |\n\n## Top / Right / Bottom / Left\n\nUse the `top`, `right`, `bottom` and `left` utilities to set the position of an\nelement.\n\n```jsx\n<Box position=\"absolute\" top=\"0\" left=\"0\" />\n\n// using spacing tokens\n<Box position=\"absolute\" top=\"4\" />\n\n// using hardcoded values\n<Box position=\"absolute\" top=\"100px\" />\n```\n\nUse the logical equivalents of `inset{Start|End}` utilities to set the position\nof an element based on the writing mode.\n\n```jsx\n<Box position=\"absolute\" insetStart=\"0\" />\n```\n\n| Prop                                      | CSS Property         | Token Category |\n| ----------------------------------------- | -------------------- | -------------- |\n| `top`                                     | `top`                | `spacing`      |\n| `right`                                   | `right`              | `spacing`      |\n| `bottom`                                  | `bottom`             | `spacing`      |\n| `left`                                    | `left`               | `spacing`      |\n| `start`, `insetStart`, `insetInlineStart` | `inset-inline-start` | `spacing`      |\n| `end` , `insetEnd`, `insetInlineEnd`      | `inset-inline-end`   | `spacing`      |\n| `insetX`, `insetInline`                   | `inset-inline`       | `spacing`      |\n| `insetY`, `insetBlock`                    | `inset-inline`       | `spacing`      |\n\n## Visibility\n\nUse the `visibility` prop to control the visibility of an element.\n\n```jsx\n<Box visibility=\"hidden\" />\n```\n\n| Prop         | CSS Property | Token Category |\n| ------------ | ------------ | -------------- |\n| `visibility` | `visibility` | -              |\n\n## Z-Index\n\nUse the `zIndex` prop to set the z-index of an element.\n\n```jsx\n// using hardcoded values\n<Box zIndex=\"1\" />\n\n// using token\n<Box zIndex=\"overlay\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `zIndex` | `z-index`    | `zIndices`     |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Layout\n\nJSX style props to control the width, height, and spacing of elements\n\n## Aspect Ratio\n\nUse the `aspectRatio` prop to set the desired aspect ratio of an element.\n\n```jsx\n// raw value\n<Box aspectRatio=\"1.2\" />\n\n// token\n<Box aspectRatio=\"square\" />\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `aspectRatio` | `aspect-ratio` | `aspectRatios` |\n\n## Break\n\n### Break After\n\nUse the `breakAfter` prop to set how page, column, or region breaks should\nbehave after an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakAfter=\"page\">Item 2</Box>\n</Box>\n```\n\n| Prop         | CSS Property  | Token Category |\n| ------------ | ------------- | -------------- |\n| `breakAfter` | `break-after` | -              |\n\n### Break Before\n\nUse the `breakBefore` prop to set how page, column, or region breaks should\nbehave before an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakBefore=\"page\">Item 2</Box>\n</Box>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `breakBefore` | `break-before` | -              |\n\n### Break Inside\n\nUse the `breakInside` prop to set how page, column, or region breaks should\nbehave inside an element.\n\n```jsx\n<Box columns=\"2\">\n  <Box>Item 1</Box>\n  <Box breakInside=\"avoid\">Item 2</Box>\n</Box>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `breakInside` | `break-inside` | -              |\n\n## Box Decoration Break\n\nUse the `boxDecorationBreak` prop to set how box decorations should behave when\nthe box breaks across multiple lines, columns, or pages.\n\n```jsx /boxDecorationBreak/\n<Box bgImage=\"linear-gradient(red, blue)\" boxDecorationBreak=\"clone\">\n  Chakra is <br /> great!\n</Box>\n```\n\n| Prop                 | CSS Property           | Token Category |\n| -------------------- | ---------------------- | -------------- |\n| `boxDecorationBreak` | `box-decoration-break` | -              |\n\n## Box Sizing\n\nUse the `boxSizing` prop to set the box sizing of an element.\n\n```jsx /boxSizing/\n<Box boxSizing=\"border-box\" padding=\"4\" width=\"8\" height=\"8\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `boxSizing` | `box-sizing` | -              |\n\n## Columns\n\nUse the `columns` prop to set the number of columns for an element.\n\n```jsx\n<Box columns={2} />\n```\n\n| Prop      | CSS Property | Token Category |\n| --------- | ------------ | -------------- |\n| `columns` | `columns`    | -              |\n\n## Float\n\nUse the `float` prop to set the float of an element.\n\n```jsx /float/\n<Box>\n  <Text>As much mud in the streets...</Text>\n  <Box float=\"left\">Float me</Box>\n</Box>\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `float` | `float`      | -              |\n\n## Clear\n\nUse the `clear` prop to set whether an element must be moved below (cleared)\nfloating elements that precede it.\n\n```jsx\n<Box>\n  <Box float=\"left\">Left</Box>\n  <Box float=\"right\">Right</Box>\n  <Box clear=\"none\">\n    As much mud in the streets as if the waters had but newly retired from the\n    face of the earth, and it would not be wonderful to meet a Megalosaurus,\n    forty feet long or so, waddling like an elephantine lizard up Holborn Hill.\n  </Box>\n</Box>\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `clear` | `clear`      | -              |\n\n## Isolation\n\nUse the `isolation` prop to set whether an element should explicitly create a\nnew stacking context.\n\n```jsx\n<Box isolation=\"isolate\">\n  <Box bg=\"red.500\" width=\"10\" height=\"10\" />\n</Box>\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `isolation` | `isolation`  | -              |\n\n## Object Fit\n\nUse the `objectFit` prop to set how an image or video should be resized to fit\nits container.\n\n```jsx\n<Image src=\"...\" objectFit=\"cover\" width=\"10\" height=\"10\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `objectFit` | `object-fit` | -              |\n\n## Object Position\n\nUse the `objectPosition` prop to set how an element should be positioned within\nits container.\n\n```jsx\n<Image src=\"...\" objectPosition=\"center\" width=\"10\" height=\"10\" />\n```\n\n| Prop             | CSS Property      | Token Category |\n| ---------------- | ----------------- | -------------- |\n| `objectPosition` | `object-position` | -              |\n\n## Overflow\n\nUse the `overflow` prop to control how content that exceeds an element's\ndimensions is handled. This property determines whether to clip the content, add\nscrollbars, or display the overflow content.\n\n```jsx\n<Box overflow=\"hidden\" maxHeight=\"120px\" />\n<Box overflow=\"auto\" maxHeight=\"120px\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `overflow` | `overflow`   | -              |\n\n## Overscroll Behavior\n\nUse the `overscrollBehavior` prop to control what the browser does when reaching\nthe boundary of a scrolling area.\n\n```jsx\n<Box maxHeight=\"120px\" overscrollBehavior=\"contain\" />\n```\n\n| Prop                 | CSS Property          | Token Category |\n| -------------------- | --------------------- | -------------- |\n| `overscrollBehavior` | `overscroll-behavior` | -              |\n\n## Position\n\nUse the `position` utilities to set the position of an element.\n\n```jsx\n<Box position=\"absolute\" />\n<Box pos=\"absolute\" /> // shorthand\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `position` | `position`   | -              |\n\n## Top / Right / Bottom / Left\n\nUse the `top`, `right`, `bottom` and `left` utilities to set the position of an\nelement.\n\n```jsx\n<Box position=\"absolute\" top=\"0\" left=\"0\" />\n\n// using spacing tokens\n<Box position=\"absolute\" top=\"4\" />\n\n// using hardcoded values\n<Box position=\"absolute\" top=\"100px\" />\n```\n\nUse the logical equivalents of `inset{Start|End}` utilities to set the position\nof an element based on the writing mode.\n\n```jsx\n<Box position=\"absolute\" insetStart=\"0\" />\n```\n\n| Prop                                      | CSS Property         | Token Category |\n| ----------------------------------------- | -------------------- | -------------- |\n| `top`                                     | `top`                | `spacing`      |\n| `right`                                   | `right`              | `spacing`      |\n| `bottom`                                  | `bottom`             | `spacing`      |\n| `left`                                    | `left`               | `spacing`      |\n| `start`, `insetStart`, `insetInlineStart` | `inset-inline-start` | `spacing`      |\n| `end` , `insetEnd`, `insetInlineEnd`      | `inset-inline-end`   | `spacing`      |\n| `insetX`, `insetInline`                   | `inset-inline`       | `spacing`      |\n| `insetY`, `insetBlock`                    | `inset-inline`       | `spacing`      |\n\n## Visibility\n\nUse the `visibility` prop to control the visibility of an element.\n\n```jsx\n<Box visibility=\"hidden\" />\n```\n\n| Prop         | CSS Property | Token Category |\n| ------------ | ------------ | -------------- |\n| `visibility` | `visibility` | -              |\n\n## Z-Index\n\nUse the `zIndex` prop to set the z-index of an element.\n\n```jsx\n// using hardcoded values\n<Box zIndex=\"1\" />\n\n// using token\n<Box zIndex=\"overlay\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `zIndex` | `z-index`    | `zIndices`     |\n",
+      "toc": [
+        {
+          "value": "Aspect Ratio",
+          "href": "#aspect-ratio",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Break",
+          "href": "#break",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Break After",
+          "href": "#break-after",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Break Before",
+          "href": "#break-before",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Break Inside",
+          "href": "#break-inside",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Box Decoration Break",
+          "href": "#box-decoration-break",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Box Sizing",
+          "href": "#box-sizing",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Columns",
+          "href": "#columns",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Float",
+          "href": "#float",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Clear",
+          "href": "#clear",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Isolation",
+          "href": "#isolation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Object Fit",
+          "href": "#object-fit",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Object Position",
+          "href": "#object-position",
+          "depth": 2,
+          "numbering": [
+            1,
+            10
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Overflow",
+          "href": "#overflow",
+          "depth": 2,
+          "numbering": [
+            1,
+            11
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Overscroll Behavior",
+          "href": "#overscroll-behavior",
+          "depth": 2,
+          "numbering": [
+            1,
+            12
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Position",
+          "href": "#position",
+          "depth": 2,
+          "numbering": [
+            1,
+            13
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Top / Right / Bottom / Left",
+          "href": "#top--right--bottom--left",
+          "depth": 2,
+          "numbering": [
+            1,
+            14
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visibility",
+          "href": "#visibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            15
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Z-Index",
+          "href": "#z-index",
+          "depth": 2,
+          "numbering": [
+            1,
+            16
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,685 @@
+{
+  "meta": {
+    "id": "Components-DateRangePicker",
+    "title": "DateRangePicker",
+    "description": "Allows users to select a start and end date from a calendar interface.",
+    "lifecycleState": "Alpha",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/date-range-picker/date-range-picker.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "DateRangePicker"
+    ],
+    "route": "components/inputs/daterangepicker",
+    "tags": [
+      "component",
+      "date",
+      "calendar"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium",
+        "href": "#medium",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Small",
+        "href": "#small",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Labels and messaging",
+        "href": "#labels-and-messaging",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Interaction and selection",
+        "href": "#interaction-and-selection",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility Standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      }
+    ]
+  },
+  "mdx": "\n# Date range picker\n\nDate range pickers allow users to select a range of dates.\n\n## Overview\n\nDate range pickers allow users to select a range of dates. The component\nincludes two date input fields for start and end dates, and a calendar that\nappears on focus. This component uses a single input field to contain both the\nstart and end dates. There are two offered sizes, the default being medium for\nmost use cases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5818-15879)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Medium\n\n```jsx-live\nconst App = () => <DateRangePicker size=\"md\" width=\"8000\" />\n```\n\n#### Small\n\n```jsx-live\nconst App = () => <DateRangePicker size=\"sm\" width=\"8000\" />\n```\n\n## Guidelines\n\nDate range picker guidelines establish a standardized approach for creating\nintuitive and accessible date input components, ensuring consistency in\npresentation and interaction for selecting dates across all applications.\n\n### Best practices\n\n- **Allow manual input:** Provide flexibility by allowing users to manually type\n  dates into the input fields.\n- **Disable invalid dates:** Prevent errors by disabling dates that are not\n  selectable (e.g., a return date before a departure date or past dates for a\n  future booking).\n- **Show clear feedback:** Use visual highlights for the selected start and end\n  dates, as well as all the days in between, to provide a clear representation\n  of the range.\n- **Ensure easy navigation:** Make the calendar simple to navigate with clear\n  controls for moving between months and years.\n- **Provide error messages:** Include clear, concise error messages to inform\n  users of any validation issues.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n\n- **Specific date selection required:** When users need to choose a particular\n  date, such as a birth month or events that span common holidays days.\n- **Date-related tasks:** For features involving scheduling, filtering by date,\n  setting deadlines, or defining date ranges.\n- **Standardized input format:** To ensure users enter dates in a consistent and\n  predictable format, reducing data entry errors.\n- **Visual calendar navigation:** When users benefit from a visual\n  representation of a calendar to navigate and select dates, especially for date\n  ranges or when the day of the week is relevant.\n- **Accessibility needs:** To provide an accessible alternative to manual text\n  input for users with disabilities, including keyboard navigation and screen\n  reader support.\n- **Clear date context:** When the dates are a primary piece of information and\n  needs to be explicitly chosen.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Selecting a single date:** Use a date picker instead.\n- **Complex date inputs:** Use separate date and time input fields for greater\n  clarity.\n- **Approximate or vague dates:** When the exact date is not critical, and users\n  might only know a month or year (consider a select dropdown or a less specific\n  input).\n- **Dates far in the past or future:** For dates like birthdates, consider a\n  direct text input with clear formatting hints or segmented inputs\n  (month/day/year) to avoid excessive calendar navigation. However, a date\n  picker can still be suitable if well-implemented with year selection.\n- **Simple \"today\" or \"now\" selection:** For actions that simply require the\n  current date or time, a button or automated function might be more efficient.\n- **Limited screen real estate:** On very constrained interfaces, a compact text\n  input with a clear format might be preferred over an expanded calendar, though\n  accessibility should still be a priority.\n- **High frequency of typing known dates:** If users frequently know the exact\n  date they need to enter and typing is faster for them, a well-formatted text\n  input with validation might be sufficient alongside (or instead of) a date\n  picker. (e.g. birthdays)\n- **Binary \"yes/no\" for date-related options:** For simple choices like \"Remind\n  me?\" (implying the current date/time), a checkbox or switch might be more\n  appropriate.\n\n### Labels and messaging\n\nClear labels and concise messaging are crucial for a date input to ensure users\nunderstand what date information is required and how to provide it correctly.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use a clear and descriptive label (e.g., \"Date of Birth,\" \"Event Date\").\n> - Do provide clear formatting hints (e.g., MM/DD/YYYY) as placeholder text or\n>   helper text.\n> - Do validate the input and provide clear error messages for incorrect formats\n>   or invalid dates.\n\n![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't rely solely on placeholder text for the label.\n> - Don't use ambiguous date formats without clear guidance.\n> - Don't fail to provide feedback on invalid input.\n\n![labels and messaging - don'ts](/images/date-picker/labels-and-messaging-dont.png)\n\n### Interaction and selection\n\nThe ideal date range picker interaction offers a seamless experience through\nintuitive calendar navigation, clear visual feedback on selection, and the\nflexibility of both direct typing and visual selection to accommodate user\npreferences and accessibility needs.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do highlight the current date in the calendar picker for reference.\n> - Do provide a visual calendar picker for easy selection, especially for\n>   non-familiar dates or date ranges.\n> - Do allow manual text input as an alternative for users who prefer it or know\n>   the date.\n> - Do clearly indicate the selected date(s) in the calendar.\n> - Do enable easy navigation between months and years in the calendar.\n> - Do consider providing preset date ranges (e.g., \"Last Week,\" \"Next Month\")\n>   when relevant.\n\n![interaction and selection - do's](/images/date-range-picker/interaction-and-selection-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use it for selecting vague or non-specific timeframes (e.g., \"sometime\n>   next year\").\n> - Don't force users to only use the calendar picker if they prefer typing.\n> - Don't use it for simple \"today\" selections where a button might suffice.\n> - Don't auto-advance between date segments (day/month/year) in text input, as\n>   it can hinder error correction.\n> - Don't make calendar navigation cumbersome.\n\n![interaction and selection - don'ts](/images/date-range-picker/interaction-and-selection-dont.png)\n\n## Props\n\n<PropsTable id=\"DateRangePicker\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <DateRangePicker aria-label=\"Enter date range\" />\n```\n\n### Accessibility Standards\n\n- Always provide a visible label for the input.\n- Clearly associate the label with the input using the for attribute on the\n  `<label>` and a matching id on the input element.\n- Ensure sufficient color contrast for all elements (text, borders, icons, focus\n  indicators).\n- Clearly indicate the focused state.\n- Support keyboard navigation:\n  - Use Tab to navigate to and from the date input.\n  - Use Enter or Space to open/close the date picker (if applicable).\n  - Use arrow keys to navigate within the calendar grid (if a date picker is\n    provided).\n  - Allow users to select dates using Enter or Space.\n- Communicate errors clearly, using both visual cues (e.g., color) and\n  descriptive error messages.\n- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).\n- Ensure screen readers announce the selected date and any navigation changes\n  within a date picker.\n- Provide an accessible way to clear the date input.\n\n### Resources\n\n- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DateRangePicker.html)\n- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Date range picker\n\nDate range pickers allow users to select a range of dates.\n\n## Overview\n\nDate range pickers allow users to select a range of dates. The component\nincludes two date input fields for start and end dates, and a calendar that\nappears on focus. This component uses a single input field to contain both the\nstart and end dates. There are two offered sizes, the default being medium for\nmost use cases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5818-15879)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Medium\n\n```jsx-live\nconst App = () => <DateRangePicker size=\"md\" width=\"8000\" />\n```\n\n#### Small\n\n```jsx-live\nconst App = () => <DateRangePicker size=\"sm\" width=\"8000\" />\n```\n\n## Guidelines\n\nDate range picker guidelines establish a standardized approach for creating\nintuitive and accessible date input components, ensuring consistency in\npresentation and interaction for selecting dates across all applications.\n\n### Best practices\n\n- **Allow manual input:** Provide flexibility by allowing users to manually type\n  dates into the input fields.\n- **Disable invalid dates:** Prevent errors by disabling dates that are not\n  selectable (e.g., a return date before a departure date or past dates for a\n  future booking).\n- **Show clear feedback:** Use visual highlights for the selected start and end\n  dates, as well as all the days in between, to provide a clear representation\n  of the range.\n- **Ensure easy navigation:** Make the calendar simple to navigate with clear\n  controls for moving between months and years.\n- **Provide error messages:** Include clear, concise error messages to inform\n  users of any validation issues.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n\n- **Specific date selection required:** When users need to choose a particular\n  date, such as a birth month or events that span common holidays days.\n- **Date-related tasks:** For features involving scheduling, filtering by date,\n  setting deadlines, or defining date ranges.\n- **Standardized input format:** To ensure users enter dates in a consistent and\n  predictable format, reducing data entry errors.\n- **Visual calendar navigation:** When users benefit from a visual\n  representation of a calendar to navigate and select dates, especially for date\n  ranges or when the day of the week is relevant.\n- **Accessibility needs:** To provide an accessible alternative to manual text\n  input for users with disabilities, including keyboard navigation and screen\n  reader support.\n- **Clear date context:** When the dates are a primary piece of information and\n  needs to be explicitly chosen.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Selecting a single date:** Use a date picker instead.\n- **Complex date inputs:** Use separate date and time input fields for greater\n  clarity.\n- **Approximate or vague dates:** When the exact date is not critical, and users\n  might only know a month or year (consider a select dropdown or a less specific\n  input).\n- **Dates far in the past or future:** For dates like birthdates, consider a\n  direct text input with clear formatting hints or segmented inputs\n  (month/day/year) to avoid excessive calendar navigation. However, a date\n  picker can still be suitable if well-implemented with year selection.\n- **Simple \"today\" or \"now\" selection:** For actions that simply require the\n  current date or time, a button or automated function might be more efficient.\n- **Limited screen real estate:** On very constrained interfaces, a compact text\n  input with a clear format might be preferred over an expanded calendar, though\n  accessibility should still be a priority.\n- **High frequency of typing known dates:** If users frequently know the exact\n  date they need to enter and typing is faster for them, a well-formatted text\n  input with validation might be sufficient alongside (or instead of) a date\n  picker. (e.g. birthdays)\n- **Binary \"yes/no\" for date-related options:** For simple choices like \"Remind\n  me?\" (implying the current date/time), a checkbox or switch might be more\n  appropriate.\n\n### Labels and messaging\n\nClear labels and concise messaging are crucial for a date input to ensure users\nunderstand what date information is required and how to provide it correctly.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use a clear and descriptive label (e.g., \"Date of Birth,\" \"Event Date\").\n> - Do provide clear formatting hints (e.g., MM/DD/YYYY) as placeholder text or\n>   helper text.\n> - Do validate the input and provide clear error messages for incorrect formats\n>   or invalid dates.\n\n![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't rely solely on placeholder text for the label.\n> - Don't use ambiguous date formats without clear guidance.\n> - Don't fail to provide feedback on invalid input.\n\n![labels and messaging - don'ts](/images/date-picker/labels-and-messaging-dont.png)\n\n### Interaction and selection\n\nThe ideal date range picker interaction offers a seamless experience through\nintuitive calendar navigation, clear visual feedback on selection, and the\nflexibility of both direct typing and visual selection to accommodate user\npreferences and accessibility needs.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do highlight the current date in the calendar picker for reference.\n> - Do provide a visual calendar picker for easy selection, especially for\n>   non-familiar dates or date ranges.\n> - Do allow manual text input as an alternative for users who prefer it or know\n>   the date.\n> - Do clearly indicate the selected date(s) in the calendar.\n> - Do enable easy navigation between months and years in the calendar.\n> - Do consider providing preset date ranges (e.g., \"Last Week,\" \"Next Month\")\n>   when relevant.\n\n![interaction and selection - do's](/images/date-range-picker/interaction-and-selection-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use it for selecting vague or non-specific timeframes (e.g., \"sometime\n>   next year\").\n> - Don't force users to only use the calendar picker if they prefer typing.\n> - Don't use it for simple \"today\" selections where a button might suffice.\n> - Don't auto-advance between date segments (day/month/year) in text input, as\n>   it can hinder error correction.\n> - Don't make calendar navigation cumbersome.\n\n![interaction and selection - don'ts](/images/date-range-picker/interaction-and-selection-dont.png)\n\n## Props\n\n<PropsTable id=\"DateRangePicker\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <DateRangePicker aria-label=\"Enter date range\" />\n```\n\n### Accessibility Standards\n\n- Always provide a visible label for the input.\n- Clearly associate the label with the input using the for attribute on the\n  `<label>` and a matching id on the input element.\n- Ensure sufficient color contrast for all elements (text, borders, icons, focus\n  indicators).\n- Clearly indicate the focused state.\n- Support keyboard navigation:\n  - Use Tab to navigate to and from the date input.\n  - Use Enter or Space to open/close the date picker (if applicable).\n  - Use arrow keys to navigate within the calendar grid (if a date picker is\n    provided).\n  - Allow users to select dates using Enter or Space.\n- Communicate errors clearly, using both visual cues (e.g., color) and\n  descriptive error messages.\n- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).\n- Ensure screen readers announce the selected date and any navigation changes\n  within a date picker.\n- Provide an accessible way to clear the date input.\n\n### Resources\n\n- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DateRangePicker.html)\n- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium",
+          "href": "#medium",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Small",
+          "href": "#small",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels and messaging",
+          "href": "#labels-and-messaging",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction and selection",
+          "href": "#interaction-and-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses uncontrolled mode:\n\n```jsx-live-dev\nconst App = () => (\n  <DateRangePicker />\n)\n```\n\n## Working with date values\n\nThe DateRangePicker relies on Adobe's `@internationalized/date` library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.\n\n### Date value types\n\nThree primary date types are available depending on your needs:\n\n```tsx\nimport { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';\n\n// Date only (no time)\nconst dateOnly = new CalendarDate(2024, 1, 15);\n\n// Date with time (no timezone)\nconst dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);\n\n// Date with time and timezone\nconst zonedDate = new ZonedDateTime(2024, 1, 15, 14, 30, 'America/New_York');\n```\n\n### Creating date values\n\nUse helper functions to parse ISO strings or create dates programmatically:\n\n```tsx\nimport { parseDate, parseDateTime, parseZonedDateTime } from '@internationalized/date';\n\n// Parse ISO date strings\nconst date = parseDate('2024-01-15');\nconst dateTime = parseDateTime('2024-01-15T14:30');\nconst zonedDate = parseZonedDateTime('2024-01-15T14:30[America/New_York]');\n```\n\n### Converting to ISO strings\n\nUse `.toString()` to convert date objects for API/backend consumption:\n\n```tsx\n// Convert individual dates\nconst date = new CalendarDate(2024, 1, 15);\ndate.toString(); // \"2024-01-15\"\n\nconst dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);\ndateTime.toString(); // \"2024-01-15T14:30:00\"\n\n// Convert date ranges for API calls\nconst dateRange = {\n  start: new CalendarDate(2024, 1, 15),\n  end: new CalendarDate(2024, 1, 20)\n};\n\nconst apiPayload = {\n  startDate: dateRange.start.toString(), // \"2024-01-15\"\n  endDate: dateRange.end.toString()      // \"2024-01-20\"\n};\n```\n\n### Date range structure\n\nThe component expects and returns date ranges in this structure:\n\n```tsx\ntype DateRange = {\n  start: CalendarDate | CalendarDateTime | ZonedDateTime;\n  end: CalendarDate | CalendarDateTime | ZonedDateTime;\n}\n\n// Note: While TypeScript allows mixing types, always use the same type for both\n// start and end to avoid semantic issues.\n```\n\n> [!TIP]\\\n> See [Adobe's @internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html) for complete API reference and advanced usage.\n\n## Usage examples\n\n### Size options\n\nThe `sm` and `md` size variants are available to match your interface density:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DateRangePicker size=\"sm\" />\n    <DateRangePicker size=\"md\" />\n  </Stack>\n)\n```\n\n### Visual variants\n\nChoose between `solid` and `ghost` variants to match your design context:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DateRangePicker variant=\"solid\" />\n    <DateRangePicker variant=\"ghost\" />\n  </Stack>\n)\n```\n\n### Granularity options\n\nThe `granularity` prop controls both the level of date precision and the component's behavior:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DateRangePicker granularity=\"day\" />\n    <DateRangePicker granularity=\"minute\" />\n  </Stack>\n)\n```\n\n**Behavioral differences:**\n- `granularity=\"day\"` (default): Calendar closes automatically after selecting the end date. Time inputs are hidden.\n- `granularity=\"hour\" | \"minute\" | \"second\"`: Calendar remains open after date selection, displaying time input fields in the footer. This allows users to set both dates and times in one interaction.\n\n### Uncontrolled mode\n\nFor simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:\n\n```jsx-live-dev\nconst App = () => {\n  const [selectedRange, setSelectedRange] = useState<string>('No selection');\n\n  return (\n    <>\n      <DateRangePicker\n        defaultValue={{\n          start: new CalendarDate(2025, 1, 15),\n          end: new CalendarDate(2025, 1, 20),\n        }}\n        onChange={(range) => {\n          setSelectedRange(range ? `${range.start} to ${range.end}` : 'No selection');\n        }}\n      />\n      <Text fontSize=\"sm\">{selectedRange}</Text>\n    </>\n  );\n}\n```\n\nUse uncontrolled mode when you need to capture the selected value without managing state yourself.\n\n### Controlled mode\n\nFor scenarios requiring programmatic control or coordination with other components, use controlled mode:\n\n```jsx-live-dev\nconst App = () => {\n  const [value, setValue] = useState<DateRangePickerProps[\"value\"]>(null);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DateRangePicker\n        value={value}\n        onChange={setValue}\n      />\n      <Text fontSize=\"sm\">\n        {value ? `Selected: ${value.start} to ${value.end}` : 'No selection'}\n      </Text>\n    </Stack>\n  );\n}\n```\n\nUse controlled mode when you need to:\n- Synchronize the date range with external state\n- Validate or transform date selections\n- Clear or programmatically set the date range\n\n### Time zone handling\n\nWhen working with `ZonedDateTime` values, configure time zone display and hour format:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DateRangePicker\n      granularity=\"minute\"\n      hideTimeZone={false}\n      hourCycle={24}\n    />\n    <DateRangePicker\n      granularity=\"minute\"\n      hideTimeZone={true}\n      hourCycle={12}\n    />\n  </Stack>\n)\n```\n\n- `hideTimeZone`: Controls visibility of the time zone selector\n- `hourCycle`: Set to `12` for 12-hour format with AM/PM, or `24` for 24-hour format\n\n## Component requirements\n\n### Date value types\n\nAll date values **must** use `@internationalized/date` types:\n- `CalendarDate` for date-only scenarios\n- `CalendarDateTime` for dates with times (no timezone)\n- `ZonedDateTime` for timezone-aware dates\n\n### Accessibility\n\nThe DateRangePicker handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:\n\n- Using the `DateRangePickerField` pattern component (recommended)\n- Associating a `<label>` element with the `DateRangePicker` using `aria-labelledby`:\n\n```tsx\n<label id=\"label-id\">\n  {intl.formatMessage(labelMessage)}\n</label>\n<DateRangePicker aria-labelledby=\"label-id\" />\n```\n\n- Associating a `<label>` element with the `DateRangePicker` using `htmlFor`:\n\n```tsx\n<label htmlFor=\"date-range-picker-id\">\n  {intl.formatMessage(labelMessage)}\n</label>\n<DateRangePicker id=\"date-range-picker-id\" />\n```\n\nIf your design requires that the label should not be visible, the label should be set using the `aria-label` prop:\n\n```tsx\n<DateRangePicker aria-label={intl.formatMessage(labelMessage)} />\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-date-range-picker\";\n\nexport const Example = () => (\n  <DateRangePicker id={PERSISTENT_ID} />\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n- `Tab` / `Shift+Tab`: Navigate between date segments and buttons\n- `Arrow keys`: Increment/decrement date segments and navigate calendar\n- `Enter` / `Space`: Open calendar, select dates\n- `Escape`: Close calendar popover\n\n## API reference\n\n<PropsTable id=\"DateRangePicker\" />\n\n## Common patterns\n\n### Filtering data by date range\n\nA common use case is filtering lists or tables by date range:\n\n```jsx-live-dev\nconst App = () => {\n  const [dateRange, setDateRange] = useState<DateRangePickerProps[\"value\"]>(null);\n\n  // In a real application, you'd filter data based on dateRange\n  const appliedFilter = dateRange\n    ? `Showing data from ${dateRange.start} to ${dateRange.end}`\n    : 'No date filter applied';\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DateRangePicker\n        value={dateRange}\n        onChange={setDateRange}\n      />\n      <Text fontSize=\"sm\">\n        {appliedFilter}\n      </Text>\n    </Stack>\n  );\n}\n```\n\n### Promotion period selection\n\nFor e-commerce scenarios like setting up promotions, sales, or limited-time offers:\n\n```jsx-live-dev\nconst App = () => {\n  const [promotionRange, setPromotionRange] = useState<DateRangePickerProps[\"value\"]>(null);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DateRangePicker\n        granularity=\"minute\"\n        value={promotionRange}\n        onChange={setPromotionRange}\n        hourCycle={24}\n      />\n      {promotionRange && (\n        <Text fontSize=\"sm\">\n          Promotion active from {promotionRange.start.toString()} to {promotionRange.end.toString()}\n        </Text>\n      )}\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using DateRangePicker in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.\n\n### Basic rendering tests\n\nVerify the component renders with expected elements:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { DateRangePicker } from '@commercetools/nimbus';\n\ndescribe('DateRangePicker', () => {\n  it('renders start and end date inputs', () => {\n    render(<DateRangePicker />);\n\n    // Each date input has 3 segments (month, day, year)\n    const dateInputs = screen.getAllByRole('spinbutton');\n    expect(dateInputs).toHaveLength(6);\n  });\n\n  it('renders calendar and clear buttons', () => {\n    render(<DateRangePicker />);\n\n    expect(screen.getByRole('button', { name: /open calendar/i })).toBeInTheDocument();\n    expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument();\n  });\n});\n```\n\n### Interaction tests\n\nTest user interactions with the component:\n\n```tsx\nimport { render, screen, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { DateRangePicker } from '@commercetools/nimbus';\n\ndescribe('DateRangePicker interactions', () => {\n  it('opens calendar when button is clicked', async () => {\n    const user = userEvent.setup();\n    render(<DateRangePicker />);\n\n    const calendarButton = screen.getByRole('button', { name: /open calendar/i });\n    await user.click(calendarButton);\n\n    await waitFor(() => {\n      expect(screen.getByRole('grid')).toBeInTheDocument();\n    });\n  });\n\n  it('clears selection when clear button is clicked', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n    render(<DateRangePicker onChange={handleChange} />);\n\n    const clearButton = screen.getByRole('button', { name: /clear/i });\n    await user.click(clearButton);\n\n    expect(handleChange).toHaveBeenCalledWith(null);\n  });\n});\n```\n\n### Testing with date values\n\nTest date value handling using `@internationalized/date`:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { CalendarDate } from '@internationalized/date';\nimport { DateRangePicker } from '@commercetools/nimbus';\n\ndescribe('DateRangePicker with date values', () => {\n  it('displays provided date range', () => {\n    const dateRange = {\n      start: new CalendarDate(2024, 1, 15),\n      end: new CalendarDate(2024, 1, 20),\n    };\n\n    render(<DateRangePicker value={dateRange} />);\n\n    // Verify the dates are displayed in the input segments\n    expect(screen.getByText('1', { selector: '[role=\"spinbutton\"]' })).toBeInTheDocument(); // Month\n    expect(screen.getByText('15', { selector: '[role=\"spinbutton\"]' })).toBeInTheDocument(); // Start day\n    expect(screen.getByText('20', { selector: '[role=\"spinbutton\"]' })).toBeInTheDocument(); // End day\n  });\n\n  it('calls onChange with correct date types', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n    render(<DateRangePicker onChange={handleChange} />);\n\n    // Interact with date picker...\n    // After selection:\n    expect(handleChange).toHaveBeenCalledWith(\n      expect.objectContaining({\n        start: expect.any(CalendarDate),\n        end: expect.any(CalendarDate),\n      })\n    );\n  });\n});\n```\n\n### Testing time selection\n\nWhen using time granularity, test time input behavior:\n\n```tsx\nimport { render, screen, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { DateRangePicker } from '@commercetools/nimbus';\n\ndescribe('DateRangePicker with time', () => {\n  it('shows time inputs when granularity includes time', async () => {\n    const user = userEvent.setup();\n    render(<DateRangePicker granularity=\"minute\" />);\n\n    // Open calendar\n    const calendarButton = screen.getByRole('button', { name: /open calendar/i });\n    await user.click(calendarButton);\n\n    // Time inputs should appear in the popover footer\n    await waitFor(() => {\n      expect(screen.getByText(/start time/i)).toBeInTheDocument();\n      expect(screen.getByText(/end time/i)).toBeInTheDocument();\n    });\n  });\n});\n```\n\n## Resources\n\n- [Storybook](link-tbd)\n- [React Aria DateRangePicker](https://react-spectrum.adobe.com/react-aria/DateRangePicker.html)\n- [ARIA Date Picker Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Working with date values",
+          "href": "#working-with-date-values",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date value types",
+          "href": "#date-value-types",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Creating date values",
+          "href": "#creating-date-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Converting to ISO strings",
+          "href": "#converting-to-iso-strings",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date range structure",
+          "href": "#date-range-structure",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Granularity options",
+          "href": "#granularity-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Time zone handling",
+          "href": "#time-zone-handling",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date value types",
+          "href": "#date-value-types-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Filtering data by date range",
+          "href": "#filtering-data-by-date-range",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Promotion period selection",
+          "href": "#promotion-period-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic rendering tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing with date values",
+          "href": "#testing-with-date-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing time selection",
+          "href": "#testing-time-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

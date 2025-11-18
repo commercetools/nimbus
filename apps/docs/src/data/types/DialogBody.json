@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Dialog.Body - The main body content section",
+  "displayName": "DialogBody",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "The ref to the dialog body",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

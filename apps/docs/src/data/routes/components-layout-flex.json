@@ -1,0 +1,469 @@
+{
+  "meta": {
+    "id": "Components-Flex",
+    "title": "Flex",
+    "description": "A layout component for creating flexible layouts based on CSS Flexbox.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/flex/flex.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Flex"
+    ],
+    "route": "components/layout/flex",
+    "tags": [
+      "component",
+      "flex",
+      "flexbox",
+      "layout"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Key Features",
+        "href": "#key-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Import",
+        "href": "#import",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Direction",
+        "href": "#direction",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Alignment",
+        "href": "#alignment",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Wrapping",
+        "href": "#wrapping",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Flexible items",
+        "href": "#flexible-items",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Centering content",
+        "href": "#centering-content",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With asChild",
+        "href": "#with-aschild",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          8
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "When to use",
+        "href": "#when-to-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Flexbox-specific props",
+        "href": "#flexbox-specific-props",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "All Box props",
+        "href": "#all-box-props",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Flex\n\nFlex is a layout component that provides a convenient way to create flexible layouts based on CSS Flexbox. It's based on the [Chakra UI Flex component](https://chakra-ui.com/docs/components/flex) and supports all style props for rapid UI development.\n\n## Overview\n\nThe Flex component is essentially a Box component with `display: flex` applied by default. It provides an intuitive API for creating flexible layouts and supports all flexbox properties.\n\n### Key Features\n\n- **Flexbox by default**: Automatically applies `display: flex`\n- **Style props**: Supports all Chakra UI style props for rapid development\n- **Responsive design**: Easily create responsive layouts with responsive props\n- **Semantic HTML**: Can render as any HTML element using the `as` prop\n\n### Resources\n\nLearn more about CSS Flexbox and the underlying implementation:\n\n[Chakra UI Flex](https://chakra-ui.com/docs/components/flex)\n[CSS Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)\n\n## Usage\n\n### Import\n\n```jsx\nimport { Flex } from \"@commercetools/nimbus\";\n```\n\n### Basic usage\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\">\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 3\n    </Box>\n  </Flex>\n);\n```\n\n### Direction\n\nControl the direction of flex items using the `direction` prop:\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"600\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"500\">Horizontal (row):</Text>\n      <Flex direction=\"row\" gap=\"400\">\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 1\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 2\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 3\n        </Box>\n      </Flex>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"500\">Vertical (column):</Text>\n      <Flex direction=\"column\" gap=\"400\">\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 1\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 2\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 3\n        </Box>\n      </Flex>\n    </Stack>\n  </Stack>\n);\n```\n\n### Alignment\n\nControl alignment of flex items using `alignItems` and `justifyContent`:\n\n```jsx-live\nconst App = () => (\n  <Flex\n    direction=\"row\"\n    gap=\"400\"\n    alignItems=\"center\"\n    justifyContent=\"space-between\"\n    p=\"400\"\n    bg=\"neutral.2\"\n  >\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 3\n    </Box>\n  </Flex>\n);\n```\n\n### Wrapping\n\nControl how flex items wrap using the `wrap` prop:\n\n```jsx-live\nconst App = () => (\n  <Flex wrap=\"wrap\" gap=\"400\" maxWidth=\"600px\">\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 3\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 4\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 5\n    </Box>\n  </Flex>\n);\n```\n\n### Flexible items\n\nControl how individual items grow and shrink using flex properties:\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\">\n    <Box p=\"400\" bg=\"primary.7\" flex=\"1\">\n      Flexible item (flex: 1)\n    </Box>\n    <Box p=\"400\" bg=\"positive.7\">\n      Fixed width item\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" flex=\"2\">\n      More flexible item (flex: 2)\n    </Box>\n  </Flex>\n);\n```\n\n### Centering content\n\nA common use case is centering content both horizontally and vertically:\n\n```jsx-live\nconst App = () => (\n  <Flex\n    alignItems=\"center\"\n    justifyContent=\"center\"\n    height=\"200px\"\n    bg=\"neutral.2\"\n  >\n    <Box p=\"400\" bg=\"primary.7\">\n      Centered content\n    </Box>\n  </Flex>\n);\n```\n\n### With asChild\n\nUse the `asChild` prop to apply Flex styles to any child element while maintaining the child's functionality:\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\" p=\"400\" bg=\"neutral.2\" asChild>\n    <section>\n      <Box p=\"400\" bg=\"primary.7\">\n        Item 1\n      </Box>\n      <Box p=\"400\" bg=\"primary.7\">\n        Item 2\n      </Box>\n    </section>\n  </Flex>\n);\n```\n\n## Guidelines\n\nUse the Flex component strategically to create flexible and responsive layouts.\n\n### Best practices\n\n- **Use for flexible layouts**: Flex is ideal when you need items to grow, shrink, or align dynamically\n- **Consider Stack first**: For simple vertical or horizontal stacking with consistent spacing, Stack may be simpler\n- **Leverage responsive props**: Use responsive values for direction, alignment, and other properties\n- **Combine with other layout components**: Flex works well with Box, Stack, and Grid for complex layouts\n\n### When to use\n\n> [!TIP]\\\n> When to use\n\n- **Dynamic layouts**: When items need to grow or shrink based on available space\n- **Complex alignment**: When you need precise control over item alignment\n- **Responsive designs**: When layout needs to change based on viewport size\n- **Flexible spacing**: When items should distribute space dynamically\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple stacking**: Use Stack instead for basic vertical/horizontal layouts with consistent spacing\n- **Grid layouts**: Use Grid for two-dimensional layouts with rows and columns\n- **Static layouts**: Use Box when flexbox features aren't needed\n\n## Props\n\nThe Flex component accepts all system props from Chakra UI, including:\n\n### Flexbox-specific props\n\n- `direction` - Sets the direction of flex items (`row`, `column`, `row-reverse`, `column-reverse`)\n- `wrap` - Controls wrapping behavior (`wrap`, `nowrap`, `wrap-reverse`)\n- `alignItems` - Aligns items on the cross axis\n- `justifyContent` - Aligns items on the main axis\n- `alignContent` - Aligns flex lines when there's extra space\n- `gap` - Sets the gap between items (replaces the need for margins)\n\n### All Box props\n\nFlex also supports all Box component props:\n\n- Space props (margin, padding)\n- Color props (background, color)\n- Typography props (fontSize, fontWeight)\n- Layout props (width, height, display)\n- Border props\n- Position props\n- Shadow props\n\n## Accessibility\n\nFlex renders a `div` by default but can be changed to any other HTML element using the `as` prop to ensure proper semantic structure:\n\n```jsx-live\nconst App = () => (\n  <Flex as=\"nav\" gap=\"400\" p=\"400\">\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      Home\n    </Box>\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      About\n    </Box>\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      Contact\n    </Box>\n  </Flex>\n);\n```\n\n### Best practices\n\n- **Use semantic HTML**: Choose appropriate HTML elements with the `as` prop\n- **Maintain reading order**: Ensure visual order matches DOM order for screen readers\n- **Avoid layout-only divs**: When possible, apply flex styles to semantic elements\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Flex\n\nFlex is a layout component that provides a convenient way to create flexible layouts based on CSS Flexbox. It's based on the [Chakra UI Flex component](https://chakra-ui.com/docs/components/flex) and supports all style props for rapid UI development.\n\n## Overview\n\nThe Flex component is essentially a Box component with `display: flex` applied by default. It provides an intuitive API for creating flexible layouts and supports all flexbox properties.\n\n### Key Features\n\n- **Flexbox by default**: Automatically applies `display: flex`\n- **Style props**: Supports all Chakra UI style props for rapid development\n- **Responsive design**: Easily create responsive layouts with responsive props\n- **Semantic HTML**: Can render as any HTML element using the `as` prop\n\n### Resources\n\nLearn more about CSS Flexbox and the underlying implementation:\n\n[Chakra UI Flex](https://chakra-ui.com/docs/components/flex)\n[CSS Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)\n\n## Usage\n\n### Import\n\n```jsx\nimport { Flex } from \"@commercetools/nimbus\";\n```\n\n### Basic usage\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\">\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 3\n    </Box>\n  </Flex>\n);\n```\n\n### Direction\n\nControl the direction of flex items using the `direction` prop:\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"600\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"500\">Horizontal (row):</Text>\n      <Flex direction=\"row\" gap=\"400\">\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 1\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 2\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 3\n        </Box>\n      </Flex>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"500\">Vertical (column):</Text>\n      <Flex direction=\"column\" gap=\"400\">\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 1\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 2\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\">\n          Item 3\n        </Box>\n      </Flex>\n    </Stack>\n  </Stack>\n);\n```\n\n### Alignment\n\nControl alignment of flex items using `alignItems` and `justifyContent`:\n\n```jsx-live\nconst App = () => (\n  <Flex\n    direction=\"row\"\n    gap=\"400\"\n    alignItems=\"center\"\n    justifyContent=\"space-between\"\n    p=\"400\"\n    bg=\"neutral.2\"\n  >\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\">\n      Item 3\n    </Box>\n  </Flex>\n);\n```\n\n### Wrapping\n\nControl how flex items wrap using the `wrap` prop:\n\n```jsx-live\nconst App = () => (\n  <Flex wrap=\"wrap\" gap=\"400\" maxWidth=\"600px\">\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 3\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 4\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" minWidth=\"150px\">\n      Item 5\n    </Box>\n  </Flex>\n);\n```\n\n### Flexible items\n\nControl how individual items grow and shrink using flex properties:\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\">\n    <Box p=\"400\" bg=\"primary.7\" flex=\"1\">\n      Flexible item (flex: 1)\n    </Box>\n    <Box p=\"400\" bg=\"positive.7\">\n      Fixed width item\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" flex=\"2\">\n      More flexible item (flex: 2)\n    </Box>\n  </Flex>\n);\n```\n\n### Centering content\n\nA common use case is centering content both horizontally and vertically:\n\n```jsx-live\nconst App = () => (\n  <Flex\n    alignItems=\"center\"\n    justifyContent=\"center\"\n    height=\"200px\"\n    bg=\"neutral.2\"\n  >\n    <Box p=\"400\" bg=\"primary.7\">\n      Centered content\n    </Box>\n  </Flex>\n);\n```\n\n### With asChild\n\nUse the `asChild` prop to apply Flex styles to any child element while maintaining the child's functionality:\n\n```jsx-live\nconst App = () => (\n  <Flex gap=\"400\" p=\"400\" bg=\"neutral.2\" asChild>\n    <section>\n      <Box p=\"400\" bg=\"primary.7\">\n        Item 1\n      </Box>\n      <Box p=\"400\" bg=\"primary.7\">\n        Item 2\n      </Box>\n    </section>\n  </Flex>\n);\n```\n\n## Guidelines\n\nUse the Flex component strategically to create flexible and responsive layouts.\n\n### Best practices\n\n- **Use for flexible layouts**: Flex is ideal when you need items to grow, shrink, or align dynamically\n- **Consider Stack first**: For simple vertical or horizontal stacking with consistent spacing, Stack may be simpler\n- **Leverage responsive props**: Use responsive values for direction, alignment, and other properties\n- **Combine with other layout components**: Flex works well with Box, Stack, and Grid for complex layouts\n\n### When to use\n\n> [!TIP]\\\n> When to use\n\n- **Dynamic layouts**: When items need to grow or shrink based on available space\n- **Complex alignment**: When you need precise control over item alignment\n- **Responsive designs**: When layout needs to change based on viewport size\n- **Flexible spacing**: When items should distribute space dynamically\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple stacking**: Use Stack instead for basic vertical/horizontal layouts with consistent spacing\n- **Grid layouts**: Use Grid for two-dimensional layouts with rows and columns\n- **Static layouts**: Use Box when flexbox features aren't needed\n\n## Props\n\nThe Flex component accepts all system props from Chakra UI, including:\n\n### Flexbox-specific props\n\n- `direction` - Sets the direction of flex items (`row`, `column`, `row-reverse`, `column-reverse`)\n- `wrap` - Controls wrapping behavior (`wrap`, `nowrap`, `wrap-reverse`)\n- `alignItems` - Aligns items on the cross axis\n- `justifyContent` - Aligns items on the main axis\n- `alignContent` - Aligns flex lines when there's extra space\n- `gap` - Sets the gap between items (replaces the need for margins)\n\n### All Box props\n\nFlex also supports all Box component props:\n\n- Space props (margin, padding)\n- Color props (background, color)\n- Typography props (fontSize, fontWeight)\n- Layout props (width, height, display)\n- Border props\n- Position props\n- Shadow props\n\n## Accessibility\n\nFlex renders a `div` by default but can be changed to any other HTML element using the `as` prop to ensure proper semantic structure:\n\n```jsx-live\nconst App = () => (\n  <Flex as=\"nav\" gap=\"400\" p=\"400\">\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      Home\n    </Box>\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      About\n    </Box>\n    <Box as=\"a\" href=\"#\" p=\"200\">\n      Contact\n    </Box>\n  </Flex>\n);\n```\n\n### Best practices\n\n- **Use semantic HTML**: Choose appropriate HTML elements with the `as` prop\n- **Maintain reading order**: Ensure visual order matches DOM order for screen readers\n- **Avoid layout-only divs**: When possible, apply flex styles to semantic elements\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Key Features",
+          "href": "#key-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Direction",
+          "href": "#direction",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment",
+          "href": "#alignment",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Wrapping",
+          "href": "#wrapping",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Flexible items",
+          "href": "#flexible-items",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Centering content",
+          "href": "#centering-content",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With asChild",
+          "href": "#with-aschild",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "When to use",
+          "href": "#when-to-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Flexbox-specific props",
+          "href": "#flexbox-specific-props",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "All Box props",
+          "href": "#all-box-props",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

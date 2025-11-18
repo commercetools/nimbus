@@ -1,0 +1,177 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Tooltip\n\nA contextual popup that displays a description for an element.",
+  "displayName": "TooltipRoot",
+  "methods": [],
+  "props": {
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the tooltip should be disabled, independent from the trigger.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+        "name": "TooltipTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "delay": {
+      "defaultValue": {
+        "value": "300"
+      },
+      "description": "The delay time for the tooltip to show up. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Immediate-or-delayed-appearance).",
+      "name": "delay",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+        "name": "TooltipTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "closeDelay": {
+      "defaultValue": {
+        "value": "200"
+      },
+      "description": "The delay time for the tooltip to close. [See guidelines](https://spectrum.adobe.com/page/tooltip/#Warmup-and-cooldown).",
+      "name": "closeDelay",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+        "name": "TooltipTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "trigger": {
+      "defaultValue": {
+        "value": "'hover'"
+      },
+      "description": "By default, opens for both focus and hover. Can be made to open only for focus.",
+      "name": "trigger",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+        "name": "TooltipTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+tooltip@3.4.21_react@19.2.0/node_modules/@react-types/tooltip/src/index.d.ts",
+          "name": "TooltipTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"focus\" | \"hover\"",
+        "value": [
+          {
+            "value": "\"focus\""
+          },
+          {
+            "value": "\"hover\""
+          }
+        ]
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (controlled).",
+      "name": "isOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (uncontrolled).",
+      "name": "defaultOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the overlay's open state changes.",
+      "name": "onOpenChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

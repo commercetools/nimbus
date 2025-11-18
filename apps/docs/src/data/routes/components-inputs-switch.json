@@ -1,0 +1,487 @@
+{
+  "meta": {
+    "id": "Components-Switch",
+    "title": "Switch",
+    "description": "A clear, visual toggle, allowing users to activate or deactivate a setting quickly.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/switch/switch.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Switch"
+    ],
+    "route": "components/inputs/switch",
+    "tags": [
+      "component",
+      "input",
+      "toggle"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium (md)",
+        "href": "#medium-md",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Small (sm)",
+        "href": "#small-sm",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Labels",
+        "href": "#labels",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With label",
+        "href": "#with-label",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Without visible label",
+        "href": "#without-visible-label",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Mixed interaction states",
+        "href": "#mixed-interaction-states",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          2,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=346-2572&t=0Gug4G6TEF60mpzZ-1",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Switch\n\n## Overview\n\nThis switch is an interactive element that provides instant visual feedback\nallowing users to toggle binary options.\n\n### Resources\n\n- [Figma](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=346-2572&t=0Gug4G6TEF60mpzZ-1)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\n#### Medium (md)\n\n```jsx-live\nconst App = () => <Switch size=\"md\">Label</Switch>;\n```\n\n#### Small (sm)\n\n```jsx-live\nconst App = () => <Switch size=\"sm\">Label</Switch>;\n```\n\n### Labels\n\n#### With label\n\nIt is always good practice to have a label paired with a switch so a user knows\nwhat is being toggled. The label responds to both switch sizes to match use\ncases.\n\n```jsx-live\nconst App = () => <Switch>Label</Switch>;\n```\n\n#### Without visible label\n\nYou can use switch without visible label if the use is clear enough to not need\na label for the user. \n\n```jsx-live\nconst App = () => <Switch aria-label=\"I still need an aria-label for a11y purposes\" />;\n```\n\n## Guidelines\n\nSwitch guidelines focus on providing a clear, accessible, and visually consistent\nbinary toggle for on/off states, ensuring discoverability, ease of interaction,\nand proper communication of the current setting.\n\n### Best practices\n\n- **Labels & feedback**: Use clear labels and provide instant visual feedback on\n  state changes.\n- **Functionality**: Employ switches solely for binary on/off actions, avoiding\n  overuse.\n- **Accessibility**: Ensure keyboard navigation and proper ARIA for screen\n  readers.\n\n### Usage\n\n- **Simple on/off settings**: When users need to toggle a single feature or\n  preference between two states (e.g., \"Notifications: On/Off,\" \"Dark Mode:\n  On/Off\").\n- **Immediate, direct control**: When users want to quickly and directly change a\n  setting without navigating through menus or dialogs.\n- **Visual clarity of state**: When it's important to visually represent the\n  current state of a setting at a glance.\n- **User preferences**: When users are setting personal preferences that are\n  binary.\n- **Feature toggles**: When users want to enable or disable features of an\n  application.\n\n### Mixed interaction states\n\nSwitches should represent binary options, without mixing states. Avoid use cases\nthat will need to represent summaries when options are mixed. Try using\ncheckboxes if you have many settings that are selectable.\n\n> [!TIP]\\\n> **Do**\n> - Keep switches to binary options, simplifying for the user. \n\n![Do](/images/switch/mixed-state-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n> - There is not an indeterminate state for switches. Do not design experiences\n>   where a switch is being used to summarize mixed settings.\n> - Do not excessively use switches, other options like checkboxes are available.\n\n![Dont](/images/switch/mixed-state-dont.png)\n\n## Specs\n\n### Props\n\n<PropsTable id=\"Switch\"/>\n\n### Accessibility\n\n#### 1. Perceivable:\n- **1.3.1 Info and Relationships (Level A)**:\n  - Ensure the switch's state and purpose are programmatically determinable. Use\n    ARIA attributes like aria-checked to convey the on/off state to assistive\n    technologies.\n  - Associate a clear label with the switch using the `<label>` element or\n    aria-label.\n- **1.4.1 Use of Color (Level A)**:\n  - Don't rely solely on color to indicate the switch's state. Use other visual\n    cues like position or icons.\n- **1.4.3 Contrast (Minimum) (Level AA)**:\n  - Ensure sufficient color contrast between the switch's elements (background,\n    toggle, label) and surrounding content.\n\n#### 2. Operable:\n- **2.1.1 Keyboard (Level A)**:\n  - Make the switch fully operable via keyboard. Users should be able to focus on\n    the switch using the Tab key and toggle it using the Spacebar or Enter key.\n- **2.4.7 Focus Visible (Level AA)**:\n  - Provide a clear visual focus indicator when the switch receives keyboard\n    focus. \n\n#### 3. Understandable:\n- **3.2.1 On Focus (Level A)**:\n  - Ensure that focusing on the switch doesn't trigger unexpected changes or\n    actions.\n- **3.3.2 Labels or Instructions (Level A)**:\n  - Provide clear and concise labels that accurately describe the switch's\n    function.\n\n#### 4. Robust:\n- **4.1.2 Name, Role, Value (Level A)**:\n  - Use appropriate semantic HTML and ARIA attributes to define the switch's\n    role, name, and value. This ensures compatibility with assistive\n    technologies.\n  - aria-checked must accurately reflect the on/off state.",
+  "views": {
+    "overview": {
+      "mdx": "\n# Switch\n\n## Overview\n\nThis switch is an interactive element that provides instant visual feedback\nallowing users to toggle binary options.\n\n### Resources\n\n- [Figma](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=346-2572&t=0Gug4G6TEF60mpzZ-1)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\n#### Medium (md)\n\n```jsx-live\nconst App = () => <Switch size=\"md\">Label</Switch>;\n```\n\n#### Small (sm)\n\n```jsx-live\nconst App = () => <Switch size=\"sm\">Label</Switch>;\n```\n\n### Labels\n\n#### With label\n\nIt is always good practice to have a label paired with a switch so a user knows\nwhat is being toggled. The label responds to both switch sizes to match use\ncases.\n\n```jsx-live\nconst App = () => <Switch>Label</Switch>;\n```\n\n#### Without visible label\n\nYou can use switch without visible label if the use is clear enough to not need\na label for the user. \n\n```jsx-live\nconst App = () => <Switch aria-label=\"I still need an aria-label for a11y purposes\" />;\n```\n\n## Guidelines\n\nSwitch guidelines focus on providing a clear, accessible, and visually consistent\nbinary toggle for on/off states, ensuring discoverability, ease of interaction,\nand proper communication of the current setting.\n\n### Best practices\n\n- **Labels & feedback**: Use clear labels and provide instant visual feedback on\n  state changes.\n- **Functionality**: Employ switches solely for binary on/off actions, avoiding\n  overuse.\n- **Accessibility**: Ensure keyboard navigation and proper ARIA for screen\n  readers.\n\n### Usage\n\n- **Simple on/off settings**: When users need to toggle a single feature or\n  preference between two states (e.g., \"Notifications: On/Off,\" \"Dark Mode:\n  On/Off\").\n- **Immediate, direct control**: When users want to quickly and directly change a\n  setting without navigating through menus or dialogs.\n- **Visual clarity of state**: When it's important to visually represent the\n  current state of a setting at a glance.\n- **User preferences**: When users are setting personal preferences that are\n  binary.\n- **Feature toggles**: When users want to enable or disable features of an\n  application.\n\n### Mixed interaction states\n\nSwitches should represent binary options, without mixing states. Avoid use cases\nthat will need to represent summaries when options are mixed. Try using\ncheckboxes if you have many settings that are selectable.\n\n> [!TIP]\\\n> **Do**\n> - Keep switches to binary options, simplifying for the user. \n\n![Do](/images/switch/mixed-state-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n> - There is not an indeterminate state for switches. Do not design experiences\n>   where a switch is being used to summarize mixed settings.\n> - Do not excessively use switches, other options like checkboxes are available.\n\n![Dont](/images/switch/mixed-state-dont.png)\n\n## Specs\n\n### Props\n\n<PropsTable id=\"Switch\"/>\n\n### Accessibility\n\n#### 1. Perceivable:\n- **1.3.1 Info and Relationships (Level A)**:\n  - Ensure the switch's state and purpose are programmatically determinable. Use\n    ARIA attributes like aria-checked to convey the on/off state to assistive\n    technologies.\n  - Associate a clear label with the switch using the `<label>` element or\n    aria-label.\n- **1.4.1 Use of Color (Level A)**:\n  - Don't rely solely on color to indicate the switch's state. Use other visual\n    cues like position or icons.\n- **1.4.3 Contrast (Minimum) (Level AA)**:\n  - Ensure sufficient color contrast between the switch's elements (background,\n    toggle, label) and surrounding content.\n\n#### 2. Operable:\n- **2.1.1 Keyboard (Level A)**:\n  - Make the switch fully operable via keyboard. Users should be able to focus on\n    the switch using the Tab key and toggle it using the Spacebar or Enter key.\n- **2.4.7 Focus Visible (Level AA)**:\n  - Provide a clear visual focus indicator when the switch receives keyboard\n    focus. \n\n#### 3. Understandable:\n- **3.2.1 On Focus (Level A)**:\n  - Ensure that focusing on the switch doesn't trigger unexpected changes or\n    actions.\n- **3.3.2 Labels or Instructions (Level A)**:\n  - Provide clear and concise labels that accurately describe the switch's\n    function.\n\n#### 4. Robust:\n- **4.1.2 Name, Role, Value (Level A)**:\n  - Use appropriate semantic HTML and ARIA attributes to define the switch's\n    role, name, and value. This ensures compatibility with assistive\n    technologies.\n  - aria-checked must accurately reflect the on/off state.",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium (md)",
+          "href": "#medium-md",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Small (sm)",
+          "href": "#small-sm",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels",
+          "href": "#labels",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With label",
+          "href": "#with-label",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Without visible label",
+          "href": "#without-visible-label",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Mixed interaction states",
+          "href": "#mixed-interaction-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

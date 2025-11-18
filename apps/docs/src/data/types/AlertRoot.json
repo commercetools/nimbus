@@ -1,0 +1,42 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Alert.Root - Provides feedback to the user about the status of an action or system event",
+  "displayName": "AlertRoot",
+  "methods": [],
+  "props": {
+    "variant": {
+      "defaultValue": null,
+      "description": "Visual style variant of the alert",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/alert/alert.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"flat\" | \"outlined\">"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/alert/alert.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

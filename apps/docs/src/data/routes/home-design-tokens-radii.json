@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "id": "TokensRadii",
+    "title": "Radii",
+    "description": "The list of available radius tokens",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/radii.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Radii"
+    ],
+    "route": "home/design-tokens/radii",
+    "tags": [
+      "radius",
+      "radii",
+      "border-radius"
+    ],
+    "toc": [
+      {
+        "value": "Tokens",
+        "href": "#tokens",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Architecture",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Radii\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Radii\n\nThe list of available radius tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"radii\" demoProperty=\"borderRadius\" />\n",
+      "toc": [
+        {
+          "value": "Tokens",
+          "href": "#tokens",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

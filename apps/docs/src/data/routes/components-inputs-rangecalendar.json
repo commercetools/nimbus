@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "id": "Components-RangeCalendar",
+    "title": "RangeCalendar",
+    "description": "Calendar Range display a grid of days in one or more months and allow users to select a range of dates.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/range-calendar/range-calendar.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "RangeCalendar"
+    ],
+    "route": "components/inputs/rangecalendar",
+    "tags": [
+      "component",
+      "calendar"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Date range",
+        "href": "#date-range",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Keeping interactions simple",
+        "href": "#keeping-interactions-simple",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# RangeCalendar\n\nRange calendar displays a grid of days in one or more months and allow users to\nselect a range of dates.\n\n## Overview\n\nThe calendar component is most often used within the popover component when a\nuser interacts with a date input. Easily toggle, month, year, and select a\nrange.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Date range\n\nAllow users to select a range of dates.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n## Guidelines\n\nCalendar guidelines focus on creating intuitive and accessible interfaces for\nviewing, navigating, and interacting with dates and events.\n\n### Best practices\n\n- **Clear visual hierarchy:** Distinguish between days, weeks, months, and\n  years. Highlight the current date and any selected dates.\n- **Intuitive navigation:** Provide clear controls to move between different\n  time periods (days, weeks, months, years).\n- **Easy date range selection:** For applications requiring date ranges, provide\n  an intuitive way to select start and end dates, often with visual\n  highlighting.\n- **Clear labels and instructions:** Provide clear labels for navigation\n  controls and any interactive elements within the calendar.\n\n### Usage\n\nA calendar is used to visually display and manage time-based information,\nallowing users to view, schedule, and interact with dates. A common way this\ncomponent is used is within the popover, and paired with the date input.\n\n> [!TIP]\\\n> When to use\n\n- **Scheduling:** When users need to select specific dates.\n- **Visualizing time-based data:** To display data or to filter data in a\n  corresponding visual.\n- **Date range selection:** When users need to select a start and end date for a\n  period.\n- **Browsing dates:** When users need to navigate through different days, weeks,\n  or months to find a specific date.\n- **Contextual awareness of dates:** When the day of the week or the\n  relationship between dates is important for decision-making.\n- **Recurring events:** To allow users to set up and manage events that repeat\n  on a regular basis.\n\n### Keeping interactions simple\n\nSimple calendar interactions are vital because they minimize user effort and\ncognitive load, allowing for quick and efficient time management, the calendar's\nprimary function.\n\n> [!TIP]\\\n> **Do**\n>\n> - Provide clear navigation. Make it easy to move between days, weeks, months,\n>   and years using intuitive controls (arrows, drop downs).\n> - Enable easy date range selection. If your application requires date ranges,\n>   make the selection process straightforward (e.g., click start, click end).\n> - Consider time zones (if applicable). If your application deals with users in\n>   different time zones, handle and display times accordingly.\n> - Ensure navigation controls are clearly labeled and their function is\n>   obvious.\n\n![interaction - do's](/images/range-calendar/interaction-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't over clutter. Avoid displaying too much information on the calendar\n>   grid at once, which can make it overwhelming.\n> - Don't make navigation confusing. Ensure navigation controls are clearly\n>   labeled and their function is obvious.\n> - Don't use it for simple date input. If users know the exact date, a direct\n>   date input field might be more efficient.\n> - Don't auto-submit on date selection. Avoid automatically submitting forms or\n>   triggering actions immediately after a date is selected.\n\n![interaction - dont's](/images/range-calendar/interaction-dont.png)\n\n## Props\n\n<PropsTable id=\"RangeCalendar\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n### Accessibility standards\n\n- Ensure the calendar is navigable using a keyboard.\n  - Use Tab to move focus to and from the calendar component.\n  - Use Enter or Space to activate controls (e.g., to open/close the calendar,\n    select a date, or navigate months/years).\n  - Use arrow keys to navigate between days within the calendar grid.\n  - Ensure focus is clearly visible on the currently selected day or navigated\n    day.\n- Clearly indicate the current month and year.\n- Provide accessible controls for navigating to previous and next months/years.\n  These controls should have clear `aria-label` attributes if they are\n  icon-only.\n- Ensure selected dates are clearly distinguished visually and announced by\n  screen readers.\n- Communicate invalid or unavailable dates (e.g., past dates, blackout dates) to\n  screen readers.\n- Provide a mechanism for users to select a specific date (e.g., clicking a day,\n  or typing a date into an associated input field).\n- Announce changes in month or year to screen readers.\n- Ensure sufficient color contrast for all calendar elements (text, borders,\n  icons, selected states, hover states).\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# RangeCalendar\n\nRange calendar displays a grid of days in one or more months and allow users to\nselect a range of dates.\n\n## Overview\n\nThe calendar component is most often used within the popover component when a\nuser interacts with a date input. Easily toggle, month, year, and select a\nrange.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Date range\n\nAllow users to select a range of dates.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n## Guidelines\n\nCalendar guidelines focus on creating intuitive and accessible interfaces for\nviewing, navigating, and interacting with dates and events.\n\n### Best practices\n\n- **Clear visual hierarchy:** Distinguish between days, weeks, months, and\n  years. Highlight the current date and any selected dates.\n- **Intuitive navigation:** Provide clear controls to move between different\n  time periods (days, weeks, months, years).\n- **Easy date range selection:** For applications requiring date ranges, provide\n  an intuitive way to select start and end dates, often with visual\n  highlighting.\n- **Clear labels and instructions:** Provide clear labels for navigation\n  controls and any interactive elements within the calendar.\n\n### Usage\n\nA calendar is used to visually display and manage time-based information,\nallowing users to view, schedule, and interact with dates. A common way this\ncomponent is used is within the popover, and paired with the date input.\n\n> [!TIP]\\\n> When to use\n\n- **Scheduling:** When users need to select specific dates.\n- **Visualizing time-based data:** To display data or to filter data in a\n  corresponding visual.\n- **Date range selection:** When users need to select a start and end date for a\n  period.\n- **Browsing dates:** When users need to navigate through different days, weeks,\n  or months to find a specific date.\n- **Contextual awareness of dates:** When the day of the week or the\n  relationship between dates is important for decision-making.\n- **Recurring events:** To allow users to set up and manage events that repeat\n  on a regular basis.\n\n### Keeping interactions simple\n\nSimple calendar interactions are vital because they minimize user effort and\ncognitive load, allowing for quick and efficient time management, the calendar's\nprimary function.\n\n> [!TIP]\\\n> **Do**\n>\n> - Provide clear navigation. Make it easy to move between days, weeks, months,\n>   and years using intuitive controls (arrows, drop downs).\n> - Enable easy date range selection. If your application requires date ranges,\n>   make the selection process straightforward (e.g., click start, click end).\n> - Consider time zones (if applicable). If your application deals with users in\n>   different time zones, handle and display times accordingly.\n> - Ensure navigation controls are clearly labeled and their function is\n>   obvious.\n\n![interaction - do's](/images/range-calendar/interaction-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't over clutter. Avoid displaying too much information on the calendar\n>   grid at once, which can make it overwhelming.\n> - Don't make navigation confusing. Ensure navigation controls are clearly\n>   labeled and their function is obvious.\n> - Don't use it for simple date input. If users know the exact date, a direct\n>   date input field might be more efficient.\n> - Don't auto-submit on date selection. Avoid automatically submitting forms or\n>   triggering actions immediately after a date is selected.\n\n![interaction - dont's](/images/range-calendar/interaction-dont.png)\n\n## Props\n\n<PropsTable id=\"RangeCalendar\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n### Accessibility standards\n\n- Ensure the calendar is navigable using a keyboard.\n  - Use Tab to move focus to and from the calendar component.\n  - Use Enter or Space to activate controls (e.g., to open/close the calendar,\n    select a date, or navigate months/years).\n  - Use arrow keys to navigate between days within the calendar grid.\n  - Ensure focus is clearly visible on the currently selected day or navigated\n    day.\n- Clearly indicate the current month and year.\n- Provide accessible controls for navigating to previous and next months/years.\n  These controls should have clear `aria-label` attributes if they are\n  icon-only.\n- Ensure selected dates are clearly distinguished visually and announced by\n  screen readers.\n- Communicate invalid or unavailable dates (e.g., past dates, blackout dates) to\n  screen readers.\n- Provide a mechanism for users to select a specific date (e.g., clicking a day,\n  or typing a date into an associated input field).\n- Announce changes in month or year to screen readers.\n- Ensure sufficient color contrast for all calendar elements (text, borders,\n  icons, selected states, hover states).\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date range",
+          "href": "#date-range",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keeping interactions simple",
+          "href": "#keeping-interactions-simple",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

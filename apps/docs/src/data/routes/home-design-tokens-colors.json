@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "id": "Colors",
+    "title": "Colors",
+    "description": "available colors",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/colors.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Colors"
+    ],
+    "route": "home/design-tokens/colors",
+    "tags": [
+      "colors"
+    ],
+    "toc": [
+      {
+        "value": "Scale steps",
+        "href": "#scale-steps",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "System Colors",
+        "href": "#system-colors",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Blacks & Whites",
+        "href": "#blacks--whites",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Brand Colors",
+        "href": "#brand-colors",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Semantic Colors",
+        "href": "#semantic-colors",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Palette",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast**\nlevels to ensure clarity and **usability** across various contexts. Each scale\nprovides a range of tones, from subtle backgrounds to high-contrast elements\nlike text and interactive borders, enabling a consistent and accessible user\nexperience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with\ngreen without losing the intended contrast levels. This flexibility ensures that\nour designs remain adaptable while maintaining visual hierarchy. Additionally,\n_the contrast-based approach eliminates the need for a separate \"dark mode\"\ndesign_, as the scales naturally support both light and dark environments\nseamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background,\nborder, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a\nwhite will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works\n> on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"blackAlpha, whiteAlpha\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctviolet, ctteal, ctyellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, positive, warning, critical\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Colors\n\nIn our design system, colors are organized into **scales** based on **contrast**\nlevels to ensure clarity and **usability** across various contexts. Each scale\nprovides a range of tones, from subtle backgrounds to high-contrast elements\nlike text and interactive borders, enabling a consistent and accessible user\nexperience.\n\nThe scales are _interchangeable_, meaning a color like red can be swapped with\ngreen without losing the intended contrast levels. This flexibility ensures that\nour designs remain adaptable while maintaining visual hierarchy. Additionally,\n_the contrast-based approach eliminates the need for a separate \"dark mode\"\ndesign_, as the scales naturally support both light and dark environments\nseamlessly.\n\n## Scale steps\n\nBelow is a list of steps with corresponding use cases for various background,\nborder, and text styles in the design system:\n\n| **Step** | **Use Case**                                           |\n| -------- | ------------------------------------------------------ |\n| 1        | App background                                         |\n| 2        | Subtle background                                      |\n| 3        | UI element background                                  |\n| 4        | Hovered UI element background                          |\n| 5        | Active / Selected UI element background                |\n| 6        | Subtle borders and separators                          |\n| 7        | UI element border and focus rings                      |\n| 8        | Hovered UI element border                              |\n| 9        | Solid backgrounds                                      |\n| 10       | Hovered solid backgrounds                              |\n| 11       | Low-contrast text                                      |\n| 12       | High-contrast text                                     |\n| contrast | a contrast color (black/white) that works on step 9+10 |\n\n## System Colors\n\nColors available for decoration or reference.\n\n<br />\n\n<ColorScales ids=\"tomato,red,ruby, crimson, pink, plum, purple, violet, iris,indigo,blue,cyan, teal,jade,green,grass,bronze,gold,brown,orange,amber,yellow,lime,mint,sky\" />\n\n## Blacks & Whites\n\nBlack and white color scales do not adapt to the selected color-mode. Means a\nwhite will always be white, a black will always be black.\n\n> [!TIP]  \n> Use the `neutral` color scales if you want to refer to a gray-tone that works\n> on the current background color (light-/dark-mode dependent).\n\n<br />\n\n<ColorScales ids=\"blackAlpha, whiteAlpha\" />\n\n## Brand Colors\n\nCustom colors, tailored to the brand.\n\n<br />\n\n<ColorScales ids=\"ctviolet, ctteal, ctyellow\" />\n\n## Semantic Colors\n\nColors with meaning, used to communicate status or state.\n\n<br />\n\n<ColorScales ids=\"primary, neutral, info, positive, warning, critical\" />\n",
+      "toc": [
+        {
+          "value": "Scale steps",
+          "href": "#scale-steps",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "System Colors",
+          "href": "#system-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blacks & Whites",
+          "href": "#blacks--whites",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Brand Colors",
+          "href": "#brand-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Semantic Colors",
+          "href": "#semantic-colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

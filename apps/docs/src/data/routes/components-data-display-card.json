@@ -1,0 +1,345 @@
+{
+  "meta": {
+    "id": "Components-Card",
+    "title": "Card",
+    "description": "A versatile container component presents self-contained information",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/card/card.mdx",
+    "menu": [
+      "Components",
+      "Data Display",
+      "Card"
+    ],
+    "route": "components/data-display/card",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Content",
+        "href": "#content",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Actions",
+        "href": "#actions",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Perceivable:",
+        "href": "#1-perceivable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Operable:",
+        "href": "#2-operable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Understandable:",
+        "href": "#3-understandable",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Robust:",
+        "href": "#4-robust",
+        "depth": 4,
+        "numbering": [
+          1,
+          4,
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\nA versatile container component presents self-contained information, often\ncombining text, images, and actions, making it ideal for displaying summaries or\ncontent previews.\n\n## Overview\n\nThis versatile container component often integrates text, images, and actions.\nInteraction methods differ: some are clickable, others use buttons and links,\nand some are purely informational, grouping content without direct interaction.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev)\n\n## Guidelines\n\nCard component guidelines focus on providing a clear, concise, and visually\ndistinct container for related content, ensuring scannability, clear actions,\nand adaptability across various layouts and screen sizes.\n\n### Best practices\n\n- **Clear purpose:** Each card should represent a single, distinct piece of\n  content or concept. Avoid combining multiple unrelated ideas into one card.\n- **Concise content:** Keep the information within a card brief and scannable.\n  Use clear headings, short descriptions, and only essential details.\n- **Visual hierarchy:** Establish a clear visual hierarchy to guide the user's\n  eye. Use appropriate typography, spacing, and visual cues to prioritize\n  important information.\n- **Actionable elements:** If the card requires user interaction, clearly\n  present the primary action(s) with prominent buttons or links. Limit the\n  number of actions to avoid overwhelming the user.\n- **Consistent styling:** Maintain consistent styling for cards. This includes\n  borders, shadows, typography, and spacing.\n- **Responsive design:** Ensure cards adapt well to different screen sizes and\n  orientations. Consider how the layout will change on mobile devices.\n\n### Usage\n\nThe strength of using cards in a UI lies in their ability to present information\nin concise, digestible chunks, making it easy for users to quickly scan,\nunderstand, and interact with related content, especially in responsive layouts.\n\n> [!TIP]\\\n> When to use\n\n- **Displaying a collection of related items:** When you have multiple, distinct\n  items that share a similar structure or theme (e.g., product listings,\n  documentation, user profiles).\n- **Presenting scannable summaries:** When you need to provide a quick overview\n  of information, allowing users to grasp the key details at a glance.\n- **Highlighting key information:** When you want to draw attention to important\n  pieces of content or features.\n- **Facilitating task completion:** When a card can contain actions that allow\n  users to quickly interact with or manage the displayed information.\n- **Creating a visually organized layout:** When you need to break down complex\n  information into digestible chunks and create a structured, modular design.\n- **Responsive design:** When you need a component that adapts well to various\n  screen sizes and can be easily rearranged on different devices.\n- **Content discovery:** When you want to encourage users to explore different\n  pieces of content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Presenting linear processes:** When users need to follow a specific,\n  sequential flow (e.g., a step-by-step form or a tutorial). Other patterns like\n  steppers are more appropriate.\n- **Displaying single, detailed items:** When you need to present a lot of\n  in-depth information about one specific item. A dedicated page is usually\n  better.\n- **Primary navigation:** Using cards for main site navigation can be\n  overwhelming and make it difficult for users to understand the site's\n  structure.\n- **Simple lists:** For basic lists of items with minimal information, a simple\n  list or table might be more efficient and less visually heavy.\n- **When content is highly interrelated and needs comparison:** If users need to\n  compare specific attributes across multiple items, a table might be a better\n  choice.\n- **Overcrowding the UI with too many cards:** Using too many cards on a page\n  can lead to visual clutter and make it hard for users to focus on what's\n  important.\n- **Forcing content into a card structure:** If the content doesn't naturally\n  fit into a card format, trying to force it can lead to awkward design and a\n  poor user experience.\n\n### Content\n\nContent within cards should be concise and focused, prioritizing key information\nand clear actions to ensure scannability and quick user comprehension. Consider\nthe card's purpose and limit content to only the most relevant details, using\nclear headings and short descriptions.\n\n> [!TIP]\\\n> **Do**\n>\n> - Cards are best for presenting self-contained pieces of information.\n> - Design cards with clear headings, concise text, and a logical visual\n>   hierarchy for easy scanning.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"8000\">\n    <Card.Content>\n      <Stack gap=\"400\">\n        <img src=\"/images/card/card-discount-template.png\" alt=\"discount template illustration\" />\n        <Text fontWeight=\"bold\">\n          Discount templates\n        </Text>\n        <Text>\n          Templates allow you to get started quickly and easily by displaying only\n          what is needed for creating your discount.\n        </Text>\n        <Select.Root aria-label=\"Select template\" placeholder=\"Select...\">\n          <Select.Options>{/* Options would go here */}</Select.Options>\n        </Select.Root>\n        <Box>\n          <Button colorPalette=\"primary\" variant=\"solid\">\n            Select template\n          </Button>\n        </Box>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid cramming too much information into a single card. Each card should\n>   focus on a single subject.\n> - Long, scrolling cards can be cumbersome; prioritize key information.\n> - Don't use a card to compare information.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"1\">\n    <Card.Content>\n      <Stack direction=\"horizontal\" gap=\"400\">\n        <Stack gap=\"400\" width=\"1/2\">\n          <img src=\"/images/card/card-discount-template.png\" alt=\"discount template illustration\" />\n          <Text fontWeight=\"bold\">\n            Discount templates\n          </Text>\n          <Text>\n            Templates allow you to get started quickly and easily by displaying\n            only what is needed for creating your discount.\n          </Text>\n          <Select.Root aria-label=\"Select template\" placeholder=\"Select...\">\n            <Select.Options>{/* Options would go here */}</Select.Options>\n          </Select.Root>\n          <Box>\n            <Button colorPalette=\"primary\" variant=\"solid\">\n              Select template\n            </Button>\n          </Box>\n        </Stack>\n        <Stack gap=\"400\" width=\"1/2\">\n          <img src=\"/images/card/card-product-discount.png\" alt=\"product discount illustration\" />\n          <Text fontWeight=\"bold\">\n            Product discount\n          </Text>\n          <Text>\n            A product discount applies a percentage-off (relative) or amount-ff\n            (absolute) discount to a specific product or subset of products\n            before adding them to the cart. They are useful for displaying\n            discounted or sale prices on a product info page\n          </Text>\n          <Box>\n            <Button colorPalette=\"primary\" variant=\"solid\">\n              Add product discount\n            </Button>\n          </Box>\n        </Stack>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n### Actions\n\nActions within a card should be limited and focused, prioritizing the primary\naction related to the card's content to avoid overwhelming the user. Ensure\nactions are clearly labeled and visually prominent to facilitate quick\ninteraction.\n\n> [!TIP]\\\n> **Do**\n>\n> - If interaction is needed, provide obvious and limited actions.\n> - Users often assume cards are clickable, especially when they contain visual\n>   cues that suggest interactivity, like buttons, links, or hover effects.\n>   However, this assumption isn't universal and can vary depending on the\n>   context and user experience.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"384px\">\n    <Card.Content>\n      <Stack direction=\"horizontal\" gap=\"400\">\n        <Box\n          color=\"primary.11\"\n          boxSize=\"1000\"\n          borderRadius=\"50%\"\n          bg=\"primary.3\"\n          display=\"flex\"\n          alignItems=\"center\"\n          justifyContent=\"center\"\n          flexShrink=\"0\"\n        >\n          <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n        </Box>\n        <Stack gap=\"100\">\n          <Text fontWeight=\"bold\">\n            Learn more about products\n          </Text>\n          <Text color=\"neutral.11\">\n            Discover what a product list is and how to manage it.\n          </Text>\n        </Stack>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use too many actions for the user within cards.\n> - Cards are generally not suitable for primary site navigation.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\" alignItems=\"start\">\n    {/* Main Card */}\n    <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"423px\">\n      <Card.Content>\n        <Stack direction=\"horizontal\" gap=\"400\">\n          <Box\n            alignSelf=\"flex-start\"\n            color=\"primary.11\"\n            boxSize=\"1000\"\n            borderRadius=\"50%\"\n            bg=\"primary.3\"\n            display=\"flex\"\n            alignItems=\"center\"\n            justifyContent=\"center\"\n            flexShrink=\"0\"\n          >\n            <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n          </Box>\n          <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"center\">\n            <Stack gap=\"200\">\n              <Flex gap=\"100\" alignItems=\"center\">\n                <Text fontWeight=\"bold\" color=\"primary.11\">\n                  See your products\n                </Text>\n                <Box color=\"primary.11\" boxSize=\"600\">\n                  <Icons.ArrowForward width=\"full\" height=\"full\" />\n                </Box>\n              </Flex>\n              <Text color=\"neutral.11\">\n                You have modified products that are waiting to be published\n              </Text>\n              {/* Buttons */}\n              <Stack gap=\"200\">\n                <Button\n                  colorPalette=\"primary\"\n                  variant=\"solid\"\n                  alignSelf=\"start\"\n                >\n                  Publish Products\n                </Button>\n                <Stack direction=\"horizontal\" gap=\"300\">\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    Review\n                  </Button>\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    Reject\n                  </Button>\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    See drafts\n                  </Button>\n                </Stack>\n              </Stack>\n            </Stack>\n          </Stack>\n        </Stack>\n      </Card.Content>\n    </Card.Root>\n\n    {/* Bottom Row Cards */}\n    <Stack direction=\"horizontal\" gap=\"400\">\n      {/* Products Card */}\n      <Card.Root\n        cardPadding=\"md\"\n        borderStyle=\"outlined\"\n        width=\"201.5px\"\n      > {/* Half width approx */}\n        <Card.Content>\n          <Stack direction=\"horizontal\" gap=\"300\" alignItems=\"center\">\n            <Box\n              alignSelf=\"flex-start\"\n              color=\"primary.11\"\n              boxSize=\"1000\"\n              borderRadius=\"50%\"\n              bg=\"primary.3\"\n              display=\"flex\"\n              alignItems=\"center\"\n              justifyContent=\"center\"\n              flexShrink=\"0\"\n            >\n              <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n            </Box>\n            <Text textStyle=\"bodyStrong\" fontWeight=\"bold\" color=\"primary.11\">\n              Products\n            </Text>\n          </Stack>\n        </Card.Content>\n      </Card.Root>\n\n      {/* Discounts Card */}\n      <Card.Root\n        cardPadding=\"md\"\n        borderStyle=\"outlined\"\n        width=\"201.5px\"\n      > {/* Half width approx */}\n        <Card.Content>\n          <Stack direction=\"horizontal\" gap=\"300\" alignItems=\"center\">\n            <Box\n              alignSelf=\"flex-start\"\n              color=\"primary.11\"\n              boxSize=\"1000\"\n              borderRadius=\"50%\"\n              bg=\"primary.3\"\n              display=\"flex\"\n              alignItems=\"center\"\n              justifyContent=\"center\"\n              flexShrink=\"0\"\n            >\n              <Icons.Discount width=\"24px\" height=\"24px\" />\n            </Box>\n            <Text textStyle=\"bodyStrong\" fontWeight=\"bold\" color=\"primary.11\">\n              Discounts\n            </Text>\n          </Stack>\n        </Card.Content>\n      </Card.Root>\n    </Stack>\n  </Stack>\n);\n```\n\n## Properties\n\n<PropsTable id=\"Card\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" elevation=\"elevated\">\n    <Box backgroundColor=\"#FDE3E3\" width=\"5600\" height=\"500\"></Box>\n  </Card.Root>\n)\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content:** Provide descriptive alternative text (alt\n  attribute) for images within cards.\n- **1.3.1 Info and Relationships:** Use semantic HTML to structure the card\n  content logically (e.g., headings, lists).\n- **1.4.3 Contrast (Minimum):** Ensure sufficient color contrast between text\n  and background within the card.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard:** Ensure the entire card or its primary interactive elements\n  are focusable and operable using only a keyboard.\n- **2.4.7 Focus Visible:** Provide a clear visual focus indicator when the card\n  or its interactive elements are focused.\n- **2.5.8 Target Size (Level AAA in WCAG 2.2):** If the card is interactive,\n  ensure touch target sizes are adequate.\n\n#### 3. Understandable:\n\n- **1.3.2 Meaningful Sequence:** Ensure the content within the card is presented\n  in a logical order.\n- **3.3.2 Labels or Instructions:** Provide clear labels or instructions for\n  form elements within cards.\n\n#### 4. Robust:\n\n- Use semantic HTML to ensure compatibility with assistive technologies.\n- Avoid making the entire card a single interactive element if it contains\n  multiple distinct actions, to ensure proper interaction for assistive\n  technology users.\n",
+  "views": {
+    "overview": {
+      "mdx": "\nA versatile container component presents self-contained information, often\ncombining text, images, and actions, making it ideal for displaying summaries or\ncontent previews.\n\n## Overview\n\nThis versatile container component often integrates text, images, and actions.\nInteraction methods differ: some are clickable, others use buttons and links,\nand some are purely informational, grouping content without direct interaction.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev)\n\n## Guidelines\n\nCard component guidelines focus on providing a clear, concise, and visually\ndistinct container for related content, ensuring scannability, clear actions,\nand adaptability across various layouts and screen sizes.\n\n### Best practices\n\n- **Clear purpose:** Each card should represent a single, distinct piece of\n  content or concept. Avoid combining multiple unrelated ideas into one card.\n- **Concise content:** Keep the information within a card brief and scannable.\n  Use clear headings, short descriptions, and only essential details.\n- **Visual hierarchy:** Establish a clear visual hierarchy to guide the user's\n  eye. Use appropriate typography, spacing, and visual cues to prioritize\n  important information.\n- **Actionable elements:** If the card requires user interaction, clearly\n  present the primary action(s) with prominent buttons or links. Limit the\n  number of actions to avoid overwhelming the user.\n- **Consistent styling:** Maintain consistent styling for cards. This includes\n  borders, shadows, typography, and spacing.\n- **Responsive design:** Ensure cards adapt well to different screen sizes and\n  orientations. Consider how the layout will change on mobile devices.\n\n### Usage\n\nThe strength of using cards in a UI lies in their ability to present information\nin concise, digestible chunks, making it easy for users to quickly scan,\nunderstand, and interact with related content, especially in responsive layouts.\n\n> [!TIP]\\\n> When to use\n\n- **Displaying a collection of related items:** When you have multiple, distinct\n  items that share a similar structure or theme (e.g., product listings,\n  documentation, user profiles).\n- **Presenting scannable summaries:** When you need to provide a quick overview\n  of information, allowing users to grasp the key details at a glance.\n- **Highlighting key information:** When you want to draw attention to important\n  pieces of content or features.\n- **Facilitating task completion:** When a card can contain actions that allow\n  users to quickly interact with or manage the displayed information.\n- **Creating a visually organized layout:** When you need to break down complex\n  information into digestible chunks and create a structured, modular design.\n- **Responsive design:** When you need a component that adapts well to various\n  screen sizes and can be easily rearranged on different devices.\n- **Content discovery:** When you want to encourage users to explore different\n  pieces of content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Presenting linear processes:** When users need to follow a specific,\n  sequential flow (e.g., a step-by-step form or a tutorial). Other patterns like\n  steppers are more appropriate.\n- **Displaying single, detailed items:** When you need to present a lot of\n  in-depth information about one specific item. A dedicated page is usually\n  better.\n- **Primary navigation:** Using cards for main site navigation can be\n  overwhelming and make it difficult for users to understand the site's\n  structure.\n- **Simple lists:** For basic lists of items with minimal information, a simple\n  list or table might be more efficient and less visually heavy.\n- **When content is highly interrelated and needs comparison:** If users need to\n  compare specific attributes across multiple items, a table might be a better\n  choice.\n- **Overcrowding the UI with too many cards:** Using too many cards on a page\n  can lead to visual clutter and make it hard for users to focus on what's\n  important.\n- **Forcing content into a card structure:** If the content doesn't naturally\n  fit into a card format, trying to force it can lead to awkward design and a\n  poor user experience.\n\n### Content\n\nContent within cards should be concise and focused, prioritizing key information\nand clear actions to ensure scannability and quick user comprehension. Consider\nthe card's purpose and limit content to only the most relevant details, using\nclear headings and short descriptions.\n\n> [!TIP]\\\n> **Do**\n>\n> - Cards are best for presenting self-contained pieces of information.\n> - Design cards with clear headings, concise text, and a logical visual\n>   hierarchy for easy scanning.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"8000\">\n    <Card.Content>\n      <Stack gap=\"400\">\n        <img src=\"/images/card/card-discount-template.png\" alt=\"discount template illustration\" />\n        <Text fontWeight=\"bold\">\n          Discount templates\n        </Text>\n        <Text>\n          Templates allow you to get started quickly and easily by displaying only\n          what is needed for creating your discount.\n        </Text>\n        <Select.Root aria-label=\"Select template\" placeholder=\"Select...\">\n          <Select.Options>{/* Options would go here */}</Select.Options>\n        </Select.Root>\n        <Box>\n          <Button colorPalette=\"primary\" variant=\"solid\">\n            Select template\n          </Button>\n        </Box>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Avoid cramming too much information into a single card. Each card should\n>   focus on a single subject.\n> - Long, scrolling cards can be cumbersome; prioritize key information.\n> - Don't use a card to compare information.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"1\">\n    <Card.Content>\n      <Stack direction=\"horizontal\" gap=\"400\">\n        <Stack gap=\"400\" width=\"1/2\">\n          <img src=\"/images/card/card-discount-template.png\" alt=\"discount template illustration\" />\n          <Text fontWeight=\"bold\">\n            Discount templates\n          </Text>\n          <Text>\n            Templates allow you to get started quickly and easily by displaying\n            only what is needed for creating your discount.\n          </Text>\n          <Select.Root aria-label=\"Select template\" placeholder=\"Select...\">\n            <Select.Options>{/* Options would go here */}</Select.Options>\n          </Select.Root>\n          <Box>\n            <Button colorPalette=\"primary\" variant=\"solid\">\n              Select template\n            </Button>\n          </Box>\n        </Stack>\n        <Stack gap=\"400\" width=\"1/2\">\n          <img src=\"/images/card/card-product-discount.png\" alt=\"product discount illustration\" />\n          <Text fontWeight=\"bold\">\n            Product discount\n          </Text>\n          <Text>\n            A product discount applies a percentage-off (relative) or amount-ff\n            (absolute) discount to a specific product or subset of products\n            before adding them to the cart. They are useful for displaying\n            discounted or sale prices on a product info page\n          </Text>\n          <Box>\n            <Button colorPalette=\"primary\" variant=\"solid\">\n              Add product discount\n            </Button>\n          </Box>\n        </Stack>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n### Actions\n\nActions within a card should be limited and focused, prioritizing the primary\naction related to the card's content to avoid overwhelming the user. Ensure\nactions are clearly labeled and visually prominent to facilitate quick\ninteraction.\n\n> [!TIP]\\\n> **Do**\n>\n> - If interaction is needed, provide obvious and limited actions.\n> - Users often assume cards are clickable, especially when they contain visual\n>   cues that suggest interactivity, like buttons, links, or hover effects.\n>   However, this assumption isn't universal and can vary depending on the\n>   context and user experience.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"384px\">\n    <Card.Content>\n      <Stack direction=\"horizontal\" gap=\"400\">\n        <Box\n          color=\"primary.11\"\n          boxSize=\"1000\"\n          borderRadius=\"50%\"\n          bg=\"primary.3\"\n          display=\"flex\"\n          alignItems=\"center\"\n          justifyContent=\"center\"\n          flexShrink=\"0\"\n        >\n          <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n        </Box>\n        <Stack gap=\"100\">\n          <Text fontWeight=\"bold\">\n            Learn more about products\n          </Text>\n          <Text color=\"neutral.11\">\n            Discover what a product list is and how to manage it.\n          </Text>\n        </Stack>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use too many actions for the user within cards.\n> - Cards are generally not suitable for primary site navigation.\n\n```jsx-live\nconst App = () => (\n  <Stack gap=\"400\" alignItems=\"start\">\n    {/* Main Card */}\n    <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" width=\"423px\">\n      <Card.Content>\n        <Stack direction=\"horizontal\" gap=\"400\">\n          <Box\n            alignSelf=\"flex-start\"\n            color=\"primary.11\"\n            boxSize=\"1000\"\n            borderRadius=\"50%\"\n            bg=\"primary.3\"\n            display=\"flex\"\n            alignItems=\"center\"\n            justifyContent=\"center\"\n            flexShrink=\"0\"\n          >\n            <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n          </Box>\n          <Stack direction=\"horizontal\" gap=\"400\" alignItems=\"center\">\n            <Stack gap=\"200\">\n              <Flex gap=\"100\" alignItems=\"center\">\n                <Text fontWeight=\"bold\" color=\"primary.11\">\n                  See your products\n                </Text>\n                <Box color=\"primary.11\" boxSize=\"600\">\n                  <Icons.ArrowForward width=\"full\" height=\"full\" />\n                </Box>\n              </Flex>\n              <Text color=\"neutral.11\">\n                You have modified products that are waiting to be published\n              </Text>\n              {/* Buttons */}\n              <Stack gap=\"200\">\n                <Button\n                  colorPalette=\"primary\"\n                  variant=\"solid\"\n                  alignSelf=\"start\"\n                >\n                  Publish Products\n                </Button>\n                <Stack direction=\"horizontal\" gap=\"300\">\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    Review\n                  </Button>\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    Reject\n                  </Button>\n                  <Button colorPalette=\"primary\" variant=\"link\" size=\"sm\">\n                    See drafts\n                  </Button>\n                </Stack>\n              </Stack>\n            </Stack>\n          </Stack>\n        </Stack>\n      </Card.Content>\n    </Card.Root>\n\n    {/* Bottom Row Cards */}\n    <Stack direction=\"horizontal\" gap=\"400\">\n      {/* Products Card */}\n      <Card.Root\n        cardPadding=\"md\"\n        borderStyle=\"outlined\"\n        width=\"201.5px\"\n      > {/* Half width approx */}\n        <Card.Content>\n          <Stack direction=\"horizontal\" gap=\"300\" alignItems=\"center\">\n            <Box\n              alignSelf=\"flex-start\"\n              color=\"primary.11\"\n              boxSize=\"1000\"\n              borderRadius=\"50%\"\n              bg=\"primary.3\"\n              display=\"flex\"\n              alignItems=\"center\"\n              justifyContent=\"center\"\n              flexShrink=\"0\"\n            >\n              <Icons.ViewInAr width=\"24px\" height=\"24px\" />\n            </Box>\n            <Text textStyle=\"bodyStrong\" fontWeight=\"bold\" color=\"primary.11\">\n              Products\n            </Text>\n          </Stack>\n        </Card.Content>\n      </Card.Root>\n\n      {/* Discounts Card */}\n      <Card.Root\n        cardPadding=\"md\"\n        borderStyle=\"outlined\"\n        width=\"201.5px\"\n      > {/* Half width approx */}\n        <Card.Content>\n          <Stack direction=\"horizontal\" gap=\"300\" alignItems=\"center\">\n            <Box\n              alignSelf=\"flex-start\"\n              color=\"primary.11\"\n              boxSize=\"1000\"\n              borderRadius=\"50%\"\n              bg=\"primary.3\"\n              display=\"flex\"\n              alignItems=\"center\"\n              justifyContent=\"center\"\n              flexShrink=\"0\"\n            >\n              <Icons.Discount width=\"24px\" height=\"24px\" />\n            </Box>\n            <Text textStyle=\"bodyStrong\" fontWeight=\"bold\" color=\"primary.11\">\n              Discounts\n            </Text>\n          </Stack>\n        </Card.Content>\n      </Card.Root>\n    </Stack>\n  </Stack>\n);\n```\n\n## Properties\n\n<PropsTable id=\"Card\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <Card.Root cardPadding=\"md\" borderStyle=\"outlined\" elevation=\"elevated\">\n    <Box backgroundColor=\"#FDE3E3\" width=\"5600\" height=\"500\"></Box>\n  </Card.Root>\n)\n```\n\n### Accessibility standards\n\n#### 1. Perceivable:\n\n- **1.1.1 Non-text Content:** Provide descriptive alternative text (alt\n  attribute) for images within cards.\n- **1.3.1 Info and Relationships:** Use semantic HTML to structure the card\n  content logically (e.g., headings, lists).\n- **1.4.3 Contrast (Minimum):** Ensure sufficient color contrast between text\n  and background within the card.\n\n#### 2. Operable:\n\n- **2.1.1 Keyboard:** Ensure the entire card or its primary interactive elements\n  are focusable and operable using only a keyboard.\n- **2.4.7 Focus Visible:** Provide a clear visual focus indicator when the card\n  or its interactive elements are focused.\n- **2.5.8 Target Size (Level AAA in WCAG 2.2):** If the card is interactive,\n  ensure touch target sizes are adequate.\n\n#### 3. Understandable:\n\n- **1.3.2 Meaningful Sequence:** Ensure the content within the card is presented\n  in a logical order.\n- **3.3.2 Labels or Instructions:** Provide clear labels or instructions for\n  form elements within cards.\n\n#### 4. Robust:\n\n- Use semantic HTML to ensure compatibility with assistive technologies.\n- Avoid making the entire card a single interactive element if it contains\n  multiple distinct actions, to ensure proper interaction for assistive\n  technology users.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Content",
+          "href": "#content",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Actions",
+          "href": "#actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Perceivable:",
+          "href": "#1-perceivable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Operable:",
+          "href": "#2-operable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Understandable:",
+          "href": "#3-understandable",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Robust:",
+          "href": "#4-robust",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

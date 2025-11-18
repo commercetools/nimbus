@@ -1,0 +1,346 @@
+{
+  "meta": {
+    "id": "List",
+    "title": "List",
+    "description": "displays a list",
+    "lifecycleState": "Experimental",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/list/list.mdx",
+    "menu": [
+      "Components",
+      "Typography",
+      "List"
+    ],
+    "route": "components/typography/list",
+    "tags": [
+      "list",
+      "collections"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic options",
+        "href": "#basic-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical lists",
+        "href": "#vertical-lists",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Alignment",
+        "href": "#alignment",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Nested items, added gap space, and item wrapping",
+        "href": "#nested-items-added-gap-space-and-item-wrapping",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best Practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Do's and don'ts for implementing a list",
+        "href": "#dos-and-donts-for-implementing-a-list",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility Standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# List\n\nThe list component organizes related items or data into a vertical, scannable format.\n\n## Overview\n\nThe list component presents structured content which can include details such as text, icons, and actions, in a vertical arrangement. With improved readability letting readers quickly scan the content and compare relevant details. \n\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)\n[Chakra UI: List](https://chakra-ui.com/docs/components/list)\n\n\n## Variables\n\nGet familiar with the features.\n\n### Basic options\n\n#### Vertical lists\nVertical lists can function differently based on need. Using bullet points, numbered lists, and icons or emojis will help users understand the information differently as needed.\n\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <List.Root asChild>\n      <ul>\n        <List.Item>Red pandas</List.Item>\n        <List.Item>Pangolins</List.Item>\n        <List.Item>Opossums</List.Item>\n        <List.Item>Aye-ayes</List.Item>\n        <List.Item>Okapi</List.Item>\n      </ul>\n    </List.Root>\n    <List.Root asChild>\n      <ol>\n        <List.Item>Boil water</List.Item>\n        <List.Item>Add pasta</List.Item>\n        <List.Item>Wait patiently to cook</List.Item>\n        <List.Item>Remove and drain pasta</List.Item>\n        <List.Item>Add final ingredients and serve</List.Item>\n      </ol>\n    </List.Root>\n    <List.Root variant=\"plain\">\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Reading a book\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Talking to a friend\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Going for a walk\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Doomscrolling\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Not eating a treat\n      </List.Item>\n    </List.Root>\n  </Stack>\n)\n```\n\n#### Alignment\n\nList items are aligned to the left, center and the right. Choose what suits the information to be shown based on language and data.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"left\">Left</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"left\">Red pandas</List.Item>\n          <List.Item textAlign=\"left\">Pangolins</List.Item>\n          <List.Item textAlign=\"left\">Opossums</List.Item>\n          <List.Item textAlign=\"left\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"left\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"center\">Center</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"center\">Red pandas</List.Item>\n          <List.Item textAlign=\"center\">Pangolins</List.Item>\n          <List.Item textAlign=\"center\">Opossums</List.Item>\n          <List.Item textAlign=\"center\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"center\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"right\">Right</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"right\">Red pandas</List.Item>\n          <List.Item textAlign=\"right\">Pangolins</List.Item>\n          <List.Item textAlign=\"right\">Opossums</List.Item>\n          <List.Item textAlign=\"right\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"right\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n\n#### Nested items, added gap space, and item wrapping\nWhen nesting related items, maintain proper spacing and wrapping to keep the structure intact. Avoid long lines of text; if necessary, rephrase to make it shorter or use body text instead of bullet points, which should be reserved for concise information.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Nested items</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Gap space</Text>\n      <List.Root asChild gap=\"400\">\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Item wrapping</Text>\n      <List.Root asChild maxWidth=\"200px\">\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n\n## Guidelines\nList guidelines aim to provide users the best experience when understanding information that is being conveyed through the interface.\n\n### Best Practices\n- **Consistency in content:** Ensure all items within a single list adhere to the same content structure (e.g., if one item has an icon and metadata, all items should).\n- **Clear hierarchy:** Use typography, indentation, and visual separators to establish a clear hierarchy between list items and their sub-elements.\n- **Easy scanning:** Prioritize short, primary information at the beginning of each list item to enable quick scanning.\n- **Interactivity:** Clearly distinguish interactive list items (tappable/clickable) from static, informational ones using visual cues like hover states and pointers.\n- **State management:** Define consistent visual states for list items, including default, hover, focused, selected, and disabled.\n- **Grouping:** Use dividers, headers, or subtle visual spacing to group related items within a long list (e.g., grouping customers by status or date).\n- **Limited information:** Avoid cramming too much detail into a single list item; use secondary detail panels, cards, or dedicated pages for complex information.\n\n\n### Usage\n\nLists are fundamental UI components used to display a series of related items, allowing users to quickly scan, organize, and interact with structured data or options.\n\n> [!TIP]\\\n> When to use\n - **Navigation menus:** For primary or secondary menus where items are primarily text links.\n - **Short metadata/tasks:** For displaying a history log, task list, or brief metadata where the vertical format is optimal for chronological or simple item tracking.\n - **Structured options:** To present settings, filters, or menu choices where hierarchy and text are the main content.\n\n> [!CAUTION]\\\n> When not to use\n - **Image-heavy content:** For displaying a collection where the visual preview (e.g., product image) is the most critical element. \n - **Wide data sets:** When the content requires many columns of data that won't fit on a single line, even on a large screen.\n - **Complex data comparison:** When the user needs to compare many different data points across items, use a data table instead. \n\n### Do's and don'ts for implementing a list\n\n> [!TIP]\\\n> **Do**\n> - Ensure adequate padding and spacing to clearly separate each list item.\n> - Provide clear feedback when an item is selected or activated.\n> - Use semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies.\n> - Allow content within the list item to truncate gracefully, revealing the full text via a tooltip or expansion interactive.\n\n> [!CAUTION]\\\n> **Don't**\n> - Don't use generic links like \"Click here\"; make the entire interactive item text descriptive.\n> - Don't mix vastly different content structures or types of items in one list.\n> - Don't neglect a strategy for empty states (what happens when the list has no items?).\n> - Don't use low-contrast text for critical list item details.\n\n\n### Props\n<PropsTable id=\"List\" />\n\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <List.Root asChild>\n    <ul>\n      <List.Item>\n        Password requirements:\n        <List.Root asChild pl=\"400\">\n          <ul>\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </ul>\n        </List.Root>\n      </List.Item>\n      <List.Item>\n        Name and email requirements\n        <List.Root asChild pl=\"400\">\n          <ul>\n            <List.Item>Validation process</List.Item>\n          </ul>\n        </List.Root>\n      </List.Item>\n    </ul>\n  </List.Root>\n)\n```\n\n### Accessibility Standards\n\n- **Keyboard navigation:** Ensure all interactive list items are navigable using the Tab key and fully operable using the Enter or Spacebar keys.\n- **ARIA roles:** Use semantic HTML (`<ul>`, `<ol>`) when possible. For custom interactive lists, use appropriate ARIA roles (e.g., `role=\"listbox\"`, `role=\"option\"`) to define the component's structure.\n- **Focus indicators:** Provide a strong, clear visual focus indicator on the entire list item when it is being accessed via the keyboard.\n- **Text alternatives:** Ensure any icons or custom elements within the list item have appropriate aria-label or descriptive text.\n- **Reading order:** The programmatic reading order must logically match the visual vertical order.",
+  "views": {
+    "overview": {
+      "mdx": "\n# List\n\nThe list component organizes related items or data into a vertical, scannable format.\n\n## Overview\n\nThe list component presents structured content which can include details such as text, icons, and actions, in a vertical arrangement. With improved readability letting readers quickly scan the content and compare relevant details. \n\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)\n[Chakra UI: List](https://chakra-ui.com/docs/components/list)\n\n\n## Variables\n\nGet familiar with the features.\n\n### Basic options\n\n#### Vertical lists\nVertical lists can function differently based on need. Using bullet points, numbered lists, and icons or emojis will help users understand the information differently as needed.\n\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <List.Root asChild>\n      <ul>\n        <List.Item>Red pandas</List.Item>\n        <List.Item>Pangolins</List.Item>\n        <List.Item>Opossums</List.Item>\n        <List.Item>Aye-ayes</List.Item>\n        <List.Item>Okapi</List.Item>\n      </ul>\n    </List.Root>\n    <List.Root asChild>\n      <ol>\n        <List.Item>Boil water</List.Item>\n        <List.Item>Add pasta</List.Item>\n        <List.Item>Wait patiently to cook</List.Item>\n        <List.Item>Remove and drain pasta</List.Item>\n        <List.Item>Add final ingredients and serve</List.Item>\n      </ol>\n    </List.Root>\n    <List.Root variant=\"plain\">\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Reading a book\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Talking to a friend\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Going for a walk\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Doomscrolling\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Not eating a treat\n      </List.Item>\n    </List.Root>\n  </Stack>\n)\n```\n\n#### Alignment\n\nList items are aligned to the left, center and the right. Choose what suits the information to be shown based on language and data.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"left\">Left</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"left\">Red pandas</List.Item>\n          <List.Item textAlign=\"left\">Pangolins</List.Item>\n          <List.Item textAlign=\"left\">Opossums</List.Item>\n          <List.Item textAlign=\"left\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"left\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"center\">Center</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"center\">Red pandas</List.Item>\n          <List.Item textAlign=\"center\">Pangolins</List.Item>\n          <List.Item textAlign=\"center\">Opossums</List.Item>\n          <List.Item textAlign=\"center\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"center\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"right\">Right</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item textAlign=\"right\">Red pandas</List.Item>\n          <List.Item textAlign=\"right\">Pangolins</List.Item>\n          <List.Item textAlign=\"right\">Opossums</List.Item>\n          <List.Item textAlign=\"right\">Aye-ayes</List.Item>\n          <List.Item textAlign=\"right\">Okapi</List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n\n#### Nested items, added gap space, and item wrapping\nWhen nesting related items, maintain proper spacing and wrapping to keep the structure intact. Avoid long lines of text; if necessary, rephrase to make it shorter or use body text instead of bullet points, which should be reserved for concise information.\n\n```jsx-live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Nested items</Text>\n      <List.Root asChild>\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Gap space</Text>\n      <List.Root asChild gap=\"400\">\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Item wrapping</Text>\n      <List.Root asChild maxWidth=\"200px\">\n        <ul>\n          <List.Item>\n            Password requirements:\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>8 characters and 3 numbers</List.Item>\n                <List.Item>One special character (!@#$%^&*)</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n          <List.Item>\n            Name and email requirements\n            <List.Root asChild pl=\"400\">\n              <ul>\n                <List.Item>Validation process</List.Item>\n              </ul>\n            </List.Root>\n          </List.Item>\n        </ul>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n\n## Guidelines\nList guidelines aim to provide users the best experience when understanding information that is being conveyed through the interface.\n\n### Best Practices\n- **Consistency in content:** Ensure all items within a single list adhere to the same content structure (e.g., if one item has an icon and metadata, all items should).\n- **Clear hierarchy:** Use typography, indentation, and visual separators to establish a clear hierarchy between list items and their sub-elements.\n- **Easy scanning:** Prioritize short, primary information at the beginning of each list item to enable quick scanning.\n- **Interactivity:** Clearly distinguish interactive list items (tappable/clickable) from static, informational ones using visual cues like hover states and pointers.\n- **State management:** Define consistent visual states for list items, including default, hover, focused, selected, and disabled.\n- **Grouping:** Use dividers, headers, or subtle visual spacing to group related items within a long list (e.g., grouping customers by status or date).\n- **Limited information:** Avoid cramming too much detail into a single list item; use secondary detail panels, cards, or dedicated pages for complex information.\n\n\n### Usage\n\nLists are fundamental UI components used to display a series of related items, allowing users to quickly scan, organize, and interact with structured data or options.\n\n> [!TIP]\\\n> When to use\n - **Navigation menus:** For primary or secondary menus where items are primarily text links.\n - **Short metadata/tasks:** For displaying a history log, task list, or brief metadata where the vertical format is optimal for chronological or simple item tracking.\n - **Structured options:** To present settings, filters, or menu choices where hierarchy and text are the main content.\n\n> [!CAUTION]\\\n> When not to use\n - **Image-heavy content:** For displaying a collection where the visual preview (e.g., product image) is the most critical element. \n - **Wide data sets:** When the content requires many columns of data that won't fit on a single line, even on a large screen.\n - **Complex data comparison:** When the user needs to compare many different data points across items, use a data table instead. \n\n### Do's and don'ts for implementing a list\n\n> [!TIP]\\\n> **Do**\n> - Ensure adequate padding and spacing to clearly separate each list item.\n> - Provide clear feedback when an item is selected or activated.\n> - Use semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies.\n> - Allow content within the list item to truncate gracefully, revealing the full text via a tooltip or expansion interactive.\n\n> [!CAUTION]\\\n> **Don't**\n> - Don't use generic links like \"Click here\"; make the entire interactive item text descriptive.\n> - Don't mix vastly different content structures or types of items in one list.\n> - Don't neglect a strategy for empty states (what happens when the list has no items?).\n> - Don't use low-contrast text for critical list item details.\n\n\n### Props\n<PropsTable id=\"List\" />\n\n\n### Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => (\n  <List.Root asChild>\n    <ul>\n      <List.Item>\n        Password requirements:\n        <List.Root asChild pl=\"400\">\n          <ul>\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </ul>\n        </List.Root>\n      </List.Item>\n      <List.Item>\n        Name and email requirements\n        <List.Root asChild pl=\"400\">\n          <ul>\n            <List.Item>Validation process</List.Item>\n          </ul>\n        </List.Root>\n      </List.Item>\n    </ul>\n  </List.Root>\n)\n```\n\n### Accessibility Standards\n\n- **Keyboard navigation:** Ensure all interactive list items are navigable using the Tab key and fully operable using the Enter or Spacebar keys.\n- **ARIA roles:** Use semantic HTML (`<ul>`, `<ol>`) when possible. For custom interactive lists, use appropriate ARIA roles (e.g., `role=\"listbox\"`, `role=\"option\"`) to define the component's structure.\n- **Focus indicators:** Provide a strong, clear visual focus indicator on the entire list item when it is being accessed via the keyboard.\n- **Text alternatives:** Ensure any icons or custom elements within the list item have appropriate aria-label or descriptive text.\n- **Reading order:** The programmatic reading order must logically match the visual vertical order.",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic options",
+          "href": "#basic-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical lists",
+          "href": "#vertical-lists",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment",
+          "href": "#alignment",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Nested items, added gap space, and item wrapping",
+          "href": "#nested-items-added-gap-space-and-item-wrapping",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best Practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Do's and don'ts for implementing a list",
+          "href": "#dos-and-donts-for-implementing-a-list",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

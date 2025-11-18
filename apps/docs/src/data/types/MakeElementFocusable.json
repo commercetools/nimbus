@@ -1,0 +1,196 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "MakeElementFocusable\n============================================================\nA helper component that adds props from `react-aria`s `useFocusable` hook\nto its child so that it can be used as a trigger element for a `Tooltip`\n\nCaveats:\n- Using non-interactive elements as tooltip triggers is against ARIA best-practices,\n  it is your responsibility to ensure that the underlying trigger element handles\n  focus and hover interactions correctly for keyboard-only users\n\nFeatures:\n- allows forwarding refs to the underlying DOM element\n- accepts all native html 'HTMLElement' attributes (including aria- & data-attributes)\n\nFurther Context:\n- [React Aria Components Tooltip Documentation](https://react-spectrum.adobe.com/react-aria/Tooltip.html)\n- [React Aria Components Issue re:Tooltip with custom trigger](https://github.com/adobe/react-spectrum/issues/5733#issuecomment-1918691983)\n- [ARIA Tooltip Pattern](https://www.w3.org/TR/wai-aria-1.2/#tooltip)",
+  "displayName": "MakeElementFocusable",
+  "methods": [],
+  "props": {
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether focus should be disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+interactions@3.25.6_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/interactions/dist/types.d.ts",
+        "name": "FocusableOptions"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+interactions@3.25.6_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/interactions/dist/types.d.ts",
+          "name": "FocusableOptions"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "autoFocus": {
+      "defaultValue": null,
+      "description": "Whether the element should receive focus on render.",
+      "name": "autoFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusableProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element receives focus.",
+      "name": "onFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element loses focus.",
+      "name": "onBlur",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onFocusChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element's focus status changes.",
+      "name": "onFocusChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isFocused: boolean) => void"
+      }
+    },
+    "onKeyDown": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is pressed.",
+      "name": "onKeyDown",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "onKeyUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is released.",
+      "name": "onKeyUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "excludeFromTabOrder": {
+      "defaultValue": null,
+      "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+      "name": "excludeFromTabOrder",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "FocusableDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "React ref to be forwarded to the underlying element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tooltip/make-element-focusable.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

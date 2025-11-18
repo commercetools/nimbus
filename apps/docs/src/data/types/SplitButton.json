@@ -1,0 +1,207 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# SplitButton\n\nA split-button component that combines a primary action button with a dropdown menu.\n\nShows a primary action button + dropdown trigger. The primary button automatically\nexecutes the first enabled Menu.Item action, while the dropdown trigger opens a menu\nwith all available options.\n\nUse with Menu.Item, Menu.Section, and Separator components for content.",
+  "displayName": "SplitButton",
+  "methods": [],
+  "props": {
+    "variant": {
+      "defaultValue": {
+        "value": "\"solid\"\n\"subtle\""
+      },
+      "description": "Visual style variant of the button",
+      "name": "variant",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "SplitButtonVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "SplitButtonVariant"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
+      }
+    },
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "Size variant of the button",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"md\" | \"xs\" | \"2xs\">"
+      }
+    },
+    "colorPalette": {
+      "defaultValue": null,
+      "description": "Color palette for the button",
+      "name": "colorPalette",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SemanticPalettesOnly"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the button is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "ButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "ButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (controlled).",
+      "name": "isOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (uncontrolled).",
+      "name": "defaultOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the overlay's open state changes.",
+      "name": "onOpenChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    },
+    "onAction": {
+      "defaultValue": null,
+      "description": "Handler that is called when an item is selected.",
+      "name": "onAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+menu@3.10.5_react@19.2.0/node_modules/@react-types/menu/src/index.d.ts",
+        "name": "MenuProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+menu@3.10.5_react@19.2.0/node_modules/@react-types/menu/src/index.d.ts",
+          "name": "MenuProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: Key) => void"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Accessibility label for the dropdown trigger",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/split-button/split-button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "icon": {
+      "defaultValue": null,
+      "description": "Icon element to display in the primary button (automatically wrapped in Icon component)",
+      "name": "icon",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/split-button/split-button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "Children should contain Menu components: Menu.Item, Menu.Section, Menu.Separator\n\nThe component automatically selects the first enabled Menu.Item as the primary action.",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/split-button/split-button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

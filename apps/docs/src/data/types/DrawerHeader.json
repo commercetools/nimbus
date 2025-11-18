@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Drawer.Header - The header section of the drawer",
+  "displayName": "DrawerHeader",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "The ref to the drawer header",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/layout/stack}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Stack\n\nAn easily customizable Stack component, re-exported from Chakra UI, that provides a consistent layout structure across different products.",
+  "displayName": "Stack",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

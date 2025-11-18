@@ -1,0 +1,750 @@
+{
+  "tags": {
+    "example": "```tsx\n<ComboBox.Popover>\n  <ComboBox.ListBox>\n    {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n  </ComboBox.ListBox>\n</ComboBox.Popover>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "### ComboBox.Popover\n\nPopover wrapper for the options list.\nUses Nimbus Popover component which reads from PopoverContext provided by the custom context provider.\n\nThe PopoverContext provides:\n- open state\n- positioning configuration (fixed strategy, bottom-start placement)\n- positionReference (trigger ref for proper positioning)",
+  "displayName": "ComboBoxPopover",
+  "methods": [],
+  "props": {
+    "trigger": {
+      "defaultValue": null,
+      "description": "The name of the component that triggered the popover. This is reflected on the element\nas the `data-trigger` attribute, and can be used to provide specific\nstyles for the popover depending on which element triggered it.",
+      "name": "trigger",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "triggerRef": {
+      "defaultValue": null,
+      "description": "The ref for the element which the popover positions itself with respect to.\n\nWhen used within a trigger component such as DialogTrigger, MenuTrigger, Select, etc.,\nthis is set automatically. It is only required when used standalone.",
+      "name": "triggerRef",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "RefObject<Element>"
+      }
+    },
+    "isEntering": {
+      "defaultValue": null,
+      "description": "Whether the popover is currently performing an entry animation.",
+      "name": "isEntering",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isExiting": {
+      "defaultValue": null,
+      "description": "Whether the popover is currently performing an exit animation.",
+      "name": "isExiting",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "UNSTABLE_portalContainer": {
+      "defaultValue": {
+        "value": "document.body"
+      },
+      "description": "The container element in which the overlay portal will be placed. This may have unknown behavior depending on where it is portalled to.\n@deprecated - Use a parent UNSAFE_PortalProvider to set your portal container instead.",
+      "name": "UNSTABLE_portalContainer",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Element"
+      }
+    },
+    "offset": {
+      "defaultValue": {
+        "value": "8"
+      },
+      "description": "The additional offset applied along the main axis between the element and its\nanchor element.",
+      "name": "offset",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "placement": {
+      "defaultValue": {
+        "value": "'bottom'"
+      },
+      "description": "The placement of the element with respect to its anchor element.",
+      "name": "placement",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "PositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "Placement",
+        "value": [
+          {
+            "value": "\"bottom\""
+          },
+          {
+            "value": "\"left\""
+          },
+          {
+            "value": "\"right\""
+          },
+          {
+            "value": "\"top\""
+          },
+          {
+            "value": "\"end\""
+          },
+          {
+            "value": "\"bottom left\""
+          },
+          {
+            "value": "\"bottom right\""
+          },
+          {
+            "value": "\"bottom start\""
+          },
+          {
+            "value": "\"bottom end\""
+          },
+          {
+            "value": "\"top left\""
+          },
+          {
+            "value": "\"top right\""
+          },
+          {
+            "value": "\"top start\""
+          },
+          {
+            "value": "\"top end\""
+          },
+          {
+            "value": "\"left top\""
+          },
+          {
+            "value": "\"left bottom\""
+          },
+          {
+            "value": "\"start\""
+          },
+          {
+            "value": "\"start top\""
+          },
+          {
+            "value": "\"start bottom\""
+          },
+          {
+            "value": "\"right top\""
+          },
+          {
+            "value": "\"right bottom\""
+          },
+          {
+            "value": "\"end top\""
+          },
+          {
+            "value": "\"end bottom\""
+          }
+        ]
+      }
+    },
+    "containerPadding": {
+      "defaultValue": {
+        "value": "12"
+      },
+      "description": "The placement padding that should be applied between the element and its\nsurrounding container.",
+      "name": "containerPadding",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "PositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "crossOffset": {
+      "defaultValue": {
+        "value": "0"
+      },
+      "description": "The additional offset applied along the cross axis between the element and its\nanchor element.",
+      "name": "crossOffset",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "PositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "shouldFlip": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether the element should flip its orientation (e.g. top to bottom or left to right) when\nthere is insufficient room for it to render completely.",
+      "name": "shouldFlip",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "PositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "PositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "maxHeight": {
+      "defaultValue": null,
+      "description": "The maxHeight specified for the overlay element.\nBy default, it will take all space up to the current viewport height.",
+      "name": "maxHeight",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "boundaryElement": {
+      "defaultValue": {
+        "value": "document.body"
+      },
+      "description": "Element that that serves as the positioning boundary.",
+      "name": "boundaryElement",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Element"
+      }
+    },
+    "arrowRef": {
+      "defaultValue": null,
+      "description": "A ref for the popover arrow element.",
+      "name": "arrowRef",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "RefObject<Element>"
+      }
+    },
+    "scrollRef": {
+      "defaultValue": {
+        "value": "overlayRef"
+      },
+      "description": "A ref for the scrollable region within the overlay.",
+      "name": "scrollRef",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "RefObject<Element>"
+      }
+    },
+    "shouldUpdatePosition": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether the overlay should update its position automatically.",
+      "name": "shouldUpdatePosition",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "arrowBoundaryOffset": {
+      "defaultValue": {
+        "value": "0"
+      },
+      "description": "The minimum distance the arrow's edge should be from the edge of the overlay element.",
+      "name": "arrowBoundaryOffset",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPositionProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPositionProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "isNonModal": {
+      "defaultValue": null,
+      "description": "Whether the popover is non-modal, i.e. elements outside the popover may be\ninteracted with by assistive technologies.\n\nMost popovers should not use this option as it may negatively impact the screen\nreader experience. Only use with components such as combobox, which are designed\nto handle this situation carefully.",
+      "name": "isNonModal",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isKeyboardDismissDisabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether pressing the escape key to close the popover should be disabled.\n\nMost popovers should not use this option. When set to true, an alternative\nway to close the popover with a keyboard must be provided.",
+      "name": "isKeyboardDismissDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "shouldCloseOnInteractOutside": {
+      "defaultValue": null,
+      "description": "When user interacts with the argument element outside of the popover ref,\nreturn true if onClose should be called. This gives you a chance to filter\nout interaction with elements that should not dismiss the popover.\nBy default, onClose will always be called on interaction outside the popover ref.",
+      "name": "shouldCloseOnInteractOutside",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+        "name": "AriaPopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-aria+overlays@3.30.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/@react-aria/overlays/dist/types.d.ts",
+          "name": "AriaPopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(element: Element) => boolean"
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (controlled).",
+      "name": "isOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": null,
+      "description": "Whether the overlay is open by default (uncontrolled).",
+      "name": "defaultOpen",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the overlay's open state changes.",
+      "name": "onOpenChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+        "name": "OverlayTriggerProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+overlays@3.9.2_react@19.2.0/node_modules/@react-types/overlays/src/index.d.ts",
+          "name": "OverlayTriggerProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ChildrenOrFunction<PopoverRenderProps>"
+      }
+    },
+    "className": {
+      "defaultValue": null,
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ClassNameOrFunction<PopoverRenderProps>"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "StyleOrFunction<PopoverRenderProps>"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "A slot name for the component. Slots allow the component to receive props from a parent component.\nAn explicit `null` value indicates that the local props completely override all props received from a parent.",
+      "name": "slot",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "SlotProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.13.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "SlotProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Defines a string value that labels the current element.",
+      "name": "aria-label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "asChild": {
+      "defaultValue": null,
+      "description": "",
+      "name": "asChild",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "unstyled": {
+      "defaultValue": null,
+      "description": "If `true`, the element will opt out of the theme styles.",
+      "name": "unstyled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "UnstyledProp"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

@@ -1,0 +1,280 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "ProgressBar\n============================================================\nDisplays progress towards completion of a task or process\n\nFeatures:\n\n- Supports both determinate (with value) and indeterminate (loading) states\n- Two visual variants: solid (gradient) and contrast (monochromatic)\n- Three layouts: minimal, inline, and stacked\n- Configurable value formatting with internationalization support\n- Full accessibility support with ARIA attributes\n- Allows forwarding refs to the underlying DOM element\n- Accepts all native HTML div attributes\n- Supports variants, sizes, etc. configured in the recipe\n- Allows overriding styles by using style-props",
+  "displayName": "ProgressBar",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "Size variant of the progress bar",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"md\" | \"2xs\">"
+      }
+    },
+    "translate": {
+      "defaultValue": null,
+      "description": "",
+      "name": "translate",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"yes\" | \"no\"",
+        "value": [
+          {
+            "value": "\"yes\""
+          },
+          {
+            "value": "\"no\""
+          }
+        ]
+      }
+    },
+    "label": {
+      "defaultValue": null,
+      "description": "The content to display as the label.",
+      "name": "label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBarBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBarBaseProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "value": {
+      "defaultValue": {
+        "value": "0"
+      },
+      "description": "The current value (controlled).",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBaseProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "variant": {
+      "defaultValue": {
+        "value": "\"solid\""
+      },
+      "description": "Visual style variant of the progress bar",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"contrast\" | \"solid\">"
+      }
+    },
+    "layout": {
+      "defaultValue": {
+        "value": "\"stacked\""
+      },
+      "description": "Layout configuration for label and value positioning",
+      "name": "layout",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"minimal\" | \"inline\" | \"stacked\">"
+      }
+    },
+    "isIndeterminate": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the progress is indeterminate (unknown duration)\nWhether presentation is indeterminate when progress isn't known.",
+      "name": "isIndeterminate",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBarProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<boolean> & boolean"
+      }
+    },
+    "formatOptions": {
+      "defaultValue": {
+        "value": "{style: 'percent'}\n{ style: \"percent\" }"
+      },
+      "description": "The display format of the value label.\nFormat options for the progress bar value display\n@see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat",
+      "name": "formatOptions",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBarBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBarBaseProps"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "NumberFormatOptions"
+      }
+    },
+    "minValue": {
+      "defaultValue": {
+        "value": "0"
+      },
+      "description": "The smallest value allowed for the input.",
+      "name": "minValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBaseProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "maxValue": {
+      "defaultValue": {
+        "value": "100"
+      },
+      "description": "The largest value allowed for the input.",
+      "name": "maxValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBaseProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "isDynamic": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether the progress bar represents an active, ongoing process.\nSet to `true` for dynamic progress (e.g., file uploads, downloads).\nSet to `false` for static progress indicators (e.g., step 3 of 5 in a wizard).",
+      "name": "isDynamic",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<boolean>"
+      }
+    },
+    "valueLabel": {
+      "defaultValue": null,
+      "description": "The content to display as the value's label (e.g. 1 of 4).",
+      "name": "valueLabel",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+        "name": "ProgressBarBaseProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+progress@3.5.16_react@19.2.0/node_modules/@react-types/progress/src/index.d.ts",
+          "name": "ProgressBarBaseProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/progress-bar/progress-bar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

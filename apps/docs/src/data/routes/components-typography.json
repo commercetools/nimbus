@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "id": "Components-Typography",
+    "title": "Typography",
+    "description": "Components for text styling and formatting.",
+    "order": 6,
+    "repoPath": "packages/nimbus/src/docs/typography.mdx",
+    "menu": [
+      "Components",
+      "Typography"
+    ],
+    "route": "components/typography",
+    "tags": [
+      "document"
+    ],
+    "toc": [],
+    "icon": "FontDownload",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Typography\n\nComponents for text styling and formatting.\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Typography\n\nComponents for text styling and formatting.\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": []
+    }
+  }
+}

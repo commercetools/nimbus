@@ -1,0 +1,261 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "",
+  "displayName": "DataTableExpandButton",
+  "methods": [],
+  "props": {
+    "form": {
+      "defaultValue": null,
+      "description": "",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formAction": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | ((formData: FormData) => void | Promise<void>)"
+      }
+    },
+    "formEncType": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formEncType",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formMethod": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formMethod",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formNoValidate": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formNoValidate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "formTarget": {
+      "defaultValue": null,
+      "description": "",
+      "name": "formTarget",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "type": {
+      "defaultValue": null,
+      "description": "",
+      "name": "type",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "HTMLInputTypeAttribute"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "InputHTMLAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "InputHTMLAttributes"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | number | readonly string[]"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "asChild": {
+      "defaultValue": null,
+      "description": "",
+      "name": "asChild",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref).\n@see {@link https://react.dev/learn/referencing-values-with-refs#refs-and-the-dom React Docs}",
+      "name": "ref",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+        "name": "RefAttributes"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@types+react@19.2.2/node_modules/@types/react/index.d.ts",
+          "name": "RefAttributes"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/combobox/combobox.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

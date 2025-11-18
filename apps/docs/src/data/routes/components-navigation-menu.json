@@ -1,0 +1,316 @@
+{
+  "meta": {
+    "id": "Components-Menu",
+    "title": "Menu",
+    "description": "A menu displays a list of actions or options that a user can choose.",
+    "lifecycleState": "Alpha",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/menu/menu.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Menu"
+    ],
+    "route": "components/navigation/menu",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Common popover content",
+        "href": "#common-popover-content",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Solid-styled widths",
+        "href": "#solid-styled-widths",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Icons within action lists",
+        "href": "#icons-within-action-lists",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Keep menu items concise",
+        "href": "#keep-menu-items-concise",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Organize dropdown content when possible",
+        "href": "#organize-dropdown-content-when-possible",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Properties",
+        "href": "#properties",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Menu\n\nA temporary surface that displays a list of choices or actions. It typically\nappears when a user interacts with an element like a button or icon, or performs\na specific action.\n\n## Overview\n\nMenus present short, actionable items in a vertical list, ensuring easy\nnavigation and selection. They display below the trigger with a 8px space. To\nclose a menu, a user makes a selection, or in the case several selections may be\nmade, after a confirm button or a click off the active area.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-aria/Menu.html)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)\n\n## Guidelines\n\nMenu guidelines focus on providing temporary, contextual information or actions\nin a clear and accessible manner, ensuring they are easily triggered, navigable\nvia keyboard, and don't disrupt the user's primary workflow.\n\n### Best practices\n\n- **Clear trigger:** Make the trigger element visually distinct and interactive.\n  Use consistent icons or labels for dropdown triggers.\n- **Logical content:** Order options logically (alphabetical, frequency, etc.).\n  Keep content concise and actionable.\n- **Easy interaction:** If interaction involves a single selection, close the\n  popover upon selection. Keep the popover open if more complicated content\n  needs several selections.\n- **Responsive behavior:** Adapt the dropdown's position and size to different\n  screen sizes. Ensure it works well on touch devices.\n- **Visual feedback:** Highlight the selected option. Use clear hover states.\n- **Keyboard navigation:** Allow users to navigate options with arrow keys.\n  Enable selection with Enter/Spacebar. Enable closing the popover with the\n  Escape key.\n- **ARIA attributes:** Use `aria-haspopup`, `aria-expanded`, and `aria-label`\n  for screen reader support. Manage focus correctly when the popover opens and\n  closes.\n- **Avoid nested dropdowns:** Keep the structure simple and avoid nested menus.\n- **Contextual placement:** Position the dropdown near the trigger element\n  without obscuring important content.\n- **Limit content:** Keep the content to simple actions, or short text.\n- **Use sections correctly:** Use sections only if you have more than 2 groups\n  to organize. It is unneeded to have sections if the information is collected\n  together.\n\n#### Common popover content\n\nThese are some of the most seen uses of popover content. These are included in\nthe figma library components to make designing common shared uses easier.\n\n**Simple list**\n\nAllows the user to select one option, add a search to allow users to make\nselection easier if there are many options. For options 5 or fewer, a search is\nnot needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n      <Menu.Trigger asChild>\n        <IconButton\n          variant=\"ghost\"\n          colorPalette=\"neutral\"\n          aria-label=\"More options\"\n        >\n          <Icons.MoreVert />\n        </IconButton>\n      </Menu.Trigger>\n    <Menu.Content>\n      <Menu.Item id=\"menu-item-1\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-2\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-3\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-4\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-5\">Menu Item</Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Action list**\n\nInclude icons, offer tips or shortcuts, color coding for semantic clues, and\nsectioning. For options 5 or fewer, a search is not needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"solid\" colorPalette=\"primary\">\n        <Icons.FolderOpen />\n        File Menu\n      </Button>\n    </Menu.Trigger>\n   <Menu.Content>\n      <Menu.Item id=\"duplicate\">\n        <Icon slot=\"icon\"><Icons.ContentCopy /></Icon>\n        <Text slot=\"label\">Duplicate</Text>\n        <Kbd slot=\"keyboard\">⌘T</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"rename\">\n        <Icon slot=\"icon\"><Icons.Create /></Icon>\n        <Text slot=\"label\">Rename</Text>\n        <Kbd slot=\"keyboard\">⌘R</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"share\">\n        <Icon slot=\"icon\"><Icons.IosShare /></Icon>\n        <Text slot=\"label\">Share</Text>\n        <Kbd slot=\"keyboard\">⌘W</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"pin\">\n        <Icon slot=\"icon\"><Icons.PushPin /></Icon>\n        <Text slot=\"label\">Pin</Text>\n        <Kbd slot=\"keyboard\">⌘P</Kbd>\n      </Menu.Item>\n      <Separator />\n      <Menu.Item id=\"delete\" isCritical>\n        <Icon slot=\"icon\"><Icons.Delete /></Icon>\n        <Text slot=\"label\">Delete</Text>\n        <Kbd slot=\"keyboard\">⌘D</Kbd>\n      </Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Section list**\n\nLets the user perform a one time action. Features optional section titles and\ndescriptions. For options 5 or fewer, a search is not needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"outline\" colorPalette=\"primary\">\n        Actions\n      </Button>\n    </Menu.Trigger>\n    <Menu.Content>\n      <Menu.Section label=\"Import\">\n        <Menu.Item id=\"import-csv\">Import from CSV</Menu.Item>\n        <Menu.Item id=\"import-drive\">Import from Drive</Menu.Item>\n      </Menu.Section>\n      <Separator />\n      <Menu.Section label=\"Export\">\n        <Menu.Item id=\"export-csv\">Export to CSV</Menu.Item>\n        <Menu.Item id=\"export-drive\">Export to Drive</Menu.Item>\n      </Menu.Section>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Custom content**\n\nProvide a different experience to suit what your user needs within a popover.\nMake sure that this content is best suited for smaller areas. Options are very\ncustomizable to suit your needs.\n\n## Usage\n\nMenus are essential to hold actions and tools in a compact and handy area of the\nUI for a user. Make sure to use them correctly to allow the user to work more\nefficiently and not to overwhelm. Recognizing experience patterns in your\nproduct will also help in creating successful interactions for your users.\n\n> [!TIP]\\\n> When to use\n\n- **Short, actionable lists:** Lists of options for filtering, sorting, or\n  selecting specific actions. Menu items that are clearly labeled and easily\n  understood.\n- **Simple form elements:** Basic form inputs like radio buttons or checkboxes\n  for quick selections.\n- **Contextual actions:** Actions related to the item or element that triggered\n  the dropdown. Quick links to related settings or preferences.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Long paragraphs of text:** Menus are not suitable for displaying large\n  amounts of text. Keep content concise and focused.\n- **Complex forms or interactions:** Avoid placing complex forms or multi-step\n  processes within a menu dropdown. These should be handled on dedicated pages\n  or modals.\n- **Critical information:** Do not rely on menu dropdown to display essential\n  information that users need to see immediately. Important content should be\n  readily visible on the page.\n- **Unrelated content:** Ensure that the content of the menu is directly related\n  to the trigger element. Avoid including unrelated or irrelevant information.\n- **Nested dropdown:** Nested drop down within menu can be confusing and\n  difficult to navigate.\n- **Content that changes the page layout:** Avoid content that will cause the\n  page to reflow when the menu opens.\n\n### Solid-styled widths\n\nThese placements are more regular, they have either a maximum width of 268px or\nform wide. The menu width should match the width of the field itself.\n\n> [!TIP]\\\n> **Do**\n>\n> - The form is at maximum size (when not in a full page form) and the menu\n>   matches the width of the field.\n> - Longer options flow to the next lines, and when chosen, those longer texts\n>   are truncated so the user can still see the icons clearly.\n\n![](/images/menu/menu-width-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not have different widths for select inputs.\n> - Do not change the width of the field to match the content once selected.\n\n![](/images/menu/menu-width-dont.png)\n\n### Icons within action lists\n\nHaving icons can make actions easier for a user to select quickly, especially\nfor common and repetitive actions across products. Make sure to keep aligned\nwith familiar patterns to ensure user recognition. Actions can also be organized\nwith sections.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use common icons and clear and concise labels that are easily understood by\n>   users.\n> - Use destructive-styled icons for the actions that apply.\n\n![](/images/menu/menu-icons-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not use uncommon icons, and do not shorten labels of actions unless it is\n>   common and user tested.\n> - Do not use destructive styled actions for actions that are not destructive\n\n![](/images/menu/menu-icons-dont.png)\n\n### Keep menu items concise\n\nKeep menu items short and concise. Long menu items that cause text to wrap\nmultiple lines are discouraged. If text wrapping becomes a frequent concern,\nconsider revising the text or use alternative UI patterns that will give your\ncontent more space.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use a short and easily understandable label. Describe, do not use labels as\n>   instructions.\n> - Text can flow to three lines, but truncate further text.\n\n![](/images/menu/menu-concise-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Keep content short or make sure that the location has enough room to display\n>   content with more space.\n> - Don’t use additional labels or explainers when unneeded.\n> - Do not encourage lengthy text for drop down experiences. Text can flow to\n>   three lines, but truncate further text.\n> - Punctuation is not needed.\n\n![](/images/menu/menu-concise-dont.png)\n\n### Organize dropdown content when possible\n\nUse grouping structures if all items in a list can be grouped for a better user\nexperience. By default, organize by alphabetical order.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use labels within popover/drop downs to organize content.\n> - If actions lists become bulky and hard to scan, consider another experience\n>   for the user.\n\n![](/images/menu/menu-organize-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't bury frequently used actions within a dropdown or menu; instead,\n>   prioritize them at the top and group related actions together to facilitate\n>   quick user selection.\n\n![](/images/menu/menu-organize-dont.png)\n\n## Properties\n\n<PropsTable id=\"Menu\" />\n\n## Accessibility\n\nA dropdown popover is a temporary, compact list of options or actions that\nappears on user interaction, designed for quick selections and efficient\nnavigation.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"solid\" colorPalette=\"primary\">\n        <Icons.FolderOpen />\n        File Menu\n      </Button>\n    </Menu.Trigger>\n   <Menu.Content>\n      <Menu.Item id=\"duplicate\">\n        <Icon slot=\"icon\"><Icons.ContentCopy /></Icon>\n        <Text slot=\"label\">Duplicate</Text>\n        <Kbd slot=\"keyboard\">⌘T</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"rename\">\n        <Icon slot=\"icon\"><Icons.Create /></Icon>\n        <Text slot=\"label\">Rename</Text>\n        <Kbd slot=\"keyboard\">⌘R</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"share\">\n        <Icon slot=\"icon\"><Icons.IosShare /></Icon>\n        <Text slot=\"label\">Share</Text>\n        <Kbd slot=\"keyboard\">⌘W</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"pin\">\n        <Icon slot=\"icon\"><Icons.PushPin /></Icon>\n        <Text slot=\"label\">Pin</Text>\n        <Kbd slot=\"keyboard\">⌘P</Kbd>\n      </Menu.Item>\n      <Separator />\n      <Menu.Item id=\"delete\" isCritical>\n        <Icon slot=\"icon\"><Icons.Delete /></Icon>\n        <Text slot=\"label\">Delete</Text>\n        <Kbd slot=\"keyboard\">⌘D</Kbd>\n      </Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n### Accessibility standards\n\n**Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select\n(Enter/Space), and close (Esc) the menu using only the keyboard.\n\n**ARIA Roles & States:** Properly apply ARIA roles (e.g., role=\"menu\",\nrole=\"menuitem\", aria-haspopup\") and states (e.g., aria-expanded, aria-checked)\nto convey semantic meaning.\n\n**Focus Management:** Confirm focus correctly moves into the menu when opened,\ncycles within it, and returns to the trigger when closed.\n\n**Contrast & Visibility:** Verify sufficient color contrast for menu items and a\nclear visual focus indicator for selected/hovered items.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Menu\n\nA temporary surface that displays a list of choices or actions. It typically\nappears when a user interacts with an element like a button or icon, or performs\na specific action.\n\n## Overview\n\nMenus present short, actionable items in a vertical list, ensuring easy\nnavigation and selection. They display below the trigger with a 8px space. To\nclose a menu, a user makes a selection, or in the case several selections may be\nmade, after a confirm button or a click off the active area.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-aria/Menu.html)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2569)\n\n## Guidelines\n\nMenu guidelines focus on providing temporary, contextual information or actions\nin a clear and accessible manner, ensuring they are easily triggered, navigable\nvia keyboard, and don't disrupt the user's primary workflow.\n\n### Best practices\n\n- **Clear trigger:** Make the trigger element visually distinct and interactive.\n  Use consistent icons or labels for dropdown triggers.\n- **Logical content:** Order options logically (alphabetical, frequency, etc.).\n  Keep content concise and actionable.\n- **Easy interaction:** If interaction involves a single selection, close the\n  popover upon selection. Keep the popover open if more complicated content\n  needs several selections.\n- **Responsive behavior:** Adapt the dropdown's position and size to different\n  screen sizes. Ensure it works well on touch devices.\n- **Visual feedback:** Highlight the selected option. Use clear hover states.\n- **Keyboard navigation:** Allow users to navigate options with arrow keys.\n  Enable selection with Enter/Spacebar. Enable closing the popover with the\n  Escape key.\n- **ARIA attributes:** Use `aria-haspopup`, `aria-expanded`, and `aria-label`\n  for screen reader support. Manage focus correctly when the popover opens and\n  closes.\n- **Avoid nested dropdowns:** Keep the structure simple and avoid nested menus.\n- **Contextual placement:** Position the dropdown near the trigger element\n  without obscuring important content.\n- **Limit content:** Keep the content to simple actions, or short text.\n- **Use sections correctly:** Use sections only if you have more than 2 groups\n  to organize. It is unneeded to have sections if the information is collected\n  together.\n\n#### Common popover content\n\nThese are some of the most seen uses of popover content. These are included in\nthe figma library components to make designing common shared uses easier.\n\n**Simple list**\n\nAllows the user to select one option, add a search to allow users to make\nselection easier if there are many options. For options 5 or fewer, a search is\nnot needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n      <Menu.Trigger asChild>\n        <IconButton\n          variant=\"ghost\"\n          colorPalette=\"neutral\"\n          aria-label=\"More options\"\n        >\n          <Icons.MoreVert />\n        </IconButton>\n      </Menu.Trigger>\n    <Menu.Content>\n      <Menu.Item id=\"menu-item-1\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-2\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-3\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-4\">Menu Item</Menu.Item>\n      <Menu.Item id=\"menu-item-5\">Menu Item</Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Action list**\n\nInclude icons, offer tips or shortcuts, color coding for semantic clues, and\nsectioning. For options 5 or fewer, a search is not needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"solid\" colorPalette=\"primary\">\n        <Icons.FolderOpen />\n        File Menu\n      </Button>\n    </Menu.Trigger>\n   <Menu.Content>\n      <Menu.Item id=\"duplicate\">\n        <Icon slot=\"icon\"><Icons.ContentCopy /></Icon>\n        <Text slot=\"label\">Duplicate</Text>\n        <Kbd slot=\"keyboard\">⌘T</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"rename\">\n        <Icon slot=\"icon\"><Icons.Create /></Icon>\n        <Text slot=\"label\">Rename</Text>\n        <Kbd slot=\"keyboard\">⌘R</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"share\">\n        <Icon slot=\"icon\"><Icons.IosShare /></Icon>\n        <Text slot=\"label\">Share</Text>\n        <Kbd slot=\"keyboard\">⌘W</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"pin\">\n        <Icon slot=\"icon\"><Icons.PushPin /></Icon>\n        <Text slot=\"label\">Pin</Text>\n        <Kbd slot=\"keyboard\">⌘P</Kbd>\n      </Menu.Item>\n      <Separator />\n      <Menu.Item id=\"delete\" isCritical>\n        <Icon slot=\"icon\"><Icons.Delete /></Icon>\n        <Text slot=\"label\">Delete</Text>\n        <Kbd slot=\"keyboard\">⌘D</Kbd>\n      </Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Section list**\n\nLets the user perform a one time action. Features optional section titles and\ndescriptions. For options 5 or fewer, a search is not needed.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"outline\" colorPalette=\"primary\">\n        Actions\n      </Button>\n    </Menu.Trigger>\n    <Menu.Content>\n      <Menu.Section label=\"Import\">\n        <Menu.Item id=\"import-csv\">Import from CSV</Menu.Item>\n        <Menu.Item id=\"import-drive\">Import from Drive</Menu.Item>\n      </Menu.Section>\n      <Separator />\n      <Menu.Section label=\"Export\">\n        <Menu.Item id=\"export-csv\">Export to CSV</Menu.Item>\n        <Menu.Item id=\"export-drive\">Export to Drive</Menu.Item>\n      </Menu.Section>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n**Custom content**\n\nProvide a different experience to suit what your user needs within a popover.\nMake sure that this content is best suited for smaller areas. Options are very\ncustomizable to suit your needs.\n\n## Usage\n\nMenus are essential to hold actions and tools in a compact and handy area of the\nUI for a user. Make sure to use them correctly to allow the user to work more\nefficiently and not to overwhelm. Recognizing experience patterns in your\nproduct will also help in creating successful interactions for your users.\n\n> [!TIP]\\\n> When to use\n\n- **Short, actionable lists:** Lists of options for filtering, sorting, or\n  selecting specific actions. Menu items that are clearly labeled and easily\n  understood.\n- **Simple form elements:** Basic form inputs like radio buttons or checkboxes\n  for quick selections.\n- **Contextual actions:** Actions related to the item or element that triggered\n  the dropdown. Quick links to related settings or preferences.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Long paragraphs of text:** Menus are not suitable for displaying large\n  amounts of text. Keep content concise and focused.\n- **Complex forms or interactions:** Avoid placing complex forms or multi-step\n  processes within a menu dropdown. These should be handled on dedicated pages\n  or modals.\n- **Critical information:** Do not rely on menu dropdown to display essential\n  information that users need to see immediately. Important content should be\n  readily visible on the page.\n- **Unrelated content:** Ensure that the content of the menu is directly related\n  to the trigger element. Avoid including unrelated or irrelevant information.\n- **Nested dropdown:** Nested drop down within menu can be confusing and\n  difficult to navigate.\n- **Content that changes the page layout:** Avoid content that will cause the\n  page to reflow when the menu opens.\n\n### Solid-styled widths\n\nThese placements are more regular, they have either a maximum width of 268px or\nform wide. The menu width should match the width of the field itself.\n\n> [!TIP]\\\n> **Do**\n>\n> - The form is at maximum size (when not in a full page form) and the menu\n>   matches the width of the field.\n> - Longer options flow to the next lines, and when chosen, those longer texts\n>   are truncated so the user can still see the icons clearly.\n\n![](/images/menu/menu-width-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not have different widths for select inputs.\n> - Do not change the width of the field to match the content once selected.\n\n![](/images/menu/menu-width-dont.png)\n\n### Icons within action lists\n\nHaving icons can make actions easier for a user to select quickly, especially\nfor common and repetitive actions across products. Make sure to keep aligned\nwith familiar patterns to ensure user recognition. Actions can also be organized\nwith sections.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use common icons and clear and concise labels that are easily understood by\n>   users.\n> - Use destructive-styled icons for the actions that apply.\n\n![](/images/menu/menu-icons-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not use uncommon icons, and do not shorten labels of actions unless it is\n>   common and user tested.\n> - Do not use destructive styled actions for actions that are not destructive\n\n![](/images/menu/menu-icons-dont.png)\n\n### Keep menu items concise\n\nKeep menu items short and concise. Long menu items that cause text to wrap\nmultiple lines are discouraged. If text wrapping becomes a frequent concern,\nconsider revising the text or use alternative UI patterns that will give your\ncontent more space.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use a short and easily understandable label. Describe, do not use labels as\n>   instructions.\n> - Text can flow to three lines, but truncate further text.\n\n![](/images/menu/menu-concise-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Keep content short or make sure that the location has enough room to display\n>   content with more space.\n> - Don’t use additional labels or explainers when unneeded.\n> - Do not encourage lengthy text for drop down experiences. Text can flow to\n>   three lines, but truncate further text.\n> - Punctuation is not needed.\n\n![](/images/menu/menu-concise-dont.png)\n\n### Organize dropdown content when possible\n\nUse grouping structures if all items in a list can be grouped for a better user\nexperience. By default, organize by alphabetical order.\n\n> [!TIP]\\\n> **Do**\n>\n> - Use labels within popover/drop downs to organize content.\n> - If actions lists become bulky and hard to scan, consider another experience\n>   for the user.\n\n![](/images/menu/menu-organize-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't bury frequently used actions within a dropdown or menu; instead,\n>   prioritize them at the top and group related actions together to facilitate\n>   quick user selection.\n\n![](/images/menu/menu-organize-dont.png)\n\n## Properties\n\n<PropsTable id=\"Menu\" />\n\n## Accessibility\n\nA dropdown popover is a temporary, compact list of options or actions that\nappears on user interaction, designed for quick selections and efficient\nnavigation.\n\n```jsx-live\nconst App = () => (\n  <Menu.Root>\n    <Menu.Trigger asChild>\n      <Button variant=\"solid\" colorPalette=\"primary\">\n        <Icons.FolderOpen />\n        File Menu\n      </Button>\n    </Menu.Trigger>\n   <Menu.Content>\n      <Menu.Item id=\"duplicate\">\n        <Icon slot=\"icon\"><Icons.ContentCopy /></Icon>\n        <Text slot=\"label\">Duplicate</Text>\n        <Kbd slot=\"keyboard\">⌘T</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"rename\">\n        <Icon slot=\"icon\"><Icons.Create /></Icon>\n        <Text slot=\"label\">Rename</Text>\n        <Kbd slot=\"keyboard\">⌘R</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"share\">\n        <Icon slot=\"icon\"><Icons.IosShare /></Icon>\n        <Text slot=\"label\">Share</Text>\n        <Kbd slot=\"keyboard\">⌘W</Kbd>\n      </Menu.Item>\n      <Menu.Item id=\"pin\">\n        <Icon slot=\"icon\"><Icons.PushPin /></Icon>\n        <Text slot=\"label\">Pin</Text>\n        <Kbd slot=\"keyboard\">⌘P</Kbd>\n      </Menu.Item>\n      <Separator />\n      <Menu.Item id=\"delete\" isCritical>\n        <Icon slot=\"icon\"><Icons.Delete /></Icon>\n        <Text slot=\"label\">Delete</Text>\n        <Kbd slot=\"keyboard\">⌘D</Kbd>\n      </Menu.Item>\n    </Menu.Content>\n  </Menu.Root>\n);\n```\n\n### Accessibility standards\n\n**Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select\n(Enter/Space), and close (Esc) the menu using only the keyboard.\n\n**ARIA Roles & States:** Properly apply ARIA roles (e.g., role=\"menu\",\nrole=\"menuitem\", aria-haspopup\") and states (e.g., aria-expanded, aria-checked)\nto convey semantic meaning.\n\n**Focus Management:** Confirm focus correctly moves into the menu when opened,\ncycles within it, and returns to the trigger when closed.\n\n**Contrast & Visibility:** Verify sufficient color contrast for menu items and a\nclear visual focus indicator for selected/hovered items.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common popover content",
+          "href": "#common-popover-content",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Solid-styled widths",
+          "href": "#solid-styled-widths",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icons within action lists",
+          "href": "#icons-within-action-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keep menu items concise",
+          "href": "#keep-menu-items-concise",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Organize dropdown content when possible",
+          "href": "#organize-dropdown-content-when-possible",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Properties",
+          "href": "#properties",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

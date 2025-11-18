@@ -1,0 +1,460 @@
+{
+  "meta": {
+    "id": "Component-Lifecycle-States",
+    "title": "ADR: Nimbus Software Lifecycle States",
+    "description": "Architecture decision record defining the lifecycle states for Nimbus components, hooks, utilities, classes, etc.",
+    "order": 3,
+    "repoPath": "packages/nimbus/src/docs/architecture-decisions/adr-0003-component-lifecycle-states.mdx",
+    "menu": [
+      "Home",
+      "Contribute",
+      "ADR's",
+      "ADR0003 Component Lifecycle States"
+    ],
+    "route": "home/contribute/adrs/adr0003-component-lifecycle-states",
+    "tags": [
+      "architecture",
+      "lifecycle",
+      "versioning",
+      "stability"
+    ],
+    "toc": [
+      {
+        "value": "Context",
+        "href": "#context",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Decision",
+        "href": "#decision",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Pre-Release States",
+        "href": "#pre-release-states",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Experimental",
+        "href": "#1-experimental",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Alpha",
+        "href": "#2-alpha",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "3. Beta",
+        "href": "#3-beta",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "General Availability States",
+        "href": "#general-availability-states",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "4. Stable",
+        "href": "#4-stable",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "5. Deprecated",
+        "href": "#5-deprecated",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "6. End-of-Life (EOL)",
+        "href": "#6-end-of-life-eol",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Consequences",
+        "href": "#consequences",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Positive Consequences",
+        "href": "#positive-consequences",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Negative Consequences",
+        "href": "#negative-consequences",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Implementation Requirements",
+        "href": "#implementation-requirements",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Examples",
+        "href": "#examples",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Experimental Feature",
+        "href": "#experimental-feature",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Beta Feature with Migration Path",
+        "href": "#beta-feature-with-migration-path",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Deprecated Feature",
+        "href": "#deprecated-feature",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Summary",
+        "href": "#summary",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# ADR: Nimbus Software Lifecycle States\n\n## Context\n\nAs Nimbus grows and evolves, we need a clear system to communicate the\nstability, support level, and future trajectory of our components, hooks,\nutilities, functions, and classes to consumers. Without a standardized\nlifecycle system, consumers cannot make informed decisions about adoption,\nmigration planning, or production readiness.\n\nThe lack of clear lifecycle states leads to:\n- Uncertainty about which features are safe for production use\n- Difficulty planning migrations when APIs change\n- Inconsistent expectations about support and maintenance\n- Confusion about the maturity level of different library elements\n\nWe need a structured approach that balances innovation (allowing for\nexperimentation and iteration) with stability (providing reliable,\nproduction-ready features).\n\n## Decision\n\nWe will implement a six-stage lifecycle system for all UI library elements,\ndivided into Pre-Release States and General Availability States. Each state\nclearly communicates stability expectations, support commitments, and\ntransition pathways.\n\n### Pre-Release States\n\nThese states are for features under active development, subject to rapid\nchange, and not yet recommended for general production use.\n\n#### 1. Experimental\n- **Purpose**: Earliest public state for new concepts, significant API\n  redesigns, or exploratory features\n- **Stability**: Highly unstable, may be removed entirely without notice\n- **Goal**: Validate ideas and gather initial conceptual feedback\n- **Consumer Usage**: Absolutely not for production use; only for deep\n  exploration and early-stage feedback\n- **Breaking Changes**: Highest frequency, no advance warning\n- **Transitions**: To Alpha (if viable) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Experimental)` in documentation,\n  changelogs, and `@experimental` JSDoc tag\n\n#### 2. Alpha\n- **Purpose**: Features with clearer direction that have passed experimental\n  validation\n- **Stability**: Still highly unstable with known bugs and incomplete\n  functionality\n- **Goal**: Early adopter testing and initial feedback on core concepts\n- **Consumer Usage**: Not for production use; exploration and feedback only\n- **Breaking Changes**: Frequent breaking changes without warning\n- **Transitions**: To Beta (if successful) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Alpha)` in documentation, changelogs, and\n  `@alpha` JSDoc tag\n\n#### 3. Beta\n- **Purpose**: More stable features with mostly complete core functionality\n- **Stability**: Subject to breaking changes but less frequently than Alpha\n- **Goal**: Gather broad feedback on functionality and usability\n- **Consumer Usage**: Use with caution in non-critical production\n  environments\n- **Breaking Changes**: Some breaking changes, typically with prior notice,\n  may occur in minor versions\n- **Transitions**: To Stable (if successful) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Beta)` in documentation, changelogs, and\n  `@beta` JSDoc tag\n\n### General Availability States\n\nThese states represent stable and supported features, and features being\nphased out.\n\n#### 4. Stable\n- **Purpose**: Standard, production-ready state\n- **Stability**: API considered stable, thoroughly tested, and actively\n  maintained\n- **Goal**: Provide reliable, consistent functionality for production\n  applications\n- **Consumer Usage**: Recommended for all production applications\n- **Breaking Changes**: Adhere to strict semantic versioning (only in major\n  releases) with clear migration guides\n- **Transitions**: To Deprecated (when superseded or no longer relevant)\n- **Marking**: Default status requiring no special marking; documentation\n  confirms stability\n\n#### 5. Deprecated\n- **Purpose**: Not to be used in new development. Superseded by better\n  alternatives or found not viable as an Alpha or Beta\n- **Stability**: Maintained for compatibility but no new features\n- **Goal**: Provide transition period for migration to alternatives\n- **Consumer Usage**: Avoid for new development; migrate existing usage to\n  recommended alternatives\n- **Breaking Changes**: Only critical bug fixes; no new features\n- **Transitions**: To End-of-Life (EOL)\n- **Marking**: Clear warnings in documentation with recommended alternatives;\n  `@deprecated` JSDoc tag; console warnings during development; date for \n  the EOL transition\n\n#### 6. End-of-Life (EOL)\n- **Purpose**: Complete removal from the library\n- **Stability**: No longer available\n- **Goal**: Clean up deprecated features\n- **Consumer Usage**: Element is gone; applications using it will break upon\n  upgrade\n- **Breaking Changes**: N/A (element removed)\n- **Transitions**: N/A (terminal state)\n- **Marking**: Not present in current documentation or code; removal noted in\n  release notes\n\n## Consequences\n\n### Positive Consequences\n\n- **Clear Communication**: Consumers can make informed decisions about\n  feature adoption based on explicit stability guarantees\n- **Predictable Migration Path**: Well-defined transition states help\n  consumers plan upgrades and migrations\n- **Innovation Support**: Pre-release states allow for experimentation while\n  protecting production users\n- **Maintenance Clarity**: Clear support commitments for each state help\n  prioritize development resources\n- **Semantic Versioning Alignment**: Lifecycle states work with semantic\n  versioning to provide comprehensive change communication\n\n### Negative Consequences\n\n- **Additional Overhead**: Requires consistent marking and tracking of\n  lifecycle states across all library elements\n- **Documentation Complexity**: More detailed documentation needed to explain\n  states and transitions\n- **Consumer Learning Curve**: Users must understand the lifecycle system to\n  make appropriate adoption decisions\n- **Potential Confusion**: Multiple pre-release states might create\n  uncertainty about which features to try\n\n### Implementation Requirements\n\n- **Documentation Standards**: All elements must be clearly marked with their\n  lifecycle state\n- **Tooling Integration**: JSDoc tags, TypeScript definitions, and build\n  tools should reflect lifecycle states\n- **Communication Process**: Clear guidelines for announcing state\n  transitions in changelogs and release notes\n- **Development Workflow**: Integration with development processes to ensure\n  proper state management\n\n## Examples\n\n### Experimental Feature\n```jsx\n/**\n * @experimental This component is experimental and may be removed without\n * notice\n */\nexport const ExperimentalDataGrid = () => {\n  // Implementation\n};\n```\n\n### Beta Feature with Migration Path\n```jsx\n/**\n * @beta This component is in beta. API may change in minor versions.\n * Expected to reach stable in v2.1.0\n */\nexport const BetaAdvancedSelect = () => {\n  // Implementation\n};\n```\n\n### Deprecated Feature\n```jsx\n/**\n * @deprecated Use `NewButton` instead. Will be removed in v3.0.0\n * @see {@link NewButton}\n */\nexport const OldButton = () => {\n  console.warn('OldButton is deprecated. Use NewButton instead.');\n  // Implementation\n};\n```\n\n## Summary\n\nThe six-stage lifecycle system provides clear communication about feature\nstability and support commitments. Pre-release states (Experimental, Alpha,\nBeta) enable innovation while protecting production users, while General\nAvailability states (Stable, Deprecated, EOL) ensure reliable long-term\nsupport and predictable migration paths.\n\nThis system balances the need for innovation with stability requirements,\ngiving consumers the information they need to make appropriate adoption\ndecisions while providing clear guidelines for library maintainers. ",
+  "views": {
+    "overview": {
+      "mdx": "\n# ADR: Nimbus Software Lifecycle States\n\n## Context\n\nAs Nimbus grows and evolves, we need a clear system to communicate the\nstability, support level, and future trajectory of our components, hooks,\nutilities, functions, and classes to consumers. Without a standardized\nlifecycle system, consumers cannot make informed decisions about adoption,\nmigration planning, or production readiness.\n\nThe lack of clear lifecycle states leads to:\n- Uncertainty about which features are safe for production use\n- Difficulty planning migrations when APIs change\n- Inconsistent expectations about support and maintenance\n- Confusion about the maturity level of different library elements\n\nWe need a structured approach that balances innovation (allowing for\nexperimentation and iteration) with stability (providing reliable,\nproduction-ready features).\n\n## Decision\n\nWe will implement a six-stage lifecycle system for all UI library elements,\ndivided into Pre-Release States and General Availability States. Each state\nclearly communicates stability expectations, support commitments, and\ntransition pathways.\n\n### Pre-Release States\n\nThese states are for features under active development, subject to rapid\nchange, and not yet recommended for general production use.\n\n#### 1. Experimental\n- **Purpose**: Earliest public state for new concepts, significant API\n  redesigns, or exploratory features\n- **Stability**: Highly unstable, may be removed entirely without notice\n- **Goal**: Validate ideas and gather initial conceptual feedback\n- **Consumer Usage**: Absolutely not for production use; only for deep\n  exploration and early-stage feedback\n- **Breaking Changes**: Highest frequency, no advance warning\n- **Transitions**: To Alpha (if viable) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Experimental)` in documentation,\n  changelogs, and `@experimental` JSDoc tag\n\n#### 2. Alpha\n- **Purpose**: Features with clearer direction that have passed experimental\n  validation\n- **Stability**: Still highly unstable with known bugs and incomplete\n  functionality\n- **Goal**: Early adopter testing and initial feedback on core concepts\n- **Consumer Usage**: Not for production use; exploration and feedback only\n- **Breaking Changes**: Frequent breaking changes without warning\n- **Transitions**: To Beta (if successful) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Alpha)` in documentation, changelogs, and\n  `@alpha` JSDoc tag\n\n#### 3. Beta\n- **Purpose**: More stable features with mostly complete core functionality\n- **Stability**: Subject to breaking changes but less frequently than Alpha\n- **Goal**: Gather broad feedback on functionality and usability\n- **Consumer Usage**: Use with caution in non-critical production\n  environments\n- **Breaking Changes**: Some breaking changes, typically with prior notice,\n  may occur in minor versions\n- **Transitions**: To Stable (if successful) or Deprecated (if not viable)\n- **Marking**: Clearly marked as `(Beta)` in documentation, changelogs, and\n  `@beta` JSDoc tag\n\n### General Availability States\n\nThese states represent stable and supported features, and features being\nphased out.\n\n#### 4. Stable\n- **Purpose**: Standard, production-ready state\n- **Stability**: API considered stable, thoroughly tested, and actively\n  maintained\n- **Goal**: Provide reliable, consistent functionality for production\n  applications\n- **Consumer Usage**: Recommended for all production applications\n- **Breaking Changes**: Adhere to strict semantic versioning (only in major\n  releases) with clear migration guides\n- **Transitions**: To Deprecated (when superseded or no longer relevant)\n- **Marking**: Default status requiring no special marking; documentation\n  confirms stability\n\n#### 5. Deprecated\n- **Purpose**: Not to be used in new development. Superseded by better\n  alternatives or found not viable as an Alpha or Beta\n- **Stability**: Maintained for compatibility but no new features\n- **Goal**: Provide transition period for migration to alternatives\n- **Consumer Usage**: Avoid for new development; migrate existing usage to\n  recommended alternatives\n- **Breaking Changes**: Only critical bug fixes; no new features\n- **Transitions**: To End-of-Life (EOL)\n- **Marking**: Clear warnings in documentation with recommended alternatives;\n  `@deprecated` JSDoc tag; console warnings during development; date for \n  the EOL transition\n\n#### 6. End-of-Life (EOL)\n- **Purpose**: Complete removal from the library\n- **Stability**: No longer available\n- **Goal**: Clean up deprecated features\n- **Consumer Usage**: Element is gone; applications using it will break upon\n  upgrade\n- **Breaking Changes**: N/A (element removed)\n- **Transitions**: N/A (terminal state)\n- **Marking**: Not present in current documentation or code; removal noted in\n  release notes\n\n## Consequences\n\n### Positive Consequences\n\n- **Clear Communication**: Consumers can make informed decisions about\n  feature adoption based on explicit stability guarantees\n- **Predictable Migration Path**: Well-defined transition states help\n  consumers plan upgrades and migrations\n- **Innovation Support**: Pre-release states allow for experimentation while\n  protecting production users\n- **Maintenance Clarity**: Clear support commitments for each state help\n  prioritize development resources\n- **Semantic Versioning Alignment**: Lifecycle states work with semantic\n  versioning to provide comprehensive change communication\n\n### Negative Consequences\n\n- **Additional Overhead**: Requires consistent marking and tracking of\n  lifecycle states across all library elements\n- **Documentation Complexity**: More detailed documentation needed to explain\n  states and transitions\n- **Consumer Learning Curve**: Users must understand the lifecycle system to\n  make appropriate adoption decisions\n- **Potential Confusion**: Multiple pre-release states might create\n  uncertainty about which features to try\n\n### Implementation Requirements\n\n- **Documentation Standards**: All elements must be clearly marked with their\n  lifecycle state\n- **Tooling Integration**: JSDoc tags, TypeScript definitions, and build\n  tools should reflect lifecycle states\n- **Communication Process**: Clear guidelines for announcing state\n  transitions in changelogs and release notes\n- **Development Workflow**: Integration with development processes to ensure\n  proper state management\n\n## Examples\n\n### Experimental Feature\n```jsx\n/**\n * @experimental This component is experimental and may be removed without\n * notice\n */\nexport const ExperimentalDataGrid = () => {\n  // Implementation\n};\n```\n\n### Beta Feature with Migration Path\n```jsx\n/**\n * @beta This component is in beta. API may change in minor versions.\n * Expected to reach stable in v2.1.0\n */\nexport const BetaAdvancedSelect = () => {\n  // Implementation\n};\n```\n\n### Deprecated Feature\n```jsx\n/**\n * @deprecated Use `NewButton` instead. Will be removed in v3.0.0\n * @see {@link NewButton}\n */\nexport const OldButton = () => {\n  console.warn('OldButton is deprecated. Use NewButton instead.');\n  // Implementation\n};\n```\n\n## Summary\n\nThe six-stage lifecycle system provides clear communication about feature\nstability and support commitments. Pre-release states (Experimental, Alpha,\nBeta) enable innovation while protecting production users, while General\nAvailability states (Stable, Deprecated, EOL) ensure reliable long-term\nsupport and predictable migration paths.\n\nThis system balances the need for innovation with stability requirements,\ngiving consumers the information they need to make appropriate adoption\ndecisions while providing clear guidelines for library maintainers. ",
+      "toc": [
+        {
+          "value": "Context",
+          "href": "#context",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Decision",
+          "href": "#decision",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Pre-Release States",
+          "href": "#pre-release-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Experimental",
+          "href": "#1-experimental",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Alpha",
+          "href": "#2-alpha",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "3. Beta",
+          "href": "#3-beta",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "General Availability States",
+          "href": "#general-availability-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "4. Stable",
+          "href": "#4-stable",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "5. Deprecated",
+          "href": "#5-deprecated",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "6. End-of-Life (EOL)",
+          "href": "#6-end-of-life-eol",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Consequences",
+          "href": "#consequences",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Positive Consequences",
+          "href": "#positive-consequences",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Negative Consequences",
+          "href": "#negative-consequences",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Implementation Requirements",
+          "href": "#implementation-requirements",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Examples",
+          "href": "#examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Experimental Feature",
+          "href": "#experimental-feature",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Beta Feature with Migration Path",
+          "href": "#beta-feature-with-migration-path",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Deprecated Feature",
+          "href": "#deprecated-feature",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Summary",
+          "href": "#summary",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "id": "Components-Box",
+    "title": "Box",
+    "description": "A basic layout component that serves as a wrapper or container.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/box/box.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Box"
+    ],
+    "route": "components/layout/box",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Import",
+        "href": "#import",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "As a flex container",
+        "href": "#as-a-flex-container",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With border",
+        "href": "#with-border",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With shadow",
+        "href": "#with-shadow",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With asChild",
+        "href": "#with-aschild",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Props",
+        "href": "#props",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Box\n\nBox is a basic layout component that serves as a wrapper or container. It's\nbased on the\n[Chakra UI Box component](https://chakra-ui.com/docs/components/box) and\nsupports all style props for rapid UI development.\n\n## Import\n\n```jsx\nimport { Box } from \"@commercetools/nimbus\";\n```\n\n## Usage\n\n### Basic usage\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" bg=\"primary.3\">\n    Basic Box\n  </Box>\n);\n```\n\n### As a flex container\n\n```jsx-live\nconst App = () => (\n  <Box display=\"flex\" gap=\"100\">\n    <Box p=\"100\" bg=\"primary.3\">\n      Item 1\n    </Box>\n    <Box p=\"100\" bg=\"primary.3\">\n      Item 2\n    </Box>\n  </Box>\n);\n```\n\n### With border\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" border=\"solid-50\" borderColor=\"primary.3\">\n    Box with border\n  </Box>\n);\n```\n\n### With shadow\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" boxShadow=\"6\">\n    Box with shadow\n  </Box>\n);\n```\n\n### With asChild\n\nUse the `asChild` prop to apply Box styles to any child element while\nmaintaining the child's functionality:\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" bg=\"primary.3\" asChild>\n    <button onClick={() => alert(\"Clicked!\")}>\n      I am a button with Box styles\n    </button>\n  </Box>\n);\n```\n\n## Props\n\nThe Box component accepts all system props from Chakra UI, including:\n\n- Space props (margin, padding)\n- Color props (background, color)\n- Typography props (fontSize, fontWeight)\n- Layout props (width, height, display)\n- Flexbox props\n- Grid props\n- Border props\n- Position props\n- Shadow props\n\n## Accessibility\n\nBox renders a `div` by default but can be changed to any other HTML element\nusing the `as` prop.\n\n```jsx-live\nconst App = () => (\n  <Box as=\"section\" p=\"100\">\n    Section content\n  </Box>\n);\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Box\n\nBox is a basic layout component that serves as a wrapper or container. It's\nbased on the\n[Chakra UI Box component](https://chakra-ui.com/docs/components/box) and\nsupports all style props for rapid UI development.\n\n## Import\n\n```jsx\nimport { Box } from \"@commercetools/nimbus\";\n```\n\n## Usage\n\n### Basic usage\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" bg=\"primary.3\">\n    Basic Box\n  </Box>\n);\n```\n\n### As a flex container\n\n```jsx-live\nconst App = () => (\n  <Box display=\"flex\" gap=\"100\">\n    <Box p=\"100\" bg=\"primary.3\">\n      Item 1\n    </Box>\n    <Box p=\"100\" bg=\"primary.3\">\n      Item 2\n    </Box>\n  </Box>\n);\n```\n\n### With border\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" border=\"solid-50\" borderColor=\"primary.3\">\n    Box with border\n  </Box>\n);\n```\n\n### With shadow\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" boxShadow=\"6\">\n    Box with shadow\n  </Box>\n);\n```\n\n### With asChild\n\nUse the `asChild` prop to apply Box styles to any child element while\nmaintaining the child's functionality:\n\n```jsx-live\nconst App = () => (\n  <Box p=\"100\" bg=\"primary.3\" asChild>\n    <button onClick={() => alert(\"Clicked!\")}>\n      I am a button with Box styles\n    </button>\n  </Box>\n);\n```\n\n## Props\n\nThe Box component accepts all system props from Chakra UI, including:\n\n- Space props (margin, padding)\n- Color props (background, color)\n- Typography props (fontSize, fontWeight)\n- Layout props (width, height, display)\n- Flexbox props\n- Grid props\n- Border props\n- Position props\n- Shadow props\n\n## Accessibility\n\nBox renders a `div` by default but can be changed to any other HTML element\nusing the `as` prop.\n\n```jsx-live\nconst App = () => (\n  <Box as=\"section\" p=\"100\">\n    Section content\n  </Box>\n);\n```\n",
+      "toc": [
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "As a flex container",
+          "href": "#as-a-flex-container",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With border",
+          "href": "#with-border",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With shadow",
+          "href": "#with-shadow",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With asChild",
+          "href": "#with-aschild",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props",
+          "href": "#props",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

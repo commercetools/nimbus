@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "id": "Components-RichTextInput",
+    "title": "RichTextInput",
+    "description": "The rich text input component allows users to input and format text using a user friendly interface. Changing standard text inputs into fully featured edits, supporting formatting, linking, and embedding.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/rich-text-input/rich-text-input.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "RichTextInput"
+    ],
+    "route": "components/inputs/richtextinput",
+    "tags": [
+      "component",
+      "rich-text",
+      "editor",
+      "formatting"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Toolbar features",
+        "href": "#toolbar-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Minimum and maximum height",
+        "href": "#minimum-and-maximum-height",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Rich text input in use",
+        "href": "#rich-text-input-in-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          6,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# RichTextInput\n\nThe rich text input component allows users to input and format text using a user\nfriendly interface. Changing standard text inputs into fully featured edits,\nsupporting formatting, linking, and embedding.\n\n## Overview\n\nRich text input is made of two parts, the input where users can add text, and a\ntoolbar. This toolbar has been arranged to suit user's needs for text editing.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Slate.js Documentation](https://docs.slatejs.org/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Toolbar features\n\nUsers can change type styles, toggle bold, italics, underline, strikethrough,\ncode sections, superscript, subscript, bullet points and numbered lists. Undo\nand redo buttons are icon buttons.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p><strong>Nimbus</strong> dolor sit amet, consectetur adipiscing elit. Aliquam <em>component</em> felis, vel consistency elementum. Sed design tokens ut turpis ac <u>user experience</u> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Try formatting some text...\"\n    />\n  );\n};\n```\n\n### Minimum and maximum height\n\nThese can be fully configured as needed. Toolbar should remain sticky to the top\nof the input. Set the minimum height to ensure at least a few lines of content\nare visible.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac user experience maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      minHeight=\"7200\"\n      maxHeight=\"9600\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n\n## Guidelines\n\nThese guidelines provide comprehensive direction for designing and developing\nrich text inputs within Nimbus.\n\n### Best practices\n\n- **Make responsive changes:** Apply changes immediately to the selected text\n  upon clicking a toolbar control.\n- **Utilize tooltips and labels:** Include tooltips for all toolbar actions to\n  enhance discoverability and accessibility.\n- **Keep a user's focus:** Maintain the user's focus within the text area after\n  an action or toggle is selected.\n- **Allow for common shortcuts:** Support standard keyboard shortcuts for\n  formatting (e.g., Ctrl/Cmd+B for bold).\n- **Make it easier to correct mistakes:** Offer an undo/redo history for content\n  changes, and allow for a large enough input window so a user can quickly read\n  content without needing to scroll line by line.\n- **Tailor tooling:** Determine the required formatting options based on the\n  user's needs for the specific application.\n- **Curate tools into meaningful similar collections:** Group related controls\n  logically in the toolbar (e.g., text styling, lists, media).\n\n## Usage\n\nRich text inputs should be used in areas where a user knows that a longer\nresponse or description is expected.\n\n> [!TIP]\\\n> When to use\n\n- **Editing long-form content:** Such as product descriptions, knowledge base\n  articles, or email bodies, where visual hierarchy and style are necessary for\n  readability.\n- **Formatting text:** Such as applying bold, italics, underlines, or specific\n  heading levels.\n- **Structuring content:** With bulleted or numbered lists.\n- **Embedding external elements:** Like links, images, or videos within other\n  content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Short answers:** Or single-line inputs, such as names, titles, or search\n  queries.\n- **Specific data entry:** Unformatted text is required, like SKUs, passwords,\n  or simple codes.\n- **Plain text communication:** Such as chat messages or comments, where\n  formatting options can clutter the interface or distract from the\n  conversation.\n- **Inputs that need to be strictly controlled:** Where the application's style\n  guide should be the only source of formatting (e.g., when there is passing\n  through of styling and content to another site).\n\n### Rich text input in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use tooltips for tools represented by icons. In the case of paragraph\n>   styles show the style in the dropdown, not just stated in plain text.\n> - Do provide more height for the input to see a few lines of text and reduce\n>   scrolling.\n> - Do utilize an undo and redo button to assist a user with writing and editing\n>   text when possible.\n\n![Do](/images/rich-text-input/rich-text-input-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't make the input so small that you cannot easily see a few lines of\n>   text.\n> - Don't move the rich text toolbar to sit on the bottom of the input.\n> - Don't overload the rich text toolbar with tools that are unnecessary.\n\n![Don't](/images/rich-text-input/rich-text-input-dont.png)\n\n## Specs\n\n<PropsTable id=\"RichTextInput\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n### Accessibility standards\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n\n- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,\n  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.\n- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab\n  key. Users must be able to navigate and apply formatting without a mouse.\n- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,\n  such as `aria-label` for toggle icon buttons.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# RichTextInput\n\nThe rich text input component allows users to input and format text using a user\nfriendly interface. Changing standard text inputs into fully featured edits,\nsupporting formatting, linking, and embedding.\n\n## Overview\n\nRich text input is made of two parts, the input where users can add text, and a\ntoolbar. This toolbar has been arranged to suit user's needs for text editing.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Slate.js Documentation](https://docs.slatejs.org/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Toolbar features\n\nUsers can change type styles, toggle bold, italics, underline, strikethrough,\ncode sections, superscript, subscript, bullet points and numbered lists. Undo\nand redo buttons are icon buttons.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p><strong>Nimbus</strong> dolor sit amet, consectetur adipiscing elit. Aliquam <em>component</em> felis, vel consistency elementum. Sed design tokens ut turpis ac <u>user experience</u> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Try formatting some text...\"\n    />\n  );\n};\n```\n\n### Minimum and maximum height\n\nThese can be fully configured as needed. Toolbar should remain sticky to the top\nof the input. Set the minimum height to ensure at least a few lines of content\nare visible.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac user experience maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      minHeight=\"7200\"\n      maxHeight=\"9600\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n\n## Guidelines\n\nThese guidelines provide comprehensive direction for designing and developing\nrich text inputs within Nimbus.\n\n### Best practices\n\n- **Make responsive changes:** Apply changes immediately to the selected text\n  upon clicking a toolbar control.\n- **Utilize tooltips and labels:** Include tooltips for all toolbar actions to\n  enhance discoverability and accessibility.\n- **Keep a user's focus:** Maintain the user's focus within the text area after\n  an action or toggle is selected.\n- **Allow for common shortcuts:** Support standard keyboard shortcuts for\n  formatting (e.g., Ctrl/Cmd+B for bold).\n- **Make it easier to correct mistakes:** Offer an undo/redo history for content\n  changes, and allow for a large enough input window so a user can quickly read\n  content without needing to scroll line by line.\n- **Tailor tooling:** Determine the required formatting options based on the\n  user's needs for the specific application.\n- **Curate tools into meaningful similar collections:** Group related controls\n  logically in the toolbar (e.g., text styling, lists, media).\n\n## Usage\n\nRich text inputs should be used in areas where a user knows that a longer\nresponse or description is expected.\n\n> [!TIP]\\\n> When to use\n\n- **Editing long-form content:** Such as product descriptions, knowledge base\n  articles, or email bodies, where visual hierarchy and style are necessary for\n  readability.\n- **Formatting text:** Such as applying bold, italics, underlines, or specific\n  heading levels.\n- **Structuring content:** With bulleted or numbered lists.\n- **Embedding external elements:** Like links, images, or videos within other\n  content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Short answers:** Or single-line inputs, such as names, titles, or search\n  queries.\n- **Specific data entry:** Unformatted text is required, like SKUs, passwords,\n  or simple codes.\n- **Plain text communication:** Such as chat messages or comments, where\n  formatting options can clutter the interface or distract from the\n  conversation.\n- **Inputs that need to be strictly controlled:** Where the application's style\n  guide should be the only source of formatting (e.g., when there is passing\n  through of styling and content to another site).\n\n### Rich text input in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use tooltips for tools represented by icons. In the case of paragraph\n>   styles show the style in the dropdown, not just stated in plain text.\n> - Do provide more height for the input to see a few lines of text and reduce\n>   scrolling.\n> - Do utilize an undo and redo button to assist a user with writing and editing\n>   text when possible.\n\n![Do](/images/rich-text-input/rich-text-input-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't make the input so small that you cannot easily see a few lines of\n>   text.\n> - Don't move the rich text toolbar to sit on the bottom of the input.\n> - Don't overload the rich text toolbar with tools that are unnecessary.\n\n![Don't](/images/rich-text-input/rich-text-input-dont.png)\n\n## Specs\n\n<PropsTable id=\"RichTextInput\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n### Accessibility standards\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState(\"\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n\n- **Semantic Markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,\n  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.\n- **Keyboard Access:** Ensure all toolbar controls are accessible via the tab\n  key. Users must be able to navigate and apply formatting without a mouse.\n- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,\n  such as `aria-label` for toggle icon buttons.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toolbar features",
+          "href": "#toolbar-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Minimum and maximum height",
+          "href": "#minimum-and-maximum-height",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Rich text input in use",
+          "href": "#rich-text-input-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

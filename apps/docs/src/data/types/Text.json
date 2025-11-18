@@ -1,0 +1,43 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/typography/text}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Text\n\nthe Text component is used to display text",
+  "displayName": "Text",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/text/text.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLElement>"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "",
+      "name": "slot",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/text/text.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

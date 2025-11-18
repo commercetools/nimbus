@@ -1,0 +1,390 @@
+{
+  "meta": {
+    "id": "Components-MoneyInput",
+    "title": "MoneyInput",
+    "description": "A controlled input for money values that combines currency selection with amount input, supporting both standard and high-precision monetary values.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/money-input/money-input.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "MoneyInput"
+    ],
+    "route": "components/inputs/moneyinput",
+    "tags": [
+      "component",
+      "input",
+      "currency",
+      "money"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Anatomy",
+        "href": "#anatomy",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Multi-part functions",
+        "href": "#multi-part-functions",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "High-precision pricing",
+        "href": "#high-precision-pricing",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium",
+        "href": "#medium",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Small",
+        "href": "#small",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Guidelines",
+        "href": "#guidelines",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Usage",
+        "href": "#usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Money input in use",
+        "href": "#money-input-in-use",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Specs",
+        "href": "#specs",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          5,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8463-23501&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Money input\n\nA controlled input for money values that combines currency selection with amount input, supporting both standard and high-precision monetary values.\n\n## Overview\n\nThe money input component combines a currency selector (a dropdown menu) and a numerical input field into a single, cohesive unit, offering robust states like default, invalid, and disabled, alongside specialized handling for focused and hovered interactions.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/NumberField.html)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8463-23501&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Anatomy\n\n#### Multi-part functions\n\nIn each localized money input, there is a dropdown to select the correct currency, a field that lets a user type in directly, and a stepper to allow for incremental numerical changes to the price shown within.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\", \"JPY\"]}\n    />\n  );\n}\n```\n\n#### High-precision pricing\n\nThis mode is essential for maintaining financial accuracy in large-scale or complex commercial systems.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.12345\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      hasHighPrecisionBadge\n    />\n  );\n}\n```\n\n### Size\n\n#### Medium\n\nDefault size common with other inputs.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      size=\"md\"\n    />\n  );\n}\n```\n\n#### Small\n\nCompact size for more condensed areas.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      size=\"sm\"\n    />\n  );\n}\n```\n\n## Guidelines\n\nMoney input guidelines offer best practice and usage guides to keep user experience accessible and familiar, ensuring consistency and high ease of use.\n\n### Best practices\n\n- **Default currency:** Pre-select the most common or local currency for the user based on location or historical data to minimize input effort.\n- **Clear labeling:** Always use a persistent, descriptive label (e.g., \"Product price,\" \"Shipping cost\") and ensure the currency field and numerical input are visually grouped as one component.\n- **Validation feedback:** Provide immediate, clear, and action-oriented error messages and visual cues when validation fails (e.g., input is non-numeric, or violates range constraints).\n- **Precision guidance:** Utilize the \"High precision price\" tooltip or similar mechanisms to explain special input requirements for decimal places or specific pricing rules.\n- **Logical currency ordering:** Order the currency dropdown options logically, typically placing the most common currencies first, followed by an alphabetical list.\n\n### Usage\n\nUtilizing money input should be consistent, and relevant for the data needed.\n\n> [!TIP]\\\n> When to use\n\n- **Currency flexibility:** When the user must select the currency alongside the value. Recording multiple prices that are specific to currency.\n- **Price configuration:** For setting product prices, discounts, taxes, or inventory costs in a back-office system.\n- **Transactional input:** When capturing any customer-facing input that involves currency and payment (e.g., donation amount).\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple currency display:** Do not use the full input component just to display a currency value. Use formatted text instead.\n- **Pure numerical data:** If the input is only a number and does not involve money, use a standard number input.\n- **Fixed currency:** If the currency is guaranteed to be fixed (e.g., always USD) and selection is not required, use a standard text input with a fixed currency symbol/label appended.\n\n### Money input in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do make both the currency selector and the number input easily accessible.\n> - Do provide helper text or tooltips (like the \"High precision price\" tooltip) for complex constraints.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.12345\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Product Price</FormField.Label>\n      <FormField.Input>\n        <MoneyInput\n          value={value}\n          onValueChange={setValue}\n          currencies={[\"EUR\", \"USD\", \"GBP\"]}\n          hasHighPrecisionBadge\n        />\n      </FormField.Input>\n      <FormField.Description>\n        High precision pricing available for detailed financial accuracy\n      </FormField.Description>\n    </FormField.Root>\n  );\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't hide the currency selector if the currency is not fixed.\n> - Don't use a money input if there is a default single currency or if the number does not represent a currency.\n> - Don't allow users to submit the form with an invalid or incorrectly formatted currency or number.\n> - Don't use lengthy error messages; keep them concise and focus on the solution.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <FormField.Root isInvalid>\n      <FormField.Label>Product Price</FormField.Label>\n      <FormField.Input>\n        <MoneyInput\n          value={value}\n          onValueChange={setValue}\n          currencies={[\"EUR\"]}\n          isInvalid\n          width=\"100%\"\n        />\n      </FormField.Input>\n      <FormField.Error>\n        FATAL CLIENT-SIDE VALIDATION FAILURE: The input string for the Product Price field did not pass the REGEX matching criteria for the accepted numeric float and currency locale object structure. Data integrity requires a value greater than the currently defined minimum threshold, which is configured for 30.00 base units, and must contain two trailing decimal places, regardless of whether the final calculated value is a whole integer.\n      </FormField.Error>\n    </FormField.Root>\n  );\n}\n```\n\n## Specs\n\n<PropsTable id=\"MoneyInput\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n    />\n  );\n}\n```\n\n### Accessibility standards\n\n- **Keyboard operability:** Ensure the user can navigate seamlessly between the currency selector and the number input using the tab key.\n- **ARIA roles:** The currency selector should function as an accessible dropdown/select menu, while the number input should use the appropriate number input type.\n- **Error communication:** Validation errors must be announced to screen readers. The invalid state should use `aria-invalid=\"true\"` on the input field and link to the error message via `aria-describedby`.\n- **Contrast:** Ensure sufficient color contrast for all text, borders, and icons, especially in the `invalid` and `disabled` states.\n- **Focus indication:** Maintain a strong, clear focus ring around both the currency menu and the number input when active.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Money input\n\nA controlled input for money values that combines currency selection with amount input, supporting both standard and high-precision monetary values.\n\n## Overview\n\nThe money input component combines a currency selector (a dropdown menu) and a numerical input field into a single, cohesive unit, offering robust states like default, invalid, and disabled, alongside specialized handling for focused and hovered interactions.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/NumberField.html)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8463-23501&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Anatomy\n\n#### Multi-part functions\n\nIn each localized money input, there is a dropdown to select the correct currency, a field that lets a user type in directly, and a stepper to allow for incremental numerical changes to the price shown within.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\", \"JPY\"]}\n    />\n  );\n}\n```\n\n#### High-precision pricing\n\nThis mode is essential for maintaining financial accuracy in large-scale or complex commercial systems.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.12345\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      hasHighPrecisionBadge\n    />\n  );\n}\n```\n\n### Size\n\n#### Medium\n\nDefault size common with other inputs.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      size=\"md\"\n    />\n  );\n}\n```\n\n#### Small\n\nCompact size for more condensed areas.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n      size=\"sm\"\n    />\n  );\n}\n```\n\n## Guidelines\n\nMoney input guidelines offer best practice and usage guides to keep user experience accessible and familiar, ensuring consistency and high ease of use.\n\n### Best practices\n\n- **Default currency:** Pre-select the most common or local currency for the user based on location or historical data to minimize input effort.\n- **Clear labeling:** Always use a persistent, descriptive label (e.g., \"Product price,\" \"Shipping cost\") and ensure the currency field and numerical input are visually grouped as one component.\n- **Validation feedback:** Provide immediate, clear, and action-oriented error messages and visual cues when validation fails (e.g., input is non-numeric, or violates range constraints).\n- **Precision guidance:** Utilize the \"High precision price\" tooltip or similar mechanisms to explain special input requirements for decimal places or specific pricing rules.\n- **Logical currency ordering:** Order the currency dropdown options logically, typically placing the most common currencies first, followed by an alphabetical list.\n\n### Usage\n\nUtilizing money input should be consistent, and relevant for the data needed.\n\n> [!TIP]\\\n> When to use\n\n- **Currency flexibility:** When the user must select the currency alongside the value. Recording multiple prices that are specific to currency.\n- **Price configuration:** For setting product prices, discounts, taxes, or inventory costs in a back-office system.\n- **Transactional input:** When capturing any customer-facing input that involves currency and payment (e.g., donation amount).\n\n> [!CAUTION]\\\n> When not to use\n\n- **Simple currency display:** Do not use the full input component just to display a currency value. Use formatted text instead.\n- **Pure numerical data:** If the input is only a number and does not involve money, use a standard number input.\n- **Fixed currency:** If the currency is guaranteed to be fixed (e.g., always USD) and selection is not required, use a standard text input with a fixed currency symbol/label appended.\n\n### Money input in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do make both the currency selector and the number input easily accessible.\n> - Do provide helper text or tooltips (like the \"High precision price\" tooltip) for complex constraints.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.12345\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Product Price</FormField.Label>\n      <FormField.Input>\n        <MoneyInput\n          value={value}\n          onValueChange={setValue}\n          currencies={[\"EUR\", \"USD\", \"GBP\"]}\n          hasHighPrecisionBadge\n        />\n      </FormField.Input>\n      <FormField.Description>\n        High precision pricing available for detailed financial accuracy\n      </FormField.Description>\n    </FormField.Root>\n  );\n}\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't hide the currency selector if the currency is not fixed.\n> - Don't use a money input if there is a default single currency or if the number does not represent a currency.\n> - Don't allow users to submit the form with an invalid or incorrectly formatted currency or number.\n> - Don't use lengthy error messages; keep them concise and focus on the solution.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <FormField.Root isInvalid>\n      <FormField.Label>Product Price</FormField.Label>\n      <FormField.Input>\n        <MoneyInput\n          value={value}\n          onValueChange={setValue}\n          currencies={[\"EUR\"]}\n          isInvalid\n          width=\"100%\"\n        />\n      </FormField.Input>\n      <FormField.Error>\n        FATAL CLIENT-SIDE VALIDATION FAILURE: The input string for the Product Price field did not pass the REGEX matching criteria for the accepted numeric float and currency locale object structure. Data integrity requires a value greater than the currently defined minimum threshold, which is configured for 30.00 base units, and must contain two trailing decimal places, regardless of whether the final calculated value is a whole integer.\n      </FormField.Error>\n    </FormField.Root>\n  );\n}\n```\n\n## Specs\n\n<PropsTable id=\"MoneyInput\" />\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.\n\n```jsx-live\nconst App = () => {\n  const [value, setValue] = React.useState({\n    amount: \"20.00\",\n    currencyCode: \"EUR\"\n  });\n\n  return (\n    <MoneyInput\n      value={value}\n      onValueChange={setValue}\n      currencies={[\"EUR\", \"USD\", \"GBP\"]}\n    />\n  );\n}\n```\n\n### Accessibility standards\n\n- **Keyboard operability:** Ensure the user can navigate seamlessly between the currency selector and the number input using the tab key.\n- **ARIA roles:** The currency selector should function as an accessible dropdown/select menu, while the number input should use the appropriate number input type.\n- **Error communication:** Validation errors must be announced to screen readers. The invalid state should use `aria-invalid=\"true\"` on the input field and link to the error message via `aria-describedby`.\n- **Contrast:** Ensure sufficient color contrast for all text, borders, and icons, especially in the `invalid` and `disabled` states.\n- **Focus indication:** Maintain a strong, clear focus ring around both the currency menu and the number input when active.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Anatomy",
+          "href": "#anatomy",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-part functions",
+          "href": "#multi-part-functions",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "High-precision pricing",
+          "href": "#high-precision-pricing",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium",
+          "href": "#medium",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Small",
+          "href": "#small",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Money input in use",
+          "href": "#money-input-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Specs",
+          "href": "#specs",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            5,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

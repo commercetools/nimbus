@@ -1,0 +1,210 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Tabs\n\nA tabs component built on React Aria Components that allows users to switch between different views.",
+  "displayName": "TabsRoot",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"md\"\n\"md\""
+      },
+      "description": "Size variant of the tabs",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "TabsVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\" | \"lg\">"
+      }
+    },
+    "variant": {
+      "defaultValue": {
+        "value": "\"line\"\n\"line\""
+      },
+      "description": "Visual style variant of the tabs",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "TabsVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"line\" | \"pills\">"
+      }
+    },
+    "placement": {
+      "defaultValue": {
+        "value": "\"start\"\n\"start\""
+      },
+      "description": "Placement of the tab list relative to panels",
+      "name": "placement",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "TabsVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"end\" | \"start\">"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "The disabled keys of the Tabs component.",
+      "name": "disabledKeys",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Iterable<string | number>"
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "Callback invoked when the selected tab changes.",
+      "name": "onSelectionChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: string | number) => void"
+      }
+    },
+    "selectedKey": {
+      "defaultValue": null,
+      "description": "The selected key of the Tabs component.",
+      "name": "selectedKey",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | number"
+      }
+    },
+    "defaultSelectedKey": {
+      "defaultValue": null,
+      "description": "The default selected key of the Tabs component.",
+      "name": "defaultSelectedKey",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | number"
+      }
+    },
+    "orientation": {
+      "defaultValue": {
+        "value": "\"horizontal\"\n\"horizontal\""
+      },
+      "description": "Layout orientation of the tabs",
+      "name": "orientation",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "TabsVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"horizontal\" | \"vertical\">"
+      }
+    },
+    "keyboardActivation": {
+      "defaultValue": null,
+      "description": "The keyboard activation of the Tabs component.",
+      "name": "keyboardActivation",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"manual\" | \"automatic\"",
+        "value": [
+          {
+            "value": "\"manual\""
+          },
+          {
+            "value": "\"automatic\""
+          }
+        ]
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    },
+    "tabs": {
+      "defaultValue": null,
+      "description": "",
+      "name": "tabs",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "TabItemProps[]"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

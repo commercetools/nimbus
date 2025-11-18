@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Dialog.Content - The main dialog content container",
+  "displayName": "DialogContent",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "The ref to the dialog content",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "RefObject<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

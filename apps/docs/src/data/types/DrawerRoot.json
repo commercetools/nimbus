@@ -1,0 +1,142 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "",
+  "displayName": "DrawerRoot",
+  "methods": [],
+  "props": {
+    "placement": {
+      "defaultValue": null,
+      "description": "Placement of the drawer in the viewport",
+      "name": "placement",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"bottom\" | \"left\" | \"right\" | \"top\">"
+      }
+    },
+    "showBackdrop": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show backdrop overlay\nWhether to show the backdrop overlay behind the drawer",
+      "name": "showBackdrop",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<boolean> & boolean"
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Whether the drawer is open (controlled mode)",
+      "name": "isOpen",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the drawer is open by default (uncontrolled mode)",
+      "name": "defaultOpen",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isDismissable": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether the drawer can be dismissed by clicking the backdrop or pressing Escape.\nIf true, clicking outside the drawer or pressing Escape will close it.",
+      "name": "isDismissable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isKeyboardDismissDisabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether keyboard dismissal (Escape key) is disabled.\nIf true, pressing Escape will NOT close the drawer.",
+      "name": "isKeyboardDismissDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "shouldCloseOnInteractOutside": {
+      "defaultValue": null,
+      "description": "Function to determine whether the drawer should close when interacting outside.\nReceives the event and returns true to allow closing, false to prevent.",
+      "name": "shouldCloseOnInteractOutside",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(element: Element) => boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Callback fired when the drawer open state changes\n@param isOpen - Whether the drawer is now open",
+      "name": "onOpenChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

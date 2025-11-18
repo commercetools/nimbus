@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Alert.Actions - Container for action buttons within the alert",
+  "displayName": "AlertActions",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

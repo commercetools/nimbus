@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "id": "Tokens-Other",
+    "title": "Other",
+    "description": "Less frequently used design-tokens",
+    "order": 9999,
+    "repoPath": "packages/nimbus/src/docs/tokens-other.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Other"
+    ],
+    "route": "home/design-tokens/other",
+    "tags": [
+      "document"
+    ],
+    "toc": [],
+    "icon": "MoreHoriz",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Other\n\nLess frequently used design-tokens\n\n<CategoryOverview />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Other\n\nLess frequently used design-tokens\n\n<CategoryOverview />\n",
+      "toc": []
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# TabPanels\n\nA container for the tab panels that displays panelContent based on the selected tab.",
+  "displayName": "TabsPanels",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "",
+      "name": "size",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "DraggableListVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "DraggableListVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"sm\" | \"md\">"
+      }
+    },
+    "variant": {
+      "defaultValue": {
+        "value": "\"solid\"\n\"subtle\""
+      },
+      "description": "Visual style variant of the button",
+      "name": "variant",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "SplitButtonVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "SplitButtonVariant"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
+      }
+    },
+    "placement": {
+      "defaultValue": {
+        "value": "\"start\""
+      },
+      "description": "",
+      "name": "placement",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "TabsVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "TabsVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"end\" | \"start\">"
+      }
+    },
+    "orientation": {
+      "defaultValue": {
+        "value": "horizontal"
+      },
+      "description": "",
+      "name": "orientation",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+        "name": "SeparatorVariant"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen.d.ts",
+          "name": "SeparatorVariant"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"horizontal\" | \"vertical\">"
+      }
+    },
+    "tabs": {
+      "defaultValue": null,
+      "description": "",
+      "name": "tabs",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "TabItemProps[]"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

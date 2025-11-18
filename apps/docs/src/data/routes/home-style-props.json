@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "id": "Home-Style Props",
+    "title": "Style Props",
+    "description": "JSX style props for applying CSS rules",
+    "order": 5,
+    "repoPath": "packages/nimbus/src/docs/style-props.mdx",
+    "menu": [
+      "Home",
+      "Style Props"
+    ],
+    "route": "home/style-props",
+    "tags": [
+      "document"
+    ],
+    "toc": [],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Style Props\n\nJSX style props for applying CSS rules\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Style Props\n\nJSX style props for applying CSS rules\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": []
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "id": "Style Props-Display",
+    "title": "Display",
+    "description": "Style props for styling display of an element.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/display.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Display"
+    ],
+    "route": "home/style-props/display",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Display Property",
+        "href": "#display-property",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Hiding Elements",
+        "href": "#hiding-elements",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Hide From",
+        "href": "#hide-from",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Hide Below",
+        "href": "#hide-below",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Display\n\nStyle props for styling display of an element.\n\n## Display Property\n\n```jsx\n<Box display=\"flex\" />\n\n// responsive\n<Box display={{ base: \"none\", md: \"block\" }} />\n```\n\n| Prop      | CSS Property | Token Category |\n| --------- | ------------ | -------------- |\n| `display` | `display`    | -              |\n\n## Hiding Elements\n\n### Hide From\n\nUse the `hideFrom` prop to hide an element from a specific breakpoint.\n\n```jsx\n<Box display=\"flex\" hideFrom=\"md\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `hideFrom` | `display`    | `breakpoints`  |\n\n### Hide Below\n\nUse the `hideBelow` prop to hide an element below a specific breakpoint.\n\n```jsx\n<Box display=\"flex\" hideBelow=\"md\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `hideBelow` | `display`    | `breakpoints`  |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Display\n\nStyle props for styling display of an element.\n\n## Display Property\n\n```jsx\n<Box display=\"flex\" />\n\n// responsive\n<Box display={{ base: \"none\", md: \"block\" }} />\n```\n\n| Prop      | CSS Property | Token Category |\n| --------- | ------------ | -------------- |\n| `display` | `display`    | -              |\n\n## Hiding Elements\n\n### Hide From\n\nUse the `hideFrom` prop to hide an element from a specific breakpoint.\n\n```jsx\n<Box display=\"flex\" hideFrom=\"md\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `hideFrom` | `display`    | `breakpoints`  |\n\n### Hide Below\n\nUse the `hideBelow` prop to hide an element below a specific breakpoint.\n\n```jsx\n<Box display=\"flex\" hideBelow=\"md\" />\n```\n\n| Prop        | CSS Property | Token Category |\n| ----------- | ------------ | -------------- |\n| `hideBelow` | `display`    | `breakpoints`  |\n",
+      "toc": [
+        {
+          "value": "Display Property",
+          "href": "#display-property",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hiding Elements",
+          "href": "#hiding-elements",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hide From",
+          "href": "#hide-from",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hide Below",
+          "href": "#hide-below",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

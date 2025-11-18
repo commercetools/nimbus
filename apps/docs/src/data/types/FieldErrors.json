@@ -1,0 +1,109 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus.commercetools.com/components/field-errors}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# FieldErrors\n\nRenders error messages based on error object configuration.\nProvides backwards compatibility with UI-Kit FieldErrors while integrating\nwith Nimbus design system patterns.\n\nSupports custom error renderers and localized built-in error messages\nfor common validation scenarios like missing required fields.",
+  "displayName": "FieldErrors",
+  "methods": [],
+  "props": {
+    "unstyled": {
+      "defaultValue": null,
+      "description": "If `true`, the element will opt out of the theme styles.",
+      "name": "unstyled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "UnstyledProp"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "errors": {
+      "defaultValue": null,
+      "description": "Object mapping error types to boolean values indicating presence",
+      "name": "errors",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/field-errors/field-errors.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "FieldErrorsData"
+      }
+    },
+    "isVisible": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether the error messages are visible",
+      "name": "isVisible",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/field-errors/field-errors.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "renderError": {
+      "defaultValue": null,
+      "description": "Custom render function for error messages",
+      "name": "renderError",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/field-errors/field-errors.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "TErrorRenderer"
+      }
+    },
+    "renderDefaultError": {
+      "defaultValue": null,
+      "description": "Default render function for error messages when no custom renderer is provided",
+      "name": "renderDefaultError",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/field-errors/field-errors.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "TErrorRenderer"
+      }
+    },
+    "customMessages": {
+      "defaultValue": null,
+      "description": "Custom message overrides for specific error types",
+      "name": "customMessages",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/field-errors/field-errors.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "{ missing?: ReactNode; invalid?: ReactNode; empty?: ReactNode; min?: ReactNode; max?: ReactNode; format?: ReactNode; duplicate?: ReactNode; ... 7 more ...; blocked?: ReactNode; }"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

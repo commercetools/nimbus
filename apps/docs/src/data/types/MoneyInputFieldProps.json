@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the MoneyInputField component.\n\nCombines MoneyInput functionality with form field features like labels,\ndescriptions, error handling, and validation feedback.\n\nContains two focusable inputs: currency selector and amount input.\nStyle props (margin, padding, width, etc.) are applied to the root container.\nFunctional props (aria-*, data-*, id, isRequired, etc.) are applied to the form field wrapper.",
+  "displayName": "MoneyInputFieldProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

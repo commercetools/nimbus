@@ -1,0 +1,871 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Dialog.CloseTrigger - A button that closes the dialog",
+  "displayName": "DialogCloseTrigger",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"md\""
+      },
+      "description": "Size variant of the button",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"md\" | \"xs\" | \"2xs\">"
+      }
+    },
+    "colorPalette": {
+      "defaultValue": null,
+      "description": "Color palette for the button",
+      "name": "colorPalette",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SemanticPalettesOnly"
+      }
+    },
+    "form": {
+      "defaultValue": null,
+      "description": "The `<form>` element to associate the button with.\nThe value of this attribute must be the id of a `<form>` in the same document.\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#form).",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "slot": {
+      "defaultValue": null,
+      "description": "Slot name for React Aria Components composition",
+      "name": "slot",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the button element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/icon-button/icon-button.types.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLButtonElement>"
+      }
+    },
+    "autoFocus": {
+      "defaultValue": null,
+      "description": "Whether the element should receive focus on render.",
+      "name": "autoFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusableProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "rel": {
+      "defaultValue": null,
+      "description": "The relationship between the linked resource and the current page. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel).",
+      "name": "rel",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "LinkButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-controls": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) whose contents or presence are controlled by the current element.",
+      "name": "aria-controls",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-current": {
+      "defaultValue": null,
+      "description": "Indicates whether this element represents the current item within a container or set of related elements.",
+      "name": "aria-current",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | \"page\" | \"step\" | \"location\" | \"date\" | \"time\" | \"true\" | \"false\""
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-disabled": {
+      "defaultValue": null,
+      "description": "Indicates whether the element is disabled to users of assistive technology.",
+      "name": "aria-disabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | \"true\" | \"false\""
+      }
+    },
+    "aria-expanded": {
+      "defaultValue": null,
+      "description": "Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.",
+      "name": "aria-expanded",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | \"true\" | \"false\""
+      }
+    },
+    "aria-haspopup": {
+      "defaultValue": null,
+      "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.",
+      "name": "aria-haspopup",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | \"grid\" | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"listbox\" | \"tree\""
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "aria-pressed": {
+      "defaultValue": null,
+      "description": "Indicates the current \"pressed\" state of toggle buttons.",
+      "name": "aria-pressed",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean | \"true\" | \"false\" | \"mixed\""
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The content to display in the button.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "ButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "ButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element receives focus.",
+      "name": "onFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element loses focus.",
+      "name": "onBlur",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: FocusEvent<Element, Element>) => void"
+      }
+    },
+    "onKeyDown": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is pressed.",
+      "name": "onKeyDown",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "onKeyUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is released.",
+      "name": "onKeyUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: KeyboardEvent) => void"
+      }
+    },
+    "onClick": {
+      "defaultValue": null,
+      "description": "**Not recommended – use `onPress` instead.** `onClick` is an alias for `onPress`\nprovided for compatibility with other libraries. `onPress` provides \nadditional event details for non-mouse interactions.",
+      "name": "onClick",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: MouseEvent<FocusableElement, MouseEvent>) => void"
+      }
+    },
+    "unstyled": {
+      "defaultValue": null,
+      "description": "If `true`, the element will opt out of the theme styles.",
+      "name": "unstyled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "UnstyledProp"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.27.1_@emotion+react@11.14.0_@types+react@19.2.2_react@19.2.0__react-_1aea5e0b89ededbd37b25bd4c0c65059/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "UnstyledProp"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "formAction": {
+      "defaultValue": null,
+      "description": "The URL that processes the information submitted by the button.\nOverrides the action attribute of the button's form owner.",
+      "name": "formAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formEncType": {
+      "defaultValue": null,
+      "description": "Indicates how to encode the form data that is submitted.",
+      "name": "formEncType",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formMethod": {
+      "defaultValue": null,
+      "description": "Indicates the HTTP method used to submit the form.",
+      "name": "formMethod",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "formNoValidate": {
+      "defaultValue": null,
+      "description": "Indicates that the form is not to be validated when it is submitted.",
+      "name": "formNoValidate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "formTarget": {
+      "defaultValue": null,
+      "description": "Overrides the target attribute of the button's form owner.",
+      "name": "formTarget",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "Submitted as a pair with the button's value as part of the form data.",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "type": {
+      "defaultValue": {
+        "value": "'button'"
+      },
+      "description": "The behavior of the button when used in an HTML form.",
+      "name": "type",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"button\" | \"reset\" | \"submit\"",
+        "value": [
+          {
+            "value": "\"button\""
+          },
+          {
+            "value": "\"reset\""
+          },
+          {
+            "value": "\"submit\""
+          }
+        ]
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "The value associated with the button's name when it's submitted with the form data.",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "variant": {
+      "defaultValue": {
+        "value": "\"subtle\""
+      },
+      "description": "Visual style variant of the button",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/button/button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"outline\" | \"link\" | \"solid\" | \"subtle\" | \"ghost\">"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the button is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "ButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "ButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "onPress": {
+      "defaultValue": null,
+      "description": "Handler that is called when the press is released over the target.",
+      "name": "onPress",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: PressEvent) => void"
+      }
+    },
+    "onPressStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press interaction starts.",
+      "name": "onPressStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: PressEvent) => void"
+      }
+    },
+    "onPressEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press interaction ends, either\nover the target or when the pointer leaves the target.",
+      "name": "onPressEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: PressEvent) => void"
+      }
+    },
+    "onPressChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the press state changes.",
+      "name": "onPressChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isPressed: boolean) => void"
+      }
+    },
+    "onPressUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press is released over the target, regardless of\nwhether it started on the target or not.",
+      "name": "onPressUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(e: PressEvent) => void"
+      }
+    },
+    "onFocusChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element's focus status changes.",
+      "name": "onFocusChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isFocused: boolean) => void"
+      }
+    },
+    "href": {
+      "defaultValue": null,
+      "description": "A URL to link to if elementType=\"a\".",
+      "name": "href",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "LinkButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "target": {
+      "defaultValue": null,
+      "description": "The target window for the link.",
+      "name": "target",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "LinkButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "LinkButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "preventFocusOnPress": {
+      "defaultValue": null,
+      "description": "Whether to prevent focus from moving to the button when pressing it.\n\nCaution, this can make the button inaccessible and should only be used when alternative keyboard interaction is provided,\nsuch as ComboBox's MenuTrigger or a NumberField's increment/decrement control.",
+      "name": "preventFocusOnPress",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+        "name": "AriaBaseButtonProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+button@3.14.1_react@19.2.0/node_modules/@react-types/button/src/index.d.ts",
+          "name": "AriaBaseButtonProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "excludeFromTabOrder": {
+      "defaultValue": null,
+      "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+      "name": "excludeFromTabOrder",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "FocusableDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.32.1_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "aria-label": {
+      "defaultValue": {
+        "value": "\"Close dialog\""
+      },
+      "description": "Accessible label for the close button",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

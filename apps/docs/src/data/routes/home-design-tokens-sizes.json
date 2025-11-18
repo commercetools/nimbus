@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "id": "TokensSizes",
+    "title": "Sizes",
+    "description": "The list of available size tokens",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/sizes.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Sizes"
+    ],
+    "route": "home/design-tokens/sizes",
+    "tags": [
+      "sizes"
+    ],
+    "toc": [
+      {
+        "value": "Numerical sizes",
+        "href": "#numerical-sizes",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Proportional sizes",
+        "href": "#proportional-sizes",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Large sizes",
+        "href": "#large-sizes",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Breakpoint",
+        "href": "#breakpoint",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Others",
+        "href": "#others",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Straighten",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including\nnumerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing\nelements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Large sizes\n\nSemantic size labels providing consistent values for specific dimensions,\nensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive\nlayouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive\nelement sizing.\n\n<SizesTokenDemo group=\"other\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Sizes\n\nDifferent size type tokens are available to suit various design needs, including\nnumerical, proportional, named, breakpoint, and others.\n\nThe list of available size tokens:\n\n## Numerical sizes\n\nPrecise, incrementally scaled units for defining fixed dimensions\n\n<SizesTokenDemo group=\"regular\" />\n\n## Proportional sizes\n\nProportional dimensional values expressed as fractions, suitable for dividing\nelements in layouts.\n\n<SizesTokenDemo group=\"fraction\" />\n\n## Large sizes\n\nSemantic size labels providing consistent values for specific dimensions,\nensuring clarity and reusability.\n\n<SizesTokenDemo group=\"large\" />\n\n## Breakpoint\n\nPredefined screen width thresholds to adjust dimensional values for responsive\nlayouts.\n\n<SizesTokenDemo group=\"breakpoint\" />\n\n## Others\n\nViewport-based or content-driven dimensional values for flexible and adaptive\nelement sizing.\n\n<SizesTokenDemo group=\"other\" />\n",
+      "toc": [
+        {
+          "value": "Numerical sizes",
+          "href": "#numerical-sizes",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Proportional sizes",
+          "href": "#proportional-sizes",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Large sizes",
+          "href": "#large-sizes",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Breakpoint",
+          "href": "#breakpoint",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Others",
+          "href": "#others",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}
