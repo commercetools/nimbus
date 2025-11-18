@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "ToggleButtonGroup\n============================================================\nTo group multiple `Button` components together, visually and logically, representing a set of related actions.",
-  "displayName": "ToggleButtonGroup",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

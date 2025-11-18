@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Props for the Spacer component.\nExtends Chakra UI Box props with flexGrow automatically set to 1.",
-  "displayName": "SpacerProps",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}
