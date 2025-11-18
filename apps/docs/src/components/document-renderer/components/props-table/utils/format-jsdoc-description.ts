@@ -63,28 +63,17 @@ export function formatJSDocDescription(
     }
   );
 
-  // 5. Clean up other common JSDoc tags that shouldn't display
-  // (These are typically for tooling, not user docs)
-  const tagsToRemove = [
-    "@internal",
-    "@private",
-    "@protected",
-    "@public",
-    "@readonly",
-    "@see",
-    "@since",
-    "@version",
-  ];
-
-  tagsToRemove.forEach((tag) => {
-    const regex = new RegExp(`${tag}\\s+[^\\n]*`, "g");
-    formatted = formatted.replace(regex, "");
-  });
-
-  // 6. Handle @see tags specially (convert to links)
+  // 5. Handle @see tags with links (convert to markdown links)
   formatted = formatted.replace(/@see\s+{@link\s+([^}]+)}/g, (_match, url) => {
     return `\n\n[See documentation](${url})\n\n`;
   });
+
+  // 6. Clean up common JSDoc tags that shouldn't display
+  // (These are typically for tooling, not user docs)
+  formatted = formatted.replace(
+    /@(?:internal|private|protected|public|readonly|see|since|version)\s+[^\n]*/g,
+    ""
+  );
 
   // 7. Clean up excessive whitespace
   formatted = formatted
