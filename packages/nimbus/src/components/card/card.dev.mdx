@@ -109,33 +109,6 @@ Standard Cards are not focusable. Interactive content inside the card (buttons, 
 
 <PropsTable id="Card" />
 
-## Common patterns
-
-### Interactive Card
-
-When making a whole card clickable, ensure it remains accessible.
-
-```jsx-live-dev
-const App = () => {
-  return (
-    <Card.Root
-      borderStyle="outlined"
-      // In a real app, use a proper Link component or Button wrapper
-      // This example demonstrates visual hover states usually associated with interaction
-      css={{
-         cursor: 'pointer',
-         transition: 'all 0.2s',
-         _hover: { borderColor: 'primary', shadow: '1' }
-      }}
-      onClick={() => alert('Card clicked')}
-    >
-      <Card.Header>Interactive Card</Card.Header>
-      <Card.Content>Click me to trigger an action.</Card.Content>
-    </Card.Root>
-  );
-}
-```
-
 ## Testing your implementation
 
 These examples demonstrate how to test your implementation when using Card in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
