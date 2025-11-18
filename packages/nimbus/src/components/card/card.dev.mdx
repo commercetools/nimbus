@@ -88,14 +88,6 @@ The `Card` component handles most accessibility requirements internally, renderi
 - **Headings**: Ensure the content within `Card.Header` follows your page's heading hierarchy (e.g., use `Heading` component or `h3`, `h4` tags).
 - **Interactive Cards**: If a card is interactive (clickable), do not attach `onClick` directly to the card div if possible. Instead, wrap the card in a link or button, or ensure proper ARIA roles (`role="button"`) and keyboard handling (`tabIndex={0}`, Enter/Space key listeners) are implemented.
 
-If you use the card as a region, you may want to add a label:
-
-```tsx
-<Card.Root role="region" aria-label="Project Details">
-  {/* content */}
-</Card.Root>
-```
-
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 
 ```tsx
