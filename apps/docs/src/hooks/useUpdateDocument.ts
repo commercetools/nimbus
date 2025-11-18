@@ -17,7 +17,7 @@ type HandleSubmitPayload = {
  * Hook to handle the updating of an existing document.
  */
 export const useUpdateDocument = () => {
-  const activeDoc = useActiveDoc();
+  const { doc: activeDoc } = useActiveDoc();
   const [isLoading, setIsLoading] = useState(false);
 
   /**

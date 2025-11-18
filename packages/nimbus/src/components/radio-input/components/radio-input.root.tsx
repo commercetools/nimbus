@@ -6,10 +6,11 @@ import type { RadioInputRootProps } from "../radio-input.types";
 import { RadioInputRootSlot } from "../radio-input.slots";
 
 /**
- * # RadioInput
+ * # RadioInput.Root
  *
  * A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
  *
+ * @supportsStyleProps
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/radio-input}
  */
 export const RadioInputRoot = (props: RadioInputRootProps) => {
@@ -24,4 +25,4 @@ export const RadioInputRoot = (props: RadioInputRootProps) => {
   );
 };
 
-RadioInputRoot.displayName = "RadioInputRoot";
+RadioInputRoot.displayName = "RadioInput.Root";

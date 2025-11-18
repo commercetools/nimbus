@@ -23,6 +23,12 @@ import {
   RangeCalendarMonthTitleSlot,
 } from "../range-calendar.slots";
 
+/**
+ * RangeCalendarGrids - Grid container component for the RangeCalendar
+ *
+ * Renders calendar grids for one or more months with proper date cells,
+ * weekday headers, and internationalization support.
+ */
 export const RangeCalendarGrids = () => {
   const { locale } = useLocale();
   const context = useSlottedContext(RangeCalendarContext);

@@ -11,6 +11,11 @@ import type {
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 
+/**
+ * DataTable.Root - The root container that provides context and state management for the entire data table
+ *
+ * @supportsStyleProps
+ */
 export const DataTableRoot = function DataTableRoot<
   T extends object = Record<string, unknown>,
 >(props: DataTableProps<T>) {
@@ -223,4 +228,4 @@ export const DataTableRoot = function DataTableRoot<
   );
 };
 
-DataTableRoot.displayName = "DataTableRoot";
+DataTableRoot.displayName = "DataTable.Root";

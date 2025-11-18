@@ -5,7 +5,6 @@ import {
 import { MenuTriggerSlot } from "../menu.slots";
 import type { MenuTriggerProps } from "../menu.types";
 import { extractStyleProps } from "@/utils";
-import type {} from "react";
 
 /**
  * Menu.Trigger - The button or element that opens the menu when activated

@@ -1,3 +1,4 @@
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
@@ -5,6 +6,11 @@ import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 // ============================================================
 
 type TabsRecipeProps = {
+  /**
+   * Visual style variant of the tabs
+   * @default "line"
+   */
+  variant?: SlotRecipeProps<"tabs">["variant"];
   /**
    * Layout orientation of the tabs
    * @default "horizontal"
@@ -47,6 +53,10 @@ export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
    * The keyboard activation of the Tabs component.
    */
   keyboardActivation?: "automatic" | "manual";
+  /**
+   * Callback invoked when the selected tab changes.
+   */
+  onSelectionChange?: (key: string | number) => void;
 };
 
 export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
@@ -103,7 +113,7 @@ export type TabItemProps = {
 // MAIN PROPS
 // ============================================================
 
-export type TabsProps = TabsRootSlotProps &
+export type TabsProps = OmitInternalProps<TabsRootSlotProps> &
   TabsVariantProps & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
@@ -113,7 +123,7 @@ export type TabsProps = TabsRootSlotProps &
 /**
  * Props for individual tab list component
  */
-export type TabListProps = TabsListSlotProps & {
+export type TabListProps = OmitInternalProps<TabsListSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -122,7 +132,7 @@ export type TabListProps = TabsListSlotProps & {
 /**
  * Props for individual tab component
  */
-export type TabProps = TabsTabSlotProps & {
+export type TabProps = OmitInternalProps<TabsTabSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
@@ -131,7 +141,7 @@ export type TabProps = TabsTabSlotProps & {
 /**
  * Props for tab panels container component
  */
-export type TabPanelsProps = TabsPanelsSlotProps & {
+export type TabPanelsProps = OmitInternalProps<TabsPanelsSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
@@ -140,7 +150,7 @@ export type TabPanelsProps = TabsPanelsSlotProps & {
 /**
  * Props for individual tab panel component
  */
-export type TabPanelProps = TabsPanelSlotProps & {
+export type TabPanelProps = OmitInternalProps<TabsPanelSlotProps> & {
   tabs?: TabItemProps[];
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;

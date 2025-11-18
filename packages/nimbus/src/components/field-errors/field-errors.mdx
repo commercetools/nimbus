@@ -16,485 +16,296 @@ tags:
   - errors
 ---
 
-# FieldErrors
+# Field errors
 
-Renders error messages based on error object configuration, providing localized
-validation feedback for form fields. Designed for seamless integration with form
-libraries like Formik while maintaining backwards compatibility with UI-Kit FieldErrors.
+Context specific, localized error messages for individual form fields.
 
 ## Overview
 
-The FieldErrors component is a utility component that takes an error object and
-renders user-friendly error messages. It supports built-in localized messages for
-common validation scenarios, custom error renderers for application-specific
-validation rules, and flexible customization options.
+The field errors component is a vital utility for user-friendly form validation, responsible for displaying context-specific, localized error messages for individual form fields. It ensures users receive clear, immediate feedback on validation issues, maintaining a consistent and accessible experience.
 
-Unlike standalone UI components, FieldErrors is designed to integrate with form
-state management and reduce the burden of localizing and displaying validation
-errors across multiple applications.
+### Resources
 
-## Basic usage
+Deep dive into implementation details and access the Nimbus design library.
 
-The simplest usage renders built-in error messages for common validation scenarios:
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15877)
+[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-fielderrors--docs)
 
-```jsx-live
-const App = () => {
-  const [errors, setErrors] = React.useState({ missing: true });
 
-  return (
-    <Stack direction="column" gap="16px">
-      <div>
-        <label htmlFor="example-field">Required Field *</label>
-        <input
-          id="example-field"
-          type="text"
-          style={{
-            marginLeft: "8px",
-            padding: "4px 8px",
-            border: "1px solid #ccc",
-            borderRadius: "4px"
-          }}
-        />
-        <FieldErrors
-          id="example-field-errors"
-          errors={errors}
-          isVisible={true}
-        />
-      </div>
+## Variables
 
-      <Button
-        variant="outline"
-        onPress={() => setErrors(prev => ({ ...prev, missing: !prev.missing }))}
-      >
-        Toggle Missing Error
-      </Button>
-    </Stack>
-  );
-};
-```
+Get familiar with the features.
 
-## Built-in error types
+### Visual elements
+**Color:** Default critical red color is typical for field errors, and a yellow warning color for issues that are less critical. Custom colors can be added, but make sure that there is a reason to use something different from known error best practices.
 
-FieldErrors includes comprehensive built-in error types organized by category:
+**Placement:** Field errors are located below the field that it is associated with.
 
-### Basic validation errors
 
 ```jsx-live
 const App = () => (
-  <Stack direction="column" gap="16px">
-    <div>
-      <strong>Missing Required Field:</strong>
-      <FieldErrors errors={{ missing: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Invalid Value:</strong>
-      <FieldErrors errors={{ invalid: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Empty Value:</strong>
-      <FieldErrors errors={{ empty: true }} isVisible={true} />
-    </div>
-  </Stack>
-);
-```
-
-### Length validation errors
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="16px">
-    <div>
-      <strong>Value Too Short:</strong>
-      <FieldErrors errors={{ min: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Value Too Long:</strong>
-      <FieldErrors errors={{ max: true }} isVisible={true} />
-    </div>
-  </Stack>
-);
-```
-
-### Format validation errors
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="16px">
-    <div>
-      <strong>Invalid Format:</strong>
-      <FieldErrors errors={{ format: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Duplicate Value:</strong>
-      <FieldErrors errors={{ duplicate: true }} isVisible={true} />
-    </div>
-  </Stack>
-);
-```
-
-### Numeric validation errors
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="16px">
-    <div>
-      <strong>Negative Number Not Allowed:</strong>
-      <FieldErrors errors={{ negative: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Whole Number Required:</strong>
-      <FieldErrors errors={{ fractions: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Value Below Minimum:</strong>
-      <FieldErrors errors={{ belowMin: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Value Above Maximum:</strong>
-      <FieldErrors errors={{ aboveMax: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Value Out of Range:</strong>
-      <FieldErrors errors={{ outOfRange: true }} isVisible={true} />
-    </div>
-  </Stack>
-);
-```
-
-### Server/async validation errors
-
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="16px">
-    <div>
-      <strong>Server Validation Failed:</strong>
-      <FieldErrors errors={{ invalidFromServer: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Resource Not Found:</strong>
-      <FieldErrors errors={{ notFound: true }} isVisible={true} />
-    </div>
-
-    <div>
-      <strong>Value Blocked:</strong>
-      <FieldErrors errors={{ blocked: true }} isVisible={true} />
-    </div>
-  </Stack>
-);
-```
-
-## Custom error messages
-
-For application-specific validation rules, use the `renderError` prop to provide
-custom error messages:
-
-```jsx-live
-const App = () => {
-  const errors = {
-    missing: true,
-    duplicate: true,
-    minLength: true,
-    format: true
-  };
-
-  const renderCustomError = (key) => {
-    switch (key) {
-      case "duplicate":
-        return "This value is already in use. Please choose a unique value.";
-      case "minLength":
-        return "This field requires at least 3 characters.";
-      case "format":
-        return "Please use only letters and numbers.";
-      default:
-        return null; // Fall back to built-in error handling
-    }
-  };
-
-  return (
-    <div>
-      <strong>Custom Error Messages:</strong>
+    <Stack direction="column" gap="200">
       <FieldErrors
-        errors={errors}
-        isVisible={true}
-        renderError={renderCustomError}
-      />
-    </div>
-  );
-};
-```
-
-## Hierarchical error handling
-
-FieldErrors supports a three-tier error handling system for maximum flexibility:
-
-1. **Custom errors** (via `renderError`) - highest priority
-2. **Default errors** (via `renderDefaultError`) - fallback for custom errors
-3. **Built-in errors** - fallback for unhandled errors
-
-```jsx-live
-const App = () => {
-  const errors = {
-    critical: true,    // Handled by renderError
-    warning: true,     // Handled by renderDefaultError
-    missing: true,     // Handled by built-in error system
-    unknown: true      // Not handled - won't render
-  };
-
-  return (
-    <div>
-      <strong>Hierarchical Error Handling:</strong>
-      <FieldErrors
-        errors={errors}
+        errors={{ critical: true }}
         isVisible={true}
         renderError={(key) => {
           if (key === "critical") {
-            return "🚨 Critical validation error!";
+            return "This is an error with a critical color.";
           }
-          return null; // Pass to renderDefaultError
-        }}
-        renderDefaultError={(key) => {
-          if (key === "warning") {
-            return "⚠️ This field has a warning.";
-          }
-          return null; // Pass to built-in error handling
+          return null;
         }}
       />
-    </div>
-  );
-};
+      <FieldErrors
+        errors={{ warning: true }}
+        isVisible={true}
+        colorPalette="warning"
+        renderError={(key) => {
+          if (key === "warning") {
+            return "This is an error with a warning color.";
+          }
+          return null;
+        }}
+      />
+    </Stack>
+);
 ```
 
-## Custom messages for built-in types
 
-Override the default messages for built-in error types while maintaining their
-validation logic:
+## Built-in error types
+These error types are included for `aboveMax`, `belowMin`, `blocked`, `duplicate`, `empty`, `format`, `fractions`, `invalid`, `invalidFromServer`, `max`, `min`, `missing`, `negative`, `notFound`, `outOfRange`.
 
 ```jsx-live
 const App = () => (
-  <Stack direction="column" gap="24px">
-    <div>
-      <strong>Custom Messages for Basic Validation:</strong>
-      <FieldErrors
-        errors={{ missing: true, invalid: true, empty: true }}
-        isVisible={true}
-        customMessages={{
-          missing: "🔥 Hey, you forgot something important!",
-          invalid: "❌ That doesn't look right to me!",
-          empty: "📝 Please add some content here!"
-        }}
-      />
-    </div>
+  <FieldErrors
+    errors={{
+      missing: true,
+      invalid: true,
+      empty: true,
+      min: true,
+      max: true,
+      format: true,
+      duplicate: true,
+      negative: true,
+      fractions: true,
+      belowMin: true,
+      aboveMax: true,
+      outOfRange: true,
+      invalidFromServer: true,
+      notFound: true,
+      blocked: true,
+    }}
+    isVisible={true}
+  />
+);
+```
 
-    <div>
-      <strong>Custom Messages for Length Validation:</strong>
-      <FieldErrors
-        errors={{ min: true, max: true }}
-        isVisible={true}
-        customMessages={{
-          min: "📏 This needs to be longer!",
-          max: "✂️ This is too long, please shorten it!"
-        }}
-      />
-    </div>
+### With custom errors
+You may use custom error text, read best practices with custom text recommendations within the guideline section. 
 
-    <div>
-      <strong>Custom Messages for Format Validation:</strong>
-      <FieldErrors
-        errors={{ format: true, duplicate: true }}
-        isVisible={true}
-        customMessages={{
-          format: "🎭 Please use the correct format!",
-          duplicate: "🔄 This value is already taken!"
-        }}
-      />
-    </div>
 
-    <div>
-      <strong>Custom Messages for Numeric Validation:</strong>
+```jsx-live
+const App = () => (
+  <Box>
+    <FieldErrors
+      errors={{
+        customError: true,
+        lengthError: true,
+        formatError: true,
+        duplicateError: true,
+        positiveError: true,
+        serverError: true,
+      }}
+      isVisible={true}
+      renderError={(key) => {
+        let message;
+        let icon;
+        switch (key) {
+          case "customError":
+            message = "Hey! You forgot something important!";
+            icon = <Icons.Whatshot/>;
+            break;
+          case "lengthError":
+            message = "This needs to be longer!";
+            icon = <Icons.Straighten />;
+            break;
+          case "formatError":
+            message = "Please use the correct format!";
+            icon = <Icons.TheaterComedy />;
+            break;
+          case "duplicateError":
+            message = "This value is already taken!";
+            icon = <Icons.RepeatOn />;
+            break;
+          case "positiveError":
+            message = "Only positive numbers allowed!";
+            icon = <Icons.BarChart />;
+            break;
+          case "serverError":
+            message = "Server says no-no!";
+            icon = <Icons.Announcement />;
+            break;
+          default:
+            return null; // Return null to fall back to built-in error handling
+        }
+        return (
+          <Flex gap="100" alignItems="center">
+            <Icon color="critical.11">
+              {icon}
+            </Icon>
+            {message}
+          </Flex>
+        );
+      }}
+    />
+  </Box>
+);
+```
+
+## Guidelines
+
+Field error guidelines establish how validation issues are communicated to the user, ensuring messages are clear, concise, actionable, and visually presented with appropriate urgency and accessibility features.
+
+
+### Best practices
+- **Validate inline and on blur:** Only show error messages after the user has finished interacting with the field (i.e., when they click or tab out). Showing errors while the user is typing is highly distracting.
+- **Be specific and actionable:** Tell the user what went wrong and how to fix it, not just that the input is invalid.
+- **Be concise:** Keep error messages short and easy to read quickly. If the fix is simple, the message should be too.
+- **Avoid technical jargon:** Use plain, user-friendly language. Avoid referencing internal system terms or validation rules (like "Regex failure" or "API 404").
+- **Group and prioritize:** When showing multiple errors, group them logically and ensure the most critical or blocking error is listed first.
+- **Use clear visual cues:** Use the critical/red color palette for the border, text, and an accompanying error icon to draw immediate attention.
+- **Place errors contextually:** Position the error message directly below the input field it refers to. This maintains a strong visual association and reading flow.
+- **Minimize layout shift:** Design the error message container so that when the message appears, it doesn't cause the rest of the form elements below it to jump or shift excessively.
+- **Distinguish severity:** Use Warning/Orange tones for non-blocking issues or cautionary alerts, reserving Critical/Red for errors that truly prevent submission.
+
+### Tone of voice
+ - **Avoid using "please":** When the UI is requesting information (e.g., "Enter your password") or enforcing a rule (e.g., "Password must be 8 characters long"), the language should be direct and authoritative. Using "please" can sometimes weaken the instructional tone, making the requirement seem optional or negotiable.
+   - **Localization formality:** If you use "please" inconsistently, it can confuse users. Furthermore, translating polite phrases across languages can be complex and sometimes lead to awkward or overly formal phrasing in the localized UI.
+ - **Stay neutral:** Maintain a helpful, professional, and consistent tone across all error types. Avoid attempting to be overly clever or humorous, as this can be misunderstood during a stressful moment.
+ - **Avoid blame:** Never use accusatory language (e.g., "You failed," "You must"). Use neutral, system-focused language.
+ - **Use softening words (sparingly):** Use words like "sorry" appropriately to soften the message, especially for critical errors. Example: "Sorry, that rank order is already taken. Please try another." Do not overuse softening language. A direct, informative tone is typically perceived as more professional and helpful than an overly conversational one in task-focused areas.
+
+
+### Usage
+Field error messages are used to communicate validation failures immediately after a user's unsuccessful input attempt, providing specific, actionable guidance on how to correct the mistake.
+
+
+
+> [!TIP]\
+> When to use
+- **Validation fails on blur/touch:** Use an error message immediately after the user attempts to interact with the field (clicks in and clicks out) and the input fails validation (e.g., they leave a required field empty).
+- **Preventing form submission:** Use an error message to clearly indicate which fields must be corrected before the form can be successfully submitted.
+- **Providing actionable correction:** Use the message to tell the user exactly how to fix the problem (e.g., "Password must contain one number" or "Please enter 8 or more characters").
+- **After server rejection:** Use an error message to display a concise message from the server indicating why the submitted value was rejected (e.g., "That email address is already registered").
+
+
+> [!CAUTION]\
+> When not to use
+- **When the form first loads:** Do not show "This field is required" error messages on empty fields when the form initially loads. This is highly distracting and premature.
+- **While the user is typing:** Avoid showing a hard error message (like a red border and critical text) while the user is actively typing; it is interruptive. Use subtle positive feedback (like a green checkmark) for successful input instead.
+- **For simple hints:** Do not use an error message container for basic formatting hints or guidelines; use neutral helper text for these non-critical purposes.
+- **For non-blocking issues:** Avoid using the critical (red) error visual treatment for issues that won't actually prevent the form from submitting. Use a softer warning or info tone instead.
+- **When using a different component:** Do not attach field errors to components that don't accept direct user text input (like a toggle switch or a button group), as the interaction models are different.
+
+### Do’s and dont’s for error state messages 
+
+> [!TIP]\
+> **Do**
+>
+> - Write concisely in plain language, avoiding technical jargon, error codes, or ambiguous terms.
+> - Position the error message directly next to the field it pertains to, and highlight the source of the problem.
+> - Show the error message immediately after the user interacts with the field or attempts to submit the form.
+> - Clearing the error message and the visual cues as soon as the user corrects the input.
+> - If known, provide suggestions or links to helpful resources (e.g., a "Forgot Password?" link).
+
+```jsx-live
+const App = () => (
+  <FormField.Root isInvalid >
+    <FormField.Label>Name</FormField.Label>
+    <FormField.Input>
+      <TextInput />
+    </FormField.Input>
+    <FormField.Error>
       <FieldErrors
-        errors={{ negative: true, belowMin: true, outOfRange: true }}
+        errors={{ missing: true }}
         isVisible={true}
-        customMessages={{
-          negative: "📊 Only positive numbers allowed!",
-          belowMin: "📈 Value must be at least 10!",
-          outOfRange: "🎯 Please enter a value between 1 and 100!"
-        }}
       />
-    </div>
+    </FormField.Error>
+  </FormField.Root>
+);
+```
+
+
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid harsh, accusatory, or negative language.
+> - Never use technical terms or obscure codes.
+> - Avoid generic messages like "Something went wrong" or "Error."
+> - Don't display "Required" field errors when the form first loads, as this creates user fatigue.
+> - Keep the error message inline and contextual.
+> - Avoid giving away hints that could aid malicious users (e.g., don't confirm if a username or email is not registered).
+
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="200">
+    <FormField.Root isInvalid>
+      <FormField.Label>Name</FormField.Label>
+      <FormField.Input>
+        <TextInput width="9600" />
+      </FormField.Input>
+    </FormField.Root>
+    <FieldErrors
+      errors={{ missing: true }}
+      isVisible={true}
+      renderError={(key) => {
+        if (key === "missing") {
+          return (
+            <Flex gap="100" alignItems="center">
+              <Icon color="critical.11" boxSize="600">
+                <Icons.ErrorOutline />
+              </Icon>
+              You put in the wrong details. Correct without invalidating this form to continue. We are very disappointed in your interactions here and one more mistake we will send a message automatically to your admin.
+            </Flex>
+          );
+        }
+        return null;
+      }}
+    />
   </Stack>
 );
 ```
 
-## Form integration example
-
-Real-world example showing integration with form state:
-
-```jsx-live
-const App = () => {
-  const [formData, setFormData] = React.useState({
-    email: "",
-    age: ""
-  });
-  const [errors, setErrors] = React.useState({});
-  const [touched, setTouched] = React.useState({});
-
-  const validateField = (name, value) => {
-    const fieldErrors = {};
-
-    if (name === "email") {
-      if (!value) {
-        fieldErrors.missing = true;
-      } else if (!/\S+@\S+\.\S+/.test(value)) {
-        fieldErrors.format = true;
-      }
-    }
-
-    if (name === "age") {
-      if (!value) {
-        fieldErrors.missing = true;
-      } else if (isNaN(value) || parseInt(value) < 0) {
-        fieldErrors.negative = true;
-      } else if (value.includes('.')) {
-        fieldErrors.fractions = true;
-      }
-    }
-
-    return fieldErrors;
-  };
-
-  const handleChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
-  };
-
-  const handleBlur = (name) => {
-    setTouched(prev => ({ ...prev, [name]: true }));
-  };
-
-  return (
-    <Stack direction="column" gap="16px" maxWidth="400px">
-      <div>
-        <label htmlFor="email-field">Email Address *</label>
-        <input
-          id="email-field"
-          type="email"
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          onBlur={() => handleBlur("email")}
-          style={{
-            display: "block",
-            width: "100%",
-            padding: "8px 12px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            marginTop: "4px"
-          }}
-        />
-        <FieldErrors
-          id="email-errors"
-          errors={errors.email}
-          isVisible={touched.email}
-          renderError={(key) => {
-            if (key === "format") {
-              return "Please enter a valid email address.";
-            }
-            return null;
-          }}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="age-field">Age *</label>
-        <input
-          id="age-field"
-          type="number"
-          value={formData.age}
-          onChange={(e) => handleChange("age", e.target.value)}
-          onBlur={() => handleBlur("age")}
-          style={{
-            display: "block",
-            width: "100%",
-            padding: "8px 12px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            marginTop: "4px"
-          }}
-        />
-        <FieldErrors
-          id="age-errors"
-          errors={errors.age}
-          isVisible={touched.age}
-        />
-      </div>
-    </Stack>
-  );
-};
-```
-
-## Migration from UI-Kit
-
-FieldErrors maintains full backwards compatibility with the UI-Kit version.
-Existing code will work without changes:
-
-```jsx
-// UI-Kit usage (still works)
-<FieldErrors
-  errors={{ missing: true, duplicate: true }}
-  isVisible={formik.touched.fieldName}
-  renderError={(key) => {
-    switch (key) {
-      case 'duplicate':
-        return 'This value must be unique.';
-      default:
-        return null;
-    }
-  }}
-/>
-```
-
-### Enhanced API
-
-The Nimbus version adds optional enhancements while maintaining compatibility:
-
-- **customMessages** - Override built-in error messages
-- **Automatic visibility** - Future versions will handle visibility automatically
-- **Better TypeScript support** - Enhanced type definitions
-- **Improved styling** - Integration with Nimbus design tokens
+## Specs
 
 <PropsTable id="FieldErrors" />
 
 ## Accessibility
 
-- Uses `role="alert"` to announce errors to screen readers
-- Provides proper ARIA labeling when `id` prop is used
-- Maintains focus management integration with form fields
-- Supports high contrast and reduced motion preferences
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
-## Best practices
 
-### Do's
-- Use built-in error types for common validation scenarios
-- Provide clear, actionable error messages
-- Combine with proper form field labeling and ARIA attributes
-- Test error messages with screen readers
+```jsx-live
+const App = () => (
+  <FieldErrors
+    errors={{ critical: true }}
+    isVisible={true}
+    renderError={(key) => {
+      if (key === "critical") {
+        return "Provide your name to continue.";
+      }
+      return null;
+    }}
+  />
+);
+```
 
-### Don'ts
-- Don't duplicate error handling logic across components
-- Avoid overly technical error messages for end users
-- Don't show all errors at once - respect the `isVisible` pattern
-- Don't forget to handle the `null` return case in custom renderers
+### Accessibility standards
 
-## Related components
-
-- **FormField** - Wrapper for form inputs with integrated error display
-- **TextInput** - Text input component that works with FieldErrors
-- **NumberInput** - Number input with built-in validation support
+ - **Instant announcement:** The root container uses `role="alert"` to trigger screen readers to immediately announce error messages when they become visible, providing critical, instant feedback to the user.
+ - **WCAG contrast:** The default critical color palette provides sufficient contrast for the error text to meet WCAG AA standards. This must be maintained when using custom colors.
+ - **Actionable messaging:** Error messages should use clear, plain language that focuses on what the user needs to do to fix the problem, not just what went wrong (e.g., "Password must be at least 8 characters" instead of "Length validation failed").
+ - **Association:** When integrated with the FormField component, errors are automatically associated with their input fields via ARIA, helping screen readers clearly link the error message to the field that caused it.
+ - **Color is supplemental:** Color (red tones) is used as a supplemental indicator; the text content itself provides the error information, meeting WCAG requirements for users with color vision deficiencies.
+ - **Visibility control:** Always tie `isVisible` to the field's interaction state (touched or blurred) to prevent users from hearing confusing announcements before they've had a chance to input data.

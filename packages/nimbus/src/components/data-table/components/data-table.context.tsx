@@ -5,7 +5,7 @@ export const DataTableContext = createContext<DataTableContextValue<
   Record<string, unknown>
 > | null>(null);
 
-DataTableContext.displayName = "DataTableContext";
+DataTableContext.displayName = "DataTable.Context";
 
 export const useDataTableContext = <
   T extends object = Record<string, unknown>,

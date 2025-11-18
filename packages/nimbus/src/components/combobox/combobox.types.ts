@@ -10,6 +10,7 @@ import type {
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TagGroupProps as NimbusTagGroupProps } from "@/components";
 import type { PopoverProps as NimbusPopoverProps } from "../popover";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -596,7 +597,7 @@ export type ComboBoxListBoxProps<T extends object> = RaListBoxProps<T> &
  *  @template T - Type for item data displayed in the option. Items array type is `T[]`.
  */
 export type ComboBoxOptionProps<T extends object> = RaListBoxItemProps<T> &
-  Omit<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
+  OmitInternalProps<ComboBoxOptionSlotProps, keyof RaListBoxItemProps<T>> & {
     ref?: Ref<HTMLDivElement>;
   };
 

@@ -1,8 +1,8 @@
 import { useCallback, useId, useRef } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useIntl } from "react-intl";
-import { Select } from "@/components/select";
-import { SearchInput } from "@/components/search-input";
+import { Select } from "@/components/select/select";
+import { SearchInput } from "@/components/search-input/search-input";
 import { extractStyleProps } from "@/utils";
 import { scopedSearchInputSlotRecipe } from "./scoped-search-input.recipe";
 import {
@@ -19,6 +19,16 @@ import type {
 import { isEmpty } from "./utils/helpers";
 import { messages } from "./scoped-search-input.i18n";
 
+/**
+ * ScopedSearchInput
+ * ============================================================
+ * A combined input component that integrates a select dropdown with a search input field,
+ * enabling users to filter search by category or field type.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/scoped-search-input}
+ *
+ * @supportsStyleProps
+ */
 export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
   const {
     value,

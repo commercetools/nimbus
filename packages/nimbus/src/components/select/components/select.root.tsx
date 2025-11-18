@@ -22,16 +22,14 @@ import {
   SelectLeadingElementSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
-import { type SelectRootProps } from "./../select.types";
+import { type SelectProps } from "./../select.types";
 import { selectSlotRecipe } from "../select.recipe";
 import { extractStyleProps } from "@/utils";
 
 /**
- * # Select
+ * Select.Root - The root component that provides context and state management for the select
  *
- * displays a collapsible list of options and allows a user to select one of them.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/select}
+ * @supportsStyleProps
  */
 export const SelectRoot = function SelectRoot({
   ref: forwardedRef,
@@ -41,7 +39,7 @@ export const SelectRoot = function SelectRoot({
   isDisabled,
   isClearable = true,
   ...props
-}: SelectRootProps) {
+}: SelectProps) {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const recipe = useSlotRecipe({ recipe: selectSlotRecipe });

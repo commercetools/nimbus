@@ -1,244 +1,167 @@
 ---
-id: Text
+id: Components-Text
 title: Text
-description: the Text component is used to display text
+description: Text styles are predefined collections of typography rules (including font-size, font-weight, line-height, and letter-spacing) that create reusable, consistent styles.
 documentState: InitialDraft
-order: 1
+order: 999
 menu:
   - Components
   - Typography
   - Text
 tags:
-  - text
+  - component
   - typography
+  - text
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-23913&m=dev
 ---
 
 # Text
 
-The `<Text>` component is a foundational element for displaying text content. It
-provides a simple and flexible way to style text with consistent design tokens
-and responsive behavior.
+Text styles are predefined collections of typography rules (including font-size, font-weight, line-height, and letter-spacing) that create reusable, consistent styles.
 
-> [!NOTE] If you need to render **large, bold text with a semantic meaning** you
-> may want to use the [`Heading`](/components/typography/heading) component
-> instead.
+## Overview
 
-`<Text>` is designed to:
+Readable and consistent text styling is important to creating effective user friendly and efficient products. These styles and tools will help give the building blocks and provide more options for creation, and there are still ways to allow for customization for the rare cases it is needed.
 
-- Display inline or block-level text content.
-- apply consistent typography styles via `textStyles`
-- customize text appearance with style-props
-- support responsive styling
+### Resources
 
-## Basic example
+Deep dive into implementation details and access the Nimbus design library.
 
-Without any configuration, Text will simply render a paragraph element `<p>`
-without adding styling, solely relying on the cascade (**C**SS), inheriting
-existing styles:
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-23913&m=dev)
 
-```jsx-live
-import { Text } from "@commercetools/nimbus";
+## Variables
 
-const App = () => <Text>I am a plain old paragraph.</Text>;
-```
+Get familiar with the features.
 
-## Changing the HTML tag (semantics)
+### Typographic Scale and Hierarchy
 
-If you need to render a different HTML element than a `<p>` tag, you can use the
-`as` prop to change the html-tag that used to render the text to the DOM:
-
-```jsx-live
-import { Text } from "@commercetools/nimbus";
-
-const App = () => (
-  <>
-    <Text as="div">We look the same, but</Text>
-    <Text as="span">we use different semantics.</Text>
-  </>
-);
-```
-
-_Alternatively_, if you need Text to render as another element which may even
-need it's own configuration, you can use the `asChild` prop to keep the props
-separated:
-
-```jsx-live
-import { Text } from "@commercetools/nimbus";
-
-const App = () => (
-  <Text textStyle="2xl" asChild>
-    <button onClick={()=>alert('Click!')}>
-      Amazing. A native html-button.
-    </button>
-  </Text>
-);
-```
-
-## Predefined text-styles
-
-Apply predefined text styles via the `textStyle` prop. No further configuration
-apart from the `textStyle` prop is needed.
-
-Text-styles can and usually do set a bunch of typographic css-rules in order to
-achieve the desired look.
-
-A `textStyle` can be a simple as a combination of font-size & line-height or
-more complex, containing capitalisation rules etc.
-
-> [!NOTE] A list of available text-styles
-> [can be found here](/tokens/typography)
-
-```jsx-live
-import { Text } from "@commercetools/nimbus";
-
-const App = () => (
-  <Text textStyle="xl">Extra Large Text</Text>
-);
-```
-
-## Custom CSS / styling
-
-Technically, you can set any css-property on the text-component via the
-available [style props](/style-props), here are the most common ones for
-changing text appearance:
-
-### Text alignment
+Text styles here are recommended for most body styled text, and made to fit well with component sizes. If you need to render large, bold text with a semantic meaning, you should use the heading component instead.
 
 ```jsx-live
 const App = () => (
-  <>
-    <Text textAlign="left">left aligned text</Text>
-    <Text textAlign="right">right aligned text</Text>
-    <Text textAlign="center">centered text</Text>
-  </>
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text as="span" textStyle="md">Paragraph md</Text>
+      <Text as="span"> - Primary body text, long descriptions, standard content blocks.</Text>
+    </Box>
+    <Box>
+      <Text as="span" textStyle="sm">Paragraph sm</Text>
+      <Text as="span"> - Secondary text, metadata, table content.</Text>
+    </Box>
+    <Box>
+      <Text as="span" textStyle="xs">Paragraph xs</Text>
+      <Text as="span"> - Tertiary content, small notes, timestamps.</Text>
+    </Box>
+    <Box>
+      <Text as="span" textStyle="caption">CAPTION</Text>
+      <Text as="span"> - Used for specialized, tracked metadata. (Includes letter-spacing: 1px).</Text>
+    </Box>
+  </Stack>
 )
 ```
 
-### Font size
+### Text Tones and Semantic Coloring
 
-#### The recommended way
+Text tones use color to semantically convey status, intent, or hierarchy. The default tone is used for the majority of UI text.
 
-Basic `textStyle` 's are available and set the size of the text and an
-appropriate line-height for this size at the same time.
+**Color Rule:** All colored font-color is always set to step 11 of the given color scale (e.g., tomato.11, indigo.11). This ensures high contrast and accessibility.
 
 ```jsx-live
 const App = () => (
-  <Flex flexDirection="column">
-    {["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl","5xl","6xl","7xl"].map((size) => (
-      <Text key={size} asChild textStyle={size}>
-        <span>Displays text in `{size}` size</span>
-      </Text>
-    ))}
-  </Flex>
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text as="span" color="fg">Default tone</Text>
+      <Text as="span"> - Standard body copy, primary content.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="fg.subtle">Secondary</Text>
+      <Text as="span"> - Helper text, metadata, inactive or less important UI elements.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="primary.11">Primary</Text>
+      <Text as="span"> - Mainly used for links or branded messages.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="info.11">Info</Text>
+      <Text as="span"> - Non-critical feedback, system messages.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="positive.11">Positive</Text>
+      <Text as="span"> - Successful actions, positive status indicators (e.g., "Complete," "Saved").</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="critical.11">Critical</Text>
+      <Text as="span"> - Validation errors, destructive warnings, critical status indicators.</Text>
+    </Box>
+    <Box>
+      <Text as="span" color="warning.11">Warning</Text>
+      <Text as="span"> - Warnings, temporary issues, actions requiring review.</Text>
+    </Box>
+  </Stack>
 )
 ```
 
-#### The escape hatch
+## Guidelines
 
-If you need to set the font-size manually and independent from the line-height,
-use `fontSize` and a font-size token. Be cautious as this may affect layout and
-readability.
+The purpose of these guidelines is to establish a clear typographic hierarchy, optimize content readability, and enforce accessibility standards.
 
-> [!NOTE] The list of available font-sizes
-> [can be found here](/tokens/typography#font-sizes)
+### Best practices
+
+- **Keep hierarchy consistent:** Use a limited, predefined set of text styles to maintain visual consistency across all products. Add custom styles with caution.
+- **Prioritize line length:** Use optimal line lengths (typically 50 to 75 characters per line) to prevent eye strain and facilitate reading.
+- **Use concise language:** Write clearly, avoiding unnecessary jargon or overly long sentences to reduce cognitive load.
+- **Break up content:** Use short paragraphs, lists, and headings to break up large blocks of text, making content easier to scan.
+- **Maintain consistent tone:** The language, style, and formality should be consistent throughout the application, reflecting the brand's voice.
+- **Handle truncation gracefully:** When necessary, truncate long text with ellipses and provide a tooltip or interaction element to reveal the full content.
+- **Keep length in mind for translation:** When supporting text localization, length can expand more than 20%. Design experiences that can be flexible to shortening and lengthening of content.
+
+### Text Do's and Don'ts
+
+> [!TIP]\
+> **Do**
+>
+> - Use predefined headings, body sizes, and weights to clearly signal the importance of content.
+> - Always maintain sufficient contrast between text and its background to meet WCAG AA standards (4.5:1 minimum).
+> - Keep line length between 50 to 75 characters to maximize reading speed and comfort.
+> - Ensure adequate vertical spacing (line-height) to prevent text lines from colliding and improve readability.
+> - Write clearly, avoiding unnecessary jargon and overly long sentences.
+> - Utilize short paragraphs, bullet points, and headings to make content scannable.
+> - Ensure any text used within images or icons has a text alternative or aria-label for screen readers.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid introducing too many different font sizes, weights, or families, which destroys visual consistency.
+> - Never use color as the only method to convey meaning (e.g., indicating an error solely with red text).
+> - Avoid excessively long lines of text (over 80 characters), which makes tracking difficult and causes fatigue.
+> - Avoid line heights that are too small, which makes text visually dense and difficult to read.
+> - Never truncate text without providing a clear way (like a tooltip) to view the full content.
+> - Avoid pairing text colors that barely distinguish themselves from the background, even if they look "stylish."
+> - Stick to the approved typeface(s) in your design system.
+
+## Specs
+
+<PropsTable id="Text" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => (
-  <Flex flexDirection="column">
-    {["250", "300", "350", "400", "450", "500", "600"].map((size) => (
-      <Text key={size} fontSize={size}>
-        Displays text in `{size}` size
-      </Text>
-    ))}
-  </Flex>
+  <Stack direction="column" gap="400">
+    <Text as="h2" fontSize="600" fontWeight="700">Header text</Text>
+    <Text>Body text</Text>
+    <Text textTransform="uppercase" letterSpacing="1px" fontSize="350">CAPTIONS</Text>
+  </Stack>
 )
 ```
 
-### Text color
+### Accessibility Standards
 
-Use the `color` prop to change the color of the text.
-
-```jsx-live
-import { Stack, Text } from "@commercetools/nimbus"
-
-const App = () => (
-    <Stack>
-      <Text color="primary.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text color="info.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text color="positive.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text color="warning.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text color="critical.11">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-    </Stack>
-  )
-```
-
-### Font weight
-
-Make text bolder or lighter by setting the `fontWeight` prop.
-
-```jsx-live
-const App = () => {
-  return (
-    <Stack>
-      <Text fontWeight="100">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="200">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="300">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="400">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="500">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="600">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="700">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="800">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-      <Text fontWeight="900">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</Text>
-    </Stack>
-  )
-}
-```
-
-## Truncate text
-
-Use the `truncate` prop to truncate the text after a single line.
-
-```jsx-live
-import { Flex, Text } from "@commercetools/nimbus"
-
-const App = () => (
-    <Flex maxW="300px">
-      <Text truncate>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      </Text>
-    </Flex>
-  )
-```
-
-## Clamp lines
-
-Use the `lineClamp` prop to truncate the text after a certain number of lines.
-
-```jsx-live
-import { Flex, Text } from "@commercetools/nimbus"
-
-const App = () => (
-    <Flex maxW="300px">
-      <Text lineClamp="2">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.
-      </Text>
-    </Flex>
-  )
-```
-
-## Additional style props
-
-The `Text` component supports all style-props that are available as
-[style-Props](/style-props). Here are some more common text-related ones:
-
-| Prop Name        | Description                          |
-| ---------------- | ------------------------------------ |
-| `textDecoration` | Set the text-decoration of the text. |
-| `textTransform`  | Set the text-transform of the text.  |
-| `letterSpacing`  | Set the letter-spacing of the text.  |
-| `lineHeight`     | Set the line-height of the text.     |
-| `whiteSpace`     | Set the white-space of the text.     |
-| ...              | ...                                  |
+- **Contrast:** The explicit rule of using color step 11 for colored text ensures that colored text meets or exceeds minimum WCAG contrast ratios against light backgrounds.
+- **Semantic HTML:** Ensure that text styles map correctly to semantic HTML tags (e.g., Headlines should use `<h1>` through `<h6>`).
+- **Truncation:** For long body copy or component-specific labels, define clear rules for truncation (using ellipses) and ensure a tooltip reveals the full text on hover/focus.
+- **Avoid Overlap:** Never overlap text elements or place complex colored backgrounds behind text, as this voids the consistent contrast guaranteed by the defined color scale.
+- **Scale Usage:** Only use component-specific styles (e.g., button md) for their intended purpose; do not use them to style arbitrary body text.

@@ -1,9 +1,9 @@
 import React from "react";
 import { useIntl } from "react-intl";
-import { Button } from "@/components/button";
-import { IconButton } from "@/components/icon-button";
-import { Menu } from "@/components/menu";
-import { Icon } from "@/components/icon";
+import { Button } from "@/components/button/button";
+import { IconButton } from "@/components/icon-button/icon-button";
+import { Menu } from "@/components/menu/menu";
+import { Icon } from "@/components/icon/icon";
 import type { SplitButtonProps } from "./split-button.types";
 import {
   SplitButtonRootSlot,
@@ -218,6 +218,3 @@ export const SplitButton = (props: SplitButtonProps) => {
 };
 
 SplitButton.displayName = "SplitButton";
-
-// Export for internal use by react-docgen
-export { SplitButton as _SplitButton };

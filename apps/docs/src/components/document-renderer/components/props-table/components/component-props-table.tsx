@@ -1,10 +1,14 @@
-import { Box, Stack, Text } from "@commercetools/nimbus";
-import { useAtomValue } from "jotai";
-import { useMemo } from "react";
-import { typesAtom } from "../../../../../atoms/types.ts";
-import type { PropItem } from "../types";
-import { groupProps } from "../utils";
-import { PROP_GROUPS, DEFAULT_EXPANDED } from "../constants";
+import { Box, Stack, Text, LoadingSpinner } from "@commercetools/nimbus";
+import { useState, useEffect, useMemo } from "react";
+import type { ComponentDoc } from "react-docgen-typescript";
+import { loadComponentTypeDefinitions } from "@/atoms/type-definitions";
+import { useManifest } from "@/contexts/manifest-context";
+import type { PropItem } from "@/components/document-renderer/components/props-table/types";
+import { groupProps } from "@/components/document-renderer/components/props-table/utils";
+import {
+  PROP_GROUPS,
+  DEFAULT_EXPANDED,
+} from "@/components/document-renderer/components/props-table/constants";
 import { StylePropsSupportBanner } from "./style-props-banner";
 import { CollapsiblePropsCategory } from "./collapsible-props-category";
 
@@ -13,13 +17,42 @@ import { CollapsiblePropsCategory } from "./collapsible-props-category";
 // ============================================================
 
 export const ComponentPropsTable = ({ id }: { id: string }) => {
-  // Get all type definitions from global atom
-  const typesArr = useAtomValue(typesAtom);
+  const { typesManifest, isLoading: isManifestLoading } = useManifest();
 
-  // Find the type definition for this specific component
-  const propsTableData = useMemo(() => {
-    return typesArr.find((v) => v.displayName === id);
-  }, [typesArr, id]);
+  // State for async loading
+  const [propsTableData, setPropsTableData] = useState<ComponentDoc | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load component type data when manifest is ready
+  useEffect(() => {
+    if (isManifestLoading) return; // Wait for manifest to load
+
+    let cancelled = false;
+
+    setIsLoading(true);
+    setError(null);
+
+    loadComponentTypeDefinitions(id, typesManifest)
+      .then((data) => {
+        if (!cancelled) {
+          setPropsTableData(data);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.message || "Failed to load component types");
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, typesManifest, isManifestLoading]);
 
   // Convert props object to array for easier manipulation
   const propsArr = useMemo<PropItem[]>(() => {
@@ -42,6 +75,31 @@ export const ComponentPropsTable = ({ id }: { id: string }) => {
   const groupedProps = useMemo(() => {
     return groupProps(propsArr);
   }, [propsArr]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Box
+        padding="600"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <LoadingSpinner size="md" />
+      </Box>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Box padding="400" backgroundColor="critical.subtle" borderRadius="4">
+        <Text color="critical.emphasized">
+          Error loading component types: {error}
+        </Text>
+      </Box>
+    );
+  }
 
   // Component not found - show error
   if (!propsTableData) {

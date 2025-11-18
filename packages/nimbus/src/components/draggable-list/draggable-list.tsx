@@ -1,6 +1,8 @@
-import { DraggableListRoot } from "./components/draggable-list.root";
-import { DraggableListItem } from "./components/draggable-list.item";
-import { DraggableListField } from "./components/draggable-list.field";
+import {
+  DraggableListRoot,
+  DraggableListItem,
+  DraggableListField,
+} from "./components";
 
 /**
  * DraggableList

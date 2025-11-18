@@ -1,6 +1,7 @@
 import { Box, Code, Table, Text } from "@commercetools/nimbus";
 import { MdxStringRenderer } from "../../../mdx-string-renderer.tsx";
 import { DefaultValue } from "./default-value.tsx";
+import { formatJSDocDescription } from "../utils";
 import type { PropItem } from "../types";
 
 interface PropsCategoryTableProps {
@@ -41,26 +42,35 @@ export const PropsCategoryTable = ({
             <Table.Row key={[componentId, item.name].join("-")}>
               {/* Prop name with required indicator */}
               <Table.Cell display="flex" justifyContent="flex-start">
-                <Text fontFamily="mono" fontWeight="600">
-                  {item.name}
-                  {item.required && (
-                    <Box
-                      as="sup"
-                      title="required"
-                      display="inline-block"
-                      color="critical.10"
-                      cursor="help"
-                    >
-                      *
-                    </Box>
-                  )}
-                </Text>
+                <Box minW="16ch">
+                  <Text
+                    lang="en"
+                    fontFamily="mono"
+                    fontWeight="600"
+                    hyphens="auto"
+                  >
+                    {item.name}
+                    {item.required && (
+                      <Box
+                        as="sup"
+                        title="required"
+                        display="inline-block"
+                        color="critical.10"
+                        cursor="help"
+                      >
+                        *
+                      </Box>
+                    )}
+                  </Text>
+                </Box>
               </Table.Cell>
 
               {/* Type and description */}
-              <Table.Cell>
+              <Table.Cell maxW="40ch">
                 <Code mb="200">{item.type?.name || "unknown"}</Code>
-                <MdxStringRenderer content={item.description} />
+                <MdxStringRenderer
+                  content={formatJSDocDescription(item.description)}
+                />
               </Table.Cell>
 
               {/* Default value */}

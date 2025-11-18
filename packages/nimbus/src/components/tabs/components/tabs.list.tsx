@@ -1,15 +1,17 @@
 import { TabList as RATabList } from "react-aria-components";
 import { extractStyleProps } from "@/utils";
 import { TabsListSlot } from "../tabs.slots";
-import { Tab } from "./tabs.tab";
+import { TabsTab } from "./tabs.tab";
 import type { TabListProps, TabItemProps } from "../tabs.types";
 
 /**
  * # TabList
  *
  * A container for the tab buttons that allows users to switch between different panels.
+ *
+ * @supportsStyleProps
  */
-export const TabList = ({ tabs, children, ...props }: TabListProps) => {
+export const TabsList = ({ tabs, children, ...props }: TabListProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Ensure RATabList always has children - either from tabs or provided children
@@ -24,9 +26,9 @@ export const TabList = ({ tabs, children, ...props }: TabListProps) => {
       <RATabList items={tabs as TabItemProps[]} {...restProps}>
         {tabs
           ? (tab: TabItemProps) => (
-              <Tab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
+              <TabsTab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
                 {tab.tabLabel}
-              </Tab>
+              </TabsTab>
             )
           : children}
       </RATabList>
@@ -34,4 +36,4 @@ export const TabList = ({ tabs, children, ...props }: TabListProps) => {
   );
 };
 
-TabList.displayName = "Tabs.List";
+TabsList.displayName = "Tabs.List";

@@ -1,7 +1,9 @@
 import { createContext, useMemo, useState, type ReactNode } from "react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { CardRoot as CardRootSlot } from "../card.slots";
 import type { CardProps } from "../card.types";
 import { Stack } from "../../stack";
+import { extractStyleProps } from "@/utils";
 
 type CardContextValue = {
   setHeader: (header: React.ReactNode) => void;
@@ -13,13 +15,18 @@ export const CardContext = createContext<CardContextValue | undefined>(
 );
 
 /**
- * # Card
+ * Card.Root - The root component that provides context and styling for the card
  *
- * A versatile container component presents self-contained information
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/data-display/card}
+ * @supportsStyleProps
  */
-export const CardRoot = ({ children, ref, ...props }: CardProps) => {
+export const CardRoot = ({ ref, children, ...props }: CardProps) => {
+  // Standard pattern: First split recipe variants
+  const recipe = useSlotRecipe({ key: "card" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+
+  // Standard pattern: Second extract style props from remaining
+  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+
   const [headerNode, setHeader] = useState<ReactNode>(null);
   const [contentNode, setContent] = useState<ReactNode>(null);
 
@@ -34,7 +41,12 @@ export const CardRoot = ({ children, ref, ...props }: CardProps) => {
 
   return (
     <CardContext.Provider value={contextValue}>
-      <CardRootSlot ref={ref} {...props}>
+      <CardRootSlot
+        ref={ref}
+        {...recipeProps}
+        {...styleProps}
+        {...functionalProps}
+      >
         {/* Always render them in this order/layout to protect consumers */}
         <Stack direction="column" gap="200">
           {headerNode}

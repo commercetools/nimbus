@@ -8,7 +8,7 @@ import type { TabPanelProps } from "../tabs.types";
  *
  * An individual tab panel that displays panelContent when its corresponding tab is selected.
  */
-export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
+export const TabsPanel = forwardRef<HTMLDivElement, TabPanelProps>(
   ({ children, ...props }, ref) => {
     // Ensure TabPanel always has children
     if (!children) {
@@ -23,4 +23,4 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
   }
 );
 
-TabPanel.displayName = "Tabs.Panel";
+TabsPanel.displayName = "Tabs.Panel";

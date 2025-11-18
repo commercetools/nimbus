@@ -1,7 +1,9 @@
-import { SelectRoot as _SelectRoot } from "./components/select.root";
-import { SelectOptions as _SelectOptions } from "./components/select.options";
-import { SelectOption as _SelectOption } from "./components/select.option";
-import { SelectOptionGroup as _SelectOptionGroup } from "./components/select.option-group";
+import {
+  SelectRoot,
+  SelectOptions,
+  SelectOption,
+  SelectOptionGroup,
+} from "./components";
 
 /**
  * Select
@@ -40,7 +42,7 @@ export const Select = {
    * </Select.Root>
    * ```
    */
-  Root: _SelectRoot,
+  Root: SelectRoot,
   /**
    * # Select.Options
    *
@@ -64,7 +66,7 @@ export const Select = {
    * </Select.Root>
    * ```
    */
-  Options: _SelectOptions,
+  Options: SelectOptions,
   /**
    * # Select.Option
    *
@@ -86,7 +88,7 @@ export const Select = {
    * </Select.Options>
    * ```
    */
-  Option: _SelectOption,
+  Option: SelectOption,
   /**
    * # Select.OptionGroup
    *
@@ -110,12 +112,5 @@ export const Select = {
    * </Select.Options>
    * ```
    */
-  OptionGroup: _SelectOptionGroup,
+  OptionGroup: SelectOptionGroup,
 };
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export { _SelectRoot, _SelectOptions, _SelectOption, _SelectOptionGroup };

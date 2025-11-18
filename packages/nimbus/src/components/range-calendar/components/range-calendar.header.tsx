@@ -17,6 +17,12 @@ import {
 } from "@commercetools/nimbus-icons";
 import { RangeCalendarHeaderSlot } from "../range-calendar.slots";
 
+/**
+ * RangeCalendarHeader - Header component for the RangeCalendar
+ *
+ * Displays navigation controls for month and year selection with proper
+ * internationalization and accessibility support.
+ */
 export const RangeCalendarHeader = () => {
   const rangeCalendarProps = useSlottedContext(RangeCalendarContext);
 

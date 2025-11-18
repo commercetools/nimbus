@@ -33,7 +33,7 @@ export const Base: Story = {
     onClick: fn(),
     ["data-testid"]: "link-test",
     ["aria-label"]: "link-to-somewhere",
-    ["href"]: "#",
+    href: "#",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

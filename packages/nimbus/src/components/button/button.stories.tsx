@@ -3,6 +3,7 @@ import { Box, Button, type ButtonProps, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof Button> = {
   title: "Components/Buttons/Button",
@@ -30,13 +31,6 @@ const variants: ButtonProps["variant"][] = [
   "ghost",
   "link",
 ];
-
-const colorPalettes: ButtonProps["colorPalette"][] = [
-  "primary",
-  "neutral",
-  "info",
-  "critical",
-] as const;
 
 export const Base: Story = {
   args: {
@@ -177,14 +171,14 @@ export const Variants: Story = {
   },
 };
 
+/**
+ * Showcase Possible Color Palettes
+ */
 export const ColorPalettes: Story = {
-  args: {
-    children: "Demo Button",
-  },
-  render: (args) => {
+  render: () => {
     return (
       <Stack>
-        {colorPalettes.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack
             key={colorPalette as string}
             direction="row"
@@ -193,11 +187,11 @@ export const ColorPalettes: Story = {
           >
             {variants.map((variant) => (
               <Button
+                minW="4000"
                 key={variant as string}
-                {...args}
                 variant={variant}
                 colorPalette={colorPalette}
-              />
+              >{`${colorPalette} - ${variant}`}</Button>
             ))}
           </Stack>
         ))}
@@ -292,7 +286,7 @@ export const SmokeTest: Story = {
   render: (args) => {
     return (
       <Stack gap="1200">
-        {colorPalettes.map((colorPalette) => (
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
           <Stack key={colorPalette as string} direction="column" gap="400">
             {sizes.map((size) => (
               <Stack direction="row" key={size as string}>

@@ -26,6 +26,14 @@ const DRAGGABLE_LIST_DATA_FORMAT = "nimbus-draggable-list-item";
 const defaultGetKey = <T extends DraggableListItemData>(item: T): Key =>
   (item.key as Key) ?? item.id;
 
+/**
+ * DraggableList.Root - The root component that provides drag-and-drop functionality
+ *
+ * Manages the state of draggable items and handles reordering logic using React Aria's
+ * GridList and drag-and-drop hooks.
+ *
+ * @supportsStyleProps
+ */
 export const DraggableListRoot = <T extends DraggableListItemData>({
   children,
   ref,
@@ -236,3 +244,5 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     </DraggableListRootSlot>
   );
 };
+
+DraggableListRoot.displayName = "DraggableList.Root";

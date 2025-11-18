@@ -1,0 +1,631 @@
+---
+title: TextInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { TextInput, type TextInputProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <TextInput placeholder="Enter your name" />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput size="sm" placeholder="Small input" />
+    <TextInput size="md" placeholder="Medium input (default)" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput variant="solid" placeholder="Solid variant (default)" />
+    <TextInput variant="ghost" placeholder="Ghost variant" />
+  </Stack>
+)
+```
+
+### Leading and trailing elements
+
+Add icons, buttons, or other elements before or after the input using `leadingElement` and `trailingElement` props:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput
+      placeholder="Search..."
+      leadingElement={<Icons.Search />}
+    />
+    <TextInput
+      placeholder="Email address"
+      leadingElement={<Icons.Email />}
+      trailingElement={<Icons.CheckCircle />}
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Elements automatically respect text direction (LTR/RTL)
+- Leading element appears at the start (left in LTR, right in RTL)
+- Trailing element appears at the end (right in LTR, left in RTL)
+- Icon sizing automatically adjusts based on the `size` prop
+
+### Placeholder text
+
+Use placeholder text to provide hints about expected input format:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput placeholder="Enter your email" />
+    <TextInput placeholder="john.doe@example.com" />
+    <TextInput placeholder="Search products..." />
+  </Stack>
+)
+```
+
+### Disabled state
+
+Disable input interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput placeholder="Enabled input" />
+    <TextInput placeholder="Disabled input" isDisabled />
+    <TextInput
+      value="Disabled with value"
+      isDisabled
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Invalid state
+
+Mark inputs as invalid for validation feedback:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput
+      placeholder="Valid input"
+      value="valid@example.com"
+      onChange={() => {}}
+    />
+    <TextInput
+      placeholder="Invalid input"
+      value="invalid-email"
+      isInvalid
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Read-only state
+
+Use `isReadOnly` to display values without allowing editing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput
+      value="Editable value"
+      onChange={() => {}}
+    />
+    <TextInput
+      value="Read-only value"
+      isReadOnly
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <TextInput
+        placeholder="Type something..."
+        defaultValue=""
+        onChange={(value) => {
+          setDisplayValue(value);
+        }}
+      />
+      <Text fontSize="sm">Current value: {displayValue || '(empty)'}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the input value without managing state yourself.
+
+**Note:** TextInput's `onChange` receives the string value directly, not an event object.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <TextInput
+        value={value}
+        onChange={(value) => setValue(value)}
+        placeholder="Controlled input"
+      />
+      <Text fontSize="sm">
+        {value ? `You typed: ${value}` : 'Start typing...'}
+      </Text>
+      <Button onClick={() => setValue('')} size="sm">
+        Clear
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform input values
+- Clear or programmatically set the value
+- React to changes in real-time
+
+### Required field
+
+Mark inputs as required using the `isRequired` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TextInput
+      placeholder="Optional field"
+    />
+    <TextInput
+      placeholder="Required field"
+      isRequired
+    />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The TextInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `TextInputField` pattern component (recommended)
+- Associating a `<label>` element with the `TextInput` using `aria-labelledby`:
+
+```tsx
+<label id="email-label">
+  {intl.formatMessage(emailMessage)}
+</label>
+<TextInput aria-labelledby="email-label" />
+```
+
+- Associating a `<label>` element with the `TextInput` using `htmlFor`:
+
+```tsx
+<label htmlFor="email-input">
+  {intl.formatMessage(emailMessage)}
+</label>
+<TextInput id="email-input" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<TextInput aria-label={intl.formatMessage(emailMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-email-input";
+
+export const EmailField = () => (
+  <TextInput id={PERSISTENT_ID} placeholder="Email" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the input field
+- `Arrow keys`: Move cursor within the text (Left/Right), no vertical navigation
+- `Home` / `End`: Move cursor to start/end of text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the input container (including leading/trailing elements area) will focus the input field, providing a larger interactive target for better usability.
+
+## API reference
+
+<PropsTable id="TextInput" />
+
+## Common patterns
+
+### Input with icon
+
+Display an icon to indicate the input's purpose:
+
+```jsx-live-dev
+const App = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <TextInput
+        value={email}
+        onChange={(value) => setEmail(value)}
+        placeholder="Email address"
+        leadingElement={<Icons.Email />}
+      />
+      <TextInput
+        value={password}
+        onChange={(value) => setPassword(value)}
+        placeholder="Password"
+        type="password"
+        leadingElement={<Icons.Lock />}
+      />
+    </Stack>
+  );
+}
+```
+
+### Search input pattern
+
+Create a search input with appropriate icons:
+
+```jsx-live-dev
+const App = () => {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <TextInput
+        value={searchQuery}
+        onChange={(value) => setSearchQuery(value)}
+        placeholder="Search products..."
+        leadingElement={<Icons.Search />}
+      />
+      {searchQuery && (
+        <Text fontSize="sm">Searching for: {searchQuery}</Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Input with clear button
+
+Add a button to quickly clear the input value:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <TextInput
+      value={value}
+      onChange={(value) => setValue(value)}
+      placeholder="Type something..."
+      leadingElement={<Icons.Search />}
+      trailingElement={
+        value ? (
+          <IconButton
+            onClick={() => setValue('')}
+            size="sm"
+            variant="ghost"
+            aria-label="Clear input"
+          >
+            <Icons.Close />
+          </IconButton>
+        ) : null
+      }
+    />
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using TextInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { TextInput } from '@commercetools/nimbus';
+
+describe('TextInput', () => {
+  it('renders input element', () => {
+    render(<TextInput placeholder="Enter text" />);
+
+    // Verify input is present
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+  });
+
+  it('renders with placeholder text', () => {
+    render(<TextInput placeholder="Email address" />);
+
+    expect(screen.getByPlaceholderText('Email address')).toBeInTheDocument();
+  });
+
+  it('renders with aria-label', () => {
+    render(<TextInput aria-label="User email" />);
+
+    expect(screen.getByRole('textbox', { name: /user email/i })).toBeInTheDocument();
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with the component:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TextInput } from '@commercetools/nimbus';
+
+describe('TextInput interactions', () => {
+  it('updates value when user types', async () => {
+    const user = userEvent.setup();
+    render(<TextInput placeholder="Type here" />);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Hello World');
+
+    expect(input).toHaveValue('Hello World');
+  });
+
+  it('calls onChange callback with string value', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<TextInput onChange={handleChange} />);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'test');
+
+    expect(handleChange).toHaveBeenCalled();
+
+    expect(typeof handleChange.mock.calls[0][0]).toBe('string');
+  });
+
+  it('clears input when clear button is clicked', async () => {
+    const user = userEvent.setup();
+    const TestComponent = () => {
+      const [value, setValue] = React.useState('initial');
+      return (
+        <TextInput
+          value={value}
+          onChange={(value) => setValue(value)}
+          trailingElement={
+            <button onClick={() => setValue('')}>Clear</button>
+          }
+        />
+      );
+    };
+
+    render(<TestComponent />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveValue('initial');
+
+    await user.click(screen.getByText('Clear'));
+
+    expect(input).toHaveValue('');
+  });
+});
+```
+
+### Testing controlled mode
+
+Test controlled component behavior:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TextInput } from '@commercetools/nimbus';
+
+describe('TextInput controlled mode', () => {
+  it('displays controlled value', () => {
+    render(<TextInput value="controlled value" onChange={() => {}} />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveValue('controlled value');
+  });
+
+  it('updates when controlled value changes', () => {
+    const { rerender } = render(
+      <TextInput value="first value" onChange={() => {}} />
+    );
+
+    expect(screen.getByRole('textbox')).toHaveValue('first value');
+
+    rerender(<TextInput value="second value" onChange={() => {}} />);
+
+    expect(screen.getByRole('textbox')).toHaveValue('second value');
+  });
+
+  it('validates input in controlled mode', async () => {
+    const user = userEvent.setup();
+    const TestComponent = () => {
+      const [value, setValue] = React.useState('');
+      const [isValid, setIsValid] = React.useState(true);
+
+      const handleChange = (newValue: string) => {
+        setValue(newValue);
+        setIsValid(newValue.length >= 3);
+      };
+
+      return (
+        <>
+          <TextInput
+            value={value}
+            onChange={handleChange}
+            isInvalid={!isValid}
+          />
+          {!isValid && <span>Must be at least 3 characters</span>}
+        </>
+      );
+    };
+
+    render(<TestComponent />);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'ab');
+
+    expect(screen.getByText('Must be at least 3 characters')).toBeInTheDocument();
+
+    await user.type(input, 'c');
+
+    expect(screen.queryByText('Must be at least 3 characters')).not.toBeInTheDocument();
+  });
+});
+```
+
+### Testing leading and trailing elements
+
+Test custom elements within the input:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TextInput } from '@commercetools/nimbus';
+
+describe('TextInput with elements', () => {
+  it('renders leading element', () => {
+    render(
+      <TextInput
+        leadingElement={<span data-testid="icon">🔍</span>}
+        placeholder="Search"
+      />
+    );
+
+    expect(screen.getByTestId('icon')).toBeInTheDocument();
+  });
+
+  it('renders trailing element', () => {
+    render(
+      <TextInput
+        trailingElement={
+          <button data-testid="clear">Clear</button>
+        }
+        placeholder="Input"
+      />
+    );
+
+    expect(screen.getByTestId('clear')).toBeInTheDocument();
+  });
+
+  it('trailing button is interactive', async () => {
+    const user = userEvent.setup();
+    const handleClick = jest.fn();
+
+    render(
+      <TextInput
+        trailingElement={
+          <button onClick={handleClick}>Action</button>
+        }
+      />
+    );
+
+    await user.click(screen.getByText('Action'));
+
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+### Testing validation states
+
+Test different validation states:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { TextInput } from '@commercetools/nimbus';
+
+describe('TextInput validation states', () => {
+  it('renders disabled state', () => {
+    render(<TextInput isDisabled placeholder="Disabled" />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+  });
+
+  it('renders invalid state', () => {
+    render(<TextInput isInvalid placeholder="Invalid" />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('renders read-only state', () => {
+    render(<TextInput isReadOnly value="Read-only" onChange={() => {}} />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('readonly');
+  });
+
+  it('renders required state', () => {
+    render(<TextInput isRequired placeholder="Required" />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('aria-required', 'true');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-textinput--docs)
+- [React Aria TextField](https://react-spectrum.adobe.com/react-aria/TextField.html)
+- [ARIA Textbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/textbox/)
+- [TextInputField Pattern](../patterns/fields/textinputfield)

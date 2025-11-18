@@ -2,6 +2,11 @@ import { DialogBodySlot } from "../dialog.slots";
 import type { DialogBodyProps } from "../dialog.types";
 import { useDialogRootContext } from "./dialog.context";
 
+/**
+ * Dialog.Body - The main body content section
+ *
+ * @supportsStyleProps
+ */
 export const DialogBody = (props: DialogBodyProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
   const { scrollBehavior } = useDialogRootContext();

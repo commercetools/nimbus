@@ -15,7 +15,7 @@ import {
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { RangeValue } from "@/components/range-calendar";
+import type { RangeValue } from "@/components/range-calendar/range-calendar.types";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**

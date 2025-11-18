@@ -223,6 +223,65 @@ component-name/
 - **Internal imports**: Use relative paths (`./hooks/use-button`)
 - **Cross-component**: Use absolute alias (`@/components`)
 - **Type imports**: Use `import { type X }` syntax
+- **Cross-chunk imports**: Import directly from implementation files, NOT barrel
+  exports (see below)
+
+#### Cross-Chunk Import Pattern (CRITICAL)
+
+When importing components or types across different component directories (which
+become separate chunks during build), you MUST import directly from the
+implementation file rather than the barrel export (`index.ts`).
+
+**Why:** Vite creates separate chunks for each component's `index.ts` file. When
+Component A imports from Component B's barrel export, it creates a dependency on
+Component B's entire chunk. This can cause:
+
+1. **Circular chunk dependencies** - Build warnings and potential runtime issues
+2. **Increased bundle size** - Unnecessarily loading entire component chunks
+3. **Build failures** - In some cases, circular dependencies prevent builds
+
+**Pattern:**
+
+```typescript
+// ❌ WRONG - Imports from barrel export (index.ts)
+import { IconToggleButton } from "@/components/icon-toggle-button";
+import type { ToggleButtonProps } from "../toggle-button";
+
+// ✅ CORRECT - Imports directly from implementation file
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+```
+
+**When to use:**
+
+- Importing components/types from a DIFFERENT component directory
+- Type-only imports across components
+- Compound component parts accessing other components
+
+**When NOT to use:**
+
+- Importing within the same component directory (use relative paths)
+- Importing from utilities, hooks, or other non-component modules
+- Public API exports in your own component's `index.ts` (those are for
+  consumers)
+
+**Real examples from codebase:**
+
+```typescript
+// rich-text-toolbar.tsx needs IconToggleButton
+// ❌ WRONG: import { IconToggleButton } from "@/components";
+// ✅ CORRECT:
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+
+// icon-toggle-button.types.ts extends ToggleButton types
+// ❌ WRONG: import type { ToggleButtonProps } from "../toggle-button";
+// ✅ CORRECT:
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
+```
+
+**Note:** This pattern is specifically for internal component development within
+Nimbus. Component consumers still use barrel exports:
+`import { Button } from '@commercetools/nimbus'`
 
 ## Resources
 

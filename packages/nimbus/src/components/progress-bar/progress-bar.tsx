@@ -65,7 +65,6 @@ export const ProgressBar = (props: ProgressBarProps) => {
     <ProgressBarRootSlot
       {...recipeProps}
       {...styleProps}
-      {...recipeProps}
       isDynamic={isDynamic}
       isIndeterminate={isIndeterminate}
       asChild

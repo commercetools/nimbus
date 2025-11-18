@@ -2,6 +2,11 @@ import { useContext, useEffect } from "react";
 import { FormFieldContext } from "./form-field.context";
 import type { FormFieldDescriptionSlotProps } from "../form-field.types";
 
+/**
+ * FormField.Description - The description element for the form field
+ *
+ * @supportsStyleProps
+ */
 export const FormFieldDescription = ({
   children,
   ...descriptionSlotProps
@@ -27,3 +32,5 @@ export const FormFieldDescription = ({
 
   return null;
 };
+
+FormFieldDescription.displayName = "FormField.Description";

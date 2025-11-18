@@ -1,7 +1,7 @@
 ---
 id: Components-Image
 title: Image
-description: A component to display images with support for fallback.
+description: An image component is used to display visual content like photographs, illustrations, or graphics within the UI to support, illustrate, or enhance textual information.
 documentState: InitialDraft
 order: 999
 menu:
@@ -12,208 +12,75 @@ tags:
   - component
   - image
   - picture
+  - media
 ---
 
 # Image
 
-The `Image` component is used to display images.
+An image component is used to display visual content like photographs, illustrations, or graphics within the UI to support, illustrate, or enhance textual information.
 
+## Overview
 
+The image component offers core features designed for optimal performance, accessibility, and responsiveness when displaying visual content.
 
-## Usage
-
-### Import
-
-```jsx
-import { Image } from "@commercetools/nimbus";
-```
-
-### Basic usage
-
-To display an image, provide a `src`-image and an `alt`-text via their respective props.
-
-Without further configuration, the image will occupy the lesser of its natural width or 100% of the available horizontal space.
-Its height will adjust to maintain the image's original aspect ratio.
-
-```jsx-live
-const App = () => (
-  <Image src="https://i.imgur.com/fqpnfaN.png" alt="Nimbus - the spaceship from Futurama" />
-);
-```
-
-### Sizing
-
-If you need to set a fixed width and/or height, you can use the `width` and `height` props.
-If only one of these props is set, the image will scale to maintain its original aspect ratio.
-If you set both, the image will be forced into the given dimensions, ignoring its original aspect ratio
-
-```jsx-live
-const App = () => (
-  <Image src="https://i.imgur.com/fqpnfaN.png" alt="Nimbus - the spaceship from Futurama" width="256px" height="256px" />
-);
-```
-
-### Aspect ratio
-
-You can enforce a specific aspect ratio for the image using the `aspectRatio` prop.
-The image will maintain this ratio, and its dimensions will adjust accordingly based on the available space or other sizing props.
-If you also provide `width` or `height`, the `aspectRatio` will be maintained, and the other dimension will be calculated.
-If both `width` and `height` are provided, `aspectRatio` is ignored.
-
-```jsx-live
-const App = () => (
-  <Stack direction="row" align="center">
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Original Aspect Ratio"
-      width="200px"
-      outline="1px solid lightblue"
-    />
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="16/9 Aspect Ratio"
-      aspectRatio={16/9}
-      width="200px"
-      outline="1px solid lightcoral"
-    />
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="4/3 Aspect Ratio, height driven"
-      aspectRatio={4/3}
-      height="150px"
-      outline="1px solid lightgreen"
-    />
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Square Aspect Ratio"
-      aspectRatio={1}
-      width="200px"
-      outline="1px solid gold"
-    />
-  </Stack>
-);
-```
-
-### Fit + align
-
-Once the image element has occupied its allocated space (determined by `width`, `height`, or `aspectRatio` props, or by the browser's default behavior for images),
-the `fit` prop governs how the actual image content is displayed within that space.
-
-#### Fit
-
-| Value     | Description                                                                                                                          |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| `cover`   | The default. The image keeps its aspect ratio and fills the given dimension. The image will be _clipped_ to fit.                     |
-| `fill`    | The image is resized to fill the given dimension. If necessary, the image will be _stretched_ or _squished_ to fit.                  |
-| `contain` | The image _keeps its aspect ratio_, but is resized to fit within the given dimension,<br/> potentially leaving some space uncovered. |
-| `none`    | The image is not resized.                                                                                                            |
-
-Here is a demo of the different fit values, the red outline shows the allocated space:
-
-```jsx-live
-const App = () => (
-  <Stack direction="row" spacing="200">
-   <Image
-      boxSize="128px"
-      fit="cover"
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Covered image"
-      outline="1px solid red"
-    />
-    <Image
-      boxSize="128px"
-      fit="fill"
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Filled image"
-      outline="1px solid red"
-    />
-    <Image
-      boxSize="128px"
-      fit="contain"
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Contained image"
-      outline="1px solid red"
-    />    
-    <Image
-      boxSize="128px"
-      fit="none"
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Filled image"
-      outline="1px solid red"
-    />
-  </Stack>
-);
-```
-
-#### Align
-
-The `align` prop (shorthand for the CSS `object-position` property) controls the positioning of the image content within the component's bounds.
-This is relevant for `fit` modes like `"contain"` (where the image might not fill the bounds) or `"cover"` (where the image is clipped).
-
-It determines which part of the image is visible or how it's aligned within any empty space.
-You can use values like `"left"`, `"right"`, `"top"`, `"bottom"`, `"center"` (default), or combinations like `"top left"`, `"bottom right"`.
-
-```jsx-live
-const App = () => (
-  <Stack direction="row" spacing="4">
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Align Top Left"
-      boxSize="200px"
-      fit="contain"
-      align="top left"
-      outline="1px solid dodgerblue"
-      backgroundColor="aliceblue"
-    />
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Align Bottom Right"
-      boxSize="200px"
-      fit="contain"
-      align="bottom right"
-      outline="1px solid orangered"
-      backgroundColor="antiquewhite"
-    />
-    <Image
-      src="https://i.imgur.com/fqpnfaN.png"
-      alt="Align Center (Default)"
-      boxSize="200px"
-      fit="contain"
-      outline="1px solid mediumseagreen"
-      backgroundColor="honeydew"
-    />
-  </Stack>
-);
-```
-
-### Border radius
-
-Apply a border radius using the `borderRadius` prop.
+## Basic functions
 
 ```jsx-live
 const App = () => (
   <Image
-    src="https://placehold.co/600x400?text=Rounded\nImage"
-    alt="Round image"
-    borderRadius="400"
+    src="/images/image/image-sample.png"
+    alt="Example image showing basic functionality"
+    width="100%"
+    maxWidth="9600"
   />
-);
+)
 ```
 
-### Round image
+- **Source set (`srcSet`) and sizes:** This allows the component to define multiple image sources at different resolutions, enabling the browser to automatically select the most appropriate, performant image based on the user's viewport size.
+- **Alternative text (`alt`):** It mandates the inclusion of descriptive alternative text, which is crucial for accessibility, ensuring screen readers convey the image's meaning.
+- **Lazy loading:** The component supports native lazy loading, which delays the loading of images outside the user's viewport, significantly improving initial page load performance.
+- **Loading behavior:** Allows control over the image loading strategy (e.g., eager vs. lazy) to prioritize critical visuals first seen.
+- **Aspect ratio and fill:** The component can maintain a specific aspect ratio or fill its container, ensuring consistent sizing and preventing layout shift during loading.
+- **Decoding:** It allows specification of the image decoding strategy (sync, async, or auto) to optimize rendering performance.
 
-By combining the `borderRadius` prop with the `boxSize` prop, you can create a round image.
+## Guidelines
+
+Image guidelines establish best practices for the selection, display, and optimization of visual content, ensuring accessibility, performance, and visual consistency across all contexts. They govern image quality, responsive behavior, appropriate usage of formats, and adherence to critical accessibility standards like meaningful alt text.
+
+### Best practices
+
+- **Relevance:** Ensure the image directly supports or enhances the content it is paired with; avoid purely decorative or confusing visuals.
+- **Quality and format:** Use high-quality, appropriately sized images.
+  - **JPEG/WebP:** For photographs and complex images.
+  - **PNG:** For images requiring transparency or simple graphics.
+  - **SVG:** For logos, icons, and illustrations that need crisp scaling.
+- **Responsiveness:** Implement responsive design principles so images scale correctly and maintain aspect ratios across various screen sizes without distorting or breaking the layout.
+- **Performance optimization:** Compress images to minimize file size and ensure fast loading times. Implement lazy loading for images that appear below the fold.
+- **Visual hierarchy:** Images should contribute to, but not dominate, the visual hierarchy unless they are the primary content (e.g., product hero image).
+- **Maintain brand style:** Ensure all illustrations and graphics adhere to the established brand style and color palette.
+
+## Specs
+
+<PropsTable id="Image" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => (
   <Image
-    boxSize="6400"
-    src="https://placehold.co/600x400?text=Round\nImage"
-    alt="Round image"
-    borderRadius="full"
+    src="/images/image/image-sample.png"
+    alt="luxury metallic green handbag with floral handle. Mangosteen accessory hangs off the bag, and sitting on the table with the bag are small accessories, a pen, lipstick, and small notebook."
+    width="4000"
   />
-);
+)
 ```
-## Props
 
-<PropsTable id="Image"/>
+### Accessibility Standards
+
+- **Alt text is mandatory:** Every image must have an `alt` attribute. If the image is decorative, use a null/empty attribute (`alt=""`). If it conveys meaning, the alt text must be descriptive and functional.
+- **Complex images:** For charts, graphs, or infographics, the text alternative must go beyond the title to describe the key information conveyed by the image.
+- **Performance:** Optimize images to ensure they load quickly. Slow loading can significantly impair the experience for users on poor connections.
+- **No conveyance of action:** If an image is a link or button, its text alternative must describe the action of the link/button, not just the image itself (e.g., `alt="View product details"`).
+- **Contrast for text in images:** If the image contains critical text, ensure that the text meets WCAG contrast standards within the image itself.

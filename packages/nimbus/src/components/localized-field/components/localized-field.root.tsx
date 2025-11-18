@@ -47,6 +47,15 @@ import {
 } from "../utils/localized-field.utils";
 import { LocalizedFieldLocaleField } from "./localized-field.locale-field";
 
+/**
+ * LocalizedField - Root component for managing localized input fields
+ *
+ * Provides a fieldset container for multiple locale-specific or currency-specific input fields
+ * with expand/collapse functionality and integrated validation display. Supports text, multiline,
+ * richText, and money input types.
+ *
+ * @supportsStyleProps
+ */
 export const LocalizedField = ({
   type = "text",
   id,

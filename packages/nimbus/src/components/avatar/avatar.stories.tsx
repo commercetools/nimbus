@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, type AvatarProps, Button, Stack } from "@commercetools/nimbus";
+import {
+  Avatar,
+  type AvatarProps,
+  Button,
+  Stack,
+  Tooltip,
+} from "@commercetools/nimbus";
 import { within, expect, waitFor } from "storybook/test";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 /**
  * Storybook metadata configuration
@@ -16,13 +23,6 @@ export default meta;
 type Story = StoryObj<typeof Avatar>;
 
 const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
-
-const colorPalettes: AvatarProps["colorPalette"][] = [
-  "red",
-  "green",
-  "blue",
-  "amber",
-];
 
 const avatarImg = "https://thispersondoesnotexist.com/ ";
 
@@ -100,7 +100,10 @@ export const SizesWithInitials: Story = {
   },
 };
 
-export const Colors: Story = {
+/**
+ * Showcase Possible Color Palettes
+ */
+export const ColorPalettes: Story = {
   args: {
     firstName: "Michael",
     lastName: "Douglas",
@@ -109,16 +112,20 @@ export const Colors: Story = {
   },
   render: (args) => {
     return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {colorPalettes.map((colorPalette) => (
-          <Avatar
-            key={colorPalette as string}
-            {...args}
-            colorPalette={colorPalette}
-            alt="avatar"
-          />
-        ))}
-      </Stack>
+      <DisplayColorPalettes>
+        {(palette) => (
+          <Tooltip.Root>
+            <Button unstyled asChild>
+              <Avatar
+                {...args}
+                colorPalette={palette}
+                alt={`${palette} avatar`}
+              />
+            </Button>
+            <Tooltip.Content>{palette}</Tooltip.Content>
+          </Tooltip.Root>
+        )}
+      </DisplayColorPalettes>
     );
   },
 };
@@ -153,21 +160,5 @@ export const ImageErrorFallback: Story = {
       await expect(img).not.toBeNull(); // Image element should still exist
       await expect(img).toHaveStyle("display: none"); // But should be hidden
     });
-  },
-};
-
-export const InAButton: Story = {
-  args: {
-    firstName: "Jane",
-    lastName: "Smith",
-    src: avatarImg,
-  },
-
-  render(args) {
-    return (
-      <Button unstyled asChild>
-        <Avatar {...args} as="button" />
-      </Button>
-    );
   },
 };

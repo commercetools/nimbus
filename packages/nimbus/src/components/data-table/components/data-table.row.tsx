@@ -25,6 +25,12 @@ import { extractStyleProps } from "@/utils";
 import { messages } from "../data-table.i18n";
 
 /**
+ * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
+ *
+ * @supportsStyleProps
+ */
+
+/**
  * Determines if a click event originated from an interactive element within a table row.
  * This is crucial for preventing row click handlers from interfering with intended
  * interactions like checkbox selection, button clicks, or other form controls.

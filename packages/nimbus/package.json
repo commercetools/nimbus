@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "main": "./dist/index.cjs",
   "module": "./dist/index.es.js",
   "type": "module",
@@ -94,6 +94,7 @@
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-intl": "catalog:react",
+    "rollup": "catalog:tooling",
     "rollup-plugin-tree-shakeable": "catalog:tooling",
     "slate": "^0.75.0",
     "slate-history": "^0.113.1",

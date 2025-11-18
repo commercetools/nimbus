@@ -4,9 +4,9 @@ import { extractStyleProps } from "@/utils";
 import { RichTextInputRootSlot } from "./rich-text-input.slots";
 import {
   RichTextEditor,
+  RichTextToolbar,
   type RichTextEditorRef,
-} from "./components/rich-text-editor";
-import { RichTextToolbar } from "./components/rich-text-toolbar";
+} from "./components";
 import type { RichTextInputProps } from "./rich-text-input.types";
 import {
   toHTML,

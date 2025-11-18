@@ -1,4 +1,4 @@
-import type { DateInputProps } from "../date-input";
+import type { DateInputProps } from "../date-input/date-input.types";
 import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
 import type {
@@ -6,6 +6,7 @@ import type {
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -53,7 +54,7 @@ type ExcludedProps =
 // MAIN PROPS
 // ============================================================
 
-export type DatePickerProps = DatePickerRootSlotProps &
+export type DatePickerProps = OmitInternalProps<DatePickerRootSlotProps> &
   Omit<DateInputProps, ConflictingPickerStateProps | ExcludedProps> &
   Omit<DatePickerStateOptions<DateValue>, ExcludedProps> & {
     /**

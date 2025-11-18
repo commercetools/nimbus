@@ -2,6 +2,11 @@ import { useContext, useEffect } from "react";
 import { FormFieldContext } from "./form-field.context";
 import type { FormFieldErrorSlotProps } from "../form-field.types";
 
+/**
+ * FormField.Error - The error message element for the form field
+ *
+ * @supportsStyleProps
+ */
 export const FormFieldError = ({
   children,
   ...errorSlotProps
@@ -27,3 +32,5 @@ export const FormFieldError = ({
 
   return null;
 };
+
+FormFieldError.displayName = "FormField.Error";

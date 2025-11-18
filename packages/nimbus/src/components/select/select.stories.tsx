@@ -3,12 +3,12 @@ import {
   Box,
   Icon,
   Select,
-  type SelectRootProps,
+  type SelectProps,
   Stack,
   Text,
-  type Key,
 } from "@commercetools/nimbus";
 import { useState } from "react";
+import type { Key } from "react-aria-components";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
 
@@ -34,8 +34,8 @@ type Story = StoryObj<typeof Select.Root>;
  * Test data
  */
 
-const selectSizes: SelectRootProps["size"][] = ["sm", "md"];
-const selectVariants: SelectRootProps["variant"][] = ["outline", "ghost"];
+const selectSizes: SelectProps["size"][] = ["sm", "md"];
+const selectVariants: SelectProps["variant"][] = ["outline", "ghost"];
 
 const optionGroupOptions = [
   {
@@ -145,7 +145,6 @@ export const ControlledState: Story = {
       { id: 6, name: "Skunk" },
     ];
     const [animal, setAnimal] = useState<Key>("Bison");
-
     const onChangeRequest = (key: Key) => {
       setAnimal(key);
       mockFn();
@@ -161,7 +160,7 @@ export const ControlledState: Story = {
           defaultSelectedKey={animal}
           selectedKey={animal}
           onSelectionChange={
-            onChangeRequest as SelectRootProps["onSelectionChange"]
+            onChangeRequest as SelectProps["onSelectionChange"]
           }
           aria-label="Select your new pet"
           data-testid="select"
@@ -243,7 +242,7 @@ export const AsyncLoading: Story = {
         <Select.Root
           isLoading={isLoading}
           selectedKey={animal}
-          onSelectionChange={setAnimal as SelectRootProps["onSelectionChange"]}
+          onSelectionChange={setAnimal as SelectProps["onSelectionChange"]}
           leadingElement={<Icon as={AddReaction} />}
           aria-label="Select your new pet"
           data-testid="select"

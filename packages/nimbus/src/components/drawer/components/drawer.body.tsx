@@ -1,6 +1,11 @@
 import { DrawerBodySlot } from "../drawer.slots";
 import type { DrawerBodyProps } from "../drawer.types";
 
+/**
+ * Drawer.Body - The main body content section of the drawer
+ *
+ * @supportsStyleProps
+ */
 export const DrawerBody = (props: DrawerBodyProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 

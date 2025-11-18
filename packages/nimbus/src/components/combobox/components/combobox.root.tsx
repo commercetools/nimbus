@@ -71,7 +71,15 @@ export function defaultGetTextValue<T extends object>(item: T): string {
 }
 
 /**
+<<<<<<< HEAD
  * Default getNewOptionData - creates an object with id and name
+=======
+ * # ComboBox
+ *
+ * A combo box combines a text input with a dropdown list, allowing users to filter a list of options to items matching a query.
+ *
+ * @supportsStyleProps
+>>>>>>> main
  */
 function defaultGetNewOptionData<T extends object>(inputValue: string): T {
   return {

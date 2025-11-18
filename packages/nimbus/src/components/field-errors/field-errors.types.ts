@@ -1,32 +1,32 @@
 import type { ReactNode } from "react";
-import type { HTMLChakraProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
+
+// ============================================================
+// RECIPE PROPS
+// ============================================================
+
+type FieldErrorsRecipeProps = SlotRecipeProps<"fieldErrors"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-export type FieldErrorsMessageSlotProps = HTMLChakraProps<"div">;
+export type FieldErrorsRootSlotProps = OmitInternalProps<
+  HTMLChakraProps<"div", FieldErrorsRecipeProps>
+>;
 
-export type FieldErrorsRootSlotProps = HTMLChakraProps<"div"> & {
-  /**
-   * Unique identifier for the field errors container
-   */
-  id?: string;
-  /**
-   * ARIA role for the container
-   */
-  role?: string;
-  /**
-   * Error message content to display
-   */
-  children?: ReactNode;
-};
+export type FieldErrorsMessageSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // HELPER TYPES
 // ============================================================
 
-export type TFieldErrors = Record<string, boolean>;
+export type FieldErrorsData = Record<string, boolean>;
 
 export type TErrorRenderer = (key: string, error?: boolean) => ReactNode;
 
@@ -57,13 +57,9 @@ export type TFieldErrorTypes =
 
 export type FieldErrorsProps = FieldErrorsRootSlotProps & {
   /**
-   * Unique identifier for the field errors
-   */
-  id?: string;
-  /**
    * Object mapping error types to boolean values indicating presence
    */
-  errors?: TFieldErrors;
+  errors?: FieldErrorsData;
   /**
    * Whether the error messages are visible
    * @default false
