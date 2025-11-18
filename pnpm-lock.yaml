@@ -113,8 +113,8 @@ catalogs:
       specifier: ^9.1.13
       version: 9.1.13
     express-rate-limit:
-      specifier: ^8.0.1
-      version: 8.1.0
+      specifier: ^8.2.1
+      version: 8.2.1
     glob:
       specifier: ^11.0.3
       version: 11.0.3
@@ -346,7 +346,7 @@ importers:
         version: 4.21.2
       express-rate-limit:
         specifier: catalog:tooling
-        version: 8.1.0(express@4.21.2)
+        version: 8.2.1(express@4.21.2)
       fuse.js:
         specifier: ^7.0.0
         version: 7.1.0
@@ -3933,8 +3933,8 @@ packages:
   expr-eval-fork@2.0.2:
     resolution: {integrity: sha512-NaAnObPVwHEYrODd7Jzp3zzT9pgTAlUUL4MZiZu9XAYPDpx89cPsfyEImFb2XY0vQNbrqg2CG7CLiI+Rs3seaQ==}
 
-  express-rate-limit@8.1.0:
-    resolution: {integrity: sha512-4nLnATuKupnmwqiJc27b4dCFmB/T60ExgmtDD7waf4LdrbJ8CPZzZRHYErDYNhoz+ql8fUdYwM/opf90PoPAQA==}
+  express-rate-limit@8.2.1:
+    resolution: {integrity: sha512-PCZEIEIxqwhzw4KF0n7QF4QqruVTcF73O5kFKUnGOyjbCCgizBBiFaYpd/fnBLUMPw/BWw9OsiN7GgrNYr7j6g==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -10779,7 +10779,7 @@ snapshots:
 
   expr-eval-fork@2.0.2: {}
 
-  express-rate-limit@8.1.0(express@4.21.2):
+  express-rate-limit@8.2.1(express@4.21.2):
     dependencies:
       express: 4.21.2
       ip-address: 10.0.1
