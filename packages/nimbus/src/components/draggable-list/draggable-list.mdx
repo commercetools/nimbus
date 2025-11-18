@@ -314,4 +314,4 @@ const App = () => {
  - **Keyboard reordering is essential:** Since drag-and-drop is a complex pointer gesture, a keyboard-accessible method for reordering is mandatory (WCAG 2.5.1 Pointer Gestures). This usually involves providing "Move Up" and "Move Down" buttons or a position input field next to the list item.
  - **ARIA roles:** Use appropriate ARIA roles to convey the list and item structure to screen readers. For interactive lists, `role="listbox"` for the container and `role="option"` for items might be suitable, or use standard semantic lists (`<ul>`, `<li>`) enhanced with ARIA attributes.
  - **Focus management:** Ensure the drag handle or the dedicated keyboard buttons are included in the Tab order and have clear focus indicators.
- - **Status updates:** Announce the result of the reordering to screen reader users using an aria-live region (e.g., "Item moved to position 4").
+ - **Status updates:** Announce the result of the reordering to screen reader users using an `aria-live` region (e.g., "Item moved to position 4").
