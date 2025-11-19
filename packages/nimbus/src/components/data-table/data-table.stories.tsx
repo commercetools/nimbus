@@ -4199,7 +4199,7 @@ export const WithCustomSettings: Story = {
             onSettingsChange={handleSettingsChange}
             customSettings={{
               icon: <Palette />,
-              label: "Custom Settings Label",
+              label: "Custom settings label",
               panel: <CustomSettingsPanel />,
             }}
           >
@@ -4218,14 +4218,14 @@ export const WithCustomSettings: Story = {
             </Flex>
             <DataTable.Table
               aria-label="Products table with custom settings"
-              borderWidth={showBorders ? "1px" : "0"}
+              borderWidth={showBorders ? "{sizes.25}" : "0"}
               borderColor={showBorders ? "neutral.7" : undefined}
               css={{
                 "& td": showBorders
                   ? {
-                      borderWidth: "1px",
+                      borderWidth: "{sizes.25}",
                       borderStyle: "solid",
-                      borderColor: "var(--chakra-colors-neutral-7)",
+                      borderColor: "neutral.7",
                     }
                   : undefined,
               }}
@@ -4245,5 +4245,65 @@ export const WithCustomSettings: Story = {
         </Stack>
       </>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Custom settings tab renders correctly", async () => {
+      // 1. Open the settings drawer
+      // Wait for the table to render to avoid early interaction issues
+      await waitFor(() => {
+        expect(
+          canvas.getByText("Interactive Table with Real-time Visual Updates")
+        ).toBeInTheDocument();
+      });
+
+      const settingsButton = await canvas.findByRole("button", {
+        name: /table settings/i,
+      });
+      await userEvent.click(settingsButton);
+
+      const dialog = await canvas.findByRole("dialog");
+      await waitFor(() => {
+        expect(dialog).toBeInTheDocument();
+      });
+
+      // 2. Check for the custom tab
+      const customTab = await within(dialog).findByRole("tab", {
+        name: /Custom settings label/i,
+      });
+      expect(customTab).toBeInTheDocument();
+
+      // 3. Click the custom tab
+      await userEvent.click(customTab);
+      expect(customTab).toHaveAttribute("aria-selected", "true");
+
+      // 4. Verify panel content
+      const panelHeading =
+        await within(dialog).findByText(/Visual Customization/i);
+      expect(panelHeading).toBeInTheDocument();
+    });
+
+    await step("Custom settings interaction works", async () => {
+      const dialog = canvas.getByRole("dialog");
+
+      // Find checkbox
+      const bordersCheckbox = within(dialog).getByRole("checkbox", {
+        name: /show cell borders/i,
+      });
+
+      // Initial state is false
+      expect(bordersCheckbox).not.toBeChecked();
+
+      // Toggle on
+      await userEvent.click(bordersCheckbox);
+      expect(bordersCheckbox).toBeChecked();
+
+      // Toggle off
+      await userEvent.click(bordersCheckbox);
+      expect(bordersCheckbox).not.toBeChecked();
+    });
   },
 };
