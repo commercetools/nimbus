@@ -4,7 +4,7 @@ import { themeTokens } from "@commercetools/nimbus-tokens";
 export const colors = defineSemanticTokens.colors({
   bg: {
     DEFAULT: {
-      value: "{colors.neutral.1}",
+      value: { _light: "#fff", _dark: "{colors.neutral.1}" },
     },
   },
   fg: {
