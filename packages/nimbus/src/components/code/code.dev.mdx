@@ -1,0 +1,256 @@
+---
+title: Code Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Code } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Code component displays inline code snippets with monospace formatting:
+
+```jsx-live-dev
+const App = () => (
+  <Text>
+    Use the <Code>console.log()</Code> function to debug your code.
+  </Text>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `xs`, `sm`, `md`, and `lg` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text>Extra small: <Code size="xs">npm install</Code></Text>
+    <Text>Small: <Code size="sm">npm install</Code></Text>
+    <Text>Medium: <Code size="md">npm install</Code></Text>
+    <Text>Large: <Code size="lg">npm install</Code></Text>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid`, `subtle`, `outline`, `surface`, and `plain` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text>Solid: <Code variant="solid">const value = 42;</Code></Text>
+    <Text>Subtle: <Code variant="subtle">const value = 42;</Code></Text>
+    <Text>Outline: <Code variant="outline">const value = 42;</Code></Text>
+    <Text>Surface: <Code variant="surface">const value = 42;</Code></Text>
+    <Text>Plain: <Code variant="plain">const value = 42;</Code></Text>
+  </Stack>
+)
+```
+
+**Visual differences:**
+- `solid`: Filled background with high contrast
+- `subtle`: Light background with medium contrast
+- `outline`: Border with transparent background
+- `surface`: Subtle background with border
+- `plain`: No background or border, colored text only
+
+### Color palette
+
+Use the `colorPalette` prop to customize the code's color scheme:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text>Default: <Code>import React from 'react';</Code></Text>
+    <Text>Blue: <Code colorPalette="blue">import React from 'react';</Code></Text>
+    <Text>Green: <Code colorPalette="green">import React from 'react';</Code></Text>
+    <Text>Red: <Code colorPalette="red">import React from 'react';</Code></Text>
+    <Text>Purple: <Code colorPalette="purple">import React from 'react';</Code></Text>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Code component renders semantic `<code>` HTML elements which are automatically recognized by screen readers as inline code. No additional accessibility attributes are required for basic usage.
+
+When using code snippets as part of instructional content:
+
+- Ensure the surrounding text provides sufficient context
+- For complex code examples, consider adding descriptive text before or after
+- Use appropriate language identifiers when displaying code blocks (though Code is intended for inline usage)
+
+#### Keyboard navigation
+
+The Code component does not have interactive elements and does not require keyboard navigation. It is a display-only component.
+
+## API reference
+
+<PropsTable id="Code" />
+
+## Common patterns
+
+### Command line instructions
+
+Display terminal commands with appropriate context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      Install the package using <Code colorPalette="green">npm install @commercetools/nimbus</Code>
+    </Text>
+    <Text>
+      Or with yarn: <Code colorPalette="blue">yarn add @commercetools/nimbus</Code>
+    </Text>
+    <Text>
+      Start the development server: <Code colorPalette="purple">pnpm dev</Code>
+    </Text>
+  </Stack>
+)
+```
+
+### Variable and function names
+
+Highlight code identifiers in documentation:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      Pass the <Code variant="subtle">userId</Code> prop to identify the user.
+    </Text>
+    <Text>
+      Call <Code variant="subtle">handleSubmit()</Code> to process the form.
+    </Text>
+    <Text>
+      The <Code variant="subtle">isLoading</Code> state indicates when data is being fetched.
+    </Text>
+  </Stack>
+)
+```
+
+### Error messages and status codes
+
+Display technical error information:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      Server returned <Code colorPalette="red" variant="solid">404 Not Found</Code>
+    </Text>
+    <Text>
+      Caught error: <Code colorPalette="red" variant="subtle">TypeError: Cannot read property 'length'</Code>
+    </Text>
+    <Text>
+      Success response: <Code colorPalette="green" variant="solid">200 OK</Code>
+    </Text>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Code in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected content:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Code } from '@commercetools/nimbus';
+
+describe('Code', () => {
+  it('renders code content', () => {
+    render(<Code>const value = 42;</Code>);
+
+    expect(screen.getByText('const value = 42;')).toBeInTheDocument();
+  });
+
+  it('renders with semantic code element', () => {
+    const { container } = render(<Code>test</Code>);
+
+    const codeElement = container.querySelector('code');
+    expect(codeElement).toBeInTheDocument();
+  });
+});
+```
+
+### Visual variant tests
+
+Test that variants are applied correctly:
+
+```tsx
+import { render } from '@testing-library/react';
+import { Code } from '@commercetools/nimbus';
+
+describe('Code variants', () => {
+  it('applies solid variant class', () => {
+    const { container } = render(<Code variant="solid">code</Code>);
+
+    const codeElement = container.querySelector('code');
+    expect(codeElement).toHaveClass('nimbus-code');
+  });
+
+  it('applies custom color palette', () => {
+    const { container } = render(
+      <Code colorPalette="blue">code</Code>
+    );
+
+    const codeElement = container.querySelector('code');
+    expect(codeElement).toBeInTheDocument();
+  });
+});
+```
+
+### Integration with text content
+
+Test code elements within text flows:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Code, Text } from '@commercetools/nimbus';
+
+describe('Code in text context', () => {
+  it('renders inline with surrounding text', () => {
+    render(
+      <Text>
+        Use the <Code>useState</Code> hook for state.
+      </Text>
+    );
+
+    expect(screen.getByText('Use the')).toBeInTheDocument();
+    expect(screen.getByText('useState')).toBeInTheDocument();
+    expect(screen.getByText('hook for state.')).toBeInTheDocument();
+  });
+
+  it('maintains proper spacing in sentence', () => {
+    const { container } = render(
+      <Text>
+        Call <Code>console.log()</Code> to debug.
+      </Text>
+    );
+
+    const codeElement = container.querySelector('code');
+    expect(codeElement?.textContent).toBe('console.log()');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](link-tbd)
