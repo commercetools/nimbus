@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
-import { IconButton, Drawer, Tabs, Tooltip } from "@/components";
+import { IconButton, Drawer, Tabs, Tooltip, Box } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
 import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
@@ -227,7 +227,7 @@ export const DataTableManager = () => {
                           {customSettings?.label}
                         </>
                       ),
-                      panelContent: customSettings.panel,
+                      panelContent: <Box mt="800">{customSettings.panel}</Box>,
                     }
                   : null,
                 // Filter out null values when no custom settings are provided

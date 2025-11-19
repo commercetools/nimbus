@@ -4088,7 +4088,7 @@ export const WithCustomSettings: Story = {
 
     // Custom settings panel component that triggers onSettingsChange
     const CustomSettingsPanel = () => (
-      <Stack direction="column" gap="400" p="400">
+      <Stack direction="column">
         <Box>
           <Heading size="sm" mb="200">
             Visual Customization
