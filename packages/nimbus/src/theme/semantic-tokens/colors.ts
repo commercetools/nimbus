@@ -4,18 +4,12 @@ import { themeTokens } from "@commercetools/nimbus-tokens";
 export const colors = defineSemanticTokens.colors({
   bg: {
     DEFAULT: {
-      value: {
-        _light: "white",
-        _dark: "black",
-      },
+      value: "{colors.neutral.1}",
     },
   },
   fg: {
     DEFAULT: {
-      value: {
-        _light: "black",
-        _dark: "white",
-      },
+      value: "{colors.neutral.12}",
     },
   },
   border: {
@@ -44,7 +38,7 @@ export const colors = defineSemanticTokens.colors({
       value: "{colors.positive.8}",
     },
     info: {
-      value: "{colors.ingo.8}",
+      value: "{colors.info.8}",
     },
   },
   ...themeTokens.color["system-palettes"],
