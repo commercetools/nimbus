@@ -182,8 +182,11 @@ export const Example = () => (
 
 ### Composition constraints
 
-- All sub-components (`Title`, `Description`, `Actions`, `DismissButton`) **must** be direct children of `Alert.Root` to function correctly. They communicate via context to register themselves for layout.
-- Do not wrap sub-components in other elements (like `div` or `Stack`) if you want them to be automatically placed in the correct slot of the alert grid. You *can* use layout components *inside* `Alert.Actions` or `Alert.Description`.
+The `Alert` component manages its own layout grid. To ensure correct placement:
+
+- Keep sub-components (`Title`, `Description`, `Actions`, `DismissButton`) as direct children of `Alert.Root`.
+- Do not wrap sub-components in other elements (like `div` or `Stack`), as these wrappers will be rendered as part of the layout and may break the visual structure.
+- You *can* use layout components *inside* `Alert.Actions` or `Alert.Description` to organize content within those slots.
 
 ## API reference
 

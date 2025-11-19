@@ -11,12 +11,15 @@ export const alertRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      display: "inline-flex",
-      flexDirection: "row",
+      display: "grid",
+      gridTemplateColumns: "auto 1fr auto",
       gap: "200",
       width: "100%",
+      alignItems: "start",
     },
     icon: {
+      gridColumn: "1",
+      gridRow: "1",
       marginTop: "50",
       "& svg": {
         width: "500",
@@ -25,10 +28,22 @@ export const alertRecipe = defineSlotRecipe({
       },
     },
     title: {
+      gridColumn: "2",
+      order: "1",
       color: "colorPalette.11",
     },
     description: {
+      gridColumn: "2",
+      order: "2",
       color: "colorPalette.11",
+    },
+    actions: {
+      gridColumn: "2",
+      order: "3",
+    },
+    dismissButton: {
+      gridColumn: "3",
+      gridRow: "1",
     },
   },
 
