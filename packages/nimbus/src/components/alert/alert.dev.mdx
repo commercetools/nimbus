@@ -164,7 +164,7 @@ const App = () => {
 
 The `Alert` component has built-in accessibility features:
 
-- **Role**: The root element automatically has `role="alert"`. This informs screen readers that the content is important and time-sensitive.
+- **Role**: The root element automatically has `role="alert"`. This informs screen readers that the content is important and time-sensitive. Because of `role="alert"`'s intrusive nature, the `Alert` component should be used sparingly and only in situations where the user's immediate attention is required.
 - **Icons**: Decorative icons are automatically hidden from screen readers to avoid redundancy.
 - **Dismiss Button**: The `Alert.DismissButton` comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
 
