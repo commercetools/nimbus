@@ -1,0 +1,129 @@
+---
+title: LoadingSpinner Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { LoadingSpinner, type LoadingSpinnerProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The LoadingSpinner component indicates an ongoing process or indeterminate loading state.
+
+```jsx-live-dev
+const App = () => (
+  <LoadingSpinner />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `size` prop controls the dimensions of the spinner to match your interface density. Available sizes are `2xs`, `xs`, `sm` (default), `md`, and `lg`.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <LoadingSpinner size="2xs" />
+    <LoadingSpinner size="xs" />
+    <LoadingSpinner size="sm" />
+    <LoadingSpinner size="md" />
+    <LoadingSpinner size="lg" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+The `colorPalette` prop allows you to adapt the spinner to different backgrounds.
+
+- `primary`: The default color, suitable for light backgrounds.
+- `white`: Suitable for dark backgrounds or colored surfaces.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box padding="400">
+      <LoadingSpinner colorPalette="primary" />
+    </Box>
+
+    <Box padding="400" backgroundColor="black" borderRadius="4px">
+      <LoadingSpinner colorPalette="white" />
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The LoadingSpinner uses `role="progressbar"` and an indeterminate state by default.
+
+You **must** ensure the spinner has an accessible label. The component provides a default localized label ("Loading"), but you should provide a more specific label when possible using `aria-label` or `aria-labelledby`.
+
+```tsx
+// Recommended: Specific label describing what is loading
+<LoadingSpinner aria-label="Loading order details" />
+
+// Using aria-labelledby
+<h3 id="loading-heading">Loading Users</h3>
+<LoadingSpinner aria-labelledby="loading-heading" />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-list-loading-spinner";
+
+export const UserList = () => (
+  <LoadingSpinner id={PERSISTENT_ID} />
+);
+```
+
+## API reference
+
+<PropsTable id="LoadingSpinner" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using LoadingSpinner in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with the expected accessibility attributes:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { LoadingSpinner } from '@commercetools/nimbus';
+
+describe('LoadingSpinner', () => {
+  it('renders with default accessibility attributes', () => {
+    render(<LoadingSpinner />);
+    
+    // Verify role and default label
+    const spinner = screen.getByRole('progressbar');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveAttribute('aria-label', 'Loading');
+  });
+
+  it('renders with a custom accessible label', () => {
+    render(<LoadingSpinner aria-label="Loading products" />);
+    
+    expect(screen.getByRole('progressbar', { name: "Loading products" })).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-loadingspinner--docs)
+- [React Aria ProgressBar](https://react-spectrum.adobe.com/react-aria/useProgressBar.html)
+
