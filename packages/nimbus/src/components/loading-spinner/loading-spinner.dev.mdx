@@ -50,13 +50,8 @@ The `colorPalette` prop allows you to adapt the spinner to different backgrounds
 ```jsx-live-dev
 const App = () => (
   <Stack direction="row" gap="400">
-    <Box padding="400">
-      <LoadingSpinner colorPalette="primary" />
-    </Box>
-
-    <Box padding="400" backgroundColor="black" borderRadius="4px">
-      <LoadingSpinner colorPalette="white" />
-    </Box>
+    <LoadingSpinner colorPalette="primary" margin="400"/>
+    <LoadingSpinner colorPalette="white" margin="400" bgColor="black" />
   </Stack>
 )
 ```
