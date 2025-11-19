@@ -28,7 +28,9 @@ export const useDataTableContext = <
 export const useCustomSettingsContext = () => {
   const context = useContext(CustomSettingsContext);
   if (!context) {
-    throw new Error("CustomSettings context not found");
+    throw new Error(
+      "CustomSettings components must be used within CustomSettings.Root"
+    );
   }
   return context;
 };

@@ -3972,8 +3972,6 @@ export const WithTableManager: Story = {
  * const handleSettingsChange = (action: string | undefined) => {
  *   // Handle built-in actions
  *   if (action === UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY) { ... }
- *   // Handle custom actions
- *   if (action === CUSTOM_ACTIONS.TOGGLE_FEATURE) { ... }
  * };
  *
  * // 3. Pass custom settings with your panel component
@@ -3989,15 +3987,6 @@ export const WithTableManager: Story = {
  */
 export const WithCustomSettings: Story = {
   render: () => {
-    // Define custom action constants for your custom settings
-    // These can be any string values specific to your application
-    const CUSTOM_DISPLAY_ACTIONS = {
-      TOGGLE_BORDERS: "toggleBorders",
-      TOGGLE_HEADER_HIGHLIGHT: "toggleHeaderHighlight",
-      TOGGLE_COLUMN_COLOR: "toggleColumnColor",
-      DISABLE_SPECIFIC_ROW: "disableSpecificRow",
-    } as const;
-
     const initialColumnsState = [
       ...initialVisibleColumns,
       ...initialHiddenColumns,
@@ -4021,6 +4010,30 @@ export const WithCustomSettings: Story = {
       setVisibleColumns(updatedColumns);
     };
 
+    const handleToggleBorders = () => {
+      setShowBorders(!showBorders);
+    };
+
+    const handleToggleHeaderHighlight = () => {
+      setHighlightHeaders(!highlightHeaders);
+    };
+
+    const handleToggleColumnColor = () => {
+      setColorFirstColumn(!colorFirstColumn);
+    };
+
+    const handleDisableSpecificRow = () => {
+      setDisabledRowIds((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has("3")) {
+          newSet.delete("3");
+        } else {
+          newSet.add("3");
+        }
+        return newSet;
+      });
+    };
+
     // Dynamic settings handler that supports both built-in and custom actions
     const handleSettingsChange = (action: string | undefined) => {
       if (!action) {
@@ -4034,31 +4047,6 @@ export const WithCustomSettings: Story = {
           break;
         case UPDATE_ACTIONS.TOGGLE_ROW_DENSITY:
           setDensity(density === "condensed" ? "default" : "condensed");
-          break;
-      }
-
-      // Handle custom actions that affect table appearance
-      switch (action) {
-        case CUSTOM_DISPLAY_ACTIONS.TOGGLE_BORDERS:
-          setShowBorders((prev) => !prev);
-          break;
-        case CUSTOM_DISPLAY_ACTIONS.TOGGLE_HEADER_HIGHLIGHT:
-          setHighlightHeaders((prev) => !prev);
-          break;
-        case CUSTOM_DISPLAY_ACTIONS.TOGGLE_COLUMN_COLOR:
-          setColorFirstColumn((prev) => !prev);
-          break;
-        case CUSTOM_DISPLAY_ACTIONS.DISABLE_SPECIFIC_ROW:
-          // Toggle disabled state for row with id "3"
-          setDisabledRowIds((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has("3")) {
-              newSet.delete("3");
-            } else {
-              newSet.add("3");
-            }
-            return newSet;
-          });
           break;
       }
     };
@@ -4114,9 +4102,7 @@ export const WithCustomSettings: Story = {
         <Stack direction="column" gap="400">
           <Checkbox
             isSelected={showBorders}
-            onChange={() => {
-              handleSettingsChange(CUSTOM_DISPLAY_ACTIONS.TOGGLE_BORDERS);
-            }}
+            onChange={handleToggleBorders}
             data-testid="show-borders-checkbox"
           >
             <Box>
@@ -4129,11 +4115,7 @@ export const WithCustomSettings: Story = {
 
           <Checkbox
             isSelected={highlightHeaders}
-            onChange={() => {
-              handleSettingsChange(
-                CUSTOM_DISPLAY_ACTIONS.TOGGLE_HEADER_HIGHLIGHT
-              );
-            }}
+            onChange={handleToggleHeaderHighlight}
             data-testid="highlight-headers-checkbox"
           >
             <Box>
@@ -4146,9 +4128,7 @@ export const WithCustomSettings: Story = {
 
           <Checkbox
             isSelected={colorFirstColumn}
-            onChange={() => {
-              handleSettingsChange(CUSTOM_DISPLAY_ACTIONS.TOGGLE_COLUMN_COLOR);
-            }}
+            onChange={handleToggleColumnColor}
             data-testid="color-first-column-checkbox"
           >
             <Box>
@@ -4161,9 +4141,7 @@ export const WithCustomSettings: Story = {
 
           <Checkbox
             isSelected={disabledRowIds.has("3")}
-            onChange={() => {
-              handleSettingsChange(CUSTOM_DISPLAY_ACTIONS.DISABLE_SPECIFIC_ROW);
-            }}
+            onChange={handleDisableSpecificRow}
             data-testid="disable-row-checkbox"
           >
             <Box>
@@ -4221,7 +4199,7 @@ export const WithCustomSettings: Story = {
             onSettingsChange={handleSettingsChange}
             customSettings={{
               icon: <Palette />,
-              label: "Visual",
+              label: "Custom Settings Label",
               panel: <CustomSettingsPanel />,
             }}
           >
