@@ -1,0 +1,272 @@
+---
+title: Alert Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Alert, type AlertProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Alert component uses a compound component pattern. You must wrap all parts in `Alert.Root`. The component automatically handles layout and icon selection based on the `colorPalette`.
+
+```jsx-live-dev
+const App = () => (
+  <Alert.Root colorPalette="info">
+    <Alert.Title>Information</Alert.Title>
+    <Alert.Description>
+      This is a basic alert message notifying you of a change.
+    </Alert.Description>
+  </Alert.Root>
+)
+```
+
+## Usage examples
+
+### Color palettes
+
+The `colorPalette` prop determines the semantic color and the accompanying icon. The following examples demonstrate every palette available for this component (`positive`, `warning`, `critical`, `info`).
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Alert.Root colorPalette="positive">
+      <Alert.Title>Positive</Alert.Title>
+      <Alert.Description>Operation completed successfully.</Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root colorPalette="warning">
+      <Alert.Title>Warning</Alert.Title>
+      <Alert.Description>Please review your changes.</Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root colorPalette="critical">
+      <Alert.Title>Critical</Alert.Title>
+      <Alert.Description>An error occurred while saving.</Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root colorPalette="info">
+      <Alert.Title>Info</Alert.Title>
+      <Alert.Description>New updates are available.</Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Two visual variants are available to suit different interface needs: `outlined` (default) and `flat`.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Alert.Root variant="outlined" colorPalette="info">
+      <Alert.Title>Outlined (Default)</Alert.Title>
+      <Alert.Description>
+        Best for high-contrast environments or when the alert needs to stand out against a colored background.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root variant="flat" colorPalette="info">
+      <Alert.Title>Flat</Alert.Title>
+      <Alert.Description>
+        A subtler look, suitable for dense interfaces or secondary notifications.
+      </Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
+```
+
+### Flexible composition
+
+The component parts (`Title`, `Description`, `Actions`, `DismissButton`) can be composed as needed. The `Alert.Root` handles the layout regardless of the order in JSX.
+
+**Title only:**
+
+```jsx-live-dev
+const App = () => (
+  <Alert.Root colorPalette="positive">
+    <Alert.Title>Success: Item created.</Alert.Title>
+  </Alert.Root>
+)
+```
+
+**Description only:**
+
+```jsx-live-dev
+const App = () => (
+  <Alert.Root colorPalette="info">
+    <Alert.Description>
+      System maintenance scheduled for tonight at 02:00 UTC.
+    </Alert.Description>
+  </Alert.Root>
+)
+```
+
+### Adding actions
+
+Use `Alert.Actions` to group action buttons. These will be positioned correctly within the alert layout.
+
+```jsx-live-dev
+const App = () => (
+  <Alert.Root colorPalette="warning">
+    <Alert.Title>Storage Limit Reached</Alert.Title>
+    <Alert.Description>
+      You have used 95% of your available storage.
+    </Alert.Description>
+    <Alert.Actions>
+      <Stack direction="row" gap="200">
+        <Button variant="solid">Upgrade Plan</Button>
+        <Button variant="ghost">Dismiss</Button>
+      </Stack>
+    </Alert.Actions>
+  </Alert.Root>
+)
+```
+
+### Dismissible alerts
+
+Add the `Alert.DismissButton` to provide a close action. You must handle the dismissal logic (e.g., removing the alert from the DOM) yourself.
+
+```jsx-live-dev
+const App = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (!isVisible) {
+    return (
+      <Button onPress={() => setIsVisible(true)}>
+        Reset Example
+      </Button>
+    );
+  }
+
+  return (
+    <Alert.Root colorPalette="info" variant="outlined">
+      <Alert.Title>Dismissible Alert</Alert.Title>
+      <Alert.Description>
+        Click the close button to dismiss this message.
+      </Alert.Description>
+      <Alert.DismissButton onPress={() => setIsVisible(false)} />
+    </Alert.Root>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The `Alert` component has built-in accessibility features:
+
+- **Role**: The root element automatically has `role="alert"`. This informs screen readers that the content is important and time-sensitive. Because of `role="alert"`'s intrusive nature, the `Alert` component should be used sparingly and only in situations where the user's immediate attention is required.
+- **Icons**: Decorative icons are automatically hidden from screen readers to avoid redundancy.
+- **Dismiss Button**: The `Alert.DismissButton` comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-alert";
+
+export const Example = () => (
+  <Alert.Root id={PERSISTENT_ID}>
+    <Alert.Title>Notification</Alert.Title>
+  </Alert.Root>
+);
+```
+
+### Composition constraints
+
+The `Alert` component manages its own layout grid. To ensure correct placement:
+
+- Keep sub-components (`Title`, `Description`, `Actions`, `DismissButton`) as direct children of `Alert.Root`.
+- Do not wrap sub-components in other elements (like `div` or `Stack`), as these wrappers will be rendered as part of the layout and may break the visual structure.
+- You *can* use layout components *inside* `Alert.Actions` or `Alert.Description` to organize content within those slots.
+
+## API reference
+
+<PropsTable id="Alert" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using `Alert` in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the alert renders with the expected content and role:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Alert } from '@commercetools/nimbus';
+
+describe('Alert integration', () => {
+  it('renders the alert message', () => {
+    render(
+      <Alert.Root colorPalette="critical">
+        <Alert.Title>Error saving</Alert.Title>
+        <Alert.Description>Connection lost</Alert.Description>
+      </Alert.Root>
+    );
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('Error saving')).toBeInTheDocument();
+    expect(screen.getByText('Connection lost')).toBeInTheDocument();
+  });
+});
+```
+
+### Interaction tests
+
+Test interactions with actions and dismiss buttons:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Alert, Button } from '@commercetools/nimbus';
+
+describe('Alert interactions', () => {
+  it('calls the dismiss handler when clicked', async () => {
+    const user = userEvent.setup();
+    const handleDismiss = jest.fn();
+
+    render(
+      <Alert.Root>
+        <Alert.Title>Notification</Alert.Title>
+        <Alert.DismissButton onPress={handleDismiss} />
+      </Alert.Root>
+    );
+
+    const dismissBtn = screen.getByRole('button', { name: /dismiss/i });
+    await user.click(dismissBtn);
+
+    expect(handleDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles action clicks', async () => {
+    const user = userEvent.setup();
+    const handleAction = jest.fn();
+
+    render(
+      <Alert.Root>
+        <Alert.Title>Confirmation</Alert.Title>
+        <Alert.Actions>
+          <Button onPress={handleAction}>Confirm</Button>
+        </Alert.Actions>
+      </Alert.Root>
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Confirm' }));
+    expect(handleAction).toHaveBeenCalled();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-alert--docs)
+
