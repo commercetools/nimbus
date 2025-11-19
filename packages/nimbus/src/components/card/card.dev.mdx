@@ -9,7 +9,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { Card, type CardProps } from '@commercetools/nimbus';
+import { Box, Card, Link, type CardProps } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
@@ -75,6 +75,55 @@ const App = () => (
       <Card.Header>Muted Background</Card.Header>
       <Card.Content>Subtle background color for differentiation.</Card.Content>
     </Card.Root>
+  </Stack>
+)
+```
+
+### Interactive cards
+
+When making a card interactive, avoid placing `onClick` directly on the `Card.Root`. Instead, wrap the card in an anchor tag or use proper ARIA roles to ensure accessibility.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    {/* Option 1: Wrapped in a Nimbus Link (Recommended for navigation) */}
+    <Link 
+      href="#" 
+      textDecoration="none" 
+      color="inherit" 
+      display="block"
+      _hover={{ textDecoration: 'none' }}
+      aria-label="Navigate to details"
+    >
+      <Card.Root borderStyle="outlined" elevation="elevated">
+        <Card.Header>Navigational Card</Card.Header>
+        <Card.Content>
+          This entire card acts as a link using the system Link component.
+        </Card.Content>
+      </Card.Root>
+    </Link>
+
+    {/* Option 2: Interactive element with ARIA (For actions) */}
+    <Box
+      role="button"
+      tabIndex={0}
+      onClick={() => alert("Card clicked")}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          alert("Card clicked");
+        }
+      }}
+      cursor="pointer"
+      aria-label="Trigger action"
+    >
+      <Card.Root borderStyle="outlined">
+        <Card.Header>Action Card</Card.Header>
+        <Card.Content>
+          Behaves like a button with keyboard support (Tab, Enter, Space).
+        </Card.Content>
+      </Card.Root>
+    </Box>
   </Stack>
 )
 ```
