@@ -1,10 +1,14 @@
 # Engineering Documentation Template Guide
 
-This guide explains how to use the `engineering-docs-template.mdx` to create consistent, high-quality implementation documentation for Nimbus components.
+This guide explains how to use the `engineering-docs-template.mdx` to create
+consistent, high-quality implementation documentation for Nimbus components.
 
 ## Overview
 
-The engineering documentation template provides a structured approach for documenting components in the Nimbus design system. It was created by analyzing existing component documentation (DateRangePicker and DateRangePickerField) and extracting common patterns and best practices.
+The engineering documentation template provides a structured approach for
+documenting components in the Nimbus design system. It was created by analyzing
+existing component documentation (DateRangePicker and DateRangePickerField) and
+extracting common patterns and best practices.
 
 ## Template Structure
 
@@ -24,9 +28,12 @@ These sections must be included in every component's engineering documentation:
 
 Include these sections only when relevant to your component:
 
-1. **Comparison section** - For field pattern components showing manual vs field pattern usage
-2. **Library-specific sections** - For components that require external libraries (e.g., @internationalized/date)
-3. **Form integration** - For field pattern components showing Formik integration
+1. **Comparison section** - For field pattern components showing manual vs field
+   pattern usage
+2. **Library-specific sections** - For components that require external
+   libraries (e.g., @internationalized/date)
+3. **Form integration** - For field pattern components showing Formik
+   integration
 4. **Common patterns** - Recommended but optional; shows realistic use cases
 
 ## Using the Template
@@ -38,11 +45,13 @@ Include these sections only when relevant to your component:
 Before copying the template, thoroughly review:
 
 1. **Component's TypeScript props interface** (`.types.ts` file)
+
    - Identify all props and their types
    - Note which features exist (size?, variant?, isDisabled?, isInvalid?, etc.)
    - Understand controlled/uncontrolled patterns (value/defaultValue)
 
 2. **Component implementation** (main `.tsx` file)
+
    - Identify React Aria integration
    - Note external library dependencies
    - Understand keyboard interactions
@@ -53,7 +62,8 @@ Before copying the template, thoroughly review:
    - Understand common use cases
    - Note edge cases and variations
 
-**Key Principle:** Let the component's actual features dictate the documentation structure. Don't force patterns that don't apply to your specific component.
+**Key Principle:** Let the component's actual features dictate the documentation
+structure. Don't force patterns that don't apply to your specific component.
 
 ### Step 2: Copy and Rename
 
@@ -71,7 +81,7 @@ cp docs/engineering-docs-template.mdx packages/nimbus/src/patterns/[pattern-cate
 
 ```yaml
 ---
-title: [ComponentName] Component  # e.g., "DateRangePicker Component"
+title: [ComponentName] [Component/Pattern]  # Use "Pattern" for fields, "Component" for others
 tab-title: Implementation
 tab-order: 3
 ---
@@ -92,10 +102,12 @@ Follow the inline guidance comments in the template to:
 ### Comparison Section (Optional)
 
 **When to include:**
+
 - For field pattern components (e.g., DateRangePickerField, TextInputField)
 - When there's a clear alternative approach (manual FormField composition)
 
 **When to exclude:**
+
 - For base components (e.g., DateRangePicker, Button)
 - For components that don't have pattern alternatives
 
@@ -110,12 +122,13 @@ Follow the inline guidance comments in the template to:
 Always include both the component and its type in the import:
 
 ```tsx
-import { ComponentName, type ComponentNameProps } from '@commercetools/nimbus';
+import { ComponentName, type ComponentNameProps } from "@commercetools/nimbus";
 ```
 
 #### Basic Usage Section
 
-Show the simplest possible usage. Use uncontrolled mode for field components, or the most basic configuration for other components.
+Show the simplest possible usage. Use uncontrolled mode for field components, or
+the most basic configuration for other components.
 
 ```jsx-live-dev
 const App = () => (
@@ -126,22 +139,42 @@ const App = () => (
 ### Library-Specific Sections (Conditional)
 
 **When to include:**
-- Components that require external libraries (e.g., @internationalized/date, TipTap, ProseMirror)
+
+- Components that require external libraries (e.g., @internationalized/date,
+  TipTap, ProseMirror)
 - When developers need to understand library concepts to use the component
 
 **When to exclude:**
+
 - Components that only use React and Nimbus dependencies
 - When the library integration is transparent to users
 
 **Examples:**
-- DateRangePicker includes "Working with date values" explaining @internationalized/date
+
+- DateRangePicker includes "Working with date values" explaining
+  @internationalized/date
 - RichTextInput might include "Working with TipTap" explaining editor concepts
 
 **Structure:**
+
 1. Introduce the library and its purpose
 2. Show type definitions or core concepts
 3. Demonstrate creation and conversion patterns
 4. Link to external documentation
+
+### Dynamic Collections (Optional)
+
+**When to include:**
+
+- Components that support dynamic data mapping (e.g., Select, ListBox, Menu)
+- Components that implement the React Aria `items` prop pattern
+
+**Structure:**
+
+1. Explain the benefit (performance, virtualization)
+2. Show example with static children
+3. Show example with dynamic `items` and render prop
+4. Provide data structure example
 
 ### Usage Examples
 
@@ -149,16 +182,23 @@ const App = () => (
 
 #### Determining Examples from Source Code
 
-**CRITICAL PRINCIPLE:** Analyze the component's props interface to determine what examples to include. Don't force standard patterns if they don't exist in your component.
+**CRITICAL PRINCIPLE:** Analyze the component's props interface to determine
+what examples to include. Don't force standard patterns if they don't exist in
+your component.
 
 **Approach:**
 
 1. **Review the component's TypeScript props interface**
-   - Look for `size?`, `variant?`, `isDisabled?`, `isInvalid?`, `isReadOnly?` props
+
+   - Look for `size?`, `variant?`, `isDisabled?`, `isInvalid?`, `isReadOnly?`
+     props
+   - Look for `items` prop (dynamic collections) and slot props
+     (`leadingElement`, `trailingElement`)
    - Note any unique props specific to this component
    - Understand controlled/uncontrolled patterns
 
 2. **Match examples to actual props**
+
    - ✅ Component has `isDisabled` prop → Include "Disabled state" subsection
    - ❌ Component has no `isDisabled` prop → Don't include "Disabled state"
    - ✅ Component has unique `granularity` prop → Document it!
@@ -173,18 +213,23 @@ const App = () => (
 #### Common Patterns by Component Type
 
 **Input-like components** (TextInput, NumberInput, Select):
-- May include: Size options, Visual variants, Disabled state, Invalid state, Read-only state, Required field, With description, With validation errors
+
+- May include: Size options, Visual variants, Disabled state, Invalid state,
+  Read-only state, Required field, With description, With validation errors
 - Always include: Uncontrolled mode, Controlled mode
 
 **Layout components** (Stack, Box, Card):
+
 - Focus on: Composition patterns, Spacing variants, Responsive behavior
 - Skip: State variations, controlled/uncontrolled modes
 
 **Interactive components** (Button, Menu, Dialog):
+
 - Focus on: Visual variants, Sizes, Events, Keyboard interactions
 - May include: Disabled state, Loading state
 
 **Display components** (Badge, Avatar, Icon):
+
 - Focus on: Visual variants, Sizes, Content variations
 - Skip: Controlled modes, state management
 
@@ -246,6 +291,7 @@ Every component must document accessibility requirements:
 - ARIA attributes used
 
 **Optional subsections:**
+
 - Type/value requirements (e.g., date components requiring specific date types)
 - Error handling (for field pattern components)
 - Integration requirements (if component needs specific setup)
@@ -273,14 +319,17 @@ For field pattern components with custom error rendering, add a subsection:
 ### Form Integration (Optional)
 
 **When to include:**
+
 - Field pattern components
 - Components commonly used in forms
 
 **When to exclude:**
+
 - Base components not typically used in forms
 - Components without form-specific behavior
 
 **Show:**
+
 - Formik integration example
 - Key integration points (value, onChange, onBlur, errors, touched)
 - Complete working example
@@ -288,12 +337,14 @@ For field pattern components with custom error rendering, add a subsection:
 ### Common Patterns (Recommended)
 
 **Include 2-3 realistic use cases:**
+
 - Production-ready scenarios
 - Integration with other components
 - Proper state management
 - Realistic data handling
 
 **Examples:**
+
 - "Filtering data by date range" (DateRangePicker)
 - "Promotion period selection" (DateRangePicker)
 - "Form validation with Formik" (field components)
@@ -304,10 +355,14 @@ For field pattern components with custom error rendering, add a subsection:
 
 #### Mandatory Opening Disclaimer
 
-Every Testing section **MUST** start with this exact disclaimer (not in a comment):
+Every Testing section **MUST** start with this exact disclaimer (not in a
+comment):
 
 ```markdown
-These examples demonstrate how to test your implementation when using [ComponentName] in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+[ComponentName] in your application. The component's internal functionality is
+already tested by Nimbus - these patterns help you verify your integration and
+application-specific logic.
 ```
 
 This appears as regular paragraph text, not as a blockquote or comment.
@@ -338,7 +393,7 @@ When testing portal content, query document directly and use waitFor:
 
 ```tsx
 await waitFor(() => {
-  expect(screen.getByRole('dialog')).toBeInTheDocument();
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
 });
 
 // Or for content only findable in document:
@@ -357,11 +412,13 @@ await waitFor(() => {
 Use actual URL pattern when possible:
 
 **For base components:**
+
 ```markdown
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-[component]--docs)
 ```
 
 **For field patterns:**
+
 ```markdown
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-[component]--docs)
 ```
@@ -371,17 +428,20 @@ Use `link-tbd` placeholder only if Storybook URL is not yet available.
 #### External Documentation
 
 Include when relevant:
+
 - React Aria documentation link (if component uses React Aria)
 - ARIA pattern link (if applicable)
 
 #### Internal Links
 
 **For field patterns, always include:**
+
 - Link to base component
 - Link to FormField component
 - Link to FieldErrors component
 
 **Example for field patterns:**
+
 ```markdown
 - [Base Component](components/[category]/[component])
 - [FormField Component](components/inputs/formfield)
@@ -393,6 +453,7 @@ Include when relevant:
 ### Base Component (DateRangePicker)
 
 **Include:**
+
 - Getting started ✓
 - Working with date values ✓ (library-specific)
 - Usage examples ✓
@@ -403,12 +464,14 @@ Include when relevant:
 - Resources ✓
 
 **Exclude:**
+
 - Comparison section ✗
 - Form integration ✗
 
 ### Field Pattern Component (DateRangePickerField)
 
 **Include:**
+
 - Comparison section ✓
 - Getting started ✓
 - Usage examples ✓
@@ -419,12 +482,14 @@ Include when relevant:
 - Resources ✓
 
 **Exclude:**
+
 - Working with date values ✗ (reference base component instead)
 - Common patterns ✗ (shown in form integration)
 
 ### Simple Component (Button, Badge)
 
 **Include:**
+
 - Getting started ✓
 - Usage examples ✓ (fewer subsections)
 - Component requirements ✓
@@ -433,6 +498,7 @@ Include when relevant:
 - Resources ✓
 
 **Exclude:**
+
 - Comparison section ✗
 - Library-specific sections ✗
 - Form integration ✗
@@ -455,6 +521,7 @@ const App = () => {
 ```
 
 **Guidelines:**
+
 - Start with `const App = () => {`
 - Use realistic state management (useState)
 - Include TypeScript type annotations
@@ -524,9 +591,12 @@ const App = () => {
 
 ```markdown
 <!-- ✓ Good -->
-The `granularity` prop controls both the level of date precision and the component's behavior.
+
+The `granularity` prop controls both the level of date precision and the
+component's behavior.
 
 <!-- ✗ Bad -->
+
 You can use the granularity prop to control precision and behavior.
 ```
 
@@ -535,8 +605,10 @@ You can use the granularity prop to control precision and behavior.
 Before publishing, verify:
 
 ### Critical Pattern Compliance
+
 - [ ] All interactive examples use `jsx-live-dev` (NOT `jsx-live`)
-- [ ] Getting Started includes type import (`import { ComponentName, type ComponentNameProps }`)
+- [ ] Getting Started includes type import
+      (`import { ComponentName, type ComponentNameProps }`)
 - [ ] Controlled examples use `ComponentNameProps["value"]` type pattern
 - [ ] Testing section includes mandatory disclaimer paragraph
 - [ ] Accessibility section includes standard boilerplate
@@ -544,13 +616,17 @@ Before publishing, verify:
 - [ ] Accessibility includes Keyboard navigation subsection
 
 ### Source-Driven Content
-- [ ] **Usage examples reflect actual component props** (not generic template examples)
+
+- [ ] **Usage examples reflect actual component props** (not generic template
+      examples)
 - [ ] Component props interface was analyzed before writing examples
 - [ ] Only documented features that exist in the component
-- [ ] No forced patterns (e.g., no "disabled state" if component has no `isDisabled` prop)
+- [ ] No forced patterns (e.g., no "disabled state" if component has no
+      `isDisabled` prop)
 - [ ] Component-specific features are highlighted
 
 ### Content
+
 - [ ] All placeholders replaced with component-specific content
 - [ ] All HTML comments removed
 - [ ] Examples are realistic and functional
@@ -559,6 +635,7 @@ Before publishing, verify:
 - [ ] Testing examples provided
 
 ### Structure
+
 - [ ] Frontmatter is complete and correct
 - [ ] Required sections are present
 - [ ] Optional sections are included only when relevant
@@ -566,6 +643,7 @@ Before publishing, verify:
 - [ ] Code blocks use correct language tags
 
 ### Code Examples
+
 - [ ] All interactive examples use `jsx-live-dev`
 - [ ] All type/test examples use `tsx`
 - [ ] Examples follow `const App = () => { }` pattern
@@ -575,6 +653,7 @@ Before publishing, verify:
 - [ ] Portal/popover tests use `waitFor` and document queries
 
 ### Links
+
 - [ ] Storybook link uses actual URL pattern (when available)
 - [ ] Field patterns link to FormField and FieldErrors
 - [ ] Field patterns link to base component
@@ -586,10 +665,12 @@ Before publishing, verify:
 If you're unsure about any aspect of the template:
 
 1. **Review existing documentation:**
+
    - `packages/nimbus/src/components/date-range-picker/date-range-picker.dev.mdx`
    - `packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.dev.mdx`
 
 2. **Check component guidelines:**
+
    - `docs/file-type-guidelines/documentation.md`
 
 3. **Ask the team:**
@@ -598,4 +679,5 @@ If you're unsure about any aspect of the template:
 
 ## Version History
 
-- **v1.0** (2025-01-06): Initial template created from DateRangePicker and DateRangePickerField analysis
+- **v1.0** (2025-01-06): Initial template created from DateRangePicker and
+  DateRangePickerField analysis

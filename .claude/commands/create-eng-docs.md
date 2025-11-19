@@ -1,21 +1,28 @@
 ---
-description: Create engineering documentation for a component using the standard template
-argument-hint: ComponentName [base|field] (e.g., DateRangePicker base, TextInputField field)
+description:
+  Create engineering documentation for a component using the standard template
+argument-hint:
+  ComponentName [base|field] (e.g., DateRangePicker base, TextInputField field)
 ---
 
-You are a **Technical Documentation Engineer** specializing in creating comprehensive, consistent engineering documentation for Nimbus design system components.
+You are a **Technical Documentation Engineer** specializing in creating
+comprehensive, consistent engineering documentation for Nimbus design system
+components.
 
 ## **Target Component**
 
 **Component Name:** $ARGUMENTS
 
 Parse the arguments to extract:
+
 - Component name (e.g., "DateRangePicker", "TextInputField")
 - Component type: "base" or "field" (defaults to "base" if not specified)
 
 ## **Your Mission**
 
-Create complete engineering documentation (`.dev.mdx` file) for the specified component using the standard template at `@docs/engineering-docs-template.mdx` and following the guidance in `@docs/engineering-docs-template-guide.md`.
+Create complete engineering documentation (`.dev.mdx` file) for the specified
+component using the standard template at `@docs/engineering-docs-template.mdx`
+and following the guidance in `@docs/engineering-docs-template-guide.md`.
 
 ## **Execution Flow**
 
@@ -23,10 +30,12 @@ Create complete engineering documentation (`.dev.mdx` file) for the specified co
 
 1. Parse component name and type from arguments
 2. Locate the component files:
+
    - For base components: `packages/nimbus/src/components/{component-name}/`
    - For field patterns: `packages/nimbus/src/patterns/fields/{component-name}/`
 
 3. Identify component characteristics by reading the main component file:
+
    ```bash
    # For base components
    find packages/nimbus/src/components -type d -iname "*{component-name}*"
@@ -44,40 +53,54 @@ Create complete engineering documentation (`.dev.mdx` file) for the specified co
 
 ### **Step 2: Analyze Component Features**
 
-**CRITICAL: This step determines what examples to create. Be thorough and source-driven.**
+**CRITICAL: This step determines what examples to create. Be thorough and
+source-driven.**
 
-1. **Read the component's TypeScript props interface** (`{component-name}.types.ts`):
+1. **Read the component's TypeScript props interface**
+   (`{component-name}.types.ts`):
+
    - Identify ALL props and their types
-   - Note which features actually exist (size?, variant?, isDisabled?, isInvalid?, isReadOnly?, etc.)
+   - Note which features actually exist (size?, variant?, isDisabled?,
+     isInvalid?, isReadOnly?, etc.)
    - Understand controlled/uncontrolled patterns (value/defaultValue/onChange)
    - Identify unique props specific to this component
 
 2. **Read the component implementation** (`{component-name}.tsx`):
-   - Identify React Aria integration (look for `import ... from 'react-aria-components'`)
+
+   - Identify React Aria integration (look for
+     `import ... from 'react-aria-components'`)
    - Note external library dependencies (e.g., `@internationalized/date`)
    - Understand keyboard interactions and accessibility patterns
    - Note compound component structure if applicable
 
-3. **Read existing Storybook stories** (`{component-name}.stories.tsx`) if available:
+3. **Read existing Storybook stories** (`{component-name}.stories.tsx`) if
+   available:
    - See what features are already demonstrated
    - Understand common use cases
    - Note edge cases and variations
 
 **Analysis Checklist:**
+
 - [ ] Size variants exist? (Look for `size?` prop in types)
 - [ ] Visual variants exist? (Look for `variant?` prop in types)
+- [ ] Dynamic collections? (Look for `items` prop)
+- [ ] Slots/Adornments? (Look for `leadingElement`, `trailingElement`, `icon`)
 - [ ] Component-specific unique props identified
 - [ ] External libraries documented (check imports)
 - [ ] Compound structure analyzed (check for namespace exports)
 - [ ] Controlled/uncontrolled modes supported? (check for value/defaultValue)
-- [ ] State props identified (isDisabled?, isInvalid?, isReadOnly?, isLoading?, etc.)
+- [ ] State props identified (isDisabled?, isInvalid?, isReadOnly?, isLoading?,
+      etc.)
 - [ ] Form-related props noted (name?, errors?, touched?, etc.)
 
-**Key Principle:** Let the component's actual features dictate the documentation. Don't force standard patterns if they don't exist in the component.
+**Key Principle:** Let the component's actual features dictate the
+documentation. Don't force standard patterns if they don't exist in the
+component.
 
 ### **Step 3: Load Template and Guidance**
 
 Read the following documents:
+
 - `@docs/engineering-docs-template.mdx` - Base template
 - `@docs/engineering-docs-template-guide.md` - Usage instructions
 - `@docs/file-type-guidelines/documentation.md` - MDX documentation standards
@@ -90,6 +113,7 @@ Based on your analysis, create a documentation plan:
 ## Documentation Plan for {ComponentName}
 
 ### Component Characteristics
+
 - **Type**: [Base Component / Field Pattern]
 - **Complexity**: [Simple / Slot-Based / Compound / Complex]
 - **Size Variants**: [Yes: sm, md, lg / No]
@@ -99,7 +123,9 @@ Based on your analysis, create a documentation plan:
 - **Key Features**: [List 3-5 main features or props]
 
 ### Sections to Include
+
 Based on component type and features:
+
 - [ ] Frontmatter (required)
 - [ ] Comparison section (field patterns only)
 - [ ] Getting started (required)
@@ -119,6 +145,7 @@ Based on component type and features:
 - [ ] Resources (required)
 
 ### Example Generation Strategy
+
 - Import patterns from similar components
 - Create realistic, production-ready examples
 - Show proper state management
@@ -126,12 +153,17 @@ Based on component type and features:
 - Use Nimbus components (Stack, Text, Button)
 
 ### Reference Components
+
 Similar components to reference for patterns:
+
 - [List 1-2 similar components in the codebase]
 ```
 
 Display this plan to the user and ask:
-> I've analyzed the component and created a documentation plan. Would you like me to proceed with generating the documentation? Reply with **"Make it so"** to continue, or provide feedback to adjust the plan.
+
+> I've analyzed the component and created a documentation plan. Would you like
+> me to proceed with generating the documentation? Reply with **"Make it so"**
+> to continue, or provide feedback to adjust the plan.
 
 ### **Step 5: Wait for User Confirmation**
 
@@ -143,29 +175,34 @@ Display this plan to the user and ask:
 
 Once confirmed, create the documentation file:
 
-1. **Start with the template**: Copy content structure from `@docs/engineering-docs-template.mdx`
+1. **Start with the template**: Copy content structure from
+   `@docs/engineering-docs-template.mdx`
 
 2. **Update frontmatter**:
+
    ```yaml
    ---
-   title: {ComponentName} Component
+   title: {ComponentName} [Component/Pattern] # Use "Pattern" for fields, "Component" for others
    tab-title: Implementation
    tab-order: 3
    ---
    ```
 
 3. **Remove inapplicable sections**:
+
    - Remove comparison section for base components
    - Remove library-specific sections if not needed
    - Remove form integration for base components
 
 4. **Replace all placeholders**:
+
    - `[ComponentName]` → Actual component name
    - `[COMPONENT_DESCRIPTION]` → Brief description from types
    - `[FEATURE_NAME]` → Actual feature names
    - All code examples with component-specific examples
 
 5. **Generate realistic code examples**:
+
    - Use `jsx-live-dev` for interactive examples
    - Follow the `const App = () => { }` pattern
    - Include proper TypeScript types
@@ -173,17 +210,34 @@ Once confirmed, create the documentation file:
    - Use actual component props and values
 
 6. **Customize each section**:
-   - **Getting started**: Show simplest usage
+
+   - **Getting started**:
+     - Create `### Import` subsection
+     - Create `### Basic usage` subsection
    - **Usage examples**: Cover all features identified in Step 2
-   - **Component requirements**: Document accessibility requirements
-   - **Testing**: Provide realistic test examples
+   - **Component requirements**:
+     - Document accessibility requirements (Role, Labeling, Keyboard)
+     - **Mandatory**: Include the standard "Persistent ID" tracking text:
+       > If your use case requires tracking and analytics for this component, it
+       > is good practice to add a **persistent**, **unique** id to the
+       > component:
+   - **Testing**:
+     - **Mandatory**: Start with this exact disclaimer:
+       > These examples demonstrate how to test your implementation when using
+       > [Component] in your application. The component's internal functionality
+       > is already tested by Nimbus - these patterns help you verify your
+       > integration and application-specific logic.
+     - Provide realistic test examples (Rendering, Interaction, etc.)
    - **Resources**: Link to Storybook (use "link-tbd" placeholder)
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
 8. **Determine output path**:
-   - Base components: `packages/nimbus/src/components/{component-name}/{component-name}.dev.mdx`
-   - Field patterns: `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
+
+   - Base components:
+     `packages/nimbus/src/components/{component-name}/{component-name}.dev.mdx`
+   - Field patterns:
+     `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
 
 9. **Write the file** using the Write tool
 
@@ -195,22 +249,29 @@ After generating the file, run validation checks:
 ## Documentation Validation
 
 ### Critical Pattern Compliance
+
 - [ ] All interactive examples use `jsx-live-dev` (NOT `jsx-live`)
-- [ ] Getting Started includes type import (`import { ComponentName, type ComponentNameProps }`)
+- [ ] Getting Started includes type import
+      (`import { ComponentName, type ComponentNameProps }`)
 - [ ] Controlled examples use `ComponentNameProps["value"]` type pattern
-- [ ] Testing section includes mandatory disclaimer paragraph (as regular text, not comment)
+- [ ] Testing section includes mandatory disclaimer paragraph (as regular text,
+      not comment)
 - [ ] Accessibility section includes standard boilerplate
 - [ ] Accessibility includes PERSISTENT_ID tracking pattern
 - [ ] Accessibility includes Keyboard navigation subsection
 
 ### Source-Driven Content Check
-- [ ] **Usage examples reflect actual component props** (not generic template examples)
+
+- [ ] **Usage examples reflect actual component props** (not generic template
+      examples)
 - [ ] Component props interface was analyzed before writing examples
 - [ ] Only documented features that exist in the component
-- [ ] No forced patterns (e.g., no "disabled state" if component has no `isDisabled` prop)
+- [ ] No forced patterns (e.g., no "disabled state" if component has no
+      `isDisabled` prop)
 - [ ] Component-specific features are highlighted
 
 ### Content Checklist
+
 - [ ] All placeholders replaced with component-specific content
 - [ ] All HTML comments removed
 - [ ] Examples are realistic and functional
@@ -219,6 +280,7 @@ After generating the file, run validation checks:
 - [ ] Testing examples provided
 
 ### Structure Checklist
+
 - [ ] Frontmatter is complete and correct
 - [ ] Required sections are present
 - [ ] Optional sections included only when relevant
@@ -226,6 +288,7 @@ After generating the file, run validation checks:
 - [ ] Code blocks use correct language tags (jsx-live-dev or tsx)
 
 ### Code Example Checklist
+
 - [ ] All interactive examples use `jsx-live-dev`
 - [ ] All type/test examples use `tsx`
 - [ ] Examples follow `const App = () => { }` pattern
@@ -235,6 +298,7 @@ After generating the file, run validation checks:
 - [ ] Portal/popover tests use `waitFor` and document queries
 
 ### Link Checklist
+
 - [ ] Storybook link uses actual URL pattern (when available)
 - [ ] Field patterns link to FormField and FieldErrors
 - [ ] Field patterns link to base component
@@ -248,25 +312,27 @@ Present this checklist with status for each item.
 
 Provide a final summary:
 
-```markdown
+````markdown
 ## Documentation Created
 
-**Component**: {ComponentName}
-**Type**: [Base Component / Field Pattern]
-**File**: {full-path-to-file}
-**Size**: {file size in lines}
+**Component**: {ComponentName} **Type**: [Base Component / Field Pattern]
+**File**: {full-path-to-file} **Size**: {file size in lines}
 
 ### Sections Included
+
 - [List all sections included]
 
 ### Key Features Documented
+
 - [List 3-5 main features]
 
 ### Code Examples
+
 - Total interactive examples: X
 - Total test examples: Y
 
 ### Next Steps
+
 1. Review the generated documentation
 2. Test all interactive examples in the docs site
 3. Update the Storybook link once available
@@ -274,6 +340,7 @@ Provide a final summary:
 5. Review with the team before publishing
 
 ### Useful Commands
+
 ```bash
 # Start docs site to preview
 pnpm start:docs
@@ -284,6 +351,8 @@ pnpm build:docs
 # Lint documentation
 pnpm lint
 ```
+````
+
 ```
 
 ## **Important Guidelines**
@@ -341,6 +410,13 @@ For components using external libraries (e.g., @internationalized/date):
 - Demonstrate conversion patterns
 - Link to library documentation
 
+### Dynamic Collections
+
+For components supporting `items` prop (e.g., Select, ListBox):
+- Document `items` vs static children
+- Provide examples of dynamic data mapping
+- Explain the render prop pattern: `<Component items={items}>{(item) => ...}</Component>`
+
 ## **Reference Materials**
 
 You have access to these reference documents:
@@ -396,3 +472,4 @@ If you encounter issues:
 ---
 
 **Begin the documentation creation process now for: $ARGUMENTS**
+```
