@@ -1,0 +1,661 @@
+---
+title: SearchInputField Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: field pattern vs manual composition
+
+**With SearchInputField:**
+```tsx
+<SearchInputField
+  label="Search products"
+  description="Enter keywords to search"
+  value={value}
+  onChange={setValue}
+  errors={errors}
+  touched={touched}
+  isRequired
+/>
+```
+
+**Manual composition:**
+```tsx
+<FormField.Root isInvalid={!!(errors && touched)} isRequired>
+  <FormField.Label>Search products</FormField.Label>
+  <FormField.Input>
+    <SearchInput
+      value={value}
+      onChange={setValue}
+      width="full"
+    />
+  </FormField.Input>
+  <FormField.Description>
+    Enter keywords to search
+  </FormField.Description>
+  {touched && errors && (
+    <FormField.Error>
+      <FieldErrors errors={errors} />
+    </FormField.Error>
+  )}
+</FormField.Root>
+```
+
+### When to use which
+
+**Use SearchInputField when:**
+- Building standard forms with search functionality
+- You want consistent field patterns across your app
+- You need built-in error handling with FieldErrors
+- You want to minimize boilerplate code
+- You need search-specific features (clear button, search icon)
+
+**Use SearchInput with manual FormField composition when:**
+- You need custom field layouts
+- You're building complex, non-standard forms
+- You need granular control over FormField sub-components
+- You require a different error handling implementation
+
+## Getting started
+
+### Import
+
+```tsx
+import { SearchInputField, type SearchInputFieldProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation with a label and controlled state:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <SearchInputField
+      label="Search products"
+      value={value}
+      onChange={setValue}
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSmall, setValueSmall] = useState<string>('');
+  const [valueMedium, setValueMedium] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInputField
+        size="sm"
+        label="Small search"
+        value={valueSmall}
+        onChange={setValueSmall}
+        placeholder="Search..."
+      />
+      <SearchInputField
+        size="md"
+        label="Medium search"
+        value={valueMedium}
+        onChange={setValueMedium}
+        placeholder="Search..."
+      />
+    </Stack>
+  );
+}
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSolid, setValueSolid] = useState<string>('');
+  const [valueGhost, setValueGhost] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInputField
+        variant="solid"
+        label="Solid variant"
+        value={valueSolid}
+        onChange={setValueSolid}
+        placeholder="Search..."
+      />
+      <SearchInputField
+        variant="ghost"
+        label="Ghost variant"
+        value={valueGhost}
+        onChange={setValueGhost}
+        placeholder="Search..."
+      />
+    </Stack>
+  );
+}
+```
+
+### With description
+
+Add helper text below the input to provide context:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords, product names, or SKUs to find what you're looking for"
+      value={value}
+      onChange={setValue}
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### With validation errors
+
+Show error messages when the field is touched and has validation errors:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+  const [touched, setTouched] = useState<boolean>(false);
+
+  // Simulate validation: require at least 2 characters
+  const errors = touched && value.length < 2 ? { missing: true } : undefined;
+
+  return (
+    <SearchInputField
+      label="Search products"
+      description="Enter at least 2 characters"
+      value={value}
+      onChange={setValue}
+      onBlur={() => setTouched(true)}
+      errors={errors}
+      touched={touched}
+      isRequired
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+
+### With info popover
+
+Provide additional context through an info button and popover:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords to search"
+      info="You can search by product name, SKU, description, or category. Use quotes for exact phrases."
+      value={value}
+      onChange={setValue}
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### Required field
+
+Mark fields as required with the `isRequired` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords to search"
+      value={value}
+      onChange={setValue}
+      isRequired
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### Disabled state
+
+Prevent user interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('Cannot edit this');
+
+  return (
+    <SearchInputField
+      label="Search"
+      description="This field cannot be modified"
+      value={value}
+      onChange={setValue}
+      isDisabled
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### Read-only state
+
+Display a non-editable value with the `isReadOnly` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('laptop');
+
+  return (
+    <SearchInputField
+      label="Current search"
+      description="This value is read-only"
+      value={value}
+      onChange={setValue}
+      isReadOnly
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### Clear button functionality
+
+The SearchInput component includes a built-in clear button that appears when there's text in the input:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('laptop');
+
+  return (
+    <SearchInputField
+      label="Search products"
+      description="Type to search, clear button appears when there's text"
+      value={value}
+      onChange={setValue}
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+The clear button:
+- Appears automatically when the input has a value
+- Clears the input when clicked
+- Supports keyboard shortcuts (Escape key to clear)
+
+## Component requirements
+
+### Error handling
+
+SearchInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+**Error object format** (`FieldErrorsData`):
+```tsx
+type FieldErrorsData = {
+  [key: string]: boolean | string | ReactNode;
+};
+
+// Examples:
+const errors = {
+  missing: true,              // Built-in message: "This field is required"
+  invalidFormat: true,        // Built-in message: "Please enter a valid format"
+  custom: "Custom error text" // Custom message
+};
+```
+
+### Accessibility
+
+SearchInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+- Search role via `role="searchbox"`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "example-search-input";
+
+export const Example = () => (
+  <SearchInputField
+    id={PERSISTENT_ID}
+    label="Search products"
+    value={value}
+    onChange={setValue}
+  />
+);
+```
+
+#### Keyboard navigation
+
+The component supports standard search input keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus to/from the input
+- `Arrow keys`: Navigate within the text
+- `Home` / `End`: Move to start/end of text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- `Escape`: Clear the input (built-in SearchInput feature)
+- `Enter`: Submit search (if onSubmit handler is provided)
+
+## Form integration
+
+SearchInputField integrates seamlessly with Formik:
+
+```tsx
+import { useFormik } from 'formik';
+import { SearchInputField, Button, Stack } from '@commercetools/nimbus';
+
+const MyForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      search: '',
+    },
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.search) {
+        errors.search = { missing: true };
+      } else if (values.search.length < 2) {
+        errors.search = { tooShort: true };
+      }
+
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('Searching for:', values.search);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <Stack direction="column" gap="400">
+        <SearchInputField
+          name="search"
+          label="Search products"
+          description="Enter keywords to search"
+          value={formik.values.search}
+          onChange={(value) => formik.setFieldValue('search', value)}
+          onBlur={() => formik.setFieldTouched('search', true)}
+          errors={formik.errors.search}
+          touched={formik.touched.search}
+          isRequired
+          placeholder="Search..."
+        />
+        <Button type="submit">Search</Button>
+      </Stack>
+    </form>
+  );
+};
+```
+
+**Key integration points:**
+- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
+- **OnBlur**: Mark field as touched on blur
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="SearchInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<SearchInputField
+  label="Search products"
+  value={value}
+  onChange={setValue}
+  errors={{ invalidSearch: true, tooShort: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'invalidSearch':
+        return 'Please enter a valid search query';
+      case 'tooShort':
+        return 'Search query must be at least 2 characters long';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SearchInputField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { SearchInputField } from '@commercetools/nimbus';
+
+describe('SearchInputField', () => {
+  it('renders label and input', () => {
+    render(
+      <SearchInputField
+        label="Search products"
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    // Verify label is rendered
+    expect(screen.getByText('Search products')).toBeInTheDocument();
+
+    // Verify input is rendered with searchbox role
+    expect(screen.getByRole('searchbox', { name: /search products/i })).toBeInTheDocument();
+  });
+
+  it('renders description text', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        description="Enter keywords to search"
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Enter keywords to search')).toBeInTheDocument();
+  });
+
+  it('shows required indicator', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        isRequired
+      />
+    );
+
+    // Check for required indicator (typically an asterisk or aria-required)
+    const input = screen.getByRole('searchbox');
+    expect(input).toHaveAttribute('aria-required', 'true');
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with the component:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SearchInputField } from '@commercetools/nimbus';
+
+describe('SearchInputField interactions', () => {
+  it('calls onChange when user types', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={handleChange}
+      />
+    );
+
+    const input = screen.getByRole('searchbox', { name: /search/i });
+    await user.type(input, 'laptop');
+
+    expect(handleChange).toHaveBeenCalledTimes(6); // Once per character
+    expect(handleChange).toHaveBeenLastCalledWith('laptop');
+  });
+
+  it('calls onBlur when input loses focus', async () => {
+    const user = userEvent.setup();
+    const handleBlur = jest.fn();
+
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        onBlur={handleBlur}
+      />
+    );
+
+    const input = screen.getByRole('searchbox');
+    await user.click(input);
+    await user.tab(); // Move focus away
+
+    expect(handleBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call onChange when disabled', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={handleChange}
+        isDisabled
+      />
+    );
+
+    const input = screen.getByRole('searchbox');
+    expect(input).toBeDisabled();
+
+    // Attempt to type (should not work)
+    await user.type(input, 'test');
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+});
+```
+
+### Testing validation and errors
+
+Test error handling and validation behavior:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SearchInputField } from '@commercetools/nimbus';
+
+describe('SearchInputField validation', () => {
+  it('does not show errors when untouched', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        errors={{ missing: true }}
+        touched={false}
+      />
+    );
+
+    // Error should not be visible
+    expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
+  });
+
+  it('shows errors when touched', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        errors={{ missing: true }}
+        touched={true}
+      />
+    );
+
+    // Error should be visible
+    expect(screen.getByText(/required/i)).toBeInTheDocument();
+  });
+
+  it('shows custom error messages', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        errors={{ invalidFormat: true }}
+        touched={true}
+        renderError={(key) => {
+          if (key === 'invalidFormat') return 'Please enter a valid search query';
+          return null;
+        }}
+      />
+    );
+
+    expect(screen.getByText('Please enter a valid search query')).toBeInTheDocument();
+  });
+
+  it('applies invalid styling when isInvalid is true', () => {
+    render(
+      <SearchInputField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        isInvalid
+      />
+    );
+
+    const input = screen.getByRole('searchbox');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](http://localhost:6006/?path=/docs/patterns-fields-searchinputfield--docs)
+- [SearchInput Component](components/inputs/searchinput)
+- [FormField Component](components/inputs/formfield)
+- [FieldErrors Component](components/forms/fielderrors)
+- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)
+
