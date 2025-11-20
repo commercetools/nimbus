@@ -62,7 +62,7 @@ export type FieldErrorsProps = FieldErrorsRootSlotProps & {
   errors?: FieldErrorsData;
   /**
    * Whether the error messages are visible
-   * @default false
+   * @default true
    */
   isVisible?: boolean;
   /**
