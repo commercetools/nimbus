@@ -137,7 +137,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     togglePin: (id: string) => void;
     onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
-    // customSettings?: DataTableCustomSettings;
   };
 
 export type CustomSettingsContextValue = {

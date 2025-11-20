@@ -81,22 +81,5 @@ export const RowPinningEdgeCases: Story = {
       expect(pinButton).toHaveAttribute("aria-label", "Pin row");
       expect(pinButton.tagName).toBe("BUTTON");
     });
-
-    // TODO: Add keyboard navigation tests
-    // await step("Pin functionality works with keyboard navigation", async () => {
-    //   const rows = canvas.getAllByRole("row");
-    //   const unpinnedRow = rows[3]; // Use an unpinned row
-    //
-    //   await userEvent.hover(unpinnedRow);
-    //   const pinButton = within(unpinnedRow).getByLabelText(/pin row/i);
-    //
-    //   // Focus the pin button and press Enter
-    //   pinButton.focus();
-    //   await userEvent.keyboard("{Enter}");
-    //
-    //   await waitFor(async () => {
-    //     expect(unpinnedRow).toHaveClass("data-table-row-pinned");
-    //   });
-    // });
   },
 };
