@@ -133,39 +133,6 @@ const App = () => {
 }
 ```
 
-### Modern event handlers
-
-The component provides granular event handlers for modern integration patterns:
-- `onValueChange`: Called when either amount or currency changes (recommended)
-- `onAmountChange`: Called when only the amount changes
-- `onCurrencyChange`: Called when only the currency changes
-
-```jsx-live-dev
-const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
-  const [lastChange, setLastChange] = useState<string>("None");
-
-  return (
-    <Stack direction="column" gap="400">
-      <MoneyInput
-        value={value}
-        currencies={["USD", "EUR"]}
-        onValueChange={(newValue) => {
-          setValue(newValue);
-          setLastChange("Value changed");
-        }}
-        onAmountChange={(amount) => console.log("Amount:", amount)}
-        onCurrencyChange={(code) => console.log("Currency:", code)}
-      />
-      <Text fontSize="sm">Last update: {lastChange}</Text>
-    </Stack>
-  );
-}
-```
-
 ### State variations
 
 The component supports standard interactive states including disabled, read-only, and invalid.
@@ -194,6 +161,43 @@ const App = () => {
         currencies={["USD"]}
         isInvalid
       />
+    </Stack>
+  );
+}
+```
+
+### Modern event handlers
+
+The component provides granular event handlers for modern integration patterns:
+- `onValueChange`: Called when either amount or currency changes (recommended)
+- `onAmountChange`: Called when only the amount changes
+- `onCurrencyChange`: Called when only the currency changes
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+  const [lastAmountChange, setLastAmountChange] = useState<string>("-");
+  const [lastCurrencyChange, setLastCurrencyChange] = useState<string>("-");
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={(newValue) => {
+          setValue(newValue);
+        }}
+        onAmountChange={(amount) => setLastAmountChange(amount || "(empty)")}
+        onCurrencyChange={(code) => setLastCurrencyChange(code)}
+      />
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm">Current value: {value.amount} {value.currencyCode}</Text>
+        <Text fontSize="sm">Last amount change: {lastAmountChange}</Text>
+        <Text fontSize="sm">Last currency change: {lastCurrencyChange}</Text>
+      </Stack>
     </Stack>
   );
 }
