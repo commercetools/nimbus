@@ -83,6 +83,9 @@ export const Blockquote = (props: BlockquoteProps) => {
 
       const firstChild = child.props.children[0];
 
+      // Type guard: ensure firstChild is a string before calling .trim()
+      if (typeof firstChild !== "string") return;
+
       switch (true) {
         case firstChild.trim() === "[!NOTE]":
           flavorProps = {
@@ -140,6 +143,11 @@ export const Blockquote = (props: BlockquoteProps) => {
 
         if (isParagraph) {
           const firstChild = child.props.children[0];
+
+          // Type guard: ensure firstChild is a string before calling .trim()
+          if (typeof firstChild !== "string") {
+            return child;
+          }
 
           if (
             [
