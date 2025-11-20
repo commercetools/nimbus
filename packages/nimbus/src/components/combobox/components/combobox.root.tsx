@@ -4,7 +4,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useId,
   type RefObject,
 } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
@@ -14,6 +13,7 @@ import {
   type Key,
   type Collection,
 } from "react-stately";
+import { useId } from "react-aria";
 import {
   CollectionBuilder,
   ComboBoxContext,
@@ -25,101 +25,58 @@ import {
   ListBoxContext,
   TagGroupContext,
   ListStateContext,
+  SelectableCollectionContext,
   type Selection,
 } from "react-aria-components";
 import { useIntl } from "react-intl";
-
+import { extractStyleProps } from "@/utils";
 import { ComboBoxRootSlot } from "../combobox.slots";
 import type {
   ComboBoxRootProps,
   ComboBoxRootContextValue,
 } from "../combobox.types";
 import { messages } from "../combobox.i18n";
-import { extractStyleProps } from "@/utils";
+import {
+  defaultGetKey,
+  defaultGetTextValue,
+  defaultGetNewOptionData,
+} from "../utils/collection";
+import {
+  normalizeSelectedKeys,
+  denormalizeSelectedKeys,
+} from "../utils/selection";
 import {
   ComboBoxRootContext,
   useComboBoxRootContext,
 } from "./combobox.root-context";
-/**
- * Default key extractor - uses string/number id or object with id property
- */
-function defaultGetKey<T extends object>(item: T): Key {
-  if (typeof item === "string" || typeof item === "number") {
-    return item as Key;
-  }
-  if ("id" in item) {
-    return (item as { id: Key }).id;
-  }
-  throw new Error("Item must have an 'id' property or provide getKey function");
-}
-
-//TODO: should this be exported as a util in the combobox namespace?
-/**
- * Default text value extractor - uses string item or object with name property
- */
-export function defaultGetTextValue<T extends object>(item: T): string {
-  if (typeof item === "string") {
-    return item;
-  }
-  if ("name" in item) {
-    return String((item as { name: unknown }).name);
-  }
-  if ("label" in item) {
-    return String((item as { label: unknown }).label);
-  }
-  return String(item);
-}
 
 /**
- * Default getNewOptionData - creates an object with id and name
+ * # ComboBox.Root
+ *
+ * Root component for ComboBox that provides state management and context for all child components.
+ * Handles selection state, input filtering, menu open/close, and custom option creation.
+ *
+ * @example
+ * ```tsx
+ * <ComboBox.Root
+ *   items={items}
+ *   getKey={(item) => item.id}
+ *   getTextValue={(item) => item.name}
+ *   onSelectionChange={(keys) => console.log(keys)}
+ * >
+ *   <ComboBox.Trigger>
+ *     <ComboBox.Input />
+ *   </ComboBox.Trigger>
+ *   <ComboBox.Popover>
+ *     <ComboBox.ListBox>
+ *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+ *     </ComboBox.ListBox>
+ *   </ComboBox.Popover>
+ * </ComboBox.Root>
+ * ```
+ *
+ * @supportsStyleProps
  */
-function defaultGetNewOptionData<T extends object>(inputValue: string): T {
-  return {
-    id: inputValue,
-    name: inputValue,
-  } as T;
-}
-
-/**
- * Normalize selectedKeys to Set format
- */
-const normalizeSelectedKeys = (
-  keys: Key | Key[] | undefined | null
-): Set<Key> => {
-  if (!keys) return new Set();
-  if (keys instanceof Set) return keys;
-  return new Set(Array.isArray(keys) ? keys : [keys]);
-};
-
-/**
- * Denormalize selectedKeys from Set to single value or array based on selectionMode
- */
-const denormalizeSelectedKeys = (
-  keys: Set<Key>,
-  selectionMode: "single" | "multiple"
-): Key | Key[] => {
-  const keysArray = Array.from(keys);
-  if (selectionMode === "single") {
-    return keysArray[0] ?? null;
-  }
-  return keysArray;
-};
-
-/**
- * Default filter implementation - filters by text content
- */
-function defaultFilter<T extends object>(
-  nodes: Iterable<Node<T>>,
-  inputValue: string
-): Iterable<Node<T>> {
-  if (!inputValue.trim()) return nodes;
-
-  const lowerInput = inputValue.toLowerCase();
-  return Array.from(nodes).filter((node) => {
-    const text = node.textValue?.toLowerCase() ?? "";
-    return text.includes(lowerInput);
-  });
-}
 
 export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   let ref: RefObject<HTMLDivElement | null>;
@@ -170,8 +127,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
     ]
   );
 
-  // Close menu when filtered collection is empty (unless allowsEmptyMenu is true)
-  // Replicates React Aria's useComboBoxState behavior
+  // Creates Collection that can be used by both the Listbox and Taggroup
   const content = useMemo(
     () => (
       <ComboBoxRootContext.Provider
@@ -220,6 +176,13 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
           {(collection) => (
             <ComboBoxRootInner<T>
               {...functionalProps}
+              selectionMode={selectionMode}
+              getKey={getKey}
+              getTextValue={getTextValue}
+              isDisabled={isDisabled}
+              isRequired={isRequired}
+              isInvalid={isInvalid}
+              isReadOnly={isReadOnly}
               collection={collection as unknown as Collection<Node<T>>}
             />
           )}
@@ -245,15 +208,12 @@ const ComboBoxRootInner = <T extends object>(
     selectionMode = "single",
     items,
     collection,
-
     getKey = defaultGetKey,
     getTextValue = defaultGetTextValue,
     children,
-    selectedKeys: controlledSelectedKeys,
+    selectedKeys: selectedKeysFromProps = [],
     onSelectionChange,
-    defaultSelectedKeys,
-    inputValue: controlledInputValue,
-    defaultInputValue = "",
+    inputValue: inputValueFromProps = "",
     onInputChange,
     filter: customFilter,
     placeholder,
@@ -281,11 +241,22 @@ const ComboBoxRootInner = <T extends object>(
   const listboxId = useId();
   const tagGroupId = useId();
 
+  // Create ref for input to enable programmatic focus
+  const inputRef = useRef<HTMLInputElement>(null);
+
   // Normalize selectedKeys to Set
-  const normalizedSelectedKeys = useMemo(
-    () => normalizeSelectedKeys(controlledSelectedKeys ?? defaultSelectedKeys),
-    [controlledSelectedKeys, defaultSelectedKeys]
+  const normalizedSelectedKeysFromProps = useMemo(
+    () => normalizeSelectedKeys(selectedKeysFromProps),
+    [selectedKeysFromProps]
   );
+  // Selected items state (controlled vs uncontrolled)
+  const isSelectionControlled = Boolean(onSelectionChange);
+  const [internalNormalizedSelectedKeys, setInternalSelectedKeys] = useState(
+    normalizedSelectedKeysFromProps
+  );
+  const normalizedSelectedKeys = isSelectionControlled
+    ? normalizedSelectedKeysFromProps
+    : internalNormalizedSelectedKeys;
 
   // Items state (internal management for allowsCustomOptions)
   const [internalItems, setInternalItems] = useState(() =>
@@ -295,9 +266,34 @@ const ComboBoxRootInner = <T extends object>(
   const effectiveItems = allowsCustomOptions ? internalItems : items;
 
   // Input value state (controlled vs uncontrolled)
-  const [internalInputValue, setInternalInputValue] =
-    useState(defaultInputValue);
-  const inputValue = controlledInputValue ?? internalInputValue;
+  // Controlled when onInputChange is provided, uncontrolled otherwise
+  const isInputControlled = onInputChange !== undefined;
+
+  // Compute initial input value for uncontrolled mode
+  // In uncontrolled single-select mode, initialize input from selected item's text
+  const computeInitialInputValue = () => {
+    // If inputValue provided, use it
+    if (inputValueFromProps) return inputValueFromProps;
+
+    // Only compute from selection in uncontrolled single-select mode
+    if (isInputControlled || selectionMode !== "single") return "";
+
+    // Get the first selected key
+    const selectedKeysArray = Array.from(normalizedSelectedKeys);
+    if (selectedKeysArray.length === 0) return "";
+
+    const selectedKey = selectedKeysArray[0];
+    // Get the text value from the collection
+    const selectedNode = collection.getItem(selectedKey);
+    return selectedNode?.textValue ?? "";
+  };
+
+  const [internalInputValue, setInternalInputValue] = useState(
+    computeInitialInputValue
+  );
+  const inputValue = isInputControlled
+    ? inputValueFromProps
+    : internalInputValue;
 
   // Track previous input value to detect changes
   const prevInputValueRef = useRef(inputValue);
@@ -305,6 +301,12 @@ const ComboBoxRootInner = <T extends object>(
   // Open state (controlled vs uncontrolled)
   const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
   const isOpen = controlledIsOpen ?? internalIsOpen;
+
+  // Focus strategy for keyboard navigation (aria-activedescendant pattern)
+  // Note: focusedKey is managed by state.selectionManager.focusedKey
+  const [focusStrategy, setFocusStrategy] = useState<"first" | "last" | null>(
+    null
+  );
 
   // Unified setIsOpen that calls both internal state and callback
   const setIsOpen = useCallback(
@@ -319,6 +321,9 @@ const ComboBoxRootInner = <T extends object>(
 
   // Toggle function that doesn't rely on captured isOpen value
   const toggleOpen = useCallback(() => {
+    const willOpen =
+      controlledIsOpen === undefined ? !isOpen : !controlledIsOpen;
+
     if (controlledIsOpen === undefined) {
       // Uncontrolled: use functional update to avoid stale closure
       // onOpenChange will be called by the useEffect below when isOpen actually changes
@@ -327,7 +332,13 @@ const ComboBoxRootInner = <T extends object>(
       // Controlled: parent manages state, just notify
       onOpenChange?.(!controlledIsOpen);
     }
-  }, [controlledIsOpen, onOpenChange]);
+
+    // When opening, focus the input and set focus strategy
+    if (willOpen) {
+      inputRef.current?.focus();
+      setFocusStrategy("first");
+    }
+  }, [controlledIsOpen, isOpen, onOpenChange]);
 
   // Call onOpenChange when isOpen changes (for uncontrolled mode)
   // This ensures we only call it once after the state actually updates
@@ -342,9 +353,11 @@ const ComboBoxRootInner = <T extends object>(
   // Handle input value changes with menuTrigger logic
   const handleInputChange = useCallback(
     (value: string) => {
-      if (controlledInputValue === undefined) {
+      if (!isInputControlled) {
+        // Uncontrolled: update internal state
         setInternalInputValue(value);
       }
+      // Always call callback (works for both modes)
       onInputChange?.(value);
 
       // Open menu on input if menuTrigger is "input" and value changed
@@ -354,24 +367,16 @@ const ComboBoxRootInner = <T extends object>(
 
       prevInputValueRef.current = value;
     },
-    [controlledInputValue, onInputChange, menuTrigger, setIsOpen]
+    [isInputControlled, onInputChange, menuTrigger, setIsOpen]
   );
 
-  // Create filtered collection following React Aria's useComboBoxState pattern
-  // This applies filtering to the collection nodes before passing to useListState
+  // Create filtered collection using Collection's built-in filter method
+  // This preserves all navigation methods (getFirstKey, getLastKey, getKeyBefore, getKeyAfter)
   const filteredCollection = useMemo(() => {
-    console.log("filteredCollection memo:", {
-      inputValue,
-      collectionSize: collection.size,
-    });
-
     // Skip filtering if input is empty - show all items
     if (inputValue.trim() === "") {
-      console.log("Skipping filter: empty input");
       return collection;
     }
-
-    const filterFn = customFilter ?? defaultFilter;
 
     // In single-select mode, if input matches a selected item exactly, show all items
     // This allows users to see all options after selecting one
@@ -383,46 +388,39 @@ const ComboBoxRootInner = <T extends object>(
 
         // If input value matches the selected item's text exactly, show all items
         if (selectedNode?.textValue === inputValue) {
-          console.log("Skipping filter: exact match with selected item");
           return collection;
         }
       }
     }
 
-    // Apply the filter to the collection nodes
-    console.log("Applying filter to collection");
-    // Pass the collection itself (which is iterable) to the filter function
-    const allNodes = Array.from(collection);
-    console.log(
-      "All nodes before filter:",
-      allNodes.length,
-      allNodes.map((n) => n.textValue)
-    );
-    const filteredNodes = filterFn(allNodes, inputValue);
-    const filteredArray = Array.from(filteredNodes);
-    console.log(
-      "Filtered nodes count:",
-      filteredArray.length,
-      filteredArray.map((n) => n.textValue)
-    );
+    // Apply the filter using Collection's built-in filter method
+    // This preserves all navigation methods
 
-    // Create a new collection with filtered nodes
-    // We need to return the original collection type structure
-    return {
-      ...collection,
-      *[Symbol.iterator]() {
-        yield* filteredArray;
-      },
-      get size() {
-        return filteredArray.length;
-      },
-      getKeys() {
-        return filteredArray.map((node) => node.key);
-      },
-      getItem(key: Key) {
-        return filteredArray.find((node) => node.key === key);
-      },
-    } as Collection<Node<T>>;
+    if (customFilter) {
+      // If custom filter provided, we need to adapt it
+      // Custom filter signature: (nodes: Iterable<Node<T>>, inputValue: string) => Iterable<Node<T>>
+      // Collection.filter signature: (nodeValue: string, node: Node<T>) => boolean
+
+      // Convert nodes to array, apply custom filter, then get keys to filter
+      const allNodes = Array.from(collection);
+      const filteredNodes = Array.from(customFilter(allNodes, inputValue));
+      const filteredKeys = new Set(filteredNodes.map((node) => node.key));
+
+      // Use Collection.filter with the filtered keys
+      return (
+        collection.filter?.((nodeValue, node) => {
+          return filteredKeys.has(node.key);
+        }) ?? collection
+      );
+    }
+
+    // Default text-based filtering using Collection's built-in filter
+    const lowerInput = inputValue.toLowerCase();
+    return (
+      collection.filter?.((nodeValue) => {
+        return nodeValue.toLowerCase().includes(lowerInput);
+      }) ?? collection
+    );
   }, [
     collection,
     inputValue,
@@ -432,16 +430,56 @@ const ComboBoxRootInner = <T extends object>(
   ]);
 
   const handleSelectionChange = useCallback(
-    (keys: Selection) => {
+    (keys: Selection, previousKeys?: Set<Key>) => {
       // Handle "all" selection (convert to actual Set of all keys)
-      const actualKeys =
+      let actualKeys =
         keys === "all"
           ? new Set(Array.from(collection).map((node) => node.key))
           : keys;
 
+      // Use provided previous keys or fall back to current normalized keys
+      const comparisonKeys = previousKeys ?? normalizedSelectedKeys;
+
+      // In multi-select mode, toggle individual item selections when clicking options
+      // React Aria sends a Set with one key when clicking an item
+      // Only apply toggle logic if the new selection is not a proper subset (which would indicate removal)
+      const isProperSubset =
+        actualKeys.size > 0 &&
+        Array.from(actualKeys).every((key) => comparisonKeys.has(key)) &&
+        actualKeys.size < comparisonKeys.size;
+
+      if (
+        selectionMode === "multiple" &&
+        actualKeys.size === 1 &&
+        !isProperSubset
+      ) {
+        const clickedKey = Array.from(actualKeys)[0];
+        const isAlreadySelected = comparisonKeys.has(clickedKey);
+
+        // If clicking an unselected item, add it to selection
+        if (!isAlreadySelected) {
+          const newSelection = new Set(comparisonKeys);
+          newSelection.add(clickedKey);
+          actualKeys = newSelection;
+        }
+        // If clicking a selected item, remove it (toggle off)
+        else {
+          const newSelection = new Set(comparisonKeys);
+          newSelection.delete(clickedKey);
+          actualKeys = newSelection;
+        }
+      }
+
       // Update selection state
       const denormalized = denormalizeSelectedKeys(actualKeys, selectionMode);
-      onSelectionChange?.(denormalized);
+
+      if (onSelectionChange) {
+        // If selection is controlled, send selected keys array to parent
+        onSelectionChange(denormalized);
+      } else {
+        // if selection is uncontrolled, set internal state
+        setInternalSelectedKeys(actualKeys);
+      }
 
       // For single-select mode, update input value and close popover
       if (selectionMode === "single") {
@@ -453,10 +491,12 @@ const ComboBoxRootInner = <T extends object>(
           const textValue = selectedNode?.textValue ?? "";
 
           // Update input value
-          if (controlledInputValue === undefined) {
+          if (!isInputControlled) {
+            // Uncontrolled: update internal state
             setInternalInputValue(textValue);
             prevInputValueRef.current = textValue;
           }
+          // Always call callback (works for both modes)
           onInputChange?.(textValue);
         }
 
@@ -469,8 +509,8 @@ const ComboBoxRootInner = <T extends object>(
     [
       collection,
       selectionMode,
+      normalizedSelectedKeys,
       onSelectionChange,
-      controlledInputValue,
       onInputChange,
       shouldCloseOnSelect,
       setIsOpen,
@@ -484,34 +524,57 @@ const ComboBoxRootInner = <T extends object>(
     onSelectionChange: handleSelectionChange,
   });
 
+  const selectedItemsFromState = useMemo(
+    () =>
+      selectionMode === "multiple"
+        ? Array.from(state.selectionManager.selectedKeys)
+            .map((key) => collection.getItem(key)?.value)
+            .filter((item): item is T => item !== undefined)
+        : [],
+    [
+      selectionMode,
+      state.selectionManager.selectedKeys,
+      collection,
+      state.collection,
+    ]
+  );
+
   // Clear all selections
   const clearSelection = useCallback(() => {
     state.selectionManager.setSelectedKeys(new Set());
 
     // Clear input value in single-select mode
     if (selectionMode === "single") {
-      if (controlledInputValue === undefined) {
+      if (!isInputControlled) {
+        // Uncontrolled: update internal state
         setInternalInputValue("");
         prevInputValueRef.current = "";
       }
+      // Always call callback (works for both modes)
       onInputChange?.("");
     }
-  }, [
-    state.selectionManager,
-    selectionMode,
-    controlledInputValue,
-    onInputChange,
-  ]);
+  }, [state.selectionManager, selectionMode, isInputControlled, onInputChange]);
 
   // Remove a specific key (for tag removal in multi-select)
+  // React Aria's TagGroup onRemove passes a Set of removed keys
   const removeKey = useCallback(
-    (key: Key) => {
-      const currentKeys = state.selectionManager.selectedKeys;
+    (keysToRemove: Set<Key>) => {
+      const currentKeys = normalizedSelectedKeys;
       const newKeys = new Set(currentKeys);
-      newKeys.delete(key);
-      handleSelectionChange(new Set([key]));
+
+      // Remove all keys in the set
+      keysToRemove.forEach((key) => newKeys.delete(key));
+
+      // Use handleSelectionChange which will detect this as a removal (proper subset)
+      // Pass currentKeys as previousKeys so it can properly detect the subset
+      handleSelectionChange(newKeys, currentKeys);
+
+      // If no tags remain after removal, move focus to the input
+      if (newKeys.size === 0) {
+        inputRef.current?.focus();
+      }
     },
-    [state.selectionManager]
+    [normalizedSelectedKeys, handleSelectionChange]
   );
 
   // Handle creating a new option from input value
@@ -557,17 +620,21 @@ const ComboBoxRootInner = <T extends object>(
 
     // Clear input for multi-select, update for single-select
     if (selectionMode === "multiple") {
-      if (controlledInputValue === undefined) {
+      if (!isInputControlled) {
+        // Uncontrolled: update internal state
         setInternalInputValue("");
         prevInputValueRef.current = "";
       }
+      // Always call callback (works for both modes)
       onInputChange?.("");
     } else {
       const textValue = getTextValue(newItem);
-      if (controlledInputValue === undefined) {
+      if (!isInputControlled) {
+        // Uncontrolled: update internal state
         setInternalInputValue(textValue);
         prevInputValueRef.current = textValue;
       }
+      // Always call callback (works for both modes)
       onInputChange?.(textValue);
     }
 
@@ -591,10 +658,111 @@ const ComboBoxRootInner = <T extends object>(
     selectionMode,
     shouldCloseOnSelect,
     setIsOpen,
-    controlledInputValue,
     onInputChange,
     onCreateOption,
   ]);
+
+  // Handle keyboard navigation in the input
+  const handleInputKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!isOpen) {
+            setIsOpen(true);
+            setFocusStrategy("first");
+          } else {
+            // Move focus to first/next item
+            const currentKey = state.selectionManager.focusedKey;
+            const nextKey = currentKey
+              ? state.collection.getKeyAfter(currentKey)
+              : state.collection.getFirstKey();
+            state.selectionManager.setFocusedKey(
+              nextKey ?? state.collection.getFirstKey()
+            );
+          }
+          break;
+
+        case "ArrowUp":
+          e.preventDefault();
+          if (!isOpen) {
+            setIsOpen(true);
+            setFocusStrategy("last");
+          } else {
+            // Move focus to last/previous item
+            const currentKey = state.selectionManager.focusedKey;
+            const prevKey = currentKey
+              ? state.collection.getKeyBefore(currentKey)
+              : state.collection.getLastKey();
+            state.selectionManager.setFocusedKey(
+              prevKey ?? state.collection.getLastKey()
+            );
+          }
+          break;
+
+        case "Enter":
+          if (isOpen && state.selectionManager.focusedKey) {
+            e.preventDefault();
+            const focusedKey = state.selectionManager.focusedKey;
+
+            if (selectionMode === "multiple") {
+              // In multi-select mode, toggle the focused item
+              const newSelection = new Set(normalizedSelectedKeys);
+              if (newSelection.has(focusedKey)) {
+                newSelection.delete(focusedKey);
+              } else {
+                newSelection.add(focusedKey);
+              }
+              handleSelectionChange(newSelection);
+              // Keep focus on the same item after selection
+            } else {
+              // In single-select mode, replace the selection
+              handleSelectionChange(new Set([focusedKey]));
+              state.selectionManager.setFocusedKey(null);
+            }
+          }
+          // Don't prevent default if no focused key - allows form submission
+          break;
+
+        case "Escape":
+          if (isOpen) {
+            e.preventDefault();
+            setIsOpen(false);
+            state.selectionManager.setFocusedKey(null);
+            // TODO: Revert to last selected value in single-select mode
+          }
+          break;
+
+        case "Home":
+          if (isOpen) {
+            e.preventDefault();
+            const firstKey = state.collection.getFirstKey();
+            state.selectionManager.setFocusedKey(firstKey);
+          }
+          break;
+
+        case "End":
+          if (isOpen) {
+            e.preventDefault();
+            const lastKey = state.collection.getLastKey();
+            state.selectionManager.setFocusedKey(lastKey);
+          }
+          break;
+
+        default:
+          // Regular typing - handled by onChange
+          break;
+      }
+    },
+    [
+      isOpen,
+      state.selectionManager,
+      state.collection,
+      handleSelectionChange,
+      setIsOpen,
+      setFocusStrategy,
+    ]
+  );
 
   // Handle input focus - open if menuTrigger is "focus"
   const handleFocus = useCallback(() => {
@@ -653,7 +821,7 @@ const ComboBoxRootInner = <T extends object>(
         : "";
 
     // Update input value (respecting controlled/uncontrolled pattern)
-    if (controlledInputValue === undefined) {
+    if (!isInputControlled) {
       // Uncontrolled: update internal state directly
       setInternalInputValue(itemText);
       prevInputValueRef.current = itemText;
@@ -665,9 +833,34 @@ const ComboBoxRootInner = <T extends object>(
     selectionMode,
     state.selectionManager.selectedKeys,
     state.collection,
-    controlledInputValue,
+    isInputControlled,
     onInputChange,
   ]);
+
+  // Apply focus strategy when menu opens
+  useEffect(() => {
+    if (isOpen && focusStrategy) {
+      const key =
+        focusStrategy === "first"
+          ? state.collection.getFirstKey()
+          : state.collection.getLastKey();
+
+      state.selectionManager.setFocusedKey(key ?? null);
+      setFocusStrategy(null); // Reset strategy after applying
+    }
+  }, [isOpen, focusStrategy, state.collection, state.selectionManager]);
+
+  // Manage focus state when menu opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      // Enable focus mode for virtual focus to work
+      state.selectionManager.setFocused(true);
+    } else {
+      // Disable focus mode and clear focused key
+      state.selectionManager.setFocused(false);
+      state.selectionManager.setFocusedKey(null);
+    }
+  }, [isOpen, state.selectionManager]);
 
   // Track if collection has been populated at least once
   const collectionPopulatedRef = useRef(false);
@@ -690,7 +883,6 @@ const ComboBoxRootInner = <T extends object>(
 
     // Close menu if no items match the filter
     if (!hasItems) {
-      console.log("Closing menu because collection is empty");
       setIsOpen(false);
     }
   }, [isOpen, allowsEmptyMenu, state.collection.size, setIsOpen, inputValue]);
@@ -702,6 +894,7 @@ const ComboBoxRootInner = <T extends object>(
     [
       InputContext,
       {
+        ref: inputRef,
         role: "combobox" as const,
         "aria-autocomplete": "list" as const,
         "aria-controls":
@@ -709,6 +902,9 @@ const ComboBoxRootInner = <T extends object>(
             ? `${tagGroupId} ${listboxId}`
             : listboxId,
         "aria-expanded": isOpen,
+        "aria-activedescendant": state.selectionManager.focusedKey
+          ? `${listboxId}-option-${state.selectionManager.focusedKey}`
+          : undefined,
         "aria-describedby":
           selectionMode === "multiple" ? tagGroupId : undefined,
         "aria-label": ariaLabel,
@@ -716,6 +912,7 @@ const ComboBoxRootInner = <T extends object>(
         value: inputValue,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
           handleInputChange(e.target.value),
+        onKeyDown: handleInputKeyDown,
         onFocus: handleFocus,
         onBlur: handleBlur,
         disabled: isDisabled,
@@ -731,12 +928,7 @@ const ComboBoxRootInner = <T extends object>(
       TagGroupContext,
       {
         id: tagGroupId,
-        items:
-          selectionMode === "multiple"
-            ? Array.from(state.selectionManager.selectedKeys).map((key) =>
-                state.collection.getItem(key)
-              )
-            : [],
+        items: selectedItemsFromState,
         onRemove: removeKey,
       },
     ],
@@ -777,7 +969,7 @@ const ComboBoxRootInner = <T extends object>(
         isNonModal: true,
       },
     ],
-
+    [SelectableCollectionContext, { shouldUseVirtualFocus: true }],
     // ListBoxContext - for ComboBox.ListBox
     // Pass listbox props and ref from useListBox hook
     [
@@ -804,31 +996,3 @@ const ComboBoxRootInner = <T extends object>(
     </Provider>
   );
 };
-
-/**
- * # ComboBox.Root
- *
- * Root component for ComboBox that provides state management and context for all child components.
- * Handles selection state, input filtering, menu open/close, and custom option creation.
- *
- * @example
- * ```tsx
- * <ComboBox.Root
- *   items={items}
- *   getKey={(item) => item.id}
- *   getTextValue={(item) => item.name}
- *   onSelectionChange={(keys) => console.log(keys)}
- * >
- *   <ComboBox.Trigger>
- *     <ComboBox.Input />
- *   </ComboBox.Trigger>
- *   <ComboBox.Popover>
- *     <ComboBox.ListBox>
- *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
- *     </ComboBox.ListBox>
- *   </ComboBox.Popover>
- * </ComboBox.Root>
- * ```
- *
- * @supportsStyleProps
- */

@@ -1,3 +1,9 @@
+import { useContext } from "react";
+import {
+  TagGroupContext,
+  type ContextValue,
+  type TagGroupProps,
+} from "react-aria-components";
 import { TagGroup } from "@/components";
 import { useComboBoxRootContext } from "./combobox.root-context";
 import { ComboBoxTagGroupSlot } from "../combobox.slots";
@@ -34,6 +40,17 @@ export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {
   const { selectionMode, getKey, getTextValue } = useComboBoxRootContext();
   const [styleProps, functionalProps] = extractStyleProps(props);
 
+  const tagGroupContext =
+    useContext<
+      ContextValue<TagGroupProps & { items?: object[] }, HTMLDivElement>
+    >(TagGroupContext);
+
+  // Extract items from context, handling both direct values and slotted values
+  const items =
+    (tagGroupContext && "items" in tagGroupContext
+      ? tagGroupContext.items
+      : undefined) ?? [];
+
   // Only render in multi-select mode
   if (selectionMode !== "multiple") {
     return null;
@@ -43,7 +60,7 @@ export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {
     <ComboBoxTagGroupSlot {...styleProps} {...functionalProps}>
       {/* TagGroup.Root receives id from TagGroupContext set by custom-context */}
       <TagGroup.Root>
-        <TagGroup.TagList maxW="100%">
+        <TagGroup.TagList items={items} maxW="100%">
           {(item) => {
             const itemKey = getKey(item);
             const itemValue = getTextValue(item);
