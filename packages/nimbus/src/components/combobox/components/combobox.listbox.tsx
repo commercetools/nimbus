@@ -26,8 +26,14 @@ export function ComboBoxListBox<T extends object>({
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
-    <ComboBoxListBoxSlot {...styleProps} ref={ref} asChild={false}>
-      <RaListBox {...functionalProps}>{children}</RaListBox>
+    <ComboBoxListBoxSlot {...styleProps} ref={ref} asChild>
+      <RaListBox
+        {...functionalProps}
+        shouldFocusOnHover={true}
+        shouldFocusWrap={true}
+      >
+        {children}
+      </RaListBox>
     </ComboBoxListBoxSlot>
   );
 }

@@ -14,7 +14,7 @@ import {
   // Box,
   // Button,
   // // ComboBox,
-  // // type ComboBoxRootProps,
+  // type ComboBoxRootProps,
   // Flex,
   // FormField,
   // Icon,
@@ -30,8 +30,8 @@ import {
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
-import { defaultGetTextValue } from "./components/combobox.root";
-import type { ComboBoxRootProps } from "@commercetools/nimbus";
+import type { ComboBoxRootProps } from "./combobox.types";
+import { defaultGetTextValue } from "./utils/collection";
 
 /**
  * Storybook metadata configuration
@@ -63,9 +63,11 @@ const options: SimpleOption[] = [
 ];
 
 function SingleSelectComboBox<T extends object>(props: ComboBoxRootProps<T>) {
+  console.log(props);
   return (
     <ComboBox.Root {...props}>
       <ComboBox.Trigger>
+        <ComboBox.TagGroup />
         <ComboBox.Input />
         <IconButton slot="toggle">
           <KeyboardArrowDown />
@@ -91,7 +93,13 @@ function SingleSelectComboBox<T extends object>(props: ComboBoxRootProps<T>) {
  */
 export const Base: Story = {
   render: () => {
-    return <SingleSelectComboBox<SimpleOption> items={options} />;
+    return (
+      <SingleSelectComboBox<SimpleOption>
+        items={options}
+        selectionMode="multiple"
+        selectedKeys={[1]}
+      />
+    );
   },
 };
 

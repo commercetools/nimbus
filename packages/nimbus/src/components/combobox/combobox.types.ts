@@ -210,23 +210,30 @@ export type ComboBoxRootProps<T extends object> = Omit<
   defaultSelectedKeys?: Key | Key[];
 
   /**
-   * Controlled input value
+   * Input value for controlled mode
    *
-   * When using controlled mode, you **MUST** update this prop in response to `onInputChange`
-   * to see input value changes. This includes:
+   * **Controlled Mode:** When `onInputChange` is provided, you manage the input value.
+   * You **MUST** update this prop in response to `onInputChange` for changes to be visible:
    * - User typing in the input
    * - Automatic sync on selection changes (single-select mode)
    * - Input clearing after selection (multi-select mode)
    *
-   * If you don't update `inputValue` when `onInputChange` fires, the input will appear frozen.
+   * **Uncontrolled Mode:** When `onInputChange` is NOT provided, the component manages
+   * the input value internally. You can still pass `inputValue` to set the initial value.
    *
    * @example
    * ```tsx
-   * // ✅ Correct: Update inputValue in response to onInputChange
+   * // ✅ Controlled: Update inputValue in response to onInputChange
    * const [inputValue, setInputValue] = useState("");
    * <ComboBox.Root
    *   inputValue={inputValue}
    *   onInputChange={setInputValue}
+   * />
+   *
+   * // ✅ Uncontrolled: Component manages input internally
+   * <ComboBox.Root
+   *   inputValue="initial search text"
+   *   // No onInputChange - component handles updates
    * />
    *
    * // ❌ Wrong: Controlled prop but never updated
@@ -239,21 +246,17 @@ export type ComboBoxRootProps<T extends object> = Omit<
   inputValue?: string;
 
   /**
-   * Default input value for uncontrolled mode
-   * @default ""
-   */
-  defaultInputValue?: string;
-
-  /**
    * Callback when input value changes
+   *
+   * **When provided:** Enables controlled input mode. You must update `inputValue` prop
+   * in this callback for the input to update.
+   *
+   * **When NOT provided:** Component uses uncontrolled input mode and manages value internally.
    *
    * Called when:
    * - User types in the input
    * - Selection changes in single-select mode (input syncs to selected item's text)
    * - Option selected in multi-select mode (input clears)
-   *
-   * In controlled mode (`inputValue` prop provided), you must update `inputValue`
-   * in this callback for changes to be visible.
    *
    * @param value - The new input value
    */
