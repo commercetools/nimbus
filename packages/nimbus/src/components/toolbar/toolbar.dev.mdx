@@ -1,0 +1,644 @@
+---
+title: Toolbar Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Toolbar, type ToolbarProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation creates a horizontal toolbar with default styling:
+
+```jsx-live-dev
+const App = () => (
+  <Toolbar>
+    <Button size="xs" variant="ghost">File</Button>
+    <Button size="xs" variant="ghost">Edit</Button>
+    <Button size="xs" variant="ghost">View</Button>
+  </Toolbar>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `xs` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Size: xs</Text>
+      <Toolbar size="xs">
+        <IconButton size="xs" variant="ghost" aria-label="New">
+          <Icons.Add />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Save">
+          <Icons.Save />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Print">
+          <Icons.Print />
+        </IconButton>
+      </Toolbar>
+    </Box>
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Size: md</Text>
+      <Toolbar size="md">
+        <IconButton size="xs" variant="ghost" aria-label="New">
+          <Icons.Add />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Save">
+          <Icons.Save />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Print">
+          <Icons.Print />
+        </IconButton>
+      </Toolbar>
+    </Box>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `plain` and `outline` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Variant: plain</Text>
+      <Toolbar variant="plain">
+        <IconButton size="xs" variant="ghost" aria-label="Undo">
+          <Icons.Undo />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Redo">
+          <Icons.Redo />
+        </IconButton>
+      </Toolbar>
+    </Box>
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Variant: outline</Text>
+      <Toolbar variant="outline">
+        <IconButton size="xs" variant="ghost" aria-label="Undo">
+          <Icons.Undo />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Redo">
+          <Icons.Redo />
+        </IconButton>
+      </Toolbar>
+    </Box>
+  </Stack>
+)
+```
+
+### Orientation
+
+The `orientation` prop controls the layout direction and keyboard navigation:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600" alignItems="flex-start">
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Horizontal (default)</Text>
+      <Toolbar orientation="horizontal">
+        <IconButton size="xs" variant="ghost" aria-label="Home">
+          <Icons.Home />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Search">
+          <Icons.Search />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Settings">
+          <Icons.Settings />
+        </IconButton>
+      </Toolbar>
+    </Box>
+    <Box>
+      <Text textStyle="sm" mb="200" color="neutral.11">Vertical</Text>
+      <Toolbar orientation="vertical">
+        <IconButton size="xs" variant="ghost" aria-label="Home">
+          <Icons.Home />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Search">
+          <Icons.Search />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Settings">
+          <Icons.Settings />
+        </IconButton>
+      </Toolbar>
+    </Box>
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `orientation="horizontal"`: Arrow Left/Right keys navigate between controls
+- `orientation="vertical"`: Arrow Up/Down keys navigate between controls
+
+### With Groups and Separators
+
+Organize toolbar controls using `Group` and `Separator` components:
+
+```jsx-live-dev
+const App = () => (
+  <Toolbar>
+    <Group>
+      <IconButton size="xs" variant="ghost" aria-label="New">
+        <Icons.Add />
+      </IconButton>
+      <IconButton size="xs" variant="ghost" aria-label="Open">
+        <Icons.FolderOpen />
+      </IconButton>
+    </Group>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost" aria-label="Save">
+        <Icons.Save />
+      </IconButton>
+      <IconButton size="xs" variant="ghost" aria-label="Print">
+        <Icons.Print />
+      </IconButton>
+    </Group>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost" aria-label="Undo">
+        <Icons.Undo />
+      </IconButton>
+      <IconButton size="xs" variant="ghost" aria-label="Redo">
+        <Icons.Redo />
+      </IconButton>
+    </Group>
+  </Toolbar>
+)
+```
+
+### With ToggleButtonGroup
+
+Integrate toggle button groups for stateful toolbar controls:
+
+```jsx-live-dev
+const App = () => (
+  <Toolbar variant="outline">
+    <ToggleButtonGroup.Root
+      selectionMode="multiple"
+      defaultSelectedKeys={["bold"]}
+    >
+      <IconToggleButton
+        id="bold"
+        size="xs"
+        variant="ghost"
+        aria-label="Bold"
+      >
+        <Icons.FormatBold />
+      </IconToggleButton>
+      <IconToggleButton
+        id="italic"
+        size="xs"
+        variant="ghost"
+        aria-label="Italic"
+      >
+        <Icons.FormatItalic />
+      </IconToggleButton>
+      <IconToggleButton
+        id="underline"
+        size="xs"
+        variant="ghost"
+        aria-label="Underline"
+      >
+        <Icons.FormatUnderlined />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <Separator orientation="vertical" />
+    <ToggleButtonGroup.Root
+      selectionMode="single"
+      defaultSelectedKeys={["left"]}
+    >
+      <IconToggleButton
+        id="left"
+        size="xs"
+        variant="ghost"
+        aria-label="Align Left"
+      >
+        <Icons.FormatAlignLeft />
+      </IconToggleButton>
+      <IconToggleButton
+        id="center"
+        size="xs"
+        variant="ghost"
+        aria-label="Align Center"
+      >
+        <Icons.FormatAlignCenter />
+      </IconToggleButton>
+      <IconToggleButton
+        id="right"
+        size="xs"
+        variant="ghost"
+        aria-label="Align Right"
+      >
+        <Icons.FormatAlignRight />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+  </Toolbar>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Toolbar component handles most accessibility requirements internally, including:
+- Setting the `role="toolbar"` attribute
+- Managing keyboard navigation with arrow keys
+- Setting proper `aria-orientation` based on the `orientation` prop
+
+However, you should always provide an accessible label for the toolbar. This can be done by:
+
+- Using `aria-label` for a direct label:
+
+```tsx
+<Toolbar aria-label="Text formatting controls">
+  {/* toolbar controls */}
+</Toolbar>
+```
+
+- Using `aria-labelledby` to reference a visible label:
+
+```tsx
+<Text id="toolbar-label">Text Formatting</Text>
+<Toolbar aria-labelledby="toolbar-label">
+  {/* toolbar controls */}
+</Toolbar>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-toolbar";
+
+export const Example = () => (
+  <Toolbar id={PERSISTENT_ID} aria-label="Main toolbar">
+    {/* toolbar controls */}
+  </Toolbar>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus into and out of the toolbar
+- `Arrow Left` / `Arrow Right`: Navigate between controls in horizontal toolbars
+- `Arrow Up` / `Arrow Down`: Navigate between controls in vertical toolbars
+- `Home`: Focus first control in the toolbar
+- `End`: Focus last control in the toolbar
+
+## API reference
+
+<PropsTable id="Toolbar" />
+
+## Common patterns
+
+### Text editor toolbar
+
+Create a comprehensive text formatting toolbar with multiple control groups:
+
+```jsx-live-dev
+const App = () => {
+  const [textStyle, setTextStyle] = useState("p");
+
+  const textStyles = [
+    { id: "h1", label: "Heading 1" },
+    { id: "h2", label: "Heading 2" },
+    { id: "p", label: "Paragraph" },
+  ];
+
+  const selectedTextStyle = textStyles.find((v) => v.id === textStyle);
+
+  return (
+    <Toolbar size="md" variant="outline" aria-label="Text formatting">
+      <Group>
+        <Menu.Root onAction={(v) => setTextStyle(String(v))}>
+          <Menu.Trigger
+            borderRadius="200"
+            border="1px solid"
+            borderColor="neutral.6"
+            width="3500"
+            aria-label="Text style"
+          >
+            <Box display="flex" alignItems="center" gap="200" px="200">
+              <Text>{selectedTextStyle?.label}</Text>
+              <Icons.KeyboardArrowDown />
+            </Box>
+          </Menu.Trigger>
+          <Menu.Content>
+            {textStyles.map((style) => (
+              <Menu.Item key={style.id} id={style.id}>
+                {style.label}
+              </Menu.Item>
+            ))}
+          </Menu.Content>
+        </Menu.Root>
+      </Group>
+      <Separator orientation="vertical" />
+      <ToggleButtonGroup.Root
+        selectionMode="multiple"
+        defaultSelectedKeys={["bold"]}
+        aria-label="Text formatting"
+      >
+        <IconToggleButton id="bold" size="xs" variant="ghost" aria-label="Bold">
+          <Icons.FormatBold />
+        </IconToggleButton>
+        <IconToggleButton id="italic" size="xs" variant="ghost" aria-label="Italic">
+          <Icons.FormatItalic />
+        </IconToggleButton>
+        <IconToggleButton id="underline" size="xs" variant="ghost" aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </IconToggleButton>
+      </ToggleButtonGroup.Root>
+      <Separator orientation="vertical" />
+      <ToggleButtonGroup.Root
+        selectionMode="single"
+        defaultSelectedKeys={["left"]}
+        aria-label="Text alignment"
+      >
+        <IconToggleButton id="left" size="xs" variant="ghost" aria-label="Align Left">
+          <Icons.FormatAlignLeft />
+        </IconToggleButton>
+        <IconToggleButton id="center" size="xs" variant="ghost" aria-label="Align Center">
+          <Icons.FormatAlignCenter />
+        </IconToggleButton>
+        <IconToggleButton id="right" size="xs" variant="ghost" aria-label="Align Right">
+          <Icons.FormatAlignRight />
+        </IconToggleButton>
+      </ToggleButtonGroup.Root>
+    </Toolbar>
+  );
+}
+```
+
+### Navigation toolbar
+
+Build a vertical navigation toolbar for sidebar layouts:
+
+```jsx-live-dev
+const App = () => (
+  <Toolbar
+    orientation="vertical"
+    variant="outline"
+    aria-label="Navigation"
+  >
+    <IconButton size="xs" variant="ghost" aria-label="Home">
+      <Icons.Home />
+    </IconButton>
+    <IconButton size="xs" variant="ghost" aria-label="Search">
+      <Icons.Search />
+    </IconButton>
+    <Separator orientation="horizontal" />
+    <IconButton size="xs" variant="ghost" aria-label="Settings">
+      <Icons.Settings />
+    </IconButton>
+    <IconButton size="xs" variant="ghost" aria-label="Profile">
+      <Icons.Person />
+    </IconButton>
+    <Separator orientation="horizontal" />
+    <IconButton size="xs" variant="ghost" aria-label="Logout">
+      <Icons.Logout />
+    </IconButton>
+  </Toolbar>
+)
+```
+
+### Action toolbar
+
+Create a simple action toolbar with primary controls:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400" width="full">
+    <Toolbar aria-label="Document actions">
+      <Group>
+        <IconButton size="xs" variant="ghost" aria-label="New document">
+          <Icons.Add />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Open document">
+          <Icons.FolderOpen />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Save document">
+          <Icons.Save />
+        </IconButton>
+      </Group>
+      <Separator orientation="vertical" />
+      <Group>
+        <IconButton size="xs" variant="ghost" aria-label="Undo">
+          <Icons.Undo />
+        </IconButton>
+        <IconButton size="xs" variant="ghost" aria-label="Redo" isDisabled>
+          <Icons.Redo />
+        </IconButton>
+      </Group>
+    </Toolbar>
+    <Box
+      p="600"
+      borderRadius="200"
+      borderWidth="1px"
+      borderColor="neutral.6"
+      minHeight="6000"
+    >
+      <Text color="neutral.11">Document content area</Text>
+    </Box>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Toolbar in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Toolbar, Button } from '@commercetools/nimbus';
+
+describe('Toolbar', () => {
+  it('renders toolbar with role attribute', () => {
+    render(
+      <Toolbar aria-label="Main toolbar">
+        <Button size="xs">File</Button>
+      </Toolbar>
+    );
+
+    // Verify toolbar is rendered with correct role
+    expect(screen.getByRole('toolbar', { name: /main toolbar/i })).toBeInTheDocument();
+  });
+
+  it('renders with horizontal orientation by default', () => {
+    render(
+      <Toolbar aria-label="Test toolbar">
+        <Button size="xs">File</Button>
+      </Toolbar>
+    );
+
+    const toolbar = screen.getByRole('toolbar');
+    expect(toolbar).toHaveAttribute('aria-orientation', 'horizontal');
+  });
+
+  it('renders with vertical orientation when specified', () => {
+    render(
+      <Toolbar orientation="vertical" aria-label="Test toolbar">
+        <Button size="xs">File</Button>
+      </Toolbar>
+    );
+
+    const toolbar = screen.getByRole('toolbar');
+    expect(toolbar).toHaveAttribute('aria-orientation', 'vertical');
+  });
+});
+```
+
+### Interaction tests
+
+Test keyboard navigation with the toolbar:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Toolbar, Button } from '@commercetools/nimbus';
+
+describe('Toolbar keyboard navigation', () => {
+  it('navigates between controls with arrow keys in horizontal toolbar', async () => {
+    const user = userEvent.setup();
+    render(
+      <Toolbar aria-label="Test toolbar">
+        <Button size="xs" data-testid="btn-1">File</Button>
+        <Button size="xs" data-testid="btn-2">Edit</Button>
+        <Button size="xs" data-testid="btn-3">View</Button>
+      </Toolbar>
+    );
+
+    const btn1 = screen.getByTestId('btn-1');
+    const btn2 = screen.getByTestId('btn-2');
+    const btn3 = screen.getByTestId('btn-3');
+
+    // Focus first button
+    await user.click(btn1);
+    expect(btn1).toHaveFocus();
+
+    // Navigate with Arrow Right
+    await user.keyboard('{ArrowRight}');
+    expect(btn2).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(btn3).toHaveFocus();
+
+    // Navigate backwards with Arrow Left
+    await user.keyboard('{ArrowLeft}');
+    expect(btn2).toHaveFocus();
+  });
+
+  it('navigates between controls with arrow keys in vertical toolbar', async () => {
+    const user = userEvent.setup();
+    render(
+      <Toolbar orientation="vertical" aria-label="Test toolbar">
+        <Button size="xs" data-testid="btn-1">Home</Button>
+        <Button size="xs" data-testid="btn-2">Search</Button>
+        <Button size="xs" data-testid="btn-3">Settings</Button>
+      </Toolbar>
+    );
+
+    const btn1 = screen.getByTestId('btn-1');
+    const btn2 = screen.getByTestId('btn-2');
+    const btn3 = screen.getByTestId('btn-3');
+
+    // Focus first button
+    await user.click(btn1);
+    expect(btn1).toHaveFocus();
+
+    // Navigate with Arrow Down
+    await user.keyboard('{ArrowDown}');
+    expect(btn2).toHaveFocus();
+
+    await user.keyboard('{ArrowDown}');
+    expect(btn3).toHaveFocus();
+
+    // Navigate backwards with Arrow Up
+    await user.keyboard('{ArrowUp}');
+    expect(btn2).toHaveFocus();
+  });
+});
+```
+
+### Testing with ToggleButtonGroup
+
+Test toolbar integration with toggle button groups:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Toolbar, ToggleButtonGroup, IconToggleButton } from '@commercetools/nimbus';
+
+describe('Toolbar with ToggleButtonGroup', () => {
+  it('maintains toggle states within toolbar', async () => {
+    const user = userEvent.setup();
+    render(
+      <Toolbar aria-label="Formatting toolbar">
+        <ToggleButtonGroup.Root
+          selectionMode="multiple"
+          defaultSelectedKeys={["bold"]}
+        >
+          <IconToggleButton
+            id="bold"
+            size="xs"
+            aria-label="Bold"
+            data-testid="bold-btn"
+          >
+            B
+          </IconToggleButton>
+          <IconToggleButton
+            id="italic"
+            size="xs"
+            aria-label="Italic"
+            data-testid="italic-btn"
+          >
+            I
+          </IconToggleButton>
+        </ToggleButtonGroup.Root>
+      </Toolbar>
+    );
+
+    const boldBtn = screen.getByTestId('bold-btn');
+    const italicBtn = screen.getByTestId('italic-btn');
+
+    // Bold should be selected by default
+    expect(boldBtn).toHaveAttribute('aria-pressed', 'true');
+    expect(italicBtn).toHaveAttribute('aria-pressed', 'false');
+
+    // Click italic to activate it
+    await user.click(italicBtn);
+    expect(italicBtn).toHaveAttribute('aria-pressed', 'true');
+
+    // Bold should still be active (multiple selection mode)
+    expect(boldBtn).toHaveAttribute('aria-pressed', 'true');
+
+    // Click bold to deactivate it
+    await user.click(boldBtn);
+    expect(boldBtn).toHaveAttribute('aria-pressed', 'false');
+    expect(italicBtn).toHaveAttribute('aria-pressed', 'true');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-toolbar--docs)
+- [React Aria Toolbar](https://react-spectrum.adobe.com/react-aria/Toolbar.html)
+- [ARIA Toolbar Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)
