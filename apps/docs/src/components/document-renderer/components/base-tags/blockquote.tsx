@@ -44,6 +44,21 @@ const iconMapping = {
   WARNING: Warning,
   CAUTION: Error,
 };
+
+/**
+ * Safely extracts text content from any React node type.
+ * Handles strings, numbers, arrays, and React elements with children.
+ */
+const getTextContent = (node: ReactNode): string => {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getTextContent).join("");
+  if (isValidElement(node) && node.props.children) {
+    return getTextContent(node.props.children);
+  }
+  return "";
+};
+
 function cleanQuoteFlavor(input: string) {
   // Remove the brackets and exclamation mark
   const cleanKey = input.replace(/[[\]!]/g, "") as keyof typeof iconMapping;
@@ -82,32 +97,30 @@ export const Blockquote = (props: BlockquoteProps) => {
       if (!isParagraph) return;
 
       const firstChild = child.props.children[0];
-
-      // Type guard: ensure firstChild is a string before calling .trim()
-      if (typeof firstChild !== "string") return;
+      const firstChildText = getTextContent(firstChild).trim();
 
       switch (true) {
-        case firstChild.trim() === "[!NOTE]":
+        case firstChildText === "[!NOTE]":
           flavorProps = {
             colorPalette: "info",
           };
           break;
-        case firstChild.trim() === "[!TIP]":
+        case firstChildText === "[!TIP]":
           flavorProps = {
             colorPalette: "positive",
           };
           break;
-        case firstChild.trim() === "[!IMPORTANT]":
+        case firstChildText === "[!IMPORTANT]":
           flavorProps = {
             colorPalette: "primary",
           };
           break;
-        case firstChild.trim() === "[!WARNING]":
+        case firstChildText === "[!WARNING]":
           flavorProps = {
             colorPalette: "warning",
           };
           break;
-        case firstChild.trim() === "[!CAUTION]":
+        case firstChildText === "[!CAUTION]":
           flavorProps = {
             colorPalette: "critical",
           };
@@ -143,11 +156,7 @@ export const Blockquote = (props: BlockquoteProps) => {
 
         if (isParagraph) {
           const firstChild = child.props.children[0];
-
-          // Type guard: ensure firstChild is a string before calling .trim()
-          if (typeof firstChild !== "string") {
-            return child;
-          }
+          const firstChildText = getTextContent(firstChild).trim();
 
           if (
             [
@@ -156,7 +165,7 @@ export const Blockquote = (props: BlockquoteProps) => {
               "[!WARNING]",
               "[!CAUTION]",
               "[!TIP]",
-            ].includes(firstChild.trim())
+            ].includes(firstChildText)
           ) {
             // Get rid of first child
 
@@ -172,7 +181,7 @@ export const Blockquote = (props: BlockquoteProps) => {
                   fontSize="500"
                   asChild
                 >
-                  {cleanQuoteFlavor(firstChild.trim())}
+                  {cleanQuoteFlavor(firstChildText)}
                 </Box>,
                 ...Children.toArray(child.props.children.slice(2)),
               ],
