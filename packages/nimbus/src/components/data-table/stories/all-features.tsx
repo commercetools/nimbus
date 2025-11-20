@@ -351,4 +351,3 @@ export const AllFeatures: Story = {
   },
   args: {},
 };
-
