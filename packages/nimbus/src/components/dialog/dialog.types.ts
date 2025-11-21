@@ -80,7 +80,7 @@ export type DialogRootProps = OmitInternalProps<DialogRootSlotProps> & {
   /**
    * Whether the dialog can be dismissed by clicking the backdrop or pressing Escape.
    * If true, clicking outside the dialog or pressing Escape will close it.
-   * @default true
+   * @default false
    */
   isDismissable?: RaModalOverlayProps["isDismissable"];
 
