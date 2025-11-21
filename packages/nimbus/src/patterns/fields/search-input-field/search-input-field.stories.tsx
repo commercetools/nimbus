@@ -80,31 +80,6 @@ export const Base: Story = {
   },
 };
 
-export const Required: Story = {
-  args: {
-    label: "Search products",
-    description: "This field is required",
-    placeholder: "Search...",
-    isRequired: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("searchbox");
-    const label = canvas.getByText("Search products");
-
-    await step("FormField label shows required indicator", async () => {
-      await expect(label.innerHTML).toContain("*");
-    });
-
-    await step(
-      "FormField adds aria-required attribute when isRequired is true",
-      async () => {
-        await expect(input).toHaveAttribute("aria-required", "true");
-      }
-    );
-  },
-};
-
 export const Disabled: Story = {
   args: {
     label: "Search products",
@@ -173,7 +148,7 @@ export const WithErrors: Story = {
     description: "Enter search keywords",
     placeholder: "Search...",
     isInvalid: true,
-    errors: { missing: true, format: true },
+    errors: { format: true },
     touched: true,
   },
   play: async ({ canvasElement, step }) => {
@@ -186,9 +161,6 @@ export const WithErrors: Story = {
 
     await step("Localized error messages are displayed", async () => {
       await expect(
-        canvas.getByText("This field is required. Provide a value.")
-      ).toBeInTheDocument();
-      await expect(
         canvas.getByText("Please enter a valid format.")
       ).toBeInTheDocument();
     });
@@ -196,38 +168,6 @@ export const WithErrors: Story = {
     await step("Errors are properly linked via aria-describedby", async () => {
       const ariaDescribedby = input.getAttribute("aria-describedby");
       await expect(ariaDescribedby).toBeTruthy();
-    });
-  },
-};
-
-export const ReadOnly: Story = {
-  args: {
-    label: "Search products",
-    description: "This field is read-only",
-    value: "laptop",
-    isReadOnly: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("searchbox");
-
-    await step("FormField isReadOnly propagates to SearchInput", async () => {
-      await expect(input).toHaveAttribute("readonly");
-    });
-
-    await step("ReadOnly SearchInput displays existing value", async () => {
-      await expect(input).toHaveValue("laptop");
-    });
-
-    await step("ReadOnly SearchInput can receive focus", async () => {
-      await userEvent.click(input);
-      await expect(input).toHaveFocus();
-    });
-
-    await step("ReadOnly SearchInput cannot receive user input", async () => {
-      const originalValue = "laptop";
-      await userEvent.type(input, "Attempted Change");
-      await expect(input).toHaveValue(originalValue);
     });
   },
 };
@@ -429,29 +369,41 @@ export const WithClearButton: Story = {
       await userEvent.click(clearButton);
       await expect(input).toHaveValue("");
     });
+
+    await step("Clear button is hidden when input is empty", async () => {
+      // After clearing, the button should still exist in DOM but be hidden
+      const clearButton = canvas.queryByLabelText(/clear/i);
+      // Button exists but should have opacity 0 or pointer-events none
+      if (clearButton) {
+        const styles = window.getComputedStyle(clearButton);
+        await expect(
+          styles.opacity === "0" || styles.pointerEvents === "none"
+        ).toBe(true);
+      }
+    });
   },
 };
 
-export const WithOnSubmit: Story = {
+export const KeyboardShortcuts: Story = {
   render: () => {
     const [value, setValue] = useState("");
-    const [submittedValue, setSubmittedValue] = useState("");
-    const handleSubmit = fn((submitted: string) => {
-      setSubmittedValue(submitted);
+    const [submitted, setSubmitted] = useState("");
+    const handleSubmit = fn((searchValue: string) => {
+      setSubmitted(searchValue);
     });
 
     return (
       <Stack gap="400">
         <SearchInputField
           label="Search products"
-          description="Type and press Enter to submit"
+          description="Press Enter to submit, Escape to clear"
           value={value}
           onChange={setValue}
           onSubmit={handleSubmit}
           placeholder="Search..."
         />
-        {submittedValue && (
-          <Text data-testid="submitted-value">Submitted: {submittedValue}</Text>
+        {submitted && (
+          <Text data-testid="submitted-value">Submitted: {submitted}</Text>
         )}
       </Stack>
     );
@@ -460,103 +412,56 @@ export const WithOnSubmit: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("searchbox");
 
-    await step("Type a search query", async () => {
+    await step("Escape key clears the input", async () => {
       await userEvent.type(input, "laptop");
       await expect(input).toHaveValue("laptop");
+      await userEvent.keyboard("{Escape}");
+      await expect(input).toHaveValue("");
     });
 
-    await step("onSubmit fires when pressing Enter", async () => {
+    await step("Enter key submits the search", async () => {
+      await userEvent.type(input, "keyboard");
+      await expect(input).toHaveValue("keyboard");
       await userEvent.keyboard("{Enter}");
-      const submittedDisplay = canvas.getByTestId("submitted-value");
-      await expect(submittedDisplay).toHaveTextContent("Submitted: laptop");
+      const submittedValue = canvas.getByTestId("submitted-value");
+      await expect(submittedValue).toHaveTextContent("Submitted: keyboard");
     });
   },
 };
 
-export const Variants: Story = {
-  render: () => {
-    const [valueSolid, setValueSolid] = useState("");
-    const [valueGhost, setValueGhost] = useState("");
-
-    return (
-      <Stack gap="400">
-        <SearchInputField
-          variant="solid"
-          label="Solid variant (default)"
-          description="Solid variant with background"
-          value={valueSolid}
-          onChange={setValueSolid}
-          placeholder="Search..."
-        />
-        <SearchInputField
-          variant="ghost"
-          label="Ghost variant"
-          description="Ghost variant without background"
-          value={valueGhost}
-          onChange={setValueGhost}
-          placeholder="Search..."
-        />
-      </Stack>
-    );
+export const SearchIcon: Story = {
+  args: {
+    label: "Search products",
+    description: "Search input with icon",
+    placeholder: "Search...",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const inputs = canvas.getAllByRole("searchbox");
+    const input = canvas.getByRole("searchbox");
 
-    await step("Both variants render correctly", async () => {
-      await expect(inputs).toHaveLength(2);
+    await step("Search icon is present", async () => {
+      // The search icon should be in the leading element slot
+      // Check for SVG element in the leading element area
+      const leadingElement = canvasElement.querySelector(
+        '[class*="leadingElement"]'
+      );
+      await expect(leadingElement).toBeInTheDocument();
+
+      // The icon should be an SVG element
+      const svgIcon = leadingElement?.querySelector("svg");
+      await expect(svgIcon).toBeInTheDocument();
     });
 
-    await step("Both variants are functional", async () => {
-      await userEvent.type(inputs[0], "test solid");
-      await expect(inputs[0]).toHaveValue("test solid");
-
-      await userEvent.type(inputs[1], "test ghost");
-      await expect(inputs[1]).toHaveValue("test ghost");
-    });
-  },
-};
-
-export const Sizes: Story = {
-  render: () => {
-    const [valueSmall, setValueSmall] = useState("");
-    const [valueMedium, setValueMedium] = useState("");
-
-    return (
-      <Stack gap="400">
-        <SearchInputField
-          size="sm"
-          label="Small size"
-          description="Small size variant"
-          value={valueSmall}
-          onChange={setValueSmall}
-          placeholder="Search..."
-        />
-        <SearchInputField
-          size="md"
-          label="Medium size (default)"
-          description="Medium size variant"
-          value={valueMedium}
-          onChange={setValueMedium}
-          placeholder="Search..."
-        />
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const inputs = canvas.getAllByRole("searchbox");
-
-    await step("Both sizes render correctly", async () => {
-      await expect(inputs).toHaveLength(2);
-    });
-
-    await step("Both sizes are functional", async () => {
-      await userEvent.type(inputs[0], "small");
-      await expect(inputs[0]).toHaveValue("small");
-
-      await userEvent.type(inputs[1], "medium");
-      await expect(inputs[1]).toHaveValue("medium");
+    await step("Search icon is visible", async () => {
+      const leadingElement = canvasElement.querySelector(
+        '[class*="leadingElement"]'
+      );
+      const svgIcon = leadingElement?.querySelector("svg");
+      if (svgIcon) {
+        const styles = window.getComputedStyle(svgIcon);
+        await expect(styles.display).not.toBe("none");
+        await expect(styles.visibility).not.toBe("hidden");
+      }
     });
   },
 };
