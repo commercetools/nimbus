@@ -436,8 +436,6 @@ export const SearchIcon: Story = {
     placeholder: "Search...",
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Search icon is present", async () => {
       // The search icon should be in the leading element slot
       // Check for SVG element in the leading element area
