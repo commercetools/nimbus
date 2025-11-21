@@ -261,7 +261,7 @@ async function main() {
       }
     );
     console.log("\n✅ All documentation tests passed!");
-  } catch (error) {
+  } catch {
     console.error("\n❌ Documentation tests failed!");
     console.error("\nSome test examples in your .dev.mdx files are broken.");
     console.error(
