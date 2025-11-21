@@ -1,0 +1,191 @@
+---
+title: Card Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Box, Card, Link, type CardProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Card component uses a compound pattern to structure content. You must wrap `Card.Header` and `Card.Content` within `Card.Root`.
+
+```jsx-live-dev
+const App = () => (
+  <Card.Root>
+    <Card.Header>Card Title</Card.Header>
+    <Card.Content>
+      <Text>This is the main card content.</Text>
+    </Card.Content>
+  </Card.Root>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `cardPadding` prop controls the internal spacing of the card. Available sizes are `sm`, `md`, and `lg`.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Card.Root cardPadding="sm">
+      <Card.Header>Small Padding</Card.Header>
+      <Card.Content>Compact content spacing.</Card.Content>
+    </Card.Root>
+
+    <Card.Root cardPadding="md">
+      <Card.Header>Medium Padding</Card.Header>
+      <Card.Content>Standard content spacing (default).</Card.Content>
+    </Card.Root>
+
+    <Card.Root cardPadding="lg">
+      <Card.Header>Large Padding</Card.Header>
+      <Card.Content>Spacious content layout.</Card.Content>
+    </Card.Root>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Customize the card's appearance using `borderStyle`, `elevation`, and `backgroundStyle`.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Card.Root borderStyle="outlined" elevation="none">
+      <Card.Header>Outlined (Default)</Card.Header>
+      <Card.Content>Standard bordered look.</Card.Content>
+    </Card.Root>
+
+    <Card.Root borderStyle="none" elevation="elevated">
+      <Card.Header>Elevated</Card.Header>
+      <Card.Content>Shadow depth without border.</Card.Content>
+    </Card.Root>
+
+    <Card.Root backgroundStyle="muted" borderStyle="none">
+      <Card.Header>Muted Background</Card.Header>
+      <Card.Content>Subtle background color for differentiation.</Card.Content>
+    </Card.Root>
+  </Stack>
+)
+```
+
+### Interactive cards
+
+When making a card interactive, avoid placing `onClick` directly on the `Card.Root`. Instead, wrap the card in an anchor tag or use proper ARIA roles to ensure accessibility.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    {/* Option 1: Wrapped in a Nimbus Link (Recommended for navigation) */}
+    <Link 
+      href="#" 
+      textDecoration="none" 
+      color="inherit" 
+      display="block"
+      _hover={{ textDecoration: 'none' }}
+      aria-label="Navigate to details"
+    >
+      <Card.Root borderStyle="outlined" elevation="elevated">
+        <Card.Header>Navigational Card</Card.Header>
+        <Card.Content>
+          This entire card acts as a link using the system Link component.
+        </Card.Content>
+      </Card.Root>
+    </Link>
+
+    {/* Option 2: Interactive element with ARIA (For actions) */}
+    <Box
+      role="button"
+      tabIndex={0}
+      onClick={() => alert("Card clicked")}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          alert("Card clicked");
+        }
+      }}
+      cursor="pointer"
+      aria-label="Trigger action"
+    >
+      <Card.Root borderStyle="outlined">
+        <Card.Header>Action Card</Card.Header>
+        <Card.Content>
+          Behaves like a button with keyboard support (Tab, Enter, Space).
+        </Card.Content>
+      </Card.Root>
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The `Card` component handles most accessibility requirements internally, rendering semantic `div` elements by default. It acts as a generic container.
+
+- **Headings**: Ensure the content within `Card.Header` follows your page's heading hierarchy (e.g., use `Heading` component or `h3`, `h4` tags).
+- **Interactive Cards**: If a card is interactive (clickable), do not attach `onClick` directly to the card div if possible. Instead, wrap the card in a link or button, or ensure proper ARIA roles (`role="button"`) and keyboard handling (`tabIndex={0}`, Enter/Space key listeners) are implemented.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "project-summary-card";
+
+export const Example = () => (
+  <Card.Root id={PERSISTENT_ID}>
+    <Card.Header>Summary</Card.Header>
+    <Card.Content>...</Card.Content>
+  </Card.Root>
+);
+```
+
+#### Keyboard navigation
+
+Standard Cards are not focusable. Interactive content inside the card (buttons, links) follows the default focus order.
+
+## API reference
+
+<PropsTable id="Card" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Card in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the card displays the correct title and content.
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Card } from '@commercetools/nimbus';
+
+describe('ProjectCard', () => {
+  it('renders project details', () => {
+    render(
+      <Card.Root>
+        <Card.Header>Project X</Card.Header>
+        <Card.Content>Status: Active</Card.Content>
+      </Card.Root>
+    );
+
+    expect(screen.getByText('Project X')).toBeInTheDocument();
+    expect(screen.getByText('Status: Active')).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-card--docs)
+

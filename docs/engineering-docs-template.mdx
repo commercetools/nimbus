@@ -1,0 +1,695 @@
+---
+title: [ComponentName] [Component/Pattern]
+tab-title: Implementation
+tab-order: 3
+---
+
+<!--
+TEMPLATE USAGE GUIDE:
+====================
+This template provides a structured approach for creating engineering documentation
+for Nimbus components. Follow these guidelines:
+
+REQUIRED SECTIONS:
+- Getting started (Import, Basic usage)
+- Usage examples (Size, Variants, Component-specific features)
+- Component requirements (Accessibility is mandatory)
+- API reference
+- Testing your implementation
+- Resources
+
+OPTIONAL SECTIONS (use when applicable):
+- Comparison section (for field pattern components)
+- Library-specific sections (e.g., date handling with @internationalized/date)
+- Form integration (for field pattern components)
+- Common patterns (recommended but optional)
+
+COMPONENT-DRIVEN APPROACH:
+- Analyze the component's source code and props interface FIRST
+- Let the component's actual features dictate what examples to include
+- Don't force standard patterns if they don't apply to your component
+- Input-like components may need state examples (disabled, invalid, read-only)
+- Layout components should focus on composition and spacing
+- Display components should focus on visual variants
+- Dynamic collections (Select, ListBox) should use `items` prop for data mapping
+- Always document features that actually exist in the component's props
+
+PLACEHOLDERS TO REPLACE:
+- [ComponentName] - The PascalCase component name (e.g., DateRangePicker)
+- [COMPONENT_DESCRIPTION] - Brief description of what the component does
+- [FEATURE_NAME] - Specific feature being demonstrated (e.g., "Size options", "Visual variants")
+- All example code should be customized for your component
+
+STYLE GUIDELINES:
+- Use `jsx-live-dev` for all interactive examples
+- Use `tsx` for type definitions and non-interactive code
+- Start examples with: const App = () => { ... }
+- Use Stack, Text, Button, and other Nimbus components in examples
+- Keep examples focused and realistic
+- Include TypeScript type annotations
+- Use proper state management patterns (useState)
+
+REMOVAL BEFORE PUBLISHING:
+- Remove all HTML comments (<!-- ... -->)
+- Remove section guidance notes
+- Keep only the content relevant to your component
+-->
+
+<!-- OPTIONAL: Include this section ONLY for field pattern components -->
+## Comparison: field pattern vs manual composition
+
+**With [ComponentName]Field:**
+```tsx
+<[ComponentName]Field
+  label="[Label Text]"
+  description="[Helper text]"
+  value={value}
+  onChange={setValue}
+  errors={errors}
+  touched={touched}
+/>
+```
+
+**Manual composition:**
+```tsx
+<FormField.Root isInvalid={!!(errors && touched)}>
+  <FormField.Label>[Label Text]</FormField.Label>
+  <FormField.Input>
+    <[ComponentName]
+      value={value}
+      onChange={setValue}
+      width="full"
+    />
+  </FormField.Input>
+  <FormField.Description>
+    [Helper text]
+  </FormField.Description>
+  {touched && errors && (
+    <FormField.Error>{errors}</FormField.Error>
+  )}
+</FormField.Root>
+```
+
+### When to use which
+
+**Use [ComponentName]Field when:**
+- Building standard forms with typical field layouts
+- You want consistent field patterns across your app
+- You need built-in error handling with FieldErrors
+- You want to minimize boilerplate code
+
+**Use [ComponentName] with manual FormField composition when:**
+- You need custom field layouts
+- You're building complex, non-standard forms
+- You need granular control over FormField sub-components
+- You require a different error handling implementation
+
+<!-- END OPTIONAL SECTION -->
+
+## Getting started
+
+### Import
+
+```tsx
+import { ComponentName, type ComponentNameProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+<!-- Customize this description based on your component -->
+The simplest implementation uses [uncontrolled/controlled] mode:
+
+```jsx-live-dev
+const App = () => (
+  <[ComponentName] />
+)
+```
+
+<!-- CONDITIONAL: Include library-specific sections only when relevant -->
+<!-- Example: Date components need @internationalized/date documentation -->
+<!-- Example: Rich text components might need TipTap documentation -->
+<!-- Remove this entire section if not applicable -->
+
+## Working with [library-specific concepts]
+
+<!-- Example from DateRangePicker: Working with date values -->
+<!-- Customize this section title and content based on your component's dependencies -->
+
+The [ComponentName] relies on [library name]'s [concepts] for [purpose]. This library provides [key features].
+
+### [Concept] types
+
+[Description of the types or concepts your component uses]
+
+```tsx
+import { [Type1], [Type2] } from '[library-name]';
+
+// [Example 1 description]
+const example1 = new [Type1]([params]);
+
+// [Example 2 description]
+const example2 = new [Type2]([params]);
+```
+
+### Creating [concept] values
+
+Use helper functions to [describe purpose]:
+
+```tsx
+import { [helperFunction1], [helperFunction2] } from '[library-name]';
+
+// [Description]
+const value1 = [helperFunction1]('[example]');
+const value2 = [helperFunction2]('[example]');
+```
+
+### Converting to [format]
+
+<!-- Example: Converting date objects to ISO strings -->
+Use [method] to convert [type] for [purpose]:
+
+```tsx
+const [example] = new [Type]([params]);
+[example].toString(); // [result]
+```
+
+> [!TIP]\
+> See [[library documentation link]([url])] for complete API reference and advanced usage.
+
+<!-- END CONDITIONAL SECTION -->
+
+## Usage examples
+
+<!--
+GUIDANCE: Analyze your component's source code and props interface to determine
+what examples to include. Let the component's actual features drive this section.
+
+COMPONENT-DRIVEN EXAMPLES:
+- Review the component's TypeScript props interface
+- Document features that actually exist in the component
+- Don't force patterns that don't apply (e.g., don't add "disabled state" if component has no isDisabled prop)
+
+COMMON PATTERNS BY COMPONENT TYPE:
+- Input-like components: May include states (disabled, invalid, read-only), validation, labels
+- Layout components: Focus on composition, spacing, responsive behavior
+- Interactive components: Focus on events, controlled/uncontrolled modes, keyboard interactions
+- Display components: Focus on visual variants, sizes, content variations
+
+TYPICAL SUBSECTIONS (when applicable to your component):
+- Size options (if component has size prop)
+- Visual variants (if component has variant prop)
+- Component-specific features (e.g., granularity, orientation, placement)
+- State variations (if component supports: disabled, invalid, read-only, loading)
+- Controlled vs uncontrolled modes (for interactive components)
+
+Order subsections from simple to complex, ending with controlled/uncontrolled modes.
+-->
+
+### Size options
+
+<!-- Only include if your component has size variants -->
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <[ComponentName] size="sm" />
+    <[ComponentName] size="md" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+<!-- Only include if your component has visual variants -->
+Choose between [variant names] variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <[ComponentName] variant="solid" />
+    <[ComponentName] variant="outline" />
+    <[ComponentName] variant="ghost" />
+  </Stack>
+)
+```
+
+### [Component-specific feature]
+
+<!-- Example: "Granularity options" for DateRangePicker -->
+The `[propName]` prop controls [behavior description]:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <[ComponentName] [propName]="[value1]" />
+    <[ComponentName] [propName]="[value2]" />
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `[propName]="[value1]"`: [Description of behavior]
+- `[propName]="[value2]"`: [Description of behavior]
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<string>('[initial state]');
+
+  return (
+    <>
+      <[ComponentName]
+        defaultValue={[defaultValue]}
+        onChange={(value) => {
+          setDisplayValue([transformValueForDisplay]);
+        }}
+      />
+      <Text fontSize="sm">{displayValue}</Text>
+    </>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected value without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <[ComponentName]
+        value={value}
+        onChange={setValue}
+      />
+      <Text fontSize="sm">
+        {value ? `Selected: ${value}` : 'No selection'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform selections
+- Clear or programmatically set the value
+
+### [Additional component-specific features]
+
+<!-- Add as many subsections as needed for your component's features -->
+<!-- Examples: Time zone handling, custom formatting, validation rules, etc. -->
+
+[Description of the feature]:
+
+```jsx-live-dev
+const App = () => (
+  <[ComponentName]
+    [featureProp]={[value]}
+    [additionalProp]={[value]}
+  />
+)
+```
+
+## Component requirements
+
+<!--
+GUIDANCE: This section documents technical requirements and constraints.
+- ALWAYS include accessibility requirements
+- Include type requirements if component has special type needs
+- Include integration requirements if component requires specific setup
+-->
+
+### [Type/Value] requirements
+
+<!-- Only include if component has special type requirements -->
+<!-- Example: Date components requiring @internationalized/date types -->
+
+All [values] **must** use [library/type] types:
+- `[Type1]` for [use case]
+- `[Type2]` for [use case]
+- `[Type3]` for [use case]
+
+### Accessibility
+
+<!-- MANDATORY SECTION - ALWAYS INCLUDE -->
+<!-- Customize based on your component's accessibility features -->
+
+The [ComponentName] handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `[ComponentName]Field` pattern component (recommended)
+- Associating a `<label>` element with the `[ComponentName]` using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<[ComponentName] aria-labelledby="label-id" />
+```
+
+- Associating a `<label>` element with the `[ComponentName]` using `htmlFor`:
+
+```tsx
+<label htmlFor="component-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<[ComponentName] id="component-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<[ComponentName] aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-[component-name]";
+
+export const Example = () => (
+  <[ComponentName] id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+<!-- Customize based on your component's keyboard interactions -->
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: [Description]
+- `Arrow keys`: [Description]
+- `Enter` / `Space`: [Description]
+- `Escape`: [Description]
+
+<!-- OPTIONAL: For field pattern components, include error handling -->
+### Error handling
+
+<!-- Only include for field pattern components -->
+[ComponentName]Field uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+**Error object format** (`FieldErrorsData`):
+```tsx
+type FieldErrorsData = {
+  [key: string]: boolean | string | ReactNode;
+};
+
+// Examples:
+const errors = {
+  missing: true,              // Built-in message: "This field is required"
+  format: true,               // Built-in message: "Please enter a valid format"
+  custom: "Custom error text" // Custom message
+};
+```
+
+## API reference
+
+<!-- MANDATORY SECTION -->
+<PropsTable id="[ComponentName]" />
+
+<!-- OPTIONAL: For field pattern components with custom error rendering -->
+### Custom error rendering
+
+<!-- Only include for field pattern components that support renderError -->
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<[ComponentName]Field
+  label="Custom Validation"
+  value={value}
+  onChange={setValue}
+  errors={{ [errorKey1]: true, [errorKey2]: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case '[errorKey1]':
+        return '[Custom error message 1]';
+      case '[errorKey2]':
+        return '[Custom error message 2]';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
+
+<!-- OPTIONAL: Include for field pattern components -->
+## Form integration
+
+<!-- Only include for field pattern components -->
+[ComponentName]Field integrates seamlessly with Formik:
+
+```tsx
+import { useFormik } from 'formik';
+import { [ComponentName]Field } from '@commercetools/nimbus';
+
+const MyForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      [fieldName]: [initialValue],
+    },
+    validate: (values) => {
+      const errors = {};
+      if (![validationCondition]) {
+        errors.[fieldName] = { [errorKey]: true };
+      }
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('Submitted:', values);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <[ComponentName]Field
+        name="[fieldName]"
+        label="[Label]"
+        description="[Description]"
+        value={formik.values.[fieldName]}
+        onChange={(value) => formik.setFieldValue('[fieldName]', value)}
+        onBlur={() => formik.setFieldTouched('[fieldName]', true)}
+        errors={formik.errors.[fieldName]}
+        touched={formik.touched.[fieldName]}
+        isRequired
+      />
+      <Button type="submit">Submit</Button>
+    </form>
+  );
+};
+```
+
+**Key integration points:**
+- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
+- **OnBlur**: Mark field as touched on blur
+- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
+- **Touched**: Pass `touched.fieldName` to control error visibility
+
+## Common patterns
+
+<!--
+OPTIONAL BUT RECOMMENDED
+Include 2-3 realistic use cases showing how the component is typically used
+in production applications. Examples should demonstrate:
+- Real-world scenarios
+- Integration with other components
+- Proper state management
+- Realistic data handling
+-->
+
+### [Pattern name 1]
+
+[Description of the use case]:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
+
+  // [Description of logic]
+  const [derivedValue] = [computation];
+
+  return (
+    <Stack direction="column" gap="400">
+      <[ComponentName]
+        value={value}
+        onChange={setValue}
+      />
+      <Text fontSize="sm">
+        {[displayLogic]}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### [Pattern name 2]
+
+[Description of another common use case]:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <[ComponentName]
+        [specificProps]={[values]}
+        value={value}
+        onChange={setValue}
+      />
+      {[conditionalRendering] && (
+        <Text fontSize="sm">
+          {[derivedContent]}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using [ComponentName] in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { [ComponentName] } from '@commercetools/nimbus';
+
+describe('[ComponentName]', () => {
+  it('renders [expected element]', () => {
+    render(<[ComponentName] />);
+
+    // [Description of what you're testing]
+    expect(screen.getByRole('[role]')).toBeInTheDocument();
+  });
+
+  it('renders [additional elements]', () => {
+    render(<[ComponentName] />);
+
+    expect(screen.getByRole('[role]', { name: /[text]/i })).toBeInTheDocument();
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with the component:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { [ComponentName] } from '@commercetools/nimbus';
+
+describe('[ComponentName] interactions', () => {
+  it('[interaction description]', async () => {
+    const user = userEvent.setup();
+    render(<[ComponentName] />);
+
+    const [element] = screen.getByRole('[role]', { name: /[text]/i });
+    await user.click([element]);
+
+    await waitFor(() => {
+      expect(screen.getByRole('[role]')).toBeInTheDocument();
+    });
+  });
+
+  it('[callback test description]', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<[ComponentName] onChange={handleChange} />);
+
+    const [element] = screen.getByRole('[role]');
+    await user.click([element]);
+
+    expect(handleChange).toHaveBeenCalledWith([expectedValue]);
+  });
+});
+```
+
+### Testing with [specific values/types]
+
+<!-- Only include if component has special value handling requirements -->
+Test [value type] handling using [library]:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { [Type] } from '[library]';
+import { [ComponentName] } from '@commercetools/nimbus';
+
+describe('[ComponentName] with [value type]', () => {
+  it('displays provided [value]', () => {
+    const [value] = new [Type]([params]);
+
+    render(<[ComponentName] value={[value]} />);
+
+    // Verify the [value] is displayed
+    expect(screen.getByText('[expectedText]')).toBeInTheDocument();
+  });
+
+  it('calls onChange with correct [value type]', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<[ComponentName] onChange={handleChange} />);
+
+    // Interact with component...
+    // After interaction:
+    expect(handleChange).toHaveBeenCalledWith(
+      expect.any([Type])
+    );
+  });
+});
+```
+
+### Testing [specific feature]
+
+<!-- Add as many testing subsections as needed for component-specific features -->
+When using [feature], test [behavior]:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { [ComponentName] } from '@commercetools/nimbus';
+
+describe('[ComponentName] with [feature]', () => {
+  it('[test description]', async () => {
+    const user = userEvent.setup();
+    render(<[ComponentName] [featureProp]={[value]} />);
+
+    // [Test interaction]
+    const [element] = screen.getByRole('[role]');
+    await user.click([element]);
+
+    // [Verification]
+    await waitFor(() => {
+      expect(screen.getByText(/[expectedText]/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+## Resources
+
+<!-- MANDATORY SECTION -->
+
+<!-- For base components: -->
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-[component]--docs)
+<!-- - [React Aria [ComponentName]](https://react-spectrum.adobe.com/react-aria/[Component].html) -->
+<!-- - [ARIA [Pattern] Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/[pattern]/) -->
+
+<!-- For field patterns, also include: -->
+<!-- - [Base Component](components/[category]/[component]) -->
+<!-- - [FormField Component](components/inputs/formfield) -->
+<!-- - [FieldErrors Component](components/forms/fielderrors) -->
+
+<!-- Use "link-tbd" placeholder if Storybook URL is not yet available -->
