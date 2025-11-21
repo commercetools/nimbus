@@ -37,7 +37,8 @@ import { extractStyleProps } from "@/utils";
  * @supportsStyleProps
  */
 export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {
-  const { selectionMode, getKey, getTextValue } = useComboBoxRootContext();
+  const { selectionMode, size, getKey, getTextValue, isDisabled, isReadOnly } =
+    useComboBoxRootContext();
   const [styleProps, functionalProps] = extractStyleProps(props);
 
   const tagGroupContext =
@@ -57,15 +58,20 @@ export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {
   }
 
   return (
-    <ComboBoxTagGroupSlot {...styleProps} {...functionalProps}>
+    <ComboBoxTagGroupSlot {...styleProps} {...functionalProps} asChild>
       {/* TagGroup.Root receives id from TagGroupContext set by custom-context */}
-      <TagGroup.Root>
-        <TagGroup.TagList items={items} maxW="100%">
+      <TagGroup.Root size={size}>
+        <TagGroup.TagList items={items} display="contents">
           {(item) => {
             const itemKey = getKey(item);
             const itemValue = getTextValue(item);
             return (
-              <TagGroup.Tag id={itemKey} textValue={itemValue} maxW="100%">
+              <TagGroup.Tag
+                id={itemKey}
+                textValue={itemValue}
+                isDisabled={isDisabled || isReadOnly}
+                maxW="100%"
+              >
                 {itemValue}
               </TagGroup.Tag>
             );

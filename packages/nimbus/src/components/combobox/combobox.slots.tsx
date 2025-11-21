@@ -4,6 +4,7 @@ import type {
   ComboBoxRootSlotProps,
   ComboBoxTriggerSlotProps,
   ComboBoxLeadingElementSlotProps,
+  ComboBoxContentSlotProps,
   ComboBoxTagGroupSlotProps,
   ComboBoxInputSlotProps,
   ComboBoxPopoverSlotProps,
@@ -35,6 +36,12 @@ export const ComboBoxLeadingElementSlot = withContext<
   HTMLDivElement,
   ComboBoxLeadingElementSlotProps
 >("div", "leadingElement");
+
+// Content slot - wrapper for tags and input (flex container within grid)
+export const ComboBoxContentSlot = withContext<
+  HTMLDivElement,
+  ComboBoxContentSlotProps
+>("div", "content");
 
 // TagGroup slot - container for selected tags (multi-select)
 export const ComboBoxTagGroupSlot = withContext<

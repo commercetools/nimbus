@@ -6,6 +6,7 @@ import {
   useState,
   type RefObject,
 } from "react";
+
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   useListState,
@@ -21,7 +22,10 @@ import {
   Provider,
   InputContext,
   ButtonContext,
+  GroupContext,
+  TextContext,
   PopoverContext,
+  LabelContext,
   ListBoxContext,
   TagGroupContext,
   ListStateContext,
@@ -49,6 +53,7 @@ import {
   ComboBoxRootContext,
   useComboBoxRootContext,
 } from "./combobox.root-context";
+import { ComboBoxHiddenInput } from "./combobox.hidden-input";
 
 /**
  * # ComboBox.Root
@@ -83,6 +88,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   [props, ref] = useContextProps(props, null, ComboBoxContext);
   const {
     selectionMode = "single",
+    size = "md",
     getKey = defaultGetKey,
     getTextValue = defaultGetTextValue,
     children,
@@ -102,13 +108,18 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   // Ref for positioning the popover relative to the value area
   const triggerRef = useRef<HTMLDivElement>(null);
 
+  // Ref for input (shared via context so trigger can focus it on click)
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const rootContextValue: ComboBoxRootContextValue<T> = useMemo(
     () => ({
       selectionMode,
+      size,
       getKey,
       getTextValue,
       leadingElement,
       triggerRef,
+      inputRef,
       isDisabled,
       isRequired,
       isInvalid,
@@ -120,6 +131,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
       getTextValue,
       leadingElement,
       triggerRef,
+      inputRef,
       isDisabled,
       isRequired,
       isInvalid,
@@ -166,16 +178,19 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
         ref={ref}
         {...recipeProps}
         {...styleProps}
+        size={size}
         data-disabled={isDisabled}
         data-invalid={isInvalid}
         data-required={isRequired}
         data-readonly={isReadOnly}
         data-open={props.isOpen}
+        role="group"
       >
         <CollectionBuilder content={content}>
           {(collection) => (
             <ComboBoxRootInner<T>
               {...functionalProps}
+              size={size}
               selectionMode={selectionMode}
               getKey={getKey}
               getTextValue={getTextValue}
@@ -213,6 +228,7 @@ const ComboBoxRootInner = <T extends object>(
     children,
     selectedKeys: selectedKeysFromProps = [],
     onSelectionChange,
+    disabledKeys,
     inputValue: inputValueFromProps = "",
     onInputChange,
     filter: customFilter,
@@ -235,14 +251,29 @@ const ComboBoxRootInner = <T extends object>(
     isRequired = false,
     isInvalid = false,
     isReadOnly = false,
+    shouldFocusWrap = true,
+    autoFocus = false,
+    name,
+    formValue,
+    validationBehavior = "aria",
+    form,
+    validate,
   } = props;
 
   // Generate stable IDs for ARIA relationships
   const listboxId = useId();
   const tagGroupId = useId();
 
-  // Create ref for input to enable programmatic focus
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Ref for the scrollable region within the overlay
+  const listBoxRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Auto-focus input on mount if requested
+  useEffect(() => {
+    if (autoFocus && inputRef.current && !isDisabled) {
+      inputRef.current.focus();
+    }
+  }, [autoFocus, isDisabled]);
 
   // Normalize selectedKeys to Set
   const normalizedSelectedKeysFromProps = useMemo(
@@ -522,6 +553,7 @@ const ComboBoxRootInner = <T extends object>(
     collection: filteredCollection,
     selectedKeys: normalizedSelectedKeys,
     onSelectionChange: handleSelectionChange,
+    disabledKeys,
   });
 
   const selectedItemsFromState = useMemo(
@@ -559,6 +591,8 @@ const ComboBoxRootInner = <T extends object>(
   // React Aria's TagGroup onRemove passes a Set of removed keys
   const removeKey = useCallback(
     (keysToRemove: Set<Key>) => {
+      if (isDisabled || isReadOnly) return;
+
       const currentKeys = normalizedSelectedKeys;
       const newKeys = new Set(currentKeys);
 
@@ -578,8 +612,6 @@ const ComboBoxRootInner = <T extends object>(
   );
 
   // Handle creating a new option from input value
-  // TODO: Add to context value once custom options feature is implemented
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCreateOption = useCallback((): boolean => {
     if (!allowsCustomOptions) return false;
 
@@ -644,7 +676,7 @@ const ComboBoxRootInner = <T extends object>(
     }
 
     // Notify callback
-    onCreateOption?.(trimmedInput);
+    onCreateOption?.(newItem);
 
     return true;
   }, [
@@ -660,6 +692,9 @@ const ComboBoxRootInner = <T extends object>(
     setIsOpen,
     onInputChange,
     onCreateOption,
+    isInputControlled,
+    setInternalInputValue,
+    prevInputValueRef,
   ]);
 
   // Handle keyboard navigation in the input
@@ -720,8 +755,18 @@ const ComboBoxRootInner = <T extends object>(
               handleSelectionChange(new Set([focusedKey]));
               state.selectionManager.setFocusedKey(null);
             }
+          } else if (
+            isOpen &&
+            !state.selectionManager.focusedKey &&
+            allowsCustomOptions
+          ) {
+            // No focused item and custom options enabled - attempt to create custom option
+            const wasCreated = handleCreateOption();
+            if (wasCreated) {
+              e.preventDefault();
+            }
           }
-          // Don't prevent default if no focused key - allows form submission
+          // Don't prevent default if no focused key and no option created - allows form submission
           break;
 
         case "Escape":
@@ -749,6 +794,25 @@ const ComboBoxRootInner = <T extends object>(
           }
           break;
 
+        case "Backspace":
+          // When input is empty, backspace removes selection
+          if (inputValue === "") {
+            const selectedKeys = Array.from(normalizedSelectedKeys);
+            if (selectedKeys.length > 0) {
+              e.preventDefault();
+              if (selectionMode === "single") {
+                // Clear selection in single-select mode
+                handleSelectionChange(new Set());
+              } else {
+                // Remove last selected item in multi-select mode
+                const newKeys = new Set(selectedKeys);
+                newKeys.delete(selectedKeys[selectedKeys.length - 1]);
+                handleSelectionChange(newKeys);
+              }
+            }
+          }
+          break;
+
         default:
           // Regular typing - handled by onChange
           break;
@@ -761,6 +825,11 @@ const ComboBoxRootInner = <T extends object>(
       handleSelectionChange,
       setIsOpen,
       setFocusStrategy,
+      selectionMode,
+      inputValue,
+      normalizedSelectedKeys,
+      allowsCustomOptions,
+      handleCreateOption,
     ]
   );
 
@@ -887,7 +956,24 @@ const ComboBoxRootInner = <T extends object>(
     }
   }, [isOpen, allowsEmptyMenu, state.collection.size, setIsOpen, inputValue]);
 
-  const { triggerRef } = useComboBoxRootContext();
+  const { triggerRef, inputRef } = useComboBoxRootContext();
+
+  // Make menu width match trigger width
+  const [triggerWidth, setTriggerWidth] = useState<string | null>(null);
+  useEffect(() => {
+    const triggerElement = triggerRef.current;
+    if (!triggerElement) return;
+    const updateTriggerWidth = () => {
+      const width = triggerElement.offsetWidth;
+      setTriggerWidth(`${width}px`);
+    };
+    updateTriggerWidth();
+    const resizeObserver = new ResizeObserver(updateTriggerWidth);
+    resizeObserver.observe(triggerElement);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const contextValues = [
     // InputContext - for ComboBox.Input
@@ -920,6 +1006,10 @@ const ComboBoxRootInner = <T extends object>(
         required: isRequired,
         "aria-invalid": isInvalid,
         placeholder,
+        name,
+        form,
+        validationbehavior: validationBehavior,
+        validate,
       },
     ],
 
@@ -928,6 +1018,7 @@ const ComboBoxRootInner = <T extends object>(
       TagGroupContext,
       {
         id: tagGroupId,
+        "aria-label": intl.formatMessage(messages.selectedValues),
         items: selectedItemsFromState,
         onRemove: removeKey,
       },
@@ -941,13 +1032,16 @@ const ComboBoxRootInner = <T extends object>(
           toggle: {
             onPress: toggleOpen,
             "aria-label": intl.formatMessage(messages.toggleOptions),
-            isDisabled: isDisabled,
+            isDisabled: isDisabled || isReadOnly,
+            isPressed: isOpen,
           },
           clear: {
             onPress: clearSelection,
             "aria-label": intl.formatMessage(messages.clearSelection),
             isDisabled:
-              isDisabled || state.selectionManager.selectedKeys.size === 0,
+              isDisabled ||
+              isReadOnly ||
+              state.selectionManager.selectedKeys.size === 0,
           },
         },
       },
@@ -965,8 +1059,21 @@ const ComboBoxRootInner = <T extends object>(
           // No-op: We control the state via our toggle button
           // This prevents React Aria from managing its own state
         },
+        ref: popoverRef,
         triggerRef: triggerRef,
+        scrollRef: listBoxRef,
         isNonModal: true,
+        "aria-label": intl.formatMessage(messages.menu),
+        trigger: "ComboBox",
+        placement: "bottom start",
+        style: { "--trigger-width": triggerWidth } as React.CSSProperties,
+        clearContexts: [
+          LabelContext,
+          ButtonContext,
+          InputContext,
+          GroupContext,
+          TextContext,
+        ],
       },
     ],
     [SelectableCollectionContext, { shouldUseVirtualFocus: true }],
@@ -977,7 +1084,11 @@ const ComboBoxRootInner = <T extends object>(
       {
         items: effectiveItems,
         id: listboxId,
+        ref: listBoxRef,
         renderEmptyState,
+        shouldFocusWrap,
+        shouldFocusOnHover: true,
+        "aria-label": intl.formatMessage(messages.options),
       },
     ],
 
@@ -991,6 +1102,17 @@ const ComboBoxRootInner = <T extends object>(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       values={contextValues as any}
     >
+      {/* Hidden input for form submission */}
+      <ComboBoxHiddenInput
+        name={name}
+        form={form}
+        selectedKeys={normalizedSelectedKeys}
+        selectionMode={selectionMode}
+        formValue={formValue}
+        allowsCustomOptions={allowsCustomOptions}
+        collection={state.collection}
+        inputValue={inputValue}
+      />
       {/* Type assertion needed - CollectionChildren<T> is assignable to ReactNode at runtime */}
       {children as React.ReactNode}
     </Provider>

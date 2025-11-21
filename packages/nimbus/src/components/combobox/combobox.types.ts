@@ -1,5 +1,5 @@
 import type { ReactNode, Ref } from "react";
-import type { Node, Key } from "react-stately";
+import type { Node, Key, Collection } from "react-stately";
 import type {
   ComboBoxRenderProps,
   InputProps as RaInputProps,
@@ -40,6 +40,7 @@ type ComboBoxRecipeProps = {
 export type ComboBoxRootSlotProps = HTMLChakraProps<"div", ComboBoxRecipeProps>;
 export type ComboBoxTriggerSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxLeadingElementSlotProps = HTMLChakraProps<"div">;
+export type ComboBoxContentSlotProps = HTMLChakraProps<"div">; // Flex wrapper for tags and input
 export type ComboBoxTagGroupSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxInputSlotProps = HTMLChakraProps<"div">; // Wraps React Aria Input
 export type ComboBoxPopoverSlotProps = HTMLChakraProps<"div">;
@@ -73,6 +74,9 @@ export type ComboBoxRootContextValue<T> = {
   /** Selection mode determines single vs multi-select behavior */
   selectionMode: "single" | "multiple";
 
+  /** variant size */
+  size?: SlotRecipeProps<"combobox">["size"];
+
   /** Extract key from item for TagGroup */
   getKey: (item: T) => Key;
 
@@ -84,6 +88,9 @@ export type ComboBoxRootContextValue<T> = {
 
   /** Ref to trigger element (for popover positioning) */
   triggerRef: React.RefObject<HTMLDivElement | null>;
+
+  /** Ref to input element (for programmatic focus) */
+  inputRef: React.RefObject<HTMLInputElement | null>;
 
   /** Whether component is disabled */
   isDisabled: boolean;
@@ -207,6 +214,20 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * Multi-select: pass a Key[]
    */
   defaultSelectedKeys?: Key | Key[];
+
+  /**
+   * Keys of items that should be disabled and not selectable.
+   * Disabled items are still visible but cannot be selected or focused.
+   *
+   * @example
+   * ```tsx
+   * <ComboBox.Root
+   *   items={items}
+   *   disabledKeys={['item-2', 'item-5']}
+   * />
+   * ```
+   */
+  disabledKeys?: Iterable<Key>;
 
   /**
    * Input value for controlled mode
@@ -452,19 +473,19 @@ export type ComboBoxRootProps<T extends object> = Omit<
    *
    * Based on react-select's onCreateOption API.
    * Note: Unlike react-select, selection changes are still handled by `onSelectionChange`.
-   * @param inputValue - The input value that was used to create the option
+   * @param newOption - The option that was created
    * @example
    * ```tsx
-   * onCreateOption={async (inputValue) => {
+   * onCreateOption={async (newOption) => {
    *   // Make API call to persist
-   *   await createTagAPI({ name: inputValue });
+   *   await createTagAPI(newOption);
    *
    *   // Show notification
-   *   toast.success(`Created tag: ${inputValue}`);
+   *   toast.success(`Created tag: ${newOption.value}`);
    * }}
    * ```
    */
-  onCreateOption?: (inputValue: string) => void;
+  onCreateOption?: (newOption: T) => void;
 
   /**
    * Accessible label for the combobox (when no visible label exists)
@@ -522,6 +543,54 @@ export type ComboBoxRootProps<T extends object> = Omit<
   isReadOnly?: boolean;
 
   /**
+   * Whether keyboard focus should wrap around when navigating through options.
+   * When true, pressing ArrowDown on the last option moves focus to the first option,
+   * and pressing ArrowUp on the first option moves focus to the last option.
+   * @default true
+   */
+  shouldFocusWrap?: boolean;
+
+  /**
+   * Whether to automatically focus the input when the component mounts.
+   * @default false
+   */
+  autoFocus?: boolean;
+
+  /**
+   * The name of the input element, used when submitting an HTML form.
+   * @see https://react-spectrum.adobe.com/react-aria/forms.html
+   */
+  name?: string;
+
+  /**
+   * The current value of the hidden input element for form submission.
+   * By default, the selected key is submitted. Use this to customize the submitted value.
+   * @see https://react-spectrum.adobe.com/react-aria/forms.html
+   */
+  formValue?: "key" | "text";
+
+  /**
+   * Whether to use native HTML form validation to prevent form submission
+   * when the value is missing or invalid, or mark the field as required
+   * or invalid via ARIA.
+   * @default 'aria'
+   */
+  validationBehavior?: "aria" | "native";
+
+  /**
+   * The form element to associate the input with.
+   * Accepts either an HTML form element or the id of a form element.
+   */
+  form?: string | HTMLFormElement;
+
+  /**
+   * A function that validates the current value and returns an error message if invalid.
+   * Called when the value changes and on form submission.
+   * @see https://react-spectrum.adobe.com/react-aria/forms.html#validation
+   */
+  validate?: (value: string | null) => string | string[] | null | undefined;
+
+  /**
    * Ref to the root element
    */
   ref?: Ref<HTMLDivElement>;
@@ -535,7 +604,7 @@ export type ComboBoxTriggerProps = ComboBoxTriggerSlotProps & {
   /**
    * Children should be ComboBox.Input, ComboBox.TagGroup, and IconButton components
    */
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 /**
@@ -619,3 +688,25 @@ export type ComboBoxSectionProps<T extends object> = RaListBoxSectionProps<T> &
 
     ref?: Ref<HTMLDivElement>;
   };
+
+/**
+ * Props for the ComboBoxHiddenInput component
+ */
+export type ComboBoxHiddenInputProps<T extends object> = {
+  /** Name attribute for form submission */
+  name?: string;
+  /** Form element to associate with */
+  form?: string | HTMLFormElement;
+  /** Selected keys from state */
+  selectedKeys: Set<Key>;
+  /** Selection mode (single or multiple) */
+  selectionMode: "single" | "multiple";
+  /** What to submit: "key" (default) or "text" */
+  formValue?: "key" | "text";
+  /** Whether custom options are allowed (affects default formValue behavior) */
+  allowsCustomOptions?: boolean;
+  /** Collection of items */
+  collection: Collection<Node<T>>;
+  /** Current input value (used as fallback for custom options) */
+  inputValue: string;
+};
