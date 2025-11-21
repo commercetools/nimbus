@@ -15,20 +15,6 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      # Ensure we are using valid node version for npm trusted publising
-      # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
-
-      # Ensure npm 11.5.1 or later is installed
-      - name: Update npm
-        run: npm install -g npm@latest
-      - name: Verify npm version
-        run: |
-          npm --version
-          # Ensure latest npm is installed for trusted publishing (OIDC)
       # Get GitHub token via the CT Changesets App
       - name: Generate GitHub token (via CT Changesets App)
         id: generate_github_token
@@ -44,6 +30,20 @@ jobs:
           # https://help.github.com/en/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
           # https://github.community/t/action-does-not-trigger-another-on-push-tag-action/17148/8
           token: ${{ steps.generate_github_token.outputs.token }}
+
+      # Setup Node AFTER checkout for npm trusted publishing
+      # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      # Ensure npm 11.5.1 or later is installed for OIDC support
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Verify npm version
+        run: npm --version
 
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
