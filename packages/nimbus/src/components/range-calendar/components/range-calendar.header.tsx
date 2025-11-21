@@ -39,7 +39,6 @@ export const RangeCalendarHeader = () => {
           <VisuallyHidden>
             <Heading />
           </VisuallyHidden>
-          {/* @ts-expect-error - custom-context will add aria-label via the "slot" prop */}
           <IconButton
             slot={showRangeLabel ? "previous" : "previous-month"}
             size="xs"
@@ -57,7 +56,6 @@ export const RangeCalendarHeader = () => {
             aria-hidden="true"
             slot={showRangeLabel ? "monthRange" : "month"}
           />
-          {/* @ts-expect-error - custom-context will add aria-label via the "slot" prop */}
           <IconButton
             slot={showRangeLabel ? "next" : "next-month"}
             size="xs"
@@ -69,7 +67,6 @@ export const RangeCalendarHeader = () => {
         </Stack>
         <Box flexGrow="1" />
         <Stack direction="row" alignItems="center">
-          {/* @ts-expect-error - custom-context will add aria-label via the "slot" prop */}
           <IconButton
             slot="previous-year"
             size="xs"
@@ -87,7 +84,6 @@ export const RangeCalendarHeader = () => {
             aria-hidden="true"
             slot="year"
           />
-          {/* @ts-expect-error - custom-context will add aria-label via the "slot" prop */}
           <IconButton
             slot="next-year"
             size="xs"

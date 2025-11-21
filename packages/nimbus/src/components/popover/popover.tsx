@@ -8,10 +8,8 @@ import type { PopoverProps } from "./popover.types";
  *
  * Note this component is only used internally.
  */
-export const Popover = (props: PopoverProps) => {
-  const { children, ...rest } = props;
-
-  return <PopoverRootSlot {...rest}>{children}</PopoverRootSlot>;
+export const Popover = ({ children, ...props }: PopoverProps) => {
+  return <PopoverRootSlot {...props}>{children}</PopoverRootSlot>;
 };
 
 Popover.displayName = "Popover";
