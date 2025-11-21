@@ -185,3 +185,6 @@ dist
 
 # Playwright MCP screenshots
 .playwright-mcp/
+
+# Auto-generated test files
+**/docs-validation.generated.spec.tsx
