@@ -437,7 +437,6 @@ export const SearchIcon: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const input = canvas.getByRole("searchbox");
 
     await step("Search icon is present", async () => {
       // The search icon should be in the leading element slot
