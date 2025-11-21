@@ -41,12 +41,7 @@ export default tseslint.config(
    * Global ignores for common build and dependency directories
    */
   {
-    ignores: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/storybook-static/**",
-      "**/docs-validation.generated.spec.tsx", // Auto-generated from .dev.mdx files
-    ],
+    ignores: ["**/node_modules/**", "**/dist/**", "**/storybook-static/**"],
   },
   /**
    * Base ESLint recommended rules

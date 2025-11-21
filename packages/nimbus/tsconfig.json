@@ -34,10 +34,5 @@
       // "@types-extensions",
       "node_modules/@types"
     ]
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/test/docs-validation.generated.spec.tsx"
-  ]
+  }
 }
