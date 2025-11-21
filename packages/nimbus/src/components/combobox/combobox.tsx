@@ -17,11 +17,7 @@ import { ComboBoxSection } from "./components/combobox.section";
  * @example Single-select with clear button
  * ```tsx
  * <ComboBox.Root items={items} selectionMode="single">
- *   <ComboBox.Trigger>
- *     <ComboBox.Input />
- *     <IconButton slot="toggle"><Icons.KeyboardArrowDown /></IconButton>
- *     <IconButton slot="clear"><Icons.Close /></IconButton>
- *   </ComboBox.Trigger>
+ *   <ComboBox.Trigger />
  *   <ComboBox.Popover>
  *     <ComboBox.ListBox>
  *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}

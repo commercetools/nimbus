@@ -10,25 +10,20 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 //   fn,
 //   waitFor,
 // } from "storybook/test";
-import {
-  // Box,
-  // Button,
-  // // ComboBox,
-  // type ComboBoxRootProps,
-  // Flex,
-  // FormField,
-  // Icon,
-  IconButton,
-  // RadioInput,
-  // Stack,
-  // Text,
-} from "@commercetools/nimbus";
-import {
-  // AddReaction,
-  Close,
-  // Search,
-  KeyboardArrowDown,
-} from "@commercetools/nimbus-icons";
+// import {
+//   // Box,
+//   // Button,
+//   // // ComboBox,
+//   // type ComboBoxRootProps,
+//   // Flex,
+//   // FormField,
+//   // Icon,
+//   // IconButton,
+//   // RadioInput,
+//   // Stack,
+//   // Text,
+// } from "@commercetools/nimbus";
+import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
 import type { ComboBoxRootProps } from "./combobox.types";
 import { defaultGetTextValue } from "./utils/collection";
@@ -62,20 +57,10 @@ const options: SimpleOption[] = [
   { id: 6, name: "Skunk" },
 ];
 
-function SingleSelectComboBox<T extends object>(props: ComboBoxRootProps<T>) {
-  console.log(props);
+function ComposedComboBox<T extends object>(props: ComboBoxRootProps<T>) {
   return (
     <ComboBox.Root {...props}>
-      <ComboBox.Trigger>
-        <ComboBox.TagGroup />
-        <ComboBox.Input />
-        <IconButton slot="toggle">
-          <KeyboardArrowDown />
-        </IconButton>
-        <IconButton slot="clear">
-          <Close />
-        </IconButton>
-      </ComboBox.Trigger>
+      <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
           {(item: T) => (
@@ -94,10 +79,15 @@ function SingleSelectComboBox<T extends object>(props: ComboBoxRootProps<T>) {
 export const Base: Story = {
   render: () => {
     return (
-      <SingleSelectComboBox<SimpleOption>
+      <ComposedComboBox<SimpleOption>
+        aria-label="test"
         items={options}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "hi"}
         selectionMode="multiple"
-        selectedKeys={[1]}
+        selectedKeys={[1, 3]}
+        disabledKeys={[2, 4]}
+        leadingElement={<Search />}
       />
     );
   },

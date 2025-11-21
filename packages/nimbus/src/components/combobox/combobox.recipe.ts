@@ -1,5 +1,4 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
-import { selectSlotRecipe } from "../select/select.recipe";
 import { checkboxSlotRecipe } from "../checkbox/checkbox.recipe";
 
 /**
@@ -11,6 +10,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "root",
     "trigger",
     "leadingElement",
+    "content",
     "tagGroup",
     "input",
     "popover",
@@ -26,9 +26,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
   // Base styles applied to all instances of the component
   base: {
     root: {
-      "--leading-element-width": "sizes.200",
       colorPalette: "primary",
-      focusRing: "outside",
       display: "inline-flex",
       position: "relative",
       alignSelf: "flex-start",
@@ -47,74 +45,139 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           pointerEvents: "none!",
         },
       },
-      "& input": {
-        cursor: "text",
-        _hover: {
-          bg: "primary.2",
-        },
-        _placeholder: { opacity: 0.5 },
-      },
       "& [data-placeholder]": {
         opacity: 0.5,
       },
     },
     leadingElement: {
-      position: "absolute",
-      display: "flex",
+      gridArea: "leadingElement",
+      display: "contents",
       alignItems: "center",
+      justifyContent: "center",
       color: "neutral.11",
+      "& svg": {
+        minH: "600",
+        minW: "600",
+        pr: "100",
+      },
     },
     trigger: {
-      display: "flex",
+      display: "grid",
+      gridTemplateColumns: "auto 1fr auto auto",
+      gridTemplateAreas: '"leadingElement content toggle clear"',
+      alignItems: "center",
+      gap: "100",
+      width: "100%",
       focusRing: "outside",
-      alignItems: "flex-start",
-      pr: "1600",
-      pl: "400",
+      px: "300",
       py: "100",
       borderRadius: "200",
       color: "neutral.12",
-      maxWidth: "100%",
       textAlign: "left",
-      whiteSpace: "nowrap",
-      // overflow: "hidden",
-      textOverflow: "ellipsis",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
       _disabled: { pointerEvents: "none" },
       '[data-invalid="true"] &': {
         "--border-width": "sizes.50",
         "--border-color": "colors.critical.7",
         color: "critical.11",
       },
-      '& button[slot="remove"]': {
+      '& button[slot="toggle"]': {
+        gridArea: "toggle",
+        alignSelf: "center",
+      },
+      '& button[slot="clear"]': {
+        gridArea: "clear",
+        alignSelf: "center",
         _expanded: {
           bg: "colorPalette.3",
         },
       },
     },
-    // buttonGroup: {
-    //   position: "absolute",
-    //   display: "inline-flex",
-    //   top: 0,
-    //   bottom: 0,
-    //   right: 300,
-    //   my: "auto",
-    // },
+    content: {
+      gridArea: "content",
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center",
+      gap: "100",
+      minWidth: 0,
+    },
+    tagGroup: {
+      display: "contents",
+    },
+    input: {
+      flex: "0 0 auto",
+      minWidth: "0",
+      maxWidth: "100%",
+      border: "none",
+      outline: "none",
+      bg: "transparent",
+      padding: 0,
+      cursor: "text",
+      // If the value & placeholder are falsy, input width should be 1px
+      // so it doesn't cause a blank line in content box
+      '&[data-empty="true"]': {
+        width: "25",
+      },
+      _hover: {
+        bg: "primary.2",
+      },
+      _placeholder: { opacity: 0.5 },
+    },
     popover: {
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
+      width: "var(--trigger-width)",
     },
-
     listBox: {
-      ...selectSlotRecipe.base?.options,
       gap: "100",
     },
     section: {
-      ...selectSlotRecipe.base?.optionGroup,
+      textStyle: "xs",
+      color: "neutral.11",
+      fontWeight: "600",
+      lineHeight: "350",
+      letterSpacing: "25",
+      textTransform: "uppercase",
+      p: "200",
+      borderBottom: "solid-25",
+      borderColor: "neutral.3",
+      mx: "-200",
+      mt: "200",
+      mb: "300",
     },
     option: {
-      ...selectSlotRecipe.base?.option,
+      focusRing: "outside",
+      cursor: "menuitem",
+      color: "neutral.12",
+      textStyle: "sm",
+      p: "200",
+      borderRadius: "200",
       whiteSpace: "wrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      '&[aria-selected="true"]': {
+        bg: "primary.3",
+      },
+      '&[data-focused="true"]': {
+        bg: "primary.2",
+      },
+      '& [slot="label"]': {
+        display: "block",
+      },
+
+      '& [slot="description"]': {
+        display: "block",
+        color: "neutral.11",
+        textStyle: "xs",
+      },
+
+      "&[data-disabled='true']": {
+        layerStyle: "disabled",
+      },
     },
     optionIndicator: {
       // make sure option is aligned with the first line of text (using lh units)
@@ -141,26 +204,22 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     size: {
       // Small
       sm: {
-        value: {
+        trigger: {
           minH: "800",
           textStyle: "sm",
-          pl: "calc(var(--leading-element-width) + {sizes.100})",
         },
         leadingElement: {
           minH: "800",
-          pl: "300",
         },
       },
       // Medium
       md: {
-        value: {
+        trigger: {
           minH: "1000",
           textStyle: "md",
-          pl: "calc(var(--leading-element-width) + {sizes.200})",
         },
         leadingElement: {
           minH: "1000",
-          pl: "400",
         },
       },
     },
@@ -168,21 +227,30 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
+          bg: "primary.1",
+          "&:hover": {
+            bg: "primary.2",
+          },
           width: "7200",
         },
-        value: {
-          ...selectSlotRecipe.variants?.variant.outline.trigger,
+        trigger: {
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
+
           width: "100%",
         },
       },
       ghost: {
         root: {
-          ...selectSlotRecipe.variants?.variant.ghost.root,
+          bg: "transparent",
+          "&:hover": {
+            bg: "primaryAlpha.2",
+          },
           maxW: "7200",
         },
-
-        value: {
-          ...selectSlotRecipe.variants?.variant.ghost.trigger,
+        trigger: {
+          "--border-width": "sizes.25",
+          "--border-color": "transparent",
           bg: "transparent",
         },
       },
@@ -271,10 +339,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       css: {
         trigger: {
           flex: "1 1 auto",
-        },
-        listBox: {
-          minW: "max(var(--trigger-width), {sizes.2000})",
-          maxW: "max(var(--trigger-width), {sizes.7200})",
         },
       },
     },

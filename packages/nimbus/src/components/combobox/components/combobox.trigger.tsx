@@ -1,9 +1,11 @@
+import { Close, KeyboardArrowDown } from "@commercetools/nimbus-icons";
+import { IconButton } from "@/components/icon-button/icon-button";
 import { useComboBoxRootContext } from "./combobox.root-context";
-import {
-  ComboBoxTriggerSlot,
-  ComboBoxLeadingElementSlot,
-} from "../combobox.slots";
+import { ComboBoxTriggerSlot, ComboBoxContentSlot } from "../combobox.slots";
 import type { ComboBoxTriggerProps } from "../combobox.types";
+import { ComboBoxInput } from "./combobox.input";
+import { ComboBoxLeadingElement } from "./combobox.leading-element";
+import { ComboBoxTagGroup } from "./combobox.tag-group";
 
 /**
  * # ComboBox.Trigger
@@ -28,15 +30,40 @@ export const ComboBoxTrigger = ({
   children,
   ...restProps
 }: ComboBoxTriggerProps) => {
-  const { triggerRef, leadingElement } = useComboBoxRootContext();
+  const { triggerRef, leadingElement, inputRef, isDisabled } =
+    useComboBoxRootContext();
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Focus input when clicking anywhere on the trigger, except on buttons
+    if (
+      !isDisabled &&
+      e.target instanceof HTMLElement &&
+      !e.target.closest("button")
+    ) {
+      inputRef.current?.focus();
+    }
+  };
 
   return (
-    <ComboBoxTriggerSlot ref={triggerRef} {...restProps}>
+    <ComboBoxTriggerSlot ref={triggerRef} onClick={handleClick} {...restProps}>
       {leadingElement && (
-        <ComboBoxLeadingElementSlot>
-          {leadingElement}
-        </ComboBoxLeadingElementSlot>
+        <ComboBoxLeadingElement>{leadingElement}</ComboBoxLeadingElement>
       )}
+      <ComboBoxContentSlot>
+        <ComboBoxTagGroup />
+        <ComboBoxInput />
+      </ComboBoxContentSlot>
+      <IconButton slot="toggle" size="2xs" variant="ghost" excludeFromTabOrder>
+        <KeyboardArrowDown />
+      </IconButton>
+      <IconButton
+        slot="clear"
+        size="2xs"
+        variant="ghost"
+        colorPalette="primary"
+      >
+        <Close />
+      </IconButton>
       {children}
     </ComboBoxTriggerSlot>
   );
