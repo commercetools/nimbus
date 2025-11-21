@@ -1,9 +1,14 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "preconstruct": {
-    "packages": ["packages/tokens"]
+    "packages": [
+      "packages/tokens"
+    ]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
@@ -70,5 +75,9 @@
     "typescript-eslint": "catalog:tooling",
     "vite-bundle-analyzer": "catalog:tooling",
     "vitest": "catalog:tooling"
+  },
+  "engines": {
+    "node": ">=22.10",
+    "pnpm": ">=10"
   }
 }
