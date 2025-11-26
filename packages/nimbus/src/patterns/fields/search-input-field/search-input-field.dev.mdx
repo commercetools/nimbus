@@ -1,16 +1,16 @@
 ---
-title: TextInputField Pattern
+title: SearchInputField Pattern
 tab-title: Implementation
 tab-order: 3
 ---
 
 ## Comparison: field pattern vs manual composition
 
-**With TextInputField:**
+**With SearchInputField:**
 ```tsx
-<TextInputField
-  label="Project name"
-  description="Enter a descriptive name"
+<SearchInputField
+  label="Search products"
+  description="Enter keywords to search"
   value={value}
   onChange={setValue}
   errors={errors}
@@ -22,16 +22,16 @@ tab-order: 3
 **Manual composition:**
 ```tsx
 <FormField.Root isInvalid={!!(errors && touched)} isRequired>
-  <FormField.Label>Project name</FormField.Label>
+  <FormField.Label>Search products</FormField.Label>
   <FormField.Input>
-    <TextInput
+    <SearchInput
       value={value}
       onChange={setValue}
       width="full"
     />
   </FormField.Input>
   <FormField.Description>
-    Enter a descriptive name
+    Enter keywords to search
   </FormField.Description>
   {touched && errors && (
     <FormField.Error>
@@ -43,13 +43,14 @@ tab-order: 3
 
 ### When to use which
 
-**Use TextInputField when:**
-- Building standard forms with typical field layouts
+**Use SearchInputField when:**
+- Building standard forms with search functionality
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
+- You need search-specific features (clear button, search icon)
 
-**Use TextInput with manual FormField composition when:**
+**Use SearchInput with manual FormField composition when:**
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -60,7 +61,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { TextInputField, type TextInputFieldProps } from '@commercetools/nimbus';
+import { SearchInputField, type SearchInputFieldProps } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
@@ -72,10 +73,11 @@ const App = () => {
   const [value, setValue] = useState<string>('');
 
   return (
-    <TextInputField
-      label="Username"
+    <SearchInputField
+      label="Search products"
       value={value}
       onChange={setValue}
+      placeholder="Search..."
     />
   );
 }
@@ -94,19 +96,19 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <TextInputField
+      <SearchInputField
         size="sm"
-        label="Small input"
+        label="Small search"
         value={valueSmall}
         onChange={setValueSmall}
-        placeholder="Small size"
+        placeholder="Search..."
       />
-      <TextInputField
+      <SearchInputField
         size="md"
-        label="Medium input"
+        label="Medium search"
         value={valueMedium}
         onChange={setValueMedium}
-        placeholder="Medium size (default)"
+        placeholder="Search..."
       />
     </Stack>
   );
@@ -124,19 +126,19 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <TextInputField
+      <SearchInputField
         variant="solid"
         label="Solid variant"
         value={valueSolid}
         onChange={setValueSolid}
-        placeholder="Solid variant (default)"
+        placeholder="Search..."
       />
-      <TextInputField
+      <SearchInputField
         variant="ghost"
         label="Ghost variant"
         value={valueGhost}
         onChange={setValueGhost}
-        placeholder="Ghost variant"
+        placeholder="Search..."
       />
     </Stack>
   );
@@ -152,12 +154,12 @@ const App = () => {
   const [value, setValue] = useState<string>('');
 
   return (
-    <TextInputField
-      label="Project name"
-      description="Choose a unique name that describes your project"
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords, product names, or SKUs to find what you're looking for"
       value={value}
       onChange={setValue}
-      placeholder="My Awesome Project"
+      placeholder="Search..."
     />
   );
 }
@@ -172,20 +174,20 @@ const App = () => {
   const [value, setValue] = useState<string>('');
   const [touched, setTouched] = useState<boolean>(false);
 
-  // Simulate validation: require at least 3 characters
-  const errors = touched && value.length < 3 ? { missing: true } : undefined;
+  // Simulate validation: require at least 2 characters
+  const errors = touched && value.length < 2 ? { missing: true } : undefined;
 
   return (
-    <TextInputField
-      label="Username"
-      description="Enter at least 3 characters"
+    <SearchInputField
+      label="Search products"
+      description="Enter at least 2 characters"
       value={value}
       onChange={setValue}
       onBlur={() => setTouched(true)}
       errors={errors}
       touched={touched}
       isRequired
-      placeholder="johndoe"
+      placeholder="Search..."
     />
   );
 }
@@ -202,13 +204,13 @@ const App = () => {
   const [value, setValue] = useState<string>('');
 
   return (
-    <TextInputField
-      label="API Key"
-      description="Enter your API key for authentication"
-      info="Your API key can be found in your account settings under 'Developers'. Keep this key secure and do not share it publicly."
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords to search"
+      info="You can search by product name, SKU, description, or category. Use quotes for exact phrases."
       value={value}
       onChange={setValue}
-      type="password"
+      placeholder="Search..."
     />
   );
 }
@@ -223,13 +225,13 @@ const App = () => {
   const [value, setValue] = useState<string>('');
 
   return (
-    <TextInputField
-      label="Email address"
-      description="We'll use this to contact you"
+    <SearchInputField
+      label="Search products"
+      description="Enter keywords to search"
       value={value}
       onChange={setValue}
       isRequired
-      placeholder="user@example.com"
+      placeholder="Search..."
     />
   );
 }
@@ -244,12 +246,13 @@ const App = () => {
   const [value, setValue] = useState<string>('Cannot edit this');
 
   return (
-    <TextInputField
-      label="Account ID"
+    <SearchInputField
+      label="Search"
       description="This field cannot be modified"
       value={value}
       onChange={setValue}
       isDisabled
+      placeholder="Search..."
     />
   );
 }
@@ -261,93 +264,51 @@ Display a non-editable value with the `isReadOnly` prop:
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('Read-only value');
+  const [value, setValue] = useState<string>('laptop');
 
   return (
-    <TextInputField
-      label="System-generated ID"
-      description="This value is automatically generated"
+    <SearchInputField
+      label="Current search"
+      description="This value is read-only"
       value={value}
       onChange={setValue}
       isReadOnly
+      placeholder="Search..."
     />
   );
 }
 ```
 
-### Different input types
+### Clear button functionality
 
-Use the `type` prop to specify the HTML input type:
+The SearchInput component includes a built-in clear button that appears when there's text in the input:
 
 ```jsx-live-dev
 const App = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [search, setSearch] = useState<string>('');
+  const [value, setValue] = useState<string>('laptop');
 
   return (
-    <Stack direction="column" gap="400">
-      <TextInputField
-        type="email"
-        label="Email"
-        value={email}
-        onChange={setEmail}
-        placeholder="user@example.com"
-      />
-      <TextInputField
-        type="password"
-        label="Password"
-        value={password}
-        onChange={setPassword}
-        placeholder="Enter your password"
-      />
-      <TextInputField
-        type="search"
-        label="Search"
-        value={search}
-        onChange={setSearch}
-        placeholder="Search..."
-      />
-    </Stack>
+    <SearchInputField
+      label="Search products"
+      description="Type to search, clear button appears when there's text"
+      value={value}
+      onChange={setValue}
+      placeholder="Search..."
+    />
   );
 }
 ```
 
-### With leading and trailing elements
-
-Add icons or other elements to the input using `leadingElement` and `trailingElement`:
-
-```jsx-live-dev
-const App = () => {
-  const [search, setSearch] = useState<string>('');
-  const [url, setUrl] = useState<string>('');
-
-  return (
-    <Stack direction="column" gap="400">
-      <TextInputField
-        label="Search"
-        value={search}
-        onChange={setSearch}
-        placeholder="Search..."
-        leadingElement={<Icons.Search />}
-      />
-      <TextInputField
-        label="Website URL"
-        value={url}
-        onChange={setUrl}
-        placeholder="example.com"
-        leadingElement={<Text fontSize="sm" color="neutral.11">https://</Text>}
-      />
-    </Stack>
-  );
-}
-```
+The clear button:
+- Appears automatically when the input has a value
+- Clears the input when clicked
+- Supports keyboard shortcuts (Escape key to clear)
 
 ## Component requirements
 
 ### Error handling
 
-TextInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+SearchInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
 
 **Error object format** (`FieldErrorsData`):
 ```tsx
@@ -365,7 +326,7 @@ const errors = {
 
 ### Accessibility
 
-TextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+SearchInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
 
 **Automatic ARIA relationships:**
 - Labels connected via `aria-labelledby`
@@ -373,16 +334,17 @@ TextInputField provides comprehensive accessibility through [FormField](componen
 - Error messages connected via `aria-describedby`
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
+- Search role via `role="searchbox"`
 
 If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
 
 ```tsx
-const PERSISTENT_ID = "example-text-input";
+const PERSISTENT_ID = "example-search-input";
 
 export const Example = () => (
-  <TextInputField
+  <SearchInputField
     id={PERSISTENT_ID}
-    label="Username"
+    label="Search products"
     value={value}
     onChange={setValue}
   />
@@ -391,75 +353,59 @@ export const Example = () => (
 
 #### Keyboard navigation
 
-The component supports standard text input keyboard interaction:
+The component supports standard search input keyboard interaction:
 - `Tab` / `Shift+Tab`: Move focus to/from the input
 - `Arrow keys`: Navigate within the text
 - `Home` / `End`: Move to start/end of text
 - `Ctrl+A` / `Cmd+A`: Select all text
+- `Escape`: Clear the input (built-in SearchInput feature)
+- `Enter`: Submit search (if onSubmit handler is provided)
 
 ## Form integration
 
-TextInputField integrates seamlessly with Formik:
+SearchInputField integrates seamlessly with Formik:
 
 ```tsx
 import { useFormik } from 'formik';
-import { TextInputField, Button, Stack } from '@commercetools/nimbus';
+import { SearchInputField, Button, Stack } from '@commercetools/nimbus';
 
 const MyForm = () => {
   const formik = useFormik({
     initialValues: {
-      username: '',
-      email: '',
+      search: '',
     },
     validate: (values) => {
       const errors = {};
 
-      if (!values.username) {
-        errors.username = { missing: true };
-      } else if (values.username.length < 3) {
-        errors.username = { tooShort: true };
-      }
-
-      if (!values.email) {
-        errors.email = { missing: true };
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-        errors.email = { invalidFormat: true };
+      if (!values.search) {
+        errors.search = { missing: true };
+      } else if (values.search.length < 2) {
+        errors.search = { tooShort: true };
       }
 
       return errors;
     },
     onSubmit: (values) => {
-      console.log('Submitted:', values);
+      console.log('Searching for:', values.search);
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack direction="column" gap="400">
-        <TextInputField
-          name="username"
-          label="Username"
-          description="Choose a unique username"
-          value={formik.values.username}
-          onChange={(value) => formik.setFieldValue('username', value)}
-          onBlur={() => formik.setFieldTouched('username', true)}
-          errors={formik.errors.username}
-          touched={formik.touched.username}
+        <SearchInputField
+          name="search"
+          label="Search products"
+          description="Enter keywords to search"
+          value={formik.values.search}
+          onChange={(value) => formik.setFieldValue('search', value)}
+          onBlur={() => formik.setFieldTouched('search', true)}
+          errors={formik.errors.search}
+          touched={formik.touched.search}
           isRequired
+          placeholder="Search..."
         />
-        <TextInputField
-          name="email"
-          type="email"
-          label="Email address"
-          description="We'll use this to contact you"
-          value={formik.values.email}
-          onChange={(value) => formik.setFieldValue('email', value)}
-          onBlur={() => formik.setFieldTouched('email', true)}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
-          isRequired
-        />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Search</Button>
       </Stack>
     </form>
   );
@@ -474,25 +420,25 @@ const MyForm = () => {
 
 ## API reference
 
-<PropsTable id="TextInputField" />
+<PropsTable id="SearchInputField" />
 
 ### Custom error rendering
 
 Use the `renderError` prop to customize how specific error keys are displayed:
 
 ```tsx
-<TextInputField
-  label="Email address"
+<SearchInputField
+  label="Search products"
   value={value}
   onChange={setValue}
-  errors={{ invalidEmail: true, tooShort: true }}
+  errors={{ invalidSearch: true, tooShort: true }}
   touched={true}
   renderError={(key) => {
     switch (key) {
-      case 'invalidEmail':
-        return 'Please enter a valid email address (e.g., user@example.com)';
+      case 'invalidSearch':
+        return 'Please enter a valid search query';
       case 'tooShort':
-        return 'Email must be at least 5 characters long';
+        return 'Search query must be at least 2 characters long';
       default:
         return null; // Fall back to FieldErrors built-in messages
     }
@@ -502,7 +448,7 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using TextInputField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using SearchInputField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
 
 ### Basic rendering tests
 
@@ -510,42 +456,42 @@ Verify the component renders with expected elements:
 
 ```tsx
 import { render, screen } from '@testing-library/react';
-import { TextInputField } from '@commercetools/nimbus';
+import { SearchInputField } from '@commercetools/nimbus';
 
-describe('TextInputField', () => {
+describe('SearchInputField', () => {
   it('renders label and input', () => {
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search products"
         value=""
         onChange={() => {}}
       />
     );
 
     // Verify label is rendered
-    expect(screen.getByText('Username')).toBeInTheDocument();
+    expect(screen.getByText('Search products')).toBeInTheDocument();
 
-    // Verify input is rendered
-    expect(screen.getByRole('textbox', { name: /username/i })).toBeInTheDocument();
+    // Verify input is rendered with searchbox role
+    expect(screen.getByRole('searchbox', { name: /search products/i })).toBeInTheDocument();
   });
 
   it('renders description text', () => {
     render(
-      <TextInputField
-        label="Email"
-        description="Enter your email address"
+      <SearchInputField
+        label="Search"
+        description="Enter keywords to search"
         value=""
         onChange={() => {}}
       />
     );
 
-    expect(screen.getByText('Enter your email address')).toBeInTheDocument();
+    expect(screen.getByText('Enter keywords to search')).toBeInTheDocument();
   });
 
   it('shows required indicator', () => {
     render(
-      <TextInputField
-        label="Required field"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         isRequired
@@ -553,7 +499,7 @@ describe('TextInputField', () => {
     );
 
     // Check for required indicator (typically an asterisk or aria-required)
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     expect(input).toHaveAttribute('aria-required', 'true');
   });
 });
@@ -566,26 +512,26 @@ Test user interactions with the component:
 ```tsx
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TextInputField } from '@commercetools/nimbus';
+import { SearchInputField } from '@commercetools/nimbus';
 
-describe('TextInputField interactions', () => {
+describe('SearchInputField interactions', () => {
   it('calls onChange when user types', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={handleChange}
       />
     );
 
-    const input = screen.getByRole('textbox', { name: /username/i });
-    await user.type(input, 'johndoe');
+    const input = screen.getByRole('searchbox', { name: /search/i });
+    await user.type(input, 'laptop');
 
-    expect(handleChange).toHaveBeenCalledTimes(7); // Once per character
-    expect(handleChange).toHaveBeenLastCalledWith('johndoe');
+    expect(handleChange).toHaveBeenCalledTimes(6); // Once per character
+    expect(handleChange).toHaveBeenLastCalledWith('laptop');
   });
 
   it('calls onBlur when input loses focus', async () => {
@@ -593,15 +539,15 @@ describe('TextInputField interactions', () => {
     const handleBlur = jest.fn();
 
     render(
-      <TextInputField
-        label="Email"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         onBlur={handleBlur}
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     await user.click(input);
     await user.tab(); // Move focus away
 
@@ -613,15 +559,15 @@ describe('TextInputField interactions', () => {
     const handleChange = jest.fn();
 
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={handleChange}
         isDisabled
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     expect(input).toBeDisabled();
 
     // Attempt to type (should not work)
@@ -638,13 +584,13 @@ Test error handling and validation behavior:
 ```tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TextInputField } from '@commercetools/nimbus';
+import { SearchInputField } from '@commercetools/nimbus';
 
-describe('TextInputField validation', () => {
+describe('SearchInputField validation', () => {
   it('does not show errors when untouched', () => {
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         errors={{ missing: true }}
@@ -658,8 +604,8 @@ describe('TextInputField validation', () => {
 
   it('shows errors when touched', () => {
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         errors={{ missing: true }}
@@ -673,96 +619,43 @@ describe('TextInputField validation', () => {
 
   it('shows custom error messages', () => {
     render(
-      <TextInputField
-        label="Email"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         errors={{ invalidFormat: true }}
         touched={true}
         renderError={(key) => {
-          if (key === 'invalidFormat') return 'Please enter a valid email';
+          if (key === 'invalidFormat') return 'Please enter a valid search query';
           return null;
         }}
       />
     );
 
-    expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid search query')).toBeInTheDocument();
   });
 
   it('applies invalid styling when isInvalid is true', () => {
     render(
-      <TextInputField
-        label="Username"
+      <SearchInputField
+        label="Search"
         value=""
         onChange={() => {}}
         isInvalid
       />
     );
 
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-invalid', 'true');
-  });
-});
-```
-
-### Testing with different input types
-
-Test specific input type behavior:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { TextInputField } from '@commercetools/nimbus';
-
-describe('TextInputField input types', () => {
-  it('renders email input type', () => {
-    render(
-      <TextInputField
-        type="email"
-        label="Email"
-        value=""
-        onChange={() => {}}
-      />
-    );
-
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('type', 'email');
-  });
-
-  it('renders password input type', () => {
-    render(
-      <TextInputField
-        type="password"
-        label="Password"
-        value=""
-        onChange={() => {}}
-      />
-    );
-
-    const input = screen.getByLabelText(/password/i);
-    expect(input).toHaveAttribute('type', 'password');
-  });
-
-  it('renders search input type', () => {
-    render(
-      <TextInputField
-        type="search"
-        label="Search"
-        value=""
-        onChange={() => {}}
-      />
-    );
-
     const input = screen.getByRole('searchbox');
-    expect(input).toHaveAttribute('type', 'search');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
   });
 });
 ```
 
 ## Resources
 
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-textinputfield--docs)
-- [TextInput Component](/components/inputs/textinput)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-searchinputfield--docs)
+- [SearchInput Component](/components/inputs/searchinput)
 - [FormField Component](/components/inputs/formfield)
 - [FieldErrors Component](/components/forms/fielderrors)
-- [React Aria TextField](https://react-spectrum.adobe.com/react-aria/TextField.html)
-- [ARIA Textbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/textbox/)
+- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)
+

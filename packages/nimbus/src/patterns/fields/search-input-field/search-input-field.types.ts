@@ -1,0 +1,62 @@
+import type { ReactNode } from "react";
+import type { SearchInputProps } from "@/components/search-input/search-input.types";
+import type { FieldErrorsData } from "@/components";
+import type { FormFieldProps } from "@/components/form-field";
+
+/**
+ * Props for the SearchInputField component.
+ *
+ * Combines SearchInput functionality with form field features like labels,
+ * descriptions, error handling, and validation feedback.
+ *
+ * Style props (margin, padding, width, etc.) are applied to the input element.
+ * Functional props (aria-*, data-*, id, isRequired, etc.) are applied to the form field wrapper.
+ */
+export type SearchInputFieldProps = Omit<SearchInputProps, "isInvalid" | "id"> &
+  Pick<
+    FormFieldProps,
+    "isRequired" | "isInvalid" | "isDisabled" | "isReadOnly" | "id"
+  > & {
+    /**
+     * Used as HTML name of the input component.
+     */
+    name?: string;
+
+    /**
+     * Label text for the input field (required for accessibility)
+     */
+    label: string | ReactNode;
+
+    /**
+     * Description text that appears below the input
+     */
+    description?: string | ReactNode;
+
+    /**
+     * Info content that appears in a popover when the info button is clicked.
+     * Info button will only be visible when this prop is passed.
+     */
+    info?: ReactNode;
+
+    /**
+     * Error object - only truthy values will be rendered
+     * Compatible with FieldErrors format
+     */
+    errors?: FieldErrorsData;
+
+    /**
+     * Custom error renderer function
+     */
+    renderError?: (errorKey: string) => ReactNode;
+
+    /**
+     * Indicates whether the field was touched. Errors will only be shown when the field was touched.
+     */
+    touched?: boolean;
+
+    /**
+     * Size of the search input
+     * @default "md"
+     */
+    size?: "sm" | "md";
+  };

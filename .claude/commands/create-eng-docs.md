@@ -30,7 +30,6 @@ and following the guidance in `@docs/engineering-docs-template-guide.md`.
 
 1. Parse component name and type from arguments
 2. Locate the component files:
-
    - For base components: `packages/nimbus/src/components/{component-name}/`
    - For field patterns: `packages/nimbus/src/patterns/fields/{component-name}/`
 
@@ -58,7 +57,6 @@ source-driven.**
 
 1. **Read the component's TypeScript props interface**
    (`{component-name}.types.ts`):
-
    - Identify ALL props and their types
    - Note which features actually exist (size?, variant?, isDisabled?,
      isInvalid?, isReadOnly?, etc.)
@@ -66,7 +64,6 @@ source-driven.**
    - Identify unique props specific to this component
 
 2. **Read the component implementation** (`{component-name}.tsx`):
-
    - Identify React Aria integration (look for
      `import ... from 'react-aria-components'`)
    - Note external library dependencies (e.g., `@internationalized/date`)
@@ -189,20 +186,17 @@ Once confirmed, create the documentation file:
    ```
 
 3. **Remove inapplicable sections**:
-
    - Remove comparison section for base components
    - Remove library-specific sections if not needed
    - Remove form integration for base components
 
 4. **Replace all placeholders**:
-
    - `[ComponentName]` → Actual component name
    - `[COMPONENT_DESCRIPTION]` → Brief description from types
    - `[FEATURE_NAME]` → Actual feature names
    - All code examples with component-specific examples
 
 5. **Generate realistic code examples**:
-
    - Use `jsx-live-dev` for interactive examples
    - Follow the `const App = () => { }` pattern
    - Include proper TypeScript types
@@ -210,7 +204,6 @@ Once confirmed, create the documentation file:
    - Use actual component props and values
 
 6. **Customize each section**:
-
    - **Getting started**:
      - Create `### Import` subsection
      - Create `### Basic usage` subsection
@@ -228,12 +221,15 @@ Once confirmed, create the documentation file:
        > is already tested by Nimbus - these patterns help you verify your
        > integration and application-specific logic.
      - Provide realistic test examples (Rendering, Interaction, etc.)
-   - **Resources**: Link to Storybook (use "link-tbd" placeholder)
+   - **Resources**:
+     - Link to Storybook (use "link-tbd" placeholder)
+     - **Internal component links must start with '/'** (e.g.,
+       `/components/inputs/searchinput`) to ensure absolute paths from root, not
+       relative to current page
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
 8. **Determine output path**:
-
    - Base components:
      `packages/nimbus/src/components/{component-name}/{component-name}.dev.mdx`
    - Field patterns:
@@ -303,7 +299,8 @@ After generating the file, run validation checks:
 - [ ] Field patterns link to FormField and FieldErrors
 - [ ] Field patterns link to base component
 - [ ] External documentation links added (React Aria, ARIA patterns)
-- [ ] Internal component links correct
+- [ ] **Internal component links start with '/'** (e.g.,
+      `/components/inputs/searchinput`) to ensure absolute paths from root
 ```
 
 Present this checklist with status for each item.
