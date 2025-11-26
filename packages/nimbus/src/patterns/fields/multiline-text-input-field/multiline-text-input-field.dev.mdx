@@ -1,0 +1,687 @@
+---
+title: MultilineTextInputField Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: field pattern vs manual composition
+
+**With MultilineTextInputField:**
+```tsx
+<MultilineTextInputField
+  label="Project Description"
+  description="Enter a detailed description"
+  value={value}
+  onChange={setValue}
+  errors={errors}
+  touched={touched}
+  isRequired
+  autoGrow
+/>
+```
+
+**Manual composition:**
+```tsx
+<FormField.Root isInvalid={!!(errors && touched)} isRequired>
+  <FormField.Label>Project Description</FormField.Label>
+  <FormField.Input>
+    <MultilineTextInput
+      value={value}
+      onChange={setValue}
+      width="full"
+      autoGrow
+    />
+  </FormField.Input>
+  <FormField.Description>
+    Enter a detailed description
+  </FormField.Description>
+  {touched && errors && (
+    <FormField.Error>
+      <FieldErrors errors={errors} />
+    </FormField.Error>
+  )}
+</FormField.Root>
+```
+
+### When to use which
+
+**Use MultilineTextInputField when:**
+- Building standard forms with typical field layouts
+- You want consistent field patterns across your app
+- You need built-in error handling with FieldErrors
+- You want to minimize boilerplate code
+
+**Use MultilineTextInput with manual FormField composition when:**
+- You need custom field layouts
+- You're building complex, non-standard forms
+- You need granular control over FormField sub-components
+- You require a different error handling implementation
+
+## Getting started
+
+### Import
+
+```tsx
+import { MultilineTextInputField, type MultilineTextInputFieldProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation with a label and controlled state:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Comments"
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSmall, setValueSmall] = useState<string>('');
+  const [valueMedium, setValueMedium] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <MultilineTextInputField
+        size="sm"
+        label="Small input"
+        value={valueSmall}
+        onChange={setValueSmall}
+        placeholder="Small size"
+      />
+      <MultilineTextInputField
+        size="md"
+        label="Medium input"
+        value={valueMedium}
+        onChange={setValueMedium}
+        placeholder="Medium size (default)"
+      />
+    </Stack>
+  );
+}
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSolid, setValueSolid] = useState<string>('');
+  const [valueGhost, setValueGhost] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <MultilineTextInputField
+        variant="solid"
+        label="Solid variant"
+        value={valueSolid}
+        onChange={setValueSolid}
+        placeholder="Solid variant (default)"
+      />
+      <MultilineTextInputField
+        variant="ghost"
+        label="Ghost variant"
+        value={valueGhost}
+        onChange={setValueGhost}
+        placeholder="Ghost variant"
+      />
+    </Stack>
+  );
+}
+```
+
+### Auto-growing input
+
+Enable `autoGrow` to let the input expand vertically as the user types:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Feedback"
+      description="This field grows with your content"
+      value={value}
+      onChange={setValue}
+      autoGrow
+      placeholder="Type multiple lines to see me grow..."
+    />
+  );
+}
+```
+
+### Fixed rows
+
+Set a specific number of visible rows using the `rows` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Notes"
+      description="Starts with 5 visible rows"
+      value={value}
+      onChange={setValue}
+      rows={5}
+      placeholder="Enter your notes here..."
+    />
+  );
+}
+```
+
+### With description
+
+Add helper text below the input to provide context:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Project Description"
+      description="Provide a detailed summary of the project scope and goals"
+      value={value}
+      onChange={setValue}
+      placeholder="Enter description..."
+    />
+  );
+}
+```
+
+### With validation errors
+
+Show error messages when the field is touched and has validation errors:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+  const [touched, setTouched] = useState<boolean>(false);
+
+  // Simulate validation: require at least 10 characters
+  const errors = touched && value.length < 10 ? { missing: true } : undefined;
+
+  return (
+    <MultilineTextInputField
+      label="Review"
+      description="Enter at least 10 characters"
+      value={value}
+      onChange={setValue}
+      onBlur={() => setTouched(true)}
+      errors={errors}
+      touched={touched}
+      isRequired
+      placeholder="Write your review..."
+    />
+  );
+}
+```
+
+**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+
+### With info popover
+
+Provide additional context through an info button and popover:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Configuration"
+      description="Enter valid JSON configuration"
+      info="The configuration must be valid JSON. Keys must be quoted strings. Trailing commas are not allowed."
+      value={value}
+      onChange={setValue}
+      rows={4}
+      placeholder="{}"
+    />
+  );
+}
+```
+
+### Required field
+
+Mark fields as required with the `isRequired` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Reason for return"
+      description="Please explain why you are returning this item"
+      value={value}
+      onChange={setValue}
+      isRequired
+      placeholder="Explanation..."
+    />
+  );
+}
+```
+
+### Disabled state
+
+Prevent user interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('This content cannot be edited');
+
+  return (
+    <MultilineTextInputField
+      label="System Logs"
+      description="Archived logs are read-only"
+      value={value}
+      onChange={setValue}
+      isDisabled
+    />
+  );
+}
+```
+
+### Read-only state
+
+Display a non-editable value with the `isReadOnly` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('Generated description content...');
+
+  return (
+    <MultilineTextInputField
+      label="Generated Summary"
+      description="This summary was AI-generated"
+      value={value}
+      onChange={setValue}
+      isReadOnly
+      rows={3}
+    />
+  );
+}
+```
+
+### With leading element
+
+Add icons or other elements to the start of the input area:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <MultilineTextInputField
+      label="Message"
+      value={value}
+      onChange={setValue}
+      placeholder="Type your message..."
+      leadingElement={<Icons.Edit />}
+    />
+  );
+}
+```
+
+## Component requirements
+
+### Error handling
+
+MultilineTextInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+**Error object format** (`FieldErrorsData`):
+```tsx
+type FieldErrorsData = {
+  [key: string]: boolean | string | ReactNode;
+};
+
+// Examples:
+const errors = {
+  missing: true,              // Built-in message: "This field is required"
+  invalidFormat: true,        // Built-in message: "Please enter a valid format"
+  custom: "Custom error text" // Custom message
+};
+```
+
+### Accessibility
+
+MultilineTextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+
+**Automatic ARIA relationships:**
+- Labels connected via `aria-labelledby`
+- Descriptions connected via `aria-describedby`
+- Error messages connected via `aria-describedby`
+- Required fields indicated with `aria-required`
+- Invalid state indicated with `aria-invalid`
+
+If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "feedback-input";
+
+export const Example = () => (
+  <MultilineTextInputField
+    id={PERSISTENT_ID}
+    label="Feedback"
+    value={value}
+    onChange={setValue}
+  />
+);
+```
+
+#### Keyboard navigation
+
+The component supports standard textarea keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus to/from the input
+- `Arrow keys`: Navigate within the text
+- `Ctrl+A` / `Cmd+A`: Select all text
+
+## Form integration
+
+MultilineTextInputField integrates seamlessly with Formik:
+
+```tsx
+import { useFormik } from 'formik';
+import { MultilineTextInputField, Button, Stack } from '@commercetools/nimbus';
+
+const MyForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      description: '',
+      notes: '',
+    },
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.description) {
+        errors.description = { missing: true };
+      } else if (values.description.length < 20) {
+        errors.description = { tooShort: true };
+      }
+
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('Submitted:', values);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <Stack direction="column" gap="400">
+        <MultilineTextInputField
+          name="description"
+          label="Description"
+          description="Enter a detailed description (min 20 chars)"
+          value={formik.values.description}
+          onChange={(value) => formik.setFieldValue('description', value)}
+          onBlur={() => formik.setFieldTouched('description', true)}
+          errors={formik.errors.description}
+          touched={formik.touched.description}
+          isRequired
+          autoGrow
+        />
+        <MultilineTextInputField
+          name="notes"
+          label="Internal Notes"
+          description="Optional notes for the team"
+          value={formik.values.notes}
+          onChange={(value) => formik.setFieldValue('notes', value)}
+          onBlur={() => formik.setFieldTouched('notes', true)}
+          errors={formik.errors.notes}
+          touched={formik.touched.notes}
+          rows={3}
+        />
+        <Button type="submit">Submit</Button>
+      </Stack>
+    </form>
+  );
+};
+```
+
+**Key integration points:**
+- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
+- **OnBlur**: Mark field as touched on blur
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Touched**: Pass `touched.fieldName` to control error visibility
+
+## API reference
+
+<PropsTable id="MultilineTextInputField" />
+
+### Custom error rendering
+
+Use the `renderError` prop to customize how specific error keys are displayed:
+
+```tsx
+<MultilineTextInputField
+  label="Description"
+  value={value}
+  onChange={setValue}
+  errors={{ tooShort: true, invalidContent: true }}
+  touched={true}
+  renderError={(key) => {
+    switch (key) {
+      case 'tooShort':
+        return 'Description must be at least 20 characters long';
+      case 'invalidContent':
+        return 'Content contains prohibited words';
+      default:
+        return null; // Fall back to FieldErrors built-in messages
+    }
+  }}
+/>
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MultilineTextInputField in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { MultilineTextInputField } from '@commercetools/nimbus';
+
+describe('MultilineTextInputField', () => {
+  it('renders label and textarea', () => {
+    render(
+      <MultilineTextInputField
+        label="Description"
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    // Verify label is rendered
+    expect(screen.getByText('Description')).toBeInTheDocument();
+
+    // Verify textarea is rendered
+    expect(screen.getByRole('textbox', { name: /description/i })).toBeInTheDocument();
+    expect(screen.getByRole('textbox').tagName).toBe('TEXTAREA');
+  });
+
+  it('renders description text', () => {
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        description="Enter your notes"
+        value=""
+        onChange={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Enter your notes')).toBeInTheDocument();
+  });
+
+  it('shows required indicator', () => {
+    render(
+      <MultilineTextInputField
+        label="Required field"
+        value=""
+        onChange={() => {}}
+        isRequired
+      />
+    );
+
+    // Check for required indicator
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('aria-required', 'true');
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with the component:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MultilineTextInputField } from '@commercetools/nimbus';
+
+describe('MultilineTextInputField interactions', () => {
+  it('calls onChange when user types', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <MultilineTextInputField
+        label="Description"
+        value=""
+        onChange={handleChange}
+      />
+    );
+
+    const input = screen.getByRole('textbox', { name: /description/i });
+    await user.type(input, 'hello world');
+
+    expect(handleChange).toHaveBeenCalled();
+    expect(handleChange).toHaveBeenLastCalledWith(expect.stringContaining('hello world'));
+  });
+
+  it('calls onBlur when input loses focus', async () => {
+    const user = userEvent.setup();
+    const handleBlur = jest.fn();
+
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        value=""
+        onChange={() => {}}
+        onBlur={handleBlur}
+      />
+    );
+
+    const input = screen.getByRole('textbox');
+    await user.click(input);
+    await user.tab(); // Move focus away
+
+    expect(handleBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call onChange when disabled', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        value=""
+        onChange={handleChange}
+        isDisabled
+      />
+    );
+
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+
+    // Attempt to type (should not work)
+    await user.type(input, 'test');
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+});
+```
+
+### Testing validation and errors
+
+Test error handling and validation behavior:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { MultilineTextInputField } from '@commercetools/nimbus';
+
+describe('MultilineTextInputField validation', () => {
+  it('does not show errors when untouched', () => {
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        value=""
+        onChange={() => {}}
+        errors={{ missing: true }}
+        touched={false}
+      />
+    );
+
+    // Error should not be visible
+    expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
+  });
+
+  it('shows errors when touched', () => {
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        value=""
+        onChange={() => {}}
+        errors={{ missing: true }}
+        touched={true}
+      />
+    );
+
+    // Error should be visible
+    expect(screen.getByText(/required/i)).toBeInTheDocument();
+  });
+
+  it('applies invalid styling when isInvalid is true', () => {
+    render(
+      <MultilineTextInputField
+        label="Notes"
+        value=""
+        onChange={() => {}}
+        isInvalid
+      />
+    );
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('data-invalid', 'true');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-multilinetextinputfield--docs)
+- [MultilineTextInput Component](components/forms/multiline-text-input)
+- [FormField Component](components/inputs/formfield)
+- [FieldErrors Component](components/forms/fielderrors)
+- [React Aria TextField](https://react-spectrum.adobe.com/react-aria/TextField.html)
