@@ -32,7 +32,3 @@ jobs:
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5
-
-      - name: Validate engineering documentation
-        run: pnpm test:docs
-        timeout-minutes: 2

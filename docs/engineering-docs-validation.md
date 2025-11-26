@@ -1,303 +1,379 @@
-# Engineering Documentation Test Validation
+# Engineering Documentation Test Integration
 
-This guide explains how to validate test code examples in engineering documentation (`.dev.mdx` files) using automated CI checks.
+This guide explains how test code examples in engineering documentation (`.dev.mdx` files) are automatically kept up-to-date using real, executable tests.
 
 ## Overview
 
-Engineering documentation (`.dev.mdx` files) includes test code examples showing consumers how to test components. To ensure these examples stay valid and up-to-date, we extract and run them automatically in CI.
+Engineering documentation (`.dev.mdx` files) includes test code examples showing consumers how to test components. These examples are now **automatically generated from real test files**, ensuring they're always valid and up-to-date.
 
 ## How It Works
 
-### 1. Tag Test Blocks in Documentation
+### The Inverted Strategy
 
-Wrap test code blocks with validation tags:
+Instead of extracting tests from documentation, we **inject tests into documentation** at build time:
+
+1. **Tests live in `.docs.spec.tsx` files** - Real, executable test files colocated with components
+2. **Tests run with normal test suite** - No special CLI workflow needed
+3. **Build extracts test sections** - TypeScript AST parser finds tagged sections
+4. **Documentation generated** - Test code injected into MDX at build time
+
+**Key Benefit:** Tests are the source of truth. Documentation is derived from working tests.
+
+## Writing Documentation Tests
+
+### 1. Create Test File
+
+Create a `.docs.spec.tsx` file alongside your component:
+
+```
+text-input/
+├── text-input.tsx
+├── text-input.types.ts
+├── text-input.dev.mdx          # Developer guide
+├── text-input.docs.spec.tsx    # NEW: Tests for documentation
+└── text-input.stories.tsx      # Storybook tests
+```
+
+### 2. Tag Test Sections with JSDoc
+
+Use JSDoc tags to mark test sections for documentation:
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TextInput, NimbusProvider } from '@commercetools/nimbus';
+
+/**
+ * @docs-section basic-rendering
+ * @docs-title Basic Rendering Tests
+ * @docs-description Verify the component renders with expected elements
+ * @docs-order 1
+ */
+describe('TextInput - Basic rendering', () => {
+  it('renders input element', () => {
+    render(
+      <NimbusProvider>
+        <TextInput placeholder="Enter text" />
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+  });
+
+  it('renders with placeholder text', () => {
+    render(
+      <NimbusProvider>
+        <TextInput placeholder="Email" />
+      </NimbusProvider>
+    );
+
+    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section interactions
+ * @docs-title Interaction Tests
+ * @docs-description Test user interactions with the component
+ * @docs-order 2
+ */
+describe('TextInput - Interactions', () => {
+  it('updates value when user types', async () => {
+    const user = userEvent.setup();
+    render(
+      <NimbusProvider>
+        <TextInput placeholder="Type here" />
+      </NimbusProvider>
+    );
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Hello World');
+
+    expect(input).toHaveValue('Hello World');
+  });
+});
+```
+
+### 3. Add Injection Token to MDX
+
+In your `.dev.mdx` file, add a single token where tests should appear:
 
 ```mdx
 ## Testing your implementation
 
-### Basic rendering tests
+These examples demonstrate how to test your implementation when using ComponentName in your application.
 
-<!-- test:validate -->
-\`\`\`tsx
+{{docs-tests: component-name.docs.spec.tsx}}
+
+## Additional testing considerations
+
+[Manual content about edge cases, patterns, etc.]
+```
+
+### 4. Build Documentation
+
+When you build docs, test sections are automatically extracted and injected:
+
+```bash
+pnpm build:docs
+```
+
+The build process:
+1. Finds `{{docs-tests:}}` tokens in MDX
+2. Locates companion `.docs.spec.tsx` file
+3. Parses TypeScript AST
+4. Extracts sections with JSDoc tags
+5. Generates markdown sections with code blocks
+6. Cleans code (removes test infrastructure)
+7. Injects into documentation
+
+## JSDoc Tag Reference
+
+### Required Tags
+
+| Tag | Purpose | Example |
+|-----|---------|---------|
+| `@docs-section` | Unique identifier for the section | `@docs-section basic-rendering` |
+| `@docs-title` | Display title in documentation | `@docs-title Basic Rendering Tests` |
+| `@docs-description` | Brief description of what tests demonstrate | `@docs-description Verify component renders correctly` |
+| `@docs-order` | Sort order in documentation (lower = earlier) | `@docs-order 1` |
+
+### Example Usage
+
+```typescript
+/**
+ * @docs-section controlled-mode
+ * @docs-title Testing Controlled Mode
+ * @docs-description Test controlled component behavior
+ * @docs-order 3
+ */
+describe('Component - Controlled mode', () => {
+  // Tests here
+});
+```
+
+## Code Transparency
+
+The build process shows **full, unmodified test code** in documentation. What you write in `.docs.spec.tsx` files is exactly what consumers see.
+
+### What Consumers See
+
+All code is preserved as-is, including:
+
+✅ **Complete test setup:**
+- `renderWithProvider()` helper function
+- `NimbusProvider` imports
+- `ReactNode` type imports
+- All test infrastructure
+
+✅ **Full context:**
+- Exact imports you use
+- Helper functions defined
+- Complete, copy-paste ready examples
+
+### Example
+
+**In test file (what you write):**
+
+```typescript
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { TextInput } from '@commercetools/nimbus';
+import { TextInput, NimbusProvider } from '@commercetools/nimbus';
 
-describe('TextInput - Basic rendering', () => {
-  it('renders input element', () => {
-    render(<TextInput placeholder="Enter text" />);
+describe('Tests', () => {
+  it('works', () => {
+    render(
+      <NimbusProvider>
+        <TextInput placeholder="Test" />
+      </NimbusProvider>
+    );
+
     expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 });
-\`\`\`
-<!-- /test:validate -->
 ```
 
-**Important**: Use `vi.fn()` instead of `jest.fn()` since we run tests with Vitest.
-
-### 2. Run Validation
-
-```bash
-# Validate all .dev.mdx files
-pnpm test:docs
-
-# Validate specific file
-pnpm test:docs --file=text-input.dev.mdx
-```
-
-### 3. What Happens
-
-The validation script (`scripts/validate-docs-tests.ts`):
-
-1. **Finds** all `.dev.mdx` files in the codebase
-2. **Extracts** code blocks between `<!-- test:validate -->` tags
-3. **Generates** a temporary test file with all extracted code
-4. **Wraps** render calls with `NimbusProvider` automatically
-5. **Runs** tests using Vitest
-6. **Reports** results (pass/fail)
-
-Example output:
-
-```
-🔍 Validating engineering documentation tests...
-
-Found 12 file(s) to validate:
-
-  ✓ packages/nimbus/src/components/text-input/text-input.dev.mdx - 5 test block(s)
-  - packages/nimbus/src/components/button/button.dev.mdx - No tagged tests
-  ...
-
-Total: 5 test block(s) extracted
-
-📝 Generated test file: packages/nimbus/src/test/docs-validation.generated.spec.tsx
-
-🧪 Running extracted tests...
-
- ✓ TextInput - Basic rendering > renders input element
- ✓ TextInput - Basic rendering > renders with placeholder text
- ✓ TextInput - Basic rendering > renders with aria-label
- ✓ TextInput - Interactions > updates value when user types
- ✓ TextInput - Interactions > calls onChange callback with string value
- ...
-
-✅ All documentation tests passed!
-```
-
-## Writing Test Examples
-
-### Best Practices
-
-✅ **DO:**
-- Keep examples simple and focused
-- Use realistic test patterns consumers would write
-- Include common testing scenarios
-- Use `vi.fn()` for mocks (Vitest)
-- Group related tests in describe blocks with descriptive names
-
-❌ **DON'T:**
-- Include overly complex test setups
-- Use internal implementation details
-- Add test utilities not available to consumers
-- Use `jest.fn()` (use `vi.fn()` instead)
-
-### Example Structure
+**In documentation (what consumers see):**
 
 ```tsx
-<!-- test:validate -->
-\`\`\`tsx
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ComponentName } from '@commercetools/nimbus';
+import { TextInput, NimbusProvider } from '@commercetools/nimbus';
 
-describe('ComponentName - Feature description', () => {
-  it('tests specific behavior', async () => {
-    const user = userEvent.setup();
-    render(<ComponentName prop="value" />);
+describe('Tests', () => {
+  it('works', () => {
+    render(
+      <NimbusProvider>
+        <TextInput placeholder="Test" />
+      </NimbusProvider>
+    );
 
-    const element = screen.getByRole('role');
-    await user.click(element);
-
-    expect(element).toHaveTextContent('expected');
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 });
-\`\`\`
-<!-- /test:validate -->
 ```
 
-### What Gets Wrapped Automatically
+**Result:** Exactly the same! No transformations, no hidden setup. Complete transparency.
 
-The script automatically handles:
+## Best Practices
 
-**✅ NimbusProvider wrapping:**
-```tsx
-// You write:
-render(<TextInput placeholder="Test" />);
+### ✅ DO
 
-// Script transforms to:
-renderWithProvider(<TextInput placeholder="Test" />);
-// where renderWithProvider wraps in <NimbusProvider>
-```
+- **Keep examples simple and focused** - One concept per test section
+- **Use realistic test patterns** - Show what consumers would actually write
+- **Include common testing scenarios** - Basic rendering, interactions, states
+- **Wrap every render with `<NimbusProvider>`** - Shows consumers the required setup explicitly
+- **Group related tests** - Use describe blocks with clear names
+- **Order logically** - Use `@docs-order` to sequence from simple to complex
+- **Be explicit about boilerplate** - Don't hide setup requirements in helpers
 
-**✅ Rerender support:**
-```tsx
-// You write:
-const { rerender } = render(<Component value="first" />);
-rerender(<Component value="second" />);
+### ❌ DON'T
 
-// Script wraps both render and rerender calls
-```
+- **Include overly complex test setups** - Keep examples accessible
+- **Use internal implementation details** - Focus on public API
+- **Add test utilities not available to consumers** - Stick to standard libraries
+- **Skip JSDoc tags** - All required tags must be present
+- **Duplicate test logic** - One source of truth in `.docs.spec.tsx`
 
-### What You Need to Handle
+## File Naming Convention
 
-**Import statements:**
-Always include all necessary imports in each test block:
+| File Type | Purpose | Example |
+|-----------|---------|---------|
+| `.docs.spec.tsx` | Tests for documentation examples | `text-input.docs.spec.tsx` |
+| `.spec.tsx` | Internal unit tests (not shown in docs) | `text-input.spec.tsx` |
+| `.stories.tsx` | Storybook interaction tests | `text-input.stories.tsx` |
 
-```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ComponentName } from '@commercetools/nimbus';
-```
+**Note:** `.docs.spec.tsx` tests are discovered automatically by Vitest and run with the normal test suite.
 
-The script deduplicates imports across blocks automatically.
+## Running Tests
 
-## Testing the Validation
-
-### Test That It Works
-
-Add a deliberately failing test to see validation catch it:
-
-```tsx
-<!-- test:validate -->
-\`\`\`tsx
-import { render, screen } from '@testing-library/react';
-import { TextInput } from '@commercetools/nimbus';
-
-describe('Broken example', () => {
-  it('should fail', () => {
-    render(<TextInput placeholder="Test" />);
-    expect(screen.getByRole('button')).toBeInTheDocument(); // Wrong role!
-  });
-});
-\`\`\`
-<!-- /test:validate -->
-```
-
-Run `pnpm test:docs` - it should fail with a clear error message.
-
-### Test That It Catches Stale Code
-
-If you update a component's API but forget to update docs:
-
-```tsx
-// Old docs example (now broken):
-render(<TextInput color="primary" />); // color prop removed
-
-// Validation catches this:
-❌ Property 'color' does not exist on type 'TextInputProps'
-```
-
-## CI Integration
-
-### Add to GitHub Actions
-
-```yaml
-# .github/workflows/test.yml
-name: Test
-
-on: [push, pull_request]
-
-jobs:
-  test-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm build:packages
-      - run: pnpm test:docs
-```
-
-### Pre-commit Hook (Optional)
+Documentation tests run normally with existing commands:
 
 ```bash
-# .husky/pre-commit
-pnpm test:docs
+# Run all tests (includes docs tests)
+pnpm test
+
+# Run only unit tests (includes docs tests)
+pnpm test:unit
+
+# Run specific docs test file
+pnpm test:unit text-input.docs.spec.tsx
+
+# Run in watch mode
+pnpm test:unit --watch
 ```
 
-## Rollout Strategy
+**No special CLI workflow needed!**
 
-### Phase 1: Pilot (Current)
-- ✅ TextInput has tagged test blocks
-- ✅ Script validates and passes
-- Get feedback from team
+## Verification Checklist
 
-### Phase 2: Expand
-- Add tags to other complex components (Select, DatePicker, etc.)
-- Tag pattern components (TextInputField, etc.)
-- Test edge cases and complex scenarios
+When creating or updating documentation tests:
 
-### Phase 3: Enforce
-- Add to CI pipeline
-- Make test:docs required for PR merges
-- Document pattern in contribution guide
-
-## Maintenance Benefits
-
-✅ **Catches breaking changes** - API changes caught before release
-✅ **Prevents stale examples** - Invalid code fails CI
-✅ **Documents testing patterns** - Shows real, working test code
-✅ **No duplication** - Tests ARE the documentation
-✅ **Low overhead** - Just add tags to existing code
-✅ **Fast feedback** - Run locally before committing
+- [ ] Test file named `{component}.docs.spec.tsx`
+- [ ] File colocated with component
+- [ ] All describe blocks have JSDoc tags (`@docs-section`, `@docs-title`, `@docs-description`, `@docs-order`)
+- [ ] Every `render()` call wraps component with `<NimbusProvider>`
+- [ ] NimbusProvider imported from `@commercetools/nimbus`
+- [ ] MDX file has `{{docs-tests: filename}}` token
+- [ ] Tests pass when run with `pnpm test:unit`
+- [ ] Documentation builds without errors
+- [ ] Generated docs show full code including provider (no cleaning)
 
 ## Troubleshooting
 
 ### Tests Fail Locally
 
-1. **Ensure packages are built:**
-   ```bash
-   pnpm build:packages
-   ```
+**Issue:** Tests fail with "useContext returned undefined" errors
 
-2. **Check generated file:**
-   ```bash
-   cat packages/nimbus/src/test/docs-validation.generated.spec.tsx
-   ```
+**Solution:** Ensure every `render()` call wraps the component with `<NimbusProvider>`:
 
-3. **Run test file directly:**
-   ```bash
-   pnpm vitest run packages/nimbus/src/test/docs-validation.generated.spec.tsx --project=unit
-   ```
+```typescript
+// ✅ Correct - Provider wrapper included
+describe('Tests', () => {
+  it('works', () => {
+    render(
+      <NimbusProvider>
+        <Component />
+      </NimbusProvider>
+    );
+  });
+});
 
-### Common Issues
+// ❌ Wrong - Missing provider
+describe('Tests', () => {
+  it('works', () => {
+    render(<Component />); // Will fail with context error!
+  });
+});
+```
 
-**Issue**: `useContext returned undefined`
-- **Cause**: Missing NimbusProvider wrapper
-- **Fix**: Script should wrap automatically; check `renderWithProvider` function in generated file
+### Documentation Not Updating
 
-**Issue**: `Cannot find module '@commercetools/nimbus'`
-- **Cause**: Package not built
-- **Fix**: Run `pnpm build:packages` first
+**Issue:** Changes to test file don't appear in docs
 
-**Issue**: Tests pass locally but fail in CI
-- **Cause**: Missing build step in CI
-- **Fix**: Ensure CI runs `pnpm build:packages` before `pnpm test:docs`
+**Solution:**
+1. Rebuild nimbus-docs-build package: `pnpm --filter @commercetools/nimbus-docs-build build`
+2. Rebuild documentation: `pnpm build:docs`
+3. Restart dev server if running
 
-## Example: TextInput
+### Token Not Replaced
 
-See `packages/nimbus/src/components/text-input/text-input.dev.mdx` for a complete reference implementation with:
-- ✅ 5 tagged test sections
-- ✅ 14 individual test cases
-- ✅ All tests passing
+**Issue:** `{{docs-tests:}}` token appears in documentation
 
-## Related Documentation
+**Possible causes:**
+- Test file not found (check filename matches exactly)
+- No sections found (add `@docs-section` JSDoc tags)
+- Syntax error in test file (run tests to verify)
 
-- [Component Guidelines](./component-guidelines.md) - Component development patterns
-- [Unit Testing Guidelines](./file-type-guidelines/unit-testing.md) - Testing best practices
-- [Stories Guidelines](./file-type-guidelines/stories.md) - Storybook test patterns
+**Debug:**
+```bash
+# Check console output during docs build for warnings
+pnpm build:docs
+
+# Look for messages like:
+# "Test file not found: ..."
+# "No test sections found in ..."
+```
+
+### Code Appears Malformed
+
+**Issue:** Generated code has syntax errors
+
+**Solution:**
+- Verify test file has valid JSX syntax
+- Ensure all imports are valid
+- Run tests to confirm code is executable
+
+## Migration from Old System
+
+If migrating from the HTML comment tag system:
+
+1. **Extract test code** from `<!-- test:validate -->` tags in `.dev.mdx`
+2. **Create `.docs.spec.tsx`** file with extracted tests
+3. **Add JSDoc tags** to each describe block
+4. **Wrap all render calls** with `<NimbusProvider>` explicitly
+5. **Add NimbusProvider import** to imports
+6. **Replace test sections** in MDX with `{{docs-tests: filename}}`
+7. **Verify** tests pass and docs build correctly
+
+## Example: Complete TextInput Implementation
+
+See `packages/nimbus/src/components/text-input/` for a complete reference:
+
+- `text-input.docs.spec.tsx` - Test file with 5 sections, 14 tests
+- `text-input.dev.mdx` - Uses `{{docs-tests: text-input.docs.spec.tsx}}`
+- Generated docs at `apps/docs/src/data/routes/components-inputs-textinput.json`
+
+## Benefits
+
+✅ **Always up-to-date** - Tests ARE the examples
+✅ **Type-safe** - TypeScript catches API changes
+✅ **IDE support** - Full autocomplete and type checking
+✅ **No duplication** - Single source of truth
+✅ **Normal workflow** - Tests run with `pnpm test`
+✅ **Build-time validation** - Missing tests fail docs build
+✅ **Clean examples** - Infrastructure removed automatically
 
 ---
 
