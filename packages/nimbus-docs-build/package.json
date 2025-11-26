@@ -38,6 +38,7 @@
     "@types/node": "catalog:utils",
     "typescript": "catalog:tooling"
   },
+  "peerDependencies": {},
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
