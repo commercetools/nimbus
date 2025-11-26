@@ -28,8 +28,8 @@ catalogs:
       specifier: ^19.0.0
       version: 19.2.2
     '@types/react-dom':
-      specifier: ^19.0.0
-      version: 19.2.2
+      specifier: ^19.2.3
+      version: 19.2.3
     next-themes:
       specifier: ^0.4.6
       version: 0.4.6
@@ -268,7 +268,7 @@ importers:
         version: 19.2.2
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.2(@types/react@19.2.2)
+        version: 19.2.3(@types/react@19.2.2)
       '@vitejs/plugin-react-swc':
         specifier: catalog:tooling
         version: 4.1.0(@swc/helpers@0.5.17)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -437,7 +437,7 @@ importers:
         version: 19.2.2
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.2(@types/react@19.2.2)
+        version: 19.2.3(@types/react@19.2.2)
       '@vitejs/plugin-react-swc':
         specifier: catalog:tooling
         version: 4.1.0(@swc/helpers@0.5.17)(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -561,7 +561,7 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: catalog:tooling
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@testing-library/user-event':
         specifier: catalog:tooling
         version: 14.6.1(@testing-library/dom@10.4.1)
@@ -579,7 +579,7 @@ importers:
         version: 19.2.2
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.2(@types/react@19.2.2)
+        version: 19.2.3(@types/react@19.2.2)
       '@vitejs/plugin-react':
         specifier: catalog:tooling
         version: 5.0.4(vite@7.1.11(@types/node@24.8.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -2668,8 +2668,8 @@ packages:
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
 
-  '@types/react-dom@19.2.2':
-    resolution: {integrity: sha512-9KQPoO6mZCi7jcIStSnlOWn2nEF3mNmyr3rIAsGnAbQKYbRLyqmeSc39EVgtxXVia+LMT8j3knZLAZAh+xLmrw==}
+  '@types/react-dom@19.2.3':
+    resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
       '@types/react': ^19.2.0
 
@@ -8982,7 +8982,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.4
       '@testing-library/dom': 10.4.1
@@ -8990,7 +8990,7 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
     optionalDependencies:
       '@types/react': 19.2.2
-      '@types/react-dom': 19.2.2(@types/react@19.2.2)
+      '@types/react-dom': 19.2.3(@types/react@19.2.2)
 
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
     dependencies:
@@ -9143,7 +9143,7 @@ snapshots:
 
   '@types/range-parser@1.2.7': {}
 
-  '@types/react-dom@19.2.2(@types/react@19.2.2)':
+  '@types/react-dom@19.2.3(@types/react@19.2.2)':
     dependencies:
       '@types/react': 19.2.2
 
