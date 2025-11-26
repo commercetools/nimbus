@@ -1,0 +1,335 @@
+---
+title: Kbd Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Kbd } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Kbd component displays keyboard keys and shortcuts with consistent styling:
+
+```jsx-live-dev
+const App = () => (
+  <Text>
+    Press <Kbd>Enter</Kbd> to submit the form.
+  </Text>
+)
+```
+
+## Usage examples
+
+### Single keys
+
+Display individual keyboard keys:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>Press <Kbd>A</Kbd> to select all</Text>
+    <Text>Press <Kbd>Esc</Kbd> to cancel</Text>
+    <Text>Press <Kbd>Tab</Kbd> to move focus</Text>
+    <Text>Press <Kbd>Space</Kbd> to activate</Text>
+    <Text>Press <Kbd>Delete</Kbd> to remove</Text>
+  </Stack>
+)
+```
+
+### Key combinations
+
+Display multiple keys pressed together using separate Kbd components:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy
+    </Text>
+    <Text>
+      Press <Kbd>Ctrl</Kbd> + <Kbd>V</Kbd> to paste
+    </Text>
+    <Text>
+      Press <Kbd>Ctrl</Kbd> + <Kbd>Z</Kbd> to undo
+    </Text>
+    <Text>
+      Press <Kbd>Ctrl</Kbd> + <Kbd>Shift</Kbd> + <Kbd>Z</Kbd> to redo
+    </Text>
+  </Stack>
+)
+```
+
+### Modifier keys
+
+Show common modifier key combinations:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      <Kbd>⌘</Kbd> + <Kbd>S</Kbd> to save (macOS)
+    </Text>
+    <Text>
+      <Kbd>Ctrl</Kbd> + <Kbd>S</Kbd> to save (Windows/Linux)
+    </Text>
+    <Text>
+      <Kbd>Alt</Kbd> + <Kbd>Tab</Kbd> to switch windows
+    </Text>
+    <Text>
+      <Kbd>Shift</Kbd> + <Kbd>Enter</Kbd> to insert line break
+    </Text>
+  </Stack>
+)
+```
+
+### Arrow keys
+
+Display directional navigation keys:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>Use <Kbd>↑</Kbd> and <Kbd>↓</Kbd> to navigate options</Text>
+    <Text>Use <Kbd>←</Kbd> and <Kbd>→</Kbd> to move cursor</Text>
+    <Text>
+      Press <Kbd>Ctrl</Kbd> + <Kbd>↑</Kbd> to scroll to top
+    </Text>
+  </Stack>
+)
+```
+
+### Function keys
+
+Display function keys for special actions:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>Press <Kbd>F1</Kbd> for help</Text>
+    <Text>Press <Kbd>F5</Kbd> to refresh</Text>
+    <Text>Press <Kbd>F11</Kbd> for fullscreen</Text>
+    <Text>Press <Kbd>F12</Kbd> to open developer tools</Text>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Kbd component renders semantic `<kbd>` HTML elements which are recognized by screen readers as keyboard input. This helps assistive technology users understand that the content represents keys to press.
+
+**Best practices:**
+- Always use Kbd within descriptive text that explains the action
+- Provide clear context about what the keyboard shortcut does
+- Use consistent patterns for key combinations (e.g., modifier + key)
+- Consider providing alternative methods for users who cannot use keyboards
+
+**Example with clear context:**
+```jsx-live-dev
+const App = () => (
+  <Text>
+    To save your changes, press <Kbd>Ctrl</Kbd> + <Kbd>S</Kbd> or use the Save button.
+  </Text>
+)
+```
+
+#### Keyboard navigation
+
+The Kbd component does not have interactive elements and does not require keyboard navigation. It is a display-only component used to visually represent keyboard keys.
+
+## API reference
+
+<PropsTable id="Kbd" />
+
+## Common patterns
+
+### Help dialog shortcuts
+
+Display available keyboard shortcuts in a help menu:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text fontWeight="semibold">Keyboard Shortcuts</Text>
+    <Stack direction="column" gap="200">
+      <Stack direction="row" justify="space-between" width="300px">
+        <Text>Copy</Text>
+        <Stack direction="row" gap="100" align="center">
+          <Kbd>Ctrl</Kbd>
+          <Text>+</Text>
+          <Kbd>C</Kbd>
+        </Stack>
+      </Stack>
+      <Stack direction="row" justify="space-between" width="300px">
+        <Text>Paste</Text>
+        <Stack direction="row" gap="100" align="center">
+          <Kbd>Ctrl</Kbd>
+          <Text>+</Text>
+          <Kbd>V</Kbd>
+        </Stack>
+      </Stack>
+      <Stack direction="row" justify="space-between" width="300px">
+        <Text>Search</Text>
+        <Stack direction="row" gap="100" align="center">
+          <Kbd>Ctrl</Kbd>
+          <Text>+</Text>
+          <Kbd>F</Kbd>
+        </Stack>
+      </Stack>
+    </Stack>
+  </Stack>
+)
+```
+
+### Form field hints
+
+Show keyboard shortcuts in form field descriptions:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text>
+      Type to search. Press <Kbd>Enter</Kbd> to select the first result.
+    </Text>
+    <Text>
+      Use <Kbd>Tab</Kbd> to move to the next field, or <Kbd>Shift</Kbd> + <Kbd>Tab</Kbd> to go back.
+    </Text>
+    <Text>
+      Press <Kbd>Esc</Kbd> to clear your input and close suggestions.
+    </Text>
+  </Stack>
+)
+```
+
+### Editor shortcuts
+
+Display text editor keyboard commands:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Text fontWeight="semibold">Text Formatting</Text>
+    <Stack direction="column" gap="200">
+      <Text>
+        <Kbd>Ctrl</Kbd> + <Kbd>B</Kbd> for bold
+      </Text>
+      <Text>
+        <Kbd>Ctrl</Kbd> + <Kbd>I</Kbd> for italic
+      </Text>
+      <Text>
+        <Kbd>Ctrl</Kbd> + <Kbd>U</Kbd> for underline
+      </Text>
+      <Text>
+        <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd> to insert link
+      </Text>
+    </Stack>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Kbd in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected content:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Kbd } from '@commercetools/nimbus';
+
+describe('Kbd', () => {
+  it('renders keyboard key content', () => {
+    render(<Kbd>Enter</Kbd>);
+
+    expect(screen.getByText('Enter')).toBeInTheDocument();
+  });
+
+  it('renders with semantic kbd element', () => {
+    const { container } = render(<Kbd>Ctrl</Kbd>);
+
+    const kbdElement = container.querySelector('kbd');
+    expect(kbdElement).toBeInTheDocument();
+  });
+});
+```
+
+### Key combination tests
+
+Test multiple keys in combinations:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Kbd, Text } from '@commercetools/nimbus';
+
+describe('Kbd combinations', () => {
+  it('renders key combination correctly', () => {
+    render(
+      <Text>
+        Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy
+      </Text>
+    );
+
+    expect(screen.getByText('Ctrl')).toBeInTheDocument();
+    expect(screen.getByText('C')).toBeInTheDocument();
+    expect(screen.getByText('to copy')).toBeInTheDocument();
+  });
+
+  it('renders multiple kbd elements independently', () => {
+    const { container } = render(
+      <>
+        <Kbd>Shift</Kbd>
+        <Kbd>Tab</Kbd>
+      </>
+    );
+
+    const kbdElements = container.querySelectorAll('kbd');
+    expect(kbdElements).toHaveLength(2);
+    expect(kbdElements[0]).toHaveTextContent('Shift');
+    expect(kbdElements[1]).toHaveTextContent('Tab');
+  });
+});
+```
+
+### Integration with instructions
+
+Test keyboard shortcuts within instructional text:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Kbd, Text } from '@commercetools/nimbus';
+
+describe('Kbd in instructions', () => {
+  it('displays shortcut within help text', () => {
+    render(
+      <Text>
+        Press <Kbd>Esc</Kbd> to cancel
+      </Text>
+    );
+
+    expect(screen.getByText('Press')).toBeInTheDocument();
+    expect(screen.getByText('Esc')).toBeInTheDocument();
+    expect(screen.getByText('to cancel')).toBeInTheDocument();
+  });
+
+  it('renders accessible keyboard instruction', () => {
+    const { container } = render(
+      <Text>
+        Use <Kbd>Tab</Kbd> to navigate
+      </Text>
+    );
+
+    const kbdElement = container.querySelector('kbd');
+    expect(kbdElement).toHaveTextContent('Tab');
+    expect(kbdElement?.tagName).toBe('KBD');
+  });
+});
+```
