@@ -199,6 +199,7 @@ function visit(
 
   // Recursively visit all child nodes
   for (const key of Object.keys(node)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const value = (node as any)[key];
 
     if (value && typeof value === "object") {
