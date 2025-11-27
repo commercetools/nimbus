@@ -11,28 +11,44 @@ Unit test files (`{utility-name}.spec.ts` or `{hook-name}.spec.ts`) provide fast
 
 ## When to Use
 
-Unit tests are exclusively for non-component code:
+Unit tests are used for:
 
 - **Utility functions and helpers** - Pure functions, formatters, validators, data transformers
 - **React hooks** - Custom hooks tested in isolation with `renderHook`
 - **Business logic** - Calculations, algorithms, data processing
 - **Validation functions** - Input validators, schema validators
 - **Helper modules** - String manipulation, date formatting, number formatting
+- **Documentation examples** - Consumer-facing test patterns (in `.docs.spec.tsx` files)
 
-**For components**: Use Storybook stories with play functions to test all component behavior, interactions, visual states, and accessibility.
+**For component behavior testing**: Use Storybook stories with play functions to test all component interactions, visual states, and accessibility.
 
-### Unit Tests vs Storybook Tests
+### Documentation Tests (`.docs.spec.tsx`)
 
-| Aspect | Unit Tests | Storybook Tests |
-|--------|------------|-----------------|
-| **Environment** | JSDOM (fast, simulated) | Real browser (accurate) |
-| **Purpose** | Utility/hook logic verification | Component behavior & interactions |
-| **Speed** | Very fast (~ms per test) | Slower (~seconds per story) |
-| **Focus** | Pure functions, hooks | UI, user flows, visual states, a11y |
-| **Use For** | Utilities, hooks only | ALL components |
-| **Required** | Only for utilities/hooks | For ALL interactive components |
+A special category of unit tests used for engineering documentation:
 
-**Testing Strategy**: Components are testable in JSDOM (for consumers using JSDOM), but Nimbus tests all component behavior exclusively in Storybook stories with play functions.
+- **Purpose**: Provide real, working test examples for consumers
+- **Location**: Colocated with components (e.g., `text-input.docs.spec.tsx`)
+- **Integration**: Automatically injected into `.dev.mdx` documentation at build time
+- **Workflow**: Write once, used in both test suite AND documentation
+
+See [Engineering Documentation Test Integration](../engineering-docs-validation.md) for complete details.
+
+### Unit Tests vs Storybook Tests vs Documentation Tests
+
+| Aspect | Unit Tests | Storybook Tests | Documentation Tests |
+|--------|------------|-----------------|---------------------|
+| **Environment** | JSDOM (fast, simulated) | Real browser (accurate) | JSDOM (consumer-friendly) |
+| **Purpose** | Utility/hook logic verification | Component behavior & interactions | Consumer test examples |
+| **Speed** | Very fast (~ms per test) | Slower (~seconds per story) | Very fast (~ms per test) |
+| **Focus** | Pure functions, hooks | UI, user flows, visual states, a11y | Integration patterns, public API |
+| **Use For** | Utilities, hooks | ALL components | Documentation examples |
+| **File Pattern** | `*.spec.{ts,tsx}` | `*.stories.tsx` | `*.docs.spec.tsx` |
+| **Audience** | Internal developers | Internal developers | External consumers |
+
+**Testing Strategy**:
+- **Nimbus internal testing**: Storybook stories test all component behavior
+- **Consumer documentation**: `.docs.spec.tsx` tests demonstrate integration patterns
+- **Utility testing**: Standard `.spec.ts` files test helper functions and hooks
 
 ## Testing Infrastructure
 

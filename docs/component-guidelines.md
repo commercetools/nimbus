@@ -36,7 +36,9 @@ detailed guidelines:
 ### Testing Files
 
 - **[Unit Tests ({utility}.spec.ts)](./file-type-guidelines/unit-testing.md)** -
-  Fast, isolated tests for utilities and hooks only (components use Storybook stories)
+  Fast, isolated tests for utilities, hooks, and documentation examples
+- **[Documentation Tests ({component}.docs.spec.tsx)](../engineering-docs-validation.md)** -
+  Consumer-facing test examples automatically injected into `.dev.mdx` documentation
 
 ### Styling System Files (When Needed)
 
@@ -81,9 +83,11 @@ detailed guidelines:
    stories with play functions for testing
 8. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
    documentation
-9. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
+9. **[Add Documentation Tests](../engineering-docs-validation.md)** - Create
+   `.docs.spec.tsx` with consumer test examples (optional but recommended)
+10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
 
-**Note**: All component behavior is tested in Storybook stories with play functions. Unit tests are reserved for utilities and hooks only.
+**Note**: All component behavior is tested in Storybook stories with play functions. Documentation tests (`.docs.spec.tsx`) provide consumer-facing examples.
 
 ### 🎨 Adding Styling to Components
 
@@ -178,6 +182,8 @@ component-name/
 ├── component-name.i18n.ts         # i18n messages (if needed)
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Documentation (required)
+├── component-name.dev.mdx        # Engineering guide (optional)
+├── component-name.docs.spec.tsx  # Documentation tests (optional, recommended)
 ├── components/                    # Compound parts (if compound)
 │   ├── component-name.root.tsx
 │   ├── component-name.part.tsx
@@ -216,6 +222,8 @@ component-name/
 | i18n          | `{component-name}.i18n.ts`     | `button.i18n.ts`     |
 | Stories       | `{component-name}.stories.tsx` | `button.stories.tsx` |
 | Documentation | `{component-name}.mdx`         | `button.mdx`         |
+| Engineering Docs | `{component-name}.dev.mdx`  | `button.dev.mdx`     |
+| Documentation Tests | `{component-name}.docs.spec.tsx` | `button.docs.spec.tsx` |
 
 ### Import Conventions
 
