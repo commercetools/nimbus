@@ -1,0 +1,816 @@
+---
+title: NumberInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { NumberInput, type NumberInputProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <NumberInput placeholder="Enter a number" />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput size="sm" placeholder="Small input" />
+    <NumberInput size="md" placeholder="Medium input (default)" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput variant="solid" placeholder="Solid variant (default)" />
+    <NumberInput variant="ghost" placeholder="Ghost variant" />
+  </Stack>
+)
+```
+
+### Leading and trailing elements
+
+Add icons, buttons, or other elements before or after the input using `leadingElement` and `trailingElement` props:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput
+      placeholder="Quantity"
+      leadingElement={<Icons.ShoppingCart />}
+    />
+    <NumberInput
+      placeholder="Amount"
+      leadingElement={<Icons.AttachMoney />}
+      trailingElement={<Icons.TrendingUp />}
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Elements automatically respect text direction (LTR/RTL)
+- Leading element appears at the start (left in LTR, right in RTL)
+- Trailing element appears before increment/decrement buttons
+- Icon sizing automatically adjusts based on the `size` prop
+
+### Number constraints
+
+Control the acceptable range and increment values using `minValue`, `maxValue`, and `step` props:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Range constraint (1-100):</Text>
+      <NumberInput
+        placeholder="Enter 1-100"
+        minValue={1}
+        maxValue={100}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Step increment (multiples of 5):</Text>
+      <NumberInput
+        placeholder="Multiples of 5"
+        step={5}
+        defaultValue={0}
+      />
+    </Stack>
+ 
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Combining constraints (10-100, step 10):</Text>
+      <NumberInput
+        placeholder="10, 20, 30..."
+        minValue={10}
+        maxValue={100}
+        step={10}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- `minValue` and `maxValue` enforce valid ranges
+- Increment/decrement buttons respect these limits
+- Users can still type values outside the range, but validation will apply
+- `step` determines the increment/decrement amount (default is 1)
+
+### Decimal numbers
+
+Support decimal precision by setting the `step` prop to a decimal value:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Two decimal places (step 0.01):</Text>
+      <NumberInput
+        placeholder="0.00"
+        step={0.01}
+        defaultValue={0}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">One decimal place (step 0.1):</Text>
+      <NumberInput
+        placeholder="0.0"
+        step={0.1}
+        defaultValue={0}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- `step` value determines decimal precision
+- Increment/decrement buttons adjust by the step amount
+- Users can type any decimal value
+- Use with `minValue={0}` for positive-only numbers (prices, quantities)
+
+### Disabled state
+
+Disable input interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput placeholder="Enabled input" />
+    <NumberInput placeholder="Disabled input" isDisabled />
+    <NumberInput
+      value={42}
+      isDisabled
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Increment and decrement buttons are also disabled
+- Input cannot receive focus or accept keyboard input
+- Visual styling indicates disabled state
+
+### Invalid state
+
+Mark inputs as invalid for validation feedback:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput
+      placeholder="Valid input"
+      value={50}
+      onChange={() => {}}
+    />
+    <NumberInput
+      placeholder="Invalid input"
+      value={150}
+      isInvalid
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Read-only state
+
+Use `isReadOnly` to display values without allowing editing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput
+      value={42}
+      onChange={() => {}}
+    />
+    <NumberInput
+      value={42}
+      isReadOnly
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Users can select and copy text but cannot edit
+- Increment and decrement buttons are disabled in read-only mode
+- Input still receives focus for accessibility
+
+### Required field
+
+Mark inputs as required using the `isRequired` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <NumberInput
+      placeholder="Optional field"
+    />
+    <NumberInput
+      placeholder="Required field"
+      isRequired
+    />
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<number | undefined>(undefined);
+
+  return (
+    <Stack direction="column" gap="400">
+      <NumberInput
+        placeholder="Type a number..."
+        defaultValue={0}
+        onChange={(value) => {
+          setDisplayValue(value);
+        }}
+      />
+      <Text fontSize="sm">
+        Current value: {displayValue !== undefined ? displayValue : '(not set)'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the number value without managing state yourself.
+
+**Note:** NumberInput's `onChange` receives the number value directly, not an event object.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<NumberInputProps["value"]>(0);
+
+  return (
+    <Stack direction="column" gap="400">
+      <NumberInput
+        value={value}
+        onChange={setValue}
+        placeholder="Controlled input"
+        minValue={0}
+        maxValue={100}
+      />
+      <Text fontSize="sm">
+        {value !== undefined ? `Value: ${value}` : 'No value'}
+      </Text>
+      <Stack direction="row" gap="300">
+        <Button onPress={() => setValue(0)}>
+          Reset to 0
+        </Button>
+        <Button onPress={() => setValue(50)}>
+          Set to 50
+        </Button>
+        <Button onPress={() => setValue(100)}>
+          Set to 100
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform input values
+- Clear or programmatically set the value
+- React to changes in real-time
+
+### Locale formatting
+
+NumberInput automatically formats numbers according to the user's locale when using React Aria's I18nProvider:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">US English (default):</Text>
+      <NumberInput defaultValue={1234.56} placeholder="1,234.56" />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">German (de-DE):</Text>
+      <NimbusI18nProvider locale="de-DE">
+        <NumberInput defaultValue={1234.56} placeholder="1.234,56" />
+      </NimbusI18nProvider>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">French (fr-FR):</Text>
+      <NimbusI18nProvider locale="fr-FR">
+        <NumberInput defaultValue={1234.56} placeholder="1 234,56" />
+      </NimbusI18nProvider>
+    </Stack>
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Number formatting automatically adapts to the locale
+- Thousands separators and decimal symbols change based on locale
+- Input parsing handles locale-specific formats
+- Wrap your app with `NimbusI18nProvider` to set the locale
+
+## Component requirements
+
+### Accessibility
+
+The NumberInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `NumberInputField` pattern component (recommended)
+- Associating a `<label>` element with the `NumberInput` using `aria-labelledby`:
+
+```tsx
+<label id="quantity-label">
+  {intl.formatMessage(quantityMessage)}
+</label>
+<NumberInput aria-labelledby="quantity-label" />
+```
+
+- Associating a `<label>` element with the `NumberInput` using `htmlFor`:
+
+```tsx
+<label htmlFor="quantity-input">
+  {intl.formatMessage(quantityMessage)}
+</label>
+<NumberInput id="quantity-input" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<NumberInput aria-label={intl.formatMessage(quantityMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-quantity-input";
+
+export const QuantityField = () => (
+  <NumberInput id={PERSISTENT_ID} placeholder="Quantity" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the input field
+- `Arrow Up` / `Arrow Down`: Increment/decrement the value by `step` amount
+- `Page Up` / `Page Down`: Increment/decrement by larger amounts (10x step)
+- `Home`: Set to minimum value (if `minValue` is defined)
+- `End`: Set to maximum value (if `maxValue` is defined)
+- `Enter`: Submit form (if inside a form)
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+**Increment/Decrement buttons:**
+- Click on increment (up arrow) or decrement (down arrow) buttons to adjust value
+- Buttons are automatically disabled when reaching `minValue` or `maxValue`
+- Buttons have localized aria-labels for screen readers
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the input container (including leading/trailing elements area) will focus the input field, providing a larger interactive target for better usability.
+
+## API reference
+
+<PropsTable id="NumberInput" />
+
+## Common patterns
+
+### Quantity selector with constraints
+
+Create a quantity input with minimum and maximum values:
+
+```jsx-live-dev
+const App = () => {
+  const [quantity, setQuantity] = useState<number>(1);
+  const totalPrice = quantity * 29.99;
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="semibold">Select Quantity</Text>
+        <NumberInput
+          value={quantity}
+          onChange={(value) => setQuantity(value ?? 1)}
+          minValue={1}
+          maxValue={10}
+          step={1}
+        />
+        <Text fontSize="sm" color="neutral.11">
+          Minimum: 1, Maximum: 10
+        </Text>
+      </Stack>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Text>Total:</Text>
+        <Text fontWeight="bold" fontSize="lg">
+          ${totalPrice.toFixed(2)}
+        </Text>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Measurement input with units
+
+Create inputs for measurements with unit labels displayed as trailing elements:
+
+```jsx-live-dev
+const App = () => {
+  const [weight, setWeight] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
+  const bmi = weight && height ? (weight / Math.pow(height / 100, 2)).toFixed(1) : 0;
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="300">
+        <Text fontWeight="semibold">Weight</Text>
+        <NumberInput
+          value={weight}
+          onChange={(value) => setWeight(value ?? 0)}
+          placeholder="0"
+          minValue={0}
+          maxValue={300}
+          step={0.1}
+          trailingElement={<Text fontSize="sm" color="neutral.11">kg</Text>}
+        />
+      </Stack>
+
+      <Stack direction="column" gap="300">
+        <Text fontWeight="semibold">Height</Text>
+        <NumberInput
+          value={height}
+          onChange={(value) => setHeight(value ?? 0)}
+          placeholder="0"
+          minValue={0}
+          maxValue={250}
+          step={1}
+          trailingElement={<Text fontSize="sm" color="neutral.11">cm</Text>}
+        />
+      </Stack>
+
+      {weight > 0 && height > 0 && (
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Text>BMI:</Text>
+          <Text fontWeight="bold" fontSize="lg">{bmi}</Text>
+        </Stack>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using NumberInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected elements:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { NumberInput } from '@commercetools/nimbus';
+
+describe('NumberInput', () => {
+  it('renders input element', () => {
+    render(<NumberInput aria-label="Quantity" />);
+
+    const input = screen.getByRole('spinbutton', { name: /quantity/i });
+    expect(input).toBeInTheDocument();
+    expect(input.tagName).toBe('INPUT');
+  });
+
+  it('renders with placeholder text', () => {
+    render(
+      <NumberInput
+        placeholder="Enter quantity"
+        aria-label="Quantity"
+      />
+    );
+
+    expect(screen.getByPlaceholderText(/enter quantity/i)).toBeInTheDocument();
+  });
+
+  it('renders increment and decrement buttons', () => {
+    render(<NumberInput aria-label="Quantity" />);
+
+    expect(screen.getByRole('button', { name: /increment/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /decrement/i })).toBeInTheDocument();
+  });
+});
+```
+
+### Interaction tests
+
+Test user interactions with the number input:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { NumberInput } from '@commercetools/nimbus';
+
+describe('NumberInput interactions', () => {
+  it('handles typing numeric values', async () => {
+    const user = userEvent.setup();
+    render(<NumberInput aria-label="Quantity" />);
+
+    const input = screen.getByRole('spinbutton');
+    await user.type(input, '42');
+
+    expect(input).toHaveValue('42');
+  });
+
+  it('calls onChange with numeric value', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    await user.type(input, '10');
+
+    expect(handleChange).toHaveBeenCalledWith(10);
+  });
+
+  it('handles increment button clicks', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={5}
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+    await user.click(incrementButton);
+
+    expect(handleChange).toHaveBeenCalledWith(6);
+  });
+
+  it('handles decrement button clicks', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={5}
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const decrementButton = screen.getByRole('button', { name: /decrement/i });
+    await user.click(decrementButton);
+
+    expect(handleChange).toHaveBeenCalledWith(4);
+  });
+});
+```
+
+### Testing constraints
+
+Verify minimum, maximum, and step constraints:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { NumberInput } from '@commercetools/nimbus';
+
+describe('NumberInput constraints', () => {
+  it('respects minimum value', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={5}
+        minValue={1}
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const decrementButton = screen.getByRole('button', { name: /decrement/i });
+
+    // Click multiple times to try going below minimum
+    await user.click(decrementButton);
+    await user.click(decrementButton);
+    await user.click(decrementButton);
+    await user.click(decrementButton);
+    await user.click(decrementButton);
+
+    // Should stop at minimum value
+    expect(handleChange).toHaveBeenLastCalledWith(1);
+  });
+
+  it('respects maximum value', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={8}
+        maxValue={10}
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+
+    // Click multiple times to try going above maximum
+    await user.click(incrementButton);
+    await user.click(incrementButton);
+    await user.click(incrementButton);
+
+    // Should stop at maximum value
+    expect(handleChange).toHaveBeenLastCalledWith(10);
+  });
+
+  it('increments by step amount', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={0}
+        step={5}
+        onChange={handleChange}
+        aria-label="Quantity"
+      />
+    );
+
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+    await user.click(incrementButton);
+
+    expect(handleChange).toHaveBeenCalledWith(5);
+  });
+});
+```
+
+### Testing states
+
+Verify different component states render correctly:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { NumberInput } from '@commercetools/nimbus';
+
+describe('NumberInput states', () => {
+  it('handles disabled state', async () => {
+    const user = userEvent.setup();
+    render(
+      <NumberInput
+        isDisabled
+        aria-label="Quantity"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+
+    expect(input).toBeDisabled();
+    expect(incrementButton).toBeDisabled();
+
+    // Verify cannot type when disabled
+    await user.type(input, '42');
+    expect(input).toHaveValue('');
+  });
+
+  it('handles invalid state', () => {
+    render(
+      <NumberInput
+        isInvalid
+        aria-label="Quantity"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveAttribute('data-invalid', 'true');
+  });
+
+  it('handles required state', () => {
+    render(
+      <NumberInput
+        isRequired
+        aria-label="Quantity"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveAttribute('aria-required', 'true');
+  });
+
+  it('handles read-only state', () => {
+    render(
+      <NumberInput
+        isReadOnly
+        value={42}
+        onChange={() => {}}
+        aria-label="Quantity"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+
+    expect(input).toHaveAttribute('readonly');
+    expect(incrementButton).toBeDisabled();
+  });
+});
+```
+
+### Testing decimal precision
+
+When using decimal numbers, test precision handling:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { NumberInput } from '@commercetools/nimbus';
+
+describe('NumberInput decimal precision', () => {
+  it('handles decimal step increments', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        value={0}
+        step={0.1}
+        onChange={handleChange}
+        aria-label="Price"
+      />
+    );
+
+    const incrementButton = screen.getByRole('button', { name: /increment/i });
+    await user.click(incrementButton);
+
+    expect(handleChange).toHaveBeenCalledWith(0.1);
+  });
+
+  it('accepts decimal input', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(
+      <NumberInput
+        step={0.01}
+        onChange={handleChange}
+        aria-label="Price"
+      />
+    );
+
+    const input = screen.getByRole('spinbutton');
+    await user.type(input, '12.34');
+
+    expect(handleChange).toHaveBeenCalledWith(12.34);
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-numberinput--docs)
+- [React Aria NumberField](https://react-spectrum.adobe.com/react-aria/NumberField.html)
