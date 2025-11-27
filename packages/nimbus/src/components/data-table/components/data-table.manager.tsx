@@ -1,10 +1,13 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useIntl } from "react-intl";
-import { IconButton, Drawer, Tabs, Tooltip } from "@/components";
+import { IconButton, Drawer, Tabs, Tooltip, Box } from "@/components";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
 import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
-import { useDataTableContext } from "./data-table.context";
+import {
+  useDataTableContext,
+  useCustomSettingsContext,
+} from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
 import { messages } from "../data-table.i18n";
 
@@ -18,11 +21,18 @@ export const DataTableManager = () => {
   const context = useDataTableContext();
   const { formatMessage } = useIntl();
 
-  const { columns, visibleColumns, onColumnsChange, onSettingsChange } =
-    context;
+  const {
+    columns,
+    visibleColumns,
+    onColumnsChange,
+    onSettingsChange,
+    // customSettings,
+  } = context;
   const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
+
+  const { customSettings } = useCustomSettingsContext();
 
   // Store columns in a ref to avoid recreating the callback
   const columnsRef = useRef(columns);
@@ -208,7 +218,20 @@ export const DataTableManager = () => {
                     <LayoutSettingsPanel onSettingsChange={onSettingsChange} />
                   ),
                 },
-              ]}
+                customSettings
+                  ? {
+                      id: "custom-settings",
+                      tabLabel: (
+                        <>
+                          {customSettings?.icon ?? null}
+                          {customSettings?.label}
+                        </>
+                      ),
+                      panelContent: <Box mt="800">{customSettings.panel}</Box>,
+                    }
+                  : null,
+                // Filter out null values when no custom settings are provided
+              ].filter((tab): tab is NonNullable<typeof tab> => tab !== null)}
             />
           </Drawer.Body>
         </Drawer.Content>

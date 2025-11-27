@@ -160,6 +160,7 @@ export const VisibleColumnsPanel = ({
               border="none"
               borderColor="none"
               h="full"
+              w="full"
               overflowY="auto"
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
