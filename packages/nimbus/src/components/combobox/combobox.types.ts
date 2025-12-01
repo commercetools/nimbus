@@ -385,7 +385,6 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * ```
    *
    * **Built-in Utilities:** For common patterns, use the exported filter utilities:
-   * - `filterByText` - Basic case-insensitive text filtering
    * - `filterByTextWithSections` - Section-aware filtering
    * - `createSectionAwareFilter` - Factory for custom section-aware filters
    * - `createMultiPropertyFilter` - Multi-property search filtering
