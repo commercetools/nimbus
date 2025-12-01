@@ -1,0 +1,433 @@
+---
+title: Tooltip Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Tooltip, MakeElementFocusable } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation wraps a trigger element and tooltip content:
+
+```jsx-live-dev
+const App = () => (
+  <Tooltip.Root>
+    <Button>Hover me</Button>
+    <Tooltip.Content>
+      Helpful information appears here
+    </Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+## Usage examples
+
+### Placement options
+
+The `placement` prop controls where the tooltip appears relative to the trigger element. The default placement is `"bottom"`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <Tooltip.Root>
+      <Button>Top</Button>
+      <Tooltip.Content placement="top">
+        Top placement
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <Button>Bottom</Button>
+      <Tooltip.Content placement="bottom">
+        Bottom placement
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <Button>Left</Button>
+      <Tooltip.Content placement="left">
+        Left placement
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <Button>Right</Button>
+      <Tooltip.Content placement="right">
+        Right placement
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+**Available placements:**
+
+The component supports 26 placement options:
+- **Basic**: `top`, `bottom`, `left`, `right`, `start`, `end`
+- **With alignment**: `top left`, `top right`, `top start`, `top end`, `bottom left`, `bottom right`, `bottom start`, `bottom end`, `left top`, `left bottom`, `right top`, `right bottom`, `start top`, `start bottom`, `end top`, `end bottom`
+
+### Delay configuration
+
+Control when tooltips appear and disappear using `delay` and `closeDelay` props on `Tooltip.Root`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Button>Instant</Button>
+      <Tooltip.Content>
+        Shows immediately
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root delay={300} closeDelay={200}>
+      <Button>Default timing</Button>
+      <Tooltip.Content>
+        300ms delay to show, 200ms to hide
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root delay={1000}>
+      <Button>Slow</Button>
+      <Tooltip.Content>
+        1000ms delay to show
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+**Timing considerations:**
+- `delay`: Time in milliseconds before the tooltip appears (default: `300`)
+- `closeDelay`: Time in milliseconds before the tooltip disappears (default: `200`)
+- Shorter delays improve responsiveness but may feel too aggressive
+- Longer delays reduce accidental triggers but may feel sluggish
+
+### Complex content
+
+Tooltip content can include multiple elements using layout components:
+
+```jsx-live-dev
+const App = () => (
+  <Tooltip.Root>
+    <Button>Feature info</Button>
+    <Tooltip.Content>
+      <Stack direction="column" gap="100">
+        <Text fontWeight="600" fontSize="sm">Premium Feature</Text>
+        <Text fontSize="xs">
+          Available on Pro and Enterprise plans
+        </Text>
+      </Stack>
+    </Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+### With icon buttons
+
+A common pattern is providing context for icon-only buttons:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="300">
+    <Tooltip.Root>
+      <IconButton aria-label="Edit">
+        <Icons.Edit />
+      </IconButton>
+      <Tooltip.Content placement="top">
+        Edit item
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <IconButton aria-label="Delete">
+        <Icons.Delete />
+      </IconButton>
+      <Tooltip.Content placement="top">
+        Delete item
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <IconButton aria-label="Share">
+        <Icons.Share />
+      </IconButton>
+      <Tooltip.Content placement="top">
+        Share with team
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+### With focusable elements
+
+Tooltips work with any focusable element. For non-interactive elements like Text, use `MakeElementFocusable`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Tooltip.Root>
+      <MakeElementFocusable>
+        <Text
+          as="span"
+          textDecoration="underline"
+          cursor="help"
+        >
+          Hover or focus me
+        </Text>
+      </MakeElementFocusable>
+      <Tooltip.Content>
+        This text element is focusable and shows a tooltip
+      </Tooltip.Content>
+    </Tooltip.Root>
+
+    <Tooltip.Root>
+      <Button variant="ghost">
+        <Icons.Info />
+        Learn more
+      </Button>
+      <Tooltip.Content placement="right">
+        Opens detailed documentation
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Tooltip component is built with React Aria Components and provides accessible tooltip behavior by default. The component:
+
+- Automatically associates tooltip content with the trigger using `aria-describedby`
+- Assigns the `tooltip` ARIA role to the content
+- Shows on both hover and keyboard focus
+- Hides when focus leaves or `Escape` is pressed
+
+**Important:** Ensure the trigger element has an accessible label. For icon-only buttons, always provide an `aria-label`:
+
+```tsx
+<Tooltip.Root>
+  <IconButton aria-label="Delete item">
+    <Icons.Delete />
+  </IconButton>
+  <Tooltip.Content>Delete this item</Tooltip.Content>
+</Tooltip.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the trigger element:
+
+```tsx
+const PERSISTENT_ID = "delete-button-tooltip";
+
+export const Example = () => (
+  <Tooltip.Root>
+    <IconButton id={PERSISTENT_ID} aria-label="Delete">
+      <Icons.Delete />
+    </IconButton>
+    <Tooltip.Content>Delete item</Tooltip.Content>
+  </Tooltip.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab` / `Shift+Tab`: Move focus to/from the trigger element
+- Tooltip appears automatically when trigger receives focus
+- `Escape`: Dismisses the tooltip (if shown)
+- Tooltip disappears automatically when focus leaves the trigger
+
+### Trigger element requirements
+
+The first child of `Tooltip.Root` must be a focusable element:
+
+- Use buttons, links, or other interactive elements (recommended)
+- For non-interactive elements like Text or div, wrap with `MakeElementFocusable`
+- Avoid wrapping non-focusable elements without proper handling
+
+```tsx
+// ✅ Good - button is natively focusable
+<Tooltip.Root>
+  <Button>Trigger</Button>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+
+// ✅ Good - non-interactive element with MakeElementFocusable
+<Tooltip.Root>
+  <MakeElementFocusable>
+    <Text as="span">Trigger</Text>
+  </MakeElementFocusable>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+
+// ❌ Bad - Text with tabIndex won't work properly
+<Tooltip.Root>
+  <Text as="span" tabIndex={0}>Trigger</Text>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+```
+
+## API reference
+
+<PropsTable id="Tooltip" />
+
+## Common patterns
+
+### Info tooltips for form fields
+
+Provide additional context for form fields without cluttering the interface:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200" alignItems="center">
+        <Text as="label" htmlFor="username-input" fontWeight="500">
+          Username
+        </Text>
+        <Tooltip.Root>
+          <IconButton
+            aria-label="Username requirements"
+            size="sm"
+            variant="ghost"
+          >
+            <Icons.Info />
+          </IconButton>
+          <Tooltip.Content placement="right">
+            <Stack direction="column" gap="100">
+              <Text fontSize="xs" fontWeight="600">Requirements:</Text>
+              <Text fontSize="xs">• 3-20 characters</Text>
+              <Text fontSize="xs">• Letters and numbers only</Text>
+              <Text fontSize="xs">• No spaces</Text>
+            </Stack>
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Stack>
+      <TextInput
+        id="username-input"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Enter username"
+      />
+    </Stack>
+  );
+}
+```
+
+### Action descriptions for icon buttons
+
+Clarify what icon buttons do before users click them:
+
+```jsx-live-dev
+const App = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        Code snippet:
+      </Text>
+      <Stack
+        direction="row"
+        gap="300"
+        padding="300"
+        backgroundColor="neutral.3"
+        borderRadius="200"
+        alignItems="center"
+      >
+        <Text fontFamily="mono" fontSize="sm" flex="1">
+          npm install @commercetools/nimbus
+        </Text>
+
+        <Tooltip.Root>
+          <IconButton
+            aria-label="Copy to clipboard"
+            size="sm"
+            variant="ghost"
+            onClick={handleCopy}
+          >
+            {copied ? <Icons.Check /> : <Icons.ContentCopy />}
+          </IconButton>
+          <Tooltip.Content placement="top">
+            {copied ? 'Copied!' : 'Copy to clipboard'}
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Contextual help in data tables
+
+Provide explanations for table headers or data values:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Stack direction="row" gap="400" paddingX="300" paddingY="200">
+      <Stack direction="row" gap="100" alignItems="center" flex="1">
+        <Text fontWeight="600" fontSize="sm">Product Name</Text>
+      </Stack>
+
+      <Stack direction="row" gap="100" alignItems="center" width="150px">
+        <Text fontWeight="600" fontSize="sm">Conversion Rate</Text>
+        <Tooltip.Root>
+          <IconButton
+            aria-label="About conversion rate"
+            size="sm"
+            variant="ghost"
+          >
+            <Icons.HelpOutline />
+          </IconButton>
+          <Tooltip.Content placement="top">
+            <Text fontSize="xs">
+              Percentage of visitors who make a purchase
+            </Text>
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Stack>
+
+      <Stack direction="row" gap="100" alignItems="center" width="100px">
+        <Text fontWeight="600" fontSize="sm">Status</Text>
+      </Stack>
+    </Stack>
+
+    <Stack direction="row" gap="400" paddingX="300" paddingY="200" backgroundColor="neutral.2">
+      <Text fontSize="sm" flex="1">Premium Widget</Text>
+      <Text fontSize="sm" width="150px">24.5%</Text>
+      <Text fontSize="sm" width="100px">Active</Text>
+    </Stack>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Tooltip in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: tooltip.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-tooltip-tooltip--docs)
+- [React Aria Tooltip](https://react-spectrum.adobe.com/react-aria/Tooltip.html)
+- [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
