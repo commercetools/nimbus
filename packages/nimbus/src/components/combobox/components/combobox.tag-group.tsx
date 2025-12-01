@@ -11,29 +11,24 @@ import type { ComboBoxTagGroupProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
 /**
- * # ComboBox.TagGroup
+ * # ComboBox.TagGroup (Internal Component)
  *
- * Displays selected items as tags in multi-select mode.
- * Uses Nimbus TagGroup component which reads from TagGroupContext.
+ * Internal component that displays selected items as tags in multi-select mode.
+ * Automatically rendered by ComboBox.Trigger - not exposed to consumers.
  *
- * TagGroupContext (provided by custom context provider) includes:
+ * Consumes React-Aria's TagGroupContext, which is populated by the
+ * TagGroupContextProvider in ComboBox.Root with:
  * - items: selected items array from collection
  * - onRemove: handler to remove tags
- * - size: tag size variant
- * - aria-label: accessible label
- * - selectionMode: "none" for tags
+ * - size: tag size matching ComboBox size
+ * - aria-label: accessible label for the tag group
+ * - id: generated in ComboBox.Root
+ * - selectionMode: "none" (tags are not selectable)
  * - disabledKeys: disabled tag keys
  *
- * Only renders content in multi-select mode.
+ * Renders null in single-select mode to avoid unnecessary DOM elements.
  *
- * @example
- * ```tsx
- * <ComboBox.Trigger>
- *   <ComboBox.TagGroup />
- *   <ComboBox.Input />
- * </ComboBox.Trigger>
- * ```
- *
+ * @internal
  * @supportsStyleProps
  */
 export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {

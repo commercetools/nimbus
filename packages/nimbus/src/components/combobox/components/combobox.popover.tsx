@@ -4,14 +4,14 @@ import type { ComboBoxPopoverProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
 
 /**
- * ### ComboBox.Popover
+ * # ComboBox.Popover
  *
- * Popover wrapper for the options list.
+ * Popover wrapper for the options dropdown list.
  * Uses Nimbus Popover component which reads from PopoverContext provided by the custom context provider.
  *
  * The PopoverContext provides:
  * - open state
- * - positioning configuration (fixed strategy, bottom-start placement)
+ * - positioning configuration (fixed strategy, bottom-start placement, --nimbus-combobox-trigger-width CSS var)
  * - positionReference (trigger ref for proper positioning)
  *
  * @example
@@ -36,6 +36,7 @@ export const ComboBoxPopover = ({
     <ComboBoxPopoverSlot asChild {...styleProps}>
       <Popover
         ref={ref}
+        role="dialog"
         isNonModal={true}
         autoFocus={true}
         {...functionalProps}

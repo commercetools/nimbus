@@ -1,11 +1,6 @@
 export { ComboBoxRoot } from "./combobox.root";
-export { ComboBoxOptionGroup } from "./combobox.option-group";
+export { ComboBoxTrigger } from "./combobox.trigger";
+export { ComboBoxPopover } from "./combobox.popover";
+export { ComboBoxListBox } from "./combobox.listbox";
 export { ComboBoxOption } from "./combobox.option";
-export { ComboBoxLeadingElement } from "./combobox.leading-element";
-export { ComboBoxOptions } from "./combobox.options";
-export { SingleSelectRoot } from "./combobox.single-select-root";
-export { SingleSelectInput } from "./combobox.single-select-input";
-export { ComboBoxSingleSelectButtonGroup } from "./combobox.single-select-button-group";
-export { MultiSelectRoot } from "./combobox.multi-select-root";
-export { ComboBoxButtonGroup } from "./combobox.multi-select-button-group";
-export { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
+export { ComboBoxSection } from "./combobox.section";

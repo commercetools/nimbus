@@ -1,13 +1,13 @@
 import { ComboBoxLeadingElementSlot } from "../combobox.slots";
 
 /**
- * This component is needed as proxy around the leading element slot.
- * It measures the width of whatever the user hands over via `leadingElement`
- * and provides this width as css variable on the root element.
+ * # ComboBox.LeadingElement (Internal Component)
  *
- * the css variable is then used in the recipe to update the left-padding of the
- * input.
+ * Internal wrapper component that positions the leading element (icon, avatar, etc.)
+ * within the combobox trigger using CSS Grid's named template area.
+ * Automatically rendered by ComboBox.Trigger when leadingElement prop is provided.
  *
+ * @internal
  * @supportsStyleProps
  */
 export const ComboBoxLeadingElement = ({

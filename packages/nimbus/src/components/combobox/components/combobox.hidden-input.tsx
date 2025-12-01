@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { ComboBoxHiddenInputProps } from "../combobox.types";
 
 /**
- * # ComboBoxHiddenInput
+ * # ComboBoxHiddenInput (Internal Component)
  *
  * Hidden input element for form submission.
  * Follows React Aria's pattern for ComboBox form integration.
@@ -11,6 +11,7 @@ import type { ComboBoxHiddenInputProps } from "../combobox.types";
  * When formValue="text" or allowsCustomOptions=true, submits the text value instead.
  *
  * @see https://react-spectrum.adobe.com/react-aria/ComboBox.html#html-forms
+ * @internal
  */
 export const ComboBoxHiddenInput = <T extends object>(
   props: ComboBoxHiddenInputProps<T>

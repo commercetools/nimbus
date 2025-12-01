@@ -16,14 +16,9 @@ export const messages = defineMessages({
     description: "aria-label for selected values tag group",
     defaultMessage: "Selected values",
   },
-  menu: {
-    id: "Nimbus.ComboBox.menu",
-    description: "aria-label for combobox menu popover",
-    defaultMessage: "Menu",
-  },
   options: {
     id: "Nimbus.ComboBox.options",
     description: "aria-label for combobox menu options",
-    defaultMessage: "Options",
+    defaultMessage: "Options menu",
   },
 });

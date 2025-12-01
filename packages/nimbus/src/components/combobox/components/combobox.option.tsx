@@ -34,27 +34,20 @@ import { extractStyleProps } from "@/utils";
  *   )}
  * </ComboBox.Option>
  * ```
- */
-
-/**
+ *
  * @supportsStyleProps
  */
+
 export function ComboBoxOption<T extends object>({
   children,
   ref,
   ...props
 }: ComboBoxOptionProps<T>) {
   const [styleProps, restProps] = extractStyleProps(props);
-  const textValue = typeof children === "string" ? children : undefined;
 
   return (
     <ComboBoxOptionSlot {...styleProps} asChild>
-      <ListBoxItem
-        ref={ref}
-        textValue={props.textValue ?? textValue}
-        aria-label={props.textValue ?? textValue}
-        {...restProps}
-      >
+      <ListBoxItem ref={ref} {...restProps}>
         {(renderProps) => {
           const content =
             typeof children === "function"
