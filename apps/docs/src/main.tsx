@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app.tsx";
-import { BrowserRouter } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
 // Enable granular HMR for MDX files instead of full page reloads
 if (import.meta.hot) {
