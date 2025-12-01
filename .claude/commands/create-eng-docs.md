@@ -138,7 +138,7 @@ Based on component type and features:
 - [ ] Form integration (field patterns only)
 - [ ] API reference (required)
 - [ ] Common patterns (recommended)
-- [ ] Testing your implementation (required - now auto-generated from .docs.spec.tsx)
+- [ ] Testing your implementation (required)
 - [ ] Resources (required)
 
 ### Example Generation Strategy
