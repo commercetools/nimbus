@@ -1,0 +1,469 @@
+---
+title: MultilineTextInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { MultilineTextInput, type MultilineTextInputProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <MultilineTextInput placeholder="Enter your message" />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput size="sm" placeholder="Small textarea" />
+    <MultilineTextInput size="md" placeholder="Medium textarea (default)" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput variant="solid" placeholder="Solid variant (default)" />
+    <MultilineTextInput variant="ghost" placeholder="Ghost variant" />
+  </Stack>
+)
+```
+
+### Leading elements
+
+Add icons, buttons, or other elements at the start of the textarea using the `leadingElement` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput
+      placeholder="Add a comment..."
+      leadingElement={<Icons.Comment />}
+    />
+    <MultilineTextInput
+      placeholder="Describe the issue..."
+      leadingElement={<Icons.ReportProblem />}
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Elements automatically respect text direction (LTR/RTL)
+- Leading element appears at the start (left in LTR, right in RTL)
+- Icon sizing automatically adjusts based on the `size` prop
+
+### Rows configuration
+
+Control the visible number of text rows using the `rows` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text fontSize="sm" color="neutral.11">Default (1 row):</Text>
+    <MultilineTextInput
+      placeholder="Single row textarea"
+    />
+
+    <Text fontSize="sm" color="neutral.11">3 rows:</Text>
+    <MultilineTextInput
+      rows={3}
+      placeholder="Three rows textarea"
+    />
+
+    <Text fontSize="sm" color="neutral.11">6 rows:</Text>
+    <MultilineTextInput
+      rows={6}
+      placeholder="Six rows textarea"
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Default is 1 row if not specified
+- Users can manually resize vertically using the resize handle
+- Larger `rows` values provide more visible space for longer content
+
+### Auto-grow functionality
+
+Enable automatic height adjustment based on content using the `autoGrow` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text fontSize="sm" color="neutral.11">
+      Auto-grow enabled - type multiple lines to see it expand:
+    </Text>
+    <MultilineTextInput
+      autoGrow
+      placeholder="Start typing... This textarea will grow automatically!"
+    />
+
+    <Text fontSize="sm" color="neutral.11">
+      Auto-grow with max height constraint:
+    </Text>
+    <MultilineTextInput
+      autoGrow
+      maxHeight="3200"
+      placeholder="Grows up to max height, then scrolls"
+    />
+  </Stack>
+)
+```
+
+**Behavioral notes:**
+- Textarea automatically expands as you type more lines
+- Automatically shrinks when you delete content
+- Manual resize handle remains available with auto-grow
+- Use `maxHeight` to limit expansion and enable scrolling beyond that point
+- Use `minH` and `maxH` style props for height constraints
+
+### Disabled state
+
+Disable textarea interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput placeholder="Enabled textarea" />
+    <MultilineTextInput placeholder="Disabled textarea" isDisabled />
+    <MultilineTextInput
+      value="Disabled with content"
+      isDisabled
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Invalid state
+
+Mark textareas as invalid for validation feedback:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput
+      placeholder="Valid textarea"
+      value="This message meets requirements"
+      onChange={() => {}}
+    />
+    <MultilineTextInput
+      placeholder="Invalid textarea"
+      value="Too short"
+      isInvalid
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Read-only state
+
+Use `isReadOnly` to display content without allowing editing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <MultilineTextInput
+      value="This content is editable"
+      onChange={() => {}}
+    />
+    <MultilineTextInput
+      value="This content is read-only and cannot be modified"
+      isReadOnly
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <MultilineTextInput
+        placeholder="Type something..."
+        defaultValue=""
+        onChange={(value) => {
+          setDisplayValue(value);
+        }}
+      />
+      <Text fontSize="sm">Current value: {displayValue || '(empty)'}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the textarea value without managing state yourself.
+
+**Note:** MultilineTextInput's `onChange` receives the string value directly, not an event object.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MultilineTextInputProps["value"]>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <MultilineTextInput
+        value={value}
+        onChange={setValue}
+        placeholder="Type your message..."
+        rows={3}
+      />
+      <Text fontSize="sm">
+        {value ? `Character count: ${value.length}` : 'Start typing...'}
+      </Text>
+      <Button onClick={() => setValue('')} size="xs">
+        Clear
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform input values
+- Clear or programmatically set the value
+- React to changes in real-time (e.g., character counting)
+
+## Component requirements
+
+### Accessibility
+
+The MultilineTextInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `MultilineTextInputField` pattern component (recommended)
+- Associating a `<label>` element with the `MultilineTextInput` using `aria-labelledby`:
+
+```tsx
+<label id="description-label">
+  {intl.formatMessage(descriptionMessage)}
+</label>
+<MultilineTextInput aria-labelledby="description-label" />
+```
+
+- Associating a `<label>` element with the `MultilineTextInput` using `htmlFor`:
+
+```tsx
+<label htmlFor="description-textarea">
+  {intl.formatMessage(descriptionMessage)}
+</label>
+<MultilineTextInput id="description-textarea" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<MultilineTextInput aria-label={intl.formatMessage(descriptionMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-description-textarea";
+
+export const DescriptionField = () => (
+  <MultilineTextInput id={PERSISTENT_ID} placeholder="Description" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the textarea field
+- `Arrow keys`: Move cursor within the text (all directions for multi-line navigation)
+- `Home` / `End`: Move cursor to start/end of current line
+- `Ctrl+Home` / `Ctrl+End`: Move cursor to start/end of entire text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- `Enter`: Insert new line
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the textarea container (including leading element area) will focus the textarea field, providing a larger interactive target for better usability.
+
+## API reference
+
+<PropsTable id="MultilineTextInput" />
+
+## Common patterns
+
+### Comment input with character limit
+
+Track character count and enforce limits for user-generated content:
+
+```jsx-live-dev
+const App = () => {
+  const [comment, setComment] = useState<string>('');
+  const maxLength = 280;
+  const remaining = maxLength - comment.length;
+  const isOverLimit = remaining < 0;
+
+  return (
+    <Stack direction="column" gap="400">
+      <MultilineTextInput
+        value={comment}
+        onChange={setComment}
+        placeholder="Share your thoughts..."
+        rows={4}
+        isInvalid={isOverLimit}
+        leadingElement={<Icons.Comment />}
+      />
+      <Stack direction="row" justifyContent="space-between">
+        <Text fontSize="sm" color={isOverLimit ? 'critical.11' : 'neutral.11'}>
+          {remaining} characters remaining
+        </Text>
+        <Button
+          size="xs"
+          isDisabled={comment.length === 0 || isOverLimit}
+        >
+          Post Comment
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Auto-growing feedback form
+
+Create responsive form fields that adapt to content length:
+
+```jsx-live-dev
+const App = () => {
+  const [feedback, setFeedback] = useState<string>('');
+  const wordCount = feedback.trim().split(/\s+/).filter(Boolean).length;
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="semibold">Share Your Feedback</Text>
+      <MultilineTextInput
+        autoGrow
+        value={feedback}
+        onChange={setFeedback}
+        placeholder="Tell us about your experience..."
+        minH="1600"
+        maxH="4800"
+        leadingElement={<Icons.Feedback />}
+      />
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Text fontSize="sm" color="neutral.11">
+          {wordCount} {wordCount === 1 ? 'word' : 'words'}
+        </Text>
+        <Button size="xs" isDisabled={wordCount < 10}>
+          Submit Feedback
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Multi-field form with validation
+
+Combine multiple textareas in a form with validation states:
+
+```jsx-live-dev
+const App = () => {
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [touched, setTouched] = useState({ title: false, description: false });
+
+  const titleError = touched.title && title.length < 5;
+  const descError = touched.description && description.length < 20;
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="300">
+        <Text fontWeight="semibold">Title *</Text>
+        <MultilineTextInput
+          value={title}
+          onChange={setTitle}
+          onBlur={() => setTouched(prev => ({ ...prev, title: true }))}
+          placeholder="Brief summary (minimum 5 characters)"
+          rows={1}
+          isInvalid={titleError}
+          isRequired
+        />
+        {titleError && (
+          <Text fontSize="sm" color="critical.11">
+            Title must be at least 5 characters
+          </Text>
+        )}
+      </Stack>
+
+      <Stack direction="column" gap="300">
+        <Text fontWeight="semibold">Description *</Text>
+        <MultilineTextInput
+          autoGrow
+          value={description}
+          onChange={setDescription}
+          onBlur={() => setTouched(prev => ({ ...prev, description: true }))}
+          placeholder="Detailed explanation (minimum 20 characters)"
+          minH="2400"
+          maxH="4800"
+          isInvalid={descError}
+          isRequired
+        />
+        {descError && (
+          <Text fontSize="sm" color="critical.11">
+            Description must be at least 20 characters
+          </Text>
+        )}
+      </Stack>
+
+      <Button
+        isDisabled={!title || !description || titleError || descError}
+      >
+        Submit
+      </Button>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MultilineTextInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: multiline-text-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-multilinetextinput--docs)
+- [React Aria TextField](https://react-spectrum.adobe.com/react-aria/TextField.html)
+- [ARIA Textbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/textbox/)

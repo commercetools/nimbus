@@ -62,7 +62,7 @@ export type MultilineTextInputProps = OmitInternalProps<
     autoGrow?: boolean;
     /**
      * Number of visible text rows
-     * @default 3
+     * @default 1
      */
     rows?: number;
     /**
