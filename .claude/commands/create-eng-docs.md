@@ -215,7 +215,7 @@ Once confirmed, create the documentation file:
        > is good practice to add a **persistent**, **unique** id to the
        > component:
    - **Testing**:
-     - **NEW APPROACH**: Testing examples are now auto-generated from `.docs.spec.tsx` files
+- Testing examples are auto-generated from `.docs.spec.tsx` files
      - **Mandatory**: Include this text before the injection token:
        > These examples demonstrate how to test your implementation when using
        > [Component] in your application. The component's internal functionality
