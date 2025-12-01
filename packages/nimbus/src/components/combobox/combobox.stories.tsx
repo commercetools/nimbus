@@ -111,6 +111,212 @@ export const Base: Story = {
 };
 
 // ============================================================
+// CUSTOM "CREATABLE" OPTIONS
+// ============================================================
+
+/**
+ * Multi-Select Custom Options Story
+ * Tests custom option creation with static data (non-async mode)
+ * Verifies:
+ * - Custom options can be created by typing and pressing Enter
+ * - Custom options persist in the list
+ * - onCreateOption callback is called with the new item
+ * - Custom options can be selected/deselected
+ * - Custom options work alongside static options
+ */
+export const MultiSelectCustomOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+    const [createdOptions, setCreatedOptions] = useState<string[]>([]);
+
+    const handleCreateOption = useCallback((newItem: SimpleOption) => {
+      setCreatedOptions((prev) => [...prev, newItem.name]);
+    }, []);
+
+    return (
+      <Stack direction="column" gap="400">
+        <FormField.Root>
+          <FormField.Label>Select or create animals</FormField.Label>
+          <FormField.Description>
+            Type a custom animal name and press Enter to create!
+            {createdOptions.length > 0 &&
+              ` | Created: ${createdOptions.join(", ")}`}
+          </FormField.Description>
+          <FormField.Input>
+            <ComposedComboBox<SimpleOption>
+              aria-label="Select or create animals"
+              items={simpleOptions}
+              selectedKeys={selectedKeys}
+              onSelectionChange={setSelectedKeys}
+              selectionMode="multiple"
+              placeholder="Type to search or create..."
+              allowsCustomOptions
+              getNewOptionData={(inputValue) => ({
+                id: Date.now(),
+                name: inputValue,
+              })}
+              onCreateOption={handleCreateOption}
+            />
+          </FormField.Input>
+        </FormField.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Initial state - one item selected", async () => {
+      // Verify initial selected tag (id: 1 = Koala)
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Open combobox", async () => {
+      const toggleButton = await within(
+        await canvas.findByRole("group")
+      ).findByRole("button", { name: /toggle options/i });
+      await userEvent.click(toggleButton);
+
+      // Wait for menu to open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Verify Koala is selected in options
+      await verifyOptionsSelected(["Koala"], true);
+    });
+
+    await step("Create first custom option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Type a custom animal name
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Lion");
+
+      // Press Enter to create
+      await userEvent.keyboard("{Enter}");
+
+      // Wait for custom option to be created and selected
+      await verifyOptionsSelected(["Lion"], true);
+      await waitFor(() => {
+        // Check tag was added
+        expect(findOptionByText("Lion")).toBeInTheDocument();
+        // Check description updated
+        expect(canvas.getByText(/Created: Lion/)).toBeInTheDocument();
+      });
+
+      // Verify input was cleared after creation (multi-select behavior)
+      expect(combobox).toHaveValue("");
+    });
+
+    await step("Create second custom option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Type another custom animal
+      await userEvent.type(combobox, "Tiger");
+      await userEvent.keyboard("{Enter}");
+
+      // Wait for second custom option
+      await verifyOptionsSelected(["Tiger"], true);
+      await waitFor(() => {
+        expect(canvas.getByText(/Created: Lion, Tiger/)).toBeInTheDocument();
+      });
+    });
+
+    await step("Select an existing static option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Clear input and type to filter
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Kang");
+
+      // Wait for filtered results
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+
+      // Select Kangaroo option
+      await selectOptionsByName(["Kangaroo"]);
+
+      // Verify Kangaroo tag appears in tag list
+      await verifyTagsExist(canvas.getByRole("group"), [
+        "Koala",
+        "Lion",
+        "Tiger",
+        "Kangaroo",
+      ]);
+    });
+
+    await step("Remove a custom option tag", async () => {
+      // Find and click remove button for Lion
+      const lionTag = await within(await getTagList(canvas.getByRole("group")))
+        .getByText("Lion")
+        .closest('[role="row"]');
+      expect(lionTag).toBeInTheDocument();
+
+      const removeButton = within(lionTag as HTMLElement).getByRole("button", {
+        name: /remove tag lion/i,
+      });
+      await userEvent.click(removeButton);
+
+      // Verify Lion tag is removed
+
+      await expect(
+        await within(await getTagList(canvas.getByRole("group"))).queryByText(
+          "Lion"
+        )
+      ).not.toBeInTheDocument();
+
+      // Other tags should still exist
+      await verifyTagsExist(canvas.getByRole("group"), [
+        "Koala",
+        "Tiger",
+        "Kangaroo",
+      ]);
+    });
+
+    await step(
+      "Verify custom option still in list after deselection",
+      async () => {
+        // Open the menu again
+        const combobox = canvas.getByRole("combobox");
+        await userEvent.click(combobox);
+
+        // Clear any text to show all options
+        await userEvent.clear(combobox);
+
+        // Wait for menu to populate
+        await waitFor(() => {
+          expect(getListBox(document)).toBeInTheDocument();
+        });
+
+        // Lion should still be in the list (just not selected)
+        await verifyOptionsSelected(["Lion"], false);
+
+        // Tiger should be in the list and selected
+        await verifyOptionsSelected(["Tiger"], true);
+      }
+    );
+
+    await step("Attempt to create duplicate option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Try to create "Tiger" again (already exists)
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should not create duplicate - Created list should not change
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(canvas.getByText(/Created: Lion, Tiger$/)).toBeInTheDocument();
+
+      // Tiger should remain selected (was already selected)
+      expect(canvas.getByText("Tiger")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
 // ASYNC LOADING
 // ============================================================
 

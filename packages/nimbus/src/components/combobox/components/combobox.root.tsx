@@ -162,7 +162,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   });
 
   // Async mode state
-  const [asyncInputValue, setAsyncInputValue] = useState(""); // For immediate UI updates
+  const [asyncInputValue, setAsyncInputValue] = useState(inputValueFromProps); // For immediate UI updates
   const [asyncPending, setAsyncPending] = useState(false); // Tracks debounce wait period
   const [asyncSelectedItems, setAsyncSelectedItems] = useState<T[]>([]); // Persist selected items across searches
 
@@ -207,6 +207,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
 
   // Default empty state messages
   const asyncDefaultRenderEmptyState = useCallback(() => {
+    // TODO: verify wording and styling for empty states
     if (isLoading) {
       return inputValue?.length
         ? `loading results for "${inputValue}"`
@@ -226,6 +227,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   }, [asyncConfig?.minSearchLength, isLoading, inputValue]);
 
   const customDefaultRenderEmptyState = useCallback(() => {
+    // TODO: verify wording and styling for empty states
     if (isLoading) {
       return inputValue?.length
         ? `loading results for "${inputValue}"`
@@ -236,9 +238,11 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
 
   const defaultRenderEmptyState = allowsCustomOptions
     ? customDefaultRenderEmptyState
-    : asyncDefaultRenderEmptyState;
+    : asyncConfig
+      ? asyncDefaultRenderEmptyState
+      : undefined;
 
-  const renderEmptyState = renderEmptyStateFromProps ?? defaultRenderEmptyState;
+  const renderEmptyState = defaultRenderEmptyState ?? renderEmptyStateFromProps;
 
   // ============================================================
   // ITEMS MERGING
@@ -827,26 +831,6 @@ const ComboBoxRootInner = <T extends object>(
     ]
   );
 
-  // Remove keys (for tag removal in multi-select)
-  const removeKey = useCallback(
-    (keysToRemove: Set<Key>) => {
-      if (isDisabled || isReadOnly) return;
-
-      const currentKeys = normalizedSelectedKeys;
-      const newKeys = new Set(currentKeys);
-      keysToRemove.forEach((key) => newKeys.delete(key));
-
-      // Pass currentKeys so handleSelectionChange detects this as removal
-      handleSelectionChange(newKeys, currentKeys);
-
-      // Focus input if all tags removed
-      if (newKeys.size === 0) {
-        inputRef.current?.focus();
-      }
-    },
-    [normalizedSelectedKeys, handleSelectionChange, isDisabled, isReadOnly]
-  );
-
   // Handle creating a new custom option from input value
   // Called when user presses Enter with no focused item (allowsCustomOptions=true)
   // Returns true if option was created successfully
@@ -909,6 +893,26 @@ const ComboBoxRootInner = <T extends object>(
     setInternalInputValue,
     prevInputValueRef,
   ]);
+
+  // Remove keys (for tag removal in multi-select)
+  const removeKey = useCallback(
+    (keysToRemove: Set<Key>) => {
+      if (isDisabled || isReadOnly) return;
+
+      const currentKeys = normalizedSelectedKeys;
+      const newKeys = new Set(currentKeys);
+      keysToRemove.forEach((key) => newKeys.delete(key));
+
+      // Pass currentKeys so handleSelectionChange detects this as removal
+      handleSelectionChange(newKeys, currentKeys);
+
+      // Focus input if all tags removed
+      if (newKeys.size === 0) {
+        inputRef.current?.focus();
+      }
+    },
+    [normalizedSelectedKeys, handleSelectionChange, isDisabled, isReadOnly]
+  );
 
   // ============================================================
   // KEYBOARD NAVIGATION
@@ -1064,11 +1068,26 @@ const ComboBoxRootInner = <T extends object>(
   // ============================================================
 
   // Open menu on focus (when menuTrigger="focus")
+  // In single select mode with existing value, select all text so cursor goes to beginning
+  // and next keypress replaces the value
   const handleFocus = useCallback(() => {
     if (menuTrigger === "focus" && !isDisabled && !isReadOnly) {
       setIsOpen(true);
     }
-  }, [menuTrigger, isDisabled, isReadOnly, setIsOpen]);
+
+    // Single-select with existing value: select all text
+    // This places cursor at beginning and makes next input replace the value
+    if (selectionMode === "single" && inputValue && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [
+    menuTrigger,
+    isDisabled,
+    isReadOnly,
+    setIsOpen,
+    selectionMode,
+    inputValue,
+  ]);
 
   // Close menu on blur (with delay to allow option clicks)
   const handleBlur = useCallback(
@@ -1307,6 +1326,8 @@ const ComboBoxRootInner = <T extends object>(
           clear: {
             onPress: clearSelection,
             "aria-label": intl.formatMessage(messages.clearSelection),
+            style:
+              normalizedSelectedKeys.size > 0 ? undefined : { display: "none" },
             isDisabled:
               isDisabled ||
               isReadOnly ||

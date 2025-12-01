@@ -36,7 +36,6 @@ export const ComboBoxPopover = ({
     <ComboBoxPopoverSlot asChild {...styleProps}>
       <Popover
         ref={ref}
-        role="dialog"
         isNonModal={true}
         autoFocus={true}
         {...functionalProps}
