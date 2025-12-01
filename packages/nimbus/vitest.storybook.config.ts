@@ -6,6 +6,7 @@ import {
 } from "vitest/config";
 import createBaseConfig from "./vite.config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+import { playwright } from "@vitest/browser-playwright";
 import path from "path";
 
 export default defineConfig(async () => {
@@ -49,7 +50,7 @@ export default defineConfig(async () => {
         browser: {
           enabled: true,
           // ... use playwright to run tests
-          provider: "playwright",
+          provider: playwright(),
           // ... only in chromium
           instances: [
             {
