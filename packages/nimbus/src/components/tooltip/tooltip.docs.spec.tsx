@@ -36,8 +36,8 @@ describe("Tooltip - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button", { name: /hover me/i });
-    await user.tab(); // Focus the button
+    // Focus the button using tab
+    await user.tab();
 
     await waitFor(() => {
       expect(screen.getByRole("tooltip")).toBeInTheDocument();
@@ -54,7 +54,6 @@ describe("Tooltip - Basic rendering", () => {
  */
 describe("Tooltip - Interactions", () => {
   it("shows tooltip on focus", async () => {
-    const user = userEvent.setup();
     render(
       <NimbusProvider>
         <Tooltip.Root>
@@ -119,7 +118,7 @@ describe("Tooltip - Placement", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button", { name: /trigger/i });
+    // Tab to focus the button
     await user.tab();
 
     await waitFor(() => {
