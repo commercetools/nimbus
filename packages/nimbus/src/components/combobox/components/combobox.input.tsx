@@ -6,30 +6,18 @@ import { extractStyleProps } from "@/utils";
 import { useComboBoxRootContext } from "./combobox.root-context";
 
 /**
- * # ComboBox.Input
+ * # ComboBox.Input (Internal Component)
  *
- * Text input field for filtering and typing.
- * Reads from InputContext provided by the custom context provider.
+ * Internal text input field for filtering and typing in the combobox.
+ * Automatically rendered by ComboBox.Trigger - not exposed to consumers.
  *
- * The InputContext provides all necessary props:
- * - role="combobox"
- * - aria-autocomplete="list"
- * - aria-controls (listbox ID)
- * - aria-expanded (open state)
- * - aria-label / aria-labelledby
- * - placeholder
+ * Consumes React Aria's InputContext which provides all necessary ARIA attributes
+ * (role, aria-autocomplete, aria-controls, aria-expanded, etc.).
  *
- * Uses React Aria Input directly (not TextInput) for custom combobox styling.
- * Input width dynamically adjusts to match the text content using the size attribute.
+ * Input width dynamically adjusts to match the text content or placeholder length,
+ * collapsing to 1px when empty to avoid creating blank lines in multi-select mode.
  *
- * @example
- * ```tsx
- * <ComboBox.Trigger>
- *   <ComboBox.Input />
- *   <IconButton slot="toggle"><Icons.KeyboardArrowDown /></IconButton>
- * </ComboBox.Trigger>
- * ```
- *
+ * @internal
  * @supportsStyleProps
  */
 export const ComboBoxInput = (props: ComboBoxInputProps) => {

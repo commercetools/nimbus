@@ -64,7 +64,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     trigger: {
       display: "grid",
       gridTemplateColumns: "auto 1fr auto auto",
-      gridTemplateAreas: '"leadingElement content toggle clear"',
+      gridTemplateAreas: '"leadingElement content clear toggle"',
       alignItems: "center",
       gap: "100",
       width: "100%",
@@ -75,6 +75,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       color: "neutral.12",
       textAlign: "left",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+
       _focusWithin: {
         layerStyle: "focusRing",
       },
@@ -91,6 +92,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       '& button[slot="clear"]': {
         gridArea: "clear",
         alignSelf: "center",
+        mr: "-100",
         _expanded: {
           bg: "colorPalette.3",
         },
@@ -103,6 +105,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       gap: "100",
       minWidth: 0,
+      cursor: "text",
     },
     tagGroup: {
       display: "contents",
@@ -115,7 +118,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       outline: "none",
       bg: "transparent",
       padding: 0,
-      cursor: "text",
+
       // If the value & placeholder are falsy, input width should be 1px
       // so it doesn't cause a blank line in content box
       '&[data-empty="true"]': {
@@ -130,10 +133,21 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
-      width: "var(--trigger-width)",
+      minWidth: "var(--nimbus-combobox-trigger-width)",
+      overflow: "hidden",
+      padding: 0,
     },
     listBox: {
+      "--scrollbar-color": "colors.neutral.8",
+      "--scrollbar-bg": "colors.neutral.3",
       gap: "100",
+      padding: "200",
+      focusRing: "outside",
+
+      maxH: "40svh",
+      overflowY: "auto",
+      scrollbarWidth: "thin",
+      scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
     },
     section: {
       textStyle: "xs",
@@ -154,11 +168,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       cursor: "menuitem",
       color: "neutral.12",
       textStyle: "sm",
-      p: "200",
+      padding: "200",
       borderRadius: "200",
       whiteSpace: "wrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
+
       '&[aria-selected="true"]': {
         bg: "primary.3",
       },
@@ -282,7 +297,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
             bg: "unset",
           },
           '&[data-focused="true"]': {
-            // TODO: can't use focusRing prop, find other solution (helper, util, etc.)
             outlineWidth: "var(--focus-ring-width)",
             outlineColor: "var(--focus-ring-color)",
             outlineStyle: "var(--focus-ring-style)",

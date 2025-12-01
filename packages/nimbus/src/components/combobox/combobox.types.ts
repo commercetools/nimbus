@@ -7,9 +7,13 @@ import type {
   ListBoxItemProps as RaListBoxItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { TagGroupProps as NimbusTagGroupProps } from "@/components";
-import type { PopoverProps as NimbusPopoverProps } from "../popover";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+import type { TagGroupProps as NimbusTagGroupProps } from "../tag-group/tag-group.types";
+import type { PopoverProps as NimbusPopoverProps } from "../popover/popover.types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
@@ -17,11 +21,6 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // ============================================================
 
 type ComboBoxRecipeProps = {
-  // /**
-  //  * Selection Mode variant of combobox
-  //  * @default "single"
-  //  */
-  // selectionMode?: SlotRecipeProps<"combobox">["selectionMode"];
   /**
    * Size variant of combobox
    * @default "md"
@@ -32,7 +31,7 @@ type ComboBoxRecipeProps = {
    * @default "solid"
    */
   variant?: SlotRecipeProps<"combobox">["variant"];
-};
+} & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
@@ -66,6 +65,82 @@ export type ComboBoxFilter<T extends object> = (
   nodes: Iterable<Node<T>>,
   inputValue: string
 ) => Iterable<Node<T>>;
+
+/**
+ * Async configuration for ComboBox with built-in useAsyncList integration
+ *
+ * @template T - Type for item data returned by the load function
+ */
+export type ComboBoxAsyncConfig<T extends object> = {
+  /**
+   * Async function to load items based on filter text.
+   * Automatically receives an AbortSignal for request cancellation.
+   *
+   * @param filterText - Current input value to filter by
+   * @param signal - AbortSignal for cancelling the request
+   * @returns Promise resolving to array of items
+   *
+   * @example
+   * ```tsx
+   * async: {{
+   *   load: async (filterText, signal) => {
+   *     const response = await fetch(
+   *       `/api/search?q=${encodeURIComponent(filterText)}`,
+   *       { signal }
+   *     );
+   *     const data = await response.json();
+   *     return data.results;
+   *   }
+   * }}
+   * ```
+   */
+  load: (filterText: string, signal: AbortSignal) => Promise<T[]>;
+
+  /**
+   * Minimum number of characters required before triggering a load.
+   * Prevents unnecessary API calls for very short queries.
+   *
+   * @default 0
+   *
+   * @example
+   * ```tsx
+   * async: {{ load, minSearchLength: 2 }} // Only search after typing 2+ chars
+   * ```
+   */
+  minSearchLength?: number;
+
+  /**
+   * Debounce delay in milliseconds before triggering load.
+   * Prevents excessive API calls while user is typing.
+   *
+   * @default 300
+   *
+   * @example
+   * ```tsx
+   * async: {{ load, debounce: 500 }} // Wait 500ms after typing stops
+   * ```
+   */
+  debounce?: number;
+
+  /**
+   * Callback when an error occurs during loading.
+   * Receives the error object for custom error handling.
+   *
+   * @param error - The error that occurred
+   *
+   * @example
+   * ```tsx
+   * async: {{
+   *   load,
+   *   onError: (error) => {
+   *     console.error('Failed to load:', error);
+   *     toast.error('Search failed. Please try again.');
+   *   }
+   * }}
+   * ```
+   */
+  onError?: (error: Error) => void;
+};
 
 // ============================================================
 // CONTEXT VALUE
@@ -104,6 +179,9 @@ export type ComboBoxRootContextValue<T> = {
 
   /** Whether component is read-only */
   isReadOnly: boolean;
+
+  /** Loading state */
+  isLoading?: boolean;
 };
 
 // ============================================================
@@ -114,7 +192,6 @@ export type ComboBoxRootContextValue<T> = {
  * Root component props for unified ComboBox
  *
  * @template T - Type for item data displayed in the combobox menu. Items array type is `T[]`.
- *
  */
 export type ComboBoxRootProps<T extends object> = Omit<
   ComboBoxRootSlotProps,
@@ -200,21 +277,15 @@ export type ComboBoxRootProps<T extends object> = Omit<
    *
    * Internally normalized to Set<Key> for React Stately
    */
-  selectedKeys?: Key | Key[];
+  selectedKeys?: Key[];
 
   /**
    * Callback when selection changes
-   * Single-select: receives a single Key
-   * Multi-select: receives Key[]
+   * Always receives an array of keys regardless of selection mode:
+   * - Single-select: `[selectedKey]` or `[]` if nothing selected
+   * - Multi-select: `[key1, key2, ...]` or `[]` if nothing selected
    */
-  onSelectionChange?: (keys: Key | Key[]) => void;
-
-  /**
-   * Default selected keys for uncontrolled mode
-   * Single-select: pass a Key
-   * Multi-select: pass a Key[]
-   */
-  defaultSelectedKeys?: Key | Key[];
+  onSelectionChange?: (keys: Key[]) => void;
 
   /**
    * Keys of items that should be disabled and not selectable.
@@ -390,6 +461,88 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * ```
    */
   renderEmptyState?: () => ReactNode;
+
+  /**
+   * External loading state for displaying loading indicators.
+   * Useful when managing async data loading externally with React Stately's useAsyncList.
+   *
+   * **Note:** When using the built-in `async` prop, loading state is managed automatically.
+   * This prop is only needed for external async management.
+   *
+   * @example
+   * ```tsx
+   * // External async control with useAsyncList
+   * const asyncList = useAsyncList({
+   *   async load({ filterText, signal }) {
+   *     const res = await fetch(`/api/search?q=${filterText}`, { signal });
+   *     return { items: await res.json() };
+   *   }
+   * });
+   *
+   * <ComboBox.Root
+   *   items={asyncList.items}
+   *   isLoading={asyncList.loadingState === 'loading'}
+   *   inputValue={asyncList.filterText}
+   *   onInputChange={(value) => asyncList.setFilterText(value)}
+   * >
+   *   {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+   * </ComboBox.Root>
+   * ```
+   */
+  isLoading?: boolean;
+
+  /**
+   * Built-in async loading configuration with automatic state management.
+   *
+   * When provided, ComboBox automatically handles:
+   * - Loading state management
+   * - Request debouncing (300ms default)
+   * - Request cancellation on input changes
+   * - Automatic filter bypass (since API handles filtering)
+   * - Minimum search length validation
+   * - Error handling with optional callback
+   *
+   * **Important:** When using `async`, do NOT provide `items`, `isLoading`, `inputValue`, or `onInputChange`.
+   * These are managed automatically by the internal useAsyncList integration.
+   *
+   * @example
+   * ```tsx
+   * // Simple async search
+   * <ComboBox.Root
+   *   async={{
+   *     load: async (filterText, signal) => {
+   *       const response = await fetch(
+   *         `/api/search?q=${encodeURIComponent(filterText)}`,
+   *         { signal }
+   *       );
+   *       return response.json();
+   *     }
+   *   }}
+   * >
+   *   {(item: SearchResult) => (
+   *     <ComboBox.Option>{item.name}</ComboBox.Option>
+   *   )}
+   * </ComboBox.Root>
+   *
+   * // With configuration and error handling
+   * <ComboBox.Root
+   *   async={{
+   *     load: async (filterText, signal) => {
+   *       const response = await fetch(`/api/search?q=${filterText}`, { signal });
+   *       const data = await response.json();
+   *       return data.results;
+   *     },
+   *     minSearchLength: 2,
+   *     debounce: 500,
+   *     onError: (error) => {
+   *       console.error('Search failed:', error);
+   *       toast.error('Failed to load results');
+   *     }
+   *   }}
+   * />
+   * ```
+   */
+  async?: ComboBoxAsyncConfig<T>;
 
   /**
    * Whether to allow creating custom options that don't exist in the items collection.

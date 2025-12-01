@@ -1,5 +1,6 @@
 import { Close, KeyboardArrowDown } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components/icon-button/icon-button";
+import { LoadingSpinner } from "@/components/loading-spinner/loading-spinner";
 import { useComboBoxRootContext } from "./combobox.root-context";
 import { ComboBoxTriggerSlot, ComboBoxContentSlot } from "../combobox.slots";
 import type { ComboBoxTriggerProps } from "../combobox.types";
@@ -10,18 +11,20 @@ import { ComboBoxTagGroup } from "./combobox.tag-group";
 /**
  * # ComboBox.Trigger
  *
- * Wrapper for the input trigger area. Applies the trigger ref for popover positioning.
- * Renders leadingElement (if provided) in a styled slot before children.
- * Children should include ComboBox.Input, ComboBox.TagGroup (for multi-select), and IconButton components.
+ * The trigger element that contains the input field and controls for the combobox.
+ * Automatically renders the tag group (for multi-select), input field, toggle button, and clear button.
+ * Handles click interactions to focus the input when clicking anywhere on the trigger area.
  *
  * @example
  * ```tsx
- * <ComboBox.Trigger>
- *   <ComboBox.TagGroup />
- *   <ComboBox.Input />
- *   <IconButton slot="toggle"><Icons.KeyboardArrowDown /></IconButton>
- *   <IconButton slot="clear"><Icons.Close /></IconButton>
- * </ComboBox.Trigger>
+ * <ComboBox.Root>
+ *   <ComboBox.Trigger />
+ *   <ComboBox.Popover>
+ *     <ComboBox.ListBox>
+ *       <ComboBox.Item value="option1">Option 1</ComboBox.Item>
+ *     </ComboBox.ListBox>
+ *   </ComboBox.Popover>
+ * </ComboBox.Root>
  * ```
  *
  * @supportsStyleProps
@@ -30,7 +33,7 @@ export const ComboBoxTrigger = ({
   children,
   ...restProps
 }: ComboBoxTriggerProps) => {
-  const { triggerRef, leadingElement, inputRef, isDisabled } =
+  const { triggerRef, leadingElement, inputRef, isLoading, isDisabled } =
     useComboBoxRootContext();
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -53,9 +56,6 @@ export const ComboBoxTrigger = ({
         <ComboBoxTagGroup />
         <ComboBoxInput />
       </ComboBoxContentSlot>
-      <IconButton slot="toggle" size="2xs" variant="ghost" excludeFromTabOrder>
-        <KeyboardArrowDown />
-      </IconButton>
       <IconButton
         slot="clear"
         size="2xs"
@@ -64,6 +64,21 @@ export const ComboBoxTrigger = ({
       >
         <Close />
       </IconButton>
+
+      <IconButton
+        slot="toggle"
+        size="2xs"
+        variant="ghost"
+        colorPalette="neutral"
+        excludeFromTabOrder
+      >
+        {isLoading ? (
+          <LoadingSpinner size="xs" margin="50" />
+        ) : (
+          <KeyboardArrowDown />
+        )}
+      </IconButton>
+
       {children}
     </ComboBoxTriggerSlot>
   );

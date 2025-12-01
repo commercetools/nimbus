@@ -11,15 +11,9 @@ export const normalizeSelectedKeys = (
 };
 
 /**
- * Denormalize selectedKeys from Set to single value or array based on selectionMode
+ * Denormalize selectedKeys from Set to array
+ * Always returns an array regardless of selection mode for simpler API
  */
-export const denormalizeSelectedKeys = (
-  keys: Set<Key>,
-  selectionMode: "single" | "multiple"
-): Key | Key[] => {
-  const keysArray = Array.from(keys);
-  if (selectionMode === "single") {
-    return keysArray[0] ?? null;
-  }
-  return keysArray;
+export const denormalizeSelectedKeys = (keys: Set<Key>): Key[] => {
+  return Array.from(keys);
 };

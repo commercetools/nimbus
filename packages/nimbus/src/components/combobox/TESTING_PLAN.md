@@ -1,487 +1,581 @@
-Comprehensive ComboBox Testing Plan
+# Comprehensive ComboBox Testing Plan
 
-1. Visual & Layout Testing
+## Implementation Status Legend
 
-Grid Layout Structure
+- ✅ **Implemented**: Has corresponding Storybook story with play function tests
+- ⚠️ **Partial**: Story exists but incomplete test coverage
+- ❌ **Not Implemented**: No test coverage yet
 
-- Trigger uses CSS Grid with named areas: leadingElement content toggle clear
-- Grid template columns: auto 1fr auto auto
-- Leading element occupies leadingElement grid area
-- Content area (tags + input) occupies content grid area
-- Toggle button occupies toggle grid area
-- Clear button occupies clear grid area
-- Trigger takes full width of root container
-- Grid maintains structure across all viewport sizes
+---
 
-Leading Element Layout
+## 1. Visual & Layout Behavior
 
-- Leading element left-justified
-- Leading element vertically centered
-- Leading element renders with display: contents
-- Icon within leading element sized correctly (min 600 height/width)
-- Leading element color matches neutral.11
+### Layout Structure ❌
 
-Content Area (Tags + Input)
+**Status**: Not tested
 
-- Content area uses flexbox with wrap
-- Content area has gap: 100 between items
-- Content area fills available space (1fr)
-- Content area respects minWidth: 0
+- Leading element displays correctly when provided
+- Input field is visible and functional
+- Toggle button displays and is clickable
+- Clear button displays when selection exists
+- Component takes full width of container
+- Layout adapts to different viewport sizes
 
-Tag Layout
+### Multi-Select Tag Display ⚠️
 
-- TagGroup uses display: contents (tags become direct flex children)
-- Tags flow inline with input
-- Tags wrap to new lines when exceeding available width
-- Last tag and input on same line when space available
-- Gap maintained between tags
+**Status**: Partially tested in multi-select stories
 
-Input Sizing & Wrapping
+- Selected items display as removable tags
+- Tags appear inline with input field
+- Tags wrap to new lines when space is limited
+- Each tag shows a remove button
+- Input remains accessible after adding tags
 
-- Input dynamically sized via size attribute
-- Input size calculated from: Math.max(currentValue.length || placeholder.length
-  || 1, 1)
-- Input grows as user types
-- Input shrinks when text deleted
-- Input minimum size of 1 character when empty
-- Input width 1px (25 token) when data-empty="true"
-- Input wraps to new line when width would exceed 100% of content area
-- Input takes full content width when on its own line
-- Input: flex: 0 0 auto (doesn't grow beyond size attribute)
-- Input: maxWidth: 100% (can't exceed container)
-- Input maintains proper cursor and styling
+### Input Field Behavior ❌
 
-Button Layout
+**Status**: Not tested
 
-- Toggle and clear buttons right-justified
-- Toggle and clear buttons vertically centered
-- Toggle button slot: toggle
-- Clear button slot: clear
-- Buttons maintain position when content wraps
-- Buttons size: 2xs
-- Toggle button variant: ghost
-- Clear button variant: ghost with colorPalette: primary
+- Input field grows as user types
+- Input field shrinks when text is deleted
+- Input field is always visible and focusable
+- Input wraps to new line when content area is full
+- Placeholder text displays when input is empty
 
-Responsive Behavior
+### Button Visibility & Behavior ❌
 
-- Layout adapts to narrow viewports
-- Content wraps appropriately on mobile
-- Touch targets remain accessible (min 44x44px)
-- Grid maintains structure on all screen sizes
+**Status**: Not tested
 
-2. Interaction Testing
+- Toggle button always visible
+- Clear button only visible when selection exists
+- Buttons remain accessible when content wraps
+- Button click areas are sufficiently large for interaction
 
-Click-to-Focus
+### Responsive Behavior ❌
 
-- Clicking trigger area focuses input
-- Clicking tags area focuses input
-- Clicking empty space in content focuses input
-- Clicking toggle button does NOT focus input
-- Clicking clear button does NOT focus input
-- Click-to-focus disabled when isDisabled={true}
-- Click handler checks e.target.closest("button") to exclude buttons
+**Status**: Not tested
 
-Keyboard Navigation
+- Component works on narrow viewports
+- Content reflows appropriately on mobile devices
+- All interactive elements remain accessible on touch devices
+- Component maintains functionality across screen sizes
 
-- Tab focuses input
-- Arrow Down opens menu when closed
-- Arrow Down/Up navigates options when open
-- aria-activedescendant updates as user navigates with arrow keys
-- aria-activedescendant points to currently focused option ID
-- aria-activedescendant matches focusedKey from state.selectionManager
-- aria-activedescendant is undefined when no option is focused
-- aria-activedescendant value matches actual DOM id attribute of focused
-  ListBoxItem
-- Enter selects focused option
-- Focused option priority: Enter key selects focused option instead of creating
-  custom option
-- Escape closes menu
-- Backspace removes last tag (multi-select)
-- Tab closes menu and moves focus to next element
-- Keyboard-only navigation works without mouse
-- Focus indicators visible during keyboard navigation
-- Focus stays on input during keyboard navigation
+---
 
-Menu Open/Close Behavior
+## 2. User Interaction Testing
 
-- menuTrigger="focus": Menu opens when input receives focus
-- menuTrigger="input" (default): Menu opens when user types
-- menuTrigger="manual": Menu only opens via button or ArrowDown key
-- Toggle button opens/closes menu
-- Clear button clears selection without affecting menu state
-- shouldCloseOnBlur=true (default): Menu closes when focus leaves combobox
-- shouldCloseOnBlur=false: Menu stays open when clicking outside
-- shouldCloseOnSelect=true (default, single-select): Menu closes after selecting
-  option
-- shouldCloseOnSelect=false (single-select): Menu stays open after selecting
-  option
-- Blur delay: 150ms delay allows click events before closing menu
-- ArrowDown key: Opens menu when closed
-- Escape key: Closes menu when open
-- Escape key returns focus to input
-- Controlled open state: isOpen prop controls menu visibility
-- Uncontrolled open state: defaultOpen prop sets initial state
-- onOpenChange callback: Called when menu open state changes
+### Focus Behavior ❌
 
-Mouse/Touch Interactions
+**Status**: Not tested
 
-- Clicking option selects it
-- Clicking clear button clears selection
-- Clicking toggle button toggles menu
-- Hovering option shows hover state
-- Touch targets meet minimum size (44x44px)
+- Clicking anywhere in the trigger area focuses the input
+- Input receives focus when component is tabbed to
+- Focus remains on input during option selection
+- Component loses focus when user clicks outside
+- Focus indicators are visible during keyboard navigation
 
-3. Selection Behavior
+### Keyboard Navigation ⚠️
 
-Single Select Mode
+**Status**: Partially tested in various stories
 
-- Single item selection works
-- Single-select input sync: Input value updates to match selected item's text
-- Single-select clear: Input value clears when selection is removed
-- Single-select controlled: onInputChange called with selected item's text in
-  controlled mode
-- Previously selected item replaced on new selection
-- Clear button removes selection
-- Input displays selected item text
-- Menu closes after selection (default behavior)
-- selectedKeys accepts single Key value
-- onSelectionChange receives single Key
-- defaultSelectedKey sets initial selection
+- Tab key focuses the input field
+- Arrow Down opens menu and focuses first option
+- Arrow Up/Down navigates through options
+- Enter key selects the focused option
+- Escape key closes the menu
+- Backspace removes last tag (multi-select mode)
+- Keyboard navigation works without mouse interaction
 
-Multi Select Mode
+### Menu Opening & Closing ❌
 
-- Multiple items can be selected
-- Multi-select input clear: Input value clears after selecting an option
-  (controlled and uncontrolled)
-- Selected items displayed as tags
-- Tags show remove button
-- Clicking tag remove button deselects item
-- Backspace removes last tag
-- Multi-select: Menu always stays open after selection (ignores
-  shouldCloseOnSelect)
-- Input remains visible after adding tags
-- selectedKeys accepts Key array
-- onSelectionChange receives Key array
-- defaultSelectedKeys sets initial selections
+**Status**: Not tested
+
+- Menu opens when user starts typing (default behavior)
+- Menu opens when input receives focus (when configured)
+- Menu opens only on button click (manual mode)
+- Toggle button opens and closes the menu
+- Menu closes when user selects an option (single-select)
+- Menu stays open after selection (multi-select)
+- Menu closes when user clicks outside
+- Menu closes when Escape key is pressed
+
+### Option Selection ⚠️
+
+**Status**: Partially tested
+
+- Clicking an option selects it
+- Hovering over options shows visual feedback
+- Selected options are visually distinguished
+- Selection works via keyboard (Enter key)
+- Multiple selections work (multi-select mode)
+
+### Clear Functionality ❌
+
+**Status**: Not tested
+
+- Clear button removes current selection (single-select)
+- Clear button removes all selections (multi-select)
+- Clear button does not close the menu
+- Clear button is accessible via keyboard
+
+---
+
+## 3. Selection Modes
+
+### Single Select Mode ❌
+
+**Status**:
+
+- User can select one option at a time
+- Selecting a new option replaces previous selection
+- Selected option text appears in input field
+- Clear button removes the selection
+- Menu closes after selection (default)
+- Input displays correct value after selection
+
+### Multi Select Mode ❌
+
+**Status**: Implemented in `MultiSelectCustomOptions` and
+`AsyncMultiSelectCustomOptions`
+
+- User can select multiple options
+- Selected options appear as tags
+- Clicking tag remove button deselects the item
+- Backspace key removes last selected tag
+- Input clears after each selection
+- Menu stays open after selections
 - Clear button removes all selections
 
-Selection with getKey
+### Selection Persistence ✅
 
-- Custom getKey function used for unique identification
-- Selection works with complex objects
-- Default getKey (item.id) works automatically
-- getKey integrates with new custom options
+**Status**: Implemented in `AsyncMultiSelectPersistence`
 
-Selection with getTextValue
+- Selected items persist when filtering changes
+- Selected items remain visible as tags
+- Selected items excluded from available options list
 
-- Custom getTextValue function used for display
-- Input displays correct text value after selection
-- Default getTextValue (item.name) works automatically
-- getTextValue integrates with new custom options
+---
 
-4. Filtering & Search
+## 4. Search & Filtering
 
-Basic Filtering
+### Basic Text Filtering ⚠️
 
-- Typing filters options
-- Filter is case-insensitive
-- Partial matches shown
-- No matches shows empty state or closes menu
-- allowsEmptyMenu=false (default): Menu closes when filtered results are empty
-- allowsEmptyMenu=true: Menu stays open even when filtered results are empty
-- renderEmptyState: Custom empty state message displays when
-  allowsEmptyMenu=true and no results
-- renderEmptyState: Empty state NOT shown when allowsEmptyMenu=false (menu
-  closes instead)
+**Status**: Partially tested in async stories
+
+- Typing filters the options list
+- Filtering is case-insensitive by default
+- Partial text matches are shown
 - Clearing input shows all options
-- Filter state resets when menu closes
-- Filtered list maintains correct ARIA attributes
+- Filter resets when menu closes
+- No results state handled appropriately
 
-Custom Filter Function
+### Section-Aware Filtering ❌
 
-- Custom filter prop function used when provided
-- Default filter works without custom function
-- Filter integrates with custom options
+**Status**: Not tested **Implementation**: `createSectionAwareFilter` exists in
+`utils/filters.ts`
 
-Controlled Input
+**Required test: "FilteringWithSections"**
 
-- inputValue prop controls input text
-- onInputChange callback fires on input changes
-- Controlled input works with filtering
-- Uncontrolled input works with defaultInputValue
+Test should verify:
 
-5. Custom Options (allowsCustomOptions)
+- Sections appear with their header labels
+- Items are grouped under correct sections
+- Filtering maintains section structure
+- Empty sections are hidden during filtering
+- Sections reappear when filter allows items
+- Multiple sections can have matches simultaneously
 
-Basic Creation
+**Test scenario**:
 
-- allowsCustomOptions=true enables feature
-- Without allowsCustomOptions: Enter key does NOT create options
-- Enter key on non-matching input creates new option
-- Item addition: New item added to internal items array
-- getNewOptionData required: Must provide transform function
-- Missing getNewOptionData: Does not create options even if
-  allowsCustomOptions=true
+1. Display options grouped into "Mammals", "Birds", and "Other" sections
+2. Type "eagle" → Only "Birds" section visible with "Bald Eagle"
+3. Type "ko" → Only "Mammals" section visible with "Koala"
+4. Clear filter → All sections visible again
 
-Single-Select Custom Options
+### Custom Filter Functions ❌
 
-- Single-select behavior: New item selected
-- Single-select behavior: Input updated to item text
-- Single-select behavior: Menu closes after creation
+**Status**: Not tested **Note**: Multiple filter utilities implemented but need
+stories:
 
-Multi-Select Custom Options
+- Start-with matching
+- Case-sensitive matching
+- Word boundary matching
+- Fuzzy matching
+- Multi-property search
+- Ranked/scored results
+- Multi-term search
 
-- Multi-select behavior: New item added as tag
-- Multi-select behavior: Input cleared after creation
-- Multi-select behavior: Menu stays open after creation
+### Empty State Handling ⚠️
 
-Validation & Transformation
+**Status**: Partially tested
 
-- isValidNewOption validation: Only creates option when validation returns true
-- isValidNewOption rejection: Does not create option when validation returns
-  false
-- getNewOptionData transform: Input value correctly transformed to item object
-- Empty input: Enter on empty/whitespace-only input does NOT create option
-- Duplicate prevention: Enter on matching existing option text does NOT create
-  duplicate
-- Case-insensitive matching: "apple" matches existing "Apple" (no duplicate)
+- Menu closes when no matches found (default)
+- Menu stays open showing empty state (when configured)
+- Custom empty state message displays
+- User can recover by clearing search
 
-Integration
+---
 
-- onCreateOption callback: Called with input value when option created
-- No callback: Works without onCreateOption (optional callback)
-- getKey integration: New items use getKey function to extract unique keys
-- getTextValue integration: New items use getTextValue for display and matching
-- External items sync: When items prop changes, internal items update
+## 5. Custom Option Creation
 
-6. State Management
+### Basic Creation ✅
 
-Controlled vs Uncontrolled
+**Status**: Implemented in `MultiSelectCustomOptions`
 
-- Controlled mode: selectedKeys + onSelectionChange
-- Uncontrolled mode: defaultSelectedKeys
-- Controlled input: inputValue + onInputChange
-- Uncontrolled input: defaultInputValue
-- Controlled open state: isOpen + onOpenChange
-- Uncontrolled open state: defaultOpen
-- Mixed controlled/uncontrolled states work together
+- User can create new options when enabled
+- Press Enter on non-matching text creates option
+- Empty/whitespace-only input does not create option
+- Duplicate options are prevented
+- Custom validation rules are respected
 
-State Synchronization
+### Single-Select Custom Options ❌
 
-- Selection changes trigger onSelectionChange
-- Input changes trigger onInputChange
-- Menu state changes trigger onOpenChange
-- External state updates reflected in component
-- State updates don't cause unnecessary re-renders
+**Status**: Not tested
 
-7. Accessibility (WCAG 2.1 AA)
+- New option is automatically selected
+- Input updates to show new option text
+- Menu closes after creation
 
-ARIA Attributes
+### Multi-Select Custom Options ✅
 
-- Input has role="combobox"
-- Input has aria-autocomplete="list"
-- Input has aria-controls referencing listbox ID
-- Input has aria-expanded tracking popup state
-- Listbox has role="listbox"
-- Listbox has stable ID
-- Options have role="option"
-- Options have unique IDs
-- Options have aria-selected attribute
-- Buttons have tabindex="-1"
-- Label relationship established via aria-labelledby
-- Input without aria-label or aria-labelledby should warn (console)
+**Status**: Implemented in `MultiSelectCustomOptions` and
+`AsyncMultiSelectCustomOptions`
 
-Screen Reader Support
+- New option appears as a tag
+- Input clears after creation
+- Menu stays open after creation
+- User can create multiple custom options
 
-- Screen reader announces combobox role
-- Screen reader announces popup state (expanded/collapsed)
-- Screen reader announces active option
-- Screen reader announces selection changes
-- Screen reader announces number of options available
-- Screen reader announces when creating custom option
-- Loading states announced
-- Error states announced
+### Validation ✅
 
-Focus Management
+**Status**: Implemented in `MultiSelectCustomOptions`
 
-- Focus visible at all times
-- Focus indicator meets contrast requirements (3:1)
-- Focus moves logically through component
-- Focus trapped appropriately when menu open
-- Focus returns to input after closing menu
+- Validation function prevents invalid options
+- Duplicate detection works (case-insensitive)
+- Transform function properly formats new options
+- Callback notifies parent component of creation
 
-Keyboard Support
+---
+
+## 6. Async Data Loading
+
+### Basic Async Loading ✅
+
+**Status**: Implemented in `AsyncLoading` story
+
+- Loading indicator appears while fetching
+- Options populate after data loads
+- Search input triggers new requests
+- Debouncing prevents excessive API calls
+- Minimum character requirement can be configured
+
+### Error Handling ✅
+
+**Status**: Implemented in `AsyncLoadingWithError` story
+
+- Error message displays when load fails
+- Component remains functional after error
+- User can retry by typing again
+- Custom error messages are shown
+
+### Async with Multi-Select ✅
+
+**Status**: Implemented in `AsyncMultiSelectPersistence` and
+`AsyncMultiSelectCustomOptions`
+
+- Selected items persist during new searches
+- Tags remain visible while loading new results
+- Already-selected items can be excluded from results
+- Custom options work with async loading
+
+### Request Management ⚠️
+
+**Status**: Implicitly tested but not explicit
+
+- Previous requests are cancelled when new search starts
+- Component handles rapid typing appropriately
+- No race conditions with overlapping requests
+
+---
+
+## 7. State Management
+
+### Controlled Mode ⚠️
+
+**Status**: Implicitly tested but not systematic
+
+- Parent controls selection via props
+- Parent controls input value via props
+- Parent controls menu open state via props
+- Changes notify parent via callbacks
+
+### Uncontrolled Mode ⚠️
+
+**Status**: Implicitly tested
+
+- Component manages selection internally
+- Component manages input value internally
+- Component manages menu state internally
+- Default values are respected
+
+### State Synchronization ⚠️
+
+**Status**: Implicitly tested
+
+- Selection changes trigger callbacks
+- Input changes trigger callbacks
+- Menu state changes trigger callbacks
+- External prop changes update component
+
+---
+
+## 8. Accessibility
+
+### Keyboard Accessibility ⚠️
+
+**Status**: Partially tested
 
 - All functionality available via keyboard
-- Keyboard shortcuts documented
 - No keyboard traps
+- Focus management works correctly
+- Keyboard shortcuts work as expected
+- Focus indicators are visible
 
-8. Form Integration
+### ARIA Relationships ⚠️
 
-Form Submission
+**Status**: Partially validated
 
-- Selected value(s) submitted with form
+- Input properly associated with listbox
+- Labels properly associated with input
+- Descriptions properly associated with input
+- Error messages properly associated with input
+- Currently focused option is properly identified
+
+---
+
+## 9. Visual States
+
+### Size Variants ❌
+
+**Status**: Not tested
+
+- Small (`sm`) size renders correctly
+- Medium (`md`) size renders correctly (default)
+- Large (`lg`) size renders correctly
+- Size affects input field height
+- Size affects toggle button dimensions
+- Size affects tag dimensions (multi-select)
+- Size affects menu item height
+- Size affects font size
+- All interactive elements remain accessible across sizes
+
+### Visual Variants ❌
+
+**Status**: Not tested
+
+- Default variant displays correctly
+- Outline variant displays correctly
+- Filled variant displays correctly (if applicable)
+- Variant styling applies consistently across all parts
+- Variant styling is preserved during interaction states
+
+### State: isRequired ❌
+
+**Status**: Not tested
+
+- Required indicator displays (visual marker like asterisk)
+- Required state is announced to screen readers
+- Label includes required indicator
+- Form validation enforces required state
+- Required field prevents form submission when empty
+- Error message displays when required field is empty
+
+### State: isReadOnly ❌
+
+**Status**: Not tested
+
+- Input displays current value but prevents editing
+- Input field is visually distinguishable as read-only
+- Typing in input has no effect
+- Clear button is hidden
+- Toggle button is hidden or disabled
+- Menu does not open when clicked
+- Menu does not open when typing
+- Selected values remain visible
+- Component is focusable but not editable
+- Screen readers announce read-only state
+
+### State: isDisabled ❌
+
+**Status**: Not tested
+
+- Component appears visually disabled (reduced opacity/contrast)
+- Input field is not editable
+- Input field is not focusable
+- Toggle button does not respond to clicks
+- Clear button does not respond to clicks
+- Menu does not open
+- All interactive elements are disabled
+- Component cannot receive focus via keyboard
+- Screen readers announce disabled state
+- Cursor shows not-allowed when hovering
+
+### State: isInvalid ❌
+
+**Status**: Not tested
+
+- Component displays error styling (red border or error color)
+- Error message displays below component
+- Error icon appears (if configured)
+- Input field shows invalid state visually
+- Error state is announced to screen readers
+- aria-invalid attribute is set correctly
+- Error message is associated with input via aria-describedby
+- Error state is visible during interaction
+- Error state persists until resolved
+- Error styling applies to all relevant parts (input, border, etc.)
+
+### Combined State Testing ❌
+
+**Status**: Not tested
+
+- `isRequired + isInvalid` - Shows both required indicator and error state
+- `isReadOnly + value` - Displays value but prevents editing
+- `isDisabled + isInvalid` - Disabled takes precedence over invalid styling
+- `isDisabled + value` - Shows value but is completely non-interactive
+- `size + variant` - All size/variant combinations render correctly
+- `isRequired + isEmpty` - Required indicator visible on empty field
+
+### Focus States ❌
+
+**Status**: Not tested
+
+- Focus ring appears when input receives focus
+- Focus ring is clearly visible across all color schemes
+- Focus ring meets WCAG contrast requirements
+- Focus ring respects variant styling
+- Focus state is different from hover state
+- Focus state works with keyboard navigation
+- Focus state does not appear on mouse click (focus-visible)
+
+### Hover States ❌
+
+**Status**: Not tested
+
+- Input shows hover styling when cursor is over trigger area
+- Toggle button shows hover styling
+- Clear button shows hover styling
+- Menu items show hover styling
+- Tags show hover styling on remove button
+- Hover states are visually distinct from default state
+- Hover states work consistently across variants
+- Disabled elements do not show hover effects
+
+## 10. Form Integration
+
+### Form Submission ❌
+
+**Status**: Not tested
+
+- Selected values submit with form
+- Form name attribute works correctly
+- Works with native form submission
 - Hidden input created for form integration
-- Name prop sets form field name
-- Value prop compatible with form libraries
 
-Validation
+### Validation States ❌
 
-- isRequired prop enforces selection
-- isInvalid prop shows error state
-- isDisabled prop disables interaction
-- isReadOnly prop prevents changes
-- Validation messages accessible
-- Error styling applied correctly
+**Status**: Not tested (covered above in Visual States section)
 
-React Hook Form / Formik Integration
+- Required validation works
+- Invalid state displays correctly
+- Disabled state prevents interaction
+- Read-only state prevents changes
+- Validation messages are accessible
 
-- Works with controlled form libraries
+### Form Library Integration ❌
+
+**Status**: Not tested
+
+- Works with React Hook Form
+- Works with Formik
 - Validation integrates properly
 - Form reset works correctly
-- Error states sync with form state
 
-9. Edge Cases & Error Handling
+---
 
-Empty States
+## 11. Edge Cases & Robustness
 
-- No options provided
-- All options filtered out
-- Custom empty state rendering
-- Empty state accessible
+### Data Edge Cases ❌
 
-Loading States
+**Status**: Not tested
 
-- Loading indicator shown
-- Options disabled during load
-- Loading message announced
+- Handles very long option text gracefully
+- Handles very long input values
+- Handles special characters in text
+- Handles duplicate option values
+- Handles large option lists (100+)
+- Handles empty string options
+- Handles null/undefined values appropriately
 
-Error States
+### User Input Edge Cases ❌
 
-- Error boundary catches errors
-- Error messages displayed
-- Component remains functional after error
+**Status**: Not tested
 
-Data Edge Cases
+- Rapid typing handled correctly
+- Quick selection/deselection handled
+- Simultaneous keyboard and mouse input
+- Copy/paste into input field
+- Very fast keyboard navigation
 
-- Very long option text
-- Very long input value
-- Special characters in text
-- Duplicate option values
-- Large number of options (100+)
-- Empty strings as options
-- Null/undefined handling
+### Component Lifecycle ❌
 
-Sizing Edge Cases
+**Status**: Not tested
 
-- Placeholder longer than input width
-- Value longer than container width
-- Multiple long tags wrapping
-- Single character input
-- Empty input (no value, no placeholder)
-
-10. Performance Testing
-
-Rendering Performance
-
-- Large option lists (1000+ items) render smoothly
-- Virtualization works correctly (if implemented)
-- Re-renders minimized on input changes
-- Tag addition/removal performant
-
-Memory Management
-
-- No memory leaks on mount/unmount
+- Component mounts correctly
+- Component updates correctly
+- Component unmounts cleanly
+- No memory leaks
 - Event listeners cleaned up
-- No stale closures
-
-11. Positioning & Portal Tests
-
-Basic Positioning
-
-- Vertical Positioning: Popover positioned below combobox with correct gutter
-  spacing
-- Horizontal Alignment: Popover left-aligned with combobox trigger
-- Popover width matches trigger width (default)
-- Popover respects maxHeight
-- Popover flips to above trigger when no space below
-- Popover maintains horizontal alignment with trigger
-
-Container Context Tests
-
-- ComboBox in Modal: Popover positioned correctly when opened in modal
-- ComboBox in Modal with Scroll: Popover stays positioned when scrolling modal
-  content
-- ComboBox in Drawer: Popover positioned correctly when opened in drawer
-- ComboBox in Drawer with Scroll: Popover follows combobox when scrolling drawer
-- Scroll Container Detection: Works correctly in nested scroll containers
-- Position Updates: Popover updates position when trigger element moves
-- Fixed Positioning Strategy: Popover uses fixed positioning in portals
-- Visual Relationship: Clear visual connection between trigger and popover
-  maintained
-
-12. Regression Testing
-
-Previous Bugs
-
-- Input resizing regression (size attribute)
-- Click-to-focus with buttons regression
-- Tag wrapping regression (display: contents)
-- Trigger width regression (100% width)
-- Modal/Drawer positioning bugs fixed
-
-Visual Regression
-
-- Screenshots match expected states
-- Layout doesn't break on updates
-- Styling consistent across variants
 
 ---
 
-Testing Implementation Priority
+## 12. Portal & Positioning
 
-Phase 1: Critical Path (P0)
+### Menu Positioning ❌
 
-1. Grid layout structure verification
-2. Input sizing and wrapping
-3. Single/multi select core functionality
-4. Keyboard navigation and ARIA compliance
-5. Click-to-focus interaction
+**Status**: Visual only, not tested
 
-Phase 2: Core Features (P1)
+- Menu appears below trigger by default
+- Menu flips above trigger when no space below
+- Menu aligns with trigger horizontally
+- Menu width matches trigger width
+- Menu respects viewport boundaries
 
-1. Filtering and search
-2. Custom options creation
-3. Form integration and validation
-4. Menu open/close behavior variations
-5. Positioning in portals (Modal/Drawer)
+### Portal Contexts ❌
 
-Phase 3: Polish & Edge Cases (P2)
+**Status**: Not tested
 
-1. Loading and error states
-2. Edge case data handling
-3. Performance with large datasets
-4. Visual regression tests
-
-Phase 4: Advanced (P3)
-
-1. Assistive technology testing
-2. Memory leak detection
-3. Complex state synchronization scenarios
-4. Custom render functions
-5. Integration with form libraries
+- Works correctly inside Modal
+- Works correctly inside Drawer
+- Works correctly in scrollable containers
+- Position updates when container scrolls
+- Position updates when window resizes
 
 ---
 
-Storybook Story Structure
+## 13. Regression Prevention
 
-Each test category should have corresponding Storybook stories with play
-functions:
+### Known Fixed Bugs ❌
 
-// Example structure export const GridLayoutStructure: Story = { play: async ({
-canvasElement, step }) => { // Test grid layout... } };
+**Status**: Not systematically tested
 
-export const InputSizingAndWrapping: Story = { play: async ({ canvasElement,
-step }) => { // Test input size attribute updates... } };
+Document any previously fixed bugs here with regression tests to ensure they
+don't return.
 
-export const SingleSelectBehavior: Story = { play: async ({ canvasElement, step
-}) => { // Test single selection... } };
+### Visual Consistency ❌
+
+**Status**: Not implemented
+
+- Component appearance matches design
+- Variants render correctly
+- States (disabled, error, etc.) display correctly
+- Responsive behavior works as expected

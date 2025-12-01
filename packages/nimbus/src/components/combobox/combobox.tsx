@@ -1,40 +1,39 @@
 // Export individual components
-import { ComboBoxRoot } from "./components/combobox.root";
-import { ComboBoxTrigger } from "./components/combobox.trigger";
-import { ComboBoxTagGroup } from "./components/combobox.tag-group";
-import { ComboBoxInput } from "./components/combobox.input";
-import { ComboBoxPopover } from "./components/combobox.popover";
-import { ComboBoxListBox } from "./components/combobox.listbox";
-import { ComboBoxOption } from "./components/combobox.option";
-import { ComboBoxSection } from "./components/combobox.section";
+import {
+  ComboBoxRoot,
+  ComboBoxTrigger,
+  ComboBoxPopover,
+  ComboBoxListBox,
+  ComboBoxOption,
+  ComboBoxSection,
+} from "./components";
+
+// Export filter utilities
+import {
+  filterByText,
+  filterByStartsWith,
+  filterByCaseSensitive,
+  filterByWordBoundary,
+  filterByFuzzy,
+  createMultiPropertyFilter,
+  createRankedFilter,
+  createMultiTermFilter,
+  createSectionAwareFilter,
+} from "./utils/filters";
 
 /**
- * ### ComboBox - A searchable, filterable selection component
+ * # ComboBox
+ * ============================================================
  *
- * Supports single and multi-select modes with keyboard navigation,
- * custom filtering, and accessible interactions.
+ * A searchable, filterable selection component with single and multi-select support.
+ * Built with React Aria Components for accessibility and keyboard navigation.
  *
- * @example Single-select with clear button
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/combobox}
+ *
+ * @example
  * ```tsx
- * <ComboBox.Root items={items} selectionMode="single">
+ * <ComboBox.Root items={items}>
  *   <ComboBox.Trigger />
- *   <ComboBox.Popover>
- *     <ComboBox.ListBox>
- *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
- *     </ComboBox.ListBox>
- *   </ComboBox.Popover>
- * </ComboBox.Root>
- * ```
- *
- * @example Multi-select with tags and clear button
- * ```tsx
- * <ComboBox.Root items={items} selectionMode="multiple">
- *   <ComboBox.Trigger>
- *     <ComboBox.TagGroup />
- *     <ComboBox.Input />
- *     <IconButton slot="toggle"><Icons.KeyboardArrowDown /></IconButton>
- *     <IconButton slot="clear"><Icons.Close /></IconButton>
- *   </ComboBox.Trigger>
  *   <ComboBox.Popover>
  *     <ComboBox.ListBox>
  *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
@@ -45,17 +44,15 @@ import { ComboBoxSection } from "./components/combobox.section";
  */
 export const ComboBox = {
   /**
-   * ### ComboBox.Root
+   * # ComboBox.Root
    *
-   * Main container providing Nimbus context + React Aria contexts.
-   * Does not render UI elements directly - only provides context for children.
+   * The root component that provides state management and context for the combobox.
+   * Handles selection state, input filtering, popover open/close, and keyboard navigation.
    *
    * @example
    * ```tsx
    * <ComboBox.Root items={items}>
-   *   <ComboBox.Trigger>
-   *     <ComboBox.Input />
-   *   </ComboBox.Trigger>
+   *   <ComboBox.Trigger />
    *   <ComboBox.Popover>
    *     <ComboBox.ListBox>
    *       {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
@@ -67,55 +64,26 @@ export const ComboBox = {
   Root: ComboBoxRoot,
 
   /**
-   * ### ComboBox.Trigger
+   * # ComboBox.Trigger
    *
-   * Wrapper for the input trigger area.
-   * Contains ComboBox.TagGroup, ComboBox.Input, and IconButton slots.
+   * The trigger element that contains the input field and controls for the combobox.
+   * Automatically renders tag group (multi-select), input field, toggle button, and clear button.
    *
    * @example
    * ```tsx
-   * <ComboBox.Trigger>
-   *   <ComboBox.TagGroup />
-   *   <ComboBox.Input />
-   *   <IconButton slot="toggle"><Icons.KeyboardArrowDown /></IconButton>
-   *   <IconButton slot="clear"><Icons.Close /></IconButton>
-   * </ComboBox.Trigger>
+   * <ComboBox.Root items={items}>
+   *   <ComboBox.Trigger />
+   *   <ComboBox.Popover>...</ComboBox.Popover>
+   * </ComboBox.Root>
    * ```
    */
   Trigger: ComboBoxTrigger,
 
   /**
-   * ### ComboBox.TagGroup
+   * # ComboBox.Popover
    *
-   * Displays selected tags in multi-select mode.
-   * Automatically hidden in single-select mode.
-   * Reads TagGroupContext from Nimbus context provider.
-   *
-   * @example
-   * ```tsx
-   * <ComboBox.TagGroup />
-   * ```
-   */
-  TagGroup: ComboBoxTagGroup,
-
-  /**
-   * ### ComboBox.Input
-   *
-   * Text input field for filtering and selection.
-   * Reads InputContext from Nimbus context provider.
-   *
-   * @example
-   * ```tsx
-   * <ComboBox.Input />
-   * ```
-   */
-  Input: ComboBoxInput,
-
-  /**
-   * ### ComboBox.Popover
-   *
-   * Popover wrapper for the options list.
-   * Reads PopoverContext from Nimbus context provider.
+   * The popover container that displays the dropdown options list.
+   * Renders in a React portal and handles positioning relative to the trigger.
    *
    * @example
    * ```tsx
@@ -129,10 +97,11 @@ export const ComboBox = {
   Popover: ComboBoxPopover,
 
   /**
-   * ### ComboBox.ListBox
+   * # ComboBox.ListBox
    *
-   * Container for options and option groups.
-   * Reads ListBoxContext from Nimbus context provider.
+   * The container for dropdown options that displays filtered results.
+   *
+   * Use the render prop pattern - do **NOT** manually map over items as this is less performant.
    *
    * @example
    * ```tsx
@@ -144,29 +113,143 @@ export const ComboBox = {
   ListBox: ComboBoxListBox,
 
   /**
-   * ### ComboBox.Option
+   * # ComboBox.Option
    *
-   * Individual selectable option.
+   * An individual selectable option within the listbox.
+   * Displays a checkmark indicator for selected items in multi-select mode.
    *
    * @example
    * ```tsx
    * <ComboBox.Option>Option text</ComboBox.Option>
    * ```
+   *
+   * @example Render prop pattern
+   * ```tsx
+   * <ComboBox.Option>
+   *   {({ isSelected }) => (
+   *     <span>Option 1 {isSelected && "✓"}</span>
+   *   )}
+   * </ComboBox.Option>
+   * ```
    */
   Option: ComboBoxOption,
 
   /**
-   * ### ComboBox.Section
+   * # ComboBox.Section
    *
    * Groups related options together with an optional heading.
+   * Supports render prop pattern for dynamic option rendering within sections.
    *
    * @example
    * ```tsx
-   * <ComboBox.Section label="Category">
-   *   <ComboBox.Option>Option 1</ComboBox.Option>
-   *   <ComboBox.Option>Option 2</ComboBox.Option>
+   * <ComboBox.Section label="Category Name">
+   *   <ComboBox.Option id="opt-1">Option 1</ComboBox.Option>
+   *   <ComboBox.Option id="opt-2">Option 2</ComboBox.Option>
+   * </ComboBox.Section>
+   * ```
+   *
+   * @example Render prop pattern
+   * ```tsx
+   * <ComboBox.Section items={categoryItems}>
+   *   {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
    * </ComboBox.Section>
    * ```
    */
   Section: ComboBoxSection,
+
+  /**
+   * # ComboBox.filters
+   *
+   * Built-in filter functions and utilities for customizing ComboBox filtering behavior.
+   * These filters can be passed to the `filter` prop on ComboBox.Root to control how options are filtered based on user input.
+   *
+   * **Available Filters:**
+   * - `filterByText`: Default substring matching (case-insensitive)
+   * - `filterByStartsWith`: Prefix matching
+   * - `filterByCaseSensitive`: Exact case substring matching
+   * - `filterByWordBoundary`: Word boundary matching
+   * - `filterByFuzzy`: Fuzzy matching (characters in order)
+   * - `createMultiPropertyFilter`: Search across multiple object properties
+   * - `createRankedFilter`: Custom scoring/ranking logic
+   * - `createMultiTermFilter`: OR logic for multiple search terms
+   * - `createSectionAwareFilter`: Preserves section structure while filtering
+   *
+   * @example Basic filter usage
+   * ```tsx
+   * import { ComboBox } from '@commercetools/nimbus';
+   *
+   * function MyComponent() {
+   *   return (
+   *     <ComboBox.Root
+   *       items={items}
+   *       filter={ComboBox.filters.filterByStartsWith}
+   *     >
+   *       <ComboBox.Trigger />
+   *       <ComboBox.Popover>
+   *         <ComboBox.ListBox>
+   *           {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+   *         </ComboBox.ListBox>
+   *       </ComboBox.Popover>
+   *     </ComboBox.Root>
+   *   );
+   * }
+   * ```
+   *
+   * @example Multi-property search
+   * ```tsx
+   * const productFilter = ComboBox.filters.createMultiPropertyFilter<Product>([
+   *   'name',
+   *   'category',
+   *   'description'
+   * ]);
+   *
+   * function ProductSearch() {
+   *   return (
+   *     <ComboBox.Root items={products} filter={productFilter}>
+   *       <ComboBox.Trigger />
+   *       <ComboBox.Popover>
+   *         <ComboBox.ListBox>
+   *           {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+   *         </ComboBox.ListBox>
+   *       </ComboBox.Popover>
+   *     </ComboBox.Root>
+   *   );
+   * }
+   * ```
+   *
+   * @example Section-aware filtering
+   * ```tsx
+   * const sectionFilter = ComboBox.filters.createSectionAwareFilter(
+   *   ComboBox.filters.filterByFuzzy
+   * );
+   *
+   * function SectionedSearch() {
+   *   return (
+   *     <ComboBox.Root items={sectionsWithItems} filter={sectionFilter}>
+   *       <ComboBox.Trigger />
+   *       <ComboBox.Popover>
+   *         <ComboBox.ListBox>
+   *           {(section) => (
+   *             <ComboBox.Section>
+   *               {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
+   *             </ComboBox.Section>
+   *           )}
+   *         </ComboBox.ListBox>
+   *       </ComboBox.Popover>
+   *     </ComboBox.Root>
+   *   );
+   * }
+   * ```
+   */
+  filters: {
+    filterByText,
+    filterByStartsWith,
+    filterByCaseSensitive,
+    filterByWordBoundary,
+    filterByFuzzy,
+    createMultiPropertyFilter,
+    createRankedFilter,
+    createMultiTermFilter,
+    createSectionAwareFilter,
+  },
 };
