@@ -215,12 +215,14 @@ Once confirmed, create the documentation file:
        > is good practice to add a **persistent**, **unique** id to the
        > component:
    - **Testing**:
-     - **Mandatory**: Start with this exact disclaimer:
+- Testing examples are auto-generated from `.docs.spec.tsx` files
+     - **Mandatory**: Include this text before the injection token:
        > These examples demonstrate how to test your implementation when using
        > [Component] in your application. The component's internal functionality
        > is already tested by Nimbus - these patterns help you verify your
        > integration and application-specific logic.
-     - Provide realistic test examples (Rendering, Interaction, etc.)
+     - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
+     - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
    - **Resources**:
      - Link to Storybook (use "link-tbd" placeholder)
      - **Internal component links must start with '/'** (e.g.,
@@ -236,6 +238,82 @@ Once confirmed, create the documentation file:
      `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
 
 9. **Write the file** using the Write tool
+
+### **Step 6.1: Create Documentation Test File**
+
+**IMPORTANT**: After creating the `.dev.mdx` file, create the companion `.docs.spec.tsx` test file.
+
+1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as component
+
+2. **File structure**:
+   ```typescript
+   import { describe, it, expect, vi } from 'vitest';
+   import { render, screen } from '@testing-library/react';
+   import userEvent from '@testing-library/user-event';
+   import { ComponentName, NimbusProvider } from '@commercetools/nimbus';
+
+   /**
+    * @docs-section basic-rendering
+    * @docs-title Basic Rendering Tests
+    * @docs-description Verify the component renders with expected elements
+    * @docs-order 1
+    */
+   describe('ComponentName - Basic rendering', () => {
+     it('renders component', () => {
+       render(
+         <NimbusProvider>
+           <ComponentName />
+         </NimbusProvider>
+       );
+
+       expect(screen.getByRole('...')).toBeInTheDocument();
+     });
+   });
+
+   /**
+    * @docs-section interactions
+    * @docs-title Interaction Tests
+    * @docs-description Test user interactions with the component
+    * @docs-order 2
+    */
+   describe('ComponentName - Interactions', () => {
+     it('handles user interaction', async () => {
+       const user = userEvent.setup();
+       render(
+         <NimbusProvider>
+           <ComponentName />
+         </NimbusProvider>
+       );
+
+       // Test interactions
+     });
+   });
+   ```
+
+3. **JSDoc tags required**:
+   - `@docs-section` - Unique ID for section
+   - `@docs-title` - Display title
+   - `@docs-description` - Brief description
+   - `@docs-order` - Sort order (0 for setup, 1+ for tests)
+
+4. **Test patterns to include** (based on component features):
+   - Basic rendering (always)
+   - Interactions (if interactive)
+   - Controlled mode (if supports value/onChange)
+   - States (disabled, invalid, readonly, required - if component has these props)
+   - Component-specific features
+
+5. **Critical rules**:
+   - ✅ Every `render()` must wrap with `<NimbusProvider>`
+   - ✅ Import NimbusProvider from `@commercetools/nimbus`
+   - ✅ Use `vi.fn()` for mocks (not `jest.fn()`)
+   - ✅ Use `userEvent.setup()` for interactions
+   - ✅ Base test names on component features, not generic patterns
+
+6. **Verify tests**:
+   ```bash
+   pnpm test:unit {component-name}.docs.spec.tsx
+   ```
 
 ### **Step 7: Validate Documentation**
 
@@ -273,7 +351,9 @@ After generating the file, run validation checks:
 - [ ] Examples are realistic and functional
 - [ ] TypeScript types are correct
 - [ ] Accessibility requirements documented
-- [ ] Testing examples provided
+- [ ] Testing section has `{{docs-tests:}}` injection token
+- [ ] Companion `.docs.spec.tsx` file created with test sections
+- [ ] Tests pass when run with `pnpm test:unit`
 
 ### Structure Checklist
 
@@ -286,12 +366,15 @@ After generating the file, run validation checks:
 ### Code Example Checklist
 
 - [ ] All interactive examples use `jsx-live-dev`
-- [ ] All type/test examples use `tsx`
+- [ ] All type examples use `tsx`
 - [ ] Examples follow `const App = () => { }` pattern
 - [ ] State declarations use prop type inference pattern
 - [ ] Controlled examples include state display with Text component
-- [ ] Test examples use `userEvent.setup()` pattern
-- [ ] Portal/popover tests use `waitFor` and document queries
+- [ ] Test examples in `.docs.spec.tsx` file (not in MDX)
+- [ ] Tests wrap every `render()` with `<NimbusProvider>`
+- [ ] Tests use `vi.fn()` for mocks (not `jest.fn()`)
+- [ ] Tests use `userEvent.setup()` for interactions
+- [ ] Portal/popover tests use `waitFor` with document queries
 
 ### Link Checklist
 
@@ -312,12 +395,19 @@ Provide a final summary:
 ````markdown
 ## Documentation Created
 
-**Component**: {ComponentName} **Type**: [Base Component / Field Pattern]
-**File**: {full-path-to-file} **Size**: {file size in lines}
+**Component**: {ComponentName}
+**Type**: [Base Component / Field Pattern]
+**Files Created**:
+- `.dev.mdx`: {full-path-to-dev-mdx}
+- `.docs.spec.tsx`: {full-path-to-docs-spec}
 
 ### Sections Included
 
-- [List all sections included]
+- [List all sections included in .dev.mdx]
+
+### Test Sections Created
+
+- [List all test sections in .docs.spec.tsx with @docs-section IDs]
 
 ### Key Features Documented
 
@@ -325,20 +415,26 @@ Provide a final summary:
 
 ### Code Examples
 
-- Total interactive examples: X
-- Total test examples: Y
+- Total interactive examples (jsx-live-dev): X
+- Total test sections (in .docs.spec.tsx): Y
+- Total test cases: Z
 
 ### Next Steps
 
 1. Review the generated documentation
-2. Test all interactive examples in the docs site
-3. Update the Storybook link once available
-4. Add any component-specific advanced patterns
-5. Review with the team before publishing
+2. Run tests: `pnpm test:unit {component-name}.docs.spec.tsx`
+3. Build docs: `pnpm build:docs`
+4. Test all interactive examples in the docs site
+5. Update the Storybook link once available
+6. Add any component-specific advanced patterns
+7. Review with the team before publishing
 
 ### Useful Commands
 
 ```bash
+# Run documentation tests
+pnpm test:unit {component-name}.docs.spec.tsx
+
 # Start docs site to preview
 pnpm start:docs
 
