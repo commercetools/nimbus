@@ -252,45 +252,7 @@ const App = () => {
 
 These examples demonstrate how to test your implementation when using ProgressBar in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
 
-### Basic rendering tests
-
-Verify the component renders with the correct role and label:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { ProgressBar } from '@commercetools/nimbus';
-
-describe('ProgressBar', () => {
-  it('renders with correct accessibility attributes', () => {
-    render(<ProgressBar value={50} label="Loading" />);
-
-    const progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toBeInTheDocument();
-    expect(progressBar).toHaveAttribute('aria-label', 'Loading');
-    expect(progressBar).toHaveAttribute('aria-valuenow', '50');
-  });
-});
-```
-
-### Testing dynamic updates
-
-Test that the progress bar reflects value changes:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { ProgressBar } from '@commercetools/nimbus';
-
-describe('ProgressBar updates', () => {
-  it('updates aria-valuenow when value prop changes', () => {
-    const { rerender } = render(<ProgressBar value={0} label="Progress" />);
-
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
-
-    rerender(<ProgressBar value={50} label="Progress" />);
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
-  });
-});
-```
+{{docs-tests: progress-bar.docs.spec.tsx}}
 
 ## Resources
 
