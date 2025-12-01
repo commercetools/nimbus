@@ -154,6 +154,110 @@ const App = () => (
 - Users can type any decimal value
 - Use with `minValue={0}` for positive-only numbers (prices, quantities)
 
+### Format options
+
+Customize number display using `formatOptions`, which leverages the [Intl.NumberFormat API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat) for sophisticated formatting:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Currency (USD):</Text>
+      <NumberInput
+        defaultValue={1234.56}
+        formatOptions={{
+          style: 'currency',
+          currency: 'USD'
+        }}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Currency (EUR):</Text>
+      <NumberInput
+        defaultValue={1234.56}
+        formatOptions={{
+          style: 'currency',
+          currency: 'EUR',
+          currencyDisplay: 'code'
+        }}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Percentage:</Text>
+      <NumberInput
+        defaultValue={0.85}
+        step={0.01}
+        minValue={0}
+        maxValue={1}
+        formatOptions={{
+          style: 'percent',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Unit (kilograms):</Text>
+      <NumberInput
+        defaultValue={45.5}
+        step={0.1}
+        formatOptions={{
+          style: 'unit',
+          unit: 'kilogram',
+          unitDisplay: 'short'
+        }}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Compact notation (millions):</Text>
+      <NumberInput
+        defaultValue={1500000}
+        step={100000}
+        formatOptions={{
+          notation: 'compact',
+          compactDisplay: 'short'
+        }}
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">Scientific notation:</Text>
+      <NumberInput
+        defaultValue={12345}
+        step={1000}
+        formatOptions={{
+          notation: 'scientific',
+          maximumFractionDigits: 2
+        }}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Common format options:**
+- **Currency**: `{ style: 'currency', currency: 'USD' }` - Formats as money
+- **Percentage**: `{ style: 'percent' }` - Formats decimals as percentages (0.85 → 85%)
+- **Unit**: `{ style: 'unit', unit: 'kilogram' }` - Adds unit labels
+- **Compact**: `{ notation: 'compact' }` - Short form (1,500,000 → 1.5M)
+- **Scientific**: `{ notation: 'scientific' }` - Exponential notation (12345 → 1.23E4)
+
+**Precision control:**
+- `minimumFractionDigits` - Minimum decimal places
+- `maximumFractionDigits` - Maximum decimal places
+- `minimumSignificantDigits` - Minimum significant digits
+- `maximumSignificantDigits` - Maximum significant digits
+
+**Behavioral notes:**
+- Format options affect display only, not the underlying numeric value
+- Parsing automatically handles formatted input
+- Combine with `step` for appropriate increment/decrement amounts
+- Format options work with locale formatting (see Locale formatting section)
+
 ### Disabled state
 
 Disable input interaction with the `isDisabled` prop:
