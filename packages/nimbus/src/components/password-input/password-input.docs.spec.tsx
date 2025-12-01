@@ -165,7 +165,7 @@ describe("PasswordInput - Controlled mode", () => {
       <NimbusProvider>
         <PasswordInput
           value={currentValue}
-          onChange={(value) => {
+          onChange={(value: string) => {
             currentValue = value;
           }}
           aria-label="Password"
@@ -183,7 +183,7 @@ describe("PasswordInput - Controlled mode", () => {
       <NimbusProvider>
         <PasswordInput
           value=""
-          onChange={(value) => {
+          onChange={(value: string) => {
             currentValue = value;
           }}
           aria-label="Password"
