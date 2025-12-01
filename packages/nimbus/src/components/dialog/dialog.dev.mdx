@@ -1,0 +1,989 @@
+---
+title: Dialog Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Dialog, type DialogRootProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Dialog component uses a compound component pattern. You must wrap all parts in `Dialog.Root`. The component handles focus management, keyboard navigation, and portal rendering automatically.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Dialog Title</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        <Text>This is the dialog content. It automatically handles focus management and keyboard navigation.</Text>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button slot="close" variant="outline">Cancel</Button>
+        <Button variant="solid">Confirm</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+## Usage examples
+
+### Placement options
+
+The `placement` prop on `Dialog.Root` controls where the dialog appears in the viewport. Three options are available: `center` (default), `top`, and `bottom`.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" flexWrap="wrap">
+    <Dialog.Root placement="center">
+      <Dialog.Trigger>Center (Default)</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Center Placement</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>The dialog is centered vertically and horizontally in the viewport.</Text>
+        </Dialog.Body>
+      </Dialog.Content>
+    </Dialog.Root>
+
+    <Dialog.Root placement="top">
+      <Dialog.Trigger>Top Placement</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Top Placement</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>The dialog appears near the top of the viewport with margin spacing.</Text>
+        </Dialog.Body>
+      </Dialog.Content>
+    </Dialog.Root>
+
+    <Dialog.Root placement="bottom">
+      <Dialog.Trigger>Bottom Placement</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Bottom Placement</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>The dialog appears near the bottom of the viewport with margin spacing.</Text>
+        </Dialog.Body>
+      </Dialog.Content>
+    </Dialog.Root>
+  </Stack>
+)
+```
+
+### Scroll behavior
+
+The `scrollBehavior` prop determines how overflow content is handled. Use `outside` (default) for page-level scrolling or `inside` to confine scrolling to the dialog body.
+
+```jsx-live-dev
+const App = () => {
+  const longContent = Array.from({ length: 60 }, (_, i) => (
+    <Text key={i}>Line {i + 1} of long content that will cause overflow.</Text>
+  ));
+
+  return (
+    <Stack direction="row" gap="400">
+      <Dialog.Root scrollBehavior="outside">
+        <Dialog.Trigger>Outside (Default)</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Scroll Outside</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack direction="column" gap="200">
+              <Text fontWeight="600">The entire modal scrolls when content overflows.</Text>
+              {longContent}
+            </Stack>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      <Dialog.Root scrollBehavior="inside">
+        <Dialog.Trigger>Inside Body</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Scroll Inside Body</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack direction="column" gap="200">
+              <Text fontWeight="600">Only the body scrolls; header and footer remain fixed.</Text>
+              {longContent}
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close">Close</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Stack>
+  );
+}
+```
+
+### Uncontrolled mode
+
+The dialog manages its own open/close state internally without requiring external state management. Use the `defaultOpen` prop if you need the dialog to start open on mount (though this is rarely needed in practice).
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Uncontrolled Dialog</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        <Text>
+          This dialog manages its own state. The parent component doesn't need to track whether it's open or closed.
+          You can set defaultOpen={'{true}'} on Dialog.Root if you need it to start open on mount.
+        </Text>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button slot="close" variant="outline">Cancel</Button>
+        <Button slot="close">Save</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+### Controlled mode
+
+Use `isOpen` and `onOpenChange` to control the dialog state externally. This is essential when you need to open the dialog programmatically or track state changes.
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Button onPress={() => setIsOpen(true)}>Open Dialog</Button>
+
+      <Text>Dialog state: <Code>{isOpen ? 'Open' : 'Closed'}</Code></Text>
+
+      <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Controlled Dialog</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>This dialog's state is controlled externally.</Text>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close" variant="outline">Cancel</Button>
+            <Button onPress={() => setIsOpen(false)}>Confirm</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Stack>
+  );
+}
+```
+
+### Dismissal behavior
+
+Control how users can close the dialog using three props: `isDismissable`, `isKeyboardDismissDisabled`, and `shouldCloseOnInteractOutside`. These work together to create the right dismissal behavior for your use case.
+
+#### Default
+
+By default, dialogs can only be closed with the Escape key or close buttons. Clicking the backdrop does nothing. This is the standard behavior for most dialogs.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>Default Behavior</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Default Dismissal</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        <Stack direction="column" gap="200">
+          <Text fontWeight="600">Can be closed by:</Text>
+          <Text>✓ Escape key</Text>
+          <Text>✓ Close button</Text>
+          <Text>✗ Clicking backdrop (does nothing)</Text>
+        </Stack>
+      </Dialog.Body>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+#### Dismissable Dialogs
+
+Use `isDismissable={true}` for non-critical dialogs like notifications or informational content where users should be able to quickly dismiss by clicking outside.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root isDismissable>
+    <Dialog.Trigger>Dismissible Notification</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Quick Notification</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        <Stack direction="column" gap="200">
+          <Text>Use isDismissable={'{true}'} for non-critical dialogs.</Text>
+          <Text fontWeight="600">Can be closed by:</Text>
+          <Text>✓ Escape key</Text>
+          <Text>✓ Close button</Text>
+          <Text>✓ Clicking backdrop</Text>
+        </Stack>
+      </Dialog.Body>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+#### Critical Confirmations
+
+Use `isKeyboardDismissDisabled={true}` for critical confirmations where you need to ensure users explicitly choose an action rather than accidentally dismissing.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root isKeyboardDismissDisabled>
+    <Dialog.Trigger>Critical Action</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Confirm Deletion</Dialog.Title>
+      </Dialog.Header>
+      <Dialog.Body>
+        <Stack direction="column" gap="200">
+          <Text>Use isKeyboardDismissDisabled={'{true}'} for critical confirmations.</Text>
+          <Text fontWeight="600">Can be closed by:</Text>
+          <Text>✓ Close button only</Text>
+          <Text>✗ Escape key (disabled)</Text>
+          <Text>✗ Clicking backdrop (does nothing)</Text>
+        </Stack>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button slot="close" variant="outline">Cancel</Button>
+        <Button colorPalette="critical">Delete</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+#### Conditional dismissal
+
+Combine `isDismissable` with `isKeyboardDismissDisabled` &  `shouldCloseOnInteractOutside` to implement custom logic, such as protecting unsaved form changes.
+This example prevents backdrop and keyboard dismissal when there are unsaved changes.
+
+```jsx-live-dev
+const App = () => {
+  const [formData, setFormData] = useState('');
+  const [lastAction, setLastAction] = useState('');
+
+  const hasUnsavedChanges = formData.length > 0;
+
+  const canBeClosed = () => {
+    if (hasUnsavedChanges) {
+      setLastAction('Prevented - unsaved changes detected');
+      alert('Unsaved changes detected');
+      return false;
+    }
+    setLastAction('Allowed - no unsaved changes');
+    return true;
+  }
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm" color="fg.muted">
+        Last dismissal attempt: {lastAction || 'None'}
+      </Text>
+
+      <Dialog.Root
+        isDismissable
+        isKeyboardDismissDisabled={hasUnsavedChanges}
+        shouldCloseOnInteractOutside={canBeClosed}
+      >
+        <Dialog.Trigger>Form with Protection</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Edit Profile</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack direction="column" gap="400">
+              <Text>
+                Combines isDismissable with shouldCloseOnInteractOutside to protect unsaved work.
+                Try typing, then clicking outside.
+              </Text>
+              <TextInput
+                placeholder="Your name"
+                value={formData}
+                onChange={(value) => setFormData(value)}
+              />
+              <Text fontSize="sm">
+                Unsaved changes: <Code>{hasUnsavedChanges ? 'Yes' : 'No'}</Code>
+              </Text>
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button
+              slot="close"
+              variant="outline"
+              onPress={() => setFormData('')}
+            >
+              Cancel
+            </Button>
+            <Button onPress={() => {
+              setFormData('');
+              setLastAction('Saved and closed');
+            }}>
+              Save
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Stack>
+  );
+}
+```
+
+### Flexible composition
+
+The dialog parts are composable. You can omit optional parts based on your needs. These real-world examples demonstrate when and why to use different compositions.
+
+#### Order cancellation with full context
+
+Use the complete structure (header, body, footer) when users need detailed information before making a decision. This e-commerce example shows refund implications before confirming cancellation.
+
+```jsx-live-dev
+const App = () => {
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
+
+  const handleCancel = () => {
+    setIsCancelling(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsCancelling(false);
+      setIsOpen(false);
+      alert('Order #12345 has been cancelled. Refund will be processed in 3-5 business days.');
+    }, 1500);
+  };
+
+  return (
+    <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger>Cancel Order</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Cancel Order #12345</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Stack direction="column" gap="400">
+            <Text>
+              Are you sure you want to cancel this order? This action will:
+            </Text>
+            <Stack direction="column" gap="200" paddingLeft="400">
+              <Text>• Process a full refund to your original payment method</Text>
+              <Text>• Stop the shipment if it hasn't been dispatched</Text>
+              <Text>• Send a cancellation confirmation email</Text>
+            </Stack>
+            <Text fontSize="sm" color="fg.muted">
+              Refunds typically take 3-5 business days to appear in your account.
+            </Text>
+          </Stack>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button slot="close" variant="outline" isDisabled={isCancelling}>
+            Keep Order
+          </Button>
+          <Button
+            colorPalette="critical"
+            onPress={handleCancel}
+            isLoading={isCancelling}
+          >
+            Cancel Order
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}
+```
+
+#### Feature announcement without footer
+
+Omit the footer when actions are embedded in the body content or when only dismissal is needed. This pattern works well for informational dialogs with inline calls-to-action.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>What's New</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>New Dashboard Available</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+        <Stack direction="column" gap="400">
+          <Text>
+            We've redesigned the analytics dashboard with enhanced data visualization,
+            real-time updates, and customizable widgets.
+          </Text>
+          <Stack direction="column" gap="200">
+            <Text fontWeight="600">Key improvements:</Text>
+            <Text>• Interactive charts with drill-down capabilities</Text>
+            <Text>• Custom date range filtering</Text>
+            <Text>• Export reports in multiple formats</Text>
+          </Stack>
+          <Button variant="solid" width="full">
+            Explore New Dashboard
+          </Button>
+        </Stack>
+      </Dialog.Body>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+#### Processing state without actions
+
+Omit the footer entirely when showing non-interruptible processes. Users can't take action until the operation completes, so only the header and progress information are needed.
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
+  const [progress, setProgress] = useState(0);
+  const [deletedCount, setDeletedCount] = useState(0);
+  const totalItems = 247;
+
+  const startDeletion = () => {
+    setIsOpen(true);
+    setProgress(0);
+    setDeletedCount(0);
+
+    // Simulate progressive deletion
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = prev + 5;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setIsOpen(false);
+            alert(`Successfully deleted ${totalItems} products`);
+          }, 500);
+          return 100;
+        }
+        return newProgress;
+      });
+      setDeletedCount((prev) => Math.min(prev + 12, totalItems));
+    }, 200);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Button onPress={startDeletion}>Delete 247 Products</Button>
+      <Dialog.Root
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled
+      >
+        <Dialog.Content width="sm">
+          <Dialog.Header>
+            <Dialog.Title>Deleting Products</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack direction="column" gap="400">
+              <Text>
+                Please wait while we delete the selected products. This may take a moment.
+              </Text>
+              <Stack direction="column" gap="200">
+                <Text fontSize="sm" color="fg.muted">
+                  {deletedCount} of {totalItems} products deleted
+                </Text>
+                <Box
+                  width="full"
+                  height="8px"
+                  backgroundColor="neutral.3"
+                  borderRadius="full"
+                  overflow="hidden"
+                >
+                  <Box
+                    height="full"
+                    width={`${progress}%`}
+                    backgroundColor="primary.9"
+                    transition="width 0.2s"
+                  />
+                </Box>
+              </Stack>
+            </Stack>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The `Dialog` component is built with React Aria Components and follows WCAG 2.1 AA guidelines:
+
+- **Role**: The dialog content has `role="dialog"` and is properly labeled using either `Dialog.Title` or an `aria-label` prop on `Dialog.Root`.
+- **Focus Management**: When opened, focus moves to the first focusable element inside the dialog. When closed, focus returns to the trigger element.
+- **Keyboard Navigation**:
+  - `Escape` - Closes the dialog (unless `isKeyboardDismissDisabled` is true)
+  - `Tab` - Moves focus through interactive elements within the dialog
+  - Focus is trapped within the dialog while open
+- **Labeling**: The `Dialog.Title` component automatically provides the accessible name. If you don't use `Dialog.Title`, provide an `aria-label` on `Dialog.Root`.
+- **Backdrop**: Clicking outside the dialog closes it by default (controlled by `isDismissable`).
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "confirm-delete-dialog";
+
+export const DeleteConfirmation = () => (
+  <Dialog.Root id={PERSISTENT_ID}>
+    <Dialog.Trigger>Delete Item</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Title>Confirm Deletion</Dialog.Title>
+    </Dialog.Content>
+  </Dialog.Root>
+);
+```
+
+### Composition constraints
+
+The `Dialog` component uses specific layout slots for proper rendering:
+
+- Keep sub-components (`Header`, `Body`, `Footer`, `Title`, `CloseTrigger`) as direct children of `Dialog.Content`.
+- `Dialog.Title` should be placed inside `Dialog.Header` for proper layout.
+- `Dialog.CloseTrigger` can be placed anywhere but is typically in `Dialog.Header`.
+- You can use layout components *inside* `Dialog.Body` or `Dialog.Footer` to organize content within those sections.
+- The `Dialog.Content` is portaled to the document body by React Aria, so it renders outside your component tree.
+
+## Common patterns
+
+### Confirmation dialogs
+
+Use dialogs to confirm destructive actions. Make the intent clear with appropriate button variants.
+
+```jsx-live-dev
+const App = () => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
+
+  const handleDelete = () => {
+    setIsDeleting(true);
+    // Simulate async delete operation
+    setTimeout(() => {
+      setIsDeleting(false);
+      setIsOpen(false);
+      alert('Item deleted successfully');
+    }, 1500);
+  };
+
+  return (
+    <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger>Delete Item</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Confirm Deletion</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>
+            Are you sure you want to delete this item? This action cannot be undone.
+          </Text>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button slot="close" variant="outline" isDisabled={isDeleting}>
+            Cancel
+          </Button>
+          <Button
+            colorPalette="critical"
+            onPress={handleDelete}
+            isLoading={isDeleting}
+          >
+            Delete
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}
+```
+
+### Form dialogs
+
+Dialogs can contain forms for data entry. Use controlled mode to handle form submission and validation.
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    // Simulate async save
+    setTimeout(() => {
+      setIsSaving(false);
+      setIsOpen(false);
+      alert(`Saved: ${formData.name} (${formData.email})`);
+      setFormData({ name: '', email: '' });
+    }, 1500);
+  };
+
+  return (
+    <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger>Add User</Dialog.Trigger>
+      <Dialog.Content>
+        <form onSubmit={handleSubmit}>
+          <Dialog.Header>
+            <Dialog.Title>Create New User</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Stack direction="column" gap="400">
+              <FormField.Root>
+                <FormField.Label>Name</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    value={formData.name}
+                    onChange={(value) => setFormData({ ...formData, name: value })}
+                    required
+                  />
+                </FormField.Input>
+              </FormField.Root>
+
+              <FormField.Root>
+                <FormField.Label>Email</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    type="email"
+                    value={formData.email}
+                    onChange={(value) => setFormData({ ...formData, email: value })}
+                    required
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button
+              slot="close"
+              variant="outline"
+              isDisabled={isSaving}
+              onPress={() => setFormData({ name: '', email: '' })}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={isSaving}>
+              Create User
+            </Button>
+          </Dialog.Footer>
+        </form>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}
+```
+
+### Alert dialogs
+
+For important messages that require acknowledgment. Consider making these non-dismissable to ensure users see the message.
+
+```jsx-live-dev
+const App = () => (
+  <Dialog.Root isDismissable={false}>
+    <Dialog.Trigger>Show Alert</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>System Maintenance</Dialog.Title>
+      </Dialog.Header>
+      <Dialog.Body>
+        <Stack direction="column" gap="300">
+          <Text>
+            The system will undergo scheduled maintenance on Saturday at 2:00 AM UTC.
+            During this time, the service will be unavailable for approximately 30 minutes.
+          </Text>
+          <Text fontWeight="600">
+            Please save your work and plan accordingly.
+          </Text>
+        </Stack>
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button slot="close">I Understand</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+## API reference
+
+<PropsTable id="Dialog" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Dialog in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { Dialog } from '@commercetools/nimbus';
+
+describe('Dialog Integration', () => {
+  it('renders trigger button', () => {
+    render(
+      <Dialog.Root>
+        <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Body>Content</Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+
+    expect(screen.getByRole('button', { name: 'Open Dialog' })).toBeInTheDocument();
+  });
+});
+```
+
+### Opening and closing interaction tests
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { Dialog } from '@commercetools/nimbus';
+
+describe('Dialog Interactions', () => {
+  it('opens dialog when trigger is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog.Root>
+        <Dialog.Trigger>Open</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Title>Test Dialog</Dialog.Title>
+          <Dialog.Body>Dialog content</Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByText('Dialog content')).toBeInTheDocument();
+    });
+  });
+
+  it('closes dialog when close trigger is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog.Root>
+        <Dialog.Trigger>Open</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Title>Test Dialog</Dialog.Title>
+          <Dialog.Body>Content</Dialog.Body>
+          <Dialog.CloseTrigger />
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+
+    // Open dialog
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+
+    // Close dialog
+    await user.click(screen.getByRole('button', { name: 'Close dialog' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+  });
+});
+```
+
+### Controlled mode tests
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { useState } from 'react';
+import { Dialog, Button } from '@commercetools/nimbus';
+
+const ControlledDialog = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open External</Button>
+      <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Dialog.Content>
+          <Dialog.Title>Controlled Dialog</Dialog.Title>
+          <Dialog.Body>Content</Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    </>
+  );
+};
+
+describe('Controlled Dialog', () => {
+  it('opens dialog via external control', async () => {
+    const user = userEvent.setup();
+    render(<ControlledDialog />);
+
+    await user.click(screen.getByRole('button', { name: 'Open External' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### Form submission tests
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { Dialog, TextInput, Button } from '@commercetools/nimbus';
+
+const FormDialog = ({ onSubmit }: { onSubmit: (data: { name: string }) => void }) => {
+  const [name, setName] = useState('');
+
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Add User</Dialog.Trigger>
+      <Dialog.Content>
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit({ name }); }}>
+          <Dialog.Header>
+            <Dialog.Title>Create User</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
+            <TextInput
+              placeholder="Name"
+              value={name}
+              onChange={(value) => setName(value)}
+            />
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button type="submit">Create</Button>
+          </Dialog.Footer>
+        </form>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+};
+
+describe('Form Dialog', () => {
+  it('submits form with entered data', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+
+    render(<FormDialog onSubmit={handleSubmit} />);
+
+    // Open dialog
+    await user.click(screen.getByRole('button', { name: 'Add User' }));
+    await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+
+    // Fill form
+    await user.type(screen.getByPlaceholderText('Name'), 'John Doe');
+
+    // Submit
+    await user.click(screen.getByRole('button', { name: 'Create' }));
+
+    expect(handleSubmit).toHaveBeenCalledWith({ name: 'John Doe' });
+  });
+});
+```
+
+### Keyboard navigation tests
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { Dialog } from '@commercetools/nimbus';
+
+describe('Dialog Keyboard Navigation', () => {
+  it('closes dialog when Escape is pressed', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog.Root>
+        <Dialog.Trigger>Open</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Title>Test Dialog</Dialog.Title>
+          <Dialog.Body>Content</Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+
+    // Open dialog
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+
+    // Press Escape
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+  });
+
+  it('does not close when Escape is disabled', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Dialog.Root isKeyboardDismissDisabled>
+        <Dialog.Trigger>Open</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Title>Test Dialog</Dialog.Title>
+          <Dialog.Body>Content</Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+
+    await user.keyboard('{Escape}');
+
+    // Dialog should still be open
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Dialog Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-overlay-dialog--docs)
+- [React Aria Dialog Documentation](https://react-spectrum.adobe.com/react-aria/Dialog.html)
+- [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)

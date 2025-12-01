@@ -45,22 +45,10 @@
       "value": "Clear selection"
     }
   ],
-  "Nimbus.ComboBox.comboboxDialog": [
-    {
-      "type": 0,
-      "value": "Combobox dialog"
-    }
-  ],
-  "Nimbus.ComboBox.filterOptions": [
-    {
-      "type": 0,
-      "value": "Filter combobox options"
-    }
-  ],
   "Nimbus.ComboBox.options": [
     {
       "type": 0,
-      "value": "Combobox options"
+      "value": "Options menu"
     }
   ],
   "Nimbus.ComboBox.selectedValues": [
@@ -69,10 +57,10 @@
       "value": "Selected values"
     }
   ],
-  "Nimbus.ComboBox.toggleCombobox": [
+  "Nimbus.ComboBox.toggleOptions": [
     {
       "type": 0,
-      "value": "Toggle combobox"
+      "value": "Toggle options"
     }
   ],
   "Nimbus.DataTable.comfortable": [

@@ -1,0 +1,719 @@
+---
+title: TagGroup Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { TagGroup } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The TagGroup component is a compound component that displays a collection of tags. It consists of three parts: `TagGroup.Root`, `TagGroup.TagList`, and `TagGroup.Tag`:
+
+```jsx-live-dev
+const App = () => (
+  <TagGroup.Root aria-label="Categories">
+    <TagGroup.TagList>
+      <TagGroup.Tag>Electronics</TagGroup.Tag>
+      <TagGroup.Tag>Clothing</TagGroup.Tag>
+      <TagGroup.Tag>Home & Garden</TagGroup.Tag>
+    </TagGroup.TagList>
+  </TagGroup.Root>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `sm`, `md`, and `lg` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TagGroup.Root size="sm" aria-label="Small tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag>Small</TagGroup.Tag>
+        <TagGroup.Tag>Compact</TagGroup.Tag>
+        <TagGroup.Tag>Dense</TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+
+    <TagGroup.Root size="md" aria-label="Medium tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag>Medium</TagGroup.Tag>
+        <TagGroup.Tag>Standard</TagGroup.Tag>
+        <TagGroup.Tag>Default</TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+
+    <TagGroup.Root size="lg" aria-label="Large tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag>Large</TagGroup.Tag>
+        <TagGroup.Tag>Comfortable</TagGroup.Tag>
+        <TagGroup.Tag>Spacious</TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  </Stack>
+)
+```
+
+### Dynamic collections with items
+
+Use the `items` prop with a render function for dynamic data:
+
+```jsx-live-dev
+const App = () => {
+  const categories = [
+    { id: 'electronics', name: 'Electronics' },
+    { id: 'clothing', name: 'Clothing' },
+    { id: 'home', name: 'Home & Garden' },
+    { id: 'sports', name: 'Sports & Outdoors' },
+  ];
+
+  return (
+    <TagGroup.Root aria-label="Product categories">
+      <TagGroup.TagList items={categories}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  );
+}
+```
+
+The `items` prop accepts an array of objects, and the render function receives each item as an argument. This pattern is useful when working with dynamic data from APIs or state management.
+
+### Color palette
+
+Customize tag colors by setting the `colorPalette` prop on individual `TagGroup.Tag` components. This prop accepts semantic colors (primary, info, critical, warning, positive) or system colors (blue, green, red, purple, etc.) to establish the color context for that tag.
+
+Note that the `colorPalette` prop selects which palette to use, but doesn't immediately change the visuals. You must also reference color tokens (e.g. `backgroundColor="colorPalette.11"`, `color="colorPalette.6"`) to actually apply the intended colors.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TagGroup.Root aria-label="Primary tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag colorPalette="primary" backgroundColor="colorPalette.11" color="colorPalette.contrast">
+          Primary
+        </TagGroup.Tag>
+        <TagGroup.Tag colorPalette="primary" backgroundColor="colorPalette.3">
+          Default
+        </TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+
+    <TagGroup.Root aria-label="Blue tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag colorPalette="blue" backgroundColor="colorPalette.9" color="colorPalette.contrast">
+          Blue
+        </TagGroup.Tag>
+        <TagGroup.Tag colorPalette="blue" backgroundColor="colorPalette.3">
+          Information
+        </TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+
+    <TagGroup.Root aria-label="Red tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag colorPalette="red" backgroundColor="colorPalette.9" color="colorPalette.contrast">
+          Red
+        </TagGroup.Tag>
+        <TagGroup.Tag colorPalette="critical" backgroundColor="colorPalette.3" color="colorPalette.11">
+          Error
+        </TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+
+    <TagGroup.Root aria-label="Green tags">
+      <TagGroup.TagList>
+        <TagGroup.Tag colorPalette="green" backgroundColor="colorPalette.8" color="colorPalette.12">
+          Green
+        </TagGroup.Tag>
+        <TagGroup.Tag colorPalette="green" backgroundColor="colorPalette.4" color="colorPalette.11">
+          Accent
+        </TagGroup.Tag>
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  </Stack>
+)
+
+```
+> [!TIP]\
+> See the [Colors documentation](/home/design-tokens/colors) for detailed information about color tokens and how to use them effectively.
+
+### Removable tags
+
+Enable tag removal by providing an `onRemove` handler. Users can remove tags by clicking the remove button or pressing Backspace:
+
+```jsx-live-dev
+const App = () => {
+  const [tags, setTags] = useState([
+    { id: 'react', name: 'React' },
+    { id: 'typescript', name: 'TypeScript' },
+    { id: 'nodejs', name: 'Node.js' },
+    { id: 'graphql', name: 'GraphQL' },
+  ]);
+
+  const handleRemove = (keys) => {
+    setTags(tags.filter(tag => !keys.has(tag.id)));
+  };
+
+  return (
+    <Stack direction="column" gap="300">
+      <TagGroup.Root 
+        aria-label="Tech stack" 
+        onRemove={handleRemove}
+      >
+        <TagGroup.TagList items={tags}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <Text fontSize="sm" color="fg.muted">
+        {tags.length} {tags.length === 1 ? 'tag' : 'tags'} remaining
+      </Text>
+    </Stack>
+  );
+}
+```
+
+**Keyboard interaction**: When focused on a tag, press `Backspace` or `Delete` to remove it.
+
+### Single selection
+
+Use `selectionMode="single"` to allow selecting one tag at a time:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set());
+
+  const priorities = [
+    { id: 'low', name: 'Low' },
+    { id: 'medium', name: 'Medium' },
+    { id: 'high', name: 'High' },
+    { id: 'urgent', name: 'Urgent' },
+  ];
+
+  return (
+    <Stack direction="column" gap="300">
+      <TagGroup.Root
+        aria-label="Select priority"
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <TagGroup.TagList items={priorities}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <Text fontSize="sm">
+        Selected: {selected.size > 0 ? [...selected][0] : 'None'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Multiple selection
+
+Use `selectionMode="multiple"` to allow selecting multiple tags:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set(['electronics']));
+
+  const filters = [
+    { id: 'electronics', name: 'Electronics' },
+    { id: 'clothing', name: 'Clothing' },
+    { id: 'home', name: 'Home & Garden' },
+    { id: 'sports', name: 'Sports' },
+    { id: 'books', name: 'Books' },
+  ];
+
+  return (
+    <Stack direction="column" gap="300">
+      <TagGroup.Root
+        aria-label="Filter categories"
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <TagGroup.TagList items={filters}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <Text fontSize="sm">
+        {selected.size} {selected.size === 1 ? 'filter' : 'filters'} selected
+      </Text>
+    </Stack>
+  );
+}
+```
+
+**Note**: When using `selectionMode="single"` or `selectionMode="multiple"`, tags cannot be removed. These modes are mutually exclusive with the removal functionality.
+
+### Disabled state
+
+Disable the entire tag group or individual tags:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Disabled group:</Text>
+      <TagGroup.Root aria-label="Disabled tags" isDisabled>
+        <TagGroup.TagList>
+          <TagGroup.Tag>Disabled</TagGroup.Tag>
+          <TagGroup.Tag>Not interactive</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Individual disabled tags:</Text>
+      <TagGroup.Root aria-label="Mixed tags" selectionMode="multiple">
+        <TagGroup.TagList>
+          <TagGroup.Tag>Available</TagGroup.Tag>
+          <TagGroup.Tag isDisabled>Disabled</TagGroup.Tag>
+          <TagGroup.Tag>Available</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    </Stack>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The TagGroup component is built on React Aria's TagGroup, which provides comprehensive accessibility support. However, you must always provide an accessible label:
+
+**Provide a label** using one of these methods:
+
+- Using a visible label with `aria-labelledby`:
+
+```tsx
+<Text id="tag-label">Categories</Text>
+<TagGroup.Root aria-labelledby="tag-label">
+  <TagGroup.TagList>
+    <TagGroup.Tag>Electronics</TagGroup.Tag>
+  </TagGroup.TagList>
+</TagGroup.Root>
+```
+
+- Using `aria-label` for a non-visible label:
+
+```tsx
+<TagGroup.Root aria-label="Product categories">
+  <TagGroup.TagList>
+    <TagGroup.Tag>Electronics</TagGroup.Tag>
+  </TagGroup.TagList>
+</TagGroup.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-tag-group";
+
+export const Example = () => (
+  <TagGroup.Root id={PERSISTENT_ID} aria-label="Categories">
+    <TagGroup.TagList>
+      <TagGroup.Tag>Electronics</TagGroup.Tag>
+    </TagGroup.TagList>
+  </TagGroup.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab`: Moves focus into and out of the tag group
+- `Arrow Left` / `Arrow Right`: Navigates between tags within the group
+- `Enter` / `Space`: Selects the focused tag (when selection mode is enabled)
+- `Backspace` / `Delete`: Removes the focused tag (when `onRemove` is provided)
+- Focus wraps from the last tag to the first and vice versa
+
+## API reference
+
+### TagGroup
+
+<PropsTable id="TagGroup" />
+
+## Common patterns
+
+### Filter chips with removal
+
+Display active filters that can be removed:
+
+```jsx-live-dev
+const App = () => {
+  const [filters, setFilters] = useState([
+    { id: 'price-low', name: 'Price: Low to High', category: 'sort' },
+    { id: 'instock', name: 'In Stock', category: 'availability' },
+    { id: 'brand-apple', name: 'Apple', category: 'brand' },
+  ]);
+
+  const handleRemove = (keys) => {
+    setFilters(filters.filter(f => !keys.has(f.id)));
+  };
+
+  const handleClearAll = () => {
+    setFilters([]);
+  };
+
+  return (
+    <Stack direction="column" gap="300">
+      <Stack direction="row" justify="space-between" align="center">
+        <Text fontSize="sm" fontWeight="semibold">Active Filters</Text>
+        {filters.length > 0 && (
+          <Button size="sm" variant="ghost" onPress={handleClearAll}>
+            Clear all
+          </Button>
+        )}
+      </Stack>
+      {filters.length > 0 ? (
+        <TagGroup.Root 
+          aria-label="Active filters" 
+          onRemove={handleRemove}
+          colorPalette="blue"
+        >
+          <TagGroup.TagList items={filters}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      ) : (
+        <Text fontSize="sm" color="fg.muted">No filters applied</Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Category selector
+
+Use single selection for choosing one category:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set(['all']));
+  const [itemCount, setItemCount] = useState(124);
+
+  const categories = [
+    { id: 'all', name: 'All Products', count: 124 },
+    { id: 'new', name: 'New Arrivals', count: 18 },
+    { id: 'sale', name: 'On Sale', count: 32 },
+    { id: 'featured', name: 'Featured', count: 12 },
+  ];
+
+  const handleSelectionChange = (keys) => {
+    setSelected(keys);
+    const selectedId = [...keys][0];
+    const category = categories.find(c => c.id === selectedId);
+    setItemCount(category?.count || 0);
+  };
+
+  return (
+    <Stack direction="column" gap="300">
+      <TagGroup.Root
+        aria-label="Product categories"
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={handleSelectionChange}
+      >
+        <TagGroup.TagList items={categories}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <Text fontSize="sm" color="fg.muted">
+        Showing {itemCount} products
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Multi-select filter
+
+Allow multiple selections for filtering:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedSizes, setSelectedSizes] = useState(new Set());
+  const [selectedColors, setSelectedColors] = useState(new Set());
+
+  const sizes = [
+    { id: 'xs', name: 'XS' },
+    { id: 's', name: 'S' },
+    { id: 'm', name: 'M' },
+    { id: 'l', name: 'L' },
+    { id: 'xl', name: 'XL' },
+  ];
+
+  const colors = [
+    { id: 'black', name: 'Black' },
+    { id: 'white', name: 'White' },
+    { id: 'blue', name: 'Blue' },
+    { id: 'red', name: 'Red' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">Size</Text>
+        <TagGroup.Root
+          aria-label="Select sizes"
+          selectionMode="multiple"
+          selectedKeys={selectedSizes}
+          onSelectionChange={setSelectedSizes}
+          size="sm"
+        >
+          <TagGroup.TagList items={sizes}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">Color</Text>
+        <TagGroup.Root
+          aria-label="Select colors"
+          selectionMode="multiple"
+          selectedKeys={selectedColors}
+          onSelectionChange={setSelectedColors}
+          size="sm"
+          colorPalette="purple"
+        >
+          <TagGroup.TagList items={colors}>
+            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      </Stack>
+
+      <Text fontSize="sm" color="fg.muted">
+        Filters: {selectedSizes.size + selectedColors.size} selected
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using TagGroup in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected tags:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { TagGroup } from '@commercetools/nimbus';
+
+describe('TagGroup', () => {
+  it('renders tags with content', () => {
+    render(
+      <TagGroup.Root aria-label="Categories">
+        <TagGroup.TagList>
+          <TagGroup.Tag>Electronics</TagGroup.Tag>
+          <TagGroup.Tag>Clothing</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    expect(screen.getByText('Electronics')).toBeInTheDocument();
+    expect(screen.getByText('Clothing')).toBeInTheDocument();
+  });
+
+  it('renders with dynamic items', () => {
+    const items = [
+      { id: 'electronics', name: 'Electronics' },
+      { id: 'clothing', name: 'Clothing' },
+    ];
+
+    render(
+      <TagGroup.Root aria-label="Categories">
+        <TagGroup.TagList items={items}>
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    expect(screen.getByText('Electronics')).toBeInTheDocument();
+    expect(screen.getByText('Clothing')).toBeInTheDocument();
+  });
+});
+```
+
+### Selection tests
+
+Test single and multiple selection modes:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TagGroup } from '@commercetools/nimbus';
+
+describe('TagGroup selection', () => {
+  it('handles single selection', async () => {
+    const user = userEvent.setup();
+    const handleSelectionChange = jest.fn();
+
+    render(
+      <TagGroup.Root
+        aria-label="Priority"
+        selectionMode="single"
+        onSelectionChange={handleSelectionChange}
+      >
+        <TagGroup.TagList>
+          <TagGroup.Tag id="low">Low</TagGroup.Tag>
+          <TagGroup.Tag id="high">High</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    const lowTag = screen.getByText('Low');
+    await user.click(lowTag);
+
+    await waitFor(() => {
+      expect(handleSelectionChange).toHaveBeenCalled();
+      const selection = handleSelectionChange.mock.calls[0][0];
+      expect(selection.has('low')).toBe(true);
+    });
+  });
+
+  it('handles multiple selection', async () => {
+    const user = userEvent.setup();
+    const handleSelectionChange = jest.fn();
+
+    render(
+      <TagGroup.Root
+        aria-label="Filters"
+        selectionMode="multiple"
+        onSelectionChange={handleSelectionChange}
+      >
+        <TagGroup.TagList>
+          <TagGroup.Tag id="tag1">Tag 1</TagGroup.Tag>
+          <TagGroup.Tag id="tag2">Tag 2</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    await user.click(screen.getByText('Tag 1'));
+    await user.click(screen.getByText('Tag 2'));
+
+    await waitFor(() => {
+      expect(handleSelectionChange).toHaveBeenCalledTimes(2);
+    });
+  });
+});
+```
+
+### Removal tests
+
+Test tag removal functionality:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TagGroup } from '@commercetools/nimbus';
+
+describe('TagGroup removal', () => {
+  it('calls onRemove when remove button is clicked', async () => {
+    const user = userEvent.setup();
+    const handleRemove = jest.fn();
+
+    render(
+      <TagGroup.Root aria-label="Tags" onRemove={handleRemove}>
+        <TagGroup.TagList>
+          <TagGroup.Tag id="tag1">Tag 1</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    const removeButton = screen.getByLabelText('Remove tag');
+    await user.click(removeButton);
+
+    await waitFor(() => {
+      expect(handleRemove).toHaveBeenCalledWith(
+        expect.objectContaining({
+          has: expect.any(Function),
+        })
+      );
+    });
+  });
+
+  it('removes tag with keyboard', async () => {
+    const user = userEvent.setup();
+    const handleRemove = jest.fn();
+
+    render(
+      <TagGroup.Root aria-label="Tags" onRemove={handleRemove}>
+        <TagGroup.TagList>
+          <TagGroup.Tag id="tag1">Tag 1</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    const tag = screen.getByText('Tag 1');
+    await user.click(tag);
+    await user.keyboard('{Backspace}');
+
+    await waitFor(() => {
+      expect(handleRemove).toHaveBeenCalled();
+    });
+  });
+});
+```
+
+### Keyboard navigation tests
+
+Test keyboard interactions:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TagGroup } from '@commercetools/nimbus';
+
+describe('TagGroup keyboard navigation', () => {
+  it('navigates between tags with arrow keys', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TagGroup.Root aria-label="Tags">
+        <TagGroup.TagList>
+          <TagGroup.Tag>First</TagGroup.Tag>
+          <TagGroup.Tag>Second</TagGroup.Tag>
+          <TagGroup.Tag>Third</TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    );
+
+    // Tab to enter the tag group
+    await user.tab();
+    expect(document.activeElement?.textContent).toContain('First');
+
+    // Arrow right to next tag
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement?.textContent).toContain('Second');
+
+    // Arrow left to previous tag
+    await user.keyboard('{ArrowLeft}');
+    expect(document.activeElement?.textContent).toContain('First');
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-taggroup--docs)
+- [React Aria TagGroup](https://react-spectrum.adobe.com/react-aria/TagGroup.html)
+- [ARIA Tag Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tag/)

@@ -1,0 +1,671 @@
+---
+title: FieldErrors Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { FieldErrors, type FieldErrorsProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation shows a single error message:
+
+```jsx-live-dev
+const App = () => (
+  <FieldErrors
+    errors={{ missing: true }}
+  />
+)
+```
+
+## Usage examples
+
+### Built-in error types
+
+FieldErrors provides localized messages for common validation scenarios. Errors are organized by category:
+
+#### Basic validation
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ missing: true }}
+    />
+    <FieldErrors
+      errors={{ invalid: true }}
+    />
+    <FieldErrors
+      errors={{ empty: true }}
+    />
+  </Stack>
+)
+```
+
+#### Length validation
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ min: true }}
+    />
+    <FieldErrors
+      errors={{ max: true }}
+    />
+  </Stack>
+)
+```
+
+#### Format validation
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ format: true }}
+    />
+    <FieldErrors
+      errors={{ duplicate: true }}
+    />
+  </Stack>
+)
+```
+
+#### Numeric validation
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ negative: true }}
+    />
+    <FieldErrors
+      errors={{ fractions: true }}
+    />
+    <FieldErrors
+      errors={{ belowMin: true }}
+    />
+    <FieldErrors
+      errors={{ aboveMax: true }}
+    />
+    <FieldErrors
+      errors={{ outOfRange: true }}
+    />
+  </Stack>
+)
+```
+
+#### Server validation
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ invalidFromServer: true }}
+    />
+    <FieldErrors
+      errors={{ notFound: true }}
+    />
+    <FieldErrors
+      errors={{ blocked: true }}
+    />
+  </Stack>
+)
+```
+
+### Custom error messages
+
+Override built-in messages for specific error types using `customMessages`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <FieldErrors
+      errors={{ missing: true, min: true, format: true }}
+      customMessages={{
+        missing: "🔥 Hey! You forgot something important!",
+        min: "📏 Password must be at least 8 characters",
+        format: "📧 Please enter a valid email address"
+      }}
+    />
+  </Stack>
+)
+```
+
+### Custom error rendering
+
+Use `renderError` for complete control over specific error messages:
+
+```jsx-live-dev
+const App = () => (
+  <FieldErrors
+    errors={{
+      duplicate: true,
+      customValidation: true,
+      missing: true
+    }}
+    renderError={(key) => {
+      switch (key) {
+        case 'duplicate':
+          return 'This email is already registered. Please use a different email.';
+        case 'customValidation':
+          return 'This is a custom validation error.';
+        default:
+          return null; // Falls back to built-in messages
+      }
+    }}
+  />
+)
+```
+
+### Default error renderer
+
+Use `renderDefaultError` as a fallback when `renderError` returns null:
+
+```jsx-live-dev
+const App = () => (
+  <FieldErrors
+    errors={{
+      priority: true,
+      fallback: true,
+      missing: true
+    }}
+    renderError={(key) => {
+      if (key === 'priority') {
+        return 'High priority custom error!';
+      }
+      return null; // Falls through to renderDefaultError
+    }}
+    renderDefaultError={(key) => {
+      if (key === 'fallback') {
+        return 'Fallback error handled by renderDefaultError';
+      }
+      return null; // Falls through to built-in messages
+    }}
+  />
+)
+```
+
+**Error resolution priority:**
+1. `renderError` - Highest priority custom rendering
+2. `renderDefaultError` - Fallback custom rendering
+3. `customMessages` - Custom text for built-in error types
+4. Built-in messages - Localized default messages
+
+### Visibility control
+
+Control when errors are displayed using the `isVisible` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [showErrors, setShowErrors] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Button onPress={() => setShowErrors(!showErrors)}>
+        {showErrors ? 'Hide Errors' : 'Show Errors'}
+      </Button>
+      <FieldErrors
+        errors={{ missing: true, invalid: true }}
+        isVisible={showErrors}
+      />
+    </Stack>
+  );
+}
+```
+
+### Integration with FormField
+
+FieldErrors integrates seamlessly with FormField for form validation:
+
+```jsx-live-dev
+const App = () => {
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState('');
+  const [touched, setTouched] = useState({ email: false, age: false });
+
+  const validateEmail = (value) => {
+    const errors = {};
+    if (!value) {
+      errors.missing = true;
+    } else if (!/\S+@\S+\.\S+/.test(value)) {
+      errors.format = true;
+    } else if (value === 'admin@test.com') {
+      errors.duplicate = true;
+    }
+    return errors;
+  };
+
+  const validateAge = (value) => {
+    const errors = {};
+    if (!value) {
+      errors.missing = true;
+    } else if (Number(value) < 0) {
+      errors.negative = true;
+    } else if (Number(value) < 18) {
+      errors.belowMin = true;
+    }
+    return errors;
+  };
+
+  const emailErrors = validateEmail(email);
+  const ageErrors = validateAge(age);
+  const hasEmailErrors = Object.values(emailErrors).some(Boolean);
+  const hasAgeErrors = Object.values(ageErrors).some(Boolean);
+
+  return (
+    <Stack direction="column" gap="400" maxWidth="400px">
+      <FormField.Root isInvalid={hasEmailErrors && touched.email}>
+        <FormField.Label>Email Address *</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            type="email"
+            value={email}
+            onChange={setEmail}
+            onBlur={() => setTouched({ ...touched, email: true })}
+          />
+        </FormField.Input>
+        <FormField.Error>
+          <FieldErrors
+            errors={emailErrors}
+            isVisible={touched.email}
+            renderError={(key) => {
+              if (key === 'format') {
+                return 'Please enter a valid email address.';
+              }
+              if (key === 'duplicate') {
+                return 'This email is already registered.';
+              }
+              return null;
+            }}
+          />
+        </FormField.Error>
+      </FormField.Root>
+
+      <FormField.Root isInvalid={hasAgeErrors && touched.age}>
+        <FormField.Label>Age *</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            type="number"
+            value={age}
+            onChange={setAge}
+            onBlur={() => setTouched({ ...touched, age: true })}
+          />
+        </FormField.Input>
+        <FormField.Error>
+          <FieldErrors
+            errors={ageErrors}
+            isVisible={touched.age}
+            customMessages={{
+              belowMin: 'You must be at least 18 years old.'
+            }}
+          />
+        </FormField.Error>
+      </FormField.Root>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Error object format
+
+The `errors` prop accepts an object mapping error keys to boolean values:
+
+```tsx
+type FieldErrorsData = Record<string, boolean>;
+
+// Example
+const errors = {
+  missing: true,      // Show "missing" error
+  duplicate: false,   // Hide "duplicate" error
+  format: true        // Show "format" error
+};
+```
+
+**Built-in error types:**
+
+Use the `FieldErrorTypes` constants for type-safe error keys:
+
+```tsx
+import { FieldErrors } from '@commercetools/nimbus';
+
+const { errorTypes } = FieldErrors;
+
+// Access built-in error type constants
+errorTypes.MISSING;              // "missing"
+errorTypes.INVALID;              // "invalid"
+errorTypes.EMPTY;                // "empty"
+errorTypes.MIN_LENGTH;           // "min"
+errorTypes.MAX_LENGTH;           // "max"
+errorTypes.FORMAT;               // "format"
+errorTypes.DUPLICATE;            // "duplicate"
+errorTypes.NEGATIVE;             // "negative"
+errorTypes.FRACTIONS;            // "fractions"
+errorTypes.BELOW_MIN;            // "belowMin"
+errorTypes.ABOVE_MAX;            // "aboveMax"
+errorTypes.OUT_OF_RANGE;         // "outOfRange"
+errorTypes.INVALID_FROM_SERVER;  // "invalidFromServer"
+errorTypes.NOT_FOUND;            // "notFound"
+errorTypes.BLOCKED;              // "blocked"
+```
+
+### Accessibility
+
+The FieldErrors component includes `role="alert"` by default to announce errors to screen readers. When integrating with form fields:
+
+**Visibility timing:**
+- Only show errors after user interaction (blur/submit)
+- Use the `touched` state pattern to control `isVisible`
+- Don't show errors on initial render or while typing
+
+**ARIA relationships:**
+
+Associate error messages with form fields using `aria-describedby`:
+
+```tsx
+<FormField.Root isInvalid={hasErrors && touched}>
+  <FormField.Label>Field Label</FormField.Label>
+  <FormField.Input>
+    <TextInput
+      aria-describedby="field-errors"
+    />
+  </FormField.Input>
+  <FormField.Error>
+    <FieldErrors
+      id="field-errors"
+      errors={errors}
+      isVisible={touched}
+    />
+  </FormField.Error>
+</FormField.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-field-errors";
+
+export const Example = () => (
+  <FieldErrors
+    id={PERSISTENT_ID}
+    errors={errors}
+  />
+);
+```
+
+#### Keyboard navigation
+
+FieldErrors is a static display component with no keyboard interactions. Users navigate to form fields using standard keyboard controls:
+- `Tab` / `Shift+Tab`: Move focus between form fields
+- Error messages are announced by screen readers when fields receive focus or when errors change
+
+## API reference
+
+<PropsTable id="FieldErrors" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using FieldErrors in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected error messages:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { FieldErrors } from '@commercetools/nimbus';
+
+describe('FieldErrors', () => {
+  it('renders built-in error message', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true }}
+        isVisible={true}
+      />
+    );
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('This field is required. Provide a value.')).toBeInTheDocument();
+  });
+
+  it('does not render when isVisible is false', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true }}
+        isVisible={false}
+      />
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('does not render when all errors are false', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: false, invalid: false }}
+        isVisible={true}
+      />
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+});
+```
+
+### Custom error rendering tests
+
+Test custom error message rendering:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { FieldErrors } from '@commercetools/nimbus';
+
+describe('FieldErrors custom rendering', () => {
+  it('renders custom error messages via renderError', () => {
+    render(
+      <FieldErrors
+        errors={{ duplicate: true }}
+        isVisible={true}
+        renderError={(key) => {
+          if (key === 'duplicate') {
+            return 'This email is already registered.';
+          }
+          return null;
+        }}
+      />
+    );
+
+    expect(screen.getByText('This email is already registered.')).toBeInTheDocument();
+  });
+
+  it('renders custom messages via customMessages prop', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true, min: true }}
+        isVisible={true}
+        customMessages={{
+          missing: 'Please fill out this field!',
+          min: 'Must be at least 8 characters long.'
+        }}
+      />
+    );
+
+    expect(screen.getByText('Please fill out this field!')).toBeInTheDocument();
+    expect(screen.getByText('Must be at least 8 characters long.')).toBeInTheDocument();
+  });
+
+  it('falls back to built-in messages when renderError returns null', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true, duplicate: true }}
+        isVisible={true}
+        renderError={(key) => {
+          if (key === 'duplicate') {
+            return 'Custom duplicate message';
+          }
+          return null; // Falls back to built-in for 'missing'
+        }}
+      />
+    );
+
+    expect(screen.getByText('Custom duplicate message')).toBeInTheDocument();
+    expect(screen.getByText('This field is required. Provide a value.')).toBeInTheDocument();
+  });
+});
+```
+
+### FormField integration tests
+
+Test FieldErrors within FormField contexts:
+
+```tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { FormField, FieldErrors, TextInput } from '@commercetools/nimbus';
+
+describe('FieldErrors with FormField', () => {
+  it('shows errors only after field is touched', async () => {
+    const user = userEvent.setup();
+    const errors = { missing: true };
+    let touched = false;
+
+    const { rerender } = render(
+      <FormField.Root isInvalid={touched}>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            onBlur={() => { touched = true; }}
+            data-testid="email-input"
+          />
+        </FormField.Input>
+        <FormField.Error>
+          <FieldErrors
+            errors={errors}
+            isVisible={touched}
+            data-testid="field-errors"
+          />
+        </FormField.Error>
+      </FormField.Root>
+    );
+
+    // Initially no errors shown
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+
+    // Blur the input
+    const input = screen.getByTestId('email-input');
+    await user.click(input);
+    await user.tab();
+
+    // Rerender with touched state
+    rerender(
+      <FormField.Root isInvalid={true}>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Input>
+          <TextInput data-testid="email-input" />
+        </FormField.Input>
+        <FormField.Error>
+          <FieldErrors
+            errors={errors}
+            isVisible={true}
+          />
+        </FormField.Error>
+      </FormField.Root>
+    );
+
+    // Now errors should be visible
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByText('This field is required. Provide a value.')).toBeInTheDocument();
+    });
+  });
+
+  it('applies invalid state to FormField when errors exist', () => {
+    const errors = { invalid: true };
+
+    render(
+      <FormField.Root isInvalid={true} data-testid="form-field">
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Input>
+          <TextInput />
+        </FormField.Input>
+        <FormField.Error>
+          <FieldErrors
+            errors={errors}
+            isVisible={true}
+          />
+        </FormField.Error>
+      </FormField.Root>
+    );
+
+    const formField = screen.getByTestId('form-field');
+    expect(formField).toHaveAttribute('data-invalid', 'true');
+  });
+});
+```
+
+### Testing error priority
+
+Test the error resolution cascade:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { FieldErrors } from '@commercetools/nimbus';
+
+describe('FieldErrors error priority', () => {
+  it('prioritizes renderError over renderDefaultError', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true }}
+        isVisible={true}
+        renderError={() => 'Priority error'}
+        renderDefaultError={() => 'Fallback error'}
+      />
+    );
+
+    expect(screen.getByText('Priority error')).toBeInTheDocument();
+    expect(screen.queryByText('Fallback error')).not.toBeInTheDocument();
+  });
+
+  it('prioritizes customMessages over built-in messages', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true }}
+        isVisible={true}
+        customMessages={{
+          missing: 'Custom missing message'
+        }}
+      />
+    );
+
+    expect(screen.getByText('Custom missing message')).toBeInTheDocument();
+    expect(screen.queryByText('This field is required. Provide a value.')).not.toBeInTheDocument();
+  });
+
+  it('uses built-in messages as final fallback', () => {
+    render(
+      <FieldErrors
+        errors={{ missing: true }}
+        isVisible={true}
+        renderError={() => null}
+        renderDefaultError={() => null}
+      />
+    );
+
+    expect(screen.getByText('This field is required. Provide a value.')).toBeInTheDocument();
+  });
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-fielderrors--docs)
+- [FormField Component](components/inputs/formfield)
