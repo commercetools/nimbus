@@ -46,7 +46,9 @@ Choose between `solid` (default) and `contrast` variants to match your design co
 const App = () => (
   <Stack direction="column" gap="400">
     <ProgressBar value={75} variant="solid" label="Solid variant" />
-    <ProgressBar value={75} variant="contrast" label="Contrast variant" />
+    <Box bg="primary.9" p="400" borderRadius="200">
+      <ProgressBar value={75} variant="contrast" label="Contrast variant" />
+    </Box>
   </Stack>
 )
 ```
