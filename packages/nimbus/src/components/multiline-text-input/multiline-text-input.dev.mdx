@@ -246,7 +246,7 @@ const App = () => {
       <Text fontSize="sm">
         {value ? `Character count: ${value.length}` : 'Start typing...'}
       </Text>
-      <Button onClick={() => setValue('')} size="sm">
+      <Button onClick={() => setValue('')} size="xs">
         Clear
       </Button>
     </Stack>
@@ -348,7 +348,7 @@ const App = () => {
           {remaining} characters remaining
         </Text>
         <Button
-          size="sm"
+          size="xs"
           isDisabled={comment.length === 0 || isOverLimit}
         >
           Post Comment
@@ -384,7 +384,7 @@ const App = () => {
         <Text fontSize="sm" color="neutral.11">
           {wordCount} {wordCount === 1 ? 'word' : 'words'}
         </Text>
-        <Button size="sm" isDisabled={wordCount < 10}>
+        <Button size="xs" isDisabled={wordCount < 10}>
           Submit Feedback
         </Button>
       </Stack>
