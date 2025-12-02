@@ -337,6 +337,221 @@ const App = () => {
 }
 ```
 
+## Static utility methods
+
+The MoneyInput component provides static utility methods for advanced use cases like testing, API integration, and form validation. These methods are particularly useful for compatibility and working with backend data formats.
+
+### ID helper methods
+
+These methods generate element IDs for DOM access and testing:
+
+#### getAmountInputId
+
+Returns the ID of the amount input element within a MoneyInput.
+
+```tsx
+// Usage in testing or DOM manipulation
+const amountInputId = MoneyInput.getAmountInputId("product-price");
+// Returns: "product-price.amount"
+
+// Example: Focus the amount input programmatically
+const amountInput = document.getElementById(amountInputId);
+amountInput?.focus();
+```
+
+#### getCurrencyDropdownId
+
+Returns the ID of the currency dropdown element within a MoneyInput.
+
+```tsx
+// Usage in testing or DOM manipulation
+const currencyDropdownId = MoneyInput.getCurrencyDropdownId("product-price");
+// Returns: "product-price.currencyCode"
+
+// Example: Access the currency dropdown in tests
+const currencyDropdown = document.getElementById(currencyDropdownId);
+```
+
+**Use case:** These methods are helpful when writing integration tests or when you need to programmatically interact with specific parts of the MoneyInput component.
+
+### Data transformation methods
+
+These methods convert between UI format (`MoneyInputValue`) and API format (`MoneyValue`):
+
+#### convertToMoneyValue
+
+Converts a MoneyInputValue (UI format with string amount) to MoneyValue (API format with centAmount).
+
+```tsx
+import { MoneyInput, type MoneyInputValue, type MoneyValue } from '@commercetools/nimbus';
+
+// Convert UI value to API format before submission
+const uiValue: MoneyInputValue = {
+  amount: "123.45",
+  currencyCode: "USD"
+};
+
+const apiValue: MoneyValue = MoneyInput.convertToMoneyValue(uiValue, "en-US");
+// Returns: {
+//   type: "centPrecision",
+//   currencyCode: "USD",
+//   centAmount: 12345,
+//   fractionDigits: 2
+// }
+
+// For high precision values
+const highPrecisionValue: MoneyInputValue = {
+  amount: "123.4567",
+  currencyCode: "USD"
+};
+
+const apiHighPrecision: MoneyValue = MoneyInput.convertToMoneyValue(
+  highPrecisionValue,
+  "en-US"
+);
+// Returns: {
+//   type: "highPrecision",
+//   currencyCode: "USD",
+//   centAmount: 12346, // Rounded to standard precision
+//   preciseAmount: 1234567,
+//   fractionDigits: 4
+// }
+```
+
+#### parseMoneyValue
+
+Converts a MoneyValue (API format) to MoneyInputValue (UI format) for display in the component.
+
+```tsx
+import { MoneyInput, type MoneyValue, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Convert API data to UI format when loading
+const apiValue: MoneyValue = {
+  type: "centPrecision",
+  currencyCode: "EUR",
+  centAmount: 9999,
+  fractionDigits: 2
+};
+
+const uiValue: MoneyInputValue = MoneyInput.parseMoneyValue(apiValue, "en-US");
+// Returns: {
+//   amount: "99.99",
+//   currencyCode: "EUR"
+// }
+
+// Example: Loading data from API
+const ProductPriceEditor = ({ productId }: { productId: string }) => {
+  const [value, setValue] = useState<MoneyInputValue>({ amount: "", currencyCode: "USD" });
+
+  useEffect(() => {
+    async function loadProduct() {
+      const product = await fetchProduct(productId);
+      // Convert API MoneyValue to UI format
+      const uiValue = MoneyInput.parseMoneyValue(product.price, navigator.language);
+      setValue(uiValue);
+    }
+    loadProduct();
+  }, [productId]);
+
+  return (
+    <MoneyInput
+      value={value}
+      currencies={["USD", "EUR", "GBP"]}
+      onValueChange={setValue}
+      aria-label="Product Price"
+    />
+  );
+};
+```
+
+**Use case:** These methods enable seamless integration with commercetools APIs and other backends that use the MoneyValue format with `centAmount` and `preciseAmount` fields.
+
+### Validation methods
+
+These methods validate MoneyInputValue data:
+
+#### isEmpty
+
+Checks if a MoneyInputValue is empty (missing amount or currency).
+
+```tsx
+import { MoneyInput, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Check before form submission
+const handleSubmit = (value: MoneyInputValue) => {
+  if (MoneyInput.isEmpty(value)) {
+    alert("Please enter a price");
+    return;
+  }
+
+  // Proceed with submission
+  submitPrice(value);
+};
+
+// Example values
+MoneyInput.isEmpty({ amount: "", currencyCode: "USD" }); // true
+MoneyInput.isEmpty({ amount: "100", currencyCode: "" }); // true
+MoneyInput.isEmpty({ amount: "100", currencyCode: "USD" }); // false
+```
+
+#### isHighPrecision
+
+Checks if a MoneyInputValue exceeds the standard precision for its currency.
+
+```tsx
+import { MoneyInput, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Check if value needs high precision handling
+const value: MoneyInputValue = {
+  amount: "123.4567",
+  currencyCode: "USD" // USD standard precision is 2
+};
+
+const needsHighPrecision = MoneyInput.isHighPrecision(value, "en-US");
+// Returns: true (4 decimals > 2 standard for USD)
+
+// Example: Warn users about precision
+const PriceInput = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  const showPrecisionWarning = MoneyInput.isHighPrecision(value, navigator.language);
+
+  return (
+    <Stack direction="column" gap="200">
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR"]}
+        onValueChange={setValue}
+        aria-label="Price"
+      />
+      {showPrecisionWarning && (
+        <Text color="warning" fontSize="sm">
+          This price uses high precision formatting
+        </Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+**Use case:** These methods help validate form data before submission and provide appropriate user feedback.
+
+### Type definitions
+
+When using static methods, you'll need these type imports:
+
+```tsx
+import {
+  MoneyInput,
+  type MoneyInputValue,  // UI format: { amount: string, currencyCode: string }
+  type MoneyValue,       // API format: { centAmount: number, currencyCode, ... }
+  type CurrencyCode,     // Valid currency codes
+} from '@commercetools/nimbus';
+```
+
 ## Testing your implementation
 
 These examples demonstrate how to test your implementation when using MoneyInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
