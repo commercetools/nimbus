@@ -56,6 +56,37 @@ const App = () => (
 )
 ```
 
+### Color palette options
+
+The Button component supports all semantic color palettes to convey meaning and hierarchy. The `primary` color palette is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="400" wrap="wrap">
+      <Button colorPalette="primary">Primary (Default)</Button>
+      <Button colorPalette="neutral">Neutral</Button>
+      <Button colorPalette="info">Info</Button>
+    </Stack>
+    <Stack direction="row" gap="400" wrap="wrap">
+      <Button colorPalette="positive">Positive</Button>
+      <Button colorPalette="warning">Warning</Button>
+      <Button colorPalette="critical">Critical</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+You can also override the color palette using Chakra UI style props for one-off customizations:
+
+```jsx-live-dev
+const App = () => (
+  <Button backgroundColor="purple.9" color="purple.contrast" _hover={{ backgroundColor: "purple.10" }}>
+    Custom Purple Button
+  </Button>
+)
+```
+
 ### With icons
 
 Buttons automatically handle spacing between icons and text. You can place icons before or after the text.
