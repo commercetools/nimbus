@@ -86,13 +86,22 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
 
 export type DataTableDensity = "default" | "condensed";
 
+export type DataTableCustomSettings = {
+  icon?: ReactNode;
+  label: ReactNode;
+  panel: ReactNode;
+};
+
 export type DataTableContextValue<T extends object = Record<string, unknown>> =
   {
     columns: DataTableColumnItem<T>[];
     rows: DataTableRowItem<T>[];
     visibleColumns?: string[];
     onSettingsChange?: (
-      action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
+      action:
+        | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
+        | string
+        | undefined
     ) => void;
     renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
     search?: string;
@@ -129,6 +138,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
+
+export type CustomSettingsContextValue = {
+  customSettings?: DataTableCustomSettings;
+};
 
 type DataTableVariantProps = OmitInternalProps<
   DataTableRootSlotProps,
@@ -180,8 +193,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onPinToggle?: (rowId: string) => void;
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
   onSettingsChange?: (
-    action: (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | undefined
+    action:
+      | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
+      | string
+      | undefined
   ) => void;
+  customSettings?: DataTableCustomSettings;
 };
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
