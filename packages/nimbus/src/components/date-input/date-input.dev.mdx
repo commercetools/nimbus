@@ -1,0 +1,792 @@
+---
+title: DateInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DateInput, type DateInputProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode with an accessible label:
+
+```jsx-live-dev
+const App = () => (
+  <DateInput aria-label="Enter a date" />
+)
+```
+
+## Working with date values
+
+The DateInput component relies on `@internationalized/date`'s date types for type-safe date handling. This library provides calendar-system-aware date representations that work correctly across different locales and time zones.
+
+### Date types
+
+The library provides several date types, each with different levels of precision:
+
+```tsx
+import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';
+
+// Date only (no time component)
+const date = new CalendarDate(2025, 6, 15);
+
+// Date and time (no timezone)
+const dateTime = new CalendarDateTime(2025, 6, 15, 14, 30, 0);
+
+// Date, time, and timezone
+const zonedDateTime = new ZonedDateTime(
+  2025,
+  6,
+  15,
+  'America/New_York',
+  -4 * 60 * 60 * 1000,
+  14,
+  30,
+  0
+);
+```
+
+### Creating date values
+
+Use the appropriate constructor based on the precision you need:
+
+```tsx
+import { CalendarDate, CalendarDateTime } from '@internationalized/date';
+
+// For date-only inputs
+const birthDate = new CalendarDate(1990, 5, 15);
+
+// For date and time inputs
+const appointmentTime = new CalendarDateTime(2025, 12, 25, 10, 30, 0);
+```
+
+### Converting to strings
+
+Use the `toString()` method to convert date values to ISO 8601 format:
+
+```tsx
+const date = new CalendarDate(2025, 6, 15);
+date.toString(); // "2025-06-15"
+
+const dateTime = new CalendarDateTime(2025, 6, 15, 14, 30, 0);
+dateTime.toString(); // "2025-06-15T14:30:00"
+```
+
+> [!TIP]\
+> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateInput size="sm" aria-label="Small date input" />
+    <DateInput size="md" aria-label="Medium date input" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid`, `ghost`, and `plain` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DateInput variant="solid" aria-label="Solid variant" />
+    <DateInput variant="ghost" aria-label="Ghost variant" />
+    <DateInput variant="plain" aria-label="Plain variant" />
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `variant="solid"`: Outlined input with background, suitable for forms
+- `variant="ghost"`: Subtle background on hover, suitable for inline editing
+- `variant="plain"`: No background or border, suitable for minimal interfaces
+
+### Leading and trailing elements
+
+Add icons or interactive elements to enhance the input:
+
+```jsx-live-dev
+const App = () => {
+  const [date, setDate] = useState(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateInput
+        leadingElement={<Icons.CalendarMonth />}
+        aria-label="Date with calendar icon"
+      />
+      <DateInput
+        trailingElement={
+          <IconButton
+            size="xs"
+            variant="ghost"
+            aria-label="Clear date"
+            onPress={() => setDate(null)}
+          >
+            <Icons.Close />
+          </IconButton>
+        }
+        value={date}
+        onChange={setDate}
+        aria-label="Date with clear button"
+      />
+      <DateInput
+        leadingElement={<Icons.Event />}
+        trailingElement={<Icons.ArrowDropDown />}
+        aria-label="Date with both icons"
+      />
+    </Stack>
+  );
+}
+```
+
+### Granularity control
+
+The `granularity` prop controls which date/time segments are displayed:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Day (date only)</Text>
+      <DateInput
+        granularity="day"
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Day granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Hour (date + hour)</Text>
+      <DateInput
+        granularity="hour"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 0, 0)}
+        aria-label="Hour granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Minute (date + hour + minute)</Text>
+      <DateInput
+        granularity="minute"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        aria-label="Minute granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Second (full precision)</Text>
+      <DateInput
+        granularity="second"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 45)}
+        aria-label="Second granularity"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Hour cycle
+
+Control the time display format using the `hourCycle` prop when working with time values:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">12-hour format (2:30 PM)</Text>
+      <DateInput
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        hourCycle={12}
+        granularity="minute"
+        aria-label="12-hour format"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">24-hour format (14:30)</Text>
+      <DateInput
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        hourCycle={24}
+        granularity="minute"
+        aria-label="24-hour format"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Leading zeros
+
+Control whether single-digit values display with leading zeros:
+
+```jsx-live-dev
+const App = () => {
+  const singleDigitDate = new CalendarDate(2025, 3, 5);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">Default (locale-determined)</Text>
+        <DateInput
+          defaultValue={singleDigitDate}
+          aria-label="Default leading zeros"
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">Force leading zeros (05/03/2025)</Text>
+        <DateInput
+          defaultValue={singleDigitDate}
+          shouldForceLeadingZeros={true}
+          aria-label="With leading zeros"
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">No leading zeros (5/3/2025)</Text>
+        <DateInput
+          defaultValue={singleDigitDate}
+          shouldForceLeadingZeros={false}
+          aria-label="Without leading zeros"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Time zone handling
+
+When using `ZonedDateTime` values, control time zone display with the `hideTimeZone` prop:
+
+```jsx-live-dev
+const App = () => {
+  const zonedDateTime = new ZonedDateTime(
+    2025,
+    6,
+    15,
+    'America/New_York',
+    -4 * 60 * 60 * 1000,
+    14,
+    30,
+    0
+  );
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">With time zone displayed</Text>
+        <DateInput
+          defaultValue={zonedDateTime}
+          hideTimeZone={false}
+          granularity="minute"
+          aria-label="Date with timezone"
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">Time zone hidden</Text>
+        <DateInput
+          defaultValue={zonedDateTime}
+          hideTimeZone={true}
+          granularity="minute"
+          aria-label="Date without timezone"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Placeholder values
+
+Set a starting point for keyboard input when the field is empty using `placeholderValue`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">With placeholder (starts at 2025-06-15)</Text>
+      <DateInput
+        placeholderValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Date with placeholder"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Without placeholder (starts at today)</Text>
+      <DateInput aria-label="Date without placeholder" />
+    </Stack>
+  </Stack>
+)
+```
+
+### Min/max validation
+
+Restrict date selection to a specific range using `minValue` and `maxValue`:
+
+```jsx-live-dev
+const App = () => {
+  const [date, setDate] = useState(null);
+  const minDate = new CalendarDate(2025, 6, 1);
+  const maxDate = new CalendarDate(2025, 6, 30);
+  
+  const isInvalid = date && (
+    date.compare(minDate) < 0 || 
+    date.compare(maxDate) > 0
+  );
+
+  return (
+    <FormField.Root isInvalid={!!isInvalid}>
+      <FormField.Label>Select a date in June 2025</FormField.Label>
+      <FormField.Input>
+        <DateInput
+          value={date}
+          onChange={setDate}
+          minValue={minDate}
+          maxValue={maxDate}
+          aria-label="Date range validation"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Valid range: June 1-30, 2025
+      </FormField.Description>
+      {isInvalid && (
+        <FormField.Error>
+          Date must be between {minDate.toString()} and {maxDate.toString()}
+        </FormField.Error>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Custom validation
+
+Implement custom validation logic beyond min/max constraints:
+
+```jsx-live-dev
+const App = () => {
+  const [date, setDate] = useState(null);
+
+  const isBusinessDay = (dateValue) => {
+    if (!dateValue) return true;
+    const dayOfWeek = dateValue.toDate('UTC').getDay();
+    return dayOfWeek >= 1 && dayOfWeek <= 5;
+  };
+
+  const isInvalid = date && !isBusinessDay(date);
+
+  return (
+    <FormField.Root isInvalid={!!isInvalid}>
+      <FormField.Label>Select a business day</FormField.Label>
+      <FormField.Input>
+        <DateInput
+          value={date}
+          onChange={setDate}
+          defaultValue={new CalendarDate(2025, 6, 17)}
+          aria-label="Business days only"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Only Monday through Friday are allowed
+      </FormField.Description>
+      {isInvalid && (
+        <FormField.Error>
+          Please select a business day (Monday-Friday)
+        </FormField.Error>
+      )}
+      <Text fontSize="sm" mt="200">
+        Status: {date ? (isBusinessDay(date) ? '✅ Valid' : '❌ Invalid') : 'Not selected'}
+      </Text>
+    </FormField.Root>
+  );
+}
+```
+
+### State variations
+
+DateInput supports disabled, read-only, required, and invalid states:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Default</Text>
+      <DateInput
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Default state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Disabled</Text>
+      <DateInput
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isDisabled
+        aria-label="Disabled state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Read-only</Text>
+      <DateInput
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isReadOnly
+        aria-label="Read-only state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Required</Text>
+      <DateInput
+        isRequired
+        aria-label="Required state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Invalid</Text>
+      <DateInput
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isInvalid
+        aria-label="Invalid state"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState('No date selected');
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateInput
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        onChange={(value) => {
+          setDisplayValue(value ? value.toString() : 'No date selected');
+        }}
+        aria-label="Uncontrolled date input"
+      />
+      <Text fontSize="sm">Selected: {displayValue}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected date without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState(new CalendarDate(2025, 6, 15));
+
+  return (
+    <Stack direction="column" gap="400">
+      <DateInput
+        value={value}
+        onChange={setValue}
+        aria-label="Controlled date input"
+      />
+      <Text fontSize="sm">
+        {value ? `Selected: ${value.toString()}` : 'No selection'}
+      </Text>
+      <Stack direction="row" gap="200">
+        <Button onPress={() => setValue(new CalendarDate(2025, 1, 1))}>
+          Set to Jan 1
+        </Button>
+        <Button onPress={() => setValue(new CalendarDate(2025, 12, 31))}>
+          Set to Dec 31
+        </Button>
+        <Button onPress={() => setValue(null)}>
+          Clear
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform selections
+- Clear or programmatically set the value
+
+### Internationalization
+
+DateInput automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
+
+```jsx-live-dev
+const App = () => {
+  const [locale, setLocale] = useState('en-US');
+  const dateValue = new CalendarDate(2025, 6, 15);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200">
+        <Button
+          variant={locale === 'en-US' ? 'solid' : 'outline'}
+          onPress={() => setLocale('en-US')}
+        >
+          English (US)
+        </Button>
+        <Button
+          variant={locale === 'de-DE' ? 'solid' : 'outline'}
+          onPress={() => setLocale('de-DE')}
+        >
+          German
+        </Button>
+        <Button
+          variant={locale === 'ja-JP' ? 'solid' : 'outline'}
+          onPress={() => setLocale('ja-JP')}
+        >
+          Japanese
+        </Button>
+      </Stack>
+      <NimbusI18nProvider locale={locale}>
+        <DateInput
+          defaultValue={dateValue}
+          aria-label="Localized date input"
+        />
+      </NimbusI18nProvider>
+      <Text fontSize="sm">Current locale: {locale}</Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Date value requirements
+
+All date values **must** use `@internationalized/date` types:
+- `CalendarDate` for date-only inputs (year, month, day)
+- `CalendarDateTime` for date and time without timezone
+- `ZonedDateTime` for date, time, and timezone information
+
+### Accessibility
+
+The DateInput handles most accessibility requirements internally through React Aria's DateField. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Wrapping the DateInput in a FormField (recommended for forms):
+
+```tsx
+<FormField.Root>
+  <FormField.Label>Birth Date</FormField.Label>
+  <FormField.Input>
+    <DateInput />
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Associating a `<label>` element with the DateInput using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DateInput aria-labelledby="label-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<DateInput aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-date-input";
+
+export const Example = () => (
+  <DateInput id={PERSISTENT_ID} aria-label="Enter date" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction for navigating and editing date segments:
+- `Tab` / `Shift+Tab`: Move between date segments (day, month, year, hour, etc.)
+- `Arrow Up` / `Arrow Down`: Increment or decrement the focused segment
+- `Page Up` / `Page Down`: Increment or decrement the focused segment by larger steps
+- `Home` / `End`: Set segment to minimum or maximum value
+- `0-9`: Type digits to set segment value
+- `Backspace`: Clear the focused segment
+
+## API reference
+
+<PropsTable id="DateInput" />
+
+## Common patterns
+
+### Date of birth input
+
+A common pattern for capturing user birth dates with validation:
+
+```jsx-live-dev
+const App = () => {
+  const [birthDate, setBirthDate] = useState(null);
+  const today = new CalendarDate(2025, 12, 2);
+  const minDate = new CalendarDate(1900, 1, 1);
+  
+  const isInvalid = birthDate && (
+    birthDate.compare(minDate) < 0 || 
+    birthDate.compare(today) > 0
+  );
+
+  return (
+    <FormField.Root isInvalid={!!isInvalid}>
+      <FormField.Label>Date of Birth</FormField.Label>
+      <FormField.Input>
+        <DateInput
+          value={birthDate}
+          onChange={setBirthDate}
+          minValue={minDate}
+          maxValue={today}
+          placeholderValue={new CalendarDate(1990, 1, 1)}
+          aria-label="Date of birth"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Enter your birth date
+      </FormField.Description>
+      {isInvalid && (
+        <FormField.Error>
+          Please enter a valid birth date
+        </FormField.Error>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Appointment scheduler
+
+A pattern for scheduling appointments with time selection:
+
+```jsx-live-dev
+const App = () => {
+  const [appointmentTime, setAppointmentTime] = useState(
+    new CalendarDateTime(2025, 12, 15, 10, 0, 0)
+  );
+  
+  const businessHoursStart = 9;
+  const businessHoursEnd = 17;
+  
+  const isInvalidTime = appointmentTime && (
+    appointmentTime.hour < businessHoursStart || 
+    appointmentTime.hour >= businessHoursEnd
+  );
+
+  return (
+    <FormField.Root isInvalid={isInvalidTime}>
+      <FormField.Label>Appointment Time</FormField.Label>
+      <FormField.Input>
+        <DateInput
+          value={appointmentTime}
+          onChange={setAppointmentTime}
+          granularity="minute"
+          hourCycle={12}
+          leadingElement={<Icons.Schedule />}
+          aria-label="Appointment time"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a time between 9:00 AM and 5:00 PM
+      </FormField.Description>
+      {isInvalidTime && (
+        <FormField.Error>
+          Please select a time during business hours (9 AM - 5 PM)
+        </FormField.Error>
+      )}
+      {appointmentTime && !isInvalidTime && (
+        <Text fontSize="sm" mt="200">
+          ✅ Appointment scheduled for {appointmentTime.toString()}
+        </Text>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Event date range start
+
+Pattern for the start date of an event range (pairs with DateRangePicker):
+
+```jsx-live-dev
+const App = () => {
+  const [startDate, setStartDate] = useState(new CalendarDate(2025, 12, 10));
+  const [endDate, setEndDate] = useState(new CalendarDate(2025, 12, 15));
+  const today = new CalendarDate(2025, 12, 2);
+  
+  const isInvalid = startDate && endDate && startDate.compare(endDate) > 0;
+
+  return (
+    <Stack direction="column" gap="400">
+      <FormField.Root isInvalid={isInvalid}>
+        <FormField.Label>Event Start Date</FormField.Label>
+        <FormField.Input>
+          <DateInput
+            value={startDate}
+            onChange={setStartDate}
+            minValue={today}
+            maxValue={endDate}
+            leadingElement={<Icons.Event />}
+            aria-label="Event start date"
+          />
+        </FormField.Input>
+        {isInvalid && (
+          <FormField.Error>
+            Start date must be before end date
+          </FormField.Error>
+        )}
+      </FormField.Root>
+      
+      <FormField.Root>
+        <FormField.Label>Event End Date</FormField.Label>
+        <FormField.Input>
+          <DateInput
+            value={endDate}
+            onChange={setEndDate}
+            minValue={startDate || today}
+            leadingElement={<Icons.Event />}
+            aria-label="Event end date"
+          />
+        </FormField.Input>
+      </FormField.Root>
+      
+      <Text fontSize="sm">
+        Event duration: {startDate && endDate ? 
+          `${endDate.compare(startDate) + 1} day(s)` : 
+          'Select dates'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DateInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: date-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-dateinput--docs)
+- [React Aria DateField](https://react-spectrum.adobe.com/react-aria/DateField.html)
+- [ARIA Date Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/)
+- [@internationalized/date](https://react-spectrum.adobe.com/internationalized/date/)
