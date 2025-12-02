@@ -302,4 +302,3 @@ describe("Checkbox - Validation states", () => {
     expect(checkbox).toHaveAttribute("aria-invalid", "true");
   });
 });
-
