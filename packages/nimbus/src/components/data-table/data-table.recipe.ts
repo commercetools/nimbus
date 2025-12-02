@@ -71,7 +71,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           },
         },
         "& .data-table-sticky-cell": {
-          backgroundColor: "white",
           position: "sticky",
           left: 0,
         },
@@ -130,7 +129,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "& .data-table-row-pinned": {
         boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
         "& .data-table-sticky-cell": {
-          backgroundColor: "white",
           position: "sticky",
           left: 0,
           zIndex: 3,
@@ -195,16 +193,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // Multiline header truncation using webkit line clamp
     },
     table: {
-      // width: "fit-content",
       tableLayout: "fixed",
-      border: "1px solid {colors.neutral.3}",
-      boxShadow: "1",
+      boxSizing: "border-box",
+      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
+      borderRadius: "0 0 {sizes.200} {sizes.200}",
       colorPalette: "slate",
-      borderRadius: "8px",
       width: "100%",
     },
     header: {
       background: "colorPalette.2",
+      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
+      borderRadius: "{sizes.200} {sizes.200} 0 0",
       color: "colorPalette.11",
       borderBottom: "1px solid {colors.neutral.3}",
       lineHeight: "400",
@@ -288,10 +287,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0,
         zIndex: 13,
-        backgroundColor: "colorPalette.2",
-        "&:hover": {
-          backgroundColor: "colorPalette.2",
-        },
       },
       "&.expand-column-header": {
         cursor: "default",
@@ -299,10 +294,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0, // Default position when no selection column
         zIndex: 12,
-        backgroundColor: "colorPalette.2",
-        "&:hover": {
-          backgroundColor: "colorPalette.2",
-        },
       },
       // When selection column is present, adjust expand column header position
       "&.selection-column-header + &.expand-column-header": {
@@ -317,10 +308,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         right: 0,
         zIndex: 11,
-        backgroundColor: "colorPalette.2",
-        "&:hover": {
-          backgroundColor: "colorPalette.2",
-        },
       },
       "&[aria-sort]": {
         fontWeight: 600,

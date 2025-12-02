@@ -3999,7 +3999,6 @@ export const WithCustomSettings: Story = {
     const [density, setDensity] = useState<"default" | "condensed">("default");
 
     // Custom settings state that affect table appearance
-    const [showBorders, setShowBorders] = useState(false);
     const [highlightHeaders, setHighlightHeaders] = useState(false);
     const [colorFirstColumn, setColorFirstColumn] = useState(false);
     const [disabledRowIds, setDisabledRowIds] = useState<Set<string>>(
@@ -4008,10 +4007,6 @@ export const WithCustomSettings: Story = {
 
     const handleColumnsChange = (updatedColumns: DataTableColumnItem[]) => {
       setVisibleColumns(updatedColumns);
-    };
-
-    const handleToggleBorders = () => {
-      setShowBorders(!showBorders);
     };
 
     const handleToggleHeaderHighlight = () => {
@@ -4101,19 +4096,6 @@ export const WithCustomSettings: Story = {
 
         <Stack direction="column" gap="400">
           <Checkbox
-            isSelected={showBorders}
-            onChange={handleToggleBorders}
-            data-testid="show-borders-checkbox"
-          >
-            <Box>
-              <Text fontWeight="medium">Show cell borders</Text>
-              <Text fontSize="sm" color="neutral.11">
-                Add visible borders around all table cells
-              </Text>
-            </Box>
-          </Checkbox>
-
-          <Checkbox
             isSelected={highlightHeaders}
             onChange={handleToggleHeaderHighlight}
             data-testid="highlight-headers-checkbox"
@@ -4163,7 +4145,6 @@ export const WithCustomSettings: Story = {
         >
           <Text fontSize="sm" color="neutral.11">
             <strong>Active customizations:</strong>
-            <br />• Cell borders: {showBorders ? "Enabled" : "Disabled"}
             <br />• Header highlight:{" "}
             {highlightHeaders ? "Enabled" : "Disabled"}
             <br />• First column color:{" "}
@@ -4216,20 +4197,7 @@ export const WithCustomSettings: Story = {
                 <DataTable.Manager />
               </Box>
             </Flex>
-            <DataTable.Table
-              aria-label="Products table with custom settings"
-              borderWidth={showBorders ? "{sizes.25}" : "0"}
-              borderColor={showBorders ? "neutral.7" : undefined}
-              css={{
-                "& td": showBorders
-                  ? {
-                      borderWidth: "{sizes.25}",
-                      borderStyle: "solid",
-                      borderColor: "neutral.7",
-                    }
-                  : undefined,
-              }}
-            >
+            <DataTable.Table aria-label="Products table with custom settings">
               <DataTable.Header
                 aria-label="Products table header"
                 bg={highlightHeaders ? "purple.3" : undefined}
@@ -4291,7 +4259,7 @@ export const WithCustomSettings: Story = {
 
       // Find checkbox
       const bordersCheckbox = within(dialog).getByRole("checkbox", {
-        name: /show cell borders/i,
+        name: /Highlight header row/i,
       });
 
       // Initial state is false
