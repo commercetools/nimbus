@@ -3,4 +3,5 @@ export * from "./money-input-field";
 export * from "./multiline-text-input-field";
 export * from "./number-input-field";
 export * from "./search-input-field";
+export * from "./password-input-field";
 export * from "./text-input-field";
