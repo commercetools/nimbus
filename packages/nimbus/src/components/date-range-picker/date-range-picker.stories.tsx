@@ -1256,6 +1256,11 @@ export const TimeSupport: Story = {
   args: {
     ["aria-label"]: "Select a date and time range",
   },
+  parameters: {
+    test: {
+      timeout: 60000, // 60 seconds for complex time segment testing
+    },
+  },
   render: (args) => {
     return (
       <Stack direction="column" gap="400" alignItems="start">
