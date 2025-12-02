@@ -78,25 +78,25 @@
   "Nimbus.DataTable.comfortable": [
     {
       "type": 0,
-      "value": "Comfortable"
+      "value": "Confortable"
     }
   ],
   "Nimbus.DataTable.comfortableAriaLabel": [
     {
       "type": 0,
-      "value": "Comfortable section"
+      "value": "Sección confortable"
     }
   ],
   "Nimbus.DataTable.compact": [
     {
       "type": 0,
-      "value": "Compact"
+      "value": "Compacta"
     }
   ],
   "Nimbus.DataTable.compactAriaLabel": [
     {
       "type": 0,
-      "value": "Compact section"
+      "value": "Sección compacta"
     }
   ],
   "Nimbus.DataTable.dataTable": [
@@ -126,49 +126,49 @@
   "Nimbus.DataTable.fullText": [
     {
       "type": 0,
-      "value": "Full text"
+      "value": "Texto completo"
     }
   ],
   "Nimbus.DataTable.fullTextAriaLabel": [
     {
       "type": 0,
-      "value": "Full text section"
+      "value": "Sección de texto completo"
     }
   ],
   "Nimbus.DataTable.hiddenColumns": [
     {
       "type": 0,
-      "value": "Hidden columns"
+      "value": "Columnas ocultas"
     }
   ],
   "Nimbus.DataTable.hiddenColumnsAriaLabel": [
     {
       "type": 0,
-      "value": "Hidden columns list"
+      "value": "Lista de columnas ocultas"
     }
   ],
   "Nimbus.DataTable.hideColumn": [
     {
       "type": 0,
-      "value": "Hide column"
+      "value": "Ocultar columna"
     }
   ],
   "Nimbus.DataTable.layoutSettings": [
     {
       "type": 0,
-      "value": "Layout settings"
+      "value": "Configuraciones de formato"
     }
   ],
   "Nimbus.DataTable.layoutSettingsAriaLabel": [
     {
       "type": 0,
-      "value": "Layout settings section"
+      "value": "Sección de configuraciones de formato"
     }
   ],
   "Nimbus.DataTable.noHiddenColumns": [
     {
       "type": 0,
-      "value": "No Hidden columns"
+      "value": "Sin columnas ocultas"
     }
   ],
   "Nimbus.DataTable.pinRows": [
@@ -180,7 +180,7 @@
   "Nimbus.DataTable.reset": [
     {
       "type": 0,
-      "value": "Reset columns"
+      "value": "Restablecer columnas"
     }
   ],
   "Nimbus.DataTable.resizeColumn": [
@@ -192,19 +192,19 @@
   "Nimbus.DataTable.rowDensity": [
     {
       "type": 0,
-      "value": "Row density"
+      "value": "Densidad de filas"
     }
   ],
   "Nimbus.DataTable.rowDensityAriaLabel": [
     {
       "type": 0,
-      "value": "Row density section"
+      "value": "Sección de densidad de filas"
     }
   ],
   "Nimbus.DataTable.searchHiddenColumns": [
     {
       "type": 0,
-      "value": "Search..."
+      "value": "Buscar..."
     }
   ],
   "Nimbus.DataTable.selectRow": [
@@ -216,49 +216,49 @@
   "Nimbus.DataTable.settings": [
     {
       "type": 0,
-      "value": "Table settings"
+      "value": "Configuraciones de tablas"
     }
   ],
   "Nimbus.DataTable.textPreviews": [
     {
       "type": 0,
-      "value": "Text previews"
+      "value": "Vistas preliminares de texto"
     }
   ],
   "Nimbus.DataTable.textPreviewsAriaLabel": [
     {
       "type": 0,
-      "value": "Text previews section"
+      "value": "Sección de vistas preliminares de texto"
     }
   ],
   "Nimbus.DataTable.textVisibility": [
     {
       "type": 0,
-      "value": "Text visibility"
+      "value": "Visibilidad de texto"
     }
   ],
   "Nimbus.DataTable.textVisibilityAriaLabel": [
     {
       "type": 0,
-      "value": "Text visibility section"
+      "value": "Sección de visibilidad de texto"
     }
   ],
   "Nimbus.DataTable.visibleColumns": [
     {
       "type": 0,
-      "value": "Visible columns"
+      "value": "Columnas visibles"
     }
   ],
   "Nimbus.DataTable.visibleColumnsAria": [
     {
       "type": 0,
-      "value": "Visible columns list"
+      "value": "Lista de columnas visibles"
     }
   ],
   "Nimbus.DataTable.visibleColumnsList": [
     {
       "type": 0,
-      "value": "Visible columns"
+      "value": "Columnas visibles"
     }
   ],
   "Nimbus.DatePicker.Time.enterTime": [
