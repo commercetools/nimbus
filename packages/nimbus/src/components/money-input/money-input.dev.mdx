@@ -144,23 +144,61 @@ const App = () => {
   return (
     <Stack direction="column" gap="400">
       <MoneyInput
-        label="Disabled"
+        aria-label="Disabled"
         value={value}
         currencies={["USD"]}
         isDisabled
       />
       <MoneyInput
-        label="Read-only"
+        aria-label="Read-only"
         value={value}
         currencies={["USD"]}
         isReadOnly
       />
       <MoneyInput
-        label="Invalid"
+        aria-label="Invalid"
         value={value}
         currencies={["USD"]}
         isInvalid
       />
+    </Stack>
+  );
+}
+```
+
+### Currency input control
+
+Use `isCurrencyInputDisabled` to disable only the currency selector while keeping the amount input editable. This is useful when the currency is predetermined but the amount should still be modifiable.
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "123.45",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="bold">Currency selector enabled</Text>
+      <MoneyInput
+        aria-label="Price with currency selection"
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={setValue}
+      />
+
+      <Text fontWeight="bold">Currency selector disabled</Text>
+      <MoneyInput
+        aria-label="Price with fixed currency"
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={setValue}
+        isCurrencyInputDisabled
+      />
+
+      <Text fontSize="sm">
+        Current value: {value.amount} {value.currencyCode}
+      </Text>
     </Stack>
   );
 }
