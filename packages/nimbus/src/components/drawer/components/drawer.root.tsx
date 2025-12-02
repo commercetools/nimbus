@@ -30,8 +30,9 @@ export const DrawerRoot = (props: DrawerRootProps) => {
   });
 
   // Share all props (config + variant props) with the Drawer subcomponents
+  // Also pass hasDrawerTrigger so DrawerContent knows whether to manage its own state
   return (
-    <DrawerProvider value={props}>
+    <DrawerProvider value={{ ...props, hasDrawerTrigger }}>
       {hasDrawerTrigger ? (
         // When there's a Drawer.Trigger, use DialogTrigger for React Aria integration
         <RaDialogTrigger
