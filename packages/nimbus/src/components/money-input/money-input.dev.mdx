@@ -1,0 +1,565 @@
+---
+title: MoneyInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { MoneyInput, type MoneyInputProps, type MoneyInputValue } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The `MoneyInput` is a controlled component that manages both an amount and a currency code. It requires a `value` object and an `onValueChange` handler.
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={setValue}
+      />
+      <Text fontSize="sm">
+        Value: {value.amount} {value.currencyCode}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "123.45",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInput
+        size="sm"
+        value={value}
+        currencies={["USD", "EUR"]}
+        onValueChange={setValue}
+      />
+      <MoneyInput
+        size="md"
+        value={value}
+        currencies={["USD", "EUR"]}
+        onValueChange={setValue}
+      />
+    </Stack>
+  );
+}
+```
+
+### Currency configuration
+
+The `currencies` prop controls the available options in the dropdown. If no currencies are provided (or an empty array is passed), the component renders a static label for the currency code instead of a dropdown.
+
+```jsx-live-dev
+const App = () => {
+  const [value1, setValue1] = useState<MoneyInputValue>({
+    amount: "100.00",
+    currencyCode: "USD"
+  });
+
+  const [value2, setValue2] = useState<MoneyInputValue>({
+    amount: "50.00",
+    currencyCode: "EUR"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="bold">Multiple currencies (Dropdown)</Text>
+      <MoneyInput
+        value={value1}
+        currencies={["USD", "EUR", "GBP", "JPY"]}
+        onValueChange={setValue1}
+      />
+
+      <Text fontWeight="bold">No currencies list (Static Label)</Text>
+      <MoneyInput
+        value={value2}
+        currencies={[]}
+        onValueChange={setValue2}
+      />
+    </Stack>
+  );
+}
+```
+
+### High precision support
+
+The `MoneyInput` automatically detects high precision values (more decimal places than standard for the currency) and displays a "High Precision" badge. This feature can be toggled with `hasHighPrecisionBadge`.
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "123.4567",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        Try entering more than 2 decimal places for USD (e.g., 123.4567)
+      </Text>
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR"]}
+        onValueChange={setValue}
+        hasHighPrecisionBadge={true}
+      />
+    </Stack>
+  );
+}
+```
+
+### State variations
+
+The component supports standard interactive states including disabled, read-only, and invalid.
+
+```jsx-live-dev
+const App = () => {
+  const value = { amount: "123.45", currencyCode: "USD" };
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInput
+        aria-label="Disabled"
+        value={value}
+        currencies={["USD"]}
+        isDisabled
+      />
+      <MoneyInput
+        aria-label="Read-only"
+        value={value}
+        currencies={["USD"]}
+        isReadOnly
+      />
+      <MoneyInput
+        aria-label="Invalid"
+        value={value}
+        currencies={["USD"]}
+        isInvalid
+      />
+    </Stack>
+  );
+}
+```
+
+### Currency input control
+
+Use `isCurrencyInputDisabled` to disable only the currency selector while keeping the amount input editable. This is useful when the currency is predetermined but the amount should still be modifiable.
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "123.45",
+    currencyCode: "USD"
+  });
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="bold">Currency selector enabled</Text>
+      <MoneyInput
+        aria-label="Price with currency selection"
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={setValue}
+      />
+
+      <Text fontWeight="bold">Currency selector disabled</Text>
+      <MoneyInput
+        aria-label="Price with fixed currency"
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={setValue}
+        isCurrencyInputDisabled
+      />
+
+      <Text fontSize="sm">
+        Current value: {value.amount} {value.currencyCode}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Event handlers
+
+The component provides granular event handlers for modern integration patterns:
+- `onValueChange`: Called when either amount or currency changes (recommended)
+- `onAmountChange`: Called when only the amount changes
+- `onCurrencyChange`: Called when only the currency changes
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+  const [lastAmountChange, setLastAmountChange] = useState<string>("-");
+  const [lastCurrencyChange, setLastCurrencyChange] = useState<string>("-");
+
+  return (
+    <Stack direction="column" gap="400">
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR", "GBP"]}
+        onValueChange={(newValue) => {
+          setValue(newValue);
+        }}
+        onAmountChange={(amount) => setLastAmountChange(amount || "(empty)")}
+        onCurrencyChange={(code) => setLastCurrencyChange(code)}
+      />
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm">Current value: {value.amount} {value.currencyCode}</Text>
+        <Text fontSize="sm">Last amount change: {lastAmountChange}</Text>
+        <Text fontSize="sm">Last currency change: {lastCurrencyChange}</Text>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Value type requirements
+
+The `value` prop must be an object matching the `MoneyInputValue` interface:
+
+```tsx
+type MoneyInputValue = {
+  amount: string;
+  currencyCode: string;
+};
+```
+
+Note that `amount` is a string to preserve precision and avoid floating-point errors.
+
+### Accessibility
+
+The `MoneyInput` handles accessibility requirements for its internal input and select components. However, you must always associate a label with the component.
+
+Using `aria-label`:
+
+```tsx
+<MoneyInput
+  aria-label="Product Price"
+  value={value}
+  // ...
+/>
+```
+
+Using `aria-labelledby`:
+
+```tsx
+<label id="price-label">Product Price</label>
+<MoneyInput
+  aria-labelledby="price-label"
+  value={value}
+  // ...
+/>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-price-input";
+
+export const Example = () => (
+  <MoneyInput id={PERSISTENT_ID} value={value} />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Moves focus between the currency dropdown and the amount input.
+- `Arrow Keys` (in Dropdown): Navigates between currency options.
+- `Enter` / `Space` (in Dropdown): Selects the currency.
+- `Arrow Keys` (in Input): Adjusts the cursor position.
+
+## API reference
+
+<PropsTable id="MoneyInput" />
+
+## Common patterns
+
+### Working with locales
+
+The `MoneyInput` uses the application's locale (via `NimbusI18nProvider`) to format numbers appropriately (e.g., using commas for decimals in German).
+
+```jsx-live-dev
+const App = () => {
+  // Note: In a real app, NimbusI18nProvider would wrap the entire app
+  // This example simulates different locales
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="bold">German Locale (de-DE)</Text>
+      <NimbusI18nProvider locale="de-DE">
+        <MoneyInput
+          value={{ amount: "1234.56", currencyCode: "EUR" }}
+          currencies={["EUR"]}
+          isReadOnly
+        />
+      </NimbusI18nProvider>
+
+      <Text fontWeight="bold">US Locale (en-US)</Text>
+      <NimbusI18nProvider locale="en-US">
+        <MoneyInput
+          value={{ amount: "1234.56", currencyCode: "USD" }}
+          currencies={["USD"]}
+          isReadOnly
+        />
+      </NimbusI18nProvider>
+    </Stack>
+  );
+}
+```
+
+## Static utility methods
+
+The MoneyInput component provides static utility methods for advanced use cases like testing, API integration, and form validation. These methods are particularly useful for compatibility and working with backend data formats.
+
+### ID helper methods
+
+These methods generate element IDs for DOM access and testing:
+
+#### getAmountInputId
+
+Returns the ID of the amount input element within a MoneyInput.
+
+```tsx
+// Usage in testing or DOM manipulation
+const amountInputId = MoneyInput.getAmountInputId("product-price");
+// Returns: "product-price.amount"
+
+// Example: Focus the amount input programmatically
+const amountInput = document.getElementById(amountInputId);
+amountInput?.focus();
+```
+
+#### getCurrencyDropdownId
+
+Returns the ID of the currency dropdown element within a MoneyInput.
+
+```tsx
+// Usage in testing or DOM manipulation
+const currencyDropdownId = MoneyInput.getCurrencyDropdownId("product-price");
+// Returns: "product-price.currencyCode"
+
+// Example: Access the currency dropdown in tests
+const currencyDropdown = document.getElementById(currencyDropdownId);
+```
+
+**Use case:** These methods are helpful when writing integration tests or when you need to programmatically interact with specific parts of the MoneyInput component.
+
+### Data transformation methods
+
+These methods convert between UI format (`MoneyInputValue`) and API format (`MoneyValue`):
+
+#### convertToMoneyValue
+
+Converts a MoneyInputValue (UI format with string amount) to MoneyValue (API format with centAmount).
+
+```tsx
+import { MoneyInput, type MoneyInputValue, type MoneyValue } from '@commercetools/nimbus';
+
+// Convert UI value to API format before submission
+const uiValue: MoneyInputValue = {
+  amount: "123.45",
+  currencyCode: "USD"
+};
+
+const apiValue: MoneyValue = MoneyInput.convertToMoneyValue(uiValue, "en-US");
+// Returns: {
+//   type: "centPrecision",
+//   currencyCode: "USD",
+//   centAmount: 12345,
+//   fractionDigits: 2
+// }
+
+// For high precision values
+const highPrecisionValue: MoneyInputValue = {
+  amount: "123.4567",
+  currencyCode: "USD"
+};
+
+const apiHighPrecision: MoneyValue = MoneyInput.convertToMoneyValue(
+  highPrecisionValue,
+  "en-US"
+);
+// Returns: {
+//   type: "highPrecision",
+//   currencyCode: "USD",
+//   centAmount: 12346, // Rounded to standard precision
+//   preciseAmount: 1234567,
+//   fractionDigits: 4
+// }
+```
+
+#### parseMoneyValue
+
+Converts a MoneyValue (API format) to MoneyInputValue (UI format) for display in the component.
+
+```tsx
+import { MoneyInput, type MoneyValue, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Convert API data to UI format when loading
+const apiValue: MoneyValue = {
+  type: "centPrecision",
+  currencyCode: "EUR",
+  centAmount: 9999,
+  fractionDigits: 2
+};
+
+const uiValue: MoneyInputValue = MoneyInput.parseMoneyValue(apiValue, "en-US");
+// Returns: {
+//   amount: "99.99",
+//   currencyCode: "EUR"
+// }
+
+// Example: Loading data from API
+const ProductPriceEditor = ({ productId }: { productId: string }) => {
+  const [value, setValue] = useState<MoneyInputValue>({ amount: "", currencyCode: "USD" });
+
+  useEffect(() => {
+    async function loadProduct() {
+      const product = await fetchProduct(productId);
+      // Convert API MoneyValue to UI format
+      const uiValue = MoneyInput.parseMoneyValue(product.price, navigator.language);
+      setValue(uiValue);
+    }
+    loadProduct();
+  }, [productId]);
+
+  return (
+    <MoneyInput
+      value={value}
+      currencies={["USD", "EUR", "GBP"]}
+      onValueChange={setValue}
+      aria-label="Product Price"
+    />
+  );
+};
+```
+
+**Use case:** These methods enable seamless integration with commercetools APIs and other backends that use the MoneyValue format with `centAmount` and `preciseAmount` fields.
+
+### Validation methods
+
+These methods validate MoneyInputValue data:
+
+#### isEmpty
+
+Checks if a MoneyInputValue is empty (missing amount or currency).
+
+```tsx
+import { MoneyInput, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Check before form submission
+const handleSubmit = (value: MoneyInputValue) => {
+  if (MoneyInput.isEmpty(value)) {
+    alert("Please enter a price");
+    return;
+  }
+
+  // Proceed with submission
+  submitPrice(value);
+};
+
+// Example values
+MoneyInput.isEmpty({ amount: "", currencyCode: "USD" }); // true
+MoneyInput.isEmpty({ amount: "100", currencyCode: "" }); // true
+MoneyInput.isEmpty({ amount: "100", currencyCode: "USD" }); // false
+```
+
+#### isHighPrecision
+
+Checks if a MoneyInputValue exceeds the standard precision for its currency.
+
+```tsx
+import { MoneyInput, type MoneyInputValue } from '@commercetools/nimbus';
+
+// Check if value needs high precision handling
+const value: MoneyInputValue = {
+  amount: "123.4567",
+  currencyCode: "USD" // USD standard precision is 2
+};
+
+const needsHighPrecision = MoneyInput.isHighPrecision(value, "en-US");
+// Returns: true (4 decimals > 2 standard for USD)
+
+// Example: Warn users about precision
+const PriceInput = () => {
+  const [value, setValue] = useState<MoneyInputValue>({
+    amount: "",
+    currencyCode: "USD"
+  });
+
+  const showPrecisionWarning = MoneyInput.isHighPrecision(value, navigator.language);
+
+  return (
+    <Stack direction="column" gap="200">
+      <MoneyInput
+        value={value}
+        currencies={["USD", "EUR"]}
+        onValueChange={setValue}
+        aria-label="Price"
+      />
+      {showPrecisionWarning && (
+        <Text color="warning" fontSize="sm">
+          This price uses high precision formatting
+        </Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+**Use case:** These methods help validate form data before submission and provide appropriate user feedback.
+
+### Type definitions
+
+When using static methods, you'll need these type imports:
+
+```tsx
+import {
+  MoneyInput,
+  type MoneyInputValue,  // UI format: { amount: string, currencyCode: string }
+  type MoneyValue,       // API format: { centAmount: number, currencyCode, ... }
+  type CurrencyCode,     // Valid currency codes
+} from '@commercetools/nimbus';
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MoneyInput in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: money-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-moneyinput--docs)
+- [React Aria NumberField](https://react-spectrum.adobe.com/react-aria/NumberField.html)
+- [React Aria Select](https://react-spectrum.adobe.com/react-aria/Select.html)
