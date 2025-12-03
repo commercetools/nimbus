@@ -23,7 +23,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
   // Get configuration from context
   const {
     hasDrawerTrigger,
-    isDismissable,
+    isDismissable = true, // Default to true so clicking outside closes the drawer
     isKeyboardDismissDisabled,
     shouldCloseOnInteractOutside,
     isOpen,
