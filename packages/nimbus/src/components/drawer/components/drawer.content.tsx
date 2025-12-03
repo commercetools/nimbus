@@ -20,24 +20,35 @@ import { useDrawerRootContext } from "./drawer.context";
 export const DrawerContent = (props: DrawerContentProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 
-  // Get recipe configuration from context instead of props
+  // Get configuration from context
   const {
-    defaultOpen,
-    isDismissable,
+    hasDrawerTrigger,
+    isDismissable = true, // Default to true so clicking outside closes the drawer
     isKeyboardDismissDisabled,
     shouldCloseOnInteractOutside,
     isOpen,
     onOpenChange,
+    defaultOpen,
   } = useDrawerRootContext();
 
-  const modalProps = {
-    defaultOpen,
-    isDismissable,
-    isKeyboardDismissDisabled,
-    shouldCloseOnInteractOutside,
-    isOpen,
-    onOpenChange,
-  };
+  // When there's a Drawer.Trigger, DialogTrigger manages state via React Context
+  // When there's NO Drawer.Trigger, ModalOverlay must manage its own state
+  const modalProps = hasDrawerTrigger
+    ? {
+        // With trigger: Only pass dismissal props, state is managed by DialogTrigger
+        isDismissable,
+        isKeyboardDismissDisabled,
+        shouldCloseOnInteractOutside,
+      }
+    : {
+        // Without trigger: Pass state management props to ModalOverlay
+        isDismissable,
+        isKeyboardDismissDisabled,
+        shouldCloseOnInteractOutside,
+        isOpen,
+        onOpenChange,
+        defaultOpen,
+      };
 
   const [styleProps] = extractStyleProps(restProps);
 
