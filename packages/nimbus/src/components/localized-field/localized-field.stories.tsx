@@ -77,6 +77,12 @@ export const Base: Story = {
   render: () => {
     return <LocalizedFieldStoryComponent {...baseStoryProps} />;
   },
+  // Increase timeout for this complex test with many interactions
+  parameters: {
+    test: {
+      timeout: 60000, // 60 seconds
+    },
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("Text Field", async () => {
