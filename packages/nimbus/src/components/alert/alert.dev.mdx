@@ -194,77 +194,9 @@ The `Alert` component manages its own layout grid. To ensure correct placement:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using `Alert` within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using Alert within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
 
-### Basic rendering tests
-
-Verify the alert renders with the expected content and role:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { Alert } from '@commercetools/nimbus';
-
-describe('Alert integration', () => {
-  it('renders the alert message', () => {
-    render(
-      <Alert.Root colorPalette="critical">
-        <Alert.Title>Error saving</Alert.Title>
-        <Alert.Description>Connection lost</Alert.Description>
-      </Alert.Root>
-    );
-
-    expect(screen.getByRole('alert')).toBeInTheDocument();
-    expect(screen.getByText('Error saving')).toBeInTheDocument();
-    expect(screen.getByText('Connection lost')).toBeInTheDocument();
-  });
-});
-```
-
-### Interaction tests
-
-Test interactions with actions and dismiss buttons:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Alert, Button } from '@commercetools/nimbus';
-
-describe('Alert interactions', () => {
-  it('calls the dismiss handler when clicked', async () => {
-    const user = userEvent.setup();
-    const handleDismiss = jest.fn();
-
-    render(
-      <Alert.Root>
-        <Alert.Title>Notification</Alert.Title>
-        <Alert.DismissButton onPress={handleDismiss} />
-      </Alert.Root>
-    );
-
-    const dismissBtn = screen.getByRole('button', { name: /dismiss/i });
-    await user.click(dismissBtn);
-
-    expect(handleDismiss).toHaveBeenCalledTimes(1);
-  });
-
-  it('handles action clicks', async () => {
-    const user = userEvent.setup();
-    const handleAction = jest.fn();
-
-    render(
-      <Alert.Root>
-        <Alert.Title>Confirmation</Alert.Title>
-        <Alert.Actions>
-          <Button onPress={handleAction}>Confirm</Button>
-        </Alert.Actions>
-      </Alert.Root>
-    );
-
-    await user.click(screen.getByRole('button', { name: 'Confirm' }));
-    expect(handleAction).toHaveBeenCalled();
-  });
-});
-```
+{{docs-tests: alert.docs.spec.tsx}}
 
 ## Resources
 
