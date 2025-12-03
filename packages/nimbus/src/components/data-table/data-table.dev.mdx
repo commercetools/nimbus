@@ -1,0 +1,790 @@
+---
+title: DataTable Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DataTable, type DataTableProps, type DataTableColumnItem, type DataTableRowItem, type SortDescriptor } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The DataTable renders data in a tabular format with support for sorting, selection, resizing, and nested content. At minimum, you need to provide `columns` and `rows`:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
+    { id: '2', name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
+    { id: '3', name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' },
+  ];
+
+  return <DataTable columns={columns} rows={rows} />;
+}
+```
+
+## Working with columns and rows
+
+### Column configuration
+
+Each column requires an `id`, `header`, and `accessor` function. Additional options control sorting, resizing, and custom rendering:
+
+```tsx
+import type { DataTableColumnItem } from '@commercetools/nimbus';
+
+const columns: DataTableColumnItem[] = [
+  {
+    id: 'name',
+    header: 'Product Name',
+    accessor: (row) => row.name,
+    isSortable: true,      // Enable sorting for this column
+    isResizable: true,     // Enable column resizing
+    isRowHeader: true,     // Mark as row header for accessibility
+    width: 200,            // Initial width in pixels
+    minWidth: 100,         // Minimum width when resizing
+    maxWidth: 400,         // Maximum width when resizing
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    accessor: (row) => row.status,
+    // Custom rendering with the render prop
+    render: ({ value }) => (
+      <Badge colorPalette={value === 'Active' ? 'positive' : 'neutral'}>
+        {value}
+      </Badge>
+    ),
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    accessor: (row) => row.id,
+    headerIcon: <IconButton aria-label="Info" size="2xs" variant="ghost"><Info /></IconButton>,
+    isSortable: false,
+  },
+];
+```
+
+### Row data structure
+
+Each row must have a unique `id` property. Additional properties are accessed via column `accessor` functions:
+
+```tsx
+import type { DataTableRowItem } from '@commercetools/nimbus';
+
+const rows: DataTableRowItem[] = [
+  { id: '1', name: 'Product A', status: 'Active', price: 99.99 },
+  { id: '2', name: 'Product B', status: 'Draft', price: 149.99, isDisabled: true },
+  { id: '3', name: 'Product C', status: 'Active', price: 79.99 },
+];
+```
+
+## Usage examples
+
+### Density options
+
+The `density` prop controls row height and padding. Use `condensed` for data-dense interfaces:
+
+```jsx-live-dev
+const App = () => {
+  const [density, setDensity] = useState('default');
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User' },
+    { id: '3', name: 'Carol', role: 'Editor' },
+  ];
+
+  return (
+    <Stack gap="400">
+      <Stack direction="row" gap="300">
+        <Button
+          variant={density === 'default' ? 'solid' : 'outline'}
+          colorPalette="primary"
+          onPress={() => setDensity('default')}
+        >
+          Default
+        </Button>
+        <Button
+          variant={density === 'condensed' ? 'solid' : 'outline'}
+          colorPalette="primary"
+          onPress={() => setDensity('condensed')}
+        >
+          Condensed
+        </Button>
+      </Stack>
+      <DataTable columns={columns} rows={rows} density={density} />
+    </Stack>
+  );
+}
+```
+
+### Sorting
+
+Enable sorting with `allowsSorting`. Individual columns can opt-out using `isSortable: false`:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name, isSortable: true },
+    { id: 'age', header: 'Age', accessor: (row) => row.age, isSortable: true },
+    { id: 'role', header: 'Role', accessor: (row) => row.role, isSortable: false },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', age: 30, role: 'Admin' },
+    { id: '2', name: 'Bob', age: 25, role: 'User' },
+    { id: '3', name: 'Carol', age: 28, role: 'Editor' },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click column headers to sort. The "Role" column is not sortable.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        allowsSorting
+        defaultSortDescriptor={{ column: 'name', direction: 'ascending' }}
+      />
+    </Stack>
+  );
+}
+```
+
+### Controlled sorting
+
+For external sort state management, use `sortDescriptor` and `onSortChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [sortDescriptor, setSortDescriptor] = useState({
+    column: 'name',
+    direction: 'ascending',
+  });
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name, isSortable: true },
+    { id: 'age', header: 'Age', accessor: (row) => row.age, isSortable: true },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', age: 30 },
+    { id: '2', name: 'Bob', age: 25 },
+    { id: '3', name: 'Carol', age: 28 },
+  ];
+
+  return (
+    <Stack gap="400">
+      <Text>
+        Sorting by: <Text as="strong">{sortDescriptor.column}</Text> ({sortDescriptor.direction})
+      </Text>
+      <Stack direction="row" gap="300">
+        <Button
+          variant="outline"
+          size="md"
+          colorPalette="primary"
+          onPress={() => setSortDescriptor({ column: 'name', direction: 'ascending' })}
+        >
+          Sort by Name (A-Z)
+        </Button>
+        <Button
+          variant="outline"
+          size="md"
+          colorPalette="primary"
+          onPress={() => setSortDescriptor({ column: 'age', direction: 'descending' })}
+        >
+          Sort by Age (High-Low)
+        </Button>
+      </Stack>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        allowsSorting
+        sortDescriptor={sortDescriptor}
+        onSortChange={setSortDescriptor}
+      />
+    </Stack>
+  );
+}
+```
+
+### Row selection
+
+Enable selection with `selectionMode`. Supports `none`, `single`, or `multiple`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = useState(new Set(['1']));
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com' },
+    { id: '2', name: 'Bob', email: 'bob@example.com' },
+    { id: '3', name: 'Carol', email: 'carol@example.com' },
+  ];
+
+  const selectedCount = selectedKeys === 'all' ? rows.length : selectedKeys.size;
+
+  return (
+    <Stack gap="400">
+      <Text>Selected: {selectedCount} row(s)</Text>
+      <Stack direction="row" gap="300">
+        <Button 
+          variant="outline"
+          colorPalette="primary"
+          size="md"
+          onPress={() => setSelectedKeys(new Set())}>
+          Clear
+        </Button>
+        <Button size="md" colorPalette="primary" variant="outline" onPress={() => setSelectedKeys('all')}>
+          Select All
+        </Button>
+      </Stack>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    </Stack>
+  );
+}
+```
+
+### Resizable columns
+
+Enable column resizing with `isResizable` on the table or individual columns:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name, isResizable: true, width: 150 },
+    { id: 'description', header: 'Description', accessor: (row) => row.description, isResizable: true },
+    { id: 'status', header: 'Status', accessor: (row) => row.status, isResizable: false },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Product A', description: 'A great product for everyday use', status: 'Active' },
+    { id: '2', name: 'Product B', description: 'Premium quality item', status: 'Draft' },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Drag column borders to resize. The "Status" column is fixed width.</Text>
+      <DataTable columns={columns} rows={rows} isResizable />
+    </Stack>
+  );
+}
+```
+
+### Sticky header with scrolling
+
+Use `maxHeight` to enable vertical scrolling with a sticky header:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = Array.from({ length: 20 }, (_, i) => ({
+    id: String(i + 1),
+    name: `User ${i + 1}`,
+    role: i % 3 === 0 ? 'Admin' : i % 3 === 1 ? 'Editor' : 'Viewer',
+  }));
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      maxHeight="300px"
+    />
+  );
+}
+```
+
+### Text truncation
+
+Enable `isTruncated` to truncate long text with ellipsis:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'description', header: 'Description', accessor: (row) => row.description },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Product A',
+      description: 'This is a very long description that should be truncated when displayed in the table cell to prevent layout issues.',
+    },
+    {
+      id: '2',
+      name: 'Product B',
+      description: 'Another lengthy description that demonstrates how truncation works with ellipsis and maintains a clean table layout.',
+    },
+  ];
+
+  return <DataTable columns={columns} rows={rows} isTruncated />;
+}
+```
+
+### Clickable rows
+
+Use `onRowClick` to handle row click events for navigation or detail views:
+
+```jsx-live-dev
+const App = () => {
+  const [clickedRow, setClickedRow] = useState(null);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com' },
+    { id: '2', name: 'Bob', email: 'bob@example.com' },
+    { id: '3', name: 'Carol', email: 'carol@example.com' },
+  ];
+
+  return (
+    <Stack gap="400">
+      <Text>
+        {clickedRow ? `Clicked: ${clickedRow.name}` : 'Click a row to see details'}
+      </Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        onRowClick={(row) => setClickedRow(row)}
+      />
+    </Stack>
+  );
+}
+```
+
+### Search and filtering
+
+Use the `search` prop to filter rows across all visible columns:
+
+```jsx-live-dev
+const App = () => {
+  const [search, setSearch] = useState('');
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', role: 'Admin', department: 'Engineering' },
+    { id: '2', name: 'Bob Smith', role: 'Developer', department: 'Engineering' },
+    { id: '3', name: 'Carol Williams', role: 'Designer', department: 'Design' },
+    { id: '4', name: 'David Brown', role: 'Manager', department: 'Sales' },
+  ];
+
+  return (
+    <Stack gap="400">
+      <TextInput
+        value={search}
+        onChange={setSearch}
+        placeholder="Search..."
+        width="300px"
+        aria-label="Search table"
+      />
+      <DataTable columns={columns} rows={rows} search={search} />
+    </Stack>
+  );
+}
+```
+
+### Column visibility
+
+Control which columns are displayed using `visibleColumns`:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'email']);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'Admin', department: 'Engineering' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'User', department: 'Sales' },
+  ];
+
+  const toggleColumn = (colId) => {
+    setVisibleColumns((prev) =>
+      prev.includes(colId) ? prev.filter((id) => id !== colId) : [...prev, colId]
+    );
+  };
+
+  return (
+    <Stack gap="400">
+      <Stack direction="row" gap="300" wrap="wrap">
+        {columns.map((col) => (
+          <Checkbox
+            key={col.id}
+            isSelected={visibleColumns.includes(col.id)}
+            onChange={() => toggleColumn(col.id)}
+          >
+            {col.header}
+          </Checkbox>
+        ))}
+      </Stack>
+      <DataTable columns={columns} rows={rows} visibleColumns={visibleColumns} />
+    </Stack>
+  );
+}
+```
+
+### Nested rows
+
+Use `nestedKey` to enable expandable nested content:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Category', accessor: (row) => row.name },
+    { id: 'count', header: 'Products', accessor: (row) => row.count },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Electronics',
+      count: 3,
+      children: [
+        { id: '1-1', name: 'Laptops', count: 15 },
+        { id: '1-2', name: 'Phones', count: 25 },
+        { id: '1-3', name: 'Tablets', count: 10 },
+      ],
+    },
+    {
+      id: '2',
+      name: 'Clothing',
+      count: 2,
+      children: [
+        { id: '2-1', name: 'Shirts', count: 50 },
+        { id: '2-2', name: 'Pants', count: 30 },
+      ],
+    },
+    { id: '3', name: 'Books', count: 0 },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click the expand button to view nested items.</Text>
+      <DataTable columns={columns} rows={rows} nestedKey="children" />
+    </Stack>
+  );
+}
+```
+
+### With footer
+
+Add pagination or summary content using the `footer` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [page, setPage] = useState(1);
+  const pageSize = 3;
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const allRows = Array.from({ length: 10 }, (_, i) => ({
+    id: String(i + 1),
+    name: `User ${i + 1}`,
+    role: i % 2 === 0 ? 'Admin' : 'User',
+  }));
+
+  const totalPages = Math.ceil(allRows.length / pageSize);
+  const rows = allRows.slice((page - 1) * pageSize, page * pageSize);
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      footer={
+        <Stack direction="row" justify="space-between" align="center" width="full" px="400" py="300">
+          <Text fontSize="sm">
+            Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, allRows.length)} of {allRows.length}
+          </Text>
+          <Stack direction="row" gap="200">
+            <Button
+              size="md"
+              colorPalette="primary"
+              variant="outline"
+              onPress={() => setPage((p) => Math.max(1, p - 1))}
+              isDisabled={page === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              size="md"
+              variant="outline"
+              colorPalette="primary"
+              onPress={() => setPage((p) => Math.min(totalPages, p + 1))}
+              isDisabled={page === totalPages}
+            >
+              Next
+            </Button>
+          </Stack>
+        </Stack>
+      }
+    />
+  );
+}
+```
+
+### Disabled rows
+
+Use `disabledKeys` to prevent interaction with specific rows:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'status', header: 'Status', accessor: (row) => row.status },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Active Item', status: 'Available' },
+    { id: '2', name: 'Disabled Item', status: 'Unavailable' },
+    { id: '3', name: 'Another Active', status: 'Available' },
+  ];
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      selectionMode="multiple"
+      disabledKeys={new Set(['2'])}
+    />
+  );
+}
+```
+
+### Row pinning
+
+Pin important rows to the top of the table:
+
+```jsx-live-dev
+const App = () => {
+  const [pinnedRows, setPinnedRows] = useState(new Set(['1']));
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'priority', header: 'Priority', accessor: (row) => row.priority },
+  ];
+
+  const rows = [
+    { id: '1', name: 'High Priority Task', priority: 'High' },
+    { id: '2', name: 'Normal Task', priority: 'Normal' },
+    { id: '3', name: 'Low Priority Task', priority: 'Low' },
+  ];
+
+  return (
+    <Stack gap="400">
+      <Text>Row 1 is pinned to the top. Pinned rows stay at top when sorting.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        pinnedRows={pinnedRows}
+        onPinToggle={(rowId) => {
+          setPinnedRows((prev) => {
+            const next = new Set(prev);
+            if (next.has(rowId)) {
+              next.delete(rowId);
+            } else {
+              next.add(rowId);
+            }
+            return next;
+          });
+        }}
+        allowsSorting
+      />
+    </Stack>
+  );
+}
+```
+
+## Compound component API
+
+For advanced customization, use the compound component pattern:
+
+```jsx-live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User' },
+  ];
+
+  return (
+    <DataTable.Root columns={columns} rows={rows} allowsSorting>
+      <DataTable.Manager />
+      <DataTable.Table aria-label="Users table">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+      <DataTable.Footer>
+        <Stack direction="row" justify="center" py="300">
+          <Text fontSize="sm" color="neutral.11">Custom footer content</Text>
+        </Stack>
+      </DataTable.Footer>
+    </DataTable.Root>
+  );
+}
+```
+
+### Available sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `DataTable.Root` | Provider component that manages state and context |
+| `DataTable.Table` | The main table element |
+| `DataTable.Header` | Table header with column headers |
+| `DataTable.Body` | Table body containing rows |
+| `DataTable.Row` | Individual row component |
+| `DataTable.Cell` | Individual cell component |
+| `DataTable.Column` | Column header component |
+| `DataTable.Footer` | Footer section for pagination or summaries |
+| `DataTable.Manager` | Settings panel for column visibility and layout |
+
+## Component requirements
+
+### Accessibility
+
+The DataTable uses React Aria's Table components for full accessibility support:
+
+- **ARIA grid pattern**: The table implements the ARIA grid pattern with proper roles
+- **Keyboard navigation**: Full keyboard support with arrow keys, Tab, Enter, and Space
+- **Screen reader support**: Proper announcements for sorting, selection, and expansion
+
+Always provide an accessible label for the table:
+
+```tsx
+<DataTable
+  columns={columns}
+  rows={rows}
+  aria-label="Product inventory table"
+/>
+```
+
+Or with the compound component API:
+
+```tsx
+<DataTable.Root columns={columns} rows={rows}>
+  <DataTable.Table aria-label="Product inventory table">
+    <DataTable.Header />
+    <DataTable.Body />
+  </DataTable.Table>
+</DataTable.Root>
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab` / `Shift+Tab`: Move focus between interactive elements
+- `Arrow keys`: Navigate between cells and rows
+- `Enter` / `Space`: Activate sorting, selection, or expansion
+- `Escape`: Cancel current interaction
+
+## API reference
+
+<PropsTable id="DataTable" />
+
+### DataTableColumnItem
+
+```tsx
+type DataTableColumnItem<T extends object = Record<string, unknown>> = {
+  id: string;                              // Unique column identifier
+  header: ReactNode;                       // Column header content
+  accessor: (row: T) => ReactNode;         // Function to extract cell value
+  render?: (cell: {                        // Custom cell renderer
+    value: unknown;
+    row: T;
+    column: DataTableColumnItem<T>;
+  }) => ReactNode;
+  isResizable?: boolean;                   // Enable column resizing
+  width?: number | null;                   // Initial width in pixels
+  defaultWidth?: number | null;            // Default width
+  minWidth?: number | null;                // Minimum width when resizing
+  maxWidth?: number | null;                // Maximum width when resizing
+  sticky?: boolean;                        // Stick column to edge
+  isSortable?: boolean;                    // Enable sorting for column
+  isRowHeader?: boolean;                   // Mark as row header (accessibility)
+  headerIcon?: ReactNode;                  // Icon in column header
+};
+```
+
+### DataTableRowItem
+
+```tsx
+type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
+  id: string;           // Unique row identifier (required)
+  isDisabled?: boolean; // Disable row interactions
+  [key: string]: unknown;
+};
+```
+
+### SortDescriptor
+
+```tsx
+type SortDescriptor = {
+  column: string;                        // Column ID to sort by
+  direction: 'ascending' | 'descending'; // Sort direction
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DataTable in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: data-table.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-datatable--docs)
+- [React Aria Table](https://react-spectrum.adobe.com/react-aria/Table.html)
+- [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+
