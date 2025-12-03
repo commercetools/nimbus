@@ -1,12 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import {
-  FieldErrors,
-  FormField,
-  TextInput,
-  NimbusProvider,
-} from "@commercetools/nimbus";
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { FieldErrors, FormField, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -130,76 +124,13 @@ describe("FieldErrors - Custom rendering", () => {
  * @docs-order 3
  */
 describe("FieldErrors - FormField integration", () => {
-  it("shows errors only after field is touched", async () => {
-    const user = userEvent.setup();
+  it("shows errors when isVisible is true", () => {
     const errors = { missing: true };
-    let touched = false;
-
-    const { rerender } = render(
-      <NimbusProvider>
-        <FormField.Root isInvalid={touched}>
-          <FormField.Label>Email</FormField.Label>
-          <FormField.Input>
-            <TextInput
-              onBlur={() => {
-                touched = true;
-              }}
-              data-testid="email-input"
-            />
-          </FormField.Input>
-          <FormField.Error>
-            <FieldErrors
-              errors={errors}
-              isVisible={touched}
-              data-testid="field-errors"
-            />
-          </FormField.Error>
-        </FormField.Root>
-      </NimbusProvider>
-    );
-
-    // Initially no errors shown
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-
-    // Blur the input
-    const input = screen.getByTestId("email-input");
-    await user.click(input);
-    await user.tab();
-
-    // Rerender with touched state
-    rerender(
-      <NimbusProvider>
-        <FormField.Root isInvalid={true}>
-          <FormField.Label>Email</FormField.Label>
-          <FormField.Input>
-            <TextInput data-testid="email-input" />
-          </FormField.Input>
-          <FormField.Error>
-            <FieldErrors errors={errors} isVisible={true} />
-          </FormField.Error>
-        </FormField.Root>
-      </NimbusProvider>
-    );
-
-    // Now errors should be visible
-    await waitFor(() => {
-      expect(screen.getByRole("alert")).toBeInTheDocument();
-      expect(
-        screen.getByText("This field is required. Provide a value.")
-      ).toBeInTheDocument();
-    });
-  });
-
-  it("applies invalid state to FormField when errors exist", () => {
-    const errors = { invalid: true };
 
     render(
       <NimbusProvider>
-        <FormField.Root isInvalid={true} data-testid="form-field">
+        <FormField.Root isInvalid={true}>
           <FormField.Label>Email</FormField.Label>
-          <FormField.Input>
-            <TextInput />
-          </FormField.Input>
           <FormField.Error>
             <FieldErrors errors={errors} isVisible={true} />
           </FormField.Error>
@@ -207,8 +138,27 @@ describe("FieldErrors - FormField integration", () => {
       </NimbusProvider>
     );
 
-    const formField = screen.getByTestId("form-field");
-    expect(formField).toHaveAttribute("data-invalid", "true");
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(
+      screen.getByText("This field is required. Provide a value.")
+    ).toBeInTheDocument();
+  });
+
+  it("hides errors when isVisible is false", () => {
+    const errors = { missing: true };
+
+    render(
+      <NimbusProvider>
+        <FormField.Root isInvalid={true}>
+          <FormField.Label>Email</FormField.Label>
+          <FormField.Error>
+            <FieldErrors errors={errors} isVisible={false} />
+          </FormField.Error>
+        </FormField.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });
 

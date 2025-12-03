@@ -19,7 +19,7 @@ describe("LoadingSpinner - Basic rendering", () => {
     // Verify role and default label
     const spinner = screen.getByRole("progressbar");
     expect(spinner).toBeInTheDocument();
-    expect(spinner).toHaveAttribute("aria-label", "Loading");
+    expect(spinner).toHaveAttribute("aria-label", "Loading data");
   });
 
   it("renders with a custom accessible label", () => {

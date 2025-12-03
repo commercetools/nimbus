@@ -28,18 +28,19 @@ describe("Select - Basic rendering", () => {
     ).toBeInTheDocument();
   });
 
-  it("displays placeholder text", () => {
+  it("displays default placeholder text", () => {
     render(
       <NimbusProvider>
         <Select.Root aria-label="Select an option">
-          <Select.Options placeholder="Choose...">
+          <Select.Options>
             <Select.Option id="1">Option 1</Select.Option>
           </Select.Options>
         </Select.Root>
       </NimbusProvider>
     );
 
-    expect(screen.getByText("Choose...")).toBeInTheDocument();
+    // Default placeholder is "Select an item"
+    expect(screen.getByText("Select an item")).toBeInTheDocument();
   });
 });
 
