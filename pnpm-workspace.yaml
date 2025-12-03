@@ -10,7 +10,7 @@ catalogs:
     glob: ^11.0.3
     typescript: ~5.9.3
     typescript-eslint: ^8.48.0
-    tsx: ^4.20.6
+    tsx: ^4.21.0
     "@babel/core": ^7.28.5
     "@babel/runtime": ^7.28.4
     "@babel/preset-typescript": ^7.28.5
