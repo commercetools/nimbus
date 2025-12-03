@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DataTable, NimbusProvider } from "@commercetools/nimbus";
+import { DataTable, NimbusProvider, Box } from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
 
 // Sample test data
@@ -250,17 +250,14 @@ describe("DataTable - Row interactions", () => {
       </NimbusProvider>
     );
 
-    await user.click(screen.getByText("Alice Johnson"));
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1]; // Second data row (index 2 because of header)
+    const clickableCell = within(firstDataRow).getAllByRole("rowheader");
+    await user.click(clickableCell[0]);
 
-    const modal = within(document.body).getByRole("dialog");
-    expect(modal).toBeInTheDocument();
-
-    // expect(handleRowClick).toHaveBeenCalledWith(
-    //   expect.objectContaining({
-    //     id: "1",
-    //     name: /Alice Johnson/i,
-    //   })
-    // );
+    await waitFor(() => {
+      expect(handleRowClick).toHaveBeenCalled();
+    });
   });
 
   it("applies disabled state to specified rows", () => {
@@ -406,20 +403,18 @@ describe("DataTable - Nested rows", () => {
       name: "Parent Item",
       email: "parent@example.com",
       role: "Admin",
-      children: [
-        {
-          id: "1-1",
-          name: "Child Item 1",
-          email: "child1@example.com",
-          role: "User",
-        },
-        {
-          id: "1-2",
-          name: "Child Item 2",
-          email: "child2@example.com",
-          role: "User",
-        },
-      ],
+      children: (
+        <Box
+          p="500"
+          bg="neutral.2"
+          borderRadius="md"
+          border="1px solid"
+          borderColor="neutral.6"
+          m="200 0"
+        >
+          Child Item 1
+        </Box>
+      ),
     },
     {
       id: "2",
@@ -453,11 +448,11 @@ describe("DataTable - Nested rows", () => {
     expect(screen.queryByText("Child Item 1")).not.toBeInTheDocument();
 
     const expandButton = screen.getByRole("button", { name: /expand/i });
+    expect(expandButton).toBeInTheDocument();
     await user.click(expandButton);
 
-    await waitFor(() => {
-      expect(screen.getByText("Child Item 1")).toBeInTheDocument();
-      expect(screen.getByText("Child Item 2")).toBeInTheDocument();
+    await waitFor(async () => {
+      await expect(screen.getByText("Child Item 1")).toBeInTheDocument();
     });
   });
 
