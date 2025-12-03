@@ -1,0 +1,232 @@
+---
+title: Separator Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Separator, type SeparatorProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses the default horizontal orientation:
+
+```jsx-live-dev
+const App = () => (
+  <Box>
+    <Box p="400">Content above the separator</Box>
+    <Separator />
+    <Box p="400">Content below the separator</Box>
+  </Box>
+)
+```
+
+## Usage examples
+
+### Orientation options
+
+The Separator supports both horizontal and vertical orientations to divide content in different layouts:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontSize="sm" mb="300">Horizontal separator (default)</Text>
+      <Box p="300">Content above</Box>
+      <Separator orientation="horizontal" />
+      <Box p="300">Content below</Box>
+    </Box>
+
+    <Box>
+      <Text fontSize="sm" mb="300">Vertical separator</Text>
+      <Stack direction="row" height="100px" alignItems="center">
+        <Box p="300">Content left</Box>
+        <Separator orientation="vertical" />
+        <Box p="300">Content right</Box>
+      </Stack>
+    </Box>
+  </Stack>
+)
+```
+
+**Orientation differences:**
+- `orientation="horizontal"`: Creates a full-width horizontal divider (default)
+- `orientation="vertical"`: Creates a full-height vertical divider (requires parent with defined height)
+
+### Color palette customization
+
+Use the `colorPalette` prop to match the separator color to different background contexts:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" height="200px" gap="0">
+    <Box
+      flex="1"
+      bg="white"
+      p="400"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
+      <Text fontSize="sm" color="neutral.12" mb="300">
+        White background
+      </Text>
+      <Separator colorPalette="neutral" />
+    </Box>
+
+    <Box
+      flex="1"
+      colorPalette="slate"
+      bg="colorPalette.3"
+      p="400"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
+      <Text fontSize="sm" color="neutral.12" mb="300">
+        Slate background
+      </Text>
+      <Separator />
+    </Box>
+
+    <Box
+      flex="1"
+      colorPalette="primary"
+      bg="colorPalette.3"
+      p="400"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
+      <Text fontSize="sm" color="neutral.12" mb="300">
+        Primary background
+      </Text>
+      <Separator />
+    </Box>
+  </Stack>
+)
+```
+
+The separator automatically uses `colorPalette.6` from the current color palette context, ensuring proper contrast across different backgrounds.
+
+## Component requirements
+
+### Accessibility
+
+The Separator component handles accessibility requirements internally using React Aria:
+
+- Automatically applies `role="separator"` for screen readers
+- Sets `aria-orientation` when orientation is `"vertical"` (horizontal is the default and doesn't require explicit ARIA)
+- Non-focusable by default (separators are presentational elements)
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-separator";
+
+export const Example = () => (
+  <Separator id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+The Separator component is a presentational element and does not support keyboard interaction. It exists solely to provide visual division between content sections.
+
+## API reference
+
+<PropsTable id="Separator" />
+
+## Common patterns
+
+### Dividing form sections
+
+Use horizontal separators to visually group related form fields:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400" width="400px">
+    <Box>
+      <Text fontSize="md" fontWeight="500" mb="200">Personal Information</Text>
+      <Text fontSize="sm" color="neutral.11">Enter your basic details</Text>
+    </Box>
+
+    <Separator />
+
+    <Box>
+      <Text fontSize="md" fontWeight="500" mb="200">Contact Details</Text>
+      <Text fontSize="sm" color="neutral.11">How can we reach you?</Text>
+    </Box>
+
+    <Separator />
+
+    <Box>
+      <Text fontSize="md" fontWeight="500" mb="200">Preferences</Text>
+      <Text fontSize="sm" color="neutral.11">Customize your experience</Text>
+    </Box>
+  </Stack>
+)
+```
+
+### Toolbar dividers
+
+Use vertical separators within toolbars to organize actions into logical groups:
+
+```jsx-live-dev
+const App = () => (
+  <Toolbar aria-label="Text formatting">
+    <ToggleButtonGroup.Root selectionMode="multiple" defaultSelectedKeys={["bold"]}>
+      <IconToggleButton id="bold" size="xs" variant="ghost" aria-label="Bold">
+        <Icons.FormatBold />
+      </IconToggleButton>
+      <IconToggleButton id="italic" size="xs" variant="ghost" aria-label="Italic">
+        <Icons.FormatItalic />
+      </IconToggleButton>
+      <IconToggleButton id="underline" size="xs" variant="ghost" aria-label="Underline">
+        <Icons.FormatUnderlined />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+
+    <Separator orientation="vertical" />
+
+    <ToggleButtonGroup.Root selectionMode="single" defaultSelectedKeys={["left"]}>
+      <IconToggleButton id="left" size="xs" variant="ghost" aria-label="Align Left">
+        <Icons.FormatAlignLeft />
+      </IconToggleButton>
+      <IconToggleButton id="center" size="xs" variant="ghost" aria-label="Align Center">
+        <Icons.FormatAlignCenter />
+      </IconToggleButton>
+      <IconToggleButton id="right" size="xs" variant="ghost" aria-label="Align Right">
+        <Icons.FormatAlignRight />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+
+    <Separator orientation="vertical" />
+
+    <ToggleButtonGroup.Root selectionMode="single">
+      <IconToggleButton id="bulleted" size="xs" variant="ghost" aria-label="Bulleted List">
+        <Icons.FormatListBulleted />
+      </IconToggleButton>
+      <IconToggleButton id="numbered" size="xs" variant="ghost" aria-label="Numbered List">
+        <Icons.FormatListNumbered />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+  </Toolbar>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Separator within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: separator.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-separator--docs)
+- [React Aria Separator](https://react-spectrum.adobe.com/react-aria/useSeparator.html)
