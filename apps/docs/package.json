@@ -29,6 +29,7 @@
     "chokidar": "^5.0.0",
     "express": "^4.21.2",
     "express-rate-limit": "catalog:tooling",
+    "formik": "catalog:",
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",

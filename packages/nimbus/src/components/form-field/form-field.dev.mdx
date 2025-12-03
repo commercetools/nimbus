@@ -1,0 +1,785 @@
+---
+title: FormField Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { FormField, type FormFieldProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+FormField is a compound component that provides a structured container for form inputs with automatic accessibility via React Aria. It coordinates label, input, description, and error elements:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Username</FormField.Label>
+    <FormField.Input>
+      <TextInput placeholder="Enter your username" />
+    </FormField.Input>
+    <FormField.Description>
+      Must be 3-20 characters, letters and numbers only
+    </FormField.Description>
+  </FormField.Root>
+);
+```
+
+## Usage examples
+
+### Size options
+
+FormField supports two size variants that affect the typography scale:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <FormField.Root size="sm">
+      <FormField.Label>Small Size</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Small field" />
+      </FormField.Input>
+      <FormField.Description>Smaller typography for compact layouts</FormField.Description>
+    </FormField.Root>
+
+    <FormField.Root size="md">
+      <FormField.Label>Medium Size (default)</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Medium field" />
+      </FormField.Input>
+      <FormField.Description>Standard typography for most forms</FormField.Description>
+    </FormField.Root>
+  </Stack>
+);
+```
+
+### Layout direction
+
+Control the label and input positioning with the `direction` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <FormField.Root direction="column">
+      <FormField.Label>Column Layout (default)</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Label above input" />
+      </FormField.Input>
+      <FormField.Description>Label and input stacked vertically</FormField.Description>
+    </FormField.Root>
+
+    <FormField.Root direction="row">
+      <FormField.Label>Row Layout</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Label beside input" />
+      </FormField.Input>
+      <FormField.Description>Label and input side by side</FormField.Description>
+    </FormField.Root>
+  </Stack>
+);
+```
+
+### Required fields
+
+Mark fields as required to display a visual indicator and set ARIA attributes:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root isRequired>
+    <FormField.Label>Email Address</FormField.Label>
+    <FormField.Input>
+      <TextInput type="email" placeholder="your@email.com" />
+    </FormField.Input>
+    <FormField.Description>
+      We'll never share your email with anyone else
+    </FormField.Description>
+  </FormField.Root>
+);
+```
+
+### Validation errors
+
+Display error messages when validation fails using the `isInvalid` prop:
+
+```jsx-live-dev
+const App = () => {
+  const [email, setEmail] = React.useState('invalid-email');
+  const [touched, setTouched] = React.useState(false);
+
+  const isValid = email.includes('@') && email.includes('.');
+  const showError = touched && !isValid;
+
+  return (
+    <Stack direction="column" gap="400">
+      <FormField.Root isInvalid={showError} isRequired>
+        <FormField.Label>Email Address</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => setTouched(true)}
+            placeholder="your@email.com"
+          />
+        </FormField.Input>
+        <FormField.Description>Enter a valid email address</FormField.Description>
+        <FormField.Error>Please enter a valid email address</FormField.Error>
+      </FormField.Root>
+
+      <Text fontSize="300" color="neutral.11">
+        Current value: {email}
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Disabled state
+
+Disable user interaction with the field using `isDisabled`:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root isDisabled>
+    <FormField.Label>Account Type</FormField.Label>
+    <FormField.Input>
+      <TextInput value="Premium (locked)" readOnly />
+    </FormField.Input>
+    <FormField.Description>
+      Contact support to change your account type
+    </FormField.Description>
+  </FormField.Root>
+);
+```
+
+### Read-only state
+
+Display values without allowing edits using `isReadOnly`:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root isReadOnly>
+    <FormField.Label>User ID</FormField.Label>
+    <FormField.Input>
+      <TextInput value="user-12345-abcde" readOnly />
+    </FormField.Input>
+    <FormField.Description>
+      Your unique user identifier (cannot be changed)
+    </FormField.Description>
+  </FormField.Root>
+);
+```
+
+### Field descriptions
+
+Provide helpful context with description text that's automatically linked for screen readers:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <FormField.Root>
+      <FormField.Label>Password</FormField.Label>
+      <FormField.Input>
+        <PasswordInput placeholder="Enter password" />
+      </FormField.Input>
+      <FormField.Description>
+        Must be at least 8 characters with uppercase, lowercase, and numbers
+      </FormField.Description>
+    </FormField.Root>
+
+    <FormField.Root>
+      <FormField.Label>Confirm Password</FormField.Label>
+      <FormField.Input>
+        <PasswordInput placeholder="Re-enter password" />
+      </FormField.Input>
+      <FormField.Description>
+        Enter the same password for verification
+      </FormField.Description>
+    </FormField.Root>
+  </Stack>
+);
+```
+
+### InfoBox for contextual help
+
+Add an info icon with a popover for additional field context:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>API Key</FormField.Label>
+    <FormField.InfoBox>
+      <Stack direction="column" gap="300" padding="400">
+        <Text fontWeight="500">About API Keys</Text>
+        <Text>
+          Your API key can be found in your account settings under "Developer Tools".
+          Keep it secure and never share it publicly or commit it to version control.
+        </Text>
+        <Text>
+          If you believe your key has been compromised, regenerate it immediately
+          from your account settings.
+        </Text>
+      </Stack>
+    </FormField.InfoBox>
+    <FormField.Input>
+      <TextInput placeholder="sk_live_..." type="password" />
+    </FormField.Input>
+    <FormField.Description>
+      Used for API authentication
+    </FormField.Description>
+  </FormField.Root>
+);
+```
+
+### With different input types
+
+FormField works with any input component:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <FormField.Root>
+      <FormField.Label>Full Name</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="John Doe" />
+      </FormField.Input>
+    </FormField.Root>
+
+    <FormField.Root>
+      <FormField.Label>Age</FormField.Label>
+      <FormField.Input>
+        <NumberInput placeholder="25" min={0} max={120} />
+      </FormField.Input>
+    </FormField.Root>
+
+    <FormField.Root>
+      <FormField.Label>Country</FormField.Label>
+      <FormField.Input>
+        <Select.Root>
+          <Select.Options placeholder="Select your country">
+            <Select.Option id="us">United States</Select.Option>
+            <Select.Option id="uk">United Kingdom</Select.Option>
+            <Select.Option id="ca">Canada</Select.Option>
+            <Select.Option id="au">Australia</Select.Option>
+          </Select.Options>
+        </Select.Root>
+      </FormField.Input>
+    </FormField.Root>
+
+    <FormField.Root>
+      <FormField.Label>Bio</FormField.Label>
+      <FormField.Input>
+        <MultilineTextInput placeholder="Tell us about yourself..." />
+      </FormField.Input>
+    </FormField.Root>
+  </Stack>
+);
+```
+
+## Component requirements
+
+### Accessibility
+
+FormField implements comprehensive accessibility features through React Aria's `useField` hook, automatically managing ARIA attributes for all child components.
+
+#### Role
+
+- The root container uses appropriate semantic HTML structure
+- Input elements receive proper roles from their respective components
+- Label associations are automatic via React Aria
+
+#### Labeling
+
+- **Automatic label association**: `FormField.Label` automatically links to the input via `aria-labelledby`
+- **Required indicator**: Visual asterisk and `aria-required="true"` when `isRequired={true}`
+- **Description linking**: `FormField.Description` automatically links via `aria-describedby`
+- **Error linking**: `FormField.Error` automatically links via `aria-errormessage` when `isInvalid={true}`
+- **InfoBox accessibility**: InfoBox trigger has appropriate `aria-label` and popover role
+
+#### Keyboard navigation
+
+FormField itself doesn't handle keyboard interaction - navigation is managed by the input components it contains. The InfoBox trigger supports standard button keyboard interaction:
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus to/from InfoBox trigger |
+| `Enter` / `Space` | Open InfoBox popover |
+| `Escape` | Close InfoBox popover (when open) |
+
+Standard keyboard navigation for input elements applies based on the input type used within `FormField.Input`.
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** `id` to the component:
+
+```tsx
+<FormField.Root id="user-email-field">
+  <FormField.Label>Email Address</FormField.Label>
+  <FormField.Input>
+    <TextInput />
+  </FormField.Input>
+</FormField.Root>
+```
+
+The `id` is used by React Aria to generate consistent IDs for all child elements, ensuring proper accessibility attribute relationships.
+
+## API reference
+
+<PropsTable id="FormField" />
+
+## Common patterns
+
+### Complete form with validation
+
+A realistic login form with validation and state management:
+
+```jsx-live-dev
+const App = () => {
+  const [formData, setFormData] = React.useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = React.useState({});
+  const [touched, setTouched] = React.useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
+      newErrors.email = 'Invalid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setTouched({ email: true, password: true });
+    if (validate()) {
+      console.log('Form submitted:', formData);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="500">
+      <FormField.Root
+        isRequired
+        isInvalid={!!(errors.email && touched.email)}
+      >
+        <FormField.Label>Email Address</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            type="email"
+            value={formData.email}
+            onChange={(value) => setFormData({ ...formData, email: value })}
+            onBlur={() => setTouched({ ...touched, email: true })}
+            placeholder="your@email.com"
+          />
+        </FormField.Input>
+        {touched.email && errors.email && (
+          <FormField.Error>{errors.email}</FormField.Error>
+        )}
+      </FormField.Root>
+
+      <FormField.Root
+        isRequired
+        isInvalid={!!(errors.password && touched.password)}
+      >
+        <FormField.Label>Password</FormField.Label>
+        <FormField.Input>
+          <PasswordInput
+            value={formData.password}
+            onChange={(value) => setFormData({ ...formData, password: value })}
+            onBlur={() => setTouched({ ...touched, password: true })}
+            placeholder="Enter password"
+          />
+        </FormField.Input>
+        <FormField.Description>Minimum 8 characters</FormField.Description>
+        {touched.password && errors.password && (
+          <FormField.Error>{errors.password}</FormField.Error>
+        )}
+      </FormField.Root>
+
+      <Button onClick={handleSubmit}>Log In</Button>
+
+      <Text fontSize="300" color="neutral.11">
+        Email: {formData.email || '(empty)'} | Password length: {formData.password.length}
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Multi-step form with validation
+
+Build multi-step forms with per-step validation:
+
+```jsx-live-dev
+const App = () => {
+  const [step, setStep] = React.useState('personal');
+  const [formData, setFormData] = React.useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    notifications: true
+  });
+  const [errors, setErrors] = React.useState({});
+  const [touched, setTouched] = React.useState({});
+
+  const validateStep = (currentStep) => {
+    const newErrors = {};
+
+    if (currentStep === 'personal') {
+      if (!formData.firstName) newErrors.firstName = 'First name is required';
+      if (!formData.lastName) newErrors.lastName = 'Last name is required';
+    } else if (currentStep === 'account') {
+      if (!formData.email) newErrors.email = 'Email is required';
+      if (!formData.password) newErrors.password = 'Password is required';
+      else if (formData.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      if (step === 'personal') setStep('account');
+      else if (step === 'account') setStep('preferences');
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 'account') setStep('personal');
+    else if (step === 'preferences') setStep('account');
+  };
+
+  const handleSubmit = () => {
+    if (validateStep(step)) {
+      console.log('Form submitted:', formData);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="500">
+      <Text fontWeight="500" fontSize="400">
+        Step {step === 'personal' ? '1' : step === 'account' ? '2' : '3'} of 3: {
+          step === 'personal' ? 'Personal Info' :
+          step === 'account' ? 'Account Details' :
+          'Preferences'
+        }
+      </Text>
+
+      {step === 'personal' && (
+        <>
+          <FormField.Root
+            isRequired
+            isInvalid={!!(errors.firstName && touched.firstName)}
+          >
+            <FormField.Label>First Name</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                value={formData.firstName}
+                onChange={(value) => setFormData({ ...formData, firstName: value })}
+                onBlur={() => setTouched({ ...touched, firstName: true })}
+              />
+            </FormField.Input>
+            {errors.firstName && touched.firstName && (
+              <FormField.Error>{errors.firstName}</FormField.Error>
+            )}
+          </FormField.Root>
+
+          <FormField.Root
+            isRequired
+            isInvalid={!!(errors.lastName && touched.lastName)}
+          >
+            <FormField.Label>Last Name</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                value={formData.lastName}
+                onChange={(value) => setFormData({ ...formData, lastName: value })}
+                onBlur={() => setTouched({ ...touched, lastName: true })}
+              />
+            </FormField.Input>
+            {errors.lastName && touched.lastName && (
+              <FormField.Error>{errors.lastName}</FormField.Error>
+            )}
+          </FormField.Root>
+        </>
+      )}
+
+      {step === 'account' && (
+        <>
+          <FormField.Root
+            isRequired
+            isInvalid={!!(errors.email && touched.email)}
+          >
+            <FormField.Label>Email</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                type="email"
+                value={formData.email}
+                onChange={(value) => setFormData({ ...formData, email: value })}
+                onBlur={() => setTouched({ ...touched, email: true })}
+              />
+            </FormField.Input>
+            {errors.email && touched.email && (
+              <FormField.Error>{errors.email}</FormField.Error>
+            )}
+          </FormField.Root>
+
+          <FormField.Root
+            isRequired
+            isInvalid={!!(errors.password && touched.password)}
+          >
+            <FormField.Label>Password</FormField.Label>
+            <FormField.Input>
+              <PasswordInput
+                value={formData.password}
+                onChange={(value) => setFormData({ ...formData, password: value })}
+                onBlur={() => setTouched({ ...touched, password: true })}
+              />
+            </FormField.Input>
+            <FormField.Description>Minimum 8 characters</FormField.Description>
+            {errors.password && touched.password && (
+              <FormField.Error>{errors.password}</FormField.Error>
+            )}
+          </FormField.Root>
+        </>
+      )}
+
+      {step === 'preferences' && (
+        <>
+          <FormField.Root>
+            <FormField.Label>Email Notifications</FormField.Label>
+            <FormField.Input>
+              <Checkbox
+                isSelected={formData.notifications}
+                onChange={(value) => setFormData({ ...formData, notifications: value })}
+              >
+                Send me product updates and newsletters
+              </Checkbox>
+            </FormField.Input>
+            <FormField.Description>
+              You can change this preference anytime in settings
+            </FormField.Description>
+          </FormField.Root>
+
+          <Text fontSize="300" color="neutral.11">
+            Review: {formData.firstName} {formData.lastName} ({formData.email})
+          </Text>
+        </>
+      )}
+
+      <Stack direction="row" gap="300">
+        {step !== 'personal' && (
+          <Button variant="outline" onClick={handleBack}>
+            Back
+          </Button>
+        )}
+        {step !== 'preferences' ? (
+          <Button onClick={handleNext}>Next</Button>
+        ) : (
+          <Button onClick={handleSubmit}>Submit</Button>
+        )}
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Conditional field visibility
+
+Show or hide fields based on form state:
+
+```jsx-live-dev
+const App = () => {
+  const [accountType, setAccountType] = React.useState('personal');
+  const [needsShipping, setNeedsShipping] = React.useState(false);
+
+  return (
+    <Stack direction="column" gap="500">
+      <FormField.Root>
+        <FormField.Label>Account Type</FormField.Label>
+        <FormField.Input>
+          <Select.Root
+            selectedKey={accountType}
+            onSelectionChange={setAccountType}
+          >
+            <Select.Options placeholder="Select account type">
+              <Select.Option id="personal">Personal</Select.Option>
+              <Select.Option id="business">Business</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </FormField.Input>
+      </FormField.Root>
+
+      {accountType === 'business' && (
+        <FormField.Root isRequired>
+          <FormField.Label>Company Name</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="Acme Corporation" />
+          </FormField.Input>
+          <FormField.Description>
+            Your registered business name
+          </FormField.Description>
+        </FormField.Root>
+      )}
+
+      <Checkbox
+        isSelected={needsShipping}
+        onChange={setNeedsShipping}
+      >
+        Ship to different address
+      </Checkbox>
+
+      {needsShipping && (
+        <FormField.Root isRequired>
+          <FormField.Label>Shipping Address</FormField.Label>
+          <FormField.Input>
+            <MultilineTextInput
+              placeholder="123 Main St, City, State ZIP"
+            />
+          </FormField.Input>
+        </FormField.Root>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Form integration with Formik
+
+For library-based form management, integrate FormField with Formik:
+
+```jsx-live-dev
+const App = () => {
+  const initialValues = {
+    email: '',
+    password: ''
+  };
+
+  const validate = (values) => {
+    const errors = {};
+
+    if (!values.email) {
+      errors.email = 'Email is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    if (!values.password) {
+      errors.password = 'Password is required';
+    } else if (values.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters';
+    }
+
+    return errors;
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validate={validate}
+      onSubmit={(values) => {
+        console.log('Login:', values);
+        alert(`Logged in as: ${values.email}`);
+      }}
+    >
+      {({ errors, touched, isSubmitting }) => (
+        <Form>
+          <Stack direction="column" gap="500">
+            <Field name="email">
+              {({ field }) => (
+                <FormField.Root
+                  isRequired
+                  isInvalid={!!(errors.email && touched.email)}
+                >
+                  <FormField.Label>Email Address</FormField.Label>
+                  <FormField.Input>
+                    <TextInput
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onBlur={field.onBlur}
+                      type="email"
+                      placeholder="your@email.com"
+                    />
+                  </FormField.Input>
+                  {touched.email && errors.email && (
+                    <FormField.Error>{errors.email}</FormField.Error>
+                  )}
+                </FormField.Root>
+              )}
+            </Field>
+
+            <Field name="password">
+              {({ field }) => (
+                <FormField.Root
+                  isRequired
+                  isInvalid={!!(errors.password && touched.password)}
+                >
+                  <FormField.Label>Password</FormField.Label>
+                  <FormField.Input>
+                    <PasswordInput
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onBlur={field.onBlur}
+                      placeholder="Enter password"
+                    />
+                  </FormField.Input>
+                  <FormField.Description>
+                    Must be at least 8 characters
+                  </FormField.Description>
+                  {touched.password && errors.password && (
+                    <FormField.Error>{errors.password}</FormField.Error>
+                  )}
+                </FormField.Root>
+              )}
+            </Field>
+
+            <Button type="submit" isDisabled={isSubmitting}>
+              {isSubmitting ? 'Logging in...' : 'Log In'}
+            </Button>
+
+            <Text fontSize="300" color="neutral.11">
+              Formik manages state, validation, and submission automatically
+            </Text>
+          </Stack>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using FormField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: form-field.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook - FormField](link-tbd)
+- [React Aria - useField](https://react-spectrum.adobe.com/react-aria/useField.html) - Underlying accessibility implementation
+- [TextInput Component](/components/inputs/text-input) - Common input component used with FormField
+- [Select Component](/components/inputs/select) - Dropdown selection with FormField
+- [FieldErrors Component](/components/field-errors) - Advanced error handling patterns

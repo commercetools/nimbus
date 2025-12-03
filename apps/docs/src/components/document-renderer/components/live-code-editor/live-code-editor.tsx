@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
 import { Time, CalendarDate, CalendarDateTime } from "@internationalized/date";
+import { Formik, Form, Field } from "formik";
 
 const baseHooks = {
   useState,
@@ -21,6 +22,9 @@ const scope = {
   Time,
   CalendarDate,
   CalendarDateTime,
+  Formik,
+  Form,
+  Field,
 };
 
 const removeImportStatements = (code: string) => {
