@@ -215,19 +215,20 @@ Once confirmed, create the documentation file:
        > is good practice to add a **persistent**, **unique** id to the
        > component:
    - **Testing**:
+
 - Testing examples are auto-generated from `.docs.spec.tsx` files
-     - **Mandatory**: Include this text before the injection token:
-       > These examples demonstrate how to test your implementation when using
-       > [Component] in your application. The component's internal functionality
-       > is already tested by Nimbus - these patterns help you verify your
-       > integration and application-specific logic.
-     - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
-     - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
-   - **Resources**:
-     - Link to Storybook (use "link-tbd" placeholder)
-     - **Internal component links must start with '/'** (e.g.,
-       `/components/inputs/searchinput`) to ensure absolute paths from root, not
-       relative to current page
+  - **Mandatory**: Include this text before the injection token:
+    > These examples demonstrate how to test your implementation when using
+    > [Component] within your application. As the component's internal
+    > functionality is already tested by Nimbus, these patterns help you verify
+    > your integration and application-specific logic.
+  - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
+  - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
+  - **Resources**:
+    - Link to Storybook (use "link-tbd" placeholder)
+    - **Internal component links must start with '/'** (e.g.,
+      `/components/inputs/searchinput`) to ensure absolute paths from root, not
+      relative to current page
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -241,11 +242,14 @@ Once confirmed, create the documentation file:
 
 ### **Step 6.1: Create Documentation Test File**
 
-**IMPORTANT**: After creating the `.dev.mdx` file, create the companion `.docs.spec.tsx` test file.
+**IMPORTANT**: After creating the `.dev.mdx` file, create the companion
+`.docs.spec.tsx` test file.
 
-1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as component
+1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as
+   component
 
 2. **File structure**:
+
    ```typescript
    import { describe, it, expect, vi } from 'vitest';
    import { render, screen } from '@testing-library/react';
@@ -300,7 +304,8 @@ Once confirmed, create the documentation file:
    - Basic rendering (always)
    - Interactions (if interactive)
    - Controlled mode (if supports value/onChange)
-   - States (disabled, invalid, readonly, required - if component has these props)
+   - States (disabled, invalid, readonly, required - if component has these
+     props)
    - Component-specific features
 
 5. **Critical rules**:
@@ -395,9 +400,9 @@ Provide a final summary:
 ````markdown
 ## Documentation Created
 
-**Component**: {ComponentName}
-**Type**: [Base Component / Field Pattern]
+**Component**: {ComponentName} **Type**: [Base Component / Field Pattern]
 **Files Created**:
+
 - `.dev.mdx`: {full-path-to-dev-mdx}
 - `.docs.spec.tsx`: {full-path-to-docs-spec}
 
