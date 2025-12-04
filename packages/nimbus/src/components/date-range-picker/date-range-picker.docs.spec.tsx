@@ -114,19 +114,52 @@ describe("DateRangePicker - Date values", () => {
       </NimbusProvider>
     );
 
-    // Open calendar and select dates
-    const calendarButton = screen.getByRole("button", {
-      name: /open calendar/i,
-    });
-    await user.click(calendarButton);
+    // Type dates into the input segments
+    const spinbuttons = screen.getAllByRole("spinbutton");
 
+    // Set start date: January 15, 2024
+    await user.click(spinbuttons[0]); // month
+    await user.keyboard("1");
+    await user.click(spinbuttons[1]); // day
+    await user.keyboard("15");
+    await user.click(spinbuttons[2]); // year
+    await user.keyboard("2024");
+
+    // Set end date: January 20, 2024
+    await user.click(spinbuttons[3]); // month
+    await user.keyboard("1");
+    await user.click(spinbuttons[4]); // day
+    await user.keyboard("20");
+    await user.click(spinbuttons[5]); // year
+    await user.keyboard("2024");
+
+    // Verify onChange was called with a RangeValue containing start and end date objects
     await waitFor(() => {
-      expect(screen.getByRole("grid")).toBeInTheDocument();
+      expect(handleChange).toHaveBeenCalled();
     });
 
-    // After selection, verify the handler was called with date range
-    // (actual date selection logic would be more complex)
-    // This verifies the onChange signature
+    const changeCall =
+      handleChange.mock.calls[handleChange.mock.calls.length - 1][0];
+
+    // Verify the structure matches RangeValue<DateValue>
+    expect(changeCall).toHaveProperty("start");
+    expect(changeCall).toHaveProperty("end");
+
+    // Verify start and end have DateValue properties (year, month, day)
+    expect(changeCall.start).toHaveProperty("year");
+    expect(changeCall.start).toHaveProperty("month");
+    expect(changeCall.start).toHaveProperty("day");
+    expect(changeCall.end).toHaveProperty("year");
+    expect(changeCall.end).toHaveProperty("month");
+    expect(changeCall.end).toHaveProperty("day");
+
+    // Verify the actual date values match what we typed
+    expect(changeCall.start.year).toBe(2024);
+    expect(changeCall.start.month).toBe(1);
+    expect(changeCall.start.day).toBe(15);
+    expect(changeCall.end.year).toBe(2024);
+    expect(changeCall.end.month).toBe(1);
+    expect(changeCall.end.day).toBe(20);
   });
 });
 
