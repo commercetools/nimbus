@@ -432,57 +432,6 @@ const App = () => {
 };
 ```
 
-### Third-party form library integration
-
-FormField's flexible API makes it easy to integrate with form libraries like Formik, React Hook Form, or Final Form. Here's a conceptual example showing the integration pattern:
-
-```tsx
-// Example with React Hook Form pattern
-import { useForm } from 'react-hook-form';
-
-const MyForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-
-  const onSubmit = (data) => {
-    console.log('Form data:', data);
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormField.Root isRequired isInvalid={!!errors.email}>
-        <FormField.Label>Email</FormField.Label>
-        <FormField.Input>
-          <TextInput
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address'
-              }
-            })}
-            type="email"
-            placeholder="your@email.com"
-          />
-        </FormField.Input>
-        {errors.email && (
-          <FormField.Error>{errors.email.message}</FormField.Error>
-        )}
-      </FormField.Root>
-
-      <Button type="submit">Submit</Button>
-    </form>
-  );
-};
-```
-
-**Key Integration Points:**
-
-- **Name attribute**: Use the `name` prop on input components for form libraries to track fields
-- **Validation state**: Connect form library validation state to `isInvalid` prop
-- **Error messages**: Display form library errors using `FormField.Error`
-- **Change handlers**: Form libraries typically use `ref` or `onChange` - both work with FormField inputs
-- **Submit handling**: Use native form `onSubmit` or library-specific handlers
-
 ### Complete form with validation
 
 A realistic login form with validation and state management:
