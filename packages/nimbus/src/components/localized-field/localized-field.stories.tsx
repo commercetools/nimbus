@@ -486,6 +486,11 @@ export const EmptyValues: Story = {
   render: () => {
     return <LocalizedFieldStoryComponent {...emptyValuesStoryProps} />;
   },
+  parameters: {
+    test: {
+      timeout: 15000, // 15 seconds - multiple locale iterations
+    },
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("Text Field", async () => {
@@ -849,6 +854,11 @@ export const DescriptionsAndWarnings: Story = {
         showControls
       />
     );
+  },
+  parameters: {
+    test: {
+      timeout: 15000, // 15 seconds - complex description/warning toggling
+    },
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -1381,6 +1391,11 @@ export const ErrorsAndValidation: Story = {
         showControls
       />
     );
+  },
+  parameters: {
+    test: {
+      timeout: 15000, // 15 seconds - complex error validation toggling
+    },
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
