@@ -235,6 +235,16 @@ const App = () => {
     GBP: { amount: '79.99', currencyCode: 'GBP' }
   });
 
+  const handlePriceChange = (e) => {
+    setPrices(prev => ({
+      ...prev,
+      [e.target.currency]: {
+        amount: e.target.value.amount,
+        currencyCode: e.target.currency
+      }
+    }));
+  };
+
   return (
     <LocalizedField
       type="money"
@@ -242,12 +252,7 @@ const App = () => {
       description="Price in different currencies"
       defaultLocaleOrCurrency="USD"
       valuesByLocaleOrCurrency={prices}
-      onChange={(e) => {
-        setPrices(prev => ({
-          ...prev,
-          [e.target.currency]: e.target.value
-        }));
-      }}
+      onChange={handlePriceChange}
     />
   );
 };
@@ -641,21 +646,22 @@ The component will automatically append locale/currency codes to create unique I
 
 Manage prices across multiple currencies:
 
-```tsx
-import { LocalizedField, type LocalizedCurrency } from '@commercetools/nimbus';
-
-const PricingForm = () => {
-  const [prices, setPrices] = React.useState<LocalizedCurrency>({
-    USD: { amount: '', currencyCode: 'USD' },
-    EUR: { amount: '', currencyCode: 'EUR' },
-    GBP: { amount: '', currencyCode: 'GBP' },
-    JPY: { amount: '', currencyCode: 'JPY' }
+```jsx-live-dev
+const App = () => {
+  const [prices, setPrices] = React.useState({
+    USD: { amount: '99.99', currencyCode: 'USD' },
+    EUR: { amount: '89.99', currencyCode: 'EUR' },
+    GBP: { amount: '79.99', currencyCode: 'GBP' },
+    JPY: { amount: '12500', currencyCode: 'JPY' }
   });
 
   const handlePriceChange = (e) => {
     setPrices(prev => ({
       ...prev,
-      [e.target.currency]: e.target.value
+      [e.target.currency]: {
+        amount: e.target.value.amount,
+        currencyCode: e.target.currency
+      }
     }));
   };
 
@@ -685,11 +691,9 @@ const PricingForm = () => {
 
 Apply different validation rules per locale:
 
-```tsx
-import { LocalizedField, type LocalizedString } from '@commercetools/nimbus';
-
-const ProductNameField = () => {
-  const [values, setValues] = React.useState<LocalizedString>({
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
     en: '',
     de: '',
     es: '',
@@ -699,7 +703,7 @@ const ProductNameField = () => {
   const [touchedLocales, setTouchedLocales] = React.useState({});
 
   // Different validation rules per locale
-  const validateLocale = (locale: string, value: string) => {
+  const validateLocale = (locale, value) => {
     // English is required
     if (locale === 'en') {
       if (!value) return 'English name is required';
@@ -722,8 +726,6 @@ const ProductNameField = () => {
     return acc;
   }, {});
 
-  const hasErrors = Object.keys(errors).length > 0;
-
   return (
     <LocalizedField
       type="text"
@@ -738,7 +740,7 @@ const ProductNameField = () => {
       onChange={(e) => {
         setValues(prev => ({
           ...prev,
-          [e.target.locale!]: e.target.value as string
+          [e.target.locale]: e.target.value
         }));
       }}
       onBlur={(_, locale) => {
