@@ -96,7 +96,7 @@
     "react-intl": "catalog:react",
     "rollup": "catalog:tooling",
     "rollup-plugin-tree-shakeable": "catalog:tooling",
-    "slate": "^0.75.0",
+    "slate": "^0.120.0",
     "slate-history": "^0.113.1",
     "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.75.0",
@@ -112,7 +112,7 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "react": "19.x",
     "react-intl": "7.x",
-    "slate": "^0.75.0",
+    "slate": "^0.120.0",
     "slate-history": "^0.113.1",
     "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.75.0"
