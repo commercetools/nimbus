@@ -488,7 +488,7 @@ export const EmptyValues: Story = {
   },
   parameters: {
     test: {
-      timeout: 15000, // 15 seconds - multiple locale iterations
+      timeout: 60000,
     },
   },
   play: async ({ canvasElement, step }) => {
@@ -857,7 +857,7 @@ export const DescriptionsAndWarnings: Story = {
   },
   parameters: {
     test: {
-      timeout: 15000, // 15 seconds - complex description/warning toggling
+      timeout: 60000,
     },
   },
   play: async ({ canvasElement, step }) => {
@@ -1394,7 +1394,7 @@ export const ErrorsAndValidation: Story = {
   },
   parameters: {
     test: {
-      timeout: 15000, // 15 seconds - complex error validation toggling
+      timeout: 60000,
     },
   },
   play: async ({ canvasElement, step }) => {

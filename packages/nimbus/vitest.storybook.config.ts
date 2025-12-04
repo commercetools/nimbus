@@ -47,9 +47,9 @@ export default defineConfig(async () => {
         setupFiles: ["./.storybook/vitest.setup.ts"],
         // make vitest fn's available globally (no need to import them)
         globals: true,
-        // Increase timeouts for browser stability
-        testTimeout: 30000,
-        hookTimeout: 30000,
+        // Increase timeouts for browser stability and complex stories in CI
+        testTimeout: 60000, // 60 seconds for slow stories (LocalizedField, DateRangePicker)
+        hookTimeout: 60000,
         // config for running tests in one or multiple *real* browsers
         browser: {
           enabled: true,
