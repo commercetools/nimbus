@@ -1,0 +1,724 @@
+---
+title: TimeInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { TimeInput, type TimeInputProps } from '@commercetools/nimbus';
+import { Time, type TimeValue } from '@internationalized/date';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <TimeInput aria-label="Enter a time" />
+)
+```
+
+## Working with @internationalized/date
+
+The TimeInput component relies on `@internationalized/date`'s time value types for representing times. This library provides timezone-aware time handling and locale-specific formatting.
+
+### TimeValue types
+
+The component accepts and returns `TimeValue` objects, which can be one of several types:
+
+```tsx
+import { Time, ZonedDateTime } from '@internationalized/date';
+
+// A simple time without date or timezone
+const simpleTime = new Time(14, 30); // 2:30 PM
+
+// A time with timezone from a full date-time
+const zonedTime = parseZonedDateTime('2024-12-04T14:30[America/New_York]');
+```
+
+### Creating Time values
+
+Use the `Time` constructor to create time values:
+
+```tsx
+import { Time } from '@internationalized/date';
+
+// Create a time: 9:30 AM
+const morningTime = new Time(9, 30);
+
+// Create a time with seconds: 3:45:15 PM
+const afternoonTime = new Time(15, 45, 15);
+```
+
+### Converting time values
+
+Use `toString()` to convert Time objects for display or storage:
+
+```tsx
+const time = new Time(14, 30);
+time.toString(); // "14:30:00"
+
+// Access individual components
+time.hour;     // 14
+time.minute;   // 30
+time.second;   // 0
+```
+
+> [!TIP]\
+> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TimeInput size="sm" aria-label="Small time input" defaultValue={new Time(9, 30)} />
+    <TimeInput size="md" aria-label="Medium time input" defaultValue={new Time(15, 45)} />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` (default) and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TimeInput variant="solid" aria-label="Solid variant" defaultValue={new Time(10, 0)} />
+    <TimeInput variant="ghost" aria-label="Ghost variant" defaultValue={new Time(14, 30)} />
+  </Stack>
+)
+```
+
+### Leading and trailing elements
+
+Add icons or interactive elements before or after the time segments:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TimeInput
+      leadingElement={<Icon as={Clock} />}
+      aria-label="Time with leading icon"
+      defaultValue={new Time(9, 0)}
+    />
+    <TimeInput
+      trailingElement={<Icon as={Schedule} />}
+      aria-label="Time with trailing icon"
+      defaultValue={new Time(17, 0)}
+    />
+    <TimeInput
+      leadingElement={<Icon as={Clock} />}
+      trailingElement={<Icon as={Schedule} />}
+      aria-label="Time with both icons"
+      defaultValue={new Time(12, 30)}
+    />
+  </Stack>
+)
+```
+
+### Hour cycle
+
+Control whether the time displays in 12-hour or 24-hour format using the `hourCycle` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">12-hour format</Text>
+      <TimeInput
+        hourCycle={12}
+        aria-label="12-hour format"
+        defaultValue={new Time(14, 30)}
+      />
+    </Stack>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">24-hour format</Text>
+      <TimeInput
+        hourCycle={24}
+        aria-label="24-hour format"
+        defaultValue={new Time(14, 30)}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `hourCycle={12}`: Displays time with AM/PM indicator (e.g., 2:30 PM)
+- `hourCycle={24}`: Displays time in 24-hour format (e.g., 14:30)
+
+### Granularity
+
+The `granularity` prop controls which time segments are displayed and editable:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Hour only</Text>
+      <TimeInput
+        granularity="hour"
+        aria-label="Hour granularity"
+        defaultValue={new Time(14, 30, 45)}
+      />
+    </Stack>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Hour and minute (default)</Text>
+      <TimeInput
+        granularity="minute"
+        aria-label="Minute granularity"
+        defaultValue={new Time(14, 30, 45)}
+      />
+    </Stack>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Hour, minute, and second</Text>
+      <TimeInput
+        granularity="second"
+        aria-label="Second granularity"
+        defaultValue={new Time(14, 30, 45)}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Available granularities:**
+- `"hour"`: Only hour segment
+- `"minute"`: Hour and minute segments (default)
+- `"second"`: Hour, minute, and second segments
+
+### Hide timezone
+
+Control timezone visibility when using ZonedDateTime values:
+
+```jsx-live-dev
+const App = () => {
+  const zonedTime = parseZonedDateTime('2024-12-04T14:30[America/New_York]');
+  
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">With timezone</Text>
+        <TimeInput
+          aria-label="With timezone"
+          defaultValue={zonedTime}
+          hideTimeZone={false}
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">Without timezone</Text>
+        <TimeInput
+          aria-label="Without timezone"
+          defaultValue={zonedTime}
+          hideTimeZone={true}
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Force leading zeros
+
+Display single-digit hours and minutes with leading zeros:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Without leading zeros</Text>
+      <TimeInput
+        aria-label="Without leading zeros"
+        defaultValue={new Time(9, 5)}
+        shouldForceLeadingZeros={false}
+      />
+    </Stack>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">With leading zeros</Text>
+      <TimeInput
+        aria-label="With leading zeros"
+        defaultValue={new Time(9, 5)}
+        shouldForceLeadingZeros={true}
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Placeholder value
+
+The `placeholderValue` sets the default values when a user first interacts with empty segments:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">With placeholder (starts at 9:00 AM)</Text>
+      <TimeInput
+        aria-label="With placeholder value"
+        placeholderValue={new Time(9, 0)}
+      />
+    </Stack>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="semibold">Without placeholder (default behavior)</Text>
+      <TimeInput
+        aria-label="Without placeholder value"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Min and max values
+
+Restrict selectable times using `minValue` and `maxValue`:
+
+```jsx-live-dev
+const App = () => {
+  const [time, setTime] = useState<TimeValue | null>(new Time(10, 0));
+  const minTime = new Time(9, 0);
+  const maxTime = new Time(17, 0);
+  
+  const isInvalid = time
+    ? (time.compare(minTime) < 0 || time.compare(maxTime) > 0)
+    : false;
+  
+  return (
+    <Stack direction="column" gap="400">
+      <TimeInput
+        aria-label="Business hours only"
+        value={time}
+        onChange={setTime}
+        minValue={minTime}
+        maxValue={maxTime}
+        isInvalid={isInvalid}
+      />
+      <Text fontSize="sm" color={isInvalid ? "critical.11" : "neutral.11"}>
+        {isInvalid 
+          ? "Time must be between 9:00 AM and 5:00 PM"
+          : "Valid time range: 9:00 AM - 5:00 PM"}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Disabled state
+
+Prevent user interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <TimeInput
+    isDisabled
+    aria-label="Disabled time input"
+    defaultValue={new Time(10, 30)}
+  />
+)
+```
+
+### Invalid state
+
+Indicate validation errors with the `isInvalid` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <TimeInput
+      isInvalid
+      aria-label="Invalid time"
+      defaultValue={new Time(8, 0)}
+    />
+    <Text fontSize="sm" color="critical.11">
+      Selected time is outside business hours
+    </Text>
+  </Stack>
+)
+```
+
+### Read-only state
+
+Display time values without allowing edits:
+
+```jsx-live-dev
+const App = () => (
+  <TimeInput
+    isReadOnly
+    aria-label="Read-only time"
+    defaultValue={new Time(14, 30)}
+  />
+)
+```
+
+### Required state
+
+Mark the input as required for form validation:
+
+```jsx-live-dev
+const App = () => (
+  <TimeInput
+    isRequired
+    aria-label="Required time input"
+  />
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<string>('No time selected');
+
+  return (
+    <Stack direction="column" gap="400">
+      <TimeInput
+        defaultValue={new Time(9, 30)}
+        onChange={(value) => {
+          if (value) {
+            setDisplayValue(`Selected: ${value.toString()}`);
+          } else {
+            setDisplayValue('No time selected');
+          }
+        }}
+        aria-label="Uncontrolled time input"
+      />
+      <Text fontSize="sm">{displayValue}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected time without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<TimeInputProps["value"]>(new Time(12, 0));
+
+  return (
+    <Stack direction="column" gap="400">
+      <TimeInput
+        value={value}
+        onChange={setValue}
+        aria-label="Controlled time input"
+      />
+      <Stack direction="row" gap="300">
+        <Button size="sm" onPress={() => setValue(new Time(9, 0))}>
+          Set to 9:00 AM
+        </Button>
+        <Button size="sm" onPress={() => setValue(new Time(17, 0))}>
+          Set to 5:00 PM
+        </Button>
+        <Button size="sm" variant="secondary" onPress={() => setValue(null)}>
+          Clear
+        </Button>
+      </Stack>
+      <Text fontSize="sm">
+        {value ? `Current time: ${value.toString()}` : 'No time selected'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the time with external state
+- Validate or transform time selections
+- Clear or programmatically set the time value
+
+### Different locales
+
+The TimeInput automatically formats times according to the current locale:
+
+```jsx-live-dev
+const App = () => {
+  const sampleTime = new Time(14, 30);
+  
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">German (de-DE)</Text>
+        <NimbusI18nProvider locale="de-DE">
+          <TimeInput
+            aria-label="German locale"
+            defaultValue={sampleTime}
+          />
+        </NimbusI18nProvider>
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">French (fr-FR)</Text>
+        <NimbusI18nProvider locale="fr-FR">
+          <TimeInput
+            aria-label="French locale"
+            defaultValue={sampleTime}
+          />
+        </NimbusI18nProvider>
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">Japanese (ja-JP)</Text>
+        <NimbusI18nProvider locale="ja-JP">
+          <TimeInput
+            aria-label="Japanese locale"
+            defaultValue={sampleTime}
+          />
+        </NimbusI18nProvider>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Form integration
+
+Integrate TimeInput with FormField for complete form layouts:
+
+```jsx-live-dev
+const App = () => {
+  const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
+  const minTime = new Time(9, 0);
+  const maxTime = new Time(17, 0);
+  
+  const isInvalid = time
+    ? (time.compare(minTime) < 0 || time.compare(maxTime) > 0)
+    : true;
+
+  return (
+    <FormField.Root isInvalid={isInvalid} isRequired>
+      <FormField.Label>Appointment Time</FormField.Label>
+      <FormField.Input>
+        <TimeInput
+          value={time}
+          onChange={setTime}
+          minValue={minTime}
+          maxValue={maxTime}
+          width="full"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a time between 9:00 AM and 5:00 PM
+      </FormField.Description>
+      <FormField.Error>
+        The selected time must be between 9:00 AM and 5:00 PM
+      </FormField.Error>
+    </FormField.Root>
+  );
+}
+```
+
+## Component requirements
+
+### TimeValue requirements
+
+All time values **must** use `@internationalized/date` types:
+- `Time` for simple time values without timezone
+- `ZonedDateTime` for times with timezone information
+- `TimeValue` as the union type for component props
+
+### Accessibility
+
+The TimeInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using FormField with FormField.Label (recommended for forms)
+- Associating a `<label>` element with the TimeInput using `aria-labelledby`:
+
+```tsx
+<label id="time-label">
+  {intl.formatMessage(labelMessage)}
+</label>
+<TimeInput aria-labelledby="time-label" />
+```
+
+- Associating a `<label>` element with the TimeInput using `htmlFor`:
+
+```tsx
+<label htmlFor="time-input-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<TimeInput id="time-input-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<TimeInput aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "appointment-time-input";
+
+export const AppointmentForm = () => (
+  <TimeInput id={PERSISTENT_ID} aria-label="Appointment time" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus between segments and out of the component
+- `Arrow Up` / `Arrow Down`: Increment or decrement the focused segment
+- `Arrow Left` / `Arrow Right`: Move between time segments
+- `Number keys`: Directly type numeric values into segments
+- `A` / `P` (in 12-hour mode): Type "A" or "P" to set AM/PM
+
+## API reference
+
+<PropsTable id="TimeInput" />
+
+## Common patterns
+
+### Business hours restriction
+
+Limit time selection to standard business hours:
+
+```jsx-live-dev
+const App = () => {
+  const [time, setTime] = useState<TimeValue | null>(new Time(9, 0));
+  const businessStart = new Time(9, 0);
+  const businessEnd = new Time(17, 0);
+  
+  const isOutsideBusinessHours = time
+    ? (time.compare(businessStart) < 0 || time.compare(businessEnd) > 0)
+    : false;
+
+  return (
+    <Stack direction="column" gap="400">
+      <TimeInput
+        value={time}
+        onChange={setTime}
+        minValue={businessStart}
+        maxValue={businessEnd}
+        isInvalid={isOutsideBusinessHours}
+        aria-label="Business hours"
+      />
+      <Text fontSize="sm" color="neutral.11">
+        Business hours: 9:00 AM - 5:00 PM
+      </Text>
+      {isOutsideBusinessHours && (
+        <Text fontSize="sm" color="critical.11">
+          ⚠ Selected time is outside business hours
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Time range selector
+
+Create start and end time inputs with validation:
+
+```jsx-live-dev
+const App = () => {
+  const [startTime, setStartTime] = useState<TimeValue | null>(new Time(9, 0));
+  const [endTime, setEndTime] = useState<TimeValue | null>(new Time(17, 0));
+  
+  const hasError = startTime && endTime && endTime.compare(startTime) <= 0;
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="300" alignItems="end">
+        <Stack direction="column" gap="200" flex="1">
+          <Text fontSize="sm" fontWeight="semibold">Start Time</Text>
+          <TimeInput
+            value={startTime}
+            onChange={setStartTime}
+            isInvalid={hasError}
+            aria-label="Start time"
+          />
+        </Stack>
+        <Text fontSize="sm" color="neutral.11">to</Text>
+        <Stack direction="column" gap="200" flex="1">
+          <Text fontSize="sm" fontWeight="semibold">End Time</Text>
+          <TimeInput
+            value={endTime}
+            onChange={setEndTime}
+            minValue={startTime ?? undefined}
+            isInvalid={hasError}
+            aria-label="End time"
+          />
+        </Stack>
+      </Stack>
+      {hasError && (
+        <Text fontSize="sm" color="critical.11">
+          End time must be after start time
+        </Text>
+      )}
+      {!hasError && startTime && endTime && (
+        <Text fontSize="sm" color="neutral.11">
+          Duration: {endTime.hour - startTime.hour} hours
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Meeting scheduler with 30-minute increments
+
+Guide users to select times in specific increments:
+
+```jsx-live-dev
+const App = () => {
+  const [time, setTime] = useState<TimeValue | null>(new Time(10, 0));
+  
+  const handleTimeChange = (newTime: TimeValue | null) => {
+    if (newTime && newTime.minute % 30 !== 0) {
+      // Round to nearest 30-minute increment
+      const roundedMinute = Math.round(newTime.minute / 30) * 30;
+      const adjustedTime = newTime.set({ minute: roundedMinute % 60 });
+      setTime(adjustedTime);
+    } else {
+      setTime(newTime);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <TimeInput
+        value={time}
+        onChange={handleTimeChange}
+        aria-label="Meeting time"
+        granularity="minute"
+      />
+      <Text fontSize="sm" color="neutral.11">
+        Times are automatically rounded to 30-minute increments
+      </Text>
+      {time && (
+        <Text fontSize="sm">
+          Selected slot: {time.toString().slice(0, 5)}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using TimeInput within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: time-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-timeinput--docs)
+- [React Aria TimeField](https://react-spectrum.adobe.com/react-aria/TimeField.html)
+- [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/index.html)
