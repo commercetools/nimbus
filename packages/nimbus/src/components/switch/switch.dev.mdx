@@ -1,0 +1,365 @@
+---
+title: Switch Component
+tab-title: Implementation
+tab-order: 3
+---
+
+# Switch Component
+
+A binary toggle control that allows users to switch between on/off states with clear visual feedback.
+
+## Getting started
+
+### Import
+
+```tsx
+import { Switch, type SwitchProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => {
+  return <Switch>Enable notifications</Switch>;
+};
+```
+
+## Usage examples
+
+### Size options
+
+Switch supports two size variants: `sm` (small) and `md` (medium, default).
+
+#### Small size
+
+```jsx-live-dev
+const App = () => {
+  return <Switch size="sm">Small switch</Switch>;
+};
+```
+
+#### Medium size
+
+```jsx-live-dev
+const App = () => {
+  return <Switch size="md">Medium switch</Switch>;
+};
+```
+
+### With label
+
+It's best practice to provide a visible label that describes what the switch controls.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Switch>Dark mode</Switch>
+      <Switch>Email notifications</Switch>
+      <Switch>Auto-save drafts</Switch>
+    </Stack>
+  );
+};
+```
+
+### Without visible label
+
+When the context makes the switch's purpose clear, you can omit the visible label. However, you must still provide an accessible label using `aria-label`.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Text>Notifications</Text>
+      <Switch aria-label="Enable notifications" />
+    </Stack>
+  );
+};
+```
+
+### Disabled state
+
+Use `isDisabled` to prevent user interaction with the switch.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Switch isDisabled>Disabled switch (off)</Switch>
+      <Switch isDisabled defaultSelected>
+        Disabled switch (on)
+      </Switch>
+    </Stack>
+  );
+};
+```
+
+### Invalid state
+
+Use `isInvalid` to indicate that the switch's current state is not valid, such as when a required setting must be enabled.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Switch isInvalid>Accept terms and conditions</Switch>
+      <Text fontSize="350" color="danger.11">
+        You must accept the terms to continue
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Default selected
+
+Use `defaultSelected` to set the initial state in uncontrolled mode.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Switch defaultSelected={false}>Default off</Switch>
+      <Switch defaultSelected={true}>Default on</Switch>
+    </Stack>
+  );
+};
+```
+
+### Uncontrolled mode
+
+In uncontrolled mode, the Switch manages its own state internally. Use `defaultSelected` to set the initial value and `onChange` to be notified of changes.
+
+```jsx-live-dev
+const App = () => {
+  const [lastChanged, setLastChanged] = React.useState('');
+
+  return (
+    <Stack gap="400">
+      <Switch
+        defaultSelected={false}
+        onChange={(isSelected) => {
+          setLastChanged(`Switch is now ${isSelected ? 'on' : 'off'}`);
+        }}
+      >
+        Enable feature
+      </Switch>
+      {lastChanged && <Text fontSize="350">{lastChanged}</Text>}
+    </Stack>
+  );
+};
+```
+
+### Controlled mode
+
+In controlled mode, you manage the switch state externally using the `isSelected` prop.
+
+```jsx-live-dev
+const App = () => {
+  const [isEnabled, setIsEnabled] = React.useState<
+    SwitchProps['isSelected']
+  >(false);
+
+  return (
+    <Stack gap="400">
+      <Switch isSelected={isEnabled} onChange={setIsEnabled}>
+        Notifications enabled
+      </Switch>
+      <Text fontSize="350">
+        Current state: <strong>{isEnabled ? 'On' : 'Off'}</strong>
+      </Text>
+      <Button size="sm" onClick={() => setIsEnabled(!isEnabled)}>
+        Toggle programmatically
+      </Button>
+    </Stack>
+  );
+};
+```
+
+### Read-only state
+
+Use `isReadOnly` to display a switch that cannot be toggled by the user but shows a specific state.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack gap="400">
+      <Switch isReadOnly isSelected={false}>
+        Read-only off
+      </Switch>
+      <Switch isReadOnly isSelected={true}>
+        Read-only on
+      </Switch>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Switch component follows the [WAI-ARIA Switch pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/) and meets accessibility standards:
+
+#### Role
+
+- The switch uses a checkbox input with `type="checkbox"` and `role="switch"` semantics
+- The component properly communicates its state through ARIA attributes
+
+#### Labeling
+
+**With visible label:**
+```tsx
+<Switch>Enable dark mode</Switch>
+```
+
+**Without visible label (using aria-label):**
+```tsx
+<Switch aria-label="Enable dark mode" />
+```
+
+**With external label (using aria-labelledby):**
+```tsx
+<>
+  <span id="dark-mode-label">Enable dark mode</span>
+  <Switch aria-labelledby="dark-mode-label" />
+</>
+```
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| <kbd>Tab</kbd> | Moves focus to/from the switch |
+| <kbd>Space</kbd> | Toggles the switch between on and off states |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Switch id="notification-toggle">Enable notifications</Switch>
+```
+
+## API Reference
+
+<PropsTable id="Switch" />
+
+## Common patterns
+
+### Settings toggle
+
+Use switches for user preference settings that can be turned on or off.
+
+```jsx-live-dev
+const App = () => {
+  const [settings, setSettings] = React.useState({
+    emailNotifications: true,
+    pushNotifications: false,
+    weeklyDigest: true,
+  });
+
+  return (
+    <Stack gap="400">
+      <Text fontSize="450" fontWeight="medium">
+        Notification Settings
+      </Text>
+      <Switch
+        isSelected={settings.emailNotifications}
+        onChange={(value) =>
+          setSettings({ ...settings, emailNotifications: value })
+        }
+      >
+        Email notifications
+      </Switch>
+      <Switch
+        isSelected={settings.pushNotifications}
+        onChange={(value) =>
+          setSettings({ ...settings, pushNotifications: value })
+        }
+      >
+        Push notifications
+      </Switch>
+      <Switch
+        isSelected={settings.weeklyDigest}
+        onChange={(value) =>
+          setSettings({ ...settings, weeklyDigest: value })
+        }
+      >
+        Weekly digest emails
+      </Switch>
+    </Stack>
+  );
+};
+```
+
+### Feature enable/disable
+
+Use switches to enable or disable application features.
+
+```jsx-live-dev
+const App = () => {
+  const [darkMode, setDarkMode] = React.useState(false);
+  const [autoSave, setAutoSave] = React.useState(true);
+
+  return (
+    <Stack gap="400">
+      <Text fontSize="450" fontWeight="medium">
+        Editor Settings
+      </Text>
+      <Switch isSelected={darkMode} onChange={setDarkMode}>
+        Dark mode
+      </Switch>
+      <Switch isSelected={autoSave} onChange={setAutoSave}>
+        Auto-save
+      </Switch>
+      {autoSave && (
+        <Text fontSize="350" color="neutral.11">
+          Changes will be saved automatically every 30 seconds
+        </Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Conditional content display
+
+Show or hide content based on switch state.
+
+```jsx-live-dev
+const App = () => {
+  const [showAdvanced, setShowAdvanced] = React.useState(false);
+
+  return (
+    <Stack gap="400">
+      <Switch isSelected={showAdvanced} onChange={setShowAdvanced}>
+        Show advanced options
+      </Switch>
+      {showAdvanced && (
+        <Stack gap="300" p="400" bg="neutral.3" borderRadius="200">
+          <Text fontSize="400" fontWeight="medium">
+            Advanced Options
+          </Text>
+          <Text fontSize="350">
+            Additional configuration options appear here
+          </Text>
+        </Stack>
+      )}
+    </Stack>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Switch within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: switch.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-switch--docs)
+- [React Aria Switch](https://react-spectrum.adobe.com/react-aria/useSwitch.html)
+- [WAI-ARIA Switch Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)
+- [ARIA: switch role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/switch_role)
