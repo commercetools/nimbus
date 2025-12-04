@@ -334,6 +334,155 @@ The `id` is used by React Aria to generate consistent IDs for all child elements
 
 ## Common patterns
 
+### React 19 form state integration
+
+FormField integrates seamlessly with React 19's built-in form state features, including `useActionState` for progressive enhancement and server-side validation. This example demonstrates the standard React 19 pattern where validation occurs on form submission:
+
+```jsx-live-dev
+const App = () => {
+  const [state, submitAction, isPending] = React.useActionState(
+    async (previousState, formData) => {
+      // Simulate async server-side validation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const errors = {};
+      const email = formData.get('email');
+      const password = formData.get('password');
+
+      if (!email) {
+        errors.email = 'Email is required';
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+        errors.email = 'Invalid email address';
+      }
+
+      if (!password) {
+        errors.password = 'Password is required';
+      } else if (password.length < 8) {
+        errors.password = 'Password must be at least 8 characters';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        return { success: false, errors, data: null };
+      }
+
+      return {
+        success: true,
+        message: 'Login successful!',
+        data: { email, password: '••••••••' },
+        errors: {}
+      };
+    },
+    { success: false, errors: {}, data: null }
+  );
+
+  return (
+    <form action={submitAction} noValidate>
+      <Stack direction="column" gap="500">
+        <FormField.Root
+          isRequired
+          isInvalid={!!(state.errors && state.errors.email)}
+        >
+          <FormField.Label>Email Address</FormField.Label>
+          <FormField.Input>
+            <TextInput
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+              autoComplete="email"
+            />
+          </FormField.Input>
+          {state.errors && state.errors.email && (
+            <FormField.Error>{state.errors.email}</FormField.Error>
+          )}
+        </FormField.Root>
+
+        <FormField.Root
+          isRequired
+          isInvalid={!!(state.errors && state.errors.password)}
+        >
+          <FormField.Label>Password</FormField.Label>
+          <FormField.Input>
+            <PasswordInput
+              name="password"
+              placeholder="Enter password"
+              autoComplete="current-password"
+            />
+          </FormField.Input>
+          <FormField.Description>Minimum 8 characters</FormField.Description>
+          {state.errors && state.errors.password && (
+            <FormField.Error>{state.errors.password}</FormField.Error>
+          )}
+        </FormField.Root>
+
+        <Button type="submit" isLoading={isPending}>
+          {isPending ? 'Logging in...' : 'Log In'}
+        </Button>
+
+        {state.success && state.data && (
+          <Alert.Root colorPalette="positive">
+            <Alert.Title>{state.message}</Alert.Title>
+            <Alert.Description>
+              Email: {state.data.email}
+            </Alert.Description>
+          </Alert.Root>
+        )}
+      </Stack>
+    </form>
+  );
+};
+```
+
+### Third-party form library integration
+
+FormField's flexible API makes it easy to integrate with form libraries like Formik, React Hook Form, or Final Form. Here's a conceptual example showing the integration pattern:
+
+```tsx
+// Example with React Hook Form pattern
+import { useForm } from 'react-hook-form';
+
+const MyForm = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = (data) => {
+    console.log('Form data:', data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormField.Root isRequired isInvalid={!!errors.email}>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })}
+            type="email"
+            placeholder="your@email.com"
+          />
+        </FormField.Input>
+        {errors.email && (
+          <FormField.Error>{errors.email.message}</FormField.Error>
+        )}
+      </FormField.Root>
+
+      <Button type="submit">Submit</Button>
+    </form>
+  );
+};
+```
+
+**Key Integration Points:**
+
+- **Name attribute**: Use the `name` prop on input components for form libraries to track fields
+- **Validation state**: Connect form library validation state to `isInvalid` prop
+- **Error messages**: Display form library errors using `FormField.Error`
+- **Change handlers**: Form libraries typically use `ref` or `onChange` - both work with FormField inputs
+- **Submit handling**: Use native form `onSubmit` or library-specific handlers
+
 ### Complete form with validation
 
 A realistic login form with validation and state management:
