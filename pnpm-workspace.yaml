@@ -2,9 +2,6 @@ packages:
   - packages/*
   - apps/*
 
-catalog:
-  formik: ^2.4.9
-
 catalogMode: strict
 
 catalogs:
