@@ -1,118 +1,267 @@
 ---
+title: Button Component
 tab-title: Implementation
 tab-order: 3
 ---
 
-# Button Developer Guide
+## Getting started
 
-This is the developer-focused documentation for the Button component.
+### Import
 
-## API Reference
+```tsx
+import { Button, type ButtonProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Button component wraps React Aria's `useButton` hook to provide accessible, interactive elements.
+
+```jsx-live-dev
+const App = () => (
+  <Button onPress={() => alert('Button pressed')}>
+    Action
+  </Button>
+)
+```
+
+## Usage examples
+
+### Size options
+
+Button supports three size variants to match different interface densities. The `md` size is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Button size="2xs">2XS Button</Button>
+    <Button size="xs">XS Button</Button>
+    <Button size="md">MD Button (Default)</Button>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between five visual variants to match your design context. The `subtle` variant is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <Button variant="solid">Solid</Button>
+    <Button variant="subtle">Subtle (Default)</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="link">Link</Button>
+  </Stack>
+)
+```
+
+### Color palette options
+
+The Button component supports all semantic color palettes to convey meaning and hierarchy. The `primary` color palette is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="400" wrap="wrap">
+      <Button colorPalette="primary">Primary (Default)</Button>
+      <Button colorPalette="neutral">Neutral</Button>
+      <Button colorPalette="info">Info</Button>
+    </Stack>
+    <Stack direction="row" gap="400" wrap="wrap">
+      <Button colorPalette="positive">Positive</Button>
+      <Button colorPalette="warning">Warning</Button>
+      <Button colorPalette="critical">Critical</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+You can also override the color palette using Chakra UI style props for one-off customizations:
+
+```jsx-live-dev
+const App = () => (
+  <Button backgroundColor="purple.9" color="purple.contrast" _hover={{ backgroundColor: "purple.10" }}>
+    Custom Purple Button
+  </Button>
+)
+```
+
+### With icons
+
+Buttons automatically handle spacing between icons and text. You can place icons before or after the text.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Button>
+      <Icons.Add />
+      Add Item
+    </Button>
+    <Button variant="outline">
+      Next
+      <Icons.ArrowForward />
+    </Button>
+  </Stack>
+)
+```
+
+### As link
+
+Use the `as` prop to render the button as an anchor tag while maintaining button styling. This is useful for navigation links that need to look like actions.
+
+```jsx-live-dev
+const App = () => (
+  <Button as="a" href="#" variant="link">
+    Go to Home
+  </Button>
+)
+```
+
+### Disabled state
+
+Use the `isDisabled` prop to prevent interaction. This visualizes the button as disabled and removes it from the tab order.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Button isDisabled variant="solid">Disabled Solid</Button>
+    <Button isDisabled variant="outline">Disabled Outline</Button>
+  </Stack>
+)
+```
+
+### Event handling
+
+Use `onPress` instead of `onClick` for consistent behavior across mouse, touch, and keyboard interactions.
+
+```jsx-live-dev
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Button onPress={() => setCount(c => c + 1)}>
+        Increment
+      </Button>
+      <Text>Count: {count}</Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The Button component handles most accessibility requirements internally via React Aria.
+
+- **Labeling**: Ensure the button has a visible label (children) or an `aria-label` if it contains only an icon.
+- **Role**: Renders as `button` by default, or `link` (a tag) when using `as="a"`.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "submit-order-button";
+
+export const Example = () => (
+  <Button id={PERSISTENT_ID}>Submit</Button>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Focuses the button.
+- `Enter` or `Space`: Activates the button (triggers `onPress`).
+
+## API reference
 
 <PropsTable id="Button" />
 
-## TypeScript Usage
+## Common patterns
 
-```tsx
-import { Button } from '@commercetools/nimbus';
-import type { ButtonProps } from '@commercetools/nimbus';
+### Loading state
 
-const MyButton: React.FC<ButtonProps> = (props) => {
-  return <Button {...props}>Click me</Button>;
-};
-```
+While the Button component doesn't have a built-in `isLoading` prop yet, you can implement a loading state by disabling the button and showing a spinner.
 
-## Implementation Details
-
-The Button component is built using React Aria's Button component for accessibility.
-
-### Key Features
-
-- **Accessible by default**: Built on React Aria Components
-- **Keyboard navigation**: Full keyboard support
-- **Focus management**: Proper focus ring and states
-- **Loading states**: Built-in support for async actions
-
-## Advanced Usage
-
-### Async Actions with Loading State
-
-```jsx-live
+```jsx-live-dev
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = () => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    // Simulate async action
+    setTimeout(() => setIsLoading(false), 2000);
   };
 
   return (
-    <Button
+    <Button 
+      isDisabled={isLoading} 
       onPress={handleClick}
-      isDisabled={isLoading}
     >
-      {isLoading ? 'Loading...' : 'Click me'}
+      {isLoading ? 'Loading...' : 'Save Changes'}
     </Button>
   );
-};
+}
 ```
 
-### With Custom Ref
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Button in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+### Basic rendering tests
+
+Verify the component renders with expected content:
 
 ```tsx
-import { useRef } from 'react';
+import { render, screen } from '@testing-library/react';
 import { Button } from '@commercetools/nimbus';
 
-const MyComponent = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  return (
-    <Button ref={buttonRef}>
-      Button with Ref
-    </Button>
-  );
-};
+describe('Button', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByRole('button', { name: /click me/i })).toBeInTheDocument();
+  });
+});
 ```
 
-## Accessibility Implementation
+### Interaction tests
 
-### ARIA Attributes
-
-The Button component automatically handles:
-
-- `role="button"` for non-button elements
-- `aria-pressed` for toggle buttons
-- `aria-disabled` when disabled
-- `aria-label` for icon-only buttons
-
-### Keyboard Interactions
-
-| Key | Action |
-|-----|--------|
-| `Enter` or `Space` | Activates the button |
-| `Tab` | Moves focus to/from the button |
-
-## Performance Considerations
-
-- Button is a lightweight component with minimal re-renders
-- Use `React.memo` if passing as a prop frequently
-- For lists of buttons, consider memoization
-
-## Testing
-
-### Unit Testing Example
+Test user interactions with the component:
 
 ```tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from '@commercetools/nimbus';
 
-test('button handles click events', async () => {
-  const handleClick = jest.fn();
-  render(<Button onPress={handleClick}>Click me</Button>);
+describe('Button interactions', () => {
+  it('calls onPress handler when clicked', async () => {
+    const user = userEvent.setup();
+    const handlePress = jest.fn();
+    
+    render(<Button onPress={handlePress}>Action</Button>);
 
-  await userEvent.click(screen.getByRole('button'));
-  expect(handleClick).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: /action/i }));
+
+    expect(handlePress).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call onPress when disabled', async () => {
+    const user = userEvent.setup();
+    const handlePress = jest.fn();
+    
+    render(<Button isDisabled onPress={handlePress}>Action</Button>);
+
+    await user.click(screen.getByRole('button', { name: /action/i }));
+
+    expect(handlePress).not.toHaveBeenCalled();
+  });
 });
 ```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-button--docs)
+- [React Aria Button](https://react-spectrum.adobe.com/react-aria/useButton.html)
+
