@@ -4,7 +4,12 @@ import { Flex, Box } from "@commercetools/nimbus";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
-import { Time, CalendarDate, CalendarDateTime } from "@internationalized/date";
+import {
+  Time,
+  CalendarDate,
+  CalendarDateTime,
+  ZonedDateTime,
+} from "@internationalized/date";
 
 const baseHooks = {
   useState,
@@ -13,7 +18,7 @@ const baseHooks = {
   useMemo,
 };
 
-// funcitons & components available to the live code editor
+// functions & components available to the live code editor
 const scope = {
   ...NimbusUi,
   ...baseHooks,
@@ -21,6 +26,7 @@ const scope = {
   Time,
   CalendarDate,
   CalendarDateTime,
+  ZonedDateTime,
 };
 
 const removeImportStatements = (code: string) => {
