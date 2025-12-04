@@ -389,9 +389,7 @@ const App = () => {
             placeholder="your@email.com"
           />
         </FormField.Input>
-        {touched.email && errors.email && (
-          <FormField.Error>{errors.email}</FormField.Error>
-        )}
+        <FormField.Error>{errors.email}</FormField.Error>
       </FormField.Root>
 
       <FormField.Root
@@ -408,9 +406,7 @@ const App = () => {
           />
         </FormField.Input>
         <FormField.Description>Minimum 8 characters</FormField.Description>
-        {touched.password && errors.password && (
-          <FormField.Error>{errors.password}</FormField.Error>
-        )}
+        <FormField.Error>{errors.password}</FormField.Error>
       </FormField.Root>
 
       <Button onClick={handleSubmit}>Log In</Button>
@@ -500,9 +496,7 @@ const App = () => {
                 onBlur={() => setTouched({ ...touched, firstName: true })}
               />
             </FormField.Input>
-            {errors.firstName && touched.firstName && (
-              <FormField.Error>{errors.firstName}</FormField.Error>
-            )}
+            <FormField.Error>{errors.firstName}</FormField.Error>
           </FormField.Root>
 
           <FormField.Root
@@ -517,9 +511,7 @@ const App = () => {
                 onBlur={() => setTouched({ ...touched, lastName: true })}
               />
             </FormField.Input>
-            {errors.lastName && touched.lastName && (
-              <FormField.Error>{errors.lastName}</FormField.Error>
-            )}
+            <FormField.Error>{errors.lastName}</FormField.Error>
           </FormField.Root>
         </>
       )}
@@ -539,9 +531,7 @@ const App = () => {
                 onBlur={() => setTouched({ ...touched, email: true })}
               />
             </FormField.Input>
-            {errors.email && touched.email && (
-              <FormField.Error>{errors.email}</FormField.Error>
-            )}
+            <FormField.Error>{errors.email}</FormField.Error>
           </FormField.Root>
 
           <FormField.Root
@@ -557,9 +547,7 @@ const App = () => {
               />
             </FormField.Input>
             <FormField.Description>Minimum 8 characters</FormField.Description>
-            {errors.password && touched.password && (
-              <FormField.Error>{errors.password}</FormField.Error>
-            )}
+            <FormField.Error>{errors.password}</FormField.Error>
           </FormField.Root>
         </>
       )}
@@ -721,9 +709,7 @@ const App = () => {
               autoComplete="email"
             />
           </FormField.Input>
-          {state.errors && state.errors.email && (
-            <FormField.Error>{state.errors.email}</FormField.Error>
-          )}
+          <FormField.Error>{state.errors?.email}</FormField.Error>
         </FormField.Root>
 
         <FormField.Root
@@ -739,9 +725,7 @@ const App = () => {
             />
           </FormField.Input>
           <FormField.Description>Minimum 8 characters</FormField.Description>
-          {state.errors && state.errors.password && (
-            <FormField.Error>{state.errors.password}</FormField.Error>
-          )}
+          <FormField.Error>{state.errors?.password}</FormField.Error>
         </FormField.Root>
 
         <Button type="submit" isDisabled={isPending}>
