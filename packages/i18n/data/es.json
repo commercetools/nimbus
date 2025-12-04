@@ -49,11 +49,11 @@
   },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
-    "string": "Confortable"
+    "string": "Cómoda"
   },
   "Nimbus.DataTable.comfortableAriaLabel": {
     "developer_comment": "aria-label for the comfortable togglebutton in the data table manager layout",
-    "string": "Sección confortable"
+    "string": "Sección cómoda"
   },
   "Nimbus.DataTable.compact": {
     "developer_comment": "title for the compact togglebutton in the data table manager layout",
