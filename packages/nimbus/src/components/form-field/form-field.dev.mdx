@@ -744,7 +744,7 @@ const App = () => {
           )}
         </FormField.Root>
 
-        <Button type="submit" isLoading={isPending}>
+        <Button type="submit" isDisabled={isPending}>
           {isPending ? 'Logging in...' : 'Log In'}
         </Button>
 
