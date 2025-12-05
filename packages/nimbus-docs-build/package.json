@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@typescript-eslint/types": "^8.48.0",
+    "@typescript-eslint/types": "^8.48.1",
     "@typescript-eslint/typescript-estree": "^8.48.0",
     "gray-matter": "^4.0.3",
     "react-docgen-typescript": "^2.4.0",
