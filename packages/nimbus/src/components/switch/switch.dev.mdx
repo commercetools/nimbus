@@ -168,7 +168,7 @@ const App = () => {
       <Text fontSize="350">
         Current state: <strong>{isEnabled ? 'On' : 'Off'}</strong>
       </Text>
-      <Button size="sm" onClick={() => setIsEnabled(!isEnabled)}>
+      <Button onClick={() => setIsEnabled(!isEnabled)}>
         Toggle programmatically
       </Button>
     </Stack>
