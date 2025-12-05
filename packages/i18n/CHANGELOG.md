@@ -1,5 +1,20 @@
 # @commercetools/nimbus-i18n
 
+## 2.2.0
+
+### Patch Changes
+
+- [#675](https://github.com/commercetools/nimbus/pull/675)
+  [`d05ba77`](https://github.com/commercetools/nimbus/commit/d05ba775de145158e89bd83211f3211265b426d6)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Add additional en
+  datatable strings
+
+- [#759](https://github.com/commercetools/nimbus/pull/759)
+  [`20368ce`](https://github.com/commercetools/nimbus/commit/20368cef632a4abb25c936cf710cc06ab1889412)
+  Thanks
+  [@transifex-integration](https://github.com/apps/transifex-integration)! - Add
+  compiled Spanish strings
+
 ## 2.1.0
 
 ### Patch Changes
