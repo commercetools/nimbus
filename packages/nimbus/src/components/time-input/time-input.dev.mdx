@@ -108,18 +108,18 @@ Add icons or interactive elements before or after the time segments:
 const App = () => (
   <Stack direction="column" gap="400">
     <TimeInput
-      leadingElement={<Icon as={Clock} />}
+      leadingElement={<Icon as={Icons.AccessTime} />}
       aria-label="Time with leading icon"
       defaultValue={new Time(9, 0)}
     />
     <TimeInput
-      trailingElement={<Icon as={Schedule} />}
+      trailingElement={<Icon as={Icons.CalendarMonth} />}
       aria-label="Time with trailing icon"
       defaultValue={new Time(17, 0)}
     />
     <TimeInput
-      leadingElement={<Icon as={Clock} />}
-      trailingElement={<Icon as={Schedule} />}
+      leadingElement={<Icon as={Icons.AccessTime} />}
+      trailingElement={<Icon as={Icons.CalendarMonth} />}
       aria-label="Time with both icons"
       defaultValue={new Time(12, 30)}
     />
