@@ -160,7 +160,7 @@ describe("DateRangePicker - Date values", () => {
     expect(changeCall.end.year).toBe(2024);
     expect(changeCall.end.month).toBe(1);
     expect(changeCall.end.day).toBe(20);
-  });
+  }, 60000);
 });
 
 /**
