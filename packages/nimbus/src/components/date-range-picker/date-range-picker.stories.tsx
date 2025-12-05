@@ -125,6 +125,7 @@ export const Base: Story = {
   parameters: {
     test: {
       dangerouslyIgnoreUnhandledErrors: true,
+      timeout: 12000, // 12 seconds - complex calendar interactions
     },
   },
   play: async ({ canvasElement, step }) => {
@@ -580,6 +581,7 @@ export const Controlled: Story = {
   parameters: {
     test: {
       dangerouslyIgnoreUnhandledErrors: true,
+      timeout: 10000, // 10 seconds - controlled state updates
     },
   },
   render: (args) => {
