@@ -1023,6 +1023,8 @@ export const LayoutFullWidth: Story = {
   play: async ({ canvasElement }) => {
     // Find the combobox input
     const root = canvasElement.querySelector(
+      // TODO: Let's remove this in favor of a parentElement.parentElement like what we see elsewhere?
+      // Alternatively, maybe we don't and do this because it's more direct.
       ".nimbus-combobox__root"
     ) as HTMLElement;
 
