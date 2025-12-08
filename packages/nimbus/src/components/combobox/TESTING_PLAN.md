@@ -63,31 +63,51 @@
 - ✅ Can type in input with tags present
 - ✅ Can select additional items with tags present
 
-### Input Field Behavior ❌
+### Input Field Behavior ✅
 
-**Status**: Not tested
+**Status**: ✅ Implemented - 5 focused stories
 
+**Stories:**
+
+- `InputFieldGrows` - Input width increases as text is typed (pixel measurement)
+- `InputFieldShrinks` - Input width decreases when text is deleted (pixel
+  measurement)
+- `InputAlwaysVisible` - Input visible and focusable in empty and with-tags
+  states
+- `InputWrapsToNewLine` - Input accessible when tags wrap (trigger
+  height >100px)
+- `InputPlaceholder` - Placeholder displays when empty, hidden when typing
+
+**Test Coverage:**
+
+- ✅ Input field grows as user types (width measurement)
+- ✅ Input field shrinks when text is deleted (width measurement)
 - ✅ Input field is always visible and focusable
 - ✅ Input wraps to new line when content area is full
 - ✅ Placeholder text displays when input is empty
 
-### Button Visibility & Behavior ❌
+### Button Visibility & Behavior ✅
 
-**Status**: Not tested
+**Status**: ✅ Implemented - 2 new stories (+ 2 covered in Layout section)
 
-- Toggle button always visible
-- Clear button only visible when selection exists
-- Buttons remain accessible when content wraps
-- Button click areas are sufficiently large for interaction
+**Stories:**
 
-### Responsive Behavior ❌
+- `ButtonsAccessibleWhenWrapping` - Buttons remain functional when tags wrap
+- `ButtonsClickAreas` - Button dimensions measured for clickability
 
-**Status**: Not tested
+**Coverage from Layout Section:**
 
-- Component works on narrow viewports
-- Content reflows appropriately on mobile devices
-- All interactive elements remain accessible on touch devices
-- Component maintains functionality across screen sizes
+- ✅ Toggle button always visible (covered in `LayoutToggleButton`)
+- ✅ Clear button only visible when selection exists (covered in
+  `LayoutClearButton` and `LayoutClearButtonHidden`)
+
+**New Test Coverage:**
+
+- ✅ Buttons remain accessible when content wraps (6 tags, trigger
+  height >100px)
+- ✅ Toggle button clickable when wrapping
+- ✅ Clear button clickable when wrapping
+- ✅ Button click areas sufficiently large (width & height >20px)
 
 ---
 

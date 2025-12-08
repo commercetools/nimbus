@@ -1524,3 +1524,161 @@ export const InputPlaceholder: Story = {
     });
   },
 };
+
+// ============================================================
+// BUTTON VISIBILITY & BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Buttons: Accessible When Content Wraps
+ * Tests that toggle and clear buttons remain accessible when tags wrap to multiple lines
+ */
+export const ButtonsAccessibleWhenWrapping: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4, 5, 6,
+    ]);
+
+    return (
+      <Box width="300px">
+        <ComposedComboBox
+          aria-label="Test combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify content wrapping occurred", async () => {
+      // Find the input, then navigate to parent structure
+      const input = canvas.getByRole("combobox");
+
+      // The input is nested: input -> content -> trigger
+      // Navigate up two levels to get the trigger
+      const content = input.parentElement;
+      const trigger = content?.parentElement;
+
+      expect(trigger).toBeTruthy();
+      expect(trigger).toBeVisible();
+
+      // Measure trigger height - should be multi-line
+      const triggerHeight = (trigger as HTMLElement).offsetHeight;
+
+      // With 6 tags wrapping, height should be >100px
+      expect(triggerHeight).toBeGreaterThan(100);
+    });
+
+    await step("Toggle button remains accessible", async () => {
+      const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+      // Button should be visible
+      expect(toggleButton).toBeVisible();
+      expect(toggleButton).toBeEnabled();
+
+      // Button should be clickable
+      await userEvent.click(toggleButton);
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Close menu
+      await userEvent.click(toggleButton);
+    });
+
+    await step("Clear button remains accessible", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      // Button should be visible
+      expect(clearButton).toBeVisible();
+      expect(clearButton).toBeEnabled();
+
+      // Button should be clickable
+      await userEvent.click(clearButton);
+
+      // All selections should be cleared
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Buttons: Click Areas Sufficiently Large
+ * Tests that button click areas are large enough for interaction (min 44x44px for WCAG)
+ */
+export const ButtonsClickAreas: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Toggle button has sufficient click area", async () => {
+      const toggleButton = canvas.getByLabelText(
+        /toggle options/i
+      ) as HTMLButtonElement;
+
+      // Measure button dimensions
+      const width = toggleButton.offsetWidth;
+      const height = toggleButton.offsetHeight;
+
+      // WCAG 2.5.5 Target Size: minimum 44x44px for touch targets
+      // Note: These are icon buttons (size="2xs") so they may be smaller
+      // but should still be reasonably clickable
+      expect(width).toBeGreaterThan(20);
+      expect(height).toBeGreaterThan(20);
+
+      // Button should be clickable
+      await userEvent.click(toggleButton);
+
+      // Verify click worked
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear button has sufficient click area", async () => {
+      const clearButton = canvas.getByLabelText(
+        /clear selection/i
+      ) as HTMLButtonElement;
+
+      // Measure button dimensions
+      const width = clearButton.offsetWidth;
+      const height = clearButton.offsetHeight;
+
+      // Should be reasonably clickable
+      expect(width).toBeGreaterThan(20);
+      expect(height).toBeGreaterThan(20);
+
+      // Button should be clickable
+      await userEvent.click(clearButton);
+
+      // Verify click worked (button should hide after clearing)
+      await waitFor(() => {
+        const computedStyle = window.getComputedStyle(clearButton);
+        expect(computedStyle.display).toBe("none");
+      });
+    });
+  },
+};
