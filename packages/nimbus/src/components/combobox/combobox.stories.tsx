@@ -1022,7 +1022,9 @@ export const LayoutFullWidth: Story = {
 
   play: async ({ canvasElement }) => {
     // Find the combobox input
-    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    const root = canvasElement.querySelector(
+      ".nimbus-combobox__root"
+    ) as HTMLElement;
 
     // Verify input exists and is visible
     expect(root).toBeVisible();
@@ -1087,5 +1089,275 @@ export const LayoutResponsive: Story = {
       expect(button).toBeVisible();
       expect(button).toBeEnabled();
     }
+  },
+};
+
+// ============================================================
+// MULTI-SELECT TAG DISPLAY TESTS
+// ============================================================
+
+/**
+ * Multi-Select: Tags Display
+ * Tests that selected items display as removable tags in multi-select mode
+ */
+export const MultiSelectTagsDisplay: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify all three selected items display as tags
+    expect(canvas.getByText("Koala")).toBeInTheDocument();
+    expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    expect(canvas.getByText("Platypus")).toBeInTheDocument();
+  },
+};
+
+/**
+ * Multi-Select: Tags Inline With Input
+ * Tests that tags appear inline with the input field
+ */
+export const MultiSelectTagsInline: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify tag is displayed
+    const tag = canvas.getByText("Koala");
+    expect(tag).toBeVisible();
+
+    // Get the input
+    const input = canvas.getByRole("combobox");
+    expect(input).toBeVisible();
+
+    // Input should be focusable even with tags present
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Multi-Select: Tags Wrapping
+ * Tests that tags wrap to new lines when space is limited by measuring container height
+ */
+export const MultiSelectTagsWrapping: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <Stack direction="column" gap="400">
+        <Box width="300px">
+          <ComposedComboBox
+            aria-label="Single tag combobox"
+            items={simpleOptions}
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+          />
+        </Box>
+
+        <Box width="300px">
+          <ComposedComboBox
+            aria-label="All tags combobox"
+            items={simpleOptions}
+            selectionMode="multiple"
+            selectedKeys={[1, 2, 3, 4, 5, 6]}
+            onSelectionChange={() => {}}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    await step("Single tag - baseline height", async () => {
+      // Find the first combobox (single tag)
+      const singleTagRoot = canvasElement.querySelectorAll(
+        ".nimbus-combobox__root"
+      )[0] as HTMLElement;
+
+      expect(singleTagRoot).toBeVisible();
+
+      // Get height with only one tag
+      const singleTagHeight = singleTagRoot.offsetHeight;
+
+      // Store for comparison (should be single line height)
+      expect(singleTagHeight).toBe(40);
+    });
+
+    await step("All tags - increased height from wrapping", async () => {
+      // Find the second combobox (all 6 tags)
+      const allTagsRoot = canvasElement.querySelectorAll(
+        ".nimbus-combobox__root"
+      )[1] as HTMLElement;
+
+      expect(allTagsRoot).toBeVisible();
+
+      // Get height with all 6 tags
+      const allTagsHeight = allTagsRoot.offsetHeight;
+
+      // With 6 tags in a 300px container, height should be 164px
+      expect(allTagsHeight).toBe(164);
+    });
+  },
+};
+
+/**
+ * Multi-Select: Tag Remove Button
+ * Tests that each tag shows a remove button and can be removed
+ */
+export const MultiSelectTagRemoval: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Each tag has a remove button", async () => {
+      // All three tags should have remove buttons
+      const koalaRemove = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+      const kangarooRemove = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+      const platypusRemove = canvas.getByRole("button", {
+        name: /remove tag platypus/i,
+      });
+
+      expect(koalaRemove).toBeVisible();
+      expect(kangarooRemove).toBeVisible();
+      expect(platypusRemove).toBeVisible();
+    });
+
+    await step("Remove middle tag (Kangaroo)", async () => {
+      // Find the remove button for Kangaroo tag
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+
+      // Click to remove
+      await userEvent.click(removeButton);
+
+      // Verify Kangaroo is removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Other tags should still exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Input Accessible After Tags
+ * Tests that input remains accessible and functional after adding multiple tags
+ */
+export const MultiSelectInputAccessible: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify tags are present", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Input remains focusable", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Click input
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Can type in input with tags present", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Type to filter
+      await userEvent.type(input, "Bis");
+
+      // Menu should open with filtered results
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+        expect(findOptionByText("Bison")).toBeInTheDocument();
+      });
+    });
+
+    await step("Can select additional item", async () => {
+      // Select Bison
+      await selectOptionsByName(["Bison"]);
+
+      // Verify Bison tag appears (all 4 tags should now be present)
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+      expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
   },
 };
