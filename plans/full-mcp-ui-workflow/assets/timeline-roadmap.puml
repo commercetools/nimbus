@@ -1,0 +1,123 @@
+@startgantt
+skinparam defaultFontSize 20
+skinparam titleFontSize 30
+skinparam maxMessageSize 400
+
+<style>
+ganttDiagram {
+  timeline {
+    LineColor transparent
+    BackgroundColor white
+  }
+  task {
+    BackGroundColor #4A90E2
+    LineColor #2E5C8A
+    FontColor white
+    FontSize 20
+    FontStyle bold
+    MaximumWidth 400
+    Padding 10
+    Margin 5
+  }
+  milestone {
+    BackGroundColor red
+    FontColor black
+    FontSize 18
+    FontStyle bold
+    FontBackgroundColor #FFFFFF40
+  }
+  separator {
+    LineColor transparent
+    FontColor black
+    FontSize 22
+    Margin 8
+    Padding 5
+  }
+}
+</style>
+
+title MCP-UI Project Roadmap (30-35 weeks) - 5 engineers @ 75% allocation
+printscale weekly zoom 1.5
+project starts 2026-01-15
+
+
+
+-- 🔵 MCP-UI Server/Client --
+[Schema Design] lasts 25 days and starts at 2026-01-15
+[Schema Design] is colored in #4A90E2
+[Remote DOM] lasts 24 days and starts at [Schema Design]'s end
+[Remote DOM] is colored in #4A90E2
+[llm Integration] lasts 14 days and starts at [Remote DOM]'s end
+[llm Integration] is colored in #4A90E2
+
+-- 🟢 Theming Service --
+[Theme Format] lasts 25 days and starts at 2026-01-15
+[Theme Format] is colored in #7ED321
+
+-- 🟠 SSR & Rendering --
+[SSR Fixes] lasts 49 days and starts at 2026-01-15
+[SSR Fixes] is colored in #F5A623
+
+[PHASE 1 START] happens at 2026-01-15
+
+[PHASE 1 END] happens at [SSR Fixes]'s end
+[PHASE 2 START] happens at [SSR Fixes]'s end
+
+[Schema Expansion] lasts 35 days and starts at [llm Integration]'s end
+[Schema Expansion] is colored in #4A90E2
+[Theme Context] lasts 21 days and starts at [Schema Expansion]'s end
+[Theme Context] is colored in #4A90E2
+
+[Theme API] lasts 25 days and starts at [Theme Format]'s end
+[Theme API] is colored in #7ED321
+[Token Override] lasts 21 days and starts at [Theme API]'s end
+[Token Override] is colored in #7ED321
+[Theme Vldn] lasts 14 days and starts at [Token Override]'s end
+[Theme Vldn] is colored in #7ED321
+
+[OAuth2 Auth] lasts 21 days and starts at [SSR Fixes]'s end
+[OAuth2 Auth] is colored in #F5A623
+[Theme Integration] lasts 21 days and starts at [OAuth2 Auth]'s end
+[Theme Integration] is colored in #F5A623
+[Hydration] lasts 21 days and starts at [OAuth2 Auth]'s end
+[Hydration] is colored in #F5A623
+[Integr Test] lasts 14 days and starts at [Hydration]'s end
+[Integr Test] is colored in #F5A623
+
+[PHASE 2 END] happens at [Integr Test]'s end
+[PHASE 3 START] happens at [Integr Test]'s end
+
+[HTML Snippets] lasts 28 days and starts at [Theme Context]'s end
+[HTML Snippets] is colored in #4A90E2
+[Hosted Widgets] lasts 28 days and starts at [HTML Snippets]'s end
+[Hosted Widgets] is colored in #4A90E2
+
+[Multi-Brand Theming] lasts 28 days and starts at [Theme Vldn]'s end
+[Multi-Brand Theming] is colored in #7ED321
+[Prod Deploy] lasts 14 days and starts at [Multi-Brand Theming]'s end
+[Prod Deploy] is colored in #7ED321
+
+[Performance] lasts 28 days and starts at [Integr Test]'s end
+[Performance] is colored in #F5A623
+[Caching] lasts 21 days and starts at [Performance]'s end
+[Caching] is colored in #F5A623
+[K8s & CDN] lasts 21 days and starts at [Caching]'s end
+[K8s & CDN] is colored in #F5A623
+
+[PHASE 3 END] happens at [K8s & CDN]'s end
+[PHASE 4 START] happens at [K8s & CDN]'s end
+
+[Prod Deploy MCP] lasts 28 days and starts at [Hosted Widgets]'s end
+[Prod Deploy MCP] is colored in #4A90E2
+[Documentation] lasts 21 days and starts at [Prod Deploy MCP]'s end
+[Documentation] is colored in #4A90E2
+
+[Perf Mon & Test] lasts 21 days and starts at [Prod Deploy]'s end
+[Perf Mon & Test] is colored in #7ED321
+
+[Infra Hardening] lasts 28 days and starts at [K8s & CDN]'s end
+[Infra Hardening] is colored in #F5A623
+[Observability] lasts 21 days and starts at [Infra Hardening]'s end
+[Observability] is colored in #F5A623
+
+@endgantt

@@ -244,29 +244,31 @@ rendered UI:
 
 ## Projected Effort & Timeline
 
-The following Gantt chart illustrates the **parallel workstreams** and their key
+The following timeline roadmap illustrates the **parallel workstreams** and their key
 dependencies:
 
-![MCP-UI Implementation Timeline](assets/gantt-chart.png)
+![MCP-UI Implementation Timeline](assets/timeline-roadmap.png)
 
 ### Timeline Breakdown by Phase
 
-#### Phase 1: Remote DOM Foundation (Weeks 1-4)
+#### Phase 1: Remote DOM Foundation (Weeks 1-10)
 
 **Goal:** Usable MCP-UI system with basic components (no theming required)
 
+**Duration:** 8-10 weeks (2-2.5 months)
+
 **Parallel Work:**
 
-- 🔵 **MCP-UI (3 weeks)**
-  - MCP server schema design (2 weeks)
-  - Remote DOM proof of concept (2 weeks)
-  - Testing client integration with LLMs (1 week)
+- 🔵 **MCP-UI (6-8 weeks)**
+  - MCP server schema design (3-4 weeks)
+  - Remote DOM proof of concept (3-4 weeks)
+  - Testing client integration with LLMs (2-3 weeks)
 
-- 🟢 **Theming (2 weeks)**
-  - Theme serialization format (2 weeks)
+- 🟢 **Theming (3-4 weeks)**
+  - Theme serialization format (3-4 weeks)
 
-- 🟠 **SSR (3 weeks)**
-  - Fix hydration issues in Nimbus components (3 weeks)
+- 🟠 **SSR (6-8 weeks)**
+  - Fix hydration issues in Nimbus components (6-8 weeks)
   - Ensure SSR-safe implementations (no hydration mismatches)
 
 **Deliverable:** Remote DOM functional for internal apps + SSR-ready Nimbus
@@ -274,26 +276,28 @@ components
 
 ---
 
-#### Phase 2: Themed Rendering (Weeks 5-7)
+#### Phase 2: Themed Rendering (Weeks 11-18)
 
 **Goal:** Dynamic theming support integrated with MCP-UI
 
+**Duration:** 6-8 weeks (1.5-2 months)
+
 **Parallel Work:**
 
-- 🔵 **MCP-UI (3 weeks)**
-  - Component schema coverage expansion (3 weeks)
-  - Theme context propagation (1 week)
+- 🔵 **MCP-UI (5-7 weeks)**
+  - Component schema coverage expansion (5-7 weeks)
+  - Theme context propagation (2-3 weeks)
 
-- 🟢 **Theming (4 weeks)**
-  - Theme Service API development (2 weeks)
-  - Design token override system (2 weeks)
-  - Theme validation (1 week)
+- 🟢 **Theming (7-9 weeks)**
+  - Theme Service API development (3-5 weeks)
+  - Design token override system (3-4 weeks)
+  - Theme validation (2-3 weeks)
 
-- 🟠 **SSR (4 weeks)**
-  - SSR service with commercetools-identity OAuth2 authentication (1 week)
-  - Theme Service API client integration and caching (1 week)
-  - Hydration runtime development (1 week)
-  - Integration testing (SSR + hydration + theme resolution) (1 week)
+- 🟠 **SSR (7-9 weeks)**
+  - SSR service with commercetools-identity OAuth2 authentication (2-3 weeks)
+  - Theme Service API client integration and caching (2-3 weeks)
+  - Hydration runtime development (2-3 weeks)
+  - Integration testing (SSR + hydration + theme resolution) (2-3 weeks)
 
 **Deliverable:** Component Rendering Service with Theme Service integration and
 hydration support for complex interactive components
@@ -302,25 +306,27 @@ hydration support for complex interactive components
 
 ---
 
-#### Phase 3: External Use Cases (Weeks 8-11)
+#### Phase 3: External Use Cases (Weeks 19-28)
 
 **Goal:** HTML snippets and hosted widgets for external applications
 
+**Duration:** 8-10 weeks (2-2.5 months)
+
 **Parallel Work:**
 
-- 🔵 **MCP-UI (4 weeks)**
-  - HTML snippet rendering (2 weeks) - **Depends on 🟠 SSR**
-  - Hosted widget implementation (2 weeks) - **Depends on 🟠 SSR**
+- 🔵 **MCP-UI (7-9 weeks)**
+  - HTML snippet rendering (3-5 weeks) - **Depends on 🟠 SSR**
+  - Hosted widget implementation (3-5 weeks) - **Depends on 🟠 SSR**
   - Component coverage expansion (ongoing maintenance, non-blocking)
 
-- 🟢 **Theming (3 weeks)**
-  - Multi-brand theme management (2 weeks)
-  - Production deployment (1 week)
+- 🟢 **Theming (5-7 weeks)**
+  - Multi-brand theme management (3-5 weeks)
+  - Production deployment (2-3 weeks)
 
-- 🟠 **SSR (4 weeks)**
-  - Performance optimization (2 weeks)
-  - Caching strategy (1 week)
-  - Kubernetes + CDN deployment (hydration runtime) (1 week)
+- 🟠 **SSR (7-9 weeks)**
+  - Performance optimization (3-4 weeks)
+  - Caching strategy (2-3 weeks)
+  - Kubernetes + CDN deployment (hydration runtime) (2-3 weeks)
 
 **Deliverable:** Production-ready SSR with hydration for external applications
 (HTML snippets + hosted widgets)
@@ -335,21 +341,23 @@ not gate phase progression.
 
 ---
 
-#### Phase 4: Production Hardening (Weeks 12-14)
+#### Phase 4: Production Hardening (Weeks 29-35)
 
 **Goal:** Production-ready system with monitoring, documentation, and robust
 component coverage
 
+**Duration:** 6-8 weeks (1.5-2 months)
+
 **Parallel Work:**
 
-- 🔵 **MCP-UI (2 weeks)**
+- 🔵 **MCP-UI (4-6 weeks)**
   - Production deployment
   - Documentation and examples
 
-- 🟢 **Theming (1 week)**
+- 🟢 **Theming (2-3 weeks)**
   - Performance monitoring
 
-- 🟠 **SSR (2 weeks)**
+- 🟠 **SSR (4-6 weeks)**
   - Production hardening
   - Monitoring integration
 
@@ -359,14 +367,24 @@ component coverage
 
 ### Key Timeline Insights
 
-**Phase 1 delivers value quickly** - Remote DOM functional for internal apps
-while SSR foundation is prepared **Parallel development maximizes velocity** -
-Three teams working simultaneously **Clear integration points** - Dependencies
-are well-defined and scheduled **Incremental delivery** - Each phase adds new
-capabilities without blocking others **Two-phase rendering strategy** - Instant
-SSR display + client-side hydration for full interactivity
+**Phase 1 establishes foundation** - Remote DOM functional for internal apps
+while SSR foundation is prepared (2-2.5 months)
 
-**Total Timeline: 12-14 weeks (3-3.5 months) to full production**
+**Parallel development enables progress** - Three workstreams progress simultaneously with managed dependencies
+
+**Clear integration points** - Dependencies are well-defined and scheduled to minimize blocking
+
+**Incremental delivery** - Each phase adds new capabilities, building toward full production readiness
+
+**Two-phase rendering strategy** - Instant SSR display + client-side hydration for full interactivity
+
+**Realistic buffer** - Timeline includes 25% buffer for unknown blockers and integration challenges
+
+**Total Timeline: 30-35 weeks (7.5-8.5 months) to full production**
+
+**Team Capacity**: 5 engineers with 75% project allocation (~94 focused hours/week)
+
+**Adjustments**: Timeline accounts for maintenance responsibilities, coordination overhead, limited Claude Code access (3 of 5 engineers), and 25% buffer for unknown blockers
 
 ---
 

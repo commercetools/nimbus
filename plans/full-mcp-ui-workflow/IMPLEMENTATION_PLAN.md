@@ -4,9 +4,16 @@
 
 This implementation plan provides a phase-based checklist for delivering the MCP-UI system. Work is organized into **three parallel buckets** that can be developed simultaneously with clear integration points.
 
-**Timeline**: 12-14 weeks (3-3.5 months)
-**Team**: Nimbus Team (mcp-ui team)
+**Timeline**: 30-35 weeks (7.5-8.5 months)
+**Team**: 5 engineers with ~75% project allocation (primary focus with maintenance responsibilities), 3 with Claude Code access
 **Approach**: Parallel workstreams with incremental value delivery
+**Capacity**: ~94 focused hours/week on project (5 engineers × 5 hrs/day × 75% allocation × 5 days)
+
+**Note on Timeline**: Estimates account for:
+- Partial allocation (75%) due to maintenance responsibilities outside project
+- Coordination overhead with 5-person team (~15% overhead for syncs, reviews, alignment)
+- Limited Claude Code access (3 of 5 engineers) affecting velocity on research/documentation tasks
+- 25% buffer for unknown blockers, integration issues, and dependency delays
 
 ---
 
@@ -80,9 +87,11 @@ Server-side rendering with hydration for high-complexity components.
 
 ---
 
-## Phase 1: Remote DOM Foundation (Weeks 1-4)
+## Phase 1: Remote DOM Foundation (Weeks 1-10)
 
 **Goal**: Functional MCP-UI for internal apps + SSR-ready Nimbus components
+**Duration**: 8-10 weeks (2-2.5 months)
+**Critical Path**: SSR foundation must complete before themed rendering can begin
 
 ### 🔵 MCP-UI Tasks
 
@@ -119,9 +128,11 @@ Server-side rendering with hydration for high-complexity components.
 
 ---
 
-## Phase 2: Themed Rendering (Weeks 5-7)
+## Phase 2: Themed Rendering (Weeks 11-18)
 
 **Goal**: Dynamic theming integrated across all rendering strategies
+**Duration**: 6-8 weeks (1.5-2 months)
+**Critical Path**: Theme Service must be operational before external integration phase
 
 ### 🔵 MCP-UI Tasks
 
@@ -163,9 +174,11 @@ Server-side rendering with hydration for high-complexity components.
 
 ---
 
-## Phase 3: External Use Cases (Weeks 8-11)
+## Phase 3: External Use Cases (Weeks 19-28)
 
 **Goal**: HTML snippets and hosted widgets for external applications
+**Duration**: 8-10 weeks (2-2.5 months)
+**Critical Path**: Rendering Service with SSR must be production-ready before deployment
 
 ### 🔵 MCP-UI Tasks
 
@@ -204,9 +217,11 @@ Server-side rendering with hydration for high-complexity components.
 
 ---
 
-## Phase 4: Production Hardening (Weeks 12-14)
+## Phase 4: Production Hardening (Weeks 29-35)
 
 **Goal**: Fully monitored, documented, production-ready system
+**Duration**: 6-8 weeks (1.5-2 months)
+**Critical Path**: All prior phases complete; focus shifts to stability, monitoring, and documentation
 
 ### 🔵 MCP-UI Tasks
 
