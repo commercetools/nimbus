@@ -3115,3 +3115,590 @@ export const ClearAccessibleViaKeyboard: Story = {
     });
   },
 };
+
+// ============================================================
+// SELECTION MODES TESTS
+// ============================================================
+
+/**
+ * Single-Select: One Option at a Time
+ * Tests that only one option can be selected at a time in single-select mode
+ */
+export const SingleSelectOneAtATime: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Select second option - replaces first", async () => {
+      // Open menu again
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}"); // Navigate to Kangaroo
+      await userEvent.keyboard("{Enter}");
+
+      // Kangaroo should replace Koala
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: New Selection Replaces Previous
+ * Tests that selecting a new option replaces the previous selection
+ */
+export const SingleSelectReplacesPrevious: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      // TODO: pull this out into a helper? We do it a lot
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      await selectOptionsByName(["Koala"]);
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Select Platypus - Koala is replaced", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Only Platypus should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Platypus");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Text Appears in Input
+ * Tests that selected option text syncs to the input field
+ */
+export const SingleSelectTextInInput: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Select an option
+    await userEvent.click(input);
+    await userEvent.keyboard("{ArrowDown}");
+    await userEvent.keyboard("{ArrowDown}");
+    await userEvent.keyboard("{ArrowDown}"); // Navigate to Platypus
+    await userEvent.keyboard("{Enter}");
+
+    // Input value should match selected option text
+    await waitFor(() => {
+      expect(input.value).toBe("Platypus");
+    });
+  },
+};
+
+/**
+ * Single-Select: Clear Button Removes Selection
+ * Tests that clear button removes the current selection
+ */
+export const SingleSelectClearRemoves: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Make selection", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Clear removes selection", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+      await userEvent.click(clearButton);
+
+      await waitFor(() => {
+        expect(input.value).toBe("");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Menu Closes After Selection
+ * Tests that menu closes automatically after selecting an option
+ */
+export const SingleSelectMenuCloses: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Select option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Menu closes automatically", async () => {
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Input Displays Correct Value
+ * Tests that input always displays the correct selected value
+ */
+export const SingleSelectInputDisplaysValue: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select option with long name", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Bald");
+
+      await waitFor(() => {
+        const option = findOptionByText(
+          "Bald Eagle with a very long name hooray"
+        );
+        expect(option).toBeInTheDocument();
+      });
+
+      await selectOptionsByName(["Bald Eagle with a very long name hooray"]);
+
+      // Input should display full text
+      await waitFor(() => {
+        expect(input.value).toBe("Bald Eagle with a very long name hooray");
+      });
+    });
+  },
+};
+
+/**
+ * Multi-Select: Multiple Options Selectable
+ * Tests that multiple options can be selected
+ */
+export const MultiSelectMultipleOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Select second option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Both should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Select third option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      await selectOptionsByName(["Bison"]);
+
+      // All three should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+      expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Options Appear as Tags
+ * Tests that selected options appear as removable tags
+ */
+export const MultiSelectOptionsAppearAsTags: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+    });
+
+    await step("Options appear as tags with remove buttons", async () => {
+      // Tags should be visible
+      const koalaTag = canvas.getByText("Koala");
+      const kangarooTag = canvas.getByText("Kangaroo");
+
+      expect(koalaTag).toBeVisible();
+      expect(kangarooTag).toBeVisible();
+
+      // Each tag should have a remove button
+      const koalaRemove = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+      const kangarooRemove = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+
+      expect(koalaRemove).toBeVisible();
+      expect(kangarooRemove).toBeVisible();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Tag Remove Button Deselects
+ * Tests that clicking tag remove button deselects the item
+ */
+export const MultiSelectTagRemoveDeselects: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select two options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Click remove button on Koala tag", async () => {
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+
+      await userEvent.click(removeButton);
+
+      // Koala should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+
+      // Kangaroo should remain
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Backspace Removes Last Tag
+ * Tests that Backspace key removes the last selected tag
+ */
+export const MultiSelectBackspaceRemoves: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select two options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Backspace removes last tag (Kangaroo)", async () => {
+      // Ensure input is focused and empty
+      await userEvent.clear(input);
+      expect(input.value).toBe("");
+
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo (last tag) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Menu Stays Open After Selections
+ * Tests that menu remains open after each selection
+ */
+export const MultiSelectMenuStaysOpen: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select first option - menu stays open", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+
+      // Menu should remain open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Select second option - menu still open", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Menu should still be open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Clear Button Removes All
+ * Tests that clear button removes all selections at once
+ */
+export const MultiSelectClearRemovesAll: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select three options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // All three tags should exist
+      // TODO: should we pull this out into a util somehow?
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Clear button removes all selections", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+      await userEvent.click(clearButton);
+
+      // All tags should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
