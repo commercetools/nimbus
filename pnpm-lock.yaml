@@ -92,8 +92,8 @@ catalogs:
       specifier: ^4.0.14
       version: 4.0.14
     '@vitest/coverage-v8':
-      specifier: ^4.0.14
-      version: 4.0.14
+      specifier: ^4.0.15
+      version: 4.0.15
     '@vueless/storybook-dark-mode':
       specifier: ^10.0.4
       version: 10.0.4
@@ -594,7 +594,7 @@ importers:
         version: 4.0.14(playwright@1.57.0)(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.15)
       '@vitest/coverage-v8':
         specifier: catalog:tooling
-        version: 4.0.14(@vitest/browser@4.0.14(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)
+        version: 4.0.15(@vitest/browser@4.0.14(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)
       '@vueless/storybook-dark-mode':
         specifier: catalog:tooling
         version: 10.0.4(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
@@ -3050,11 +3050,11 @@ packages:
     peerDependencies:
       vitest: 4.0.14
 
-  '@vitest/coverage-v8@4.0.14':
-    resolution: {integrity: sha512-EYHLqN/BY6b47qHH7gtMxAg++saoGmsjWmAq9MlXxAz4M0NcHh9iOyKhBZyU4yxZqOd8Xnqp80/5saeitz4Cng==}
+  '@vitest/coverage-v8@4.0.15':
+    resolution: {integrity: sha512-FUJ+1RkpTFW7rQITdgTi93qOCWJobWhBirEPCeXh2SW2wsTlFxy51apDz5gzG+ZEYt/THvWeNmhdAoS9DTwpCw==}
     peerDependencies:
-      '@vitest/browser': 4.0.14
-      vitest: 4.0.14
+      '@vitest/browser': 4.0.15
+      vitest: 4.0.15
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
@@ -9827,10 +9827,10 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-v8@4.0.14(@vitest/browser@4.0.14(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)':
+  '@vitest/coverage-v8@4.0.15(@vitest/browser@4.0.14(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
-      '@vitest/utils': 4.0.14
+      '@vitest/utils': 4.0.15
       ast-v8-to-istanbul: 0.3.8
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
