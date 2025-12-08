@@ -1,4 +1,4 @@
-# MCP-UI: Universal Component Rendering for LLM Applications
+# Nimbus MCP-UI: Universal Component Rendering for LLM Applications
 
 ## Executive Summary
 
@@ -31,18 +31,20 @@ This fragmentation creates:
 
 ### The Solution
 
-**MCP-UI enables AI applications to deliver rich, interactive, brand-consistent
-user interfaces without custom development work.**
+**Nimbus MCP-UI enables AI applications to deliver rich, interactive,
+brand-consistent user interfaces without custom development work.**
 
-Built on our Nimbus design system, MCP-UI provides a universal framework where
-LLM agents specify **what** to display (data tables, forms, dashboards) while
-the system handles **how** it renders (styling, theming, accessibility,
+Built on our Nimbus design system, Nimbus MCP-UI provides a universal framework
+where LLM agents specify **what** to display (data tables, forms, dashboards)
+while the system handles **how** it renders (styling, theming, accessibility,
 interactivity).
 
 ### Business Impact
 
 This infrastructure unlocks:
 
+- **Fast time-to-value** - Primary internal use case (virtual DOM for Commerce
+  Center, Merchant Center) operational in under a quarter (2-2.5 months)
 - **Faster time-to-market** - Product teams ship AI features in weeks instead of
   months
 - **Consistent brand experience** - Every AI-generated UI matches commercetools
@@ -63,14 +65,14 @@ This infrastructure unlocks:
 technology:**
 
 - **AI Assistants** - Rich, interactive responses in conversational interfaces
-- **Analytics Platforms** - Dynamic data visualization and filtering
 - **Workflow Automation** - AI-generated forms, wizards, and multi-step
   processes
+- **Admin Interfaces** - AI-powered dashboard generation and configuration UIs
 - **Customer Support Tools** - Structured information presentation with clear
   hierarchy
 - **Product Discovery** - Interactive product cards, comparison tables,
   personalized recommendations
-- **Admin Interfaces** - AI-powered dashboard generation and configuration UIs
+- **Analytics Platforms** - Dynamic data visualization and filtering
 
 **Every product line with AI capabilities will benefit from this infrastructure
 investment.**
@@ -113,14 +115,15 @@ not starting from zero.
 The following diagram illustrates the high-level flow from user request to
 rendered UI:
 
-![MCP-UI Architecture Sequence Diagram](assets/sequence-diagram.png)
+![Nimbus MCP-UI Architecture Sequence Diagram](assets/sequence-diagram.png)
 
 **Architecture Flow:**
 
 1. **User** interacts with an AI application (chat, dashboard, assistant)
 2. **LLM** processes request and determines appropriate UI to display (data
    table, form, chart)
-3. **MCP-UI** receives component request from LLM with brand/project context
+3. **Nimbus MCP-UI** receives component request from LLM with brand/project
+   context
 4. **Theme Resolution** - Theme Service API retrieves
    project/organization-specific design tokens (with caching)
 5. **Server Rendering** - Component rendered with theme applied during SSR (for
@@ -131,8 +134,8 @@ rendered UI:
 This architecture centralizes UI development while ensuring brand consistency
 and security.
 
-**Authentication & Security:** All services (MCP-UI Server, Theme Service API,
-Component Rendering Service) use **commercetools-identity for OAuth2/JWT
+**Authentication & Security:** All services (Nimbus MCP-UI Server, Theme Service
+API, Component Rendering Service) use **commercetools-identity for OAuth2/JWT
 authentication**, ensuring secure, standardized access control across the
 system.
 
@@ -140,28 +143,38 @@ system.
 
 **Technical Flexibility Enables Business Agility:**
 
-MCP-UI supports three delivery methods, each optimized for specific use cases:
+Nimbus MCP-UI supports three delivery methods, each enabled through phased
+technical strategy:
 
-| Method            | Use Case                                | Bundle Size                        | Business Benefit                                                       |
-| ----------------- | --------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
-| **Remote DOM**    | Internal apps (Nimbus installed)        | ~30 KB virtual DOM                 | Fastest deployment for internal teams, minimal overhead                |
-| **HTML Snippet**  | External apps (simple, non-interactive) | ~10-30 KB SSR HTML + CSS           | Partners embed static content easily, zero runtime cost                |
-| **Hosted Widget** | External apps (complex, interactive)    | ~150 KB hydration runtime (cached) | Full interactivity for external partners, professional user experience |
+| Method            | Use Case                                | Bundle Size                        | Enabled By            | Business Value                                       |
+| ----------------- | --------------------------------------- | ---------------------------------- | --------------------- | ---------------------------------------------------- |
+| **Remote DOM**    | Internal apps (Nimbus installed)        | ~30 KB virtual DOM                 | **Phase 1** (Week 10) | Internal teams ship AI features in under a quarter   |
+| **HTML Snippet**  | External apps (simple, non-interactive) | ~10-30 KB SSR HTML + CSS           | **Phase 3** (Week 28) | Partners embed static content with zero runtime cost |
+| **Hosted Widget** | External apps (complex, interactive)    | ~150 KB hydration runtime (cached) | **Phase 3** (Week 28) | Full interactivity for external partners             |
 
-**Technical Strategy:** Two-phase rendering (instant SSR display + client-side
-hydration) ensures users see styled output immediately, then interact once
-loaded.
+**Strategy:** Phase 1 enables virtual DOM for internal apps (no SSR needed).
+Phase 2 adds dynamic theming. Phase 3 adds SSR infrastructure for external use
+cases with two-phase rendering (instant display + client hydration).
 
 ---
 
 ## Implementation Approach: Three Parallel Workstreams
 
-The MCP-UI system is organized into **three parallel workstreams** that deliver
-value incrementally:
+The Nimbus MCP-UI system is organized into **three parallel workstreams** that
+deliver value incrementally:
 
-### 🔵 Core MCP-UI Protocol
+### 🔵 Nimbus MCP-UI Protocol
 
 **Technical Focus: Enable AI agents to specify and render Nimbus components**
+
+**Real-World Result:** When a merchant asks their Commerce Center AI assistant
+"Show me orders from the last week," the LLM responds with a fully-rendered data
+table displaying order information—complete with sorting, filtering, and
+pagination controls. Similarly, queries like "Create a new product" render
+multi-step forms with validation, while "Show low inventory items" displays
+product cards with status badges and action menus. All components use Nimbus
+design patterns, ensuring consistent experiences across AI-powered features
+without custom UI development.
 
 **Key Components:**
 
@@ -191,6 +204,15 @@ value incrementally:
 
 **Technical Focus: Multi-brand and multi-tenant theme application**
 
+**Real-World Result:** When a shopper asks the Cora AI chatbot "Show me products
+similar to this one," the response displays product cards that match the
+customer's brand identity, using their color palette and typography. A luxury
+fashion retailer sees cards with their signature burgundy accent colors and
+elegant serif fonts, while a sporting goods store sees bold primary colors and
+athletic sans-serif typefaces. The Theme Service automatically applies the
+correct brand theme to every AI response, ensuring white-labeled storefronts
+maintain visual consistency without manual configuration.
+
 **Key Components:**
 
 - Theme Serialization - Convert Nimbus themes to portable, transmittable formats
@@ -218,10 +240,29 @@ value incrementally:
 - Provides infrastructure foundation enabling future customer customization of
   commercetools applications
 
+**Real-World Result:** When a shopper asks the Cora AI chatbot "Show me products
+similar to this one," the response displays product cards that match the
+customer's brand identity—using their color palette and typography. A luxury
+fashion retailer sees cards with their signature burgundy accent colors and
+elegant serif fonts, while a sporting goods store sees bold primary colors and
+athletic sans-serif typefaces. The Theme Service automatically applies the
+correct brand theme to every AI response, ensuring white-labeled storefronts
+maintain visual consistency without manual configuration.
+
 ### 🟠 Server Rendering Infrastructure
 
 **Technical Focus: High-performance rendering for data-heavy workloads and
 white-labeled products**
+
+**Real-World Result:** When a shopper in the Cora chatbot asks "Help me track my
+order," the response renders a fully-themed order tracking stepper showing
+shipping progress—styled with the customer's brand colors and instantly visible
+before JavaScript loads. Complex queries like "Compare these products" display
+interactive comparison tables with sorting and filtering, while "Complete this
+purchase" renders multi-step checkout forms with validation. All components are
+server-rendered for instant display, then hydrate for full interactivity,
+providing professional data-rich experiences that match the customer's
+storefront branding.
 
 **Key Components:**
 
@@ -260,30 +301,48 @@ white-labeled products**
 
 ## Implementation Timeline
 
+### Phased Delivery Approach
+
+Nimbus MCP-UI delivers value incrementally through four phases, with **internal
+applications (virtual DOM) operational in under a quarter**:
+
+| Phase                             | Deliverable                                                               | Completion                             | Duration   |
+| --------------------------------- | ------------------------------------------------------------------------- | -------------------------------------- | ---------- |
+| **Phase 1: Foundation**           | Internal applications render components via Remote DOM (virtual DOM)      | **Week 10** <br/> **(Under 3 months)** | 8-10 weeks |
+| **Phase 2: Themed Rendering**     | Brand consistency across all renders with dynamic theming                 | Week 18                                | 6-8 weeks  |
+| **Phase 3: External Integration** | External partners embed themed components (HTML snippets, hosted widgets) | Week 28                                | 8-10 weeks |
+| **Phase 4: Production Hardening** | Full monitoring, documentation, production-ready system, wide release     | Week 35                                | 6-8 weeks  |
+
+**Key Milestone:** Phase 1 completes the **primary internal use case**—enabling
+Commerce Center, Merchant Center, and other internal applications to render rich
+AI-generated UIs using lightweight virtual DOM delivery. This foundation is
+**operational in 2-2.5 months**, delivering immediate value to product teams
+before external integration capabilities are complete.
+
 **Total Duration: 7.5-8.5 months to full production capability**
 
-**Team**: 5 engineers with 75% project allocation (~94 focused hours/week), 3
-with Claude Code access
+**Team**: 5.25 engineers (one on parental leave starting February) with 75%
+project allocation (~94 focused hours/week), 3 with Claude Code access
 
 The following timeline roadmap illustrates the **parallel workstreams** and
 their key dependencies:
 
-![MCP-UI Implementation Timeline](assets/timeline-roadmap.png)
+![Nimbus MCP-UI Implementation Timeline](assets/timeline-roadmap.png)
 
 ### Parallel Development Strategy
 
 **All three workstreams start simultaneously** to maximize velocity and deliver
 value quickly:
 
-- **🔵 MCP-UI** can begin with Remote DOM implementation (no theming or SSR
-  needed initially)
+- **🔵 Nimbus MCP-UI Protocol** can begin with Remote DOM implementation (no
+  theming or SSR needed initially)
 - **🟢 Theming** can develop theme serialization and service infrastructure
   independently
 - **🟠 SSR** can fix hydration issues and build rendering service in parallel
 
 **Integration points are well-defined:**
 
-- 🟢 Theme serialization → 🔵 MCP-UI themed rendering
+- 🟢 Theme serialization → 🔵 Nimbus MCP-UI themed rendering
 - 🟠 SSR support → 🔵 HTML snippets and widgets
 - 🟢 Theme service → 🟠 Rendering service (theme injection)
 
@@ -296,12 +355,12 @@ external integrations go live as the system matures.
 **Milestone: Internal applications can render basic components with brand
 theming**
 
-**Business Value:** Internal product teams can start using MCP-UI immediately
-for new AI features
+**Business Value:** Internal product teams can start using Nimbus MCP-UI
+immediately for new AI features
 
 **Technical Deliverables:**
 
-- 🔵 MCP server schema design and Remote DOM proof of concept
+- 🔵 Nimbus MCP-UI server schema design and Remote DOM proof of concept
 - 🟢 Theme serialization format specification
 - 🟠 SSR-safe Nimbus components (no hydration mismatches)
 
@@ -396,33 +455,34 @@ overhead
 
 **Realistic Constraints Factored In:**
 
-- Team capacity: 5 engineers @ 75% allocation (primary focus with maintenance
+- Team capacity: 5.25 engineers @ 75% allocation (primary focus with maintenance
   responsibilities)
 - Buffer: 25% added for unknown blockers, integration issues, and dependency
   delays
 - Coordination overhead: Cross-functional alignment with Product, Design,
   Infrastructure, Security
-- Claude Code access: 3 of 5 engineers
+- Claude Code access: 2 of 5 engineers
 
 **Incremental Value Delivery:**
 
-- **Month 1-2.5**: Internal teams can render basic components
-- **Month 2.5-4.5**: Brand consistency across all renders
-- **Month 4.5-7**: External partners can embed our UIs
-- **Month 7-8.5**: Full production scale and monitoring
+- **Month 1-2.5 (Phase 1)**: Internal teams can render basic components via
+  Remote DOM **(Primary use case operational in under a quarter)**
+- **Month 2.5-4.5 (Phase 2)**: Brand consistency across all renders
+- **Month 4.5-7 (Phase 3)**: External partners can embed our UIs
+- **Month 7-8.5 (Phase 4)**: Full production scale and monitoring
 
 ## Success Metrics
 
-We will track the following metrics to measure MCP-UI effectiveness and guide
-continuous improvement:
+We will track the following metrics to measure Nimbus MCP-UI effectiveness and
+guide continuous improvement:
 
 ### Adoption & Value Realization
 
-- Number of internal products integrating MCP-UI
+- Number of internal products integrating Nimbus MCP-UI
 - Reduction in custom UI development time per feature
-- External applications and partners using MCP-UI
+- External applications and partners using Nimbus MCP-UI
 - Component usage frequency by type
-- Active MCP-UI sessions per day/week/month
+- Active Nimbus MCP-UI sessions per day/week/month
 
 **Outcome:** Faster time-to-market for AI features across product portfolio
 
@@ -454,7 +514,7 @@ continuous improvement:
 
 ### Developer Efficiency
 
-- Time to integrate MCP-UI for new applications (onboarding speed)
+- Time to integrate Nimbus MCP-UI for new applications (onboarding speed)
 - Reduction in design system implementation work
 - Component schema coverage (percentage of use cases supported)
 - Documentation clarity feedback (surveys)
@@ -476,7 +536,7 @@ continuous improvement:
 
 ## Risks Considered
 
-### Risks of Implementing MCP-UI (Mitigated)
+### Risks of Implementing Nimbus MCP-UI (Mitigated)
 
 **High-Impact Risks:**
 
@@ -497,7 +557,7 @@ continuous improvement:
 | **Performance at scale**           | User experience degradation          | Built-in monitoring, auto-scaling infrastructure, performance testing     |
 | **Maintenance burden**             | Ongoing operational cost             | Automated testing, clear ownership model, runbooks for common issues      |
 
-### Business Risks of NOT Implementing MCP-UI
+### Business Risks of NOT Implementing Nimbus MCP-UI
 
 **Strategic Risks:**
 
@@ -539,8 +599,8 @@ manage cross-functional alignment.
 
 ## Why This Work Matters
 
-MCP-UI represents a **fundamental infrastructure investment** that will pay
-dividends across our entire product organization for years.
+Nimbus MCP-UI represents a **fundamental infrastructure investment** that will
+pay dividends across our entire product organization for years.
 
 ### For Internal Teams
 
@@ -582,7 +642,7 @@ dividends across our entire product organization for years.
 
 ### Strategic Value
 
-#### Without MCP-UI, we risk:
+#### Without Nimbus MCP-UI, we risk:
 
 - **Competitive erosion** - Slow AI feature velocity limits market growth
 - **Brand fragmentation** - Inconsistent experiences damage customer trust
@@ -592,7 +652,7 @@ dividends across our entire product organization for years.
 - **Partnership friction** - External integrations require excessive custom work
 - **Security vulnerabilities** - Teams execute untrusted AI-generated code
 
-#### With MCP-UI, we enable:
+#### With Nimbus MCP-UI, we enable:
 
 - **Market leadership** - Best-in-class AI experiences differentiate our
   offerings
@@ -615,7 +675,7 @@ builders**. The companies that deliver the best AI-generated interfaces will:
 - Scale their AI capabilities across product lines efficiently
 - Enable external partners to integrate seamlessly
 
-**MCP-UI provides the infrastructure foundation for this competitive
+**Nimbus MCP-UI provides the infrastructure foundation for this competitive
 advantage.**
 
 The investment is **strategically necessary** - not optional - for commercetools
@@ -629,11 +689,11 @@ can deliver it to capture market opportunity.**
 
 ## Recommendation
 
-**Approve immediate staffing and prioritization for MCP-UI implementation**
-across all three workstreams:
+**Approve immediate staffing and prioritization for Nimbus MCP-UI
+implementation** across all three workstreams:
 
-1. **Allocate team resources** for 7.5-8.5 month focused effort (5 engineers @
-   75% allocation)
+1. **Allocate team resources** for 7.5-8.5 month focused effort (5.25 engineers
+   @ 75% allocation)
 2. **Establish cross-functional coordination** with Product, Design,
    Infrastructure, and Security
 3. **Identify early adopter product teams** for Phase 1 validation and feedback
@@ -643,7 +703,11 @@ across all three workstreams:
 
 **Expected ROI:** Post-launch benefits include:
 
-- **40-60% reduction** in AI feature development time across product portfolio
+- **Immediate value in under a quarter** - Phase 1 delivers internal application
+  use case in 2-2.5 months, enabling Commerce Center and Merchant Center AI
+  features to render rich UIs
+- **Significant reduction** in AI feature development time across product
+  portfolio
 - **Elimination of duplicate UI development** - estimated 6-10 engineer-months
   saved per year
 - **Measurable improvement** in customer satisfaction with AI interfaces

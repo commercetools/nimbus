@@ -40,7 +40,15 @@ title MCP-UI Project Roadmap (30-35 weeks) - 5 engineers @ 75% allocation
 printscale weekly zoom 1.5
 project starts 2026-01-15
 
-
+-- 📅 PHASES --
+[PHASE 1: Enable integration with internal apps] lasts 49 days and starts at 2026-01-15
+[PHASE 1: Enable integration with internal apps] is colored in #9B59B6
+[PHASE 2: Brand Consistency (Dynamic Theming)] lasts 56 days and starts at [PHASE 1: Enable integration with internal apps]'s end
+[PHASE 2: Brand Consistency (Dynamic Theming)] is colored in #8E44AD
+[PHASE 3: Enable integration with external apps] lasts 70 days and starts at [PHASE 2: Brand Consistency (Dynamic Theming)]'s end
+[PHASE 3: Enable integration with external apps] is colored in #7D3C98
+[PHASE 4: Production Monitoring/Docs/Wide Release] lasts 49 days and starts at [PHASE 3: Enable integration with external apps]'s end
+[PHASE 4: Production Monitoring/Docs/Wide Release] is colored in #6C3483
 
 -- 🔵 MCP-UI Server/Client --
 [Schema Design] lasts 25 days and starts at 2026-01-15
@@ -57,11 +65,6 @@ project starts 2026-01-15
 -- 🟠 SSR & Rendering --
 [SSR Fixes] lasts 49 days and starts at 2026-01-15
 [SSR Fixes] is colored in #F5A623
-
-[PHASE 1 START] happens at 2026-01-15
-
-[PHASE 1 END] happens at [SSR Fixes]'s end
-[PHASE 2 START] happens at [SSR Fixes]'s end
 
 [Schema Expansion] lasts 35 days and starts at [llm Integration]'s end
 [Schema Expansion] is colored in #4A90E2
@@ -84,9 +87,6 @@ project starts 2026-01-15
 [Integr Test] lasts 14 days and starts at [Hydration]'s end
 [Integr Test] is colored in #F5A623
 
-[PHASE 2 END] happens at [Integr Test]'s end
-[PHASE 3 START] happens at [Integr Test]'s end
-
 [HTML Snippets] lasts 28 days and starts at [Theme Context]'s end
 [HTML Snippets] is colored in #4A90E2
 [Hosted Widgets] lasts 28 days and starts at [HTML Snippets]'s end
@@ -103,9 +103,6 @@ project starts 2026-01-15
 [Caching] is colored in #F5A623
 [K8s & CDN] lasts 21 days and starts at [Caching]'s end
 [K8s & CDN] is colored in #F5A623
-
-[PHASE 3 END] happens at [K8s & CDN]'s end
-[PHASE 4 START] happens at [K8s & CDN]'s end
 
 [Prod Deploy MCP] lasts 28 days and starts at [Hosted Widgets]'s end
 [Prod Deploy MCP] is colored in #4A90E2

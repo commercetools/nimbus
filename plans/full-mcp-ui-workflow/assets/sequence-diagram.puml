@@ -44,7 +44,7 @@ participant "🔵 MCP-UI Server" as MCP <<mcp>>
 participant "🟠 Rendering Service" as Render <<render>>
 participant "🟢 Theme Service" as Theme <<theme>>
 
-User -> LLM: 👤 <b>1</b> "Show me sales data as a table"
+User -> LLM: 👤 <b>1</b> "Show last weeks sales by product"
 activate LLM
 note right
   Process request
@@ -58,14 +58,14 @@ note right
   Extract theme context
 end note
 
-MCP -> Theme: 🔵 <b>3</b> GET /theme/{orgId}/{projectId}
+MCP -> Theme: 🔵 <b>3</b> GET /theme/{orgId | projectId | uuid}
 activate Theme
 note right
   Retrieve design tokens
   Apply customizations
   Validate WCAG compliance
 end note
-Theme --> MCP: 🟢 <b>4</b> Theme configuration (JSON)\n{colors, spacing, typography}
+Theme --> MCP: 🟢 <b>4</b> Theme configuration (JSON)\n{colors, spacing, typography, etc}
 deactivate Theme
 
 MCP -> Render: 🔵 <b>5</b> POST /render\n{component, theme, data}
