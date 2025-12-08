@@ -3702,3 +3702,118 @@ export const MultiSelectClearRemovesAll: Story = {
     });
   },
 };
+
+// ============================================================
+// SELECTION PERSISTENCE TESTS
+// ============================================================
+
+/**
+ * Persistence: Items Persist When Filtering Changes
+ * Tests that selected items remain selected even when filter text changes
+ */
+export const PersistenceItemsPersistWhenFilteringChanges: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Change filter - Koala tag persists", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      // Koala tag should still be visible even though filter changed to "P"
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Select Platypus with different filter", async () => {
+      await selectOptionsByName(["Platypus"]);
+
+      // Both tags should be visible
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Change filter again - both persist", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      // Both previously selected tags should still be visible
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Persistence: Selected Items Remain Visible as Tags
+ * Tests that selected items always visible as tags regardless of current filter
+ */
+export const PersistenceItemsRemainVisibleAsTags: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select items with 'K' filter", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Filter by 'B' - K tags still visible", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      // Tags should remain visible despite filter not matching them
+      expect(canvas.getByText("Koala")).toBeVisible();
+      expect(canvas.getByText("Kangaroo")).toBeVisible();
+    });
+
+    await step("Clear filter - tags still visible", async () => {
+      await userEvent.clear(input);
+
+      // Tags should remain visible with empty filter
+      expect(canvas.getByText("Koala")).toBeVisible();
+      expect(canvas.getByText("Kangaroo")).toBeVisible();
+    });
+  },
+};

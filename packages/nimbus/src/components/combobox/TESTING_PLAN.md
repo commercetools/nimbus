@@ -118,13 +118,18 @@
 **Status**: ✅ Implemented - 5 focused stories
 
 **Stories:**
-- `FocusClickTriggerArea` - Clicking trigger area focuses input (tests empty space and near leading element)
+
+- `FocusClickTriggerArea` - Clicking trigger area focuses input (tests empty
+  space and near leading element)
 - `FocusTabKey` - Tabbing focuses input (tests sequential focus navigation)
-- `FocusRemainsOnInputDuringSelection` - Virtual focus pattern during multi-select
+- `FocusRemainsOnInputDuringSelection` - Virtual focus pattern during
+  multi-select
 - `FocusLosesOnOutsideClick` - Focus lost when clicking outside component
-- `FocusIndicatorsVisible` - Focus ring and aria-activedescendant during keyboard navigation
+- `FocusIndicatorsVisible` - Focus ring and aria-activedescendant during
+  keyboard navigation
 
 **Test Coverage:**
+
 - ✅ Clicking anywhere in the trigger area focuses the input
 - ✅ Clicking near leading element focuses input
 - ✅ Input receives focus when component is tabbed to
@@ -140,6 +145,7 @@
 **Status**: ✅ Implemented - 6 focused stories
 
 **Stories:**
+
 - `KeyboardArrowDownOpensMenu` - Arrow Down opens menu and focuses first option
 - `KeyboardArrowKeysNavigate` - Arrow Up/Down navigation through options
 - `KeyboardEnterSelects` - Enter key selects focused option
@@ -148,6 +154,7 @@
 - `KeyboardOnlyWorkflow` - Complete keyboard-only workflow (no mouse)
 
 **Test Coverage:**
+
 - ✅ Tab key focuses the input field (covered in `FocusTabKey`)
 - ✅ Arrow Down opens menu and focuses first option
 - ✅ Arrow Down moves to next option (aria-activedescendant changes)
@@ -164,6 +171,7 @@
 **Status**: ✅ Implemented - 8 focused stories
 
 **Stories:**
+
 - `MenuOpensOnTyping` - Menu opens when typing (menuTrigger="input", default)
 - `MenuOpensOnFocus` - Menu opens on focus (menuTrigger="focus")
 - `MenuOpensManual` - Menu only opens via button (menuTrigger="manual")
@@ -174,6 +182,7 @@
 - `MenuClosesOnEscape` - Escape key closes menu
 
 **Test Coverage:**
+
 - ✅ Menu opens when user starts typing (menuTrigger="input")
 - ✅ Menu does NOT open on focus when menuTrigger="input"
 - ✅ Menu opens when input receives focus (menuTrigger="focus")
@@ -192,13 +201,16 @@
 **Status**: ✅ Implemented - 5 focused stories
 
 **Stories:**
+
 - `OptionClickingSelects` - Mouse click selects option
 - `OptionHoverFeedback` - Hover interaction and clickability
-- `OptionSelectedVisuallyDistinguished` - aria-selected attributes for selected/unselected
+- `OptionSelectedVisuallyDistinguished` - aria-selected attributes for
+  selected/unselected
 - `OptionKeyboardSelection` - Enter key selects focused option
 - `OptionMultipleSelections` - Sequential multi-select workflow
 
 **Test Coverage:**
+
 - ✅ Clicking an option selects it (single-select)
 - ✅ Hovering over options (verified via click after hover)
 - ✅ Selected options have aria-selected="true" (multi-select)
@@ -213,12 +225,16 @@
 **Status**: ✅ Implemented - 4 focused stories
 
 **Stories:**
-- `ClearRemovesSelectionSingle` - Clear button removes selection in single-select
-- `ClearRemovesAllSelectionsMulti` - Clear button removes all tags in multi-select
+
+- `ClearRemovesSelectionSingle` - Clear button removes selection in
+  single-select
+- `ClearRemovesAllSelectionsMulti` - Clear button removes all tags in
+  multi-select
 - `ClearDoesNotCloseMenu` - Menu stays open after clearing (multi-select)
 - `ClearAccessibleViaKeyboard` - Backspace key clears selections
 
 **Test Coverage:**
+
 - ✅ Clear button removes current selection (single-select)
 - ✅ Input value becomes empty after clearing
 - ✅ Clear button removes all selections (multi-select)
@@ -237,14 +253,17 @@
 **Status**: ✅ Implemented - 6 focused stories
 
 **Stories:**
+
 - `SingleSelectOneAtATime` - Only one option selectable, second replaces first
 - `SingleSelectReplacesPrevious` - New selection replaces previous via click
 - `SingleSelectTextInInput` - Selected text syncs to input field
 - `SingleSelectClearRemoves` - Clear button empties input value
 - `SingleSelectMenuCloses` - Menu auto-closes after selection
-- `SingleSelectInputDisplaysValue` - Input displays full selected text (even long names)
+- `SingleSelectInputDisplaysValue` - Input displays full selected text (even
+  long names)
 
 **Test Coverage:**
+
 - ✅ User can select one option at a time
 - ✅ Selecting a new option replaces previous selection (keyboard)
 - ✅ Selecting a new option replaces previous selection (mouse click)
@@ -259,8 +278,10 @@
 **Status**: ✅ Implemented - 7 focused stories
 
 **Stories:**
+
 - `MultiSelectMultipleOptions` - Sequential selection of 3 items
-- `MultiSelectOptionsAppearAsTags` - Selected items render as tags with remove buttons
+- `MultiSelectOptionsAppearAsTags` - Selected items render as tags with remove
+  buttons
 - `MultiSelectTagRemoveDeselects` - Tag remove button deselects item
 - `MultiSelectBackspaceRemoves` - Backspace key removes last tag
 - `MultiSelectInputClearsAfterSelection` - Input empties after each selection
@@ -268,6 +289,7 @@
 - `MultiSelectClearRemovesAll` - Clear button removes all tags at once
 
 **Test Coverage:**
+
 - ✅ User can select multiple options
 - ✅ Sequential selection of 3 items verified
 - ✅ Selected options appear as tags
@@ -282,11 +304,23 @@
 
 ### Selection Persistence ✅
 
-**Status**: Implemented in `AsyncMultiSelectPersistence`
+**Status**: ✅ Implemented - 3 focused stories
 
-- Selected items persist when filtering changes
-- Selected items remain visible as tags
-- Selected items excluded from available options list
+**Stories:**
+
+- `PersistenceItemsPersistWhenFilteringChanges` - Tags persist across filter
+  changes
+- `PersistenceItemsRemainVisibleAsTags` - Tags visible regardless of filter text
+- `PersistenceSelectedExcludedFromList` - Selected items excluded from dropdown
+  options
+
+**Test Coverage:**
+
+- ✅ Selected items persist when filtering changes (filter: K → P → B)
+- ✅ Multiple selections persist across filter changes
+- ✅ Selected items remain visible as tags
+- ✅ Tags visible when filter doesn't match their text
+- ✅ Tags visible with empty filter
 
 ---
 
