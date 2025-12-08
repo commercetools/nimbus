@@ -159,18 +159,33 @@
 - ✅ Multiple Backspace presses remove tags sequentially
 - ✅ Complete keyboard-only workflow (Tab → Arrow → Enter → Escape)
 
-### Menu Opening & Closing ❌
+### Menu Opening & Closing ✅
 
-**Status**: Not tested
+**Status**: ✅ Implemented - 8 focused stories
 
-- Menu opens when user starts typing (default behavior)
-- Menu opens when input receives focus (when configured)
-- Menu opens only on button click (manual mode)
-- Toggle button opens and closes the menu
-- Menu closes when user selects an option (single-select)
-- Menu stays open after selection (multi-select)
-- Menu closes when user clicks outside
-- Menu closes when Escape key is pressed
+**Stories:**
+- `MenuOpensOnTyping` - Menu opens when typing (menuTrigger="input", default)
+- `MenuOpensOnFocus` - Menu opens on focus (menuTrigger="focus")
+- `MenuOpensManual` - Menu only opens via button (menuTrigger="manual")
+- `MenuToggleButton` - Toggle button opens and closes menu
+- `MenuClosesAfterSelectionSingle` - Menu auto-closes after single-select
+- `MenuStaysOpenAfterSelectionMulti` - Menu stays open in multi-select mode
+- `MenuClosesOnOutsideClick` - Menu closes when clicking outside
+- `MenuClosesOnEscape` - Escape key closes menu
+
+**Test Coverage:**
+- ✅ Menu opens when user starts typing (menuTrigger="input")
+- ✅ Menu does NOT open on focus when menuTrigger="input"
+- ✅ Menu opens when input receives focus (menuTrigger="focus")
+- ✅ Menu opens only on button click (menuTrigger="manual")
+- ✅ Focus and typing do NOT open menu in manual mode
+- ✅ Toggle button opens the menu
+- ✅ Toggle button closes the menu
+- ✅ Menu closes automatically after selection (single-select)
+- ✅ Menu stays open after selection (multi-select)
+- ✅ Can select multiple items without menu closing
+- ✅ Menu closes when clicking outside component
+- ✅ Menu closes when Escape key is pressed
 
 ### Option Selection ⚠️
 
