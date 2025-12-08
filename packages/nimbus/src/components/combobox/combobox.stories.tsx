@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { FormField, Stack } from "@commercetools/nimbus";
+import { Box, FormField, Stack } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/test-data";
@@ -840,5 +840,252 @@ export const AsyncMultiSelectCustomOptions: Story = {
       expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
       expect(canvas.queryByText("pikachu")).toBeInTheDocument();
     });
+  },
+};
+
+// ============================================================
+// LAYOUT STRUCTURE TESTS
+// ============================================================
+
+/**
+ * Layout: Leading Element
+ * Tests that leading element (icon) displays correctly when provided
+ */
+export const LayoutLeadingElement: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Combobox with leading icon"
+        items={simpleOptions}
+        leadingElement={<Search aria-hidden="true" />}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Verify SVG icon is present (from the Search icon in leadingElement), grabs the first svg
+    const svgIcon = canvasElement.querySelector("svg");
+    expect(svgIcon?.parentElement).toHaveClass(
+      "nimbus-combobox__leadingElement"
+    );
+  },
+};
+
+/**
+ * Layout: Input Field Visibility
+ * Tests that input field is visible and functional
+ */
+export const LayoutInputField: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the input
+    const input = canvas.getByRole("combobox");
+
+    // Input should be visible
+    expect(input).toBeVisible();
+
+    // Input should be enabled (not disabled)
+    expect(input).not.toBeDisabled();
+
+    // Input should accept focus
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Layout: Toggle Button
+ * Tests that toggle button displays and is clickable
+ */
+export const LayoutToggleButton: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get toggle button
+    const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+    // Toggle button should be visible and enabled
+    expect(toggleButton).toBeVisible();
+    expect(toggleButton).toBeEnabled();
+
+    // Click to open menu
+    await userEvent.click(toggleButton);
+
+    // Menu should appear
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    // Click again to close
+    await userEvent.click(toggleButton);
+
+    // Menu should disappear
+    await waitFor(() => {
+      const closedListbox = getListBox(document);
+      expect(closedListbox).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Layout: Clear Button Visibility
+ * Tests that clear button displays when selection exists and hides when cleared
+ */
+export const LayoutClearButton: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Clear button should be visible when selection exists
+    const clearButton = canvas.getByLabelText(/clear selection/i);
+    expect(clearButton).toBeVisible();
+    expect(clearButton).toBeEnabled();
+
+    // Click clear button
+    await userEvent.click(clearButton);
+
+    // Clear button should be hidden after clearing (display: none)
+    await waitFor(() => {
+      const computedStyle = window.getComputedStyle(clearButton);
+      expect(computedStyle.display).toBe("none");
+    });
+  },
+};
+
+/**
+ * Layout: Clear Button Hidden Without Selection
+ * Tests that clear button is hidden when no selection exists
+ */
+export const LayoutClearButtonHidden: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Clear button should exist but be hidden (display:none)
+    const clearButton = canvas.getByLabelText(/clear selection/i);
+
+    // Verify it has display:none
+    const computedStyle = window.getComputedStyle(clearButton);
+    expect(computedStyle.display).toBe("none");
+  },
+};
+
+/**
+ * Layout: Full Width Container
+ * Tests that component takes full width of its container
+ *
+ * // TODO: this may require finagling, rather than passing in "width="full"
+ */
+export const LayoutFullWidth: Story = {
+  render: () => {
+    return (
+      <Box width="600px">
+        <ComposedComboBox
+          width="full"
+          aria-label="Test combobox in container"
+          items={simpleOptions}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the combobox input
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+
+    // Verify input exists and is visible
+    expect(root).toBeVisible();
+
+    // Get the computed width of the input element
+    const rootWidth = (root as HTMLElement).offsetWidth;
+
+    expect(rootWidth).toBe(600);
+  },
+};
+
+/**
+ * Layout: Responsive Behavior (Smoke Test)
+ * Tests that layout structure remains intact across different container sizes
+ */
+export const LayoutResponsive: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <Box width="200px">
+          <ComposedComboBox
+            aria-label="Narrow combobox"
+            items={simpleOptions}
+          />
+        </Box>
+        <Box width="400px">
+          <ComposedComboBox
+            aria-label="Medium combobox"
+            items={simpleOptions}
+          />
+        </Box>
+        <Box width="100%">
+          <ComposedComboBox
+            width="full"
+            aria-label="Wide combobox"
+            items={simpleOptions}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // This is a smoke test - full responsive testing requires viewport resizing
+    // which is complex in Storybook. This verifies basic structure is intact.
+
+    const inputs = canvas.getAllByRole("combobox");
+
+    // All inputs should be visible and functional regardless of container size
+    for (const input of inputs) {
+      expect(input).toBeVisible();
+      expect(input).not.toBeDisabled();
+    }
+
+    // All toggle buttons should remain accessible
+    const toggleButtons = canvas.getAllByLabelText(/toggle options/i);
+    expect(toggleButtons.length).toBe(3); // One per combobox
+
+    for (const button of toggleButtons) {
+      expect(button).toBeVisible();
+      expect(button).toBeEnabled();
+    }
   },
 };
