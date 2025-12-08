@@ -15,15 +15,19 @@
 **Status**: ✅ Implemented - 6 focused stories
 
 **Stories:**
+
 - `LayoutLeadingElement` - Leading element (icon) displays correctly
 - `LayoutInputField` - Input field visibility and focus behavior
 - `LayoutToggleButton` - Toggle button display and menu open/close
-- `LayoutClearButton` - Clear button visibility with selection and clearing behavior
-- `LayoutClearButtonHidden` - Clear button hidden without selection (display:none)
+- `LayoutClearButton` - Clear button visibility with selection and clearing
+  behavior
+- `LayoutClearButtonHidden` - Clear button hidden without selection
+  (display:none)
 - `LayoutFullWidth` - Component width matches container
 - `LayoutResponsive` - Layout integrity across container sizes (smoke test)
 
 **Test Coverage:**
+
 - ✅ Leading element displays correctly when provided
 - ✅ Input field is visible and functional
 - ✅ Toggle button displays and is clickable
@@ -38,6 +42,7 @@
 **Status**: ✅ Implemented - 5 focused stories
 
 **Stories:**
+
 - `MultiSelectTagsDisplay` - Selected items display as tags
 - `MultiSelectTagsInline` - Tags appear inline with input field
 - `MultiSelectTagsWrapping` - Tags wrap to new lines when space is limited
@@ -45,6 +50,7 @@
 - `MultiSelectInputAccessible` - Input remains accessible after adding tags
 
 **Test Coverage:**
+
 - ✅ Selected items display as removable tags
 - ✅ Tags appear inline with input field
 - ✅ Tags wrap to new lines when space is limited (6 tags in 300px container)
@@ -61,11 +67,9 @@
 
 **Status**: Not tested
 
-- Input field grows as user types
-- Input field shrinks when text is deleted
-- Input field is always visible and focusable
-- Input wraps to new line when content area is full
-- Placeholder text displays when input is empty
+- ✅ Input field is always visible and focusable
+- ✅ Input wraps to new line when content area is full
+- ✅ Placeholder text displays when input is empty
 
 ### Button Visibility & Behavior ❌
 
