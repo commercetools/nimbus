@@ -2282,3 +2282,356 @@ export const ButtonsClickAreas: Story = {
     });
   },
 };
+
+// ============================================================
+// MENU OPENING & CLOSING TESTS
+// ============================================================
+
+/**
+ * Menu: Opens When User Types (Default Behavior)
+ * Tests that menu opens automatically when user starts typing (menuTrigger="input")
+ */
+export const MenuOpensOnTyping: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="input"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input - menu closed", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Menu should NOT be open yet
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Type character - menu opens", async () => {
+      await userEvent.type(input, "K");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Opens on Focus When Configured
+ * Tests that menu opens when input receives focus (menuTrigger="focus")
+ */
+export const MenuOpensOnFocus: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Click to focus input
+    await userEvent.click(input);
+
+    // Menu should open automatically on focus
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Menu: Opens Only on Button Click (Manual Mode)
+ * Tests that menu only opens via toggle button when menuTrigger="manual"
+ */
+export const MenuOpensManual: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="manual"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus does not open menu", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Menu should NOT open on focus
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Typing does not open menu", async () => {
+      await userEvent.type(input, "K");
+
+      // Menu should still NOT open
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Toggle button opens menu", async () => {
+      const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+      await userEvent.click(toggleButton);
+
+      // Menu should NOW open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Toggle Button Opens and Closes
+ * Tests that toggle button opens and closes the menu
+ */
+export const MenuToggleButton: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+    await step("Click toggle to open", async () => {
+      await userEvent.click(toggleButton);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Click toggle to close", async () => {
+      await userEvent.click(toggleButton);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Closes After Selection (Single-Select)
+ * Tests that menu closes automatically after selecting an option in single-select mode
+ */
+export const MenuClosesAfterSelectionSingle: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Select option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // Koala should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Menu closes after selection", async () => {
+      // Menu should close automatically in single-select mode
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Stays Open After Selection (Multi-Select)
+ * Tests that menu stays open after selecting an option in multi-select mode
+ */
+export const MenuStaysOpenAfterSelectionMulti: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu and select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select Koala
+      await selectOptionsByName(["Koala"]);
+
+      // Verify selection
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Menu stays open after selection", async () => {
+      // Menu should REMAIN open in multi-select mode
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Can select another option", async () => {
+      // Clear input and type again
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      // Select Platypus
+      await selectOptionsByName(["Platypus"]);
+
+      // Both tags should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+
+      // Menu should STILL be open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Menu: Closes on Outside Click
+ * Tests that menu closes when clicking outside the component
+ */
+export const MenuClosesOnOutsideClick: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+        <Box padding="400" bg="neutral.3">
+          Click here to close menu
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Click outside closes menu", async () => {
+      const outsideBox = canvas.getByText("Click here to close menu");
+      await userEvent.click(outsideBox);
+
+      // Menu should close
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Closes on Escape Key
+ * Tests that Escape key closes the menu (covered in KeyboardEscapeCloses but included for completeness)
+ */
+export const MenuClosesOnEscape: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Escape to close", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
