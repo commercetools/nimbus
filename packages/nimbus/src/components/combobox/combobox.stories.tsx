@@ -1796,6 +1796,336 @@ export const FocusIndicatorsVisible: Story = {
 };
 
 // ============================================================
+// KEYBOARD NAVIGATION TESTS
+// ============================================================
+
+/**
+ * Keyboard: Arrow Down Opens Menu and Focuses First Option
+ * Tests that Arrow Down opens the menu and focuses the first option
+ */
+export const KeyboardArrowDownOpensMenu: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down opens menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("First option is virtually focused", async () => {
+      // aria-activedescendant should point to first option
+      const activeDescendant = input.getAttribute("aria-activedescendant");
+      expect(activeDescendant).toBeTruthy();
+
+      // Find the first option
+      const firstOption = findOptionByText("Koala");
+      expect(firstOption).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard: Arrow Keys Navigate Options
+ * Tests that Arrow Up/Down navigate through options
+ */
+export const KeyboardArrowKeysNavigate: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu with Arrow Down", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Arrow Down moves to next option", async () => {
+      // Get initial active descendant
+      const initialActive = input.getAttribute("aria-activedescendant");
+
+      // Press Arrow Down
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Active descendant should change
+      await waitFor(() => {
+        const newActive = input.getAttribute("aria-activedescendant");
+        expect(newActive).not.toBe(initialActive);
+      });
+    });
+
+    await step("Arrow Up moves to previous option", async () => {
+      // Get current active descendant
+      const beforeUp = input.getAttribute("aria-activedescendant");
+
+      // Press Arrow Up
+      await userEvent.keyboard("{ArrowUp}");
+
+      // Active descendant should change
+      await waitFor(() => {
+        const afterUp = input.getAttribute("aria-activedescendant");
+        expect(afterUp).not.toBe(beforeUp);
+      });
+    });
+  },
+};
+
+/**
+ * Keyboard: Enter Selects Option
+ * Tests that Enter key selects the focused option
+ */
+export const KeyboardEnterSelects: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu and navigate to option", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}"); // Opens and focuses first
+      await userEvent.keyboard("{ArrowDown}"); // Move to second option
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Enter to select", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // Second option (Kangaroo) should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Keyboard: Escape Closes Menu
+ * Tests that Escape key closes the menu
+ */
+export const KeyboardEscapeCloses: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Escape to close", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      // Menu should close
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Input retains focus after Escape", async () => {
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Keyboard: Backspace Removes Last Tag
+ * Tests that Backspace removes the last tag in multi-select mode when input is empty
+ */
+export const KeyboardBackspaceRemovesTag: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Focus input with empty value", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+      expect(input.value).toBe("");
+    });
+
+    await step("Press Backspace to remove last tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Last tag (Platypus) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+
+      // Other tags should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Press Backspace again to remove next tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard: Navigation Without Mouse
+ * Tests complete keyboard-only workflow (no mouse interaction)
+ */
+export const KeyboardOnlyWorkflow: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab to focus input (no mouse)", async () => {
+      await userEvent.tab();
+
+      const input = canvas.getByRole("combobox");
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down to open menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Navigate with arrows", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Arrow Down to move through options
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have focus
+      expect(input).toHaveFocus();
+    });
+
+    await step("Select with Enter", async () => {
+      const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+      await userEvent.keyboard("{Enter}");
+
+      // Third option (Platypus) should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Platypus");
+      });
+    });
+
+    await step("Escape closes menu", async () => {
+      // Reopen menu
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Close with Escape
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
 // BUTTON VISIBILITY & BEHAVIOR TESTS
 // ============================================================
 
