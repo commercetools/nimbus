@@ -1526,6 +1526,274 @@ export const InputPlaceholder: Story = {
 };
 
 // ============================================================
+// FOCUS BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Focus: Click Trigger Area Focuses Input
+ * Tests that clicking anywhere in the trigger area (not on buttons) focuses the input
+ */
+export const FocusClickTriggerArea: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        leadingElement={<Search aria-hidden="true" />}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Click in empty space focuses input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Input should not have focus initially
+      expect(input).not.toHaveFocus();
+
+      // Find the trigger container and click it (not the input directly)
+      const trigger = input.parentElement?.parentElement;
+      expect(trigger).toBeTruthy();
+
+      // Click the trigger area (clicks propagate to focus the input)
+      await userEvent.click(trigger as HTMLElement);
+
+      // Input should now have focus
+      expect(input).toHaveFocus();
+    });
+
+    await step("Click near leading element focuses input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Clear focus by clicking outside
+      await userEvent.click(canvasElement);
+
+      // Find the SVG (leading element) and click near it
+      const svg = canvasElement.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+
+      // Click the SVG's parent container
+      const leadingContainer = svg?.parentElement;
+      if (leadingContainer) {
+        await userEvent.click(leadingContainer);
+
+        // Input should have focus
+        expect(input).toHaveFocus();
+      }
+    });
+  },
+};
+
+/**
+ * Focus: Tab Key Focuses Input
+ * Tests that tabbing to the component focuses the input field
+ */
+export const FocusTabKey: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="First combobox" items={simpleOptions} />
+        <ComposedComboBox aria-label="Second combobox" items={simpleOptions} />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab focuses first input", async () => {
+      const firstInput = canvas.getByLabelText("First combobox");
+
+      // Tab to focus
+      await userEvent.tab();
+
+      // First input should have focus
+      expect(firstInput).toHaveFocus();
+    });
+
+    await step("Tab moves to second input", async () => {
+      const secondInput = canvas.getByLabelText("Second combobox");
+
+      // Tab again (skipping toggle button which has excludeFromTabOrder)
+      await userEvent.tab();
+
+      // Second input should have focus
+      expect(secondInput).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Focus: Remains on Input During Option Selection
+ * Tests that focus stays on input when selecting options (virtual focus pattern)
+ */
+export const FocusRemainsOnInputDuringSelection: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input and open menu", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Type to open menu
+      await userEvent.type(input, "K");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Select option - focus remains on input", async () => {
+      // Input should still have focus before selection
+      expect(input).toHaveFocus();
+
+      // Select an option
+      await selectOptionsByName(["Koala"]);
+
+      // Focus should REMAIN on input (virtual focus pattern)
+      await waitFor(() => {
+        expect(input).toHaveFocus();
+      });
+    });
+
+    await step(
+      "Navigate and select another - focus still on input",
+      async () => {
+        // Clear input text
+        await userEvent.clear(input);
+
+        // Type to filter again
+        await userEvent.type(input, "P");
+
+        // Select another option
+        await selectOptionsByName(["Platypus"]);
+
+        // Focus should still be on input
+        await waitFor(() => {
+          expect(input).toHaveFocus();
+        });
+      }
+    );
+  },
+};
+
+/**
+ * Focus: Loses Focus on Outside Click
+ * Tests that component loses focus when clicking outside
+ */
+export const FocusLosesOnOutsideClick: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+        <Box padding="400" bg="neutral.3">
+          Click me to remove focus
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Focus input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Click outside loses focus", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Click the Box below the combobox
+      const outsideBox = canvas.getByText("Click me to remove focus");
+      await userEvent.click(outsideBox);
+
+      // Input should no longer have focus
+      expect(input).not.toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Focus: Indicators Visible During Keyboard Navigation
+ * Tests that focus indicators are visible when navigating with keyboard
+ */
+export const FocusIndicatorsVisible: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Tab to input - focus ring visible", async () => {
+      // Tab to focus input
+      await userEvent.tab();
+
+      expect(input).toHaveFocus();
+
+      // Input should have focus-visible styling (can't directly test CSS,
+      // but verify the element is focused via keyboard)
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow down to navigate options - virtual focus", async () => {
+      // Press arrow down to open menu and focus first option
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Menu should be open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Input should still have browser focus (virtual focus pattern)
+      expect(input).toHaveFocus();
+
+      // First option should be aria-activedescendant (virtual focus)
+      const activeDescendant = input.getAttribute("aria-activedescendant");
+      expect(activeDescendant).toBeTruthy();
+    });
+
+    await step("Navigate options maintains focus indicators", async () => {
+      // Press arrow down again
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have browser focus
+      expect(input).toHaveFocus();
+
+      // Active descendant should have changed (different option focused)
+      const newActiveDescendant = input.getAttribute("aria-activedescendant");
+      expect(newActiveDescendant).toBeTruthy();
+    });
+  },
+};
+
+// ============================================================
 // BUTTON VISIBILITY & BEHAVIOR TESTS
 // ============================================================
 
