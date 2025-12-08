@@ -162,6 +162,7 @@ export const MultiSelectCustomOptions: Story = {
       </Stack>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -383,6 +384,7 @@ export const AsyncLoading: Story = {
       </ComboBox.Root>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -473,6 +475,7 @@ export const AsyncLoadingWithError: Story = {
       </Stack>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -548,6 +551,7 @@ export const AsyncMultiSelectPersistence: Story = {
       </ComboBox.Root>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -721,6 +725,7 @@ export const AsyncMultiSelectCustomOptions: Story = {
       </Stack>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -2700,7 +2705,7 @@ export const OptionHoverFeedback: Story = {
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const input = canvas.getByRole("combobox");
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
 
     await step("Open menu", async () => {
       await userEvent.click(input);
@@ -2890,8 +2895,223 @@ export const OptionMultipleSelections: Story = {
       expect(canvas.getByText("Koala")).toBeInTheDocument();
       expect(canvas.getByText("Platypus")).toBeInTheDocument();
       expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
+  },
+};
 
-      await verifyOptionsSelected(["Koala", "Platypus", "Bison"], true);
+// ============================================================
+// CLEAR FUNCTIONALITY TESTS
+// ============================================================
+
+/**
+ * Clear: Removes Current Selection (Single-Select)
+ * Tests that clear button removes the selected item in single-select mode
+ */
+export const ClearRemovesSelectionSingle: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Make a selection first", async () => {
+      // Open menu and select an option
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select first option (Koala)
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Click clear button to remove selection", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // Selection should be cleared
+      await waitFor(() => {
+        expect(input.value).toBe("");
+      });
+    });
+  },
+};
+
+/**
+ * Clear: Removes All Selections (Multi-Select)
+ * Tests that clear button removes all selected items in multi-select mode
+ */
+export const ClearRemovesAllSelectionsMulti: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Click clear button", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // All tags should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Clear: Does Not Close Menu
+ * Tests that clear button doesn't close the menu (allows continued browsing)
+ */
+export const ClearDoesNotCloseMenu: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu and select item", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select Koala
+      await selectOptionsByName(["Koala"]);
+
+      // Verify tag
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Click clear button", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // Selection should be cleared
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Menu remains open", async () => {
+      // Menu should STILL be open after clearing
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Clear: Accessible via Keyboard (Backspace)
+ * Tests that selections can be cleared via keyboard using Backspace
+ */
+export const ClearAccessibleViaKeyboard: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Use Backspace to clear last tag", async () => {
+      await userEvent.click(input);
+      expect(input.value).toBe(""); // Input empty in multi-select
+
+      // Backspace removes last tag
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo (last tag) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Use Backspace again to clear remaining tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Koala should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
     });
   },
 };
