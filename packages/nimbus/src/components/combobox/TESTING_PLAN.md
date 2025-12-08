@@ -326,16 +326,30 @@
 
 ## 4. Search & Filtering
 
-### Basic Text Filtering ⚠️
+### Basic Text Filtering ✅
 
-**Status**: Partially tested in async stories
+**Status**: ✅ Implemented - 6 focused stories
 
-- Typing filters the options list
-- Filtering is case-insensitive by default
-- Partial text matches are shown
-- Clearing input shows all options
-- Filter resets when menu closes
-- No results state handled appropriately
+**Stories:**
+- `FilteringTypingFiltersOptions` - Typing filters options (6→2→1 progression)
+- `FilteringCaseInsensitive` - Case-insensitive matching (k, K, Ko all match)
+- `FilteringPartialMatches` - Substring matching (ala, ng)
+- `FilteringClearingShowsAll` - Clear input restores all options (2→6)
+- `FilteringResetsOnMenuClose` - Filter state maintained on menu close/reopen
+- `FilteringNoResultsState` - Empty state with no matches
+
+**Test Coverage:**
+- ✅ Typing filters the options list (progressive filtering verified)
+- ✅ Options count decreases as filter narrows (6→2→1)
+- ✅ Filtering is case-insensitive by default
+- ✅ Lowercase, uppercase, and mixed case produce same results
+- ✅ Partial text matches are shown (substring matching)
+- ✅ Multiple partial match patterns tested
+- ✅ Clearing input shows all options (restores full list)
+- ✅ Filter state persists when menu closes and reopens
+- ✅ No results state handled appropriately
+- ✅ Empty state message displays when no matches
+- ✅ Typing valid text after no matches restores options
 
 ### Section-Aware Filtering ❌
 

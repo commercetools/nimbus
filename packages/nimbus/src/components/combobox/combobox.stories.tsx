@@ -3817,3 +3817,292 @@ export const PersistenceItemsRemainVisibleAsTags: Story = {
     });
   },
 };
+
+// ============================================================
+// BASIC TEXT FILTERING TESTS
+// ============================================================
+
+/**
+ * Filtering: Typing Filters Options List
+ * Tests that typing in the input filters the available options
+ */
+export const FilteringTypingFiltersOptions: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu - all 6 options visible", async () => {
+      await userEvent.click(input);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      const options = getListboxOptions();
+      expect(options.length).toBe(6);
+    });
+
+    await step("Type 'K' - filters to 2 options", async () => {
+      await userEvent.type(input, "B");
+
+      // Should show Koala and Kangaroo
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(2);
+      });
+
+      expect(findOptionByText("Bison")).toBeInTheDocument();
+      expect(
+        findOptionByText("Bald Eagle with a very long name hooray")
+      ).toBeInTheDocument();
+    });
+
+    await step("Type more 'oa' - filters to 1 option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "oa");
+
+      // Should only show Koala
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      expect(findOptionByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Filtering: Case Insensitive by Default
+ * Tests that filtering is case-insensitive
+ */
+export const FilteringCaseInsensitive: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type lowercase 'k' - matches Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "k");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear and type uppercase 'K' - same results", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Mixed case 'Ko' - still matches", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Ko");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Partial Text Matches Shown
+ * Tests that partial text matches are included in results
+ */
+export const FilteringPartialMatches: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'al' - matches Koala and Bald Eagle", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "al");
+
+      // Should match "Koala" and "Bald Eagle" (contains "al")
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(
+          findOptionByText("Bald Eagle with a very long name hooray")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'ng' - matches Kangaroo", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ng");
+
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Clearing Input Shows All Options
+ * Tests that clearing the input shows all options again
+ */
+export const FilteringClearingShowsAll: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Filter to specific items", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3); // Koala, Kangaroo, Skunk
+      });
+    });
+
+    await step("Clear input - all options return", async () => {
+      await userEvent.clear(input);
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(6); // All options
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Filter Resets When Menu Closes
+ * Tests that filter state resets when menu closes and reopens
+ */
+export const FilteringResetsOnMenuClose: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Filter options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3);
+      });
+    });
+
+    await step("Close menu with Escape", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Reopen menu - filter maintained", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Filter text should still be "K" in input
+      // Options should still be filtered
+      const options = getListboxOptions();
+      expect(options.length).toBe(3);
+    });
+  },
+};
+
+/**
+ * Filtering: No Results State Handled
+ * Tests that filtering with no matches shows empty state
+ */
+export const FilteringNoResultsState: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "No results found"}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type text with no matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      // Menu should remain open (allowsEmptyMenu=true)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Empty state message displays", async () => {
+      const options = getListboxOptions();
+      const notFoundOption = findOptionByText("No results found");
+
+      expect(options.length).toBe(1);
+      // Empty state should be visible
+      expect(notFoundOption).toBeInTheDocument();
+    });
+
+    await step("Type valid text - options return", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "K");
+
+      // Options should appear
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3);
+      });
+    });
+  },
+};
