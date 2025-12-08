@@ -1361,3 +1361,166 @@ export const MultiSelectInputAccessible: Story = {
     });
   },
 };
+
+// ============================================================
+// INPUT FIELD BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Input: Always Visible And Focusable
+ * Tests that input field remains visible and focusable in all states
+ */
+export const InputAlwaysVisible: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <Stack direction="column" gap="400">
+        {/* Empty state */}
+        <ComposedComboBox
+          aria-label="Empty combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+        />
+
+        {/* With selections (multi-select) */}
+        <ComposedComboBox
+          aria-label="With tags combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Empty state - input visible and focusable", async () => {
+      const emptyInput = canvas.getByLabelText("Empty combobox");
+
+      expect(emptyInput).toBeVisible();
+      expect(emptyInput).not.toBeDisabled();
+
+      await userEvent.click(emptyInput);
+      expect(emptyInput).toHaveFocus();
+    });
+
+    await step("With tags - input visible and focusable", async () => {
+      const withTagsInput = canvas.getByLabelText("With tags combobox");
+
+      expect(withTagsInput).toBeVisible();
+      expect(withTagsInput).not.toBeDisabled();
+
+      await userEvent.click(withTagsInput);
+      expect(withTagsInput).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Input: Wraps to New Line
+ * Tests that input wraps to new line when content area is full (multi-select with many tags)
+ */
+export const InputWrapsToNewLine: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4, 5, 6,
+    ]);
+
+    return (
+      <Box width="300px">
+        <ComposedComboBox
+          aria-label="Test combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the root (contains tags and input)
+    const root = canvasElement.querySelector(
+      ".nimbus-combobox__root"
+    ) as HTMLElement;
+
+    expect(root).toBeVisible();
+
+    // Measure trigger height - should be multi-line due to wrapping tags
+    const rootHeight = root.offsetHeight;
+
+    // With 6 tags wrapping, height should be >100px (multiple lines)
+    expect(rootHeight).toBe(164);
+
+    // Input should still be visible and functional
+    const input = canvas.getByRole("combobox");
+    expect(input).toBeVisible();
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+
+    // Input should be at the bottom of the container
+    const inputHeight = input.offsetHeight;
+    // The offsetTop should be greater than the height in this case
+    expect(input.offsetTop).toBeGreaterThan(inputHeight);
+  },
+};
+
+/**
+ * Input: Placeholder Text Displays
+ * Tests that placeholder text displays when input is empty
+ */
+export const InputPlaceholder: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        placeholder="Search animals..."
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Placeholder visible when empty", async () => {
+      // Input should be empty
+      expect(input.value).toBe("");
+
+      // Placeholder should be set
+      expect(input.placeholder).toBe("Search animals...");
+    });
+
+    await step("Placeholder hidden when typing", async () => {
+      // Type in input
+      await userEvent.type(input, "test");
+
+      // Input should have value
+      expect(input.value).toBe("test");
+
+      // Placeholder is still in the attribute but hidden by browser
+      expect(input.placeholder).toBe("Search animals...");
+    });
+
+    await step("Placeholder visible again after clearing", async () => {
+      // Clear input
+      await userEvent.clear(input);
+
+      // Input should be empty again
+      expect(input.value).toBe("");
+
+      // Placeholder still set
+      expect(input.placeholder).toBe("Search animals...");
+    });
+  },
+};
