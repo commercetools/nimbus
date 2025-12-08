@@ -149,8 +149,8 @@ catalogs:
       specifier: ^7.2.6
       version: 7.2.6
     vite-bundle-analyzer:
-      specifier: ^1.2.3
-      version: 1.2.3
+      specifier: ^1.3.0
+      version: 1.3.0
     vite-plugin-dts:
       specifier: ^4.5.4
       version: 4.5.4
@@ -243,7 +243,7 @@ importers:
         version: 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       vite-bundle-analyzer:
         specifier: catalog:tooling
-        version: 1.2.3
+        version: 1.3.0
       vitest:
         specifier: catalog:tooling
         version: 4.0.15(@types/node@24.10.1)(@vitest/browser-playwright@4.0.14)(happy-dom@20.0.8)(jsdom@27.2.0(postcss@8.5.6))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
@@ -6473,8 +6473,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite-bundle-analyzer@1.2.3:
-    resolution: {integrity: sha512-8nhwDGHWMKKgg6oegAOpDgTT7/yzTVzeYzLF4y8WBJoYu9gO7h29UpHiQnXD2rAvfQzDy5Wqe/Za5cgqhnxi5g==}
+  vite-bundle-analyzer@1.3.0:
+    resolution: {integrity: sha512-irQeQRiSnhVs6ifoqxJZftBmAaSoJgxUPEZsgLTRU1U7tQ4GELiRnoYdGskGReQFCL+qm7rm6RiohzUkVu8Whw==}
     hasBin: true
 
   vite-plugin-compression@0.5.1:
@@ -14133,7 +14133,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-bundle-analyzer@1.2.3: {}
+  vite-bundle-analyzer@1.3.0: {}
 
   vite-plugin-compression@0.5.1(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
