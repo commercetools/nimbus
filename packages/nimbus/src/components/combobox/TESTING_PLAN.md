@@ -135,17 +135,29 @@
 - ✅ Focus indicators visible during keyboard navigation (aria-activedescendant)
 - ✅ Virtual focus updates when navigating options with arrow keys
 
-### Keyboard Navigation ⚠️
+### Keyboard Navigation ✅
 
-**Status**: Partially tested in various stories
+**Status**: ✅ Implemented - 6 focused stories
 
-- Tab key focuses the input field
-- Arrow Down opens menu and focuses first option
-- Arrow Up/Down navigates through options
-- Enter key selects the focused option
-- Escape key closes the menu
-- Backspace removes last tag (multi-select mode)
-- Keyboard navigation works without mouse interaction
+**Stories:**
+- `KeyboardArrowDownOpensMenu` - Arrow Down opens menu and focuses first option
+- `KeyboardArrowKeysNavigate` - Arrow Up/Down navigation through options
+- `KeyboardEnterSelects` - Enter key selects focused option
+- `KeyboardEscapeCloses` - Escape key closes menu
+- `KeyboardBackspaceRemovesTag` - Backspace removes last tag (multi-select)
+- `KeyboardOnlyWorkflow` - Complete keyboard-only workflow (no mouse)
+
+**Test Coverage:**
+- ✅ Tab key focuses the input field (covered in `FocusTabKey`)
+- ✅ Arrow Down opens menu and focuses first option
+- ✅ Arrow Down moves to next option (aria-activedescendant changes)
+- ✅ Arrow Up moves to previous option (aria-activedescendant changes)
+- ✅ Enter key selects the focused option (single-select)
+- ✅ Escape key closes the menu
+- ✅ Input retains focus after Escape
+- ✅ Backspace removes last tag when input empty (multi-select)
+- ✅ Multiple Backspace presses remove tags sequentially
+- ✅ Complete keyboard-only workflow (Tab → Arrow → Enter → Escape)
 
 ### Menu Opening & Closing ❌
 
