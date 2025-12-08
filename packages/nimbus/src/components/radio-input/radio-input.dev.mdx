@@ -1,0 +1,429 @@
+---
+title: RadioInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { RadioInput, type RadioInputRootProps, type RadioInputOptionProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The RadioInput is a compound component that requires both `RadioInput.Root` and `RadioInput.Option` sub-components. The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <RadioInput.Root name="choice">
+    <RadioInput.Option value="yes">Yes</RadioInput.Option>
+    <RadioInput.Option value="no">No</RadioInput.Option>
+  </RadioInput.Root>
+)
+```
+
+## Usage examples
+
+### Orientation options
+
+The `orientation` prop controls the layout direction of radio options. The default is `vertical`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadioInput.Root name="vertical-example" orientation="vertical">
+      <RadioInput.Option value="option1">First Option</RadioInput.Option>
+      <RadioInput.Option value="option2">Second Option</RadioInput.Option>
+      <RadioInput.Option value="option3">Third Option</RadioInput.Option>
+    </RadioInput.Root>
+    <hr />
+    <RadioInput.Root name="horizontal-example" orientation="horizontal">
+      <RadioInput.Option value="option1">First Option</RadioInput.Option>
+      <RadioInput.Option value="option2">Second Option</RadioInput.Option>
+      <RadioInput.Option value="option3">Third Option</RadioInput.Option>
+    </RadioInput.Root>
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `orientation="vertical"`: Options are stacked vertically with consistent spacing (default)
+- `orientation="horizontal"`: Options are arranged in a row, useful for compact layouts with few options
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
+
+  return (
+    <>
+      <RadioInput.Root
+        name="uncontrolled-example"
+        defaultValue="option2"
+        onChange={(value) => {
+          setSelectedValue(value);
+        }}
+      >
+        <RadioInput.Option value="option1">First Choice</RadioInput.Option>
+        <RadioInput.Option value="option2">Second Choice</RadioInput.Option>
+        <RadioInput.Option value="option3">Third Choice</RadioInput.Option>
+      </RadioInput.Root>
+      <Text fontSize="sm">
+        Selected: {selectedValue || 'None'}
+      </Text>
+    </>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected value without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<RadioInputRootProps["value"]>("option1");
+
+  return (
+    <Stack direction="column" gap="400">
+      <RadioInput.Root
+        name="controlled-example"
+        value={value}
+        onChange={setValue}
+      >
+        <RadioInput.Option value="option1">First Choice</RadioInput.Option>
+        <RadioInput.Option value="option2">Second Choice</RadioInput.Option>
+        <RadioInput.Option value="option3">Third Choice</RadioInput.Option>
+      </RadioInput.Root>
+      <Text fontSize="sm">
+        Selected: {value || 'None'}
+      </Text>
+      <Button size="sm" onPress={() => setValue("option2")}>
+        Select Second Option
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform selections
+- Clear or programmatically set the value
+- Coordinate with other form fields
+
+### Disabled state
+
+Use the `isDisabled` prop to disable the entire radio group, or apply it to individual options:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadioInput.Root name="disabled-example" isDisabled>
+      <RadioInput.Option value="option1">Disabled Option 1</RadioInput.Option>
+      <RadioInput.Option value="option2">Disabled Option 2</RadioInput.Option>
+    </RadioInput.Root>
+    
+    <RadioInput.Root name="disabled-selected-example" isDisabled defaultValue="option1">
+      <RadioInput.Option value="option1">Selected but Disabled</RadioInput.Option>
+      <RadioInput.Option value="option2">Also Disabled</RadioInput.Option>
+    </RadioInput.Root>
+    
+    <hr />
+    
+    <RadioInput.Root name="partially-disabled-example" defaultValue="option1">
+      <RadioInput.Option value="option1">Available Option</RadioInput.Option>
+      <RadioInput.Option value="option2" isDisabled>Disabled Option</RadioInput.Option>
+      <RadioInput.Option value="option3">Another Available Option</RadioInput.Option>
+    </RadioInput.Root>
+  </Stack>
+)
+```
+
+### Invalid state
+
+Use the `isInvalid` prop to indicate validation errors:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadioInput.Root name="invalid-example" isInvalid>
+      <RadioInput.Option value="option1">Invalid Option 1</RadioInput.Option>
+      <RadioInput.Option value="option2">Invalid Option 2</RadioInput.Option>
+    </RadioInput.Root>
+    
+    <RadioInput.Root name="invalid-selected-example" isInvalid defaultValue="option1">
+      <RadioInput.Option value="option1">Selected Invalid Option</RadioInput.Option>
+      <RadioInput.Option value="option2">Another Invalid Option</RadioInput.Option>
+    </RadioInput.Root>
+  </Stack>
+)
+```
+
+### With FormField
+
+RadioInput integrates seamlessly with the FormField pattern for consistent form layouts:
+
+```jsx-live-dev
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Select your preference:</FormField.Label>
+    <FormField.Input>
+      <RadioInput.Root name="formfield-example" aria-label="Preference selection">
+        <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+        <RadioInput.Option value="option2">Option 2</RadioInput.Option>
+        <RadioInput.Option value="option3">Option 3</RadioInput.Option>
+      </RadioInput.Root>
+    </FormField.Input>
+    <FormField.Description>
+      Choose one option from the list above.
+    </FormField.Description>
+  </FormField.Root>
+)
+```
+
+### Required state
+
+Use the `isRequired` prop to indicate that a selection is mandatory. When used with `FormField`, it displays a visual indicator (asterisk) in the label and sets `aria-required="true"` for accessibility:
+
+```jsx-live-dev
+const App = () => (
+    <FormField.Root isRequired>
+      <FormField.Label>Select your preference</FormField.Label>
+      <FormField.Input>
+        <RadioInput.Root name="required-example" isRequired aria-label="Preference selection">
+          <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+          <RadioInput.Option value="option2">Option 2</RadioInput.Option>
+          <RadioInput.Option value="option3">Option 3</RadioInput.Option>
+        </RadioInput.Root>
+      </FormField.Input>
+      <FormField.Description>
+        You must select one of the options above.
+      </FormField.Description>
+    </FormField.Root>
+)
+```
+
+**Note:** The `isRequired` prop sets the `aria-required` attribute on the radio group for screen readers. For visual indication, use it within a `FormField.Root` that also has `isRequired`, which will display an asterisk (*) in the label.
+
+## Component requirements
+
+### Accessibility
+
+The RadioInput handles most accessibility requirements internally via React Aria Components. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `FormField` pattern component (recommended):
+```tsx
+<FormField.Root>
+  <FormField.Label>
+    {intl.formatMessage(labelMessage)}
+  </FormField.Label>
+  <FormField.Input>
+    <RadioInput.Root name="example" aria-label={intl.formatMessage(labelMessage)}>
+      <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+    </RadioInput.Root>
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Associating a `<label>` element with the `RadioInput.Root` using `aria-labelledby`:
+```tsx
+<label id="radio-label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<RadioInput.Root name="example" aria-labelledby="radio-label-id">
+  <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+</RadioInput.Root>
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+```tsx
+<RadioInput.Root 
+  name="example" 
+  aria-label={intl.formatMessage(labelMessage)}
+>
+  <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+</RadioInput.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-radio-input";
+
+export const Example = () => (
+  <RadioInput.Root id={PERSISTENT_ID} name="example">
+    <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+  </RadioInput.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate into and out of the radio group
+- `Arrow keys` (Up/Down or Left/Right): Navigate between radio options within the group
+- `Space`: Select the focused radio option
+- `Enter`: Does not trigger selection (use Space instead)
+
+## API reference
+
+<PropsTable id="RadioInput" />
+
+## Common patterns
+
+### Form validation
+
+Validate radio input selection and display error messages:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [touched, setTouched] = useState(false);
+
+  const handleChange = (newValue: string) => {
+    setValue(newValue);
+    setError(undefined);
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
+    if (!value) {
+      setError('Please select an option');
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!value) {
+      setError('Please select an option');
+      setTouched(true);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <FormField.Root isInvalid={!!(error && touched)}>
+        <FormField.Label>Select an option</FormField.Label>
+        <FormField.Input>
+          <RadioInput.Root
+            name="validation-example"
+            value={value}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            isInvalid={!!(error && touched)}
+            aria-label="Option selection"
+          >
+            <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+            <RadioInput.Option value="option2">Option 2</RadioInput.Option>
+            <RadioInput.Option value="option3">Option 3</RadioInput.Option>
+          </RadioInput.Root>
+        </FormField.Input>
+        {touched && error && (
+          <FormField.Error>{error}</FormField.Error>
+        )}
+      </FormField.Root>
+      <Button onPress={handleSubmit}>Submit</Button>
+      {value && !error && (
+        <Text fontSize="sm" color="positive.9">
+          Successfully selected: {value}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Dynamic options
+
+Render radio options from a data array:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
+  
+  const options = [
+    { value: 'small', label: 'Small' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'large', label: 'Large' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <RadioInput.Root
+        name="dynamic-example"
+        value={selectedValue}
+        onChange={setSelectedValue}
+        orientation="horizontal"
+      >
+        {options.map((option) => (
+          <RadioInput.Option key={option.value} value={option.value}>
+            {option.label}
+          </RadioInput.Option>
+        ))}
+      </RadioInput.Root>
+      {selectedValue && (
+        <Text fontSize="sm">
+          Selected size: {options.find(opt => opt.value === selectedValue)?.label}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Conditional rendering based on selection
+
+Show or hide content based on the selected radio option:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string | undefined>(undefined);
+
+  return (
+    <Stack direction="column" gap="400">
+      <RadioInput.Root
+        name="conditional-example"
+        value={value}
+        onChange={setValue}
+      >
+        <RadioInput.Option value="yes">Yes, I agree</RadioInput.Option>
+        <RadioInput.Option value="no">No, I disagree</RadioInput.Option>
+      </RadioInput.Root>
+      
+      {value === 'yes' && (
+        <Text fontSize="sm" color="positive.9">
+          Thank you for agreeing!
+        </Text>
+      )}
+      
+      {value === 'no' && (
+        <Text fontSize="sm" color="critical.9">
+          Please let us know why you disagree.
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using RadioInput in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: radio-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-radioinput--docs)
+- [React Aria RadioGroup](https://react-spectrum.adobe.com/react-aria/RadioGroup.html)
+- [ARIA Radio Group Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)
+
