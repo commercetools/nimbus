@@ -232,29 +232,53 @@
 
 ## 3. Selection Modes
 
-### Single Select Mode ❌
+### Single Select Mode ✅
 
-**Status**:
+**Status**: ✅ Implemented - 6 focused stories
 
-- User can select one option at a time
-- Selecting a new option replaces previous selection
-- Selected option text appears in input field
-- Clear button removes the selection
-- Menu closes after selection (default)
-- Input displays correct value after selection
+**Stories:**
+- `SingleSelectOneAtATime` - Only one option selectable, second replaces first
+- `SingleSelectReplacesPrevious` - New selection replaces previous via click
+- `SingleSelectTextInInput` - Selected text syncs to input field
+- `SingleSelectClearRemoves` - Clear button empties input value
+- `SingleSelectMenuCloses` - Menu auto-closes after selection
+- `SingleSelectInputDisplaysValue` - Input displays full selected text (even long names)
 
-### Multi Select Mode ❌
+**Test Coverage:**
+- ✅ User can select one option at a time
+- ✅ Selecting a new option replaces previous selection (keyboard)
+- ✅ Selecting a new option replaces previous selection (mouse click)
+- ✅ Selected option text appears in input field
+- ✅ Clear button removes the selection
+- ✅ Menu closes after selection (default behavior)
+- ✅ Input displays correct value after selection
+- ✅ Long text values display correctly
 
-**Status**: Implemented in `MultiSelectCustomOptions` and
-`AsyncMultiSelectCustomOptions`
+### Multi Select Mode ✅
 
-- User can select multiple options
-- Selected options appear as tags
-- Clicking tag remove button deselects the item
-- Backspace key removes last selected tag
-- Input clears after each selection
-- Menu stays open after selections
-- Clear button removes all selections
+**Status**: ✅ Implemented - 7 focused stories
+
+**Stories:**
+- `MultiSelectMultipleOptions` - Sequential selection of 3 items
+- `MultiSelectOptionsAppearAsTags` - Selected items render as tags with remove buttons
+- `MultiSelectTagRemoveDeselects` - Tag remove button deselects item
+- `MultiSelectBackspaceRemoves` - Backspace key removes last tag
+- `MultiSelectInputClearsAfterSelection` - Input empties after each selection
+- `MultiSelectMenuStaysOpen` - Menu remains open after selections
+- `MultiSelectClearRemovesAll` - Clear button removes all tags at once
+
+**Test Coverage:**
+- ✅ User can select multiple options
+- ✅ Sequential selection of 3 items verified
+- ✅ Selected options appear as tags
+- ✅ Tags have remove buttons visible
+- ✅ Clicking tag remove button deselects the item
+- ✅ Remaining tags persist after one removed
+- ✅ Backspace key removes last selected tag
+- ✅ Input clears after each selection (verified 2x)
+- ✅ Menu stays open after selections
+- ✅ Clear button removes all selections
+- ✅ All tags removed after clear button click
 
 ### Selection Persistence ✅
 
