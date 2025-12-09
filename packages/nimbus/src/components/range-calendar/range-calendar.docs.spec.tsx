@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CalendarDate, today, getLocalTimeZone } from "@internationalized/date";
 import { RangeCalendar, NimbusProvider } from "@commercetools/nimbus";
