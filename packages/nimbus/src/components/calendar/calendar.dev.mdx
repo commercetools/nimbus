@@ -1,0 +1,502 @@
+---
+title: Calendar Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Calendar, type CalendarProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation displays a calendar with no pre-selected date:
+
+```jsx-live-dev
+const App = () => (
+  <Calendar />
+)
+```
+
+## Working with date values
+
+The Calendar relies on `@internationalized/date`'s library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.
+
+### Date value types
+
+Three primary date types are available depending on your needs:
+
+```tsx
+import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';
+
+// Date only (no time)
+const dateOnly = new CalendarDate(2024, 1, 15);
+
+// Date with time (no timezone)
+const dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);
+
+// Date with time and timezone
+const zonedDate = new ZonedDateTime(2024, 1, 15, 14, 30, 'America/New_York');
+```
+
+### Creating date values
+
+Use helper functions to parse ISO strings or create dates programmatically:
+
+```tsx
+import { parseDate, parseDateTime, parseZonedDateTime } from '@internationalized/date';
+
+// Parse ISO date strings
+const date = parseDate('2024-01-15');
+const dateTime = parseDateTime('2024-01-15T14:30');
+const zonedDate = parseZonedDateTime('2024-01-15T14:30[America/New_York]');
+```
+
+### Converting to ISO strings
+
+Use `.toString()` to convert date objects for API/backend consumption:
+
+```tsx
+const date = new CalendarDate(2024, 1, 15);
+date.toString(); // "2024-01-15"
+
+const dateTime = new CalendarDateTime(2024, 1, 15, 14, 30);
+dateTime.toString(); // "2024-01-15T14:30:00"
+```
+
+> [!TIP]\
+> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedDate, setSelectedDate] = useState<string>('No selection');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Calendar
+        defaultValue={new CalendarDate(2025, 1, 15)}
+        onChange={(date) => {
+          setSelectedDate(date ? date.toString() : 'No selection');
+        }}
+      />
+      <Text fontSize="sm">Selected: {selectedDate}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected date without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Calendar
+        value={value}
+        onChange={setValue}
+      />
+      <Text fontSize="sm">
+        {value ? `Selected: ${value.toString()}` : 'No selection'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the date with external state
+- Validate or transform date selections
+- Clear or programmatically set the date
+
+### Multi-month display
+
+Display multiple months simultaneously using the `visibleDuration` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Calendar
+    defaultValue={new CalendarDate(2025, 1, 15)}
+    visibleDuration={{ months: 2 }}
+    width="680px"
+  />
+)
+```
+
+Set an appropriate width to accommodate multiple months (approximately 340px per month).
+
+### Navigation behavior
+
+The `pageBehavior` prop controls how the calendar navigates when using prev/next buttons:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Single month navigation</Text>
+      <Text fontSize="sm" color="neutral.11">Navigates by one month at a time</Text>
+      <Calendar
+        defaultValue={new CalendarDate(2025, 1, 15)}
+        visibleDuration={{ months: 2 }}
+        pageBehavior="single"
+        width="680px"
+      />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Visible duration navigation</Text>
+      <Text fontSize="sm" color="neutral.11">Navigates by the number of visible months</Text>
+      <Calendar
+        defaultValue={new CalendarDate(2025, 1, 15)}
+        visibleDuration={{ months: 2 }}
+        pageBehavior="visible"
+        width="680px"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `pageBehavior="single"`: Advances one month at a time, regardless of how many months are visible
+- `pageBehavior="visible"`: Advances by the full visible duration (e.g., if showing 3 months, advances 3 months)
+
+### Date constraints
+
+#### Minimum and maximum values
+
+Restrict selectable dates using `minValue` and `maxValue`:
+
+```jsx-live-dev
+const App = () => {
+  const today = new CalendarDate(2025, 1, 15);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Minimum date (today onwards)</Text>
+        <Calendar
+          minValue={today}
+          defaultValue={today}
+        />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Maximum date (up to 7 days from today)</Text>
+        <Calendar
+          maxValue={today.add({ days: 7 })}
+          defaultValue={today}
+        />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Date range (next 7 days only)</Text>
+        <Calendar
+          minValue={today.add({ days: 1 })}
+          maxValue={today.add({ days: 7 })}
+          defaultValue={today.add({ days: 1 })}
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+#### Unavailable dates
+
+Mark specific dates as unavailable using the `isDateUnavailable` callback:
+
+```jsx-live-dev
+const App = () => {
+  const today = new CalendarDate(2025, 1, 15);
+
+  return (
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="neutral.11">
+        Only weekdays are selectable (weekends are disabled)
+      </Text>
+      <Calendar
+        defaultValue={today}
+        isDateUnavailable={(date) => {
+          const dayOfWeek = date.toDate('UTC').getDay();
+          return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+        }}
+      />
+    </Stack>
+  );
+}
+```
+
+### Custom week start day
+
+Specify which day starts the week using `firstDayOfWeek`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Week starts on Sunday (default)</Text>
+      <Calendar />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Week starts on Monday</Text>
+      <Calendar firstDayOfWeek="mon" />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Week starts on Saturday</Text>
+      <Calendar firstDayOfWeek="sat" />
+    </Stack>
+  </Stack>
+)
+```
+
+### Internationalization
+
+The Calendar automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">English (US)</Text>
+      <NimbusI18nProvider locale="en-US">
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusI18nProvider>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">German</Text>
+      <NimbusI18nProvider locale="de-DE">
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusI18nProvider>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">French</Text>
+      <NimbusI18nProvider locale="fr-FR">
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusI18nProvider>
+    </Stack>
+  </Stack>
+)
+```
+
+### State props
+
+Control the calendar's interactive state using `isDisabled`, `isReadOnly`, and `isInvalid`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Disabled</Text>
+      <Text fontSize="sm" color="neutral.11">User cannot interact with the calendar</Text>
+      <Calendar isDisabled defaultValue={new CalendarDate(2025, 1, 15)} />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Read-only</Text>
+      <Text fontSize="sm" color="neutral.11">Calendar is visible but selection is prevented</Text>
+      <Calendar isReadOnly defaultValue={new CalendarDate(2025, 1, 15)} />
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Invalid</Text>
+      <Text fontSize="sm" color="neutral.11">Indicates validation error state</Text>
+      <Calendar isInvalid defaultValue={new CalendarDate(2025, 1, 15)} />
+    </Stack>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Date value requirements
+
+All date values **must** use `@internationalized/date` types:
+- `CalendarDate` for date-only values (recommended for most use cases)
+- `CalendarDateTime` for date with time
+- `ZonedDateTime` for date with time and timezone
+
+### Accessibility
+
+The Calendar handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Associating a `<label>` element with the Calendar using `aria-labelledby`:
+
+```tsx
+<label id="calendar-label">
+  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+</label>
+<Calendar aria-labelledby="calendar-label" />
+```
+
+- Associating a `<label>` element with the Calendar using `htmlFor`:
+
+```tsx
+<label htmlFor="calendar-id">
+  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+</label>
+<Calendar id="calendar-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<Calendar aria-label={intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "booking-calendar";
+
+export const BookingForm = () => (
+  <Calendar id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus into and out of the calendar
+- `Arrow keys`: Navigate between dates within the grid
+- `Page Up` / `Page Down`: Navigate to the previous/next month
+- `Shift + Page Up` / `Shift + Page Down`: Navigate to the previous/next year
+- `Home` / `End`: Navigate to the start/end of the current week
+- `Enter` / `Space`: Select the focused date
+
+## API reference
+
+<PropsTable id="Calendar" />
+
+## Common patterns
+
+### Booking system with constraints
+
+A typical booking system that prevents past dates and weekends:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
+  const today = new CalendarDate(2025, 1, 15);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="600">Select your booking date</Text>
+      <Text fontSize="sm" color="neutral.11">
+        Available dates: Weekdays only, starting tomorrow
+      </Text>
+      <Calendar
+        value={value}
+        onChange={setValue}
+        minValue={today.add({ days: 1 })}
+        isDateUnavailable={(date) => {
+          const dayOfWeek = date.toDate('UTC').getDay();
+          return dayOfWeek === 0 || dayOfWeek === 6;
+        }}
+      />
+      {value && (
+        <Text fontSize="sm">
+          Selected booking date: {value.toString()}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Working days selection
+
+Calendar configured for business day selection with current month focus:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(
+    new CalendarDate(2025, 1, 15)
+  );
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="600">Select working day</Text>
+      <Calendar
+        value={value}
+        onChange={setValue}
+        isDateUnavailable={(date) => {
+          const dayOfWeek = date.toDate('UTC').getDay();
+          return dayOfWeek === 0 || dayOfWeek === 6;
+        }}
+      />
+      {value && (
+        <Stack direction="column" gap="100">
+          <Text fontSize="sm">Selected: {value.toString()}</Text>
+          <Text fontSize="sm" color="neutral.11">
+            {value.toDate('UTC').toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </Text>
+        </Stack>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Multi-month date selection
+
+Display multiple months for easier range visualization:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="600">Select a date across multiple months</Text>
+      <Calendar
+        value={value}
+        onChange={setValue}
+        visibleDuration={{ months: 3 }}
+        pageBehavior="visible"
+        width="1000px"
+      />
+      {value && (
+        <Text fontSize="sm">Selected: {value.toString()}</Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Calendar within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: calendar.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-calendar--docs)
+- [React Aria Calendar](https://react-spectrum.adobe.com/react-aria/Calendar.html)
+- [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+- [@internationalized/date](https://react-spectrum.adobe.com/internationalized/date/)
