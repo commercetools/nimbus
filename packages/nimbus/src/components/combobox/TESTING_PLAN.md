@@ -393,14 +393,25 @@
 **Bug Fixed:**
 - ✅ Added `filter` prop to destructuring in combobox.root.tsx (line 107)
 
-### Empty State Handling ⚠️
+### Empty State Handling ✅
 
-**Status**: Partially tested
+**Status**: ✅ Implemented - 4 focused stories
 
-- Menu closes when no matches found (default)
-- Menu stays open showing empty state (when configured)
-- Custom empty state message displays
-- User can recover by clearing search
+**Stories:**
+- `EmptyStateMenuClosesDefault` - Menu auto-closes when no matches (allowsEmptyMenu=false)
+- `EmptyStateMenuStaysOpen` - Menu stays open with empty state (allowsEmptyMenu=true)
+- `EmptyStateCustomMessage` - Custom renderEmptyState with multiple elements
+- `EmptyStateRecoverByClearingSearch` - Clear search restores options (0→6)
+
+**Test Coverage:**
+- ✅ Menu closes when no matches found (default behavior)
+- ✅ Menu stays open showing empty state (when allowsEmptyMenu=true)
+- ✅ Empty state message displays correctly
+- ✅ Options count is 0 during empty state
+- ✅ Custom empty state message displays (multi-element render)
+- ✅ Custom messages rendered in portal (document.body)
+- ✅ User can recover by clearing search (0→6 options)
+- ✅ User can type valid search after empty state
 
 ---
 

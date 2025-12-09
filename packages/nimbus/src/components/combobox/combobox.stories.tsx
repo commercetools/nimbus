@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { Box, FormField, Stack } from "@commercetools/nimbus";
+import { Box, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/test-data";
@@ -4638,6 +4638,148 @@ export const CustomFilterMultiTerm: Story = {
         expect(findOptionByText("Koala")).toBeInTheDocument();
         expect(findOptionByText("Platypus")).toBeInTheDocument();
       });
+    });
+  },
+};
+
+// ============================================================
+// EMPTY STATE HANDLING TESTS
+// ============================================================
+
+/**
+ * Empty State: Menu Closes When No Matches (Default)
+ * Tests that menu closes automatically when no matches found (default behavior)
+ */
+export const EmptyStateMenuClosesDefault: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        // allowsEmptyMenu defaults to false
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu with matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Type text with no matches - menu closes", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "xyz");
+
+      // Menu should close when no matches (default behavior)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Empty State: Custom Message Displays
+ * Tests that custom empty state message renders correctly
+ */
+export const EmptyStateCustomMessage: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => (
+          <Stack direction="column" gap="200" padding="400">
+            <Text>No animals match your search</Text>
+            <Text color="neutral.11" fontSize="300">
+              Try a different search term
+            </Text>
+          </Stack>
+        )}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search with no matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Custom empty state renders", async () => {
+      // Custom message should be visible (in portal)
+      const portal = within(document.body);
+      expect(
+        portal.getByText("No animals match your search")
+      ).toBeInTheDocument();
+      expect(
+        portal.getByText("Try a different search term")
+      ).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Empty State: User Can Recover by Clearing Search
+ * Tests that clearing search after no results restores the options
+ */
+export const EmptyStateRecoverByClearingSearch: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "No results found"}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search with no matches shows empty state", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        expect(portal.getByText("No results found")).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear search - all options return", async () => {
+      await userEvent.clear(input);
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(6); // All options restored
+      });
+
+      // Empty state should be gone
+      const portal = within(document.body);
+      expect(portal.queryByText("No results found")).not.toBeInTheDocument();
     });
   },
 };
