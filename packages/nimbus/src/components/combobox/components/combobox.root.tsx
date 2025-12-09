@@ -104,6 +104,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
     allowsEmptyMenu: allowsEmptyMenuFromProps,
     renderEmptyState: renderEmptyStateFromProps,
     async: asyncConfig,
+    filter,
     allowsCustomOptions = false,
     isDisabled = false,
     isInvalid = false,
@@ -414,6 +415,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
               <ComboBoxRootInner<T>
                 {...functionalProps}
                 size={size}
+                filter={filter}
                 selectionMode={selectionMode}
                 inputValue={inputValue}
                 onInputChange={onInputChange}
