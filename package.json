@@ -47,7 +47,8 @@
       "tmp": "^0.2.5",
       "brace-expansion": "^2.0.2",
       "mdast-util-to-hast": "^13.2.1",
-      "glob": "^13.0.0"
+      "glob": "^13.0.0",
+      "js-yaml": "^4.1.1"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
