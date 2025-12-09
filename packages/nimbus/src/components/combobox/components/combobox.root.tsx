@@ -853,8 +853,9 @@ const ComboBoxRootInner = <T extends object>(
     // Early exit: empty input
     if (!trimmedInput) return false;
 
-    // Check if option already exists (case-insensitive)
-    const matchesExisting = Array.from(state.collection).some(
+    // Check if option already exists in the UNFILTERED collection (not state.collection which is filtered)
+    // This prevents duplicates even when the current filter hides the existing option
+    const matchesExisting = Array.from(collection).some(
       (node) => node.textValue?.toLowerCase() === trimmedInput.toLowerCase()
     );
     if (matchesExisting) {
@@ -895,7 +896,7 @@ const ComboBoxRootInner = <T extends object>(
     getNewOptionData,
     isValidNewOption,
     inputValue,
-    state,
+    collection,
     selectionMode,
     onInputChange,
     onCreateOption,

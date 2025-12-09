@@ -419,13 +419,26 @@
 
 ### Basic Creation ✅
 
-**Status**: Implemented in `MultiSelectCustomOptions`
+**Status**: ✅ Implemented - 5 focused stories
 
-- User can create new options when enabled
-- Press Enter on non-matching text creates option
-- Empty/whitespace-only input does not create option
-- Duplicate options are prevented
-- Custom validation rules are respected
+**Stories:**
+- `CreationUserCanCreateOptions` - Basic custom option creation flow
+- `CreationEnterOnNonMatchingText` - Sequential creation of multiple custom options
+- `CreationEmptyInputDoesNotCreate` - Empty and whitespace-only validation
+- `CreationDuplicatesPrevented` - Case-insensitive duplicate prevention
+- `CreationCustomValidationRespected` - isValidNewOption custom rules
+
+**Test Coverage:**
+- ✅ User can create new options when allowsCustomOptions=true
+- ✅ Press Enter on non-matching text creates option
+- ✅ Created option appears as tag
+- ✅ Multiple custom options can be created sequentially
+- ✅ Empty input does not create option (Enter does nothing)
+- ✅ Whitespace-only input does not create option
+- ✅ Duplicate options are prevented (case-insensitive)
+- ✅ Case variations don't create duplicates (Koala vs koala)
+- ✅ Custom validation rules are respected (isValidNewOption)
+- ✅ Invalid options rejected, valid options created
 
 ### Single-Select Custom Options ❌
 

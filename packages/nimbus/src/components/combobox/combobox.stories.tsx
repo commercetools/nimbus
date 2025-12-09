@@ -4783,3 +4783,302 @@ export const EmptyStateRecoverByClearingSearch: Story = {
     });
   },
 };
+
+// ============================================================
+// CUSTOM OPTION CREATION - BASIC CREATION TESTS
+// ============================================================
+
+/**
+ * Creation: User Can Create New Options
+ * Tests that users can create new options when allowsCustomOptions=true
+ */
+export const CreationUserCanCreateOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type custom text", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Lion");
+
+      // No existing match for "Lion"
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Enter creates new option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // New option should appear as tag
+      await waitFor(() => {
+        expect(canvas.getByText("Lion")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Creation: Press Enter on Non-Matching Text Creates Option
+ * Tests that Enter key creates option when text doesn't match any existing option
+ */
+export const CreationEnterOnNonMatchingText: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type non-matching text 'Tiger'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Tiger");
+    });
+
+    await step("Enter creates new option 'Tiger'", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Tiger")).toBeInTheDocument();
+      });
+    });
+
+    await step("Type another non-matching text 'Bear'", async () => {
+      await userEvent.type(input, "Bear");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Bear")).toBeInTheDocument();
+      });
+
+      // Both custom options should exist
+      expect(canvas.getByText("Tiger")).toBeInTheDocument();
+      expect(canvas.getByText("Bear")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Creation: Empty Input Does Not Create Option
+ * Tests that whitespace-only or empty input doesn't create options
+ */
+export const CreationEmptyInputDoesNotCreate: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Empty input - Enter does nothing", async () => {
+      await userEvent.click(input);
+      expect(input.value).toBe("");
+
+      await userEvent.keyboard("{Enter}");
+
+      // No tag should be created
+      await waitFor(() => {
+        const tags = canvas.queryAllByRole("button", { name: /remove tag/i });
+        expect(tags.length).toBe(0);
+      });
+    });
+
+    await step("Whitespace-only input - Enter does nothing", async () => {
+      await userEvent.type(input, "   ");
+      await userEvent.keyboard("{Enter}");
+
+      // No tag should be created
+      const tags = canvas.queryAllByRole("button", { name: /remove tag/i });
+      expect(tags.length).toBe(0);
+    });
+  },
+};
+
+/**
+ * Creation: Duplicate Options Are Prevented
+ * Tests that duplicate options cannot be created (case-insensitive check)
+ */
+export const CreationDuplicatesPrevented: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(), // Trim to match validation
+        })}
+        isValidNewOption={(inputValue) => {
+          // Prevent duplicates (case-insensitive)
+          const lowerInput = inputValue.toLowerCase().trim();
+          return (
+            lowerInput.length > 0 &&
+            !simpleOptions.some((opt) => opt.name.toLowerCase() === lowerInput)
+          );
+        }}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Try to create existing option 'Koala'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create duplicate (Koala exists)
+      await waitFor(() => {
+        // TODO: we should probably remove these methods and replace with getListboxOptions?
+        // const listbox = getListBox(document);
+        // expect(listbox).toBeInTheDocument();
+
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step("Try case variation 'koala'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create duplicate
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Creation: Custom Validation Rules Respected
+ * Tests that isValidNewOption validation is respected
+ */
+export const CreationCustomValidationRespected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+        isValidNewOption={(inputValue) => {
+          // Only allow options starting with 'Custom'
+          return inputValue.startsWith("Custom");
+        }}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Invalid option 'Lion' - not created", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Lion");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create (doesn't start with 'Custom')
+      await waitFor(() => {
+        expect(canvas.queryByText("Lion")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Valid option 'CustomAnimal' - created", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "CustomAnimal");
+      await userEvent.keyboard("{Enter}");
+
+      // Should create (starts with 'Custom')
+      await waitFor(() => {
+        expect(canvas.getByText("CustomAnimal")).toBeInTheDocument();
+      });
+    });
+
+    await step("Another valid option 'CustomBeast' - created", async () => {
+      await userEvent.type(input, "CustomBeast");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("CustomBeast")).toBeInTheDocument();
+      });
+
+      // Both custom options should exist
+      expect(canvas.getByText("CustomAnimal")).toBeInTheDocument();
+      expect(canvas.getByText("CustomBeast")).toBeInTheDocument();
+    });
+  },
+};
