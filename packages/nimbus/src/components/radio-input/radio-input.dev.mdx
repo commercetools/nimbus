@@ -62,7 +62,7 @@ const App = () => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
 
   return (
-    <>
+    <Stack direction="column" gap="400">
       <RadioInput.Root
         name="uncontrolled-example"
         defaultValue="option2"
@@ -77,7 +77,7 @@ const App = () => {
       <Text fontSize="sm">
         Selected: {selectedValue || 'None'}
       </Text>
-    </>
+    </Stack>
   );
 }
 ```
@@ -176,14 +176,14 @@ RadioInput integrates seamlessly with the FormField pattern for consistent form 
 const App = () => (
   <FormField.Root>
     <FormField.Label>Select your preference:</FormField.Label>
-    <FormField.Input>
+    <FormField.Input mt="300">
       <RadioInput.Root name="formfield-example" aria-label="Preference selection">
         <RadioInput.Option value="option1">Option 1</RadioInput.Option>
         <RadioInput.Option value="option2">Option 2</RadioInput.Option>
         <RadioInput.Option value="option3">Option 3</RadioInput.Option>
       </RadioInput.Root>
     </FormField.Input>
-    <FormField.Description>
+    <FormField.Description mt="300">
       Choose one option from the list above.
     </FormField.Description>
   </FormField.Root>
@@ -198,14 +198,14 @@ Use the `isRequired` prop to indicate that a selection is mandatory. When used w
 const App = () => (
     <FormField.Root isRequired>
       <FormField.Label>Select your preference</FormField.Label>
-      <FormField.Input>
+      <FormField.Input mt="300">
         <RadioInput.Root name="required-example" isRequired aria-label="Preference selection">
           <RadioInput.Option value="option1">Option 1</RadioInput.Option>
           <RadioInput.Option value="option2">Option 2</RadioInput.Option>
           <RadioInput.Option value="option3">Option 3</RadioInput.Option>
         </RadioInput.Root>
       </FormField.Input>
-      <FormField.Description>
+      <FormField.Description mt="300">
         You must select one of the options above.
       </FormField.Description>
     </FormField.Root>
@@ -335,44 +335,6 @@ const App = () => {
       {value && !error && (
         <Text fontSize="sm" color="positive.9">
           Successfully selected: {value}
-        </Text>
-      )}
-    </Stack>
-  );
-}
-```
-
-### Dynamic options
-
-Render radio options from a data array:
-
-```jsx-live-dev
-const App = () => {
-  const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
-  
-  const options = [
-    { value: 'small', label: 'Small' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'large', label: 'Large' },
-  ];
-
-  return (
-    <Stack direction="column" gap="400">
-      <RadioInput.Root
-        name="dynamic-example"
-        value={selectedValue}
-        onChange={setSelectedValue}
-        orientation="horizontal"
-      >
-        {options.map((option) => (
-          <RadioInput.Option key={option.value} value={option.value}>
-            {option.label}
-          </RadioInput.Option>
-        ))}
-      </RadioInput.Root>
-      {selectedValue && (
-        <Text fontSize="sm">
-          Selected size: {options.find(opt => opt.value === selectedValue)?.label}
         </Text>
       )}
     </Stack>
