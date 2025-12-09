@@ -78,13 +78,13 @@
   "Nimbus.DataTable.comfortable": [
     {
       "type": 0,
-      "value": "Confortable"
+      "value": "Cómoda"
     }
   ],
   "Nimbus.DataTable.comfortableAriaLabel": [
     {
       "type": 0,
-      "value": "Sección confortable"
+      "value": "Sección cómoda"
     }
   ],
   "Nimbus.DataTable.compact": [
