@@ -1,0 +1,431 @@
+---
+title: SearchInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { SearchInput, type SearchInputProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <SearchInput placeholder="Search..." />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput size="sm" placeholder="Small search" />
+    <SearchInput size="md" placeholder="Medium search (default)" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput variant="solid" placeholder="Solid variant (default)" />
+    <SearchInput variant="ghost" placeholder="Ghost variant" />
+  </Stack>
+)
+```
+
+### Clear button behavior
+
+SearchInput includes a built-in clear button that automatically appears when the input has a value:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInput
+        value={value}
+        onChange={setValue}
+        placeholder="Type to see clear button..."
+      />
+      <Text fontSize="sm">
+        Current value: {value || '(empty)'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+**Behavioral notes:**
+- Clear button is always present in the DOM but hidden when input is empty
+- Clear button has `opacity: 0` and `pointerEvents: none` when hidden
+- Clear button automatically transitions when value changes
+- Clear button is disabled when input is disabled or read-only
+- Clear button has an internationalized aria-label ("Clear search input")
+
+### Disabled state
+
+Disable input interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput placeholder="Enabled search" />
+    <SearchInput placeholder="Disabled search" isDisabled />
+    <SearchInput
+      value="Disabled with value"
+      isDisabled
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Invalid state
+
+Mark inputs as invalid for validation feedback:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput
+      placeholder="Valid search"
+      value="valid query"
+      onChange={() => {}}
+    />
+    <SearchInput
+      placeholder="Invalid search"
+      value="error"
+      isInvalid
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Read-only state
+
+Use `isReadOnly` to display values without allowing editing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput
+      value="Editable search"
+      onChange={() => {}}
+    />
+    <SearchInput
+      value="Read-only search"
+      isReadOnly
+      onChange={() => {}}
+    />
+  </Stack>
+)
+```
+
+### Event handlers
+
+SearchInput supports three event handlers for different interaction patterns:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+  const [submitted, setSubmitted] = useState<string>('');
+  const [clearCount, setClearCount] = useState<number>(0);
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInput
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+        onSubmit={(submittedValue) => {
+          setSubmitted(submittedValue);
+        }}
+        onClear={() => {
+          setClearCount((count) => count + 1);
+        }}
+        placeholder="Type and press Enter..."
+      />
+      <Stack direction="column" gap="200" fontSize="sm">
+        <Text>Current: {value || '(empty)'}</Text>
+        <Text>Submitted: {submitted || '(none)'}</Text>
+        <Text>Clear count: {clearCount}</Text>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+**Event handler details:**
+- `onChange`: Called when input value changes (on every keystroke)
+- `onSubmit`: Called when user presses Enter
+- `onClear`: Called when user clicks the clear button or presses Escape
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInput
+        placeholder="Type something..."
+        defaultValue=""
+        onChange={(value) => {
+          setDisplayValue(value);
+        }}
+      />
+      <Text fontSize="sm">Current value: {displayValue || '(empty)'}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the input value without managing state yourself.
+
+**Note:** SearchInput's `onChange` receives the string value directly, not an event object.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInput
+        value={value}
+        onChange={(value) => setValue(value)}
+        placeholder="Controlled search"
+      />
+      <Text fontSize="sm">
+        {value ? `Searching for: ${value}` : 'Start typing...'}
+      </Text>
+      <Button onClick={() => setValue('')}>
+        Clear programmatically
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform search queries
+- Clear or programmatically set the value
+- React to changes in real-time
+- Coordinate with other components (like displaying search results)
+
+## Component requirements
+
+### Accessibility
+
+The SearchInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `SearchInputField` pattern component (if available, recommended)
+- Associating a `<label>` element with the `SearchInput` using `aria-labelledby`:
+
+```tsx
+<label id="search-label">
+  {intl.formatMessage(searchMessage)}
+</label>
+<SearchInput aria-labelledby="search-label" />
+```
+
+- Associating a `<label>` element with the `SearchInput` using `htmlFor`:
+
+```tsx
+<label htmlFor="search-input">
+  {intl.formatMessage(searchMessage)}
+</label>
+<SearchInput id="search-input" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<SearchInput aria-label={intl.formatMessage(searchMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-search-input";
+
+export const ProductSearch = () => (
+  <SearchInput id={PERSISTENT_ID} placeholder="Search products..." />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the search field
+- `Arrow keys`: Move cursor within the text (Left/Right)
+- `Home` / `End`: Move cursor to start/end of text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- `Enter`: Submit search (triggers `onSubmit` handler)
+- `Escape`: Clear the search input (triggers `onClear` handler)
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the input container (including the search icon area) will focus the input field, providing a larger interactive target for better usability.
+
+## API reference
+
+<PropsTable id="SearchInput" />
+
+## Common patterns
+
+### Search with live filtering
+
+Display results that update as the user types:
+
+```jsx-live-dev
+const App = () => {
+  const [query, setQuery] = useState<string>('');
+
+  const products = [
+    'Laptop', 'Phone', 'Tablet', 'Monitor', 'Keyboard',
+    'Mouse', 'Headphones', 'Camera', 'Printer', 'Scanner'
+  ];
+
+  const filteredProducts = products.filter(product =>
+    product.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <Stack direction="column" gap="400">
+      <SearchInput
+        value={query}
+        onChange={setQuery}
+        placeholder="Search products..."
+      />
+      <Stack direction="column" gap="200">
+        {query && filteredProducts.length === 0 && (
+          <Text fontSize="sm" color="neutral.11">
+            No results found for "{query}"
+          </Text>
+        )}
+        {query && filteredProducts.length > 0 && (
+          <Text fontSize="sm" fontWeight="medium">
+            Found {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''}:
+          </Text>
+        )}
+        {query && filteredProducts.map(product => (
+          <Text key={product} fontSize="sm">
+            • {product}
+          </Text>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Search with submit action
+
+Handle search submission with Enter key or button click:
+
+```jsx-live-dev
+const App = () => {
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  const performSearch = (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+
+    // Simulate API call delay
+    setTimeout(() => {
+      const mockResults = [
+        `Result 1 for "${searchQuery}"`,
+        `Result 2 for "${searchQuery}"`,
+        `Result 3 for "${searchQuery}"`,
+      ];
+      setResults(mockResults);
+      setIsSearching(false);
+    }, 500);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200" alignItems="center">
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          onSubmit={performSearch}
+          placeholder="Type and press Enter..."
+        />
+        <Button
+          onClick={() => performSearch(query)}
+          size="md"
+        >
+          Search
+        </Button>
+      </Stack>
+
+      {isSearching && (
+        <Text fontSize="sm" color="neutral.11">
+          Searching...
+        </Text>
+      )}
+
+      {!isSearching && results.length > 0 && (
+        <Stack direction="column" gap="200">
+          <Text fontSize="sm" fontWeight="medium">
+            Search Results:
+          </Text>
+          {results.map((result, index) => (
+            <Text key={index} fontSize="sm">
+              • {result}
+            </Text>
+          ))}
+        </Stack>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SearchInput within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: search-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-searchinput--docs)
+- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)
+- [ARIA Search Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/search.html)

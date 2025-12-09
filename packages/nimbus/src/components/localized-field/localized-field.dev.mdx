@@ -1,0 +1,765 @@
+---
+title: LocalizedField Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { LocalizedField, type LocalizedFieldProps, type LocalizedString, type LocalizedCurrency } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The LocalizedField component manages multiple locale-specific or currency-specific input fields with expand/collapse functionality. It requires controlled mode with an `onChange` handler:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: 'Hello',
+    de: 'Hallo',
+    es: 'Hola'
+  });
+
+  const handleChange = (e) => {
+    setValues(prev => ({
+      ...prev,
+      [e.target.locale]: e.target.value
+    }));
+  };
+
+  return (
+    <LocalizedField
+      type="text"
+      label="Product Name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      onChange={handleChange}
+    />
+  );
+};
+```
+
+## Working with localized values
+
+The LocalizedField component uses specialized types for managing multi-locale and multi-currency data.
+
+### LocalizedString type
+
+For `text`, `multiLine`, and `richText` input types, use the `LocalizedString` type:
+
+```tsx
+import { type LocalizedString } from '@commercetools/nimbus';
+
+// LocalizedString maps locale codes to string values
+const productName: LocalizedString = {
+  'en': 'Product',
+  'de': 'Produkt',
+  'es': 'Producto',
+  'fr-FR': 'Produit'
+};
+```
+
+### LocalizedCurrency type
+
+For `money` input type, use the `LocalizedCurrency` type:
+
+```tsx
+import { type LocalizedCurrency, type MoneyInputValue } from '@commercetools/nimbus';
+
+// LocalizedCurrency maps currency codes to MoneyInputValue objects
+const prices: LocalizedCurrency = {
+  'USD': {
+    amount: '99.99',
+    currencyCode: 'USD'
+  },
+  'EUR': {
+    amount: '89.99',
+    currencyCode: 'EUR'
+  },
+  'GBP': {
+    amount: '79.99',
+    currencyCode: 'GBP'
+  }
+};
+```
+
+### LocalizedFieldChangeEvent
+
+The component uses a custom change event for consistency across browsers and input types:
+
+```tsx
+import { type LocalizedFieldChangeEvent } from '@commercetools/nimbus';
+
+const handleChange = (e: LocalizedFieldChangeEvent) => {
+  console.log('Locale:', e.target.locale);        // e.g., "en", "de"
+  console.log('Currency:', e.target.currency);    // e.g., "USD" (for money type)
+  console.log('Value:', e.target.value);          // string or MoneyInputValue
+  console.log('Field ID:', e.target.id);          // e.g., "product-name.en"
+  console.log('Field name:', e.target.name);      // e.g., "productName.en"
+};
+```
+
+## Usage examples
+
+### Size options
+
+LocalizedField supports two size variants:
+
+```jsx-live-dev
+const App = () => {
+  const [smallValues, setSmallValues] = React.useState({
+    en: 'Small',
+    de: 'Klein'
+  });
+
+  const [mediumValues, setMediumValues] = React.useState({
+    en: 'Medium',
+    de: 'Mittel'
+  });
+
+  return (
+    <Stack direction="column" gap="600">
+      <LocalizedField
+        size="sm"
+        type="text"
+        label="Small Size"
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={smallValues}
+        onChange={(e) => setSmallValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+
+      <LocalizedField
+        size="md"
+        type="text"
+        label="Medium Size (default)"
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={mediumValues}
+        onChange={(e) => setMediumValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+    </Stack>
+  );
+};
+```
+
+### Input types
+
+LocalizedField supports four input types: `text`, `multiLine`, `richText`, and `money`.
+
+#### Text input type
+
+Single-line text input for short content:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: 'Product Name',
+    de: 'Produktname',
+    es: 'Nombre del producto'
+  });
+
+  return (
+    <LocalizedField
+      type="text"
+      label="Product Name"
+      description="Short product title"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+    />
+  );
+};
+```
+
+#### MultiLine input type
+
+Textarea for longer content:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: 'This is a detailed product description.',
+    de: 'Dies ist eine detaillierte Produktbeschreibung.',
+    es: 'Esta es una descripción detallada del producto.'
+  });
+
+  return (
+    <LocalizedField
+      type="multiLine"
+      label="Product Description"
+      description="Detailed product information"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+    />
+  );
+};
+```
+
+#### RichText input type
+
+Rich text editor for formatted content:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: '<p><strong>Bold</strong> and <em>italic</em> text</p>',
+    de: '<p><strong>Fett</strong> und <em>kursiv</em> Text</p>'
+  });
+
+  return (
+    <LocalizedField
+      type="richText"
+      label="Marketing Content"
+      description="Rich formatted content with styling"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+    />
+  );
+};
+```
+
+#### Money input type
+
+Currency-specific price inputs:
+
+```jsx-live-dev
+const App = () => {
+  const [prices, setPrices] = React.useState({
+    USD: { amount: '99.99', currencyCode: 'USD' },
+    EUR: { amount: '89.99', currencyCode: 'EUR' },
+    GBP: { amount: '79.99', currencyCode: 'GBP' }
+  });
+
+  const handlePriceChange = (e) => {
+    setPrices(prev => ({
+      ...prev,
+      [e.target.currency]: {
+        amount: e.target.value.amount,
+        currencyCode: e.target.currency
+      }
+    }));
+  };
+
+  return (
+    <LocalizedField
+      type="money"
+      label="Product Price"
+      description="Price in different currencies"
+      defaultLocaleOrCurrency="USD"
+      valuesByLocaleOrCurrency={prices}
+      onChange={handlePriceChange}
+    />
+  );
+};
+```
+
+### Expand/collapse behavior
+
+By default, LocalizedField displays only the default locale and provides a toggle to expand:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: 'English content',
+    de: 'German content',
+    es: 'Spanish content',
+    'fr-FR': 'French content'
+  });
+
+  return (
+    <Stack direction="column" gap="600">
+      <LocalizedField
+        type="text"
+        label="Collapsed by default"
+        description="Click the language icon to expand and view all locales"
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={values}
+        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+
+      <LocalizedField
+        type="text"
+        label="Expanded by default"
+        description="Opens with all locales visible"
+        defaultLocaleOrCurrency="en"
+        defaultExpanded={true}
+        valuesByLocaleOrCurrency={values}
+        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+
+      <LocalizedField
+        type="text"
+        label="Always expanded"
+        description="Toggle button hidden, all locales always visible"
+        defaultLocaleOrCurrency="en"
+        displayAllLocalesOrCurrencies={true}
+        valuesByLocaleOrCurrency={values}
+        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+    </Stack>
+  );
+};
+```
+
+### Placeholders and descriptions
+
+Add placeholders and per-locale descriptions for better user guidance:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: '',
+    de: '',
+    es: ''
+  });
+
+  const placeholders = {
+    en: 'Enter English name...',
+    de: 'Deutschen Namen eingeben...',
+    es: 'Ingrese nombre en español...'
+  };
+
+  const descriptions = {
+    en: 'English is the primary language',
+    de: 'German translation',
+    es: 'Spanish translation'
+  };
+
+  return (
+    <LocalizedField
+      type="text"
+      label="Product Name"
+      description="Localized product name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      placeholdersByLocaleOrCurrency={placeholders}
+      descriptionsByLocaleOrCurrency={descriptions}
+      displayAllLocalesOrCurrencies={true}
+      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+    />
+  );
+};
+```
+
+### Validation and error handling
+
+LocalizedField supports both group-level and per-locale validation:
+
+#### Group-level validation
+
+Errors that apply to the entire field group:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: '',
+    de: '',
+    es: ''
+  });
+  const [touched, setTouched] = React.useState(false);
+
+  const hasValues = Object.values(values).some(v => v !== '');
+  const error = touched && !hasValues ? 'At least one translation is required' : undefined;
+
+  return (
+    <Stack direction="column" gap="400">
+      <LocalizedField
+        type="text"
+        label="Product Name"
+        description="Provide at least one translation"
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={values}
+        error={error}
+        touched={touched}
+        isRequired={true}
+        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+        onBlur={() => setTouched(true)}
+      />
+
+      <Text fontSize="300" color="neutral.11">
+        Blur the field to trigger validation
+      </Text>
+    </Stack>
+  );
+};
+```
+
+#### Per-locale validation
+
+Different errors for specific locales:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: 'Valid name',
+    de: 'ab',
+    es: ''
+  });
+  const [touchedLocales, setTouchedLocales] = React.useState({});
+
+  const validateLocale = (locale, value) => {
+    if (!value) return 'This field is required';
+    if (value.length < 3) return 'Must be at least 3 characters';
+    return undefined;
+  };
+
+  const errors = Object.keys(values).reduce((acc, locale) => {
+    const error = validateLocale(locale, values[locale]);
+    if (error && touchedLocales[locale]) {
+      acc[locale] = error;
+    }
+    return acc;
+  }, {});
+
+  return (
+    <LocalizedField
+      type="text"
+      label="Product Name"
+      description="Each locale must have at least 3 characters"
+      defaultLocaleOrCurrency="en"
+      displayAllLocalesOrCurrencies={true}
+      valuesByLocaleOrCurrency={values}
+      errorsByLocaleOrCurrency={errors}
+      touched={true}
+      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      onBlur={(_, locale) => setTouchedLocales(prev => ({ ...prev, [locale]: true }))}
+    />
+  );
+};
+```
+
+### Required and disabled states
+
+Show required indicator and disable user interaction:
+
+```jsx-live-dev
+const App = () => {
+  const [requiredValues, setRequiredValues] = React.useState({
+    en: '',
+    de: ''
+  });
+
+  const [disabledValues] = React.useState({
+    en: 'This field is disabled',
+    de: 'Dieses Feld ist deaktiviert'
+  });
+
+  return (
+    <Stack direction="column" gap="600">
+      <LocalizedField
+        type="text"
+        label="Required Field"
+        description="This field must be filled out"
+        isRequired={true}
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={requiredValues}
+        onChange={(e) => setRequiredValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}
+      />
+
+      <LocalizedField
+        type="text"
+        label="Disabled Field"
+        description="This field cannot be edited"
+        isDisabled={true}
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={disabledValues}
+        onChange={() => {}}
+      />
+    </Stack>
+  );
+};
+```
+
+### Read-only state
+
+Display values without allowing edits:
+
+```jsx-live-dev
+const App = () => {
+  const [values] = React.useState({
+    en: 'Read-only English value',
+    de: 'Schreibgeschützter deutscher Wert',
+    es: 'Valor español de solo lectura'
+  });
+
+  return (
+    <LocalizedField
+      type="text"
+      label="System Generated Name"
+      description="This value is automatically generated and cannot be edited"
+      isReadOnly={true}
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={values}
+      onChange={() => {}}
+    />
+  );
+};
+```
+
+## Utility methods
+
+LocalizedField provides static utility methods for common operations:
+
+### Field attribute helpers
+
+Generate consistent field IDs and names with locale suffixes:
+
+```tsx
+// LocalizedField.getId(base, locale) - Formats: "base.locale"
+LocalizedField.getId('productName', 'en');  // "productName.en"
+LocalizedField.getId('productName', 'de');  // "productName.de"
+
+// LocalizedField.getName(base, locale) - Same formatting
+LocalizedField.getName('productName', 'en');  // "productName.en"
+```
+
+### Value checking utilities
+
+Check if fields have been touched or are empty:
+
+```tsx
+import { LocalizedField } from '@commercetools/nimbus';
+
+const values = { en: 'Hello', de: '', es: '' };
+const touched = { en: true, de: false, es: false };
+
+// Check if any locale has been touched
+LocalizedField.isTouched(touched);  // true
+
+// Check if all locales are empty
+LocalizedField.isEmpty(values);  // false (en has a value)
+```
+
+### LocalizedString helpers
+
+Create and manipulate LocalizedString objects:
+
+```tsx
+// Create empty LocalizedString with specific locales
+const emptyValues = LocalizedField.createLocalizedString(['en', 'de', 'es'], {});
+// Result: { en: '', de: '', es: '' }
+
+// Merge with existing values
+const existingValues = { en: 'Hello' };
+const merged = LocalizedField.createLocalizedString(['en', 'de', 'es'], existingValues);
+// Result: { en: 'Hello', de: '', es: '' }
+
+// Remove empty translations
+const values = { en: 'Hello', de: '', es: 'Hola' };
+const cleaned = LocalizedField.omitEmptyTranslations(values);
+// Result: { en: 'Hello', es: 'Hola' }
+```
+
+### Money value utilities
+
+Work with LocalizedCurrency values:
+
+```tsx
+// Convert money values to different format
+const prices = {
+  USD: { amount: '99.99', currencyCode: 'USD' },
+  EUR: { amount: '89.99', currencyCode: 'EUR' }
+};
+
+// Parse money values for processing
+const parsed = LocalizedField.parseMoneyValues(prices);
+
+// Get currencies with high precision amounts
+const highPrecision = LocalizedField.getHighPrecisionCurrencies(prices);
+
+// Get empty currency entries
+const empty = LocalizedField.getEmptyCurrencies(prices);
+```
+
+### Error handling utilities
+
+Convert error objects for compatibility:
+
+```tsx
+// Standard error message component
+const ErrorMessage = LocalizedField.RequiredValueErrorMessage;
+
+// Convert errors to field error format
+const errors = { missing: true, invalid: false };
+const fieldErrors = LocalizedField.toFieldErrors(errors);
+```
+
+## Component requirements
+
+### Accessibility
+
+LocalizedField implements comprehensive accessibility features to ensure WCAG 2.1 AA compliance.
+
+#### Role
+
+- `role="group"` - The fieldset groups related locale/currency fields
+- Each locale field has appropriate input roles (`textbox`, `spinbutton` for money)
+
+#### Labeling
+
+- Group label via `<legend>` element (or `aria-label` if no visible label)
+- Each locale field labeled with its language/currency code
+- Required fields indicated with `aria-required="true"`
+- Invalid fields indicated with `aria-invalid="true"`
+- Error messages linked via `aria-describedby`
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between locale fields and controls |
+| `Shift + Tab` | Move focus backwards |
+| `Enter` / `Space` | Toggle expand/collapse when focused on language icon button |
+| `Escape` | Close info dialog (if open) |
+
+For individual input types, standard keyboard behavior applies:
+- Text/multiLine: Standard text input navigation
+- RichText: Rich text editor keyboard shortcuts
+- Money: Number input behavior with arrow keys for increment/decrement
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** `id` to the component:
+
+```tsx
+<LocalizedField
+  id="product-name-localized"
+  name="productName"
+  // ... other props
+/>
+```
+
+The component will automatically append locale/currency codes to create unique IDs for each field (e.g., `product-name-localized.en`, `product-name-localized.de`).
+
+## API reference
+
+<PropsTable id="LocalizedField" />
+
+## Common patterns
+
+### Multi-currency pricing
+
+Manage prices across multiple currencies:
+
+```jsx-live-dev
+const App = () => {
+  const [prices, setPrices] = React.useState({
+    USD: { amount: '99.99', currencyCode: 'USD' },
+    EUR: { amount: '89.99', currencyCode: 'EUR' },
+    GBP: { amount: '79.99', currencyCode: 'GBP' },
+    JPY: { amount: '12500', currencyCode: 'JPY' }
+  });
+
+  const handlePriceChange = (e) => {
+    setPrices(prev => ({
+      ...prev,
+      [e.target.currency]: {
+        amount: e.target.value.amount,
+        currencyCode: e.target.currency
+      }
+    }));
+  };
+
+  const validatePrices = () => {
+    const empty = LocalizedField.getEmptyCurrencies(prices);
+    if (empty.length > 0) {
+      console.warn('Empty prices for:', empty);
+    }
+  };
+
+  return (
+    <LocalizedField
+      type="money"
+      label="Product Price"
+      description="Set prices for all supported currencies"
+      defaultLocaleOrCurrency="USD"
+      valuesByLocaleOrCurrency={prices}
+      onChange={handlePriceChange}
+      onBlur={validatePrices}
+      isRequired={true}
+    />
+  );
+};
+```
+
+### Conditional locale validation
+
+Apply different validation rules per locale:
+
+```jsx-live-dev
+const App = () => {
+  const [values, setValues] = React.useState({
+    en: '',
+    de: '',
+    es: '',
+    'fr-FR': ''
+  });
+
+  const [touchedLocales, setTouchedLocales] = React.useState({});
+
+  // Different validation rules per locale
+  const validateLocale = (locale, value) => {
+    // English is required
+    if (locale === 'en') {
+      if (!value) return 'English name is required';
+      if (value.length < 3) return 'Must be at least 3 characters';
+    }
+
+    // Other locales are optional but must meet length requirement if provided
+    if (value && value.length < 3) {
+      return 'Must be at least 3 characters';
+    }
+
+    return undefined;
+  };
+
+  const errors = Object.keys(values).reduce((acc, locale) => {
+    const error = validateLocale(locale, values[locale] || '');
+    if (error && touchedLocales[locale]) {
+      acc[locale] = error;
+    }
+    return acc;
+  }, {});
+
+  return (
+    <LocalizedField
+      type="text"
+      label="Product Name"
+      description="English name is required, other languages optional"
+      defaultLocaleOrCurrency="en"
+      displayAllLocalesOrCurrencies={true}
+      valuesByLocaleOrCurrency={values}
+      errorsByLocaleOrCurrency={errors}
+      touched={true}
+      isRequired={true}
+      onChange={(e) => {
+        setValues(prev => ({
+          ...prev,
+          [e.target.locale]: e.target.value
+        }));
+      }}
+      onBlur={(_, locale) => {
+        setTouchedLocales(prev => ({ ...prev, [locale]: true }));
+      }}
+    />
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using LocalizedField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: localized-field.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook - LocalizedField](https://nimbus-storybook.vercel.app/?path=/docs/components-localizedfield--docs)
+- [FormField Component](/components/inputs/formfield)
+- [MoneyInput Component](/components/inputs/moneyinput)
+- [React Aria - useField](https://react-spectrum.adobe.com/react-aria/useField.html)

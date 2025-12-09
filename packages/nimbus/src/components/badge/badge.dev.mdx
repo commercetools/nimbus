@@ -104,37 +104,7 @@ Badges are non-interactive elements and do not receive focus or support keyboard
 
 These examples demonstrate how to test your implementation when using Badge within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
 
-### Basic rendering tests
-
-Verify the component renders with expected elements:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { Badge } from '@commercetools/nimbus';
-
-describe('Badge', () => {
-  it('renders content correctly', () => {
-    render(<Badge>Status: Active</Badge>);
-    expect(screen.getByText('Status: Active')).toBeInTheDocument();
-  });
-});
-```
-
-### Testing with specific props
-
-When using variants, you can verify the component renders with the expected content:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { Badge } from '@commercetools/nimbus';
-
-describe('Badge with variants', () => {
-  it('renders with specific size', () => {
-    render(<Badge size="xs">Small Badge</Badge>);
-    expect(screen.getByText('Small Badge')).toBeInTheDocument();
-  });
-});
-```
+{{docs-tests: badge.docs.spec.tsx}}
 
 ## Resources
 
