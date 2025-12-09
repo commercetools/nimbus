@@ -20,9 +20,12 @@ Parse the arguments to extract:
 
 ## **Your Mission**
 
-Create complete engineering documentation (`.dev.mdx` file) for the specified
-component using the standard template at `@docs/engineering-docs-template.mdx`
-and following the guidance in `@docs/engineering-docs-template-guide.md`.
+Create complete engineering documentation for the specified component:
+
+1. **`.dev.mdx` file** - Engineering documentation using the standard template at `@docs/engineering-docs-template.mdx`
+2. **`.docs.spec.tsx` file** - Companion test file with executable test examples (MANDATORY)
+
+Follow the guidance in `@docs/engineering-docs-template-guide.md` and `@docs/engineering-docs-validation.md`.
 
 ## **Execution Flow**
 
@@ -119,7 +122,12 @@ Based on your analysis, create a documentation plan:
 - **Controlled/Uncontrolled**: [Both / Controlled only / Uncontrolled only]
 - **Key Features**: [List 3-5 main features or props]
 
-### Sections to Include
+### Files to Create
+
+- [ ] `{component-name}.dev.mdx` - Engineering documentation
+- [ ] `{component-name}.docs.spec.tsx` - Companion test file (MANDATORY)
+
+### Sections to Include (in .dev.mdx)
 
 Based on component type and features:
 
@@ -138,7 +146,7 @@ Based on component type and features:
 - [ ] Form integration (field patterns only)
 - [ ] API reference (required)
 - [ ] Common patterns (recommended)
-- [ ] Testing your implementation (required)
+- [ ] Testing your implementation (required) - uses `{{docs-tests:}}` injection token
 - [ ] Resources (required)
 
 ### Example Generation Strategy
@@ -238,15 +246,17 @@ Once confirmed, create the documentation file:
    - Field patterns:
      `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
 
-9. **Write the file** using the Write tool
+9. **Write the `.dev.mdx` file** using the Write tool
 
-### **Step 6.1: Create Documentation Test File**
+10. **Create the companion `.docs.spec.tsx` test file** (see Step 6.1 for details)
 
-**IMPORTANT**: After creating the `.dev.mdx` file, create the companion
-`.docs.spec.tsx` test file.
+11. **Write the `.docs.spec.tsx` file** using the Write tool
 
-1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as
-   component
+### **Step 6.1: Documentation Test File Structure**
+
+**MANDATORY**: Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test file. The testing section in the MDX uses an injection token that pulls from this file at build time.
+
+1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as component
 
 2. **File structure**:
 

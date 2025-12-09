@@ -1,0 +1,496 @@
+---
+title: Drawer Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Drawer } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Drawer component is a compound component with multiple parts that work together. This basic implementation shows a `Trigger` element that toggles the drawer's `Content` wrapper which contains `Header`, `Body`, and `Footer` sections:
+
+```jsx-live-dev
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>Open Drawer</Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Drawer Title</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Text>This is the drawer body content.</Text>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button variant="solid" slot="close">Confirm</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+## Usage examples
+
+### Placement options
+
+Control where the drawer appears on screen using the `placement` prop on `Drawer.Root`. Available placements are `left`, `right` (default), `top`, and `bottom`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" flexWrap="wrap">
+    {['left', 'right', 'top', 'bottom'].map((placement) => (
+      <Drawer.Root key={placement} placement={placement}>
+        <Drawer.Trigger>{placement}</Drawer.Trigger>
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Placement: {placement}</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Text>This drawer slides in from the {placement}.</Text>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button slot="close">Close</Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    ))}
+  </Stack>
+)
+```
+
+**Placement behavior:**
+- `placement="left"`: Slides in from the left edge, full viewport height
+- `placement="right"`: Slides in from the right edge, full viewport height (default)
+- `placement="top"`: Slides in from the top edge, full viewport width
+- `placement="bottom"`: Slides in from the bottom edge, full viewport width
+
+### Backdrop variants
+
+Control whether to show a backdrop overlay behind the drawer using the `showBackdrop` prop (enabled by default):
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Drawer.Root showBackdrop={false}>
+      <Drawer.Trigger>No Backdrop</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>No Backdrop</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Text>This drawer has no backdrop overlay.</Text>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+
+    <Drawer.Root showBackdrop={true}>
+      <Drawer.Trigger>With Backdrop</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>With Backdrop</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Text>This drawer has a blurred backdrop overlay.</Text>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  </Stack>
+)
+```
+
+**Backdrop behavior:**
+- `showBackdrop={true}`: Blurred backdrop overlay with semi-transparent background (default)
+- `showBackdrop={false}`: No backdrop overlay
+
+### Custom trigger with asChild
+
+Use your own button or interactive element as the trigger using the `asChild` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger asChild>
+      <Button variant="solid">Custom Button Trigger</Button>
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Custom Trigger</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Text>This drawer was opened with a custom Button component.</Text>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button slot="close">Close</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Size control
+
+Control the drawer content width using style props on `Drawer.Content`. You can use design tokens or custom values:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" flexWrap="wrap">
+    {['sm', 'md', 'lg', '512px', 'full'].map((size) => (
+      <Drawer.Root key={size}>
+        <Drawer.Trigger>{size}</Drawer.Trigger>
+        <Drawer.Content width={size}>
+          <Drawer.Header>
+            <Drawer.Title>Width: {size}</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Text>
+              This drawer uses <Code>width="{size}"</Code> on Drawer.Content.
+            </Text>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button slot="close">Close</Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    ))}
+  </Stack>
+)
+```
+
+### Scrollable content
+
+The drawer body automatically handles overflow with scroll support when content exceeds available height:
+
+```jsx-live-dev
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>Open Scrollable Drawer</Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Scrollable Content</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Stack direction="column" gap="400">
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              This is paragraph {i + 1} of scrollable content.
+            </Text>
+          ))}
+        </Stack>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button slot="close">Close</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Dismissal control
+
+Control how users can dismiss the drawer using `isDismissable` and `isKeyboardDismissDisabled` props:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Drawer.Root isDismissable={true} isKeyboardDismissDisabled={false}>
+      <Drawer.Trigger>Fully Dismissable</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Fully Dismissable</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Text>Can dismiss by: backdrop click, Escape key, or close button</Text>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+
+    <Drawer.Root isDismissable={false} isKeyboardDismissDisabled={true}>
+      <Drawer.Trigger>Modal Drawer</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Modal Drawer</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Text>Can only dismiss using the close button</Text>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  </Stack>
+)
+```
+
+**Dismissal options:**
+- `isDismissable={true}`: Allow closing by clicking backdrop (default: true)
+- `isKeyboardDismissDisabled={false}`: Allow closing with Escape key (default: false)
+- Both can be combined for fine-grained control
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultOpen` and `onOpenChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [lastAction, setLastAction] = useState('No action yet');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Drawer.Root
+        defaultOpen={false}
+        onOpenChange={(isOpen) => {
+          setLastAction(isOpen ? 'Drawer opened' : 'Drawer closed');
+        }}
+      >
+        <Drawer.Trigger>Open Drawer</Drawer.Trigger>
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Uncontrolled Drawer</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Text>This drawer manages its own open state.</Text>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button slot="close">Close</Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+      <Text fontSize="sm">Last action: {lastAction}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you only need to react to state changes without managing the state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Switch isSelected={isOpen} onChange={setIsOpen}>
+        Drawer is {isOpen ? 'open' : 'closed'}
+      </Switch>
+      <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Controlled Drawer</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Text>This drawer's state is controlled externally via the Switch.</Text>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button slot="close">Close</Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the drawer state with external state
+- Open/close the drawer programmatically
+- Coordinate the drawer with other UI elements
+
+## Component requirements
+
+### Accessibility
+
+The Drawer component handles most accessibility requirements internally through React Aria Components. However, you must provide an accessible label for the drawer using one of these approaches:
+
+- **Using Drawer.Title** (recommended):
+```tsx
+<Drawer.Content>
+  <Drawer.Header>
+    <Drawer.Title>Drawer Title</Drawer.Title>
+  </Drawer.Header>
+  <Drawer.Body>...</Drawer.Body>
+</Drawer.Content>
+```
+
+- **Using aria-label** (when no visual title is needed):
+```tsx
+<Drawer.Root aria-label={intl.formatMessage(drawerMessage)}>
+  <Drawer.Trigger>Open</Drawer.Trigger>
+  <Drawer.Content>...</Drawer.Content>
+</Drawer.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-drawer";
+
+export const Example = () => (
+  <Drawer.Root id={PERSISTENT_ID}>
+    <Drawer.Trigger>Open</Drawer.Trigger>
+    <Drawer.Content>...</Drawer.Content>
+  </Drawer.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate between focusable elements inside the drawer
+- `Escape`: Close the drawer (unless `isKeyboardDismissDisabled` is true)
+- Focus is automatically trapped within the drawer when open
+- Focus is restored to the trigger element when the drawer closes
+
+#### ARIA attributes
+
+- `role="dialog"`: Applied to the drawer content
+- `aria-label` or `aria-labelledby`: Associates the drawer with its title
+- `aria-modal="true"`: Indicates the drawer is modal (blocks interaction with background)
+
+## API reference
+
+<PropsTable id="Drawer" />
+
+## Common patterns
+
+### Nested drawers
+
+Drawers can be nested to create multi-level workflows. Each drawer maintains proper z-index stacking:
+
+```jsx-live-dev
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>Open First Drawer</Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>First Level</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Stack direction="column" gap="400">
+          <Text>This is the first level drawer.</Text>
+          <Drawer.Root>
+            <Drawer.Trigger asChild>
+              <Button size="xs">Open Second Drawer</Button>
+            </Drawer.Trigger>
+            <Drawer.Content>
+              <Drawer.Header>
+                <Drawer.Title>Second Level</Drawer.Title>
+                <Drawer.CloseTrigger />
+              </Drawer.Header>
+              <Drawer.Body>
+                <Text>This nested drawer appears above the first with proper z-index.</Text>
+              </Drawer.Body>
+              <Drawer.Footer>
+                <Button slot="close">Close Second</Button>
+              </Drawer.Footer>
+            </Drawer.Content>
+          </Drawer.Root>
+        </Stack>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button slot="close">Close First</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Conditional dismissal with shouldCloseOnInteractOutside
+
+Control whether the drawer should close when clicking outside based on custom logic:
+
+```jsx-live-dev
+const App = () => {
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  return (
+    <Drawer.Root
+      shouldCloseOnInteractOutside={() => {
+        if (hasUnsavedChanges) {
+          alert('You have unsaved changes!');
+          return false;
+        }
+        return true;
+      }}
+    >
+      <Drawer.Trigger>Open Editor</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Document Editor</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Stack direction="column" gap="400">
+            <Text>Make changes to simulate unsaved data:</Text>
+            <Switch
+              isSelected={hasUnsavedChanges}
+              onChange={setHasUnsavedChanges}
+            >
+              Has unsaved changes
+            </Switch>
+            <Text fontSize="sm" color="neutral.11">
+              Try clicking outside when changes are unsaved
+            </Text>
+          </Stack>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button variant="outline" slot="close">Cancel</Button>
+          <Button
+            variant="solid"
+            slot="close"
+            onClick={() => setHasUnsavedChanges(false)}
+          >
+            Save
+          </Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Drawer in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: drawer.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-overlay-drawer--docs)
+- [React Aria DialogTrigger](https://react-spectrum.adobe.com/react-aria/Dialog.html#dialogtrigger)
+- [React Aria Modal](https://react-spectrum.adobe.com/react-aria/Modal.html)
+- [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
