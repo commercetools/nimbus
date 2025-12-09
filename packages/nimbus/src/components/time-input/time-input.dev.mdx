@@ -419,13 +419,13 @@ const App = () => {
         aria-label="Controlled time input"
       />
       <Stack direction="row" gap="300">
-        <Button size="sm" onPress={() => setValue(new Time(9, 0))}>
+        <Button onPress={() => setValue(new Time(9, 0))}>
           Set to 9:00 AM
         </Button>
-        <Button size="sm" onPress={() => setValue(new Time(17, 0))}>
+        <Button onPress={() => setValue(new Time(17, 0))}>
           Set to 5:00 PM
         </Button>
-        <Button size="sm" variant="secondary" onPress={() => setValue(null)}>
+        <Button variant="secondary" onPress={() => setValue(null)}>
           Clear
         </Button>
       </Stack>
@@ -453,28 +453,19 @@ const App = () => {
   return (
     <Stack direction="column" gap="600">
       <Stack direction="column" gap="200">
+        <Text fontSize="sm" fontWeight="semibold">US (en-US)</Text>
+        <NimbusI18nProvider locale="en-US">
+          <TimeInput
+            aria-label="US locale"
+            defaultValue={sampleTime}
+          />
+        </NimbusI18nProvider>
+      </Stack>
+      <Stack direction="column" gap="200">
         <Text fontSize="sm" fontWeight="semibold">German (de-DE)</Text>
         <NimbusI18nProvider locale="de-DE">
           <TimeInput
             aria-label="German locale"
-            defaultValue={sampleTime}
-          />
-        </NimbusI18nProvider>
-      </Stack>
-      <Stack direction="column" gap="200">
-        <Text fontSize="sm" fontWeight="semibold">French (fr-FR)</Text>
-        <NimbusI18nProvider locale="fr-FR">
-          <TimeInput
-            aria-label="French locale"
-            defaultValue={sampleTime}
-          />
-        </NimbusI18nProvider>
-      </Stack>
-      <Stack direction="column" gap="200">
-        <Text fontSize="sm" fontWeight="semibold">Japanese (ja-JP)</Text>
-        <NimbusI18nProvider locale="ja-JP">
-          <TimeInput
-            aria-label="Japanese locale"
             defaultValue={sampleTime}
           />
         </NimbusI18nProvider>
@@ -664,46 +655,6 @@ const App = () => {
       {!hasError && startTime && endTime && (
         <Text fontSize="sm" color="neutral.11">
           Duration: {endTime.hour - startTime.hour} hours
-        </Text>
-      )}
-    </Stack>
-  );
-}
-```
-
-### Meeting scheduler with 30-minute increments
-
-Guide users to select times in specific increments:
-
-```jsx-live-dev
-const App = () => {
-  const [time, setTime] = useState<TimeValue | null>(new Time(10, 0));
-  
-  const handleTimeChange = (newTime: TimeValue | null) => {
-    if (newTime && newTime.minute % 30 !== 0) {
-      // Round to nearest 30-minute increment
-      const roundedMinute = Math.round(newTime.minute / 30) * 30;
-      const adjustedTime = newTime.set({ minute: roundedMinute % 60 });
-      setTime(adjustedTime);
-    } else {
-      setTime(newTime);
-    }
-  };
-
-  return (
-    <Stack direction="column" gap="400">
-      <TimeInput
-        value={time}
-        onChange={handleTimeChange}
-        aria-label="Meeting time"
-        granularity="minute"
-      />
-      <Text fontSize="sm" color="neutral.11">
-        Times are automatically rounded to 30-minute increments
-      </Text>
-      {time && (
-        <Text fontSize="sm">
-          Selected slot: {time.toString().slice(0, 5)}
         </Text>
       )}
     </Stack>
