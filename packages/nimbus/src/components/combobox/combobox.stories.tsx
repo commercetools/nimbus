@@ -4106,3 +4106,538 @@ export const FilteringNoResultsState: Story = {
     });
   },
 };
+
+// ============================================================
+// SECTION-AWARE FILTERING TESTS
+// ============================================================
+
+/**
+ * Filtering: With Sections
+ * Tests section-aware filtering behavior with grouped options
+ */
+export const FilteringWithSections: Story = {
+  render: () => {
+    const sectionsData = [
+      {
+        id: "mammals",
+        name: "Mammals",
+        children: [
+          { id: 1, name: "Koala" },
+          { id: 2, name: "Kangaroo" },
+        ],
+      },
+      {
+        id: "birds",
+        name: "Birds",
+        children: [{ id: 4, name: "Bald Eagle" }],
+      },
+      {
+        id: "other",
+        name: "Other",
+        children: [
+          { id: 3, name: "Platypus" },
+          { id: 5, name: "Bison" },
+          { id: 6, name: "Skunk" },
+        ],
+      },
+    ];
+
+    return (
+      <ComboBox.Root
+        items={sectionsData}
+        menuTrigger="focus"
+        aria-label="Test combobox with sections"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox<(typeof sectionsData)[0]>>
+            {(section) => (
+              <ComboBox.Section<(typeof sectionsData)[0]["children"][0]>
+                label={section.name}
+                items={section.children}
+                id={section.id}
+              >
+                {(item) => (
+                  <ComboBox.Option id={item.id} textValue={item.name}>
+                    {item.name}
+                  </ComboBox.Option>
+                )}
+              </ComboBox.Section>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("All sections appear with header labels", async () => {
+      await userEvent.click(input);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Verify section headers (in portal, so use document not canvas)
+      const portal = within(document.body);
+      expect(portal.getByText("Mammals")).toBeInTheDocument();
+      expect(portal.getByText("Birds")).toBeInTheDocument();
+      expect(portal.getByText("Other")).toBeInTheDocument();
+    });
+
+    await step("Items grouped under correct sections", async () => {
+      // Verify items exist
+      expect(findOptionByText("Koala")).toBeInTheDocument();
+      expect(findOptionByText("Bald Eagle")).toBeInTheDocument();
+      expect(findOptionByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Filter 'eagle' - only Birds section visible", async () => {
+      await userEvent.type(input, "eagle");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Birds section should be visible
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+
+        // Bald Eagle should be visible
+        expect(findOptionByText("Bald Eagle")).toBeInTheDocument();
+      });
+
+      // Other sections should not be visible (no matching items)
+      expect(portal.queryByText("Mammals")).not.toBeInTheDocument();
+      expect(portal.queryByText("Other")).not.toBeInTheDocument();
+    });
+
+    await step("Filter 'ko' - only Mammals section visible", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ko");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Mammals section should be visible
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+
+        // Koala should be visible
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+
+      // Other sections should not be visible
+      expect(portal.queryByText("Birds")).not.toBeInTheDocument();
+      expect(portal.queryByText("Other")).not.toBeInTheDocument();
+    });
+
+    await step("Clear filter - all sections visible again", async () => {
+      await userEvent.clear(input);
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // All sections should return
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+        expect(portal.getByText("Other")).toBeInTheDocument();
+      });
+    });
+
+    await step("Filter 'a' - multiple sections have matches", async () => {
+      await userEvent.type(input, "a");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Mammals section (Koala, Kangaroo contain 'a')
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+
+        // Birds section (Bald Eagle contains 'a')
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+
+        // Other section (Platypus contains 'a')
+        expect(portal.getByText("Other")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// CUSTOM FILTER FUNCTIONS TESTS
+// ============================================================
+
+/**
+ * Custom Filter: Start-With Matching
+ * Tests filterByStartsWith - matches only if text starts with search term
+ */
+export const CustomFilterStartsWith: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByStartsWith}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step(
+      "Type 'K' - matches Koala and Kangaroo (starts with)",
+      async () => {
+        await userEvent.click(input);
+        await userEvent.type(input, "K");
+
+        const options = Array.from(getListboxOptions());
+        const optionsText = options.map((option) => option.textContent);
+
+        // Should NOT match Skunk (doesn't start with 'K' but contains 'k')
+        expect(optionsText).toMatchObject(["Koala", "Kangaroo"]);
+      }
+    );
+
+    await step("Type 'al' - no matches (none start with 'al')", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "al");
+
+      const options = Array.from(getListboxOptions());
+      const optionsText = options.map((option) => option.textContent);
+
+      // Koala contains 'al' but doesn't start with it
+      expect(optionsText).toMatchObject([]);
+    });
+  },
+};
+
+/**
+ * Custom Filter: Case-Sensitive Matching
+ * Tests filterByCaseSensitive - requires exact case match
+ */
+export const CustomFilterCaseSensitive: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByCaseSensitive}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'Ko' - matches Koala (exact case)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Ko");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'ko' - no match (case differs)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ko");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(0);
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Word Boundary Matching
+ * Tests filterByWordBoundary - matches whole words
+ */
+export const CustomFilterWordBoundary: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByWordBoundary}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step(
+      "Type 'Eagle' - matches 'Bald Eagle' (word boundary)",
+      async () => {
+        await userEvent.click(input);
+        await userEvent.type(input, "Eagle");
+
+        await waitFor(() => {
+          expect(
+            findOptionByText("Bald Eagle with a very long name hooray")
+          ).toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Type 'ala' - no match (not on word boundary)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ala");
+
+      // "Koala" contains "ala" but not at word boundary
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(0);
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Fuzzy Matching
+ * Tests filterByFuzzy - matches characters in order but not necessarily adjacent
+ */
+export const CustomFilterFuzzy: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByFuzzy}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'ldEag' - matches Bald Eagle (fuzzy)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "ldEag");
+
+      await waitFor(() => {
+        expect(
+          findOptionByText("Bald Eagle with a very long name hooray")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'kng' - matches Kangaroo (K-n-g in order)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "kng");
+
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Multi-Property Search
+ * Tests createMultiPropertyFilter - searches across multiple object properties
+ */
+export const CustomFilterMultiProperty: Story = {
+  render: () => {
+    type Product = { id: number; name: string; category: string };
+    const products: Product[] = [
+      { id: 1, name: "Laptop", category: "Electronics" },
+      { id: 2, name: "Desk", category: "Furniture" },
+      { id: 3, name: "Mouse", category: "Electronics" },
+      { id: 4, name: "Chair", category: "Furniture" },
+    ];
+
+    const multiPropertyFilter =
+      ComboBox.filters.createMultiPropertyFilter<Product>(["name", "category"]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={products}
+        filter={multiPropertyFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search by name 'Laptop'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Laptop");
+
+      await waitFor(() => {
+        expect(findOptionByText("Laptop")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search by category 'Furniture'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Furniture");
+
+      await waitFor(() => {
+        // Should match both Desk and Chair (category: Furniture)
+        expect(findOptionByText("Desk")).toBeInTheDocument();
+        expect(findOptionByText("Chair")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search by category 'Electronics'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Electro");
+
+      await waitFor(() => {
+        // Should match Laptop and Mouse
+        expect(findOptionByText("Laptop")).toBeInTheDocument();
+        expect(findOptionByText("Mouse")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Ranked/Scored Results
+ * Tests createRankedFilter - custom scoring logic for ranking results
+ */
+export const CustomFilterRanked: Story = {
+  render: () => {
+    // Rank by: exact match > starts with > contains
+    const rankedFilter = ComboBox.filters.createRankedFilter<SimpleOption>(
+      (node, filterText) => {
+        const text = node.textValue.toLowerCase();
+        const search = filterText.toLowerCase();
+
+        if (text === search) return 100; // Exact match
+        if (text.startsWith(search)) return 50; // Starts with
+        if (text.includes(search)) return 10; // Contains
+        return 0; // No match
+      }
+    );
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={rankedFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search 'ko' - Koala ranked first (starts with)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "ko");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step(
+      "Search 'k' - ranked by score (starts with > contains)",
+      async () => {
+        await userEvent.clear(input);
+        await userEvent.type(input, "k");
+
+        await waitFor(() => {
+          const options = getListboxOptions();
+          expect(options.length).toBeGreaterThan(0);
+        });
+
+        const optionsList = Array.from(getListboxOptions());
+
+        // Koala and Kangaroo start with 'k' (score: 50)
+        // Skunk contains 'k' but doesn't start with it (score: 10)
+        // Skunk should appear AFTER Koala and Kangaroo due to lower score
+
+        // Get the index of each option
+        const koalaIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Koala")
+        );
+        const kangarooIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Kangaroo")
+        );
+        const skunkIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Skunk")
+        );
+
+        // Verify all are present and in the correct order
+        expect(koalaIndex).toBe(0);
+        expect(kangarooIndex).toBe(1);
+        expect(skunkIndex).toBe(2);
+
+        // Skunk (contains 'k') should be ranked AFTER Koala and Kangaroo (start with 'k')
+        expect(skunkIndex).toBeGreaterThan(koalaIndex);
+        expect(skunkIndex).toBeGreaterThan(kangarooIndex);
+      }
+    );
+  },
+};
+
+/**
+ * Custom Filter: Multi-Term Search
+ * Tests createMultiTermFilter - OR logic for multiple search terms
+ */
+export const CustomFilterMultiTerm: Story = {
+  render: () => {
+    const multiTermFilter = ComboBox.filters.createMultiTermFilter(
+      ComboBox.filters.filterByText
+    );
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={multiTermFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search 'Koala Bison' - matches both (OR logic)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Koala Bison");
+
+      await waitFor(() => {
+        // Should match both Koala OR Bison
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Bison")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search 'Ko Pl' - matches Koala and Platypus", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Ko Pl");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Platypus")).toBeInTheDocument();
+      });
+    });
+  },
+};

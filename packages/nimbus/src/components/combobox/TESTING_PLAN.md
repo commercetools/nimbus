@@ -351,41 +351,47 @@
 - ✅ Empty state message displays when no matches
 - ✅ Typing valid text after no matches restores options
 
-### Section-Aware Filtering ❌
+### Section-Aware Filtering ✅
 
-**Status**: Not tested **Implementation**: `createSectionAwareFilter` exists in
-`utils/filters.ts`
+**Status**: ✅ Implemented - 1 comprehensive story
 
-**Required test: "FilteringWithSections"**
+**Story:**
+- `FilteringWithSections` - Section structure maintenance during filtering
 
-Test should verify:
+**Test Coverage:**
+- ✅ Sections appear with their header labels (Mammals, Birds, Other)
+- ✅ Items are grouped under correct sections
+- ✅ Filtering maintains section structure (empty sections hidden)
+- ✅ Filter "eagle" → Only Birds section visible with Bald Eagle
+- ✅ Filter "ko" → Only Mammals section visible with Koala
+- ✅ Clear filter → All 3 sections visible again
+- ✅ Filter "a" → Multiple sections have matches simultaneously
+- ✅ Section headers queried from portal (document.body)
 
-- Sections appear with their header labels
-- Items are grouped under correct sections
-- Filtering maintains section structure
-- Empty sections are hidden during filtering
-- Sections reappear when filter allows items
-- Multiple sections can have matches simultaneously
+### Custom Filter Functions ✅
 
-**Test scenario**:
+**Status**: ✅ Implemented - 7 focused stories
 
-1. Display options grouped into "Mammals", "Birds", and "Other" sections
-2. Type "eagle" → Only "Birds" section visible with "Bald Eagle"
-3. Type "ko" → Only "Mammals" section visible with "Koala"
-4. Clear filter → All sections visible again
+**Stories:**
+- `CustomFilterStartsWith` - Prefix matching (filterByStartsWith)
+- `CustomFilterCaseSensitive` - Exact case matching (filterByCaseSensitive)
+- `CustomFilterWordBoundary` - Whole word matching (filterByWordBoundary)
+- `CustomFilterFuzzy` - Characters in order matching (filterByFuzzy)
+- `CustomFilterMultiProperty` - Multi-property search (createMultiPropertyFilter)
+- `CustomFilterRanked` - Custom scoring/ranking with order verification (createRankedFilter)
+- `CustomFilterMultiTerm` - Multi-term OR logic (createMultiTermFilter)
 
-### Custom Filter Functions ❌
+**Test Coverage:**
+- ✅ Start-with matching (Ko matches Koala, al doesn't)
+- ✅ Case-sensitive matching (Ko matches, ko doesn't)
+- ✅ Word boundary matching (Eagle matches, ala doesn't)
+- ✅ Fuzzy matching (koa, kng match via character order)
+- ✅ Multi-property search (search by name OR category)
+- ✅ Ranked/scored results with **order verification** (starts-with ranked higher than contains)
+- ✅ Multi-term search (Koala Bison matches both via OR logic)
 
-**Status**: Not tested **Note**: Multiple filter utilities implemented but need
-stories:
-
-- Start-with matching
-- Case-sensitive matching
-- Word boundary matching
-- Fuzzy matching
-- Multi-property search
-- Ranked/scored results
-- Multi-term search
+**Bug Fixed:**
+- ✅ Added `filter` prop to destructuring in combobox.root.tsx (line 107)
 
 ### Empty State Handling ⚠️
 
