@@ -5082,3 +5082,153 @@ export const CreationCustomValidationRespected: Story = {
     });
   },
 };
+
+// ============================================================
+// SINGLE-SELECT CUSTOM OPTIONS TESTS
+// ============================================================
+
+/**
+ * Single-Select Creation: New Option Automatically Selected
+ * Tests that new option is automatically selected in single-select mode
+ */
+export const SingleSelectCreationAutoSelected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Type custom option
+    await userEvent.click(input);
+    await userEvent.type(input, "Lion");
+    await userEvent.keyboard("{Enter}");
+
+    // New option should be automatically selected in single-select
+    await waitFor(() => {
+      expect(input.value).toBe("Lion");
+    });
+  },
+};
+
+/**
+ * Single-Select Creation: Input Updates to Show New Option Text
+ * Tests that input displays the created option's text
+ */
+export const SingleSelectCreationInputUpdates: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Create first custom option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Tiger");
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show created option text
+      await waitFor(() => {
+        expect(input.value).toBe("Tiger");
+      });
+    });
+
+    await step("Create second custom option - replaces first", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Bear");
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show new option text (single-select replacement)
+      await waitFor(() => {
+        expect(input.value).toBe("Bear");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select Creation: Menu Closes After Creation
+ * Tests that menu closes automatically after creating option in single-select
+ */
+export const SingleSelectCreationMenuCloses: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Type to open menu and create custom option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Wolf");
+
+      // Menu should open when typing
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Press Enter to create
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show created option
+      await waitFor(() => {
+        expect(input.value).toBe("Wolf");
+      });
+    });
+
+    await step("Menu closes after creation", async () => {
+      // Menu should close (single-select behavior)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
