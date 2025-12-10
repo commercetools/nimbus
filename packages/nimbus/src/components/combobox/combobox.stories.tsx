@@ -5578,3 +5578,140 @@ export const AccessibilityAriaFocusedOptionIdentified: Story = {
     });
   },
 };
+
+// ============================================================
+// VISUAL STATES - SIZE VARIANTS TESTS
+// ============================================================
+
+/**
+ * Size: Small Variant Renders Correctly
+ * Tests that sm size renders with correct root container dimensions
+ */
+export const SizeSmallVariant: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Small combobox"
+        items={simpleOptions}
+        size="sm"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the root container
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+
+    // Measure dimensions
+    const height = (root as HTMLElement).offsetHeight;
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Small size height should be 32px
+    expect(height).toBe(32);
+    expect(width).toBeGreaterThan(0);
+  },
+};
+
+/**
+ * Size: Medium Variant Renders Correctly
+ * Tests that md size renders with correct root container dimensions (default)
+ */
+export const SizeMediumVariant: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Medium combobox"
+        items={simpleOptions}
+        size="md"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the root container
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+
+    // Measure dimensions
+    const height = (root as HTMLElement).offsetHeight;
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Medium size height should be 40px
+    expect(height).toBe(40);
+    expect(width).toBeGreaterThan(0);
+  },
+};
+
+// ============================================================
+// VISUAL STATES - VARIANT TESTS
+// ============================================================
+
+/**
+ * Variant: Solid (Default) Displays Correctly
+ * Tests that solid variant renders with correct root container width
+ */
+export const VariantSolid: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Solid combobox"
+        items={simpleOptions}
+        variant="solid"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+    expect(root).toBeVisible();
+
+    // Solid variant has fixed width (7200 token = 288px)
+    const width = (root as HTMLElement).offsetWidth;
+    expect(width).toBe(288);
+
+    // Verify CSS from recipe
+    const styles = window.getComputedStyle(root as HTMLElement);
+
+    // Solid has primary.1 background
+    expect(styles.backgroundColor).toBe("rgb(255, 255, 255)");
+
+    // Solid has fixed width in CSS
+    expect(styles.width).toBe("288px");
+  },
+};
+
+/**
+ * Variant: Ghost Displays Correctly
+ * Tests that ghost variant renders with correct root container width
+ */
+export const VariantGhost: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Ghost combobox"
+        items={simpleOptions}
+        variant="ghost"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+    expect(root).toBeVisible();
+
+    // Ghost variant has maxWidth (7200 token = 288px)
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Verify CSS from recipe
+    const styles = window.getComputedStyle(root as HTMLElement);
+
+    // Ghost has transparent background
+    expect(styles.backgroundColor).toContain("rgba(0, 0, 0, 0)");
+
+    // Ghost has fixed width in CSS
+    expect(width).toBe(288);
+  },
+};

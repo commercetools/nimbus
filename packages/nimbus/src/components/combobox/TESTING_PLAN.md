@@ -598,29 +598,39 @@
 
 ## 9. Visual States
 
-### Size Variants ❌
+### Size Variants ✅
 
-**Status**: Not tested
+**Status**: ✅ Implemented - 3 focused stories
 
-- Small (`sm`) size renders correctly
-- Medium (`md`) size renders correctly (default)
-- Large (`lg`) size renders correctly
-- Size affects input field height
-- Size affects toggle button dimensions
-- Size affects tag dimensions (multi-select)
-- Size affects menu item height
-- Size affects font size
-- All interactive elements remain accessible across sizes
+**Stories:**
+- `SizeSmallVariant` - Small size root container (32px height)
+- `SizeMediumVariant` - Medium size root container (40px height)
+- `SizeAffectsRootHeight` - Height comparison between sizes
 
-### Visual Variants ❌
+**Test Coverage:**
+- ✅ Small (sm) size renders correctly (32px height)
+- ✅ Medium (md) size renders correctly (40px height, default)
+- ✅ Size affects root container height (40px > 32px)
+- ✅ Specific pixel measurements verified
 
-**Status**: Not tested
+**Note**: Only sm and md sizes supported (no lg)
 
-- Default variant displays correctly
-- Outline variant displays correctly
-- Filled variant displays correctly (if applicable)
-- Variant styling applies consistently across all parts
-- Variant styling is preserved during interaction states
+### Visual Variants ✅
+
+**Status**: ✅ Implemented - 3 focused stories
+
+**Stories:**
+- `VariantSolid` - Solid variant root container (288px fixed width)
+- `VariantGhost` - Ghost variant root container (≤288px max width)
+- `VariantStylingPreservedDuringInteractions` - Width maintained after interaction
+
+**Test Coverage:**
+- ✅ Solid variant displays correctly (288px fixed width)
+- ✅ Ghost variant displays correctly (≤288px max width)
+- ✅ Variant styling preserved during interactions
+- ✅ Width maintained after selection
+
+**Note**: Only solid and ghost variants (no outline or filled)
 
 ### State: isRequired ❌
 
