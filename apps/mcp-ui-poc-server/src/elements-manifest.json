@@ -1,0 +1,244 @@
+{
+  "version": "1.0.0",
+  "elements": [
+    {
+      "tagName": "nimbus-card",
+      "description": "Card container component",
+      "category": "layout",
+      "attributes": [
+        {
+          "name": "variant",
+          "type": "string",
+          "values": ["elevated", "outline", "subtle"],
+          "description": "Visual style variant"
+        },
+        {
+          "name": "max-width",
+          "type": "string",
+          "description": "Maximum width (e.g., '400px', '100%')"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-card-body",
+      "description": "Card body container",
+      "category": "layout",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-heading",
+      "description": "Heading text component",
+      "category": "typography",
+      "attributes": [
+        {
+          "name": "size",
+          "type": "string",
+          "values": ["xs", "sm", "md", "lg", "xl", "2xl"],
+          "description": "Text size"
+        },
+        {
+          "name": "margin-bottom",
+          "type": "string",
+          "description": "Bottom margin spacing token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-text",
+      "description": "Text content component",
+      "category": "typography",
+      "attributes": [
+        {
+          "name": "font-size",
+          "type": "string",
+          "description": "Font size token (e.g., 'sm', 'md', 'lg')"
+        },
+        {
+          "name": "font-weight",
+          "type": "string",
+          "values": ["normal", "medium", "semibold", "bold"],
+          "description": "Font weight"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "Text color (e.g., 'primary.11', 'neutral.12')"
+        },
+        {
+          "name": "margin-bottom",
+          "type": "string",
+          "description": "Bottom margin spacing token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-badge",
+      "description": "Badge component for status/labels",
+      "category": "display",
+      "attributes": [
+        {
+          "name": "color-palette",
+          "type": "string",
+          "values": ["primary", "positive", "critical", "warning", "neutral"],
+          "description": "Color scheme"
+        },
+        {
+          "name": "margin-bottom",
+          "type": "string",
+          "description": "Bottom margin spacing token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-button",
+      "description": "Interactive button component",
+      "category": "interactive",
+      "attributes": [
+        {
+          "name": "variant",
+          "type": "string",
+          "values": ["solid", "outline", "ghost"],
+          "description": "Button style variant"
+        },
+        {
+          "name": "color-palette",
+          "type": "string",
+          "values": ["primary", "positive", "critical", "neutral"],
+          "description": "Color scheme"
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "values": ["auto", "full"],
+          "description": "Button width"
+        },
+        {
+          "name": "is-disabled",
+          "type": "boolean",
+          "description": "Disabled state"
+        },
+        {
+          "name": "margin-top",
+          "type": "string",
+          "description": "Top margin spacing token"
+        }
+      ],
+      "events": [
+        {
+          "name": "press",
+          "description": "Triggered when button is clicked"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-image",
+      "description": "Image component",
+      "category": "media",
+      "attributes": [
+        {
+          "name": "src",
+          "type": "string",
+          "description": "Image source URL"
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "description": "Alternative text for accessibility"
+        },
+        {
+          "name": "border-radius",
+          "type": "string",
+          "description": "Border radius token"
+        },
+        {
+          "name": "margin-bottom",
+          "type": "string",
+          "description": "Bottom margin spacing token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-stack",
+      "description": "Stack layout component",
+      "category": "layout",
+      "attributes": [
+        {
+          "name": "direction",
+          "type": "string",
+          "values": ["row", "column"],
+          "description": "Stack direction"
+        },
+        {
+          "name": "gap",
+          "type": "string",
+          "description": "Gap spacing token"
+        },
+        {
+          "name": "margin-bottom",
+          "type": "string",
+          "description": "Bottom margin spacing token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-flex",
+      "description": "Flex layout component",
+      "category": "layout",
+      "attributes": [
+        {
+          "name": "direction",
+          "type": "string",
+          "values": ["row", "column"],
+          "description": "Flex direction"
+        },
+        {
+          "name": "gap",
+          "type": "string",
+          "description": "Gap spacing token"
+        },
+        {
+          "name": "padding",
+          "type": "string",
+          "description": "Padding spacing token"
+        },
+        {
+          "name": "background-color",
+          "type": "string",
+          "description": "Background color token"
+        },
+        {
+          "name": "border-bottom",
+          "type": "string",
+          "description": "Border bottom style"
+        },
+        {
+          "name": "border-color",
+          "type": "string",
+          "description": "Border color token"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-text-input",
+      "description": "Text input component",
+      "category": "interactive",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Input name attribute"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "description": "Placeholder text"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "description": "Required field indicator"
+        }
+      ]
+    }
+  ]
+}

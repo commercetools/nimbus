@@ -2,6 +2,10 @@ packages:
   - packages/*
   - apps/*
 
+catalog:
+  '@google/genai': ^1.32.0
+  zod: ^4.1.12
+
 catalogMode: strict
 
 catalogs:
@@ -11,10 +15,10 @@ catalogs:
     typescript: ~5.9.3
     typescript-eslint: ^8.48.0
     tsx: ^4.21.0
-    "@babel/core": ^7.28.5
-    "@babel/runtime": ^7.28.4
-    "@babel/preset-typescript": ^7.28.5
-    "@eslint/js": ^9.39.1
+    '@babel/core': ^7.28.5
+    '@babel/runtime': ^7.28.4
+    '@babel/preset-typescript': ^7.28.5
+    '@eslint/js': ^9.39.1
     eslint: ^9.39.1
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.4
@@ -22,53 +26,53 @@ catalogs:
     eslint-plugin-react-refresh: ^0.4.24
     express-rate-limit: ^8.2.1
     prettier: ^3.6.2
-    "@preconstruct/cli": ^2.8.12
-    "@vitejs/plugin-react": ^5.1.1
-    "@vitejs/plugin-react-swc": ^4.2.2
+    '@preconstruct/cli': ^2.8.12
+    '@vitejs/plugin-react': ^5.1.1
+    '@vitejs/plugin-react-swc': ^4.2.2
     vite: ^7.2.6
     vite-bundle-analyzer: ^1.2.3
     vite-plugin-dts: ^4.5.4
     vite-tsconfig-paths: ^5.1.4
     rollup: ^4.53.3
     rollup-plugin-tree-shakeable: ^2.0.0
-    "@vitest/browser": ^4.0.14
-    "@vitest/browser-playwright": ^4.0.14
-    "@vitest/coverage-v8": ^4.0.14
-    "@testing-library/dom": 10.4.1
-    "@testing-library/jest-dom": ^6.9.1
-    "@testing-library/user-event": ^14.6.1
-    "@testing-library/react": ^16.3.0
+    '@vitest/browser': ^4.0.14
+    '@vitest/browser-playwright': ^4.0.14
+    '@vitest/coverage-v8': ^4.0.14
+    '@testing-library/dom': 10.4.1
+    '@testing-library/jest-dom': ^6.9.1
+    '@testing-library/user-event': ^14.6.1
+    '@testing-library/react': ^16.3.0
     playwright: ^1.57.0
     vitest: ^4.0.15
     storybook: ^10.1.2
     eslint-plugin-storybook: ^10.1.2
-    "@storybook/addon-a11y": ^10.1.2
-    "@storybook/addon-docs": ^10.1.2
-    "@storybook/addon-vitest": ^10.1.2
-    "@storybook/react-vite": ^10.1.2
-    "@vueless/storybook-dark-mode": ^10.0.4
+    '@storybook/addon-a11y': ^10.1.2
+    '@storybook/addon-docs': ^10.1.2
+    '@storybook/addon-vitest': ^10.1.2
+    '@storybook/react-vite': ^10.1.2
+    '@vueless/storybook-dark-mode': ^10.0.4
     jsdom: ^27.2.0
-    "@types/jsdom": ^27.0.0
+    '@types/jsdom': ^27.0.0
   react:
-    "@types/react": ^19.0.0
-    "@types/react-dom": ^19.0.0
+    '@types/react': ^19.0.0
+    '@types/react-dom': ^19.0.0
     react: ^19.0.0
     react-dom: ^19.0.0
-    "@emotion/react": ^11.14.0
-    "@emotion/is-prop-valid": ^1.4.0
-    "@chakra-ui/cli": ^3.27.1
-    "@chakra-ui/react": ^3.27.1
+    '@emotion/react': ^11.14.0
+    '@emotion/is-prop-valid': ^1.4.0
+    '@chakra-ui/cli': ^3.27.1
+    '@chakra-ui/react': ^3.27.1
     next-themes: ^0.4.6
     react-aria: 3.44.0
     react-aria-components: 1.13.0
     react-stately: 3.42.0
-    "@react-aria/interactions": 3.25.6
-    "@react-aria/optimize-locales-plugin": 1.1.5
-    "@internationalized/date": ^3.10.0
+    '@react-aria/interactions': 3.25.6
+    '@react-aria/optimize-locales-plugin': 1.1.5
+    '@internationalized/date': ^3.10.0
     react-intl: ^7.1.13
   utils:
     dequal: ^2.0.3
     dompurify: ^3.3.0
     lodash: ^4.17.21
-    "@types/lodash": ^4.17.21
-    "@types/node": ^24.10.1
+    '@types/lodash': ^4.17.21
+    '@types/node': ^24.10.1

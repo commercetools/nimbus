@@ -1,0 +1,34 @@
+{
+  "name": "@commercetools/nimbus-mcp-ui-poc-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@commercetools/nimbus": "workspace:*",
+    "@commercetools/nimbus-icons": "workspace:*",
+    "@google/genai": "catalog:",
+    "@mcp-ui/client": "^5.17.1",
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:tooling",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react-swc": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:tooling",
+    "eslint-plugin-react-refresh": "catalog:tooling",
+    "globals": "catalog:tooling",
+    "typescript": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
+    "vite": "catalog:tooling"
+  }
+}
