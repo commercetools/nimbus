@@ -440,13 +440,24 @@
 - ✅ Custom validation rules are respected (isValidNewOption)
 - ✅ Invalid options rejected, valid options created
 
-### Single-Select Custom Options ❌
+### Single-Select Custom Options ✅
 
-**Status**: Not tested
+**Status**: ✅ Implemented - 3 focused stories
 
-- New option is automatically selected
-- Input updates to show new option text
-- Menu closes after creation
+**Stories:**
+- `SingleSelectCreationAutoSelected` - Auto-selection after creation
+- `SingleSelectCreationInputUpdates` - Input value sync and replacement
+- `SingleSelectCreationMenuCloses` - Menu auto-closes after creation
+
+**Test Coverage:**
+- ✅ New option is automatically selected (input.value updates)
+- ✅ Input updates to show new option text
+- ✅ Second custom option replaces first (single-select behavior)
+- ✅ Menu closes after creation
+
+**Bugs Fixed:**
+- ✅ Input value sync for custom options in single-select (combobox.root.tsx:881-885)
+- ✅ Effect guard to prevent overwriting custom option input (combobox.root.tsx:1159-1165)
 
 ### Multi-Select Custom Options ✅
 
