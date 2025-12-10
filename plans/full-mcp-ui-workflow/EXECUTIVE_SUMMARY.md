@@ -13,20 +13,38 @@ responses are limited to plain text or inconsistent custom UIs that break brand
 cohesion and user trust.**
 
 When AI agents need to present complex data, interactive forms, or sophisticated
-workflows, product teams today must choose between:
+workflows, product teams today must choose between four problematic approaches:
 
-- **Plain text responses** - Poor user experience, limited functionality
-- **Custom-built UIs per application** - High development cost, inconsistent
-  branding, slow time-to-market
-- **Static images** - Non-interactive, inaccessible, unprofessional
-- **Security risks** - Executing LLM-generated code creates vulnerabilities
+1. **Plain Text Responses** - LLM outputs markdown/text only
+   - Fast to implement, universally supported
+   - Poor UX for complex data, no branding, limited functionality
+
+2. **Static Images** - LLM generates screenshots or diagrams
+   - Visual but non-interactive, inaccessible (fails WCAG)
+   - No theming, translation, or component reuse
+
+3. **Custom UI per Feature** - Teams build components from scratch
+   - Full control and flexibility
+   - High cost (2-4 weeks per feature), duplicate work across teams,
+     inconsistent branding
+
+4. **Execute LLM-Generated Code** - Run AI-produced React/JSX directly
+   - Dynamic and flexible
+   - **Security risk** (untrusted code execution), unpredictable output, no
+     design system compliance
+
+**Alternative approaches** (AG-UI, generic component DSLs) require custom
+renderers and manifest schemas that become maintenance burdens, limit
+extensibility, and reduce the service's usefulness as requirements evolve.
 
 This fragmentation creates:
 
 - **Inconsistent brand experience** across AI-powered products
-- **Higher development costs** as teams reinvent UI solutions
+- **Higher development costs** as teams reinvent UI solutions (2-4 weeks per
+  feature)
 - **Slower feature velocity** competing on AI capabilities
 - **Accessibility compliance gaps** requiring manual WCAG implementation
+- **Security vulnerabilities** from executing untrusted AI-generated code
 - **Customer trust issues** when AI responses look unprofessional
 
 ### The Solution
@@ -38,6 +56,56 @@ Built on our Nimbus design system, Nimbus MCP-UI provides a universal framework
 where LLM agents specify **what** to display (data tables, forms, dashboards)
 while the system handles **how** it renders (styling, theming, accessibility,
 interactivity).
+
+#### How MCP-UI Solves This: Accelerating Development
+
+**Technical Approach**: MCP-UI server provides a manifest of available component description templates to the LLM. The LLM identifies the best component for the user's request, calls the MCP-UI server, and receives a lightweight component description . Client applications render descriptions to actual branded, accessible components.
+
+**Result**: Branded, accessible, interactive UIs without custom development per
+feature.
+
+**Phased Value Delivery**:
+
+**Phase 1 (Months 1-2.5)**: Internal app infrastructure
+
+- Remote DOM server, authentication, virtual DOM mapping
+- **Immediate value**: Commerce Center, Merchant Center render AI UIs in days
+  instead of weeks
+
+**Phase 2-4 (Months 2.5-8.5)**: External support + production readiness
+
+- Dynamic theming, SSR for external apps, monitoring/docs
+
+**Building Each New Component Template**:
+
+- **After infrastructure runs**: Hours to 1 day per component type
+- **Work by Nimbus experts**: Developers with deep design system knowledge
+- **Highly automatable**: Can be generated per-API-resource by leveraging
+  service RAML definitions (automatic mapping from API schemas to virtual DOM
+  patterns)
+- **Product teams benefit**: Zero repeated custom development
+
+**Concrete Example**:
+
+- **Before**: Product team builds order display card (2-4 weeks: code + design +
+  accessibility + security review)
+- **After**: Nimbus expert creates `createOrderDisplay()` template (hours to 1
+  day)
+- **Every use thereafter**: LLM calls template → MCP-UI renders with automatic
+  theme + accessibility
+
+**Cumulative Savings**:
+
+- **Month 2.5**: Internal teams ship AI features in days, not weeks
+- **10 AI features**: ~30 weeks saved (7.5 engineer-months)
+- **20 AI features**: ~60 weeks saved (15 engineer-months)
+
+**Key Insight**: Unlike approaches requiring repeated custom work, MCP-UI
+infrastructure enables fast, systematic template creation by Nimbus
+specialists - delivering consistent value across all product teams. **The
+infrastructure investment (2.5 months to internal operation) breaks even after
+~4-5 AI features**, typically within 6-9 months. Every subsequent feature
+delivers pure savings (~3 weeks each).
 
 ### Business Impact
 
