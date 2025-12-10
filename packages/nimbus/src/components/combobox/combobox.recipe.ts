@@ -32,9 +32,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       alignSelf: "flex-start",
       maxWidth: "100%",
       borderRadius: "200",
-      _hover: {
-        bg: "primary.2",
-      },
       "&[data-disabled='true']": {
         layerStyle: "disabled",
         focusRing: "none",
@@ -106,6 +103,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       gap: "100",
       minWidth: 0,
       cursor: "text",
+      "[data-disabled='true'] &": {
+        pointerEvents: "none",
+      },
     },
     tagGroup: {
       display: "contents",
@@ -243,7 +243,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       solid: {
         root: {
           bg: "primary.1",
-          "&:hover": {
+          "&:hover:not([data-disabled='true'])": {
             bg: "primary.2",
           },
           width: "7200",
@@ -258,7 +258,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       ghost: {
         root: {
           bg: "transparent",
-          "&:hover": {
+          "&:hover:not([data-disabled='true'])": {
             bg: "primaryAlpha.2",
           },
           width: "7200",
