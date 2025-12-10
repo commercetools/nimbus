@@ -5232,3 +5232,262 @@ export const SingleSelectCreationMenuCloses: Story = {
     });
   },
 };
+
+// ============================================================
+// ACCESSIBILITY - KEYBOARD ACCESSIBILITY TESTS
+// ============================================================
+
+/**
+ * A11y Keyboard: All Functionality Available via Keyboard
+ * Tests complete workflow using only keyboard (no mouse)
+ */
+export const AccessibilityKeyboardAllFunctionalityAvailable: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Focus input (then keyboard only)", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down opens menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Navigate and select with Enter", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Backspace removes selection", async () => {
+      const input = canvas.getByRole("combobox") as HTMLInputElement;
+      expect(input.value).toBe("");
+      await userEvent.keyboard("{Backspace}");
+
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: No Keyboard Traps
+ * Tests that user can Tab out of component
+ */
+export const AccessibilityKeyboardNoTraps: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="First combobox" items={simpleOptions} />
+        <ComposedComboBox aria-label="Second combobox" items={simpleOptions} />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab to first input", async () => {
+      await userEvent.tab();
+      const firstInput = canvas.getByLabelText("First combobox");
+      expect(firstInput).toHaveFocus();
+    });
+
+    await step("Open menu with arrow", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Tab exits component (no trap)", async () => {
+      await userEvent.tab();
+      const secondInput = canvas.getByLabelText("Second combobox");
+      expect(secondInput).toHaveFocus();
+    });
+
+    await step("Menu closes when focus leaves", async () => {
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Focus Management Works Correctly
+ * Tests that focus is managed correctly throughout interactions
+ */
+export const AccessibilityKeyboardFocusManagement: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow navigation maintains input focus", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have browser focus (virtual focus pattern)
+      expect(input).toHaveFocus();
+    });
+
+    await step("Selection maintains input focus", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+
+    await step("Escape maintains input focus", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Escape}");
+
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Keyboard Shortcuts Work
+ * Tests all documented keyboard shortcuts
+ */
+export const AccessibilityKeyboardShortcuts: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("ArrowDown - opens and navigates", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      const activeDesc = input.getAttribute("aria-activedescendant");
+      expect(activeDesc).toBeTruthy();
+    });
+
+    await step("Enter - selects option", async () => {
+      await userEvent.keyboard("{Enter}");
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Backspace - removes tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Escape - closes menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Focus Indicators Visible
+ * Tests that focus indicators are visible during keyboard navigation
+ */
+export const AccessibilityKeyboardFocusIndicators: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Tab to focus (keyboard interaction)
+    await userEvent.tab();
+    expect(input).toHaveFocus();
+
+    // Open menu with keyboard
+    await userEvent.keyboard("{ArrowDown}");
+
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    // Verify aria-activedescendant (virtual focus indicator)
+    const activeDesc = input.getAttribute("aria-activedescendant");
+    expect(activeDesc).toBeTruthy();
+    expect(activeDesc).toMatch(/option/); // Should reference an option element
+  },
+};
