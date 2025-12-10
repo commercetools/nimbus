@@ -261,12 +261,13 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           "&:hover": {
             bg: "primaryAlpha.2",
           },
-          maxW: "7200",
+          width: "7200",
         },
         trigger: {
           "--border-width": "sizes.25",
           "--border-color": "transparent",
           bg: "transparent",
+          width: "100%",
         },
       },
     },
