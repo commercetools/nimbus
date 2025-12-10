@@ -24,7 +24,7 @@ const App = () => (
 
 ## Working with date values
 
-The DatePicker component relies on `@internationalized/date`'s date types for type-safe date handling. This library provides calendar-system-aware date representations that work correctly across different locales and time zones.
+The DatePicker component relies on [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/index.html)'s date types for type-safe date handling. This library provides calendar-system-aware date representations that work correctly across different locales and time zones.
 
 ### Date types
 
@@ -34,21 +34,32 @@ The library provides several date types, each with different levels of precision
 import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';
 
 // Date only (no time component)
-const date = new CalendarDate(2025, 6, 15);
+const date = new CalendarDate(
+  2025, // year
+  6,    // month (1-12)
+  15    // day
+);
 
 // Date and time (no timezone)
-const dateTime = new CalendarDateTime(2025, 6, 15, 14, 30, 0);
+const dateTime = new CalendarDateTime(
+  2025, // year
+  6,    // month (1-12)
+  15,   // day
+  14,   // hour (0-23)
+  30,   // minute (0-59)
+  0     // second (0-59)
+);
 
 // Date, time, and timezone
 const zonedDateTime = new ZonedDateTime(
-  2025,
-  6,
-  15,
-  'America/New_York',
-  -4 * 60 * 60 * 1000,
-  14,
-  30,
-  0
+  2025,                    // year
+  6,                       // month (1-12)
+  15,                      // day
+  'America/New_York',      // IANA time zone identifier
+  -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)
+  14,                      // hour (0-23)
+  30,                      // minute (0-59)
+  0                        // second (0-59)
 );
 ```
 
@@ -202,14 +213,14 @@ import { ZonedDateTime } from '@internationalized/date';
 
 const App = () => {
   const zonedDateTime = new ZonedDateTime(
-    2025,
-    6,
-    15,
-    'America/New_York',
-    -4 * 60 * 60 * 1000,
-    14,
-    30,
-    0
+    2025,                    // year
+    6,                       // month (1-12)
+    15,                      // day
+    'America/New_York',      // IANA time zone identifier
+    -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)
+    14,                      // hour (0-23)
+    30,                      // minute (0-59)
+    0                        // second (0-59)
   );
 
   return (
