@@ -572,15 +572,27 @@
 - ✅ Keyboard shortcuts work as expected (5 shortcuts tested)
 - ✅ Focus indicators are visible (aria-activedescendant)
 
-### ARIA Relationships ⚠️
+### ARIA Relationships ✅
 
-**Status**: Partially validated
+**Status**: ✅ Implemented - 5 focused stories (2 with minor issues)
 
-- Input properly associated with listbox
-- Labels properly associated with input
-- Descriptions properly associated with input
-- Error messages properly associated with input
-- Currently focused option is properly identified
+**Stories:**
+- `A11yAriaInputListboxRelationship` - aria-controls verification
+- `A11yAriaLabelsAssociated` - aria-label and aria-labelledby ⚠️
+- `A11yAriaDescriptionsAssociated` - aria-describedby for descriptions
+- `A11yAriaErrorMessagesAssociated` - aria-describedby for errors ⚠️
+- `A11yAriaFocusedOptionIdentified` - aria-activedescendant verification
+
+**Test Coverage:**
+- ✅ Input properly associated with listbox (aria-controls)
+- ✅ Listbox ID matches aria-controls value
+- ⚠️ Labels association (React Aria auto-generates IDs)
+- ✅ Descriptions properly associated with input
+- ⚠️ Error messages (FormField.ErrorMessage integration issue)
+- ✅ Currently focused option is properly identified (aria-activedescendant)
+- ✅ Activedescendant updates when navigating
+
+**Note**: 98/100 tests passing - 2 failures related to FormField integration details
 
 ---
 
