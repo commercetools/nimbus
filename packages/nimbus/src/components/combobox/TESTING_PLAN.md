@@ -632,61 +632,39 @@
 
 **Note**: Only solid and ghost variants (no outline or filled)
 
-### State: isRequired ❌
+### State: isRequired ⚠️
 
-**Status**: Not tested
+**Status**: ⚠️ Test created - Implementation gap identified
 
-- Required indicator displays (visual marker like asterisk)
-- Required state is announced to screen readers
-- Label includes required indicator
-- Form validation enforces required state
-- Required field prevents form submission when empty
-- Error message displays when required field is empty
+**Story**: `StateIsRequired`
 
-### State: isReadOnly ❌
+**Issue**: Props not forwarded to React Aria Input (aria-required returns null)
 
-**Status**: Not tested
+### State: isReadOnly ⚠️
 
-- Input displays current value but prevents editing
-- Input field is visually distinguishable as read-only
-- Typing in input has no effect
-- Clear button is hidden
-- Toggle button is hidden or disabled
-- Menu does not open when clicked
-- Menu does not open when typing
-- Selected values remain visible
-- Component is focusable but not editable
-- Screen readers announce read-only state
+**Status**: ⚠️ Test created - Implementation gap identified
 
-### State: isDisabled ❌
+**Story**: `StateIsReadOnly`
 
-**Status**: Not tested
+**Issue**: Props not forwarded to React Aria Input (aria-readonly returns null, typing not prevented)
 
-- Component appears visually disabled (reduced opacity/contrast)
-- Input field is not editable
-- Input field is not focusable
-- Toggle button does not respond to clicks
-- Clear button does not respond to clicks
-- Menu does not open
-- All interactive elements are disabled
-- Component cannot receive focus via keyboard
-- Screen readers announce disabled state
-- Cursor shows not-allowed when hovering
+### State: isDisabled ⚠️
 
-### State: isInvalid ❌
+**Status**: ⚠️ Test created - Implementation gap identified
 
-**Status**: Not tested
+**Story**: `StateIsDisabled`
 
-- Component displays error styling (red border or error color)
-- Error message displays below component
-- Error icon appears (if configured)
-- Input field shows invalid state visually
-- Error state is announced to screen readers
-- aria-invalid attribute is set correctly
-- Error message is associated with input via aria-describedby
-- Error state is visible during interaction
-- Error state persists until resolved
-- Error styling applies to all relevant parts (input, border, etc.)
+**Issue**: Props not forwarded to React Aria Input (input not disabled, aria-disabled returns null)
+
+### State: isInvalid ⚠️
+
+**Status**: ⚠️ Test created - Implementation gap identified
+
+**Story**: `StateIsInvalid`
+
+**Issue**: Props not forwarded to React Aria Input (aria-invalid returns null)
+
+**Implementation Note**: All 4 state props (isRequired, isReadOnly, isDisabled, isInvalid) are defined in types but need to be forwarded to React Aria's Input component in the implementation.
 
 ### Combined State Testing ❌
 

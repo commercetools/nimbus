@@ -5607,7 +5607,7 @@ export const SizeSmallVariant: Story = {
     const height = (root as HTMLElement).offsetHeight;
     const width = (root as HTMLElement).offsetWidth;
 
-    // Small size height should be 32px
+    // Small size height
     expect(height).toBe(32);
     expect(width).toBeGreaterThan(0);
   },
@@ -5637,7 +5637,7 @@ export const SizeMediumVariant: Story = {
     const height = (root as HTMLElement).offsetHeight;
     const width = (root as HTMLElement).offsetWidth;
 
-    // Medium size height should be 40px
+    // Medium size height
     expect(height).toBe(40);
     expect(width).toBeGreaterThan(0);
   },
@@ -5667,14 +5667,14 @@ export const VariantSolid: Story = {
     expect(root).toBeTruthy();
     expect(root).toBeVisible();
 
-    // Solid variant has fixed width (7200 token = 288px)
+    // Solid variant has fixed width
     const width = (root as HTMLElement).offsetWidth;
     expect(width).toBe(288);
 
     // Verify CSS from recipe
     const styles = window.getComputedStyle(root as HTMLElement);
 
-    // Solid has primary.1 background
+    // Solid has appropriate background
     expect(styles.backgroundColor).toBe("rgb(255, 255, 255)");
 
     // Solid has fixed width in CSS
@@ -5702,7 +5702,7 @@ export const VariantGhost: Story = {
     expect(root).toBeTruthy();
     expect(root).toBeVisible();
 
-    // Ghost variant has maxWidth (7200 token = 288px)
+    // Ghost variant has fixed width
     const width = (root as HTMLElement).offsetWidth;
 
     // Verify CSS from recipe
@@ -5713,5 +5713,122 @@ export const VariantGhost: Story = {
 
     // Ghost has fixed width in CSS
     expect(width).toBe(288);
+  },
+};
+
+// ============================================================
+// VISUAL STATES - REQUIRED/READONLY/DISABLED/INVALID TESTS
+// ============================================================
+
+/**
+ * State: isRequired
+ * Tests required state
+ */
+export const StateIsRequired: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Required combobox"
+        items={simpleOptions}
+        isRequired
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    expect(input).toBeRequired();
+  },
+};
+
+/**
+ * State: isReadOnly
+ * Tests that read-only state prevents typing and interactions
+ */
+export const StateIsReadOnly: Story = {
+  render: () => {
+    const [selectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Read-only combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        isReadOnly
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Typing has no effect
+    await userEvent.click(input);
+    const initialValue = input.value;
+    await userEvent.type(input, "test");
+    expect(input.value).toBe(initialValue);
+  },
+};
+
+/**
+ * State: isDisabled
+ * Tests that disabled state disables all interactive elements
+ */
+export const StateIsDisabled: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Disabled combobox"
+        items={simpleOptions}
+        isDisabled
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Input is disabled
+    expect(input).toBeDisabled();
+  },
+};
+
+/**
+ * State: isInvalid
+ * Tests that invalid state shows error styling
+ */
+export const StateIsInvalid: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Invalid combobox"
+        items={simpleOptions}
+        isInvalid
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Container should be invalid
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toHaveAttribute("data-invalid", "true");
+
+    // Find the trigger (contains the border styling)
+    const trigger = input.parentElement?.parentElement as HTMLElement;
+    expect(trigger).toBeTruthy();
+
+    // Check CSS custom property for border color
+    const triggerStyles = window.getComputedStyle(trigger);
+    const borderColor = triggerStyles.getPropertyValue("--border-color");
+
+    // Should be styled when invalid
+    expect(borderColor).toContain("hsl(359, 77%, 81%)");
   },
 };
