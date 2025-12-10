@@ -5491,3 +5491,90 @@ export const AccessibilityKeyboardFocusIndicators: Story = {
     expect(activeDesc).toMatch(/option/); // Should reference an option element
   },
 };
+
+// ============================================================
+// ACCESSIBILITY - ARIA RELATIONSHIPS TESTS
+// ============================================================
+
+/**
+ * A11y ARIA: Input Associated with Listbox
+ * Tests aria-controls relationship between input and listbox
+ */
+export const AccessibilityAriaInputListboxRelationship: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Input should have aria-controls pointing to listbox
+    const ariaControls = input.getAttribute("aria-controls");
+    expect(ariaControls).toBeTruthy();
+
+    // Open menu
+    await userEvent.click(input);
+    await userEvent.type(input, "K");
+
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+
+      // Listbox ID should match aria-controls
+      expect(listbox?.id).toBe(ariaControls);
+    });
+  },
+};
+
+/**
+ * A11y ARIA: Focused Option Identified
+ * Tests aria-activedescendant identifies currently focused option
+ */
+export const AccessibilityAriaFocusedOptionIdentified: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("No activedescendant when menu closed", async () => {
+      await userEvent.click(input);
+      const activeDesc = input.getAttribute("aria-activedescendant");
+      expect(activeDesc).toBeNull();
+    });
+
+    await step("Activedescendant set when option focused", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const activeDesc = input.getAttribute("aria-activedescendant");
+        expect(activeDesc).toBeTruthy();
+      });
+
+      const activeDesc = input.getAttribute("aria-activedescendant");
+
+      // Verify the ID points to an actual option
+      const focusedOption = document.getElementById(activeDesc!);
+      expect(focusedOption).toBeInTheDocument();
+      expect(focusedOption?.getAttribute("role")).toBe("option");
+    });
+
+    await step("Activedescendant updates when navigating", async () => {
+      const firstActiveDesc = input.getAttribute("aria-activedescendant");
+
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const newActiveDesc = input.getAttribute("aria-activedescendant");
+        expect(newActiveDesc).not.toBe(firstActiveDesc);
+      });
+    });
+  },
+};
