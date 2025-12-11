@@ -1009,8 +1009,6 @@ export const LayoutClearButtonHidden: Story = {
 /**
  * Layout: Full Width Container
  * Tests that component takes full width of its container
- *
- * // TODO: this may require finagling, rather than passing in "width="full"
  */
 export const LayoutFullWidth: Story = {
   render: () => {
@@ -1026,10 +1024,8 @@ export const LayoutFullWidth: Story = {
   },
 
   play: async ({ canvasElement }) => {
-    // Find the combobox input
+    // Find the combobox root
     const root = canvasElement.querySelector(
-      // TODO: Let's remove this in favor of a parentElement.parentElement like what we see elsewhere?
-      // Alternatively, maybe we don't and do this because it's more direct.
       ".nimbus-combobox__root"
     ) as HTMLElement;
 
@@ -2164,10 +2160,7 @@ export const ButtonsAccessibleWhenWrapping: Story = {
       // Find the input, then navigate to parent structure
       const input = canvas.getByRole("combobox");
 
-      // The input is nested: input -> content -> trigger
-      // Navigate up two levels to get the trigger
-      const content = input.parentElement;
-      const trigger = content?.parentElement;
+      const trigger = input.parentElement?.parentElement;
 
       expect(trigger).toBeTruthy();
       expect(trigger).toBeVisible();
@@ -4989,10 +4982,6 @@ export const CreationDuplicatesPrevented: Story = {
 
       // Should NOT create duplicate (Koala exists)
       await waitFor(() => {
-        // TODO: we should probably remove these methods and replace with getListboxOptions?
-        // const listbox = getListBox(document);
-        // expect(listbox).toBeInTheDocument();
-
         const options = getListboxOptions();
         expect(options.length).toBe(1);
         expect(findOptionByText("Koala")).toBeInTheDocument();
