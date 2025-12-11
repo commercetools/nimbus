@@ -305,6 +305,17 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
+      <Stack direction="row" gap="300">
+        <Button size="xs" onPress={() => setIsOpen(true)}>
+          Open Menu
+        </Button>
+        <Button size="xs" variant="secondary" onPress={() => setIsOpen(false)}>
+          Close Menu
+        </Button>
+      </Stack>
+      <Text fontSize="sm">
+        Menu is {isOpen ? 'open' : 'closed'}
+      </Text>
       <SplitButton
         isOpen={isOpen}
         onOpenChange={setIsOpen}
@@ -319,17 +330,6 @@ const App = () => {
         <Menu.Item id="save-publish">Save and Publish</Menu.Item>
         <Menu.Item id="save-next">Save and Continue</Menu.Item>
       </SplitButton>
-      <Stack direction="row" gap="300">
-        <Button size="sm" onPress={() => setIsOpen(true)}>
-          Open Menu
-        </Button>
-        <Button size="sm" variant="secondary" onPress={() => setIsOpen(false)}>
-          Close Menu
-        </Button>
-      </Stack>
-      <Text fontSize="sm">
-        Menu is {isOpen ? 'open' : 'closed'}
-      </Text>
     </Stack>
   );
 }
@@ -345,6 +345,9 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        Last action: {lastAction}
+      </Text>
       <SplitButton
         defaultOpen={true}
         onAction={(id) => setLastAction(id)}
@@ -355,9 +358,6 @@ const App = () => {
         <Menu.Item id="save-publish">Save and Publish</Menu.Item>
         <Menu.Item id="save-next">Save and Continue</Menu.Item>
       </SplitButton>
-      <Text fontSize="sm">
-        Last action: {lastAction}
-      </Text>
     </Stack>
   );
 }
@@ -461,53 +461,6 @@ const App = () => {
 }
 ```
 
-### Bulk actions with confirmation
-
-Pattern for actions that require different handling based on selection:
-
-```jsx-live-dev
-const App = () => {
-  const [selectedItems, setSelectedItems] = useState(3);
-  const [lastAction, setLastAction] = useState<string>('');
-
-  const handleAction = (id: string) => {
-    const actionText = id === 'delete' 
-      ? `Deleted ${selectedItems} items`
-      : id === 'archive'
-      ? `Archived ${selectedItems} items`
-      : `Exported ${selectedItems} items`;
-    
-    setLastAction(actionText);
-  };
-
-  return (
-    <Stack direction="column" gap="400">
-      <Text fontSize="sm" fontWeight="semibold">
-        {selectedItems} items selected
-      </Text>
-      <SplitButton
-        onAction={handleAction}
-        aria-label="Bulk actions"
-        icon={<Icons.Done />}
-        isDisabled={selectedItems === 0}
-      >
-        <Menu.Item id="export">Export Selected</Menu.Item>
-        <Menu.Item id="duplicate">Duplicate Selected</Menu.Item>
-        <Menu.Item id="archive">Archive Selected</Menu.Item>
-        <Menu.Item id="delete" isCritical>
-          Delete Selected
-        </Menu.Item>
-      </SplitButton>
-      {lastAction && (
-        <Text fontSize="sm" color="success.11">
-          ✓ {lastAction}
-        </Text>
-      )}
-    </Stack>
-  );
-}
-```
-
 ### Conditional actions based on state
 
 Show different actions based on application state:
@@ -581,6 +534,6 @@ These examples demonstrate how to test your implementation when using SplitButto
 - [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-buttons-splitbutton--docs)
 - [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
 - [ARIA Menu Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubutton/)
-- [Menu Component](/components/overlays/menu)
-- [Button Component](/components/buttons/button)
-- [IconButton Component](/components/buttons/iconbutton)
+- [Menu Component](/components/navigation/menu)
+- [Button Component](/components/inputs/button)
+- [IconButton Component](/components/inputs/iconbutton)
