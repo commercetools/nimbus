@@ -3,29 +3,175 @@ import type {
   RemoteElementConfiguration,
 } from "@mcp-ui/client";
 import * as Nimbus from "@commercetools/nimbus";
+import { createPropMappingWrapper } from "../utils/prop-mapping-wrapper";
+
+// Wrapper for DataTable.Root that parses JSON strings
+const DataTableRootWrapper = (props: Record<string, unknown>) => {
+  const { columns, rows, ...restProps } = props;
+
+  // Parse JSON strings if they're strings
+  const parsedColumns =
+    typeof columns === "string" ? JSON.parse(columns) : columns;
+  const parsedRows = typeof rows === "string" ? JSON.parse(rows) : rows;
+
+  // Convert accessor string representations to actual functions
+  const transformedColumns = parsedColumns?.map(
+    (col: {
+      id: string;
+      header: string;
+      accessor: string | ((row: unknown) => unknown);
+    }) => {
+      if (typeof col.accessor === "string") {
+        // Create accessor function from string representation
+        return {
+          ...col,
+          accessor: (row: Record<string, unknown>) => row[col.id],
+        };
+      }
+      return col;
+    }
+  );
+
+  return (
+    <Nimbus.DataTable.Root
+      columns={transformedColumns}
+      rows={parsedRows}
+      {...restProps}
+    />
+  );
+};
+
+// Wrapper for Image to prevent children errors (img is a void element)
+const ImageWrapper = (props: Record<string, unknown>) => {
+  // Explicitly remove children to prevent React void element error
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { children, ...imageProps } = props;
+  return <Nimbus.Image {...imageProps} />;
+};
+
+// Helper function to create wrapped components with prop mapping
+function createWrappedComponent<P extends Record<string, unknown>>(
+  component: React.ComponentType<P>,
+  propMapping?: Record<string, string>
+): React.ComponentType<Record<string, unknown>> {
+  if (!propMapping || Object.keys(propMapping).length === 0) {
+    return component as React.ComponentType<Record<string, unknown>>;
+  }
+  return createPropMappingWrapper(component, propMapping);
+}
 
 export const nimbusLibrary: ComponentLibrary = {
   name: "nimbus",
   elements: [
     // Card components
     {
-      tagName: "nimbus-card",
-      component: Nimbus.Card.Root,
-      propMapping: {
-        variant: "variant",
+      tagName: "nimbus-card-root",
+      component: createWrappedComponent(Nimbus.Card.Root, {
+        "card-padding": "cardPadding",
+        "border-style": "borderStyle",
+        elevation: "elevation",
         "max-width": "maxWidth",
+        width: "width",
+      }),
+      propMapping: {
+        "card-padding": "cardPadding",
+        "border-style": "borderStyle",
+        elevation: "elevation",
+        "max-width": "maxWidth",
+        width: "width",
       },
     },
     {
-      tagName: "nimbus-card-body",
-      component: Nimbus.Card.Body,
+      tagName: "nimbus-card-header",
+      component: Nimbus.Card.Header,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-card-content",
+      component: Nimbus.Card.Content,
+      propMapping: {},
+    },
+
+    // Alert components
+    {
+      tagName: "nimbus-alert-root",
+      component: createWrappedComponent(Nimbus.Alert.Root, {
+        tone: "tone",
+        variant: "variant",
+      }),
+      propMapping: {
+        tone: "tone",
+        variant: "variant",
+      },
+    },
+    {
+      tagName: "nimbus-alert-title",
+      component: Nimbus.Alert.Title,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-alert-description",
+      component: Nimbus.Alert.Description,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-alert-actions",
+      component: Nimbus.Alert.Actions,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-alert-dismiss-button",
+      component: Nimbus.Alert.DismissButton,
+      propMapping: {},
+      eventMapping: {
+        press: "onClick",
+      },
+    },
+
+    // FormField components
+    {
+      tagName: "nimbus-form-field-root",
+      component: createWrappedComponent(Nimbus.FormField.Root, {
+        "is-required": "isRequired",
+        "is-invalid": "isInvalid",
+        "is-disabled": "isDisabled",
+        "is-read-only": "isReadOnly",
+      }),
+      propMapping: {
+        "is-required": "isRequired",
+        "is-invalid": "isInvalid",
+        "is-disabled": "isDisabled",
+        "is-read-only": "isReadOnly",
+      },
+    },
+    {
+      tagName: "nimbus-form-field-label",
+      component: Nimbus.FormField.Label,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-form-field-input",
+      component: Nimbus.FormField.Input,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-form-field-description",
+      component: Nimbus.FormField.Description,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-form-field-error",
+      component: Nimbus.FormField.Error,
       propMapping: {},
     },
 
     // Typography
     {
       tagName: "nimbus-heading",
-      component: Nimbus.Heading,
+      component: createWrappedComponent(Nimbus.Heading, {
+        size: "size",
+        "margin-bottom": "marginBottom",
+      }),
       propMapping: {
         size: "size",
         "margin-bottom": "marginBottom",
@@ -33,7 +179,12 @@ export const nimbusLibrary: ComponentLibrary = {
     },
     {
       tagName: "nimbus-text",
-      component: Nimbus.Text,
+      component: createWrappedComponent(Nimbus.Text, {
+        "font-size": "fontSize",
+        "font-weight": "fontWeight",
+        color: "color",
+        "margin-bottom": "marginBottom",
+      }),
       propMapping: {
         "font-size": "fontSize",
         "font-weight": "fontWeight",
@@ -45,7 +196,13 @@ export const nimbusLibrary: ComponentLibrary = {
     // Interactive components
     {
       tagName: "nimbus-button",
-      component: Nimbus.Button,
+      component: createWrappedComponent(Nimbus.Button, {
+        variant: "variant",
+        "color-palette": "colorPalette",
+        width: "width",
+        "is-disabled": "isDisabled",
+        "margin-top": "marginTop",
+      }),
       propMapping: {
         variant: "variant",
         "color-palette": "colorPalette",
@@ -54,22 +211,37 @@ export const nimbusLibrary: ComponentLibrary = {
         "margin-top": "marginTop",
       },
       eventMapping: {
-        press: "onClick",
+        press: "onPress",
       },
     },
     {
       tagName: "nimbus-badge",
-      component: Nimbus.Badge,
+      component: createWrappedComponent(
+        Nimbus.Badge as React.ComponentType<Record<string, unknown>>,
+        {
+          "color-palette": "colorPalette",
+          "margin-bottom": "marginBottom",
+          width: "width",
+          size: "size",
+        }
+      ),
       propMapping: {
         "color-palette": "colorPalette",
         "margin-bottom": "marginBottom",
+        width: "width",
+        size: "size",
       },
     },
 
     // Media
     {
       tagName: "nimbus-image",
-      component: Nimbus.Image,
+      component: createWrappedComponent(ImageWrapper, {
+        src: "src",
+        alt: "alt",
+        "border-radius": "borderRadius",
+        "margin-bottom": "marginBottom",
+      }),
       propMapping: {
         src: "src",
         alt: "alt",
@@ -81,16 +253,29 @@ export const nimbusLibrary: ComponentLibrary = {
     // Layout
     {
       tagName: "nimbus-stack",
-      component: Nimbus.Stack,
+      component: createWrappedComponent(Nimbus.Stack, {
+        direction: "direction",
+        gap: "gap",
+        "margin-bottom": "marginBottom",
+        width: "width",
+      }),
       propMapping: {
         direction: "direction",
         gap: "gap",
         "margin-bottom": "marginBottom",
+        width: "width",
       },
     },
     {
       tagName: "nimbus-flex",
-      component: Nimbus.Flex,
+      component: createWrappedComponent(Nimbus.Flex, {
+        direction: "direction",
+        gap: "gap",
+        padding: "padding",
+        "background-color": "backgroundColor",
+        "border-bottom": "borderBottom",
+        "border-color": "borderColor",
+      }),
       propMapping: {
         direction: "direction",
         gap: "gap",
@@ -100,103 +285,224 @@ export const nimbusLibrary: ComponentLibrary = {
         "border-color": "borderColor",
       },
     },
+    {
+      tagName: "nimbus-box",
+      component: createWrappedComponent(Nimbus.Box, {
+        padding: "padding",
+        "margin-bottom": "marginBottom",
+        "background-color": "backgroundColor",
+        "border-radius": "borderRadius",
+      }),
+      propMapping: {
+        padding: "padding",
+        "margin-bottom": "marginBottom",
+        "background-color": "backgroundColor",
+        "border-radius": "borderRadius",
+      },
+    },
 
     // Form inputs
     {
       tagName: "nimbus-text-input",
-      component: Nimbus.TextInput,
+      component: createWrappedComponent(Nimbus.TextInput, {
+        name: "name",
+        placeholder: "placeholder",
+        "is-required": "isRequired",
+      }),
       propMapping: {
         name: "name",
         placeholder: "placeholder",
-        required: "isRequired",
+        "is-required": "isRequired",
       },
+    },
+
+    // DataTable components
+    {
+      tagName: "nimbus-data-table-root",
+      component: createWrappedComponent(DataTableRootWrapper, {
+        columns: "columns",
+        rows: "rows",
+        density: "density",
+        truncated: "truncated",
+        "allows-sorting": "allowsSorting",
+        "selection-mode": "selectionMode",
+        "is-resizable": "isResizable",
+      }),
+      propMapping: {
+        columns: "columns",
+        rows: "rows",
+        density: "density",
+        truncated: "truncated",
+        "allows-sorting": "allowsSorting",
+        "selection-mode": "selectionMode",
+        "is-resizable": "isResizable",
+      },
+    },
+    {
+      tagName: "nimbus-data-table-table",
+      component: Nimbus.DataTable.Table,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-data-table-header",
+      component: Nimbus.DataTable.Header,
+      propMapping: {},
+    },
+    {
+      tagName: "nimbus-data-table-body",
+      component: Nimbus.DataTable.Body,
+      propMapping: {},
     },
   ],
 };
 
 export const nimbusRemoteElements: RemoteElementConfiguration[] = [
+  // Card components
   {
-    tagName: "nimbus-card",
-    properties: {
-      variant: { type: "string" },
-      "max-width": { type: "string" },
-    },
+    tagName: "nimbus-card-root",
+    remoteAttributes: [
+      "card-padding",
+      "border-style",
+      "elevation",
+      "max-width",
+      "width",
+    ],
   },
   {
-    tagName: "nimbus-card-body",
-    properties: {},
+    tagName: "nimbus-card-header",
   },
+  {
+    tagName: "nimbus-card-content",
+  },
+
+  // Alert components
+  {
+    tagName: "nimbus-alert-root",
+    remoteAttributes: ["tone", "variant"],
+  },
+  {
+    tagName: "nimbus-alert-title",
+  },
+  {
+    tagName: "nimbus-alert-description",
+  },
+  {
+    tagName: "nimbus-alert-actions",
+  },
+  {
+    tagName: "nimbus-alert-dismiss-button",
+    remoteEvents: ["press"],
+  },
+
+  // FormField components
+  {
+    tagName: "nimbus-form-field-root",
+    remoteAttributes: [
+      "is-required",
+      "is-invalid",
+      "is-disabled",
+      "is-read-only",
+    ],
+  },
+  {
+    tagName: "nimbus-form-field-label",
+  },
+  {
+    tagName: "nimbus-form-field-input",
+  },
+  {
+    tagName: "nimbus-form-field-description",
+  },
+  {
+    tagName: "nimbus-form-field-error",
+  },
+
+  // Typography
   {
     tagName: "nimbus-heading",
-    properties: {
-      size: { type: "string" },
-      "margin-bottom": { type: "string" },
-    },
+    remoteAttributes: ["size", "margin-bottom"],
   },
   {
     tagName: "nimbus-text",
-    properties: {
-      "font-size": { type: "string" },
-      "font-weight": { type: "string" },
-      color: { type: "string" },
-      "margin-bottom": { type: "string" },
-    },
+    remoteAttributes: ["font-size", "font-weight", "color", "margin-bottom"],
   },
+
+  // Interactive components
   {
     tagName: "nimbus-button",
-    properties: {
-      variant: { type: "string" },
-      "color-palette": { type: "string" },
-      width: { type: "string" },
-      "is-disabled": { type: "boolean" },
-      "margin-top": { type: "string" },
-    },
-    events: {
-      press: { type: "event" },
-    },
+    remoteAttributes: [
+      "variant",
+      "color-palette",
+      "width",
+      "is-disabled",
+      "margin-top",
+    ],
+    remoteEvents: ["press"],
   },
   {
     tagName: "nimbus-badge",
-    properties: {
-      "color-palette": { type: "string" },
-      "margin-bottom": { type: "string" },
-    },
+    remoteAttributes: ["color-palette", "margin-bottom", "width", "size"],
   },
+
+  // Media
   {
     tagName: "nimbus-image",
-    properties: {
-      src: { type: "string" },
-      alt: { type: "string" },
-      "border-radius": { type: "string" },
-      "margin-bottom": { type: "string" },
-    },
+    remoteAttributes: ["src", "alt", "border-radius", "margin-bottom"],
   },
+
+  // Layout
   {
     tagName: "nimbus-stack",
-    properties: {
-      direction: { type: "string" },
-      gap: { type: "string" },
-      "margin-bottom": { type: "string" },
-    },
+    remoteAttributes: ["direction", "gap", "margin-bottom", "width"],
   },
   {
     tagName: "nimbus-flex",
-    properties: {
-      direction: { type: "string" },
-      gap: { type: "string" },
-      padding: { type: "string" },
-      "background-color": { type: "string" },
-      "border-bottom": { type: "string" },
-      "border-color": { type: "string" },
-    },
+    remoteAttributes: [
+      "direction",
+      "gap",
+      "padding",
+      "background-color",
+      "border-bottom",
+      "border-color",
+    ],
   },
   {
+    tagName: "nimbus-box",
+    remoteAttributes: [
+      "padding",
+      "margin-bottom",
+      "background-color",
+      "border-radius",
+    ],
+  },
+
+  // Form inputs
+  {
     tagName: "nimbus-text-input",
-    properties: {
-      name: { type: "string" },
-      placeholder: { type: "string" },
-      required: { type: "boolean" },
-    },
+    remoteAttributes: ["name", "placeholder", "is-required"],
+  },
+
+  // DataTable components
+  {
+    tagName: "nimbus-data-table-root",
+    remoteAttributes: [
+      "columns",
+      "rows",
+      "density",
+      "truncated",
+      "allows-sorting",
+      "selection-mode",
+      "is-resizable",
+    ],
+  },
+  {
+    tagName: "nimbus-data-table-table",
+  },
+  {
+    tagName: "nimbus-data-table-header",
+  },
+  {
+    tagName: "nimbus-data-table-body",
   },
 ];
 

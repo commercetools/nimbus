@@ -24,36 +24,35 @@ export function createForm(args: FormArgs) {
     .map((field) => {
       const escapedLabel = field.label.replace(/'/g, "\\'");
       const escapedName = field.name.replace(/'/g, "\\'");
-      const fieldType = field.type || "text";
 
       return `
-    const field${field.name} = document.createElement('nimbus-stack');
-    field${field.name}.setAttribute('direction', 'column');
-    field${field.name}.setAttribute('gap', '200');
-    field${field.name}.setAttribute('margin-bottom', '400');
+    const fieldRoot${field.name} = document.createElement('nimbus-form-field-root');
+    ${field.required ? `fieldRoot${field.name}.setAttribute('is-required', 'true');` : ""}
 
-    const label${field.name} = document.createElement('nimbus-text');
-    label${field.name}.setAttribute('font-weight', 'medium');
-    label${field.name}.textContent = '${escapedLabel}${field.required ? " *" : ""}';
+    const fieldLabel${field.name} = document.createElement('nimbus-form-field-label');
+    fieldLabel${field.name}.textContent = '${escapedLabel}';
+
+    const fieldInput${field.name} = document.createElement('nimbus-form-field-input');
 
     const input${field.name} = document.createElement('nimbus-text-input');
     input${field.name}.setAttribute('name', '${escapedName}');
     input${field.name}.setAttribute('placeholder', '${escapedLabel}');
-    ${field.required ? `input${field.name}.setAttribute('required', 'true');` : ""}
 
-    field${field.name}.appendChild(label${field.name});
-    field${field.name}.appendChild(input${field.name});
-    formBody.appendChild(field${field.name});
+    fieldInput${field.name}.appendChild(input${field.name});
+    fieldRoot${field.name}.appendChild(fieldLabel${field.name});
+    fieldRoot${field.name}.appendChild(fieldInput${field.name});
+    formBody.appendChild(fieldRoot${field.name});
     `;
     })
     .join("\n");
 
   const remoteDomScript = `
-    const card = document.createElement('nimbus-card');
-    card.setAttribute('variant', 'elevated');
+    const card = document.createElement('nimbus-card-root');
+    card.setAttribute('elevation', 'elevated');
     card.setAttribute('max-width', '600px');
+    card.setAttribute('border-style', 'outlined');
 
-    const cardBody = document.createElement('nimbus-card-body');
+    const cardContent = document.createElement('nimbus-card-content');
 
     ${
       title
@@ -62,7 +61,7 @@ export function createForm(args: FormArgs) {
     heading.setAttribute('size', 'lg');
     heading.setAttribute('margin-bottom', '500');
     heading.textContent = '${escapedTitle}';
-    cardBody.appendChild(heading);
+    cardContent.appendChild(heading);
     `
         : ""
     }
@@ -80,9 +79,40 @@ export function createForm(args: FormArgs) {
     submitButton.setAttribute('margin-top', '400');
     submitButton.textContent = '${escapedSubmitLabel}';
 
+    // Add submit handler with form data collection
+    submitButton.onclick = function() {
+      // Collect form data from inputs
+      const formData = {};
+      ${fields
+        .map((field) => {
+          return `
+      const input${field.name} = document.querySelector('[name="${field.name}"]');
+      if (input${field.name}) {
+        formData['${field.name}'] = input${field.name}.value || '';
+      }`;
+        })
+        .join("")}
+
+      console.log('Form data collected:', formData);
+
+      // Send form data to host via UI Action
+      if (typeof window.postUIActionResult === 'function') {
+        window.postUIActionResult({
+          type: 'tool',
+          payload: {
+            toolName: 'submitForm',
+            params: {
+              formTitle: '${escapedTitle || "Form"}',
+              fields: formData
+            }
+          }
+        });
+      }
+    };
+
     formBody.appendChild(submitButton);
-    cardBody.appendChild(formBody);
-    card.appendChild(cardBody);
+    cardContent.appendChild(formBody);
+    card.appendChild(cardContent);
     root.appendChild(card);
   `;
 

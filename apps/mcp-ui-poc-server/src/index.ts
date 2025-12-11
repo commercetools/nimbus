@@ -121,10 +121,14 @@ function registerTools(server: McpServer) {
     {
       title: "Create Product Card",
       description:
-        "Creates a product card UI component with name, price, image, and stock status using Nimbus design system components.",
+        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
       inputSchema: z.object({
         productName: z.string().describe("The name of the product"),
         price: z.string().describe("The price of the product (e.g., '$999')"),
+        description: z
+          .string()
+          .optional()
+          .describe("Optional product description"),
         imageUrl: z
           .string()
           .optional()

@@ -2,20 +2,21 @@
  * Type definitions for MCP-UI client
  */
 
-export interface UIResource {
+export interface UIResourceContent {
   uri: string;
-  content: {
-    type: "remoteDom";
-    script: string;
-    framework: "react";
-  };
-  encoding: "text";
-  metadata?: {
+  text: string;
+  mimeType: string;
+  _meta?: {
     title?: string;
     description?: string;
     created?: string;
     [key: string]: unknown;
   };
+}
+
+export interface UIResource {
+  type: "resource";
+  resource: UIResourceContent;
 }
 
 export interface Message {

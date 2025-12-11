@@ -14,89 +14,78 @@ export interface DataTableArgs {
 export function createDataTable(args: DataTableArgs) {
   const { title, columns, data } = args;
 
-  // Escape strings for JavaScript
+  // Transform column definitions to DataTable format
+  const dataTableColumns = columns.map((col) => ({
+    id: col.key,
+    header: col.label,
+    accessor: `(row) => row['${col.key}']`,
+  }));
+
+  // Transform data rows to include id field
+  const dataTableRows = data.map((row, idx) => ({
+    id: `row-${idx}`,
+    ...row,
+  }));
+
+  // Serialize for JSON
+  const columnsJson = JSON.stringify(dataTableColumns)
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'");
+  const rowsJson = JSON.stringify(dataTableRows)
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'");
   const escapedTitle = title?.replace(/'/g, "\\'");
 
-  const headerScript = columns
-    .map((col) => {
-      const escapedLabel = col.label.replace(/'/g, "\\'");
-      return `
-    const header${col.key} = document.createElement('nimbus-text');
-    header${col.key}.setAttribute('font-weight', 'bold');
-    header${col.key}.textContent = '${escapedLabel}';
-    headerRow.appendChild(header${col.key});
-    `;
-    })
-    .join("\n");
-
-  const rowsScript = data
-    .map((row, rowIdx) => {
-      const cellsScript = columns
-        .map((col) => {
-          const cellValue = String(row[col.key] || "").replace(/'/g, "\\'");
-          return `
-      const cell${rowIdx}_${col.key} = document.createElement('nimbus-text');
-      cell${rowIdx}_${col.key}.textContent = '${cellValue}';
-      row${rowIdx}.appendChild(cell${rowIdx}_${col.key});
-      `;
-        })
-        .join("\n");
-
-      return `
-    const row${rowIdx} = document.createElement('nimbus-flex');
-    row${rowIdx}.setAttribute('gap', '400');
-    row${rowIdx}.setAttribute('padding', '300');
-    row${rowIdx}.setAttribute('border-bottom', '1px solid');
-    row${rowIdx}.setAttribute('border-color', 'neutral.6');
-    ${cellsScript}
-    tableBody.appendChild(row${rowIdx});
-    `;
-    })
-    .join("\n");
-
   const remoteDomScript = `
-    const card = document.createElement('nimbus-card');
-    card.setAttribute('variant', 'elevated');
-    card.setAttribute('max-width', '100%');
-
-    const cardBody = document.createElement('nimbus-card-body');
-
     ${
       title
         ? `
+    // Wrap in card with title
+    const card = document.createElement('nimbus-card-root');
+    card.setAttribute('elevation', 'elevated');
+    card.setAttribute('border-style', 'outlined');
+
+    const cardHeader = document.createElement('nimbus-card-header');
     const heading = document.createElement('nimbus-heading');
     heading.setAttribute('size', 'lg');
-    heading.setAttribute('margin-bottom', '400');
     heading.textContent = '${escapedTitle}';
-    cardBody.appendChild(heading);
+    cardHeader.appendChild(heading);
+    card.appendChild(cardHeader);
+
+    const cardContent = document.createElement('nimbus-card-content');
     `
         : ""
     }
 
-    const tableContainer = document.createElement('nimbus-stack');
-    tableContainer.setAttribute('direction', 'column');
-    tableContainer.setAttribute('gap', '0');
+    // Create DataTable structure
+    const dataTableRoot = document.createElement('nimbus-data-table-root');
+    dataTableRoot.setAttribute('columns', "${columnsJson}");
+    dataTableRoot.setAttribute('rows', "${rowsJson}");
+    dataTableRoot.setAttribute('allows-sorting', 'true');
+    dataTableRoot.setAttribute('density', 'default');
 
-    const headerRow = document.createElement('nimbus-flex');
-    headerRow.setAttribute('gap', '400');
-    headerRow.setAttribute('padding', '400');
-    headerRow.setAttribute('background-color', 'neutral.3');
-    headerRow.setAttribute('border-bottom', '2px solid');
-    headerRow.setAttribute('border-color', 'neutral.6');
+    const dataTableTable = document.createElement('nimbus-data-table-table');
 
-    ${headerScript}
+    const dataTableHeader = document.createElement('nimbus-data-table-header');
 
-    const tableBody = document.createElement('nimbus-stack');
-    tableBody.setAttribute('direction', 'column');
-    tableBody.setAttribute('gap', '0');
+    const dataTableBody = document.createElement('nimbus-data-table-body');
 
-    ${rowsScript}
+    // Build structure
+    dataTableTable.appendChild(dataTableHeader);
+    dataTableTable.appendChild(dataTableBody);
+    dataTableRoot.appendChild(dataTableTable);
 
-    tableContainer.appendChild(headerRow);
-    tableContainer.appendChild(tableBody);
-    cardBody.appendChild(tableContainer);
-    card.appendChild(cardBody);
+    ${
+      title
+        ? `
+    cardContent.appendChild(dataTableRoot);
+    card.appendChild(cardContent);
     root.appendChild(card);
+    `
+        : `
+    root.appendChild(dataTableRoot);
+    `
+    }
   `;
 
   return createUIResource({

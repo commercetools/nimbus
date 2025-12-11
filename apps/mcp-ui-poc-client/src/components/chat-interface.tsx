@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Stack,
@@ -9,7 +9,7 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import { UIResourceRenderer, isUIResource } from "@mcp-ui/client";
-import { GeminiClient } from "../lib/gemini-client";
+import { ClaudeClient } from "../lib/claude-client";
 import {
   nimbusLibrary,
   nimbusRemoteElements,
@@ -20,12 +20,18 @@ import type { Message } from "../types/virtual-dom";
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [geminiClient] = useState(() => new GeminiClient());
+  const [claudeClient] = useState(() => new ClaudeClient());
   const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize: validate element manifest, then Gemini
+  // Auto-scroll to bottom when messages or loading state changes
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
+  // Initialize: validate element manifest, then Claude
   useEffect(() => {
     async function init() {
       try {
@@ -35,8 +41,8 @@ export function ChatInterface() {
         await validateNimbusLibrary(serverUrl);
         console.log("✅ Element manifest validated successfully");
 
-        // 2. Initialize Gemini with MCP
-        await geminiClient.initialize();
+        // 2. Initialize Claude with MCP
+        await claudeClient.initialize();
         setIsReady(true);
       } catch (error) {
         console.error("❌ Initialization failed:", error);
@@ -47,9 +53,9 @@ export function ChatInterface() {
 
     // Cleanup on unmount
     return () => {
-      geminiClient.cleanup();
+      claudeClient.cleanup();
     };
-  }, [geminiClient]);
+  }, [claudeClient]);
 
   async function handleSendMessage() {
     if (!input.trim() || !isReady) return;
@@ -60,8 +66,8 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      // Send message - Gemini handles all tool calling automatically
-      const { text, uiResources } = await geminiClient.sendMessage(input);
+      // Send message - Claude handles all tool calling automatically
+      const { text, uiResources } = await claudeClient.sendMessage(input);
 
       // Add response to messages
       setMessages((prev) => [
@@ -117,7 +123,7 @@ export function ChatInterface() {
 
   return (
     <Flex direction="column" height="100vh" padding="600">
-      <Heading marginBottom="600">MCP-UI + Gemini Chat</Heading>
+      <Heading marginBottom="600">Nimbus MCP-UI + Claude Chat</Heading>
 
       {!isReady && (
         <Box
@@ -127,7 +133,7 @@ export function ChatInterface() {
           marginBottom="400"
         >
           <Text>
-            Initializing... Validating element manifest and connecting to Gemini
+            Initializing... Validating element manifest and connecting to Claude
           </Text>
         </Box>
       )}
@@ -145,6 +151,8 @@ export function ChatInterface() {
             padding="400"
             backgroundColor={msg.role === "user" ? "primary.2" : "neutral.2"}
             borderRadius="200"
+            maxW={"max-content"}
+            alignSelf={msg.role === "user" ? "flex-end" : undefined}
           >
             <Text fontWeight="bold" marginBottom="200">
               {msg.role === "user" ? "You" : "Assistant"}
@@ -152,21 +160,175 @@ export function ChatInterface() {
 
             {msg.content && <Text>{msg.content}</Text>}
 
-            {msg.uiResources?.map((resource, i) =>
-              isUIResource(resource) ? (
-                <Box key={i} marginTop="300">
-                  <UIResourceRenderer
-                    resource={resource}
-                    remoteDomProps={{
-                      library: nimbusLibrary,
-                      remoteElements: nimbusRemoteElements,
-                    }}
-                  />
-                </Box>
-              ) : null
-            )}
+            {msg.uiResources?.map((resource, i) => {
+              console.log("🔍 Checking resource:", resource);
+              console.log("🔍 isUIResource result:", isUIResource(resource));
+
+              if (!isUIResource(resource)) {
+                return (
+                  <Box
+                    key={i}
+                    marginTop="300"
+                    padding="400"
+                    backgroundColor="critical.2"
+                  >
+                    <Text color="critical.11">
+                      Failed to render UI resource (not recognized as
+                      UIResource)
+                    </Text>
+                    <Text fontSize="sm" color="critical.10">
+                      {JSON.stringify(resource, null, 2)}
+                    </Text>
+                  </Box>
+                );
+              }
+
+              try {
+                console.log("🎨 Rendering UIResource:", resource.resource);
+                console.log("📚 Using library config:", nimbusLibrary);
+                console.log("🔧 Remote elements config:", nimbusRemoteElements);
+                return (
+                  <Box key={i} marginTop="300">
+                    <UIResourceRenderer
+                      resource={resource.resource}
+                      remoteDomProps={{
+                        library: nimbusLibrary,
+                        remoteElements: nimbusRemoteElements,
+                      }}
+                      onUIAction={async (action: any) => {
+                        // Filter out internal protocol messages (arrays, undefined types, etc.)
+                        if (
+                          !action ||
+                          typeof action !== "object" ||
+                          Array.isArray(action)
+                        ) {
+                          return action;
+                        }
+
+                        // Only log actual UI action types we care about
+                        const validActionTypes = [
+                          "notify",
+                          "tool",
+                          "prompt",
+                          "link",
+                          "intent",
+                        ];
+                        if (validActionTypes.includes(action.type)) {
+                          console.log("🎬 UI Action received:", action);
+                        }
+
+                        // Handle different action types
+                        switch (action.type) {
+                          case "notify":
+                            console.log(
+                              "📢 Notification:",
+                              action.payload?.message
+                            );
+                            // Could show a toast notification here
+                            if (action.payload?.message) {
+                              alert(action.payload.message);
+                            }
+                            break;
+
+                          case "tool":
+                            console.log(
+                              "🔧 Tool call:",
+                              action.payload?.toolName,
+                              action.payload?.params
+                            );
+
+                            // Handle form submission
+                            if (action.payload?.toolName === "submitForm") {
+                              console.log(
+                                "📝 Form submitted with data:",
+                                action.payload.params
+                              );
+                              // You could send this data somewhere, save it, etc.
+                              alert(
+                                `Form "${action.payload.params.formTitle}" submitted!\n\nData: ${JSON.stringify(action.payload.params.fields, null, 2)}`
+                              );
+                            }
+                            break;
+
+                          case "prompt":
+                            console.log("💬 Prompt:", action.payload?.prompt);
+                            // Could trigger a new message
+                            break;
+
+                          default:
+                            // Silently ignore protocol messages and other internal types
+                            break;
+                        }
+
+                        return action;
+                      }}
+                    />
+                  </Box>
+                );
+              } catch (error) {
+                console.error("❌ Error rendering UIResource:", error);
+                return (
+                  <Box
+                    key={i}
+                    marginTop="300"
+                    padding="400"
+                    backgroundColor="critical.2"
+                  >
+                    <Text color="critical.11">Error rendering UI resource</Text>
+                    <Text fontSize="sm" color="critical.10">
+                      {(error as Error).message}
+                    </Text>
+                  </Box>
+                );
+              }
+            })}
           </Box>
         ))}
+
+        {/* Loading indicator */}
+        {isLoading && (
+          <Box
+            padding="400"
+            backgroundColor="neutral.2"
+            borderRadius="200"
+            width="fit-content"
+          >
+            <Flex gap="200" alignItems="center">
+              <Box
+                as="span"
+                display="inline-block"
+                width="8px"
+                height="8px"
+                borderRadius="full"
+                backgroundColor="primary.9"
+                animation="pulse"
+              />
+              <Box
+                as="span"
+                display="inline-block"
+                width="8px"
+                height="8px"
+                borderRadius="full"
+                backgroundColor="primary.9"
+                animation="pulse"
+                animationDelay="0.2s"
+              />
+              <Box
+                as="span"
+                display="inline-block"
+                width="8px"
+                height="8px"
+                borderRadius="full"
+                backgroundColor="primary.9"
+                animation="pulse"
+                animationDelay="0.4s"
+              />
+            </Flex>
+          </Box>
+        )}
+
+        {/* Scroll anchor */}
+        <div ref={messagesEndRef} />
       </Stack>
 
       <Flex gap="300">
@@ -176,12 +338,12 @@ export function ChatInterface() {
           value={input}
           onChange={(value) => setInput(value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-          placeholder="Ask Gemini to create UI components..."
+          placeholder="Ask Claude to create UI components..."
           isDisabled={isLoading || !isReady}
         />
         <Button
           aria-label="send message"
-          onClick={handleSendMessage}
+          onPress={handleSendMessage}
           isDisabled={isLoading || !isReady || !input.trim()}
           variant="solid"
           colorPalette="primary"

@@ -2,26 +2,93 @@
   "version": "1.0.0",
   "elements": [
     {
-      "tagName": "nimbus-card",
-      "description": "Card container component",
-      "category": "layout",
+      "tagName": "nimbus-alert-root",
+      "description": "Alert notification component root",
+      "category": "feedback",
       "attributes": [
+        {
+          "name": "tone",
+          "type": "string",
+          "values": ["positive", "critical", "warning", "info", "neutral"],
+          "description": "Alert tone/severity level"
+        },
         {
           "name": "variant",
           "type": "string",
-          "values": ["elevated", "outline", "subtle"],
-          "description": "Visual style variant"
-        },
-        {
-          "name": "max-width",
-          "type": "string",
-          "description": "Maximum width (e.g., '400px', '100%')"
+          "values": ["subtle", "solid"],
+          "description": "Alert visual style"
         }
       ]
     },
     {
-      "tagName": "nimbus-card-body",
-      "description": "Card body container",
+      "tagName": "nimbus-alert-title",
+      "description": "Alert title/heading",
+      "category": "feedback",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-alert-description",
+      "description": "Alert description text",
+      "category": "feedback",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-alert-actions",
+      "description": "Alert action buttons container",
+      "category": "feedback",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-alert-dismiss-button",
+      "description": "Alert dismiss/close button",
+      "category": "feedback",
+      "attributes": [],
+      "events": [
+        {
+          "name": "press",
+          "description": "Triggered when dismiss button is clicked"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-card-root",
+      "description": "Card container component",
+      "category": "layout",
+      "attributes": [
+        {
+          "name": "card-padding",
+          "type": "string",
+          "values": ["sm", "md", "lg"],
+          "description": "Adds css padding to card container - 'sm': '8px', 'md': '16px', 'lg': '24px' "
+        },
+        {
+          "name": "elevation",
+          "type": "string",
+          "values": ["flat", "elevated", "floating"],
+          "description": "Card elevation/shadow level"
+        },
+        {
+          "name": "border-style",
+          "type": "string",
+          "values": ["none", "outlined"],
+          "description": "Card border style"
+        },
+        {
+          "name": "max-width",
+          "type": "string",
+          "description": "CSS maximum width (e.g., '400px', '100%')"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-card-header",
+      "description": "Card header container - renders primary card name / label",
+      "category": "layout",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-card-content",
+      "description": "Card body container - renders card data / details",
       "category": "layout",
       "attributes": []
     },
@@ -77,15 +144,26 @@
       "category": "display",
       "attributes": [
         {
+          "name": "size",
+          "type": "string",
+          "values": ["2xs", "xs", "md"],
+          "description": "Available sizes for the badge, defaults to 'md'"
+        },
+        {
           "name": "color-palette",
           "type": "string",
           "values": ["primary", "positive", "critical", "warning", "neutral"],
-          "description": "Color scheme"
+          "description": "Color scheme - primary: purple, positive: green, critical: red, warning: yellow, neutral: grey (default)"
         },
         {
           "name": "margin-bottom",
           "type": "string",
           "description": "Bottom margin spacing token"
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "description": "CSS width (e.g., '400px', '100%')"
         }
       ]
     },
@@ -177,6 +255,11 @@
           "name": "margin-bottom",
           "type": "string",
           "description": "Bottom margin spacing token"
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "description": "CSS width (e.g., '400px', '100%')"
         }
       ]
     },
@@ -234,11 +317,124 @@
           "description": "Placeholder text"
         },
         {
-          "name": "required",
+          "name": "is-required",
           "type": "boolean",
           "description": "Required field indicator"
         }
       ]
+    },
+    {
+      "tagName": "nimbus-form-field-root",
+      "description": "Form field container providing context and state management",
+      "category": "forms",
+      "attributes": [
+        {
+          "name": "is-required",
+          "type": "boolean",
+          "description": "Marks field as required"
+        },
+        {
+          "name": "is-invalid",
+          "type": "boolean",
+          "description": "Marks field as having validation errors"
+        },
+        {
+          "name": "is-disabled",
+          "type": "boolean",
+          "description": "Disables the field"
+        },
+        {
+          "name": "is-read-only",
+          "type": "boolean",
+          "description": "Makes field read-only"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-form-field-label",
+      "description": "Form field label element",
+      "category": "forms",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-form-field-input",
+      "description": "Form field input wrapper element",
+      "category": "forms",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-form-field-description",
+      "description": "Form field description/help text",
+      "category": "forms",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-form-field-error",
+      "description": "Form field error message",
+      "category": "forms",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-data-table-root",
+      "description": "DataTable root container with state management",
+      "category": "data-display",
+      "attributes": [
+        {
+          "name": "columns",
+          "type": "string",
+          "description": "JSON string of column definitions"
+        },
+        {
+          "name": "rows",
+          "type": "string",
+          "description": "JSON string of row data"
+        },
+        {
+          "name": "density",
+          "type": "string",
+          "values": ["default", "condensed"],
+          "description": "Row height density"
+        },
+        {
+          "name": "truncated",
+          "type": "boolean",
+          "description": "Whether to truncate cell content"
+        },
+        {
+          "name": "allows-sorting",
+          "type": "boolean",
+          "description": "Enable column sorting"
+        },
+        {
+          "name": "selection-mode",
+          "type": "string",
+          "values": ["none", "single", "multiple"],
+          "description": "Row selection mode"
+        },
+        {
+          "name": "is-resizable",
+          "type": "boolean",
+          "description": "Allow column resizing"
+        }
+      ]
+    },
+    {
+      "tagName": "nimbus-data-table-table",
+      "description": "DataTable table element",
+      "category": "data-display",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-data-table-header",
+      "description": "DataTable header section with column headers",
+      "category": "data-display",
+      "attributes": []
+    },
+    {
+      "tagName": "nimbus-data-table-body",
+      "description": "DataTable body section with data rows",
+      "category": "data-display",
+      "attributes": []
     }
   ]
 }
