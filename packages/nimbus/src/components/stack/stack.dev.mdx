@@ -1,0 +1,459 @@
+---
+title: Stack Component
+tab-title: Implementation
+tab-order: 3
+---
+
+# Stack Component
+
+Stack is a layout component that manages the distribution and spacing of child elements in a single direction (horizontal or vertical). It's built on flexbox and provides a simple, declarative API for common layout patterns.
+
+## Getting started
+
+### Import
+
+```tsx
+import { Stack, type StackProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+By default, Stack arranges children vertically with no gap:
+
+```jsx-live-dev
+const App = () => (
+  <Stack>
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 1
+    </Box>
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 2
+    </Box>
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 3
+    </Box>
+  </Stack>
+)
+```
+
+## Usage examples
+
+### Direction variants
+
+Control the layout direction with the `direction` prop. Supports `column` (default), `row`, `column-reverse`, and `row-reverse`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="200">
+      <Box p="400" bg="primary.7" borderRadius="200" flex="1">Row Item 1</Box>
+      <Box p="400" bg="primary.7" borderRadius="200" flex="1">Row Item 2</Box>
+      <Box p="400" bg="primary.7" borderRadius="200" flex="1">Row Item 3</Box>
+    </Stack>
+    
+    <Stack direction="column" gap="200">
+      <Box p="400" bg="info.7" borderRadius="200">Column Item 1</Box>
+      <Box p="400" bg="info.7" borderRadius="200">Column Item 2</Box>
+      <Box p="400" bg="info.7" borderRadius="200">Column Item 3</Box>
+    </Stack>
+    
+    <Stack direction="row-reverse" gap="200">
+      <Box p="400" bg="positive.7" borderRadius="200">Reverse 1</Box>
+      <Box p="400" bg="positive.7" borderRadius="200">Reverse 2</Box>
+      <Box p="400" bg="positive.7" borderRadius="200">Reverse 3</Box>
+    </Stack>
+  </Stack>
+)
+```
+
+### Gap and spacing
+
+Use the `gap` prop to control spacing between items. Accepts Nimbus spacing tokens:
+
+```jsx-live-dev
+const App = () => {
+  const [gap, setGap] = useState<StackProps["gap"]>("200");
+  
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200" align="center">
+        <Text fontWeight="600">Gap:</Text>
+        <Button size="2xs" onClick={() => setGap("100")}>Small (100)</Button>
+        <Button size="2xs" onClick={() => setGap("300")}>Medium (300)</Button>
+        <Button size="2xs" onClick={() => setGap("600")}>Large (600)</Button>
+      </Stack>
+      
+      <Stack direction="row" gap={gap}>
+        <Box p="400" bg="primary.7" borderRadius="200">Item 1</Box>
+        <Box p="400" bg="primary.7" borderRadius="200">Item 2</Box>
+        <Box p="400" bg="primary.7" borderRadius="200">Item 3</Box>
+      </Stack>
+      
+      <Text fontSize="sm" color="neutral.11">
+        Current gap: {gap}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### With separator
+
+Add visual separators between items using the `separator` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Stack 
+      direction="column" 
+      separator={<Box height="25" bg="neutral.6" />}
+    >
+      <Box p="400">
+        <Text fontWeight="600">Section 1</Text>
+        <Text fontSize="sm" color="neutral.11">Content for first section</Text>
+      </Box>
+      <Box p="400">
+        <Text fontWeight="600">Section 2</Text>
+        <Text fontSize="sm" color="neutral.11">Content for second section</Text>
+      </Box>
+      <Box p="400">
+        <Text fontWeight="600">Section 3</Text>
+        <Text fontSize="sm" color="neutral.11">Content for third section</Text>
+      </Box>
+    </Stack>
+    
+    <Stack 
+      direction="row" 
+      separator={<Box width="25" bg="neutral.6" height="full" />}
+    >
+      <Box p="400" flex="1">
+        <Text fontWeight="600">Left</Text>
+      </Box>
+      <Box p="400" flex="1">
+        <Text fontWeight="600">Center</Text>
+      </Box>
+      <Box p="400" flex="1">
+        <Text fontWeight="600">Right</Text>
+      </Box>
+    </Stack>
+  </Stack>
+)
+```
+
+### Alignment options
+
+Control alignment with `align` and `justify` props:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text fontWeight="600" mb="200">Horizontal alignment (align):</Text>
+      <Stack direction="row" gap="400">
+        <Stack direction="column" gap="200" align="flex-start" bg="neutral.3" p="400" borderRadius="200" flex="1">
+          <Text fontSize="sm" fontWeight="600">Start</Text>
+          <Box p="200" bg="primary.7" borderRadius="200">Item</Box>
+        </Stack>
+        <Stack direction="column" gap="200" align="center" bg="neutral.3" p="400" borderRadius="200" flex="1">
+          <Text fontSize="sm" fontWeight="600">Center</Text>
+          <Box p="200" bg="primary.7" borderRadius="200">Item</Box>
+        </Stack>
+        <Stack direction="column" gap="200" align="flex-end" bg="neutral.3" p="400" borderRadius="200" flex="1">
+          <Text fontSize="sm" fontWeight="600">End</Text>
+          <Box p="200" bg="primary.7" borderRadius="200">Item</Box>
+        </Stack>
+      </Stack>
+    </Box>
+    
+    <Box>
+      <Text fontWeight="600" mb="200">Vertical alignment (justify):</Text>
+      <Stack direction="row" gap="400">
+        <Stack direction="row" gap="200" justify="flex-start" bg="neutral.3" p="400" borderRadius="200" flex="1" height="2000">
+          <Box p="200" bg="info.7" borderRadius="200">Start</Box>
+        </Stack>
+        <Stack direction="row" gap="200" justify="center" bg="neutral.3" p="400" borderRadius="200" flex="1" height="2000">
+          <Box p="200" bg="info.7" borderRadius="200">Center</Box>
+        </Stack>
+        <Stack direction="row" gap="200" justify="space-between" bg="neutral.3" p="400" borderRadius="200" flex="1" height="2000">
+          <Box p="200" bg="info.7" borderRadius="200">Between</Box>
+          <Box p="200" bg="info.7" borderRadius="200">Between</Box>
+        </Stack>
+      </Stack>
+    </Box>
+  </Stack>
+)
+```
+
+### Wrapping behavior
+
+Control how items wrap with the `wrap` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text fontWeight="600" mb="200">Wrap (default):</Text>
+      <Stack direction="row" wrap="wrap" gap="200" bg="neutral.3" p="400" borderRadius="200">
+        {Array.from({ length: 12 }, (_, i) => (
+          <Box key={i} p="300" bg="primary.7" borderRadius="200" minWidth="1600">
+            Item {i + 1}
+          </Box>
+        ))}
+      </Stack>
+    </Box>
+    
+    <Box>
+      <Text fontWeight="600" mb="200">No wrap (overflow):</Text>
+      <Stack direction="row" wrap="nowrap" gap="200" bg="neutral.3" p="400" borderRadius="200" overflow="auto">
+        {Array.from({ length: 12 }, (_, i) => (
+          <Box key={i} p="300" bg="info.7" borderRadius="200" minWidth="1600">
+            Item {i + 1}
+          </Box>
+        ))}
+      </Stack>
+    </Box>
+  </Stack>
+)
+```
+
+### Responsive layouts
+
+Stack supports responsive prop values for different breakpoints:
+
+```jsx-live-dev
+const App = () => (
+  <Stack 
+    direction={{ base: "column", md: "row" }}
+    gap={{ base: "300", md: "600" }}
+    align={{ base: "stretch", md: "center" }}
+  >
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 1</Text>
+      <Text fontSize="sm">Stacks vertically on mobile, horizontally on desktop</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 2</Text>
+      <Text fontSize="sm">Resize the window to see the layout change</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 3</Text>
+      <Text fontSize="sm">Gap also adjusts responsively</Text>
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+Stack should be used when you need to:
+- Arrange multiple elements in a single direction (horizontal or vertical)
+- Apply consistent spacing between elements
+- Add separators between items
+- Create responsive layouts that change direction based on viewport
+
+For more complex grid-based layouts, consider using the `Grid` component. For simple flex containers with more control over individual item properties, consider using `Flex` or `Box`.
+
+### Accessibility
+
+Stack is a layout component with no inherent accessibility requirements. However:
+
+- Ensure child elements have appropriate accessibility attributes
+- Use semantic HTML elements within Stack when appropriate
+- Consider reading order when using `row-reverse` or `column-reverse`
+- Test keyboard navigation flows through stacked elements
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Stack id="main-navigation-stack">
+  {/* children */}
+</Stack>
+```
+
+## API reference
+
+Stack re-exports Chakra UI's Stack component.
+
+### `direction`
+
+Controls the layout direction of stacked children.
+
+- **Values**: `"row"` | `"column"` | `"row-reverse"` | `"column-reverse"`
+- **Default**: `"column"`
+
+```tsx
+<Stack direction="row">
+  {/* Items arranged horizontally */}
+</Stack>
+```
+
+### `separator`
+
+A React element to render between each child item.
+
+```tsx
+<Stack separator={<Box height="25" bg="neutral.6" />}>
+  {/* Separator appears between each child */}
+</Stack>
+```
+
+Stack also supports all [Chakra UI styling props](https://www.chakra-ui.com/docs/styled-system/style-props) including `gap`, `align`, `justify`, `wrap`, spacing, colors, borders, and responsive values.
+
+## Common patterns
+
+### Navigation bar with actions
+
+Use Stack to create navigation layouts with items on opposite ends:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" align="center" gap="400" p="400" bg="neutral.2" borderRadius="200">
+    <Text fontWeight="600" fontSize="lg">Logo</Text>
+    <Spacer />
+    <Stack direction="row" gap="200">
+      <Button size="xs" variant="ghost">Home</Button>
+      <Button size="xs" variant="ghost">Products</Button>
+      <Button size="xs" variant="ghost">About</Button>
+      <Button size="xs" variant="outline">Sign In</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+### Form sections with separators
+
+Organize form sections with visual separators:
+
+```jsx-live-dev
+const App = () => (
+  <Stack 
+    direction="column" 
+    separator={<Box height="25" bg="neutral.6" />}
+    divideY="1px"
+  >
+    <Stack direction="column" gap="300" p="400">
+      <Text fontWeight="600">Personal Information</Text>
+      <TextInput label="Full Name" />
+      <TextInput label="Email Address" />
+    </Stack>
+    
+    <Stack direction="column" gap="300" p="400">
+      <Text fontWeight="600">Shipping Address</Text>
+      <TextInput label="Street Address" />
+      <Stack direction="row" gap="200">
+        <TextInput label="City" />
+        <TextInput label="Postal Code" />
+      </Stack>
+    </Stack>
+    
+    <Stack direction="column" gap="300" p="400">
+      <Text fontWeight="600">Payment Method</Text>
+      <TextInput label="Card Number" />
+      <Stack direction="row" gap="200">
+        <TextInput label="Expiry Date" />
+        <TextInput label="CVV" />
+      </Stack>
+    </Stack>
+  </Stack>
+)
+```
+
+### Action button groups
+
+Create consistent button groups with proper spacing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600" align="stretch">
+    <Box>
+      <Text fontWeight="600" mb="300">Primary/Secondary Actions:</Text>
+      <Stack direction="row" gap="200" justify="flex-end">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </Box>
+    
+    <Box>
+      <Text fontWeight="600" mb="300">Multiple Actions:</Text>
+      <Stack direction="row" gap="200" justify="space-between">
+        <Button variant="outline" colorPalette="critical">Delete</Button>
+        <Stack direction="row" gap="200">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="outline">Save Draft</Button>
+          <Button variant="solid" colorPalette="primary">Publish</Button>
+        </Stack>
+      </Stack>
+    </Box>
+    
+    <Box>
+      <Text fontWeight="600" mb="300">Icon Buttons:</Text>
+      <Stack direction="row" gap="100">
+        <IconButton icon={Edit} aria-label="Edit" size="xs" variant="ghost" />
+        <IconButton icon={Copy} aria-label="Copy" size="xs" variant="ghost" />
+        <IconButton icon={Share} aria-label="Share" size="xs" variant="ghost" />
+        <IconButton icon={Delete} aria-label="Delete" size="xs" variant="ghost" colorPalette="critical" />
+      </Stack>
+    </Box>
+  </Stack>
+)
+```
+
+### Card content layouts
+
+Structure card content with proper spacing:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Card.Root>
+      <Card.Content>
+        <Stack direction="column" gap="300">
+          <Stack direction="row" justify="space-between" align="center">
+            <Text fontWeight="600" fontSize="lg">Product Details</Text>
+            <IconButton icon={MoreVertical} aria-label="More options" size="xs" variant="ghost" />
+          </Stack>
+          
+          <Stack direction="column" gap="200">
+            <Stack direction="row" justify="space-between">
+              <Text color="neutral.11">SKU:</Text>
+              <Text fontWeight="500">ABC-12345</Text>
+            </Stack>
+            <Stack direction="row" justify="space-between">
+              <Text color="neutral.11">Price:</Text>
+              <Text fontWeight="500">$99.99</Text>
+            </Stack>
+            <Stack direction="row" justify="space-between">
+              <Text color="neutral.11">Stock:</Text>
+              <Text fontWeight="500" color="positive.11">In Stock</Text>
+            </Stack>
+          </Stack>
+          
+          <Stack direction="row" gap="200" justify="flex-end">
+            <Button size="xs" variant="outline">Edit</Button>
+            <Button size="xs" variant="solid" colorPalette="primary">View Details</Button>
+          </Stack>
+        </Stack>
+      </Card.Content>
+    </Card.Root>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Stack within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: stack.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-stack--docs)
+- [Chakra UI Stack Documentation](https://www.chakra-ui.com/docs/components/stack)
+- [Box Component](/components/layout/box)
+- [Flex Component](/components/layout/flex)
+- [Spacer Component](/components/layout/spacer)
+- [Grid Component](/components/layout/grid)
