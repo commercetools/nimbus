@@ -15,6 +15,7 @@ import {
   nimbusRemoteElements,
   validateNimbusLibrary,
 } from "./nimbus-library";
+import { UIActionProvider } from "../utils/prop-mapping-wrapper";
 import type { Message } from "../types/virtual-dom";
 
 export function ChatInterface() {
@@ -187,82 +188,91 @@ export function ChatInterface() {
                 console.log("🎨 Rendering UIResource:", resource.resource);
                 console.log("📚 Using library config:", nimbusLibrary);
                 console.log("🔧 Remote elements config:", nimbusRemoteElements);
+
+                // Define onUIAction handler
+                const handleUIAction = async (action: unknown) => {
+                  // Filter out internal protocol messages
+                  if (
+                    !action ||
+                    typeof action !== "object" ||
+                    Array.isArray(action)
+                  ) {
+                    return;
+                  }
+
+                  const typedAction = action as Record<string, unknown>;
+                  console.log("🎬 UI Action received:", typedAction);
+
+                  // Handle Remote DOM events (from our custom event wrapper)
+                  if (typedAction.type === "event") {
+                    console.log("🎯 Event:", typedAction.event, typedAction);
+
+                    // Handle button press events
+                    if (typedAction.event === "press") {
+                      const properties = typedAction.properties as
+                        | Record<string, unknown>
+                        | undefined;
+                      const label = properties?.["data-label"] || "Unknown";
+                      console.log("🔘 Button pressed:", label);
+                      alert(`Button "${label}" was clicked!`);
+                    }
+                    return;
+                  }
+
+                  const payload = typedAction.payload as
+                    | Record<string, unknown>
+                    | undefined;
+
+                  // Handle different action types
+                  switch (typedAction.type) {
+                    case "notify":
+                      console.log("📢 Notification:", payload?.message);
+                      if (payload?.message) {
+                        alert(String(payload.message));
+                      }
+                      break;
+
+                    case "tool":
+                      console.log(
+                        "🔧 Tool call:",
+                        payload?.toolName,
+                        payload?.params
+                      );
+
+                      // Handle form submission
+                      if (payload?.toolName === "submitForm") {
+                        const params = payload.params as Record<
+                          string,
+                          unknown
+                        >;
+                        console.log("📝 Form submitted with data:", params);
+                        alert(
+                          `Form "${params.formTitle}" submitted!\n\nData: ${JSON.stringify(params.fields, null, 2)}`
+                        );
+                      }
+                      break;
+
+                    case "prompt":
+                      console.log("💬 Prompt:", payload?.prompt);
+                      break;
+
+                    default:
+                      break;
+                  }
+                };
+
                 return (
                   <Box key={i} marginTop="300">
-                    <UIResourceRenderer
-                      resource={resource.resource}
-                      remoteDomProps={{
-                        library: nimbusLibrary,
-                        remoteElements: nimbusRemoteElements,
-                      }}
-                      onUIAction={async (action: any) => {
-                        // Filter out internal protocol messages (arrays, undefined types, etc.)
-                        if (
-                          !action ||
-                          typeof action !== "object" ||
-                          Array.isArray(action)
-                        ) {
-                          return action;
-                        }
-
-                        // Only log actual UI action types we care about
-                        const validActionTypes = [
-                          "notify",
-                          "tool",
-                          "prompt",
-                          "link",
-                          "intent",
-                        ];
-                        if (validActionTypes.includes(action.type)) {
-                          console.log("🎬 UI Action received:", action);
-                        }
-
-                        // Handle different action types
-                        switch (action.type) {
-                          case "notify":
-                            console.log(
-                              "📢 Notification:",
-                              action.payload?.message
-                            );
-                            // Could show a toast notification here
-                            if (action.payload?.message) {
-                              alert(action.payload.message);
-                            }
-                            break;
-
-                          case "tool":
-                            console.log(
-                              "🔧 Tool call:",
-                              action.payload?.toolName,
-                              action.payload?.params
-                            );
-
-                            // Handle form submission
-                            if (action.payload?.toolName === "submitForm") {
-                              console.log(
-                                "📝 Form submitted with data:",
-                                action.payload.params
-                              );
-                              // You could send this data somewhere, save it, etc.
-                              alert(
-                                `Form "${action.payload.params.formTitle}" submitted!\n\nData: ${JSON.stringify(action.payload.params.fields, null, 2)}`
-                              );
-                            }
-                            break;
-
-                          case "prompt":
-                            console.log("💬 Prompt:", action.payload?.prompt);
-                            // Could trigger a new message
-                            break;
-
-                          default:
-                            // Silently ignore protocol messages and other internal types
-                            break;
-                        }
-
-                        return action;
-                      }}
-                    />
+                    <UIActionProvider value={handleUIAction}>
+                      <UIResourceRenderer
+                        resource={resource.resource}
+                        remoteDomProps={{
+                          library: nimbusLibrary,
+                          remoteElements: nimbusRemoteElements,
+                        }}
+                        onUIAction={handleUIAction}
+                      />
+                    </UIActionProvider>
                   </Box>
                 );
               } catch (error) {

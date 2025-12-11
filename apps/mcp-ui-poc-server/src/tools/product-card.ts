@@ -17,11 +17,13 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
-  // Escape strings for JavaScript
-  const escapedName = productName.replace(/'/g, "\\'");
-  const escapedPrice = price.replace(/'/g, "\\'");
-  const escapedDescription = description.replace(/'/g, "\\'");
-  const escapedImageUrl = imageUrl?.replace(/'/g, "\\'");
+  // Use JSON.stringify for proper JavaScript string escaping
+  const escapedName = JSON.stringify(productName).slice(1, -1);
+  const escapedPrice = JSON.stringify(price).slice(1, -1);
+  const escapedDescription = JSON.stringify(description).slice(1, -1);
+  const escapedImageUrl = imageUrl
+    ? JSON.stringify(imageUrl).slice(1, -1)
+    : undefined;
 
   const remoteDomScript = `
     // Create container for alert and card

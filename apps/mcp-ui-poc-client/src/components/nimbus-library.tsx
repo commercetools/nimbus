@@ -49,15 +49,19 @@ const ImageWrapper = (props: Record<string, unknown>) => {
   return <Nimbus.Image {...imageProps} />;
 };
 
-// Helper function to create wrapped components with prop mapping
+// Helper function to create wrapped components with prop mapping and event mapping
 function createWrappedComponent<P extends Record<string, unknown>>(
   component: React.ComponentType<P>,
-  propMapping?: Record<string, string>
+  propMapping?: Record<string, string>,
+  eventMapping?: Record<string, string>
 ): React.ComponentType<Record<string, unknown>> {
-  if (!propMapping || Object.keys(propMapping).length === 0) {
+  if (
+    (!propMapping || Object.keys(propMapping).length === 0) &&
+    (!eventMapping || Object.keys(eventMapping).length === 0)
+  ) {
     return component as React.ComponentType<Record<string, unknown>>;
   }
-  return createPropMappingWrapper(component, propMapping);
+  return createPropMappingWrapper(component, propMapping || {}, eventMapping);
 }
 
 export const nimbusLibrary: ComponentLibrary = {
@@ -121,7 +125,13 @@ export const nimbusLibrary: ComponentLibrary = {
     },
     {
       tagName: "nimbus-alert-dismiss-button",
-      component: Nimbus.Alert.DismissButton,
+      component: createWrappedComponent(
+        Nimbus.Alert.DismissButton,
+        {},
+        {
+          press: "onPress",
+        }
+      ),
       propMapping: {},
       eventMapping: {
         press: "onClick",
@@ -196,19 +206,27 @@ export const nimbusLibrary: ComponentLibrary = {
     // Interactive components
     {
       tagName: "nimbus-button",
-      component: createWrappedComponent(Nimbus.Button, {
-        variant: "variant",
-        "color-palette": "colorPalette",
-        width: "width",
-        "is-disabled": "isDisabled",
-        "margin-top": "marginTop",
-      }),
+      component: createWrappedComponent(
+        Nimbus.Button,
+        {
+          variant: "variant",
+          "color-palette": "colorPalette",
+          width: "width",
+          "is-disabled": "isDisabled",
+          "margin-top": "marginTop",
+          "data-label": "data-label",
+        },
+        {
+          press: "onPress",
+        }
+      ),
       propMapping: {
         variant: "variant",
         "color-palette": "colorPalette",
         width: "width",
         "is-disabled": "isDisabled",
         "margin-top": "marginTop",
+        "data-label": "data-label",
       },
       eventMapping: {
         press: "onPress",
@@ -436,6 +454,7 @@ export const nimbusRemoteElements: RemoteElementConfiguration[] = [
       "width",
       "is-disabled",
       "margin-top",
+      "data-label",
     ],
     remoteEvents: ["press"],
   },

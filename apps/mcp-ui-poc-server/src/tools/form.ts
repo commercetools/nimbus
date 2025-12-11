@@ -16,14 +16,14 @@ export interface FormArgs {
 export function createForm(args: FormArgs) {
   const { title, fields, submitLabel = "Submit" } = args;
 
-  // Escape strings for JavaScript
-  const escapedTitle = title?.replace(/'/g, "\\'");
-  const escapedSubmitLabel = submitLabel.replace(/'/g, "\\'");
+  // Use JSON.stringify for proper JavaScript string escaping
+  const escapedTitle = title ? JSON.stringify(title).slice(1, -1) : undefined;
+  const escapedSubmitLabel = JSON.stringify(submitLabel).slice(1, -1);
 
   const fieldsScript = fields
     .map((field) => {
-      const escapedLabel = field.label.replace(/'/g, "\\'");
-      const escapedName = field.name.replace(/'/g, "\\'");
+      const escapedLabel = JSON.stringify(field.label).slice(1, -1);
+      const escapedName = JSON.stringify(field.name).slice(1, -1);
 
       return `
     const fieldRoot${field.name} = document.createElement('nimbus-form-field-root');

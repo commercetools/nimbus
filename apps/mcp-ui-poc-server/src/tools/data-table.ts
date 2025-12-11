@@ -27,14 +27,15 @@ export function createDataTable(args: DataTableArgs) {
     ...row,
   }));
 
-  // Serialize for JSON
+  // Serialize for JSON and escape for JavaScript template literal
+  // Must escape backslashes first, then double quotes
   const columnsJson = JSON.stringify(dataTableColumns)
-    .replace(/"/g, '\\"')
-    .replace(/'/g, "\\'");
+    .replace(/\\/g, "\\\\") // Escape backslashes first
+    .replace(/"/g, '\\"'); // Then escape double quotes
   const rowsJson = JSON.stringify(dataTableRows)
-    .replace(/"/g, '\\"')
-    .replace(/'/g, "\\'");
-  const escapedTitle = title?.replace(/'/g, "\\'");
+    .replace(/\\/g, "\\\\") // Escape backslashes first
+    .replace(/"/g, '\\"'); // Then escape double quotes
+  const escapedTitle = title ? JSON.stringify(title).slice(1, -1) : undefined;
 
   const remoteDomScript = `
     ${

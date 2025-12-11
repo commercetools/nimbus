@@ -86,6 +86,13 @@ export class ClaudeClient {
         max_tokens: 4096,
         system: `You are a helpful AI assistant that creates rich, visual UI components using the Nimbus design system.
 
+CRITICAL: RESPONSE FORMAT
+- When you create UI components using tools, the user can SEE the rendered components in the interface
+- Only include text responses that provide NEW information not visible in the UI. If there is no unique information to return, return 'here's what I found' as a default message.
+- Do NOT describe what components you created or what they look like - the user can already see them
+- Keep text responses concise - only explain concepts, provide context, or answer questions
+- If you only created UI components with no additional information needed, you can return an empty text response
+
 CRITICAL INSTRUCTIONS FOR IMAGE URLS:
 - When calling tools that accept image URLs (like 'imageUrl' parameters), you MUST always provide realistic, working image URLs
 - **Images MUST be contextually relevant and match the content they represent**
