@@ -56,8 +56,8 @@ catalogs:
       specifier: ^2.8.12
       version: 2.8.12
     '@storybook/addon-a11y':
-      specifier: ^10.1.2
-      version: 10.1.2
+      specifier: ^10.1.6
+      version: 10.1.6
     '@storybook/addon-docs':
       specifier: ^10.1.2
       version: 10.1.2
@@ -553,7 +553,7 @@ importers:
         version: 1.1.5
       '@storybook/addon-a11y':
         specifier: catalog:tooling
-        version: 10.1.2(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 10.1.6(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/addon-docs':
         specifier: catalog:tooling
         version: 10.1.2(@types/react@19.2.2)(esbuild@0.27.0)(rollup@4.53.3)(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
@@ -2455,10 +2455,10 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@storybook/addon-a11y@10.1.2':
-    resolution: {integrity: sha512-O4Rp+ftREulVLREOKwx3IKkUiSLx+F3V5zQ++h6bzlmwRuaknMHs5P3qSnjJprYV6K8qXTRbvgR2qKBgga8Qxw==}
+  '@storybook/addon-a11y@10.1.6':
+    resolution: {integrity: sha512-YTD1u7cS5eg7s5U/zitiWmRvUirZXuB+TJsrRJkoS4tkJxjgDjeWCbSUwoy6pWjKV0ZlpP3Ljv/4EsDq8yIm1g==}
     peerDependencies:
-      storybook: ^10.1.2
+      storybook: ^10.1.6
 
   '@storybook/addon-docs@10.1.2':
     resolution: {integrity: sha512-2D89qp6WwNxbiyylixJDC9C8tU8qgRS68HFcYruSNVX3dcCoty7xVytdWJIoDdTjvYlKZZdK23eD9r7+AEA3oA==}
@@ -9130,7 +9130,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@storybook/addon-a11y@10.1.2(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+  '@storybook/addon-a11y@10.1.6(storybook@10.1.2(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.11.0
