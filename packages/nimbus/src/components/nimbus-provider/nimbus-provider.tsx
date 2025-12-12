@@ -5,6 +5,7 @@ import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
+import { loadI18nMessages } from "./utils/load-i18n-messages";
 
 /**
  * # NimbusProvider
@@ -19,10 +20,15 @@ export function NimbusProvider({
   router,
   ...props
 }: NimbusProviderProps) {
+  const resolvedLocale =
+    locale ?? (typeof navigator !== "undefined" ? navigator.language : "en");
+
+  // Load and format i18n messages for the resolved locale
+  const { locale: intlLocale, messages } = loadI18nMessages(resolvedLocale);
+
   // Inner content with all the existing providers
-  // If no locale is provided, use browser's locale as fallback
   const content = (
-    <IntlProvider locale={locale ?? navigator.language} defaultLocale="en">
+    <IntlProvider locale={intlLocale} messages={messages} defaultLocale="en">
       <ChakraProvider value={system}>
         <NimbusColorModeProvider enableSystem={false} {...props}>
           <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
