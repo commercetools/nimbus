@@ -1,0 +1,465 @@
+---
+title: ToggleButton Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ToggleButton, type ToggleButtonProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses the uncontrolled mode with `defaultSelected`:
+
+```jsx-live-dev
+const App = () => (
+  <ToggleButton
+    defaultSelected={false}
+    onChange={(isSelected) => alert(`Selected: ${isSelected}`)}
+  >
+    Toggle Me
+  </ToggleButton>
+)
+```
+
+The component starts in the unselected state and manages its own state internally. The `onChange` callback is called whenever the selection state changes.
+
+## Usage examples
+
+### Controlled mode
+
+Control the toggle state externally using `isSelected` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [isSelected, setIsSelected] = useState<ToggleButtonProps["isSelected"]>(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <ToggleButton isSelected={isSelected} onChange={setIsSelected}>
+        {isSelected ? "Selected" : "Not Selected"}
+      </ToggleButton>
+      <Text fontSize="sm">
+        Current state: {isSelected ? "Selected" : "Not Selected"}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### With icons
+
+Add icons to provide visual context for the toggle action:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <ToggleButton onChange={(selected) => alert(`Liked: ${selected}`)}>
+      <Icons.ThumbUp />
+      Like
+    </ToggleButton>
+
+    <ToggleButton onChange={(selected) => alert(`Favorited: ${selected}`)}>
+      <Icons.Star />
+      Favorite
+    </ToggleButton>
+
+    <ToggleButton onChange={(selected) => alert(`Saved: ${selected}`)}>
+      <Icons.Bookmark />
+      Save
+    </ToggleButton>
+
+    <ToggleButton onChange={(selected) => alert(`Notified: ${selected}`)}>
+      <Icons.Notifications />
+      Notify
+    </ToggleButton>
+  </Stack>
+)
+```
+
+### Size variants
+
+The component supports three size variants to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center" wrap="wrap">
+    <ToggleButton size="2xs">
+      Extra Small
+    </ToggleButton>
+
+    <ToggleButton size="xs">
+      Small
+    </ToggleButton>
+
+    <ToggleButton size="md">
+      Medium (default)
+    </ToggleButton>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between visual variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton variant="outline">
+        Outline (default)
+      </ToggleButton>
+
+      <ToggleButton variant="outline" isSelected>
+        Outline Selected
+      </ToggleButton>
+    </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton variant="ghost">
+        Ghost
+      </ToggleButton>
+
+      <ToggleButton variant="ghost" isSelected>
+        Ghost Selected
+      </ToggleButton>
+    </Stack>
+  </Stack>
+)
+```
+
+### Color palettes
+
+Use different color palettes to indicate different types of actions:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton colorPalette="primary">
+        Primary
+      </ToggleButton>
+      <ToggleButton colorPalette="primary" isSelected>
+        Primary Selected
+      </ToggleButton>
+    </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton colorPalette="neutral">
+        Neutral
+      </ToggleButton>
+      <ToggleButton colorPalette="neutral" isSelected>
+        Neutral Selected
+      </ToggleButton>
+    </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton colorPalette="critical">
+        Critical
+      </ToggleButton>
+      <ToggleButton colorPalette="critical" isSelected>
+        Critical Selected
+      </ToggleButton>
+    </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton colorPalette="info">
+        Info
+      </ToggleButton>
+      <ToggleButton colorPalette="info" isSelected>
+        Info Selected
+      </ToggleButton>
+    </Stack>
+  </Stack>
+)
+```
+
+### Disabled state
+
+Disable the toggle button to prevent user interaction:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <ToggleButton isDisabled>
+      Disabled Unselected
+    </ToggleButton>
+
+    <ToggleButton isDisabled isSelected>
+      Disabled Selected
+    </ToggleButton>
+
+    <ToggleButton isDisabled variant="ghost">
+      <Icons.Star />
+      Disabled Ghost
+    </ToggleButton>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The ToggleButton component is built on React Aria's ToggleButton, which provides robust accessibility features out of the box.
+
+**Role**: The component uses the `button` role with `aria-pressed` attribute to communicate toggle state.
+
+**Labeling**: The button's label is determined by its children content. For icon-only buttons, provide an `aria-label`:
+
+```tsx
+<ToggleButton aria-label="Add to favorites">
+  <Icons.Star />
+</ToggleButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "like-button-toggle";
+
+export const LikeButton = () => (
+  <ToggleButton
+    id={PERSISTENT_ID}
+    aria-label="Like this post"
+    onChange={handleLikeToggle}
+  >
+    <Icons.ThumbUp />
+  </ToggleButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Move focus to/from the toggle button
+- `Enter` or `Space`: Toggle the selected state
+
+## API reference
+
+<PropsTable id="ToggleButton" />
+
+## Common patterns
+
+### Like/Favorite functionality
+
+Common pattern for like or favorite actions with visual feedback:
+
+```jsx-live-dev
+const App = () => {
+  const [liked, setLiked] = useState(false);
+  const [favorited, setFavorited] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="400" alignItems="center">
+        <ToggleButton
+          isSelected={liked}
+          onChange={setLiked}
+          colorPalette="critical"
+          aria-label="Like post"
+        >
+          <Icons.ThumbUp />
+          {liked ? "Liked" : "Like"}
+        </ToggleButton>
+        {liked && (
+          <Text fontSize="sm" color="critical.11">
+            Thank you for your feedback!
+          </Text>
+        )}
+      </Stack>
+
+      <Stack direction="row" gap="400" alignItems="center">
+        <ToggleButton
+          isSelected={favorited}
+          onChange={setFavorited}
+          colorPalette="info"
+          aria-label="Add to favorites"
+        >
+          <Icons.Star />
+          {favorited ? "Favorited" : "Favorite"}
+        </ToggleButton>
+        {favorited && (
+          <Text fontSize="sm" color="info.11">
+            Added to your favorites
+          </Text>
+        )}
+      </Stack>
+
+      <Stack direction="row" gap="400" alignItems="center">
+        <ToggleButton
+          isSelected={saved}
+          onChange={setSaved}
+          aria-label="Save for later"
+        >
+          <Icons.Bookmark />
+          {saved ? "Saved" : "Save"}
+        </ToggleButton>
+        {saved && (
+          <Text fontSize="sm" color="neutral.11">
+            Saved for later
+          </Text>
+        )}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Filter toggles
+
+Use toggle buttons as filter controls in a toolbar or filter panel:
+
+```jsx-live-dev
+const App = () => {
+  const [showActive, setShowActive] = useState(true);
+  const [showInactive, setShowInactive] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+
+  const getStatusText = () => {
+    const statuses = [];
+    if (showActive) statuses.push("Active");
+    if (showInactive) statuses.push("Inactive");
+    if (showArchived) statuses.push("Archived");
+    return statuses.length > 0 ? statuses.join(", ") : "None";
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="semibold">Filter by status:</Text>
+      <Stack direction="row" gap="300" wrap="wrap">
+        <ToggleButton
+          size="xs"
+          variant="outline"
+          isSelected={showActive}
+          onChange={setShowActive}
+          colorPalette="primary"
+        >
+          Active
+        </ToggleButton>
+
+        <ToggleButton
+          size="xs"
+          variant="outline"
+          isSelected={showInactive}
+          onChange={setShowInactive}
+          colorPalette="neutral"
+        >
+          Inactive
+        </ToggleButton>
+
+        <ToggleButton
+          size="xs"
+          variant="outline"
+          isSelected={showArchived}
+          onChange={setShowArchived}
+          colorPalette="neutral"
+        >
+          Archived
+        </ToggleButton>
+      </Stack>
+      <Text fontSize="sm" color="neutral.11">
+        Showing: {getStatusText()}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Settings toggles
+
+Pattern for settings or preferences with immediate visual feedback:
+
+```jsx-live-dev
+const App = () => {
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
+  const [weeklyDigest, setWeeklyDigest] = useState(true);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="semibold">Notification Preferences</Text>
+
+      <Stack direction="row" gap="300" alignItems="center">
+        <ToggleButton
+          variant="ghost"
+          size="xs"
+          isSelected={emailNotifications}
+          onChange={setEmailNotifications}
+          aria-label="Toggle email notifications"
+        >
+          <Icons.Email />
+        </ToggleButton>
+        <Stack direction="column" gap="100">
+          <Text fontSize="sm" fontWeight="medium">
+            Email Notifications
+          </Text>
+          <Text fontSize="xs" color="neutral.11">
+            {emailNotifications ? "Enabled" : "Disabled"}
+          </Text>
+        </Stack>
+      </Stack>
+
+      <Stack direction="row" gap="300" alignItems="center">
+        <ToggleButton
+          variant="ghost"
+          size="xs"
+          isSelected={pushNotifications}
+          onChange={setPushNotifications}
+          aria-label="Toggle push notifications"
+        >
+          <Icons.Notifications />
+        </ToggleButton>
+        <Stack direction="column" gap="100">
+          <Text fontSize="sm" fontWeight="medium">
+            Push Notifications
+          </Text>
+          <Text fontSize="xs" color="neutral.11">
+            {pushNotifications ? "Enabled" : "Disabled"}
+          </Text>
+        </Stack>
+      </Stack>
+
+      <Stack direction="row" gap="300" alignItems="center">
+        <ToggleButton
+          variant="ghost"
+          size="xs"
+          isSelected={weeklyDigest}
+          onChange={setWeeklyDigest}
+          aria-label="Toggle weekly digest"
+        >
+          <Icons.CalendarToday />
+        </ToggleButton>
+        <Stack direction="column" gap="100">
+          <Text fontSize="sm" fontWeight="medium">
+            Weekly Digest
+          </Text>
+          <Text fontSize="xs" color="neutral.11">
+            {weeklyDigest ? "Enabled" : "Disabled"}
+          </Text>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ToggleButton within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: toggle-button.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-buttons-togglebutton--docs)
+- [React Aria ToggleButton](https://react-spectrum.adobe.com/react-aria/ToggleButton.html)
+- [ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
+- [Button Component](/components/buttons/button)
