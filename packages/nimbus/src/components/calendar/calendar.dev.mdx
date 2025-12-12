@@ -233,7 +233,7 @@ const App = () => {
       <Calendar
         defaultValue={today}
         isDateUnavailable={(date) => {
-          const dayOfWeek = date.toDate('UTC').getDay();
+          const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
           return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
         }}
       />
@@ -409,7 +409,7 @@ const App = () => {
         onChange={setValue}
         minValue={today.add({ days: 1 })}
         isDateUnavailable={(date) => {
-          const dayOfWeek = date.toDate('UTC').getDay();
+          const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
           return dayOfWeek === 0 || dayOfWeek === 6;
         }}
       />
@@ -440,7 +440,7 @@ const App = () => {
         value={value}
         onChange={setValue}
         isDateUnavailable={(date) => {
-          const dayOfWeek = date.toDate('UTC').getDay();
+          const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
           return dayOfWeek === 0 || dayOfWeek === 6;
         }}
       />
@@ -448,7 +448,7 @@ const App = () => {
         <Stack direction="column" gap="100">
           <Text fontSize="sm">Selected: {value.toString()}</Text>
           <Text fontSize="sm" color="neutral.11">
-            {value.toDate('UTC').toLocaleDateString('en-US', {
+            {value.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',

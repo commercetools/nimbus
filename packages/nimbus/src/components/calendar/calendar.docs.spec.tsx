@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Calendar, NimbusProvider } from "@commercetools/nimbus";
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
 
 /**
  * @docs-section basic-rendering
@@ -217,7 +217,7 @@ describe("Calendar - Date constraints", () => {
         <Calendar
           defaultValue={today}
           isDateUnavailable={(date) => {
-            const dayOfWeek = date.toDate("UTC").getDay();
+            const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
             return dayOfWeek === 0 || dayOfWeek === 6; // Weekends
           }}
         />
