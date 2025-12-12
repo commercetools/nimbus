@@ -106,8 +106,62 @@ pnpm dev
 - [Client Deployment Guide](./client/DEPLOYMENT.md)
 - [Kubernetes Deployment](./server/k8s/) and [Client K8s](./client/k8s/)
 
-## Kubernetes Deployment
+## Kubernetes Deployment (Minikube)
 
-See the deployment documentation in each subdirectory:
-- Server: `server/DEPLOYMENT.md`
-- Client: `client/DEPLOYMENT.md`
+### Quick Start
+
+```bash
+# One-command setup and deployment
+./scripts/k8s-quickstart.sh
+```
+
+This script will:
+1. Build Docker images
+2. Load images into Minikube
+3. Create secrets from .env
+4. Deploy all resources
+5. Guide you to access the application
+
+### Manual Deployment
+
+```bash
+# Build packages (from repository root)
+pnpm build:packages
+
+# Navigate to MCP UI POC
+cd apps/mcp-ui-poc
+
+# Build Docker images
+./scripts/k8s-build.sh
+
+# Load into Minikube
+./scripts/k8s-load-minikube.sh
+
+# Create secret from .env
+./scripts/k8s-create-secret.sh
+
+# Deploy to cluster
+./scripts/k8s-deploy.sh
+
+# Access application
+kubectl port-forward svc/mcp-ui-poc-client 8080:80
+# Open http://localhost:8080
+```
+
+### Helper Scripts
+
+- `k8s-quickstart.sh` - Complete setup and deployment
+- `k8s-build.sh` - Build Docker images
+- `k8s-load-minikube.sh` - Load images into Minikube
+- `k8s-create-secret.sh` - Create secrets from .env
+- `k8s-deploy.sh` - Deploy all resources
+- `k8s-status.sh` - Check deployment status
+- `k8s-logs.sh` - View pod logs
+- `k8s-rebuild.sh` - Full rebuild and redeploy
+- `k8s-cleanup.sh` - Remove all resources
+
+### Documentation
+
+- [Detailed Kubernetes Guide](./slop-docs/KUBERNETES.md) - Complete setup and troubleshooting
+- [Server Deployment Guide](./server/DEPLOYMENT.md)
+- [Client Deployment Guide](./client/DEPLOYMENT.md)
