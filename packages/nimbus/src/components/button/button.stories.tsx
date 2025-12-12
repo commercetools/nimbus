@@ -291,58 +291,52 @@ export const SmokeTest: Story = {
             {sizes.map((size) => (
               <Stack direction="row" key={size as string}>
                 {variants.map((variant) => (
-                  <Box key={variant as string}>
-                    <Stack direction="column" css={{ "> *": { flex: "none" } }}>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          colorPalette={colorPalette}
-                        >
-                          <DemoIcon />
-                          {JSON.stringify(variant)} {args.children}
-                          <DemoIcon />
-                        </Button>
-                      </Box>
-                      <Box>
-                        <Button
-                          {...args}
-                          as="a"
-                          variant={variant}
-                          size={size}
-                          colorPalette={colorPalette}
-                          isDisabled
-                        >
-                          <DemoIcon />
-                          {JSON.stringify(variant)} {args.children}
-                          <DemoIcon />
-                        </Button>
-                      </Box>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          colorPalette={colorPalette}
-                        >
-                          <DemoIcon />
-                          {JSON.stringify(variant)} {args.children}
-                        </Button>
-                      </Box>
-                      <Box>
-                        <Button
-                          {...args}
-                          variant={variant}
-                          size={size}
-                          colorPalette={colorPalette}
-                        >
-                          {JSON.stringify(variant)} {args.children}
-                          <DemoIcon />
-                        </Button>
-                      </Box>
-                    </Stack>
-                  </Box>
+                  <Stack
+                    key={variant as string}
+                    direction="column"
+                    align="flex-start"
+                  >
+                    <Button
+                      {...args}
+                      variant={variant}
+                      size={size}
+                      colorPalette={colorPalette}
+                    >
+                      <DemoIcon />
+                      {JSON.stringify(variant)} {args.children}
+                      <DemoIcon />
+                    </Button>
+                    <Button
+                      {...args}
+                      as="a"
+                      variant={variant}
+                      size={size}
+                      colorPalette={colorPalette}
+                      isDisabled
+                    >
+                      <DemoIcon />
+                      {JSON.stringify(variant)} {args.children}
+                      <DemoIcon />
+                    </Button>
+                    <Button
+                      {...args}
+                      variant={variant}
+                      size={size}
+                      colorPalette={colorPalette}
+                    >
+                      <DemoIcon />
+                      {JSON.stringify(variant)} {args.children}
+                    </Button>
+                    <Button
+                      {...args}
+                      variant={variant}
+                      size={size}
+                      colorPalette={colorPalette}
+                    >
+                      {JSON.stringify(variant)} {args.children}
+                      <DemoIcon />
+                    </Button>
+                  </Stack>
                 ))}
               </Stack>
             ))}
