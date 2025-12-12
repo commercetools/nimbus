@@ -1,0 +1,368 @@
+---
+title: Box Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Box, type BoxProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Box component is a fundamental layout primitive that accepts all Chakra UI system props for styling:
+
+```jsx-live-dev
+const App = () => (
+  <Box p="100" bg="primary.3">
+    Basic Box
+  </Box>
+)
+```
+
+## Usage examples
+
+### Spacing and layout
+
+Use spacing tokens to control padding and margin:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box p="100" bg="primary.3">
+      Padding: 100
+    </Box>
+    <Box p="200" bg="primary.3">
+      Padding: 200
+    </Box>
+    <Box p="300" bg="primary.3">
+      Padding: 300
+    </Box>
+  </Stack>
+)
+```
+
+### Colors and backgrounds
+
+Apply background colors and text colors using design tokens:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box p="100" bg="primary.3" color="primary.11">
+      Primary colors
+    </Box>
+    <Box p="100" bg="positive.3" color="positive.11">
+      Positive colors
+    </Box>
+    <Box p="100" bg="critical.3" color="critical.11">
+      Critical colors
+    </Box>
+  </Stack>
+)
+```
+
+### Borders and shadows
+
+Create visual depth with borders and shadows:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box p="100" border="solid-50" borderColor="primary.3">
+      Box with border
+    </Box>
+    <Box p="100" shadow="6" borderRadius="100">
+      Box with shadow
+    </Box>
+    <Box p="100" border="solid-50" borderColor="primary.6" borderRadius="200" shadow="3">
+      Border, radius, and shadow
+    </Box>
+  </Stack>
+)
+```
+
+### As flex container
+
+Use flexbox props to create flexible layouts in both horizontal and vertical orientations:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box display="flex" gap="100" alignItems="center" justifyContent="space-between" p="200" bg="primary.3">
+      <Box p="100" bg="primary.6">
+        Column 1
+      </Box>
+      <Box p="100" bg="primary.6">
+        Column 2
+      </Box>
+      <Box p="100" bg="primary.6">
+        Column 3
+      </Box>
+    </Box>
+    
+    <Box display="flex" flexDirection="column" gap="100" p="200" bg="positive.3">
+      <Box p="100" bg="positive.6">
+        Row 1
+      </Box>
+      <Box p="100" bg="positive.6">
+        Row 2
+      </Box>
+      <Box p="100" bg="positive.6">
+        Row 3
+      </Box>
+    </Box>
+  </Stack>
+)
+```
+
+**When to use Flexbox:**
+- One-dimensional layouts (row OR column)
+- Aligning and distributing items along a single axis
+- Components that need to grow or shrink based on content
+- Navigation bars, button groups, form layouts
+
+### As grid container
+
+Create two-dimensional grid layouts with CSS Grid props. Grid is ideal for complex layouts where you need control over both rows and columns simultaneously:
+
+```jsx-live-dev
+const App = () => (
+  <Box 
+    display="grid" 
+    gridTemplateColumns="repeat(3, 1fr)" 
+    gap="100" 
+    p="200" 
+    bg="primary.3"
+  >
+    <Box p="100" bg="primary.6">
+      Grid Item 1
+    </Box>
+    <Box p="100" bg="primary.6">
+      Grid Item 2
+    </Box>
+    <Box p="100" bg="primary.6">
+      Grid Item 3
+    </Box>
+    <Box p="100" bg="primary.6">
+      Grid Item 4
+    </Box>
+    <Box p="100" bg="primary.6">
+      Grid Item 5
+    </Box>
+    <Box p="100" bg="primary.6">
+      Grid Item 6
+    </Box>
+  </Box>
+)
+```
+
+**When to use Grid:**
+- Two-dimensional layouts (rows AND columns)
+- Complex layouts with defined grid structures
+- Card grids, dashboards, form layouts with multiple columns
+- When you need precise control over item placement
+
+### Polymorphic rendering
+
+Change the underlying HTML element using the `as` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box as="section" p="100" bg="primary.3">
+      Rendered as section
+    </Box>
+    <Box as="article" p="100" bg="primary.3">
+      Rendered as article
+    </Box>
+    <Box as="nav" p="100" bg="primary.3">
+      Rendered as nav
+    </Box>
+  </Stack>
+)
+```
+
+### Composition with asChild
+
+Apply Box styles to interactive elements (buttons, links, inputs, etc.) while maintaining their native functionality. The `asChild` prop merges Box's styling props directly onto the child element instead of wrapping it in an additional `<div>`, which helps preserve semantic HTML structure and accessibility. 
+This is particularly important for interactive elements where the element type must remain unchanged for proper behavior and accessibility.
+
+**Benefits:**
+- **No extra DOM wrapper**: Styles are applied directly to the child element
+- **Semantic HTML**: Maintains proper HTML structure (e.g., a `<button>` stays a `<button>`, not wrapped in a `<div>`)
+- **Better accessibility**: Screen readers and assistive technologies see the actual interactive element
+- **Preserved functionality**: The child element retains all its native behavior (click handlers, keyboard navigation, etc.)
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box p="100" bg="primary.3" color="primary.11" asChild>
+      <button onClick={() => alert("Clicked!")}>
+        Button with Box styles
+      </button>
+    </Box>
+    <Box p="100" bg="positive.3" color="positive.11" asChild>
+      <a href="#" onClick={(e) => e.preventDefault()}>
+        Link with Box styles
+      </a>
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Box component is a layout primitive and renders as a `div` by default. For proper accessibility:
+
+- **Semantic HTML**: Use the `as` prop to render appropriate semantic elements (`section`, `article`, `nav`, `aside`, etc.) based on the content's purpose
+- **Landmarks**: When using Box as a landmark element (like `nav` or `main`), provide an `aria-label` for screen readers if multiple landmarks of the same type exist on the page
+- **Interactive elements**: When using `asChild` with interactive elements (buttons, links), ensure the child element has proper accessibility attributes
+
+```tsx
+// Semantic section
+<Box as="section" aria-labelledby="section-heading">
+  <h2 id="section-heading">Section Title</h2>
+</Box>
+
+// Navigation landmark
+<Box as="nav" aria-label="Main navigation">
+  {/* navigation items */}
+</Box>
+
+// Interactive element with asChild
+<Box asChild>
+  <button aria-label={intl.formatMessage(labelMessage)}>
+    {/* button content */}
+  </button>
+</Box>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-box";
+
+export const Example = () => (
+  <Box id={PERSISTENT_ID} p="100" bg="primary.3">
+    Content
+  </Box>
+);
+```
+
+#### Keyboard navigation
+
+Box is a non-interactive layout component and does not support keyboard navigation by default. However, when using the `asChild` prop with interactive elements, the child element's keyboard interactions are preserved.
+
+## API reference
+
+<PropsTable id="Box" />
+
+## Common patterns
+
+### Card-like containers
+
+Create card-style containers with borders, shadows, and rounded corners:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box 
+      p="300" 
+      border="solid-50" 
+      borderColor="neutral.6" 
+      borderRadius="200" 
+      shadow="3"
+    >
+      <Text fontSize="lg" fontWeight="semibold" mb="100">
+        Card Title
+      </Text>
+      <Text fontSize="sm" color="neutral.11">
+        This is a card-like container built with Box component using border, shadow, and border radius.
+      </Text>
+    </Box>
+    <Box 
+      p="300" 
+      bg="primary.3" 
+      borderRadius="200" 
+      shadow="6"
+    >
+      <Text fontSize="lg" fontWeight="semibold" mb="100" color="primary.11">
+        Colored Card
+      </Text>
+      <Text fontSize="sm" color="primary.11">
+        A card with background color and larger shadow for emphasis.
+      </Text>
+    </Box>
+  </Stack>
+)
+```
+
+### Responsive layouts
+
+Use responsive object syntax for adaptive layouts across breakpoints:
+
+```jsx-live-dev
+const App = () => (
+  <Box 
+    display="grid" 
+    gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+    gap="200"
+  >
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 1
+    </Box>
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 2
+    </Box>
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 3
+    </Box>
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 4
+    </Box>
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 5
+    </Box>
+    <Box p="200" bg="primary.3" borderRadius="100">
+      Item 6
+    </Box>
+  </Box>
+)
+```
+
+### Centered content container
+
+Create a centered container with maximum width:
+
+```jsx-live-dev
+const App = () => (
+  <Box maxWidth="3xl" mx="auto" p="400" bg="primary.3">
+    <Text fontSize="lg" fontWeight="semibold" mb="200">
+      Centered Container
+    </Text>
+    <Text fontSize="sm">
+      This content is centered with a maximum width, commonly used for readable text layouts or contained content areas.
+    </Text>
+  </Box>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Box within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: box.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-box--docs)
+- [Chakra UI Box](https://chakra-ui.com/docs/components/box)
+- [Chakra UI Style Props](https://v2.chakra-ui.com/docs/styled-system/style-props)
+
