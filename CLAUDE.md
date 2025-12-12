@@ -416,3 +416,23 @@ Understanding build order is crucial:
 
 For detailed development workflows, implementation steps, and common pitfalls,
 see: @docs/component-guidelines.md
+
+### File Organization Conventions
+
+**Generated Markdown Files:**
+
+Auto-generated markdown documents that were not explicitly requested should be
+placed in a `slop-docs/` subdirectory within the target directory. This keeps
+the main directory clean and separates auxiliary documentation from primary
+source files.
+
+```bash
+# Example structure
+component-name/
+├── component-name.tsx
+├── component-name.types.ts
+├── component-name.mdx          # Explicitly requested documentation
+└── slop-docs/                  # Auto-generated auxiliary docs
+    ├── analysis.md
+    └── implementation-notes.md
+```

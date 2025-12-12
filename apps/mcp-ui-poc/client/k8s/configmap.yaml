@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-ui-poc-config
+  labels:
+    app: mcp-ui-poc
+data:
+  # Server URL for the client to connect to
+  # This should match the service name in the cluster
+  MCP_SERVER_URL: "http://mcp-ui-poc-server:3001"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mcp-ui-poc-secrets
+  labels:
+    app: mcp-ui-poc
+type: Opaque
+stringData:
+  # IMPORTANT: Replace this with your actual Anthropic API key
+  # In production, use proper secret management (e.g., Sealed Secrets, External Secrets, etc.)
+  ANTHROPIC_API_KEY: "your-anthropic-api-key-here"

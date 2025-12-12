@@ -1,0 +1,93 @@
+# Docker Compose for MCP UI POC Applications
+# This file is for local development and testing of the containerized applications
+#
+# Environment variables are loaded from .env file automatically
+# Run: cp .env.example .env (then edit with your API key)
+
+version: '3.8'
+
+services:
+  # ============================================================
+  # MCP UI POC Server
+  # ============================================================
+  mcp-ui-poc-server:
+    build:
+      context: ../..
+      dockerfile: apps/mcp-ui-poc/server/Dockerfile
+    container_name: mcp-ui-poc-server
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/elements', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-ui-poc-network
+    restart: unless-stopped
+
+  # ============================================================
+  # MCP UI POC Client
+  # ============================================================
+  mcp-ui-poc-client:
+    build:
+      context: ../..
+      dockerfile: apps/mcp-ui-poc/client/Dockerfile
+      args:
+        # Build-time arguments for Vite (loaded from .env file)
+        # These are baked into the JavaScript bundle during build
+        # Note: Client runs in browser, so it connects to localhost (not Docker service name)
+        VITE_MCP_SERVER_URL: http://localhost:3001
+        VITE_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    container_name: mcp-ui-poc-client
+    ports:
+      - "8080:80"
+    depends_on:
+      mcp-ui-poc-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-ui-poc-network
+    restart: unless-stopped
+
+networks:
+  mcp-ui-poc-network:
+    driver: bridge
+
+# ============================================================
+# Usage Instructions
+# ============================================================
+#
+# 1. Create .env file with your API key:
+#    cp .env.example .env
+#    # Edit .env and set your ANTHROPIC_API_KEY
+#
+# 2. Build and start the services:
+#    docker-compose up --build
+#    # OR from repository root:
+#    docker-compose -f apps/mcp-ui-poc/docker-compose.yaml up --build
+#
+# 3. Access the applications:
+#    - Client: http://localhost:8080
+#    - Server: http://localhost:3001
+#    - Server health: http://localhost:3001/elements
+#
+# 4. Stop the services:
+#    docker-compose down
+#
+# 5. View logs:
+#    docker-compose logs -f
+#
+# 6. Rebuild a specific service:
+#    docker-compose build mcp-ui-poc-client
+#
+# ============================================================

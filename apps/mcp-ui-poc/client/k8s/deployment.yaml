@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-ui-poc-client
+  labels:
+    app: mcp-ui-poc-client
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcp-ui-poc-client
+  template:
+    metadata:
+      labels:
+        app: mcp-ui-poc-client
+        component: frontend
+    spec:
+      containers:
+        - name: client
+          image: mcp-ui-poc-client:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-ui-poc-client
+  labels:
+    app: mcp-ui-poc-client
+    component: frontend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-client
