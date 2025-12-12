@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface ColumnDef {
   key: string;
@@ -35,7 +36,7 @@ export function createDataTable(args: DataTableArgs) {
   const rowsJson = JSON.stringify(dataTableRows)
     .replace(/\\/g, "\\\\") // Escape backslashes first
     .replace(/"/g, '\\"'); // Then escape double quotes
-  const escapedTitle = title ? JSON.stringify(title).slice(1, -1) : undefined;
+  const escapedTitle = title ? escapeForJS(title) : undefined;
 
   const remoteDomScript = `
     ${

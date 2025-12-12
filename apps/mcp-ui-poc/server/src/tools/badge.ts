@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface CreateBadgeArgs {
   label: string;
@@ -10,8 +11,8 @@ export interface CreateBadgeArgs {
 export function createBadge(args: CreateBadgeArgs) {
   const { label, colorPalette = "primary", size = "md", width } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedLabel = JSON.stringify(label).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedLabel = escapeForJS(label);
 
   const remoteDomScript = `
     const badge = document.createElement('nimbus-badge');

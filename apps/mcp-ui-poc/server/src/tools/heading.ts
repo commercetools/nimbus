@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface CreateHeadingArgs {
   content: string;
@@ -9,8 +10,8 @@ export interface CreateHeadingArgs {
 export function createHeading(args: CreateHeadingArgs) {
   const { content, size = "lg", marginBottom } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedContent = JSON.stringify(content).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedContent = escapeForJS(content);
 
   const remoteDomScript = `
     const heading = document.createElement('nimbus-heading');

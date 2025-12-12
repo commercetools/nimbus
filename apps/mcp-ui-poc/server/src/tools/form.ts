@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface FormField {
   name: string;
@@ -16,14 +17,14 @@ export interface FormArgs {
 export function createForm(args: FormArgs) {
   const { title, fields, submitLabel = "Submit" } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedTitle = title ? JSON.stringify(title).slice(1, -1) : undefined;
-  const escapedSubmitLabel = JSON.stringify(submitLabel).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedTitle = title ? escapeForJS(title) : undefined;
+  const escapedSubmitLabel = escapeForJS(submitLabel);
 
   const fieldsScript = fields
     .map((field) => {
-      const escapedLabel = JSON.stringify(field.label).slice(1, -1);
-      const escapedName = JSON.stringify(field.name).slice(1, -1);
+      const escapedLabel = escapeForJS(field.label);
+      const escapedName = escapeForJS(field.name);
 
       return `
     const fieldRoot${field.name} = document.createElement('nimbus-form-field-root');

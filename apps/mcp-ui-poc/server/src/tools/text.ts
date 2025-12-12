@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface CreateTextArgs {
   content: string;
@@ -11,8 +12,8 @@ export interface CreateTextArgs {
 export function createText(args: CreateTextArgs) {
   const { content, fontSize, fontWeight, color, marginBottom } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedContent = JSON.stringify(content).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedContent = escapeForJS(content);
 
   const remoteDomScript = `
     const text = document.createElement('nimbus-text');

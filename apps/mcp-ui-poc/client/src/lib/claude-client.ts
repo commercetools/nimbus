@@ -8,8 +8,8 @@ const MCP_SERVER_URL =
   import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001";
 
 export class ClaudeClient {
-  private anthropic: Anthropic;
-  private mcpClient: Client;
+  private anthropic!: Anthropic;
+  private mcpClient!: Client;
   private conversationHistory: Anthropic.MessageParam[] = [];
   private mcpTools: Tool[] = [];
 
@@ -88,10 +88,11 @@ export class ClaudeClient {
 
 CRITICAL: RESPONSE FORMAT
 - When you create UI components using tools, the user can SEE the rendered components in the interface
-- Only include text responses that provide NEW information not visible in the UI. If there is no unique information to return, return 'here's what I found' as a default message.
+- Only include text responses that provide NEW information not visible in the UI. 
+- If there is no unique information to return, return 'here's what I found' along with the UI component.
 - Do NOT describe what components you created or what they look like - the user can already see them
 - Keep text responses concise - only explain concepts, provide context, or answer questions
-- If you only created UI components with no additional information needed, you can return an empty text response
+- If you only created UI components with no additional information needed, you can return 'here's what I found' as a default message
 
 CRITICAL INSTRUCTIONS FOR IMAGE URLS:
 - When calling tools that accept image URLs (like 'imageUrl' parameters), you MUST always provide realistic, working image URLs

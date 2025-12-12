@@ -1,5 +1,9 @@
 import { createUIResource } from "@mcp-ui/server";
-import { type ChildElement, generateChildrenScript } from "./shared-types.js";
+import {
+  type ChildElement,
+  generateChildrenScript,
+  escapeForJS,
+} from "./shared-types.js";
 
 export interface CreateCardArgs {
   content?: string;
@@ -22,8 +26,8 @@ export function createCard(args: CreateCardArgs) {
     children,
   } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedContent = JSON.stringify(content).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedContent = escapeForJS(content);
 
   const remoteDomScript = `
     const card = document.createElement('nimbus-card-root');

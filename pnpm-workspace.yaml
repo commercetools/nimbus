@@ -1,6 +1,7 @@
 packages:
   - packages/*
   - apps/*
+  - apps/mcp-ui-poc/*
 
 catalog:
   '@google/genai': ^1.32.0

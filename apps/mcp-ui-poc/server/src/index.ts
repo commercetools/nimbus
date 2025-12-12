@@ -5,7 +5,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
-import elementsManifest from "./elements-manifest.json" assert { type: "json" };
+import elementsManifest from "./elements-manifest.json" with { type: "json" };
 import { createProductCard } from "./tools/product-card.js";
 import { createForm } from "./tools/form.js";
 import { createDataTable } from "./tools/data-table.js";

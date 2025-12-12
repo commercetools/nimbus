@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface CreateButtonArgs {
   label: string;
@@ -17,8 +18,8 @@ export function createButton(args: CreateButtonArgs) {
     isDisabled = false,
   } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedLabel = JSON.stringify(label).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedLabel = escapeForJS(label);
 
   const remoteDomScript = `
     const button = document.createElement('nimbus-button');

@@ -1,5 +1,9 @@
 import { createUIResource } from "@mcp-ui/server";
-import { type ChildElement, generateChildrenScript } from "./shared-types.js";
+import {
+  type ChildElement,
+  generateChildrenScript,
+  escapeForJS,
+} from "./shared-types.js";
 
 export interface CreateStackArgs {
   content?: string;
@@ -20,8 +24,8 @@ export function createStack(args: CreateStackArgs) {
     children,
   } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedContent = JSON.stringify(content).slice(1, -1);
+  // Use improved escaping for template literal safety
+  const escapedContent = escapeForJS(content);
 
   const remoteDomScript = `
     const stack = document.createElement('nimbus-stack');

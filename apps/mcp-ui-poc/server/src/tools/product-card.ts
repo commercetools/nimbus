@@ -1,4 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
+import { escapeForJS } from "./shared-types.js";
 
 export interface ProductCardArgs {
   productName: string;
@@ -17,13 +18,11 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
-  // Use JSON.stringify for proper JavaScript string escaping
-  const escapedName = JSON.stringify(productName).slice(1, -1);
-  const escapedPrice = JSON.stringify(price).slice(1, -1);
-  const escapedDescription = JSON.stringify(description).slice(1, -1);
-  const escapedImageUrl = imageUrl
-    ? JSON.stringify(imageUrl).slice(1, -1)
-    : undefined;
+  // Use improved escaping for template literal safety
+  const escapedName = escapeForJS(productName);
+  const escapedPrice = escapeForJS(price);
+  const escapedDescription = escapeForJS(description);
+  const escapedImageUrl = imageUrl ? escapeForJS(imageUrl) : undefined;
 
   const remoteDomScript = `
     // Create container for alert and card

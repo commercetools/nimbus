@@ -26,11 +26,19 @@ export function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom when messages or loading state changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  // Focus input after initialization
+  useEffect(() => {
+    if (isReady) {
+      inputRef.current?.focus();
+    }
+  }, [isReady]);
 
   // Initialize: validate element manifest, then Claude
   useEffect(() => {
@@ -90,6 +98,10 @@ export function ChatInterface() {
       ]);
     } finally {
       setIsLoading(false);
+      // Focus input after response is received
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   }
 
@@ -185,7 +197,7 @@ export function ChatInterface() {
               }
 
               try {
-                console.log("🎨 Rendering UIResource:", resource.resource);
+                console.log("🎨 Rendering UIResource:", resource.resource.uri);
                 console.log("📚 Using library config:", nimbusLibrary);
                 console.log("🔧 Remote elements config:", nimbusRemoteElements);
 
@@ -343,6 +355,7 @@ export function ChatInterface() {
 
       <Flex gap="300">
         <TextInput
+          ref={inputRef}
           aria-label="chat input"
           flex="1"
           value={input}
