@@ -86,7 +86,7 @@ const App = () => (
 )
 ```
 
-### As flex container
+### As a flex container
 
 Use flexbox props to create flexible layouts in both horizontal and vertical orientations:
 
@@ -126,7 +126,7 @@ const App = () => (
 - Components that need to grow or shrink based on content
 - Navigation bars, button groups, form layouts
 
-### As grid container
+### As a grid container
 
 Create two-dimensional grid layouts with CSS Grid props. Grid is ideal for complex layouts where you need control over both rows and columns simultaneously:
 
@@ -343,13 +343,15 @@ Create a centered container with maximum width:
 
 ```jsx-live-dev
 const App = () => (
-  <Box maxWidth="3xl" mx="auto" p="400" bg="primary.3">
-    <Text fontSize="lg" fontWeight="semibold" mb="200">
-      Centered Container
-    </Text>
-    <Text fontSize="sm">
-      This content is centered with a maximum width, commonly used for readable text layouts or contained content areas.
-    </Text>
+  <Box bg="neutral.2" p="400">
+    <Box maxWidth="3xl" mx="auto" p="400" bg="primary.3">
+      <Text fontSize="lg" fontWeight="semibold" mb="200">
+        Centered Container
+      </Text>
+      <Text fontSize="sm">
+        This content is centered with a maximum width, commonly used for readable text layouts or contained content areas.
+      </Text>
+    </Box>
   </Box>
 )
 ```
