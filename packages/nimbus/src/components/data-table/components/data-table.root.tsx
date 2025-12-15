@@ -3,11 +3,12 @@ import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { DataTableContext } from "./data-table.context";
+import { DataTableContext, CustomSettingsContext } from "./data-table.context";
 import type {
   DataTableProps,
   SortDescriptor,
   DataTableContextValue,
+  CustomSettingsContextValue,
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 
@@ -48,6 +49,7 @@ export const DataTableRoot = function DataTableRoot<
     onPinToggle,
     onColumnsChange,
     onSettingsChange,
+    customSettings,
     children,
     ...rest
   } = props;
@@ -208,6 +210,13 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
+  const customSettingsContextValue: CustomSettingsContextValue = useMemo(
+    () => ({
+      customSettings,
+    }),
+    [customSettings]
+  );
+
   return (
     <DataTableRootSlot
       ref={ref}
@@ -221,7 +230,9 @@ export const DataTableRoot = function DataTableRoot<
         <DataTableContext.Provider
           value={contextValue as DataTableContextValue<Record<string, unknown>>}
         >
-          {children}
+          <CustomSettingsContext.Provider value={customSettingsContextValue}>
+            {children}
+          </CustomSettingsContext.Provider>
         </DataTableContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>

@@ -206,6 +206,6 @@ export const drawerSlotRecipe = defineSlotRecipe({
   },
   defaultVariants: {
     placement: "right",
-    showBackdrop: false,
+    showBackdrop: true,
   },
 });

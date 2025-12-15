@@ -64,8 +64,8 @@ const App = () => (
         <Drawer.CloseTrigger />
       </Drawer.Header>
       <Drawer.Body>
-          This is a basic dialog with default settings. It includes a backdrop,
-          title, description, and close button for a complete experience.
+          This is a basic drawer with default settings. It includes a backdrop overlay
+          (enabled by default), title, and close button for a complete experience.
       </Drawer.Body>
       <Drawer.Footer>
         <Button variant="outline" slot="close">Cancel</Button>
@@ -104,7 +104,7 @@ const App = () => (
 
 ### Placement Options
 
-Position the drawer at different locations using the `placement` prop:
+Position the drawer at different locations using the `placement` prop. You can also control the backdrop overlay with the `showBackdrop` prop (enabled by default):
 
 ```jsx-live
 const App = () => {

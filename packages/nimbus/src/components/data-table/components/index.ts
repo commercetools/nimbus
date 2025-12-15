@@ -7,4 +7,8 @@ export { DataTableRow } from "./data-table.row";
 export { DataTableCell } from "./data-table.cell";
 export { DataTableFooter } from "./data-table.footer";
 export { DataTableManager } from "./data-table.manager";
-export { DataTableContext, useDataTableContext } from "./data-table.context";
+export {
+  DataTableContext,
+  useDataTableContext,
+  useCustomSettingsContext,
+} from "./data-table.context";

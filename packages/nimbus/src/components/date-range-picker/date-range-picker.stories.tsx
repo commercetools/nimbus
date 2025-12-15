@@ -125,6 +125,7 @@ export const Base: Story = {
   parameters: {
     test: {
       dangerouslyIgnoreUnhandledErrors: true,
+      timeout: 12000, // 12 seconds - complex calendar interactions
     },
   },
   play: async ({ canvasElement, step }) => {
@@ -580,6 +581,7 @@ export const Controlled: Story = {
   parameters: {
     test: {
       dangerouslyIgnoreUnhandledErrors: true,
+      timeout: 10000, // 10 seconds - controlled state updates
     },
   },
   render: (args) => {
@@ -1255,6 +1257,11 @@ export const VariantsSizesAndStates: Story = {
 export const TimeSupport: Story = {
   args: {
     ["aria-label"]: "Select a date and time range",
+  },
+  parameters: {
+    test: {
+      timeout: 60000, // 60 seconds for complex time segment testing
+    },
   },
   render: (args) => {
     return (

@@ -84,6 +84,7 @@
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
     "@vitest/browser": "catalog:tooling",
+    "@vitest/browser-playwright": "catalog:tooling",
     "@vitest/coverage-v8": "catalog:tooling",
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",

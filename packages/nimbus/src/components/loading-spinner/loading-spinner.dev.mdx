@@ -89,33 +89,9 @@ export const UserList = () => (
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using LoadingSpinner in your application. The component's internal functionality is already tested by Nimbus - these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using LoadingSpinner within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
 
-### Basic rendering tests
-
-Verify the component renders with the expected accessibility attributes:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { LoadingSpinner } from '@commercetools/nimbus';
-
-describe('LoadingSpinner', () => {
-  it('renders with default accessibility attributes', () => {
-    render(<LoadingSpinner />);
-    
-    // Verify role and default label
-    const spinner = screen.getByRole('progressbar');
-    expect(spinner).toBeInTheDocument();
-    expect(spinner).toHaveAttribute('aria-label', 'Loading');
-  });
-
-  it('renders with a custom accessible label', () => {
-    render(<LoadingSpinner aria-label="Loading products" />);
-    
-    expect(screen.getByRole('progressbar', { name: "Loading products" })).toBeInTheDocument();
-  });
-});
-```
+{{docs-tests: loading-spinner.docs.spec.tsx}}
 
 ## Resources
 

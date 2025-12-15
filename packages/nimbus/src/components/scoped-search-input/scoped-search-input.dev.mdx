@@ -1,0 +1,596 @@
+---
+title: ScopedSearchInput Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ScopedSearchInput, type ScopedSearchInputProps, type ScopedSearchInputValue } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The ScopedSearchInput combines a select dropdown with a search input field, enabling users to filter searches by category or field type. It requires controlled mode with `value` and `onSubmit`:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All Fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+    { label: 'Phone', value: 'phone' },
+  ];
+
+  return (
+    <ScopedSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={options}
+      selectPlaceholder="Select field"
+      searchPlaceholder="Enter search term..."
+    />
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [valueSm, setValueSm] = useState({ text: '', option: 'name' });
+  const [valueMd, setValueMd] = useState({ text: '', option: 'name' });
+
+  const options = [
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+    { label: 'Phone', value: 'phone' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <ScopedSearchInput
+        size="sm"
+        value={valueSm}
+        onValueChange={setValueSm}
+        onSubmit={console.log}
+        options={options}
+        searchPlaceholder="Small size..."
+      />
+      <ScopedSearchInput
+        size="md"
+        value={valueMd}
+        onValueChange={setValueMd}
+        onSubmit={console.log}
+        options={options}
+        searchPlaceholder="Medium size..."
+      />
+    </Stack>
+  );
+}
+```
+
+### Grouped options
+
+Organize filter categories using option groups for better organization:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'email' });
+
+  const groupedOptions = [
+    {
+      label: 'Contact Info',
+      options: [
+        { label: 'Email', value: 'email' },
+        { label: 'Phone', value: 'phone' },
+      ],
+    },
+    {
+      label: 'Personal Info',
+      options: [
+        { label: 'Name', value: 'name' },
+        { label: 'Address', value: 'address' },
+      ],
+    },
+  ];
+
+  return (
+    <ScopedSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={groupedOptions}
+      searchPlaceholder="Search..."
+    />
+  );
+}
+```
+
+### Auto-focus behavior
+
+After selecting a filter option, the search input automatically receives focus, allowing users to immediately start typing without clicking:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All Fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  return (
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" color="fg.muted">
+        Select a different option to see auto-focus in action
+      </Text>
+      <ScopedSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={console.log}
+        options={options}
+        searchPlaceholder="Type after selecting..."
+      />
+    </Stack>
+  );
+}
+```
+
+### State management patterns
+
+Use separate callbacks for granular control over state changes:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'name' });
+  const [history, setHistory] = useState([]);
+
+  const options = [
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+    { label: 'Phone', value: 'phone' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ScopedSearchInput
+        value={value}
+        onTextChange={(text) => {
+          setHistory((prev) => [...prev, `Text changed: "${text}"`]);
+        }}
+        onOptionChange={(option) => {
+          setHistory((prev) => [...prev, `Option changed: "${option}"`]);
+        }}
+        onValueChange={setValue}
+        onSubmit={(val) => {
+          setHistory((prev) => [...prev, `Submitted: ${val.option} = "${val.text}"`]);
+        }}
+        options={options}
+        searchPlaceholder="Type to track changes..."
+      />
+      <Stack direction="column" gap="100" fontSize="sm">
+        <Text fontWeight="medium">Current state:</Text>
+        <Text>Option: {value.option}, Text: "{value.text}"</Text>
+        {history.length > 0 && (
+          <>
+            <Text fontWeight="medium" marginTop="200">Event history:</Text>
+            {history.slice(-3).map((event, i) => (
+              <Text key={i} color="fg.muted">{event}</Text>
+            ))}
+          </>
+        )}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+**Available callbacks:**
+- `onValueChange`: Fires when either text or option changes (receives complete value object)
+- `onTextChange`: Fires only when search text changes
+- `onOptionChange`: Fires only when selected option changes
+- `onSubmit`: Fires when user submits search (Enter key or search button)
+- `onReset`: Fires when user clears the search text
+
+### Component states
+
+The component supports common input states:
+
+```jsx-live-dev
+const App = () => {
+  const [normalValue, setNormalValue] = useState({ text: '', option: 'all' });
+  const [disabledValue, setDisabledValue] = useState({ text: 'disabled', option: 'all' });
+  const [readonlyValue, setReadonlyValue] = useState({ text: 'readonly', option: 'all' });
+  const [invalidValue, setInvalidValue] = useState({ text: 'error', option: 'all' });
+  const [requiredValue, setRequiredValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All Fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="medium">Normal</Text>
+        <ScopedSearchInput
+          value={normalValue}
+          onValueChange={setNormalValue}
+          onSubmit={console.log}
+          options={options}
+          searchPlaceholder="Normal state..."
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="medium">Disabled</Text>
+        <ScopedSearchInput
+          value={disabledValue}
+          onValueChange={setDisabledValue}
+          onSubmit={console.log}
+          options={options}
+          isDisabled
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="medium">Read-only</Text>
+        <ScopedSearchInput
+          value={readonlyValue}
+          onValueChange={setReadonlyValue}
+          onSubmit={console.log}
+          options={options}
+          isReadOnly
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="medium">Invalid</Text>
+        <ScopedSearchInput
+          value={invalidValue}
+          onValueChange={setInvalidValue}
+          onSubmit={console.log}
+          options={options}
+          isInvalid
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="medium">Required</Text>
+        <ScopedSearchInput
+          value={requiredValue}
+          onValueChange={setRequiredValue}
+          onSubmit={console.log}
+          options={options}
+          isRequired
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### isEmpty utility
+
+Use the static `isEmpty` method to validate search input before submission:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'name' });
+  const [validationMessage, setValidationMessage] = useState('');
+
+  const options = [
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  const handleSubmit = (val) => {
+    if (ScopedSearchInput.isEmpty(val)) {
+      setValidationMessage('❌ Please enter a search term');
+    } else {
+      setValidationMessage(`✓ Searching ${val.option} for: "${val.text}"`);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="300">
+      <ScopedSearchInput
+        value={value}
+        onValueChange={(val) => {
+          setValue(val);
+          setValidationMessage('');
+        }}
+        onSubmit={handleSubmit}
+        options={options}
+        searchPlaceholder="Type here..."
+      />
+      <Stack direction="row" gap="200" alignItems="center">
+        <Button onClick={() => handleSubmit(value)}>
+          Submit Search
+        </Button>
+        {validationMessage && (
+          <Text
+            fontSize="sm"
+            color={validationMessage.startsWith('❌') ? 'critical.11' : 'positive.11'}
+          >
+            {validationMessage}
+          </Text>
+        )}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Controlled mode
+
+The ScopedSearchInput requires controlled mode with explicit state management:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'products' });
+  const [lastSubmission, setLastSubmission] = useState(null);
+
+  const options = [
+    { label: 'Products', value: 'products' },
+    { label: 'Orders', value: 'orders' },
+    { label: 'Customers', value: 'customers' },
+  ];
+
+  const handleSubmit = (val) => {
+    setLastSubmission(val);
+  };
+
+  const handleClear = () => {
+    setValue({ ...value, text: '' });
+    setLastSubmission(null);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <ScopedSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={handleSubmit}
+        onReset={handleClear}
+        options={options}
+        selectPlaceholder="Select category"
+        searchPlaceholder="Enter search term..."
+      />
+      <Stack direction="column" gap="200" fontSize="sm">
+        <Text fontWeight="medium">Current state:</Text>
+        <Text>Category: {value.option}</Text>
+        <Text>Search text: {value.text || '(empty)'}</Text>
+        {lastSubmission && (
+          <>
+            <Text fontWeight="medium" marginTop="200">Last submission:</Text>
+            <Text>Searched {lastSubmission.option} for: "{lastSubmission.text}"</Text>
+          </>
+        )}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The ScopedSearchInput is built with React Aria Components and follows WCAG 2.1 AA guidelines.
+
+#### Role
+
+Both the select dropdown and search input maintain their respective semantic roles:
+- Select trigger: `role="button"` with appropriate ARIA attributes
+- Search input: `role="searchbox"`
+
+#### Labeling
+
+Provide accessible labels for both parts using `selectAriaLabel` and `searchAriaLabel`:
+
+```tsx
+<ScopedSearchInput
+  selectAriaLabel="Filter search by field"
+  searchAriaLabel="Search term"
+  // ... other props
+/>
+```
+
+When using FormField, the field label automatically associates with both inputs via `aria-labelledby`.
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between select dropdown and search input |
+| `Enter` (in select) | Open dropdown menu |
+| `Arrow Up/Down` (in select) | Navigate options |
+| `Enter` (in search) | Submit search |
+| `Escape` | Close dropdown (when open) |
+
+#### ARIA attributes
+
+The component automatically manages:
+- `aria-controls`: Links select to search input
+- `aria-labelledby`: Associates with FormField label
+- `aria-describedby`: Associates with FormField description and errors
+- `aria-invalid`: Indicates validation state
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<ScopedSearchInput
+  id="product-search"
+  value={value}
+  onValueChange={setValue}
+  onSubmit={handleSearch}
+  options={options}
+/>
+```
+
+This ensures consistent tracking across sessions and makes it easier to target specific instances for analytics or testing.
+
+## API reference
+
+<PropsTable id="ScopedSearchInput" />
+
+## Common patterns
+
+### Form integration with validation
+
+Integrate with FormField for complete form functionality:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'products' });
+  const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
+
+  const options = [
+    { label: 'Products', value: 'products' },
+    { label: 'Orders', value: 'orders' },
+    { label: 'Customers', value: 'customers' },
+  ];
+
+  const handleSubmit = (val) => {
+    setTouched(true);
+    if (ScopedSearchInput.isEmpty(val)) {
+      setError('Search term is required');
+    } else if (val.text.length < 3) {
+      setError('Search term must be at least 3 characters');
+    } else {
+      setError('');
+      console.log('Valid search:', val);
+    }
+  };
+
+  const handleChange = (val) => {
+    setValue(val);
+    if (touched && error) {
+      setError('');
+    }
+  };
+
+  return (
+    <FormField.Root isInvalid={!!(error && touched)}>
+      <FormField.Label>Search</FormField.Label>
+      <FormField.Input>
+        <ScopedSearchInput
+          value={value}
+          onValueChange={handleChange}
+          onSubmit={handleSubmit}
+          options={options}
+          selectPlaceholder="Category"
+          searchPlaceholder="Enter at least 3 characters..."
+          isInvalid={!!(error && touched)}
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a category and enter your search term
+      </FormField.Description>
+      {touched && error && (
+        <FormField.Error>{error}</FormField.Error>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Advanced search with filters
+
+Implement a full-featured search interface with multiple filter categories:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'name' });
+  const [results, setResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const searchOptions = [
+    {
+      label: 'Product Info',
+      options: [
+        { label: 'Product Name', value: 'name' },
+        { label: 'SKU', value: 'sku' },
+        { label: 'Description', value: 'description' },
+      ],
+    },
+    {
+      label: 'Attributes',
+      options: [
+        { label: 'Brand', value: 'brand' },
+        { label: 'Category', value: 'category' },
+      ],
+    },
+  ];
+
+  const mockSearch = (searchValue) => {
+    setIsSearching(true);
+    setTimeout(() => {
+      // Simulate API response
+      const mockResults = [
+        `Found results in ${searchValue.option}: "${searchValue.text}"`,
+        `Result 1 matching ${searchValue.text}`,
+        `Result 2 matching ${searchValue.text}`,
+      ];
+      setResults(mockResults);
+      setIsSearching(false);
+    }, 500);
+  };
+
+  const handleSubmit = (val) => {
+    if (!ScopedSearchInput.isEmpty(val)) {
+      mockSearch(val);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <ScopedSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={handleSubmit}
+        options={searchOptions}
+        selectPlaceholder="Search by..."
+        searchPlaceholder="Enter search term..."
+      />
+      {isSearching && (
+        <Text fontSize="sm" color="fg.muted">Searching...</Text>
+      )}
+      {!isSearching && results.length > 0 && (
+        <Stack direction="column" gap="200">
+          <Text fontSize="sm" fontWeight="medium">Search Results:</Text>
+          {results.map((result, i) => (
+            <Text key={i} fontSize="sm">{result}</Text>
+          ))}
+        </Stack>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ScopedSearchInput in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: scoped-search-input.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-scopedsearchinput--docs)
+- [SearchInput Component](/components/inputs/searchinput)
+- [Select Component](/components/inputs/select)
+- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)
+- [React Aria Select](https://react-spectrum.adobe.com/react-aria/Select.html)

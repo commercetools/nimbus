@@ -1,0 +1,384 @@
+---
+title: Checkbox Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Checkbox, type CheckboxProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode:
+
+```jsx-live-dev
+const App = () => (
+  <Checkbox>Accept terms and conditions</Checkbox>
+)
+```
+
+## Usage examples
+
+### Selection states
+
+The Checkbox supports three selection states: unchecked (default), checked, and indeterminate.
+
+#### Unchecked
+
+The default state when no selection has been made:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Checkbox>Option 1</Checkbox>
+    <Checkbox>Option 2</Checkbox>
+  </Stack>
+)
+```
+
+#### Checked
+
+Use the `isSelected` prop to indicate a checked state:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Checkbox isSelected>Option 1</Checkbox>
+    <Checkbox isSelected>Option 2</Checkbox>
+  </Stack>
+)
+```
+
+#### Indeterminate
+
+Use the `isIndeterminate` prop to show a partial selection state, commonly used for "select all" scenarios:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Checkbox isIndeterminate>Select all</Checkbox>
+    <Checkbox isSelected>Option 1</Checkbox>
+    <Checkbox>Option 2</Checkbox>
+  </Stack>
+)
+```
+
+### Validation and disabled states
+
+#### Invalid state
+
+Use the `isInvalid` prop to indicate validation errors:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Checkbox isInvalid>Required field</Checkbox>
+    <Checkbox isSelected isInvalid>Invalid selection</Checkbox>
+  </Stack>
+)
+```
+
+#### Disabled state
+
+Disable checkbox interaction with the `isDisabled` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Checkbox isDisabled>Disabled checkbox</Checkbox>
+    <Checkbox isSelected isDisabled>Disabled and checked</Checkbox>
+    <Checkbox isIndeterminate isDisabled>Disabled and indeterminate</Checkbox>
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [displayValue, setDisplayValue] = useState<boolean>(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        {displayValue ? 'Notifications enabled' : 'Notifications disabled'}
+      </Text>
+      <Checkbox
+        defaultValue={false}
+        onChange={(isSelected) => {
+          setDisplayValue(isSelected);
+        }}
+      >
+        Enable notifications
+      </Checkbox>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected state without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [isSelected, setIsSelected] = useState<boolean>(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        {isSelected ? 'Terms accepted' : 'Terms not accepted'}
+      </Text>
+      <Checkbox
+        isSelected={isSelected}
+        onChange={setIsSelected}
+      >
+        Accept terms and conditions
+      </Checkbox>
+      <Button
+        size="sm"
+        onClick={() => setIsSelected(!isSelected)}
+      >
+        {isSelected ? 'Uncheck' : 'Check'}
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform selections
+- Clear or programmatically set the value
+- React to changes in real-time
+
+## Component requirements
+
+### Accessibility
+
+The Checkbox handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `CheckboxField` pattern component (recommended, if available)
+- Providing label content via the `children` prop:
+
+```tsx
+<Checkbox>
+  {intl.formatMessage(checkboxLabelMessage)}
+</Checkbox>
+```
+
+- Associating a `<label>` element with the `Checkbox` using `aria-labelledby`:
+
+```tsx
+<label id="checkbox-label">
+  {intl.formatMessage(labelMessage)}
+</label>
+<Checkbox aria-labelledby="checkbox-label" />
+```
+
+- Associating a `<label>` element with the `Checkbox` using `htmlFor`:
+
+```tsx
+<label htmlFor="checkbox-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<Checkbox id="checkbox-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<Checkbox aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "terms-acceptance-checkbox";
+
+export const TermsCheckbox = () => (
+  <Checkbox id={PERSISTENT_ID}>
+    Accept terms and conditions
+  </Checkbox>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the checkbox
+- `Space` / `Enter`: Toggle the checkbox state when focused
+
+## API reference
+
+<PropsTable id="Checkbox" />
+
+## Common patterns
+
+### Checkbox group
+
+Group related checkboxes together for multiple selections:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const options = [
+    { id: 'option1', label: 'Email notifications' },
+    { id: 'option2', label: 'SMS notifications' },
+    { id: 'option3', label: 'Push notifications' },
+  ];
+
+  const handleToggle = (optionId: string) => {
+    setSelectedOptions((prev) =>
+      prev.includes(optionId)
+        ? prev.filter((id) => id !== optionId)
+        : [...prev, optionId]
+    );
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      {options.map((option) => (
+        <Checkbox
+          key={option.id}
+          isSelected={selectedOptions.includes(option.id)}
+          onChange={() => handleToggle(option.id)}
+        >
+          {option.label}
+        </Checkbox>
+      ))}
+      <Text fontSize="sm">
+        Selected: {selectedOptions.length} of {options.length}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Select all pattern
+
+Implement a "select all" checkbox with indeterminate state:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { id: '1', label: 'Item 1', selected: false },
+    { id: '2', label: 'Item 2', selected: true },
+    { id: '3', label: 'Item 3', selected: false },
+  ]);
+
+  const allSelected = items.every((item) => item.selected);
+  const someSelected = items.some((item) => item.selected) && !allSelected;
+
+  const handleSelectAll = (isSelected: boolean) => {
+    setItems((prev) =>
+      prev.map((item) => ({ ...item, selected: isSelected }))
+    );
+  };
+
+  const handleToggleItem = (id: string) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, selected: !item.selected } : item
+      )
+    );
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Checkbox
+        isSelected={allSelected}
+        isIndeterminate={someSelected}
+        onChange={handleSelectAll}
+      >
+        Select all
+      </Checkbox>
+      <Stack direction="column" gap="200" ml="600">
+        {items.map((item) => (
+          <Checkbox
+            key={item.id}
+            isSelected={item.selected}
+            onChange={() => handleToggleItem(item.id)}
+          >
+            {item.label}
+          </Checkbox>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Form integration example
+
+Integrate checkboxes with form state management:
+
+```jsx-live-dev
+const App = () => {
+  const [formData, setFormData] = useState({
+    acceptTerms: false,
+    subscribeNewsletter: false,
+    shareData: false,
+  });
+
+  const handleChange = (field: string) => (isSelected: boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: isSelected }));
+  };
+
+  const handleSubmit = () => {
+    if (!formData.acceptTerms) {
+      alert('Please accept the terms and conditions');
+      return;
+    }
+    alert('Form submitted!');
+  };
+
+  return (
+    <Stack direction="column" gap="600">
+      <Checkbox
+        isSelected={formData.acceptTerms}
+        onChange={handleChange('acceptTerms')}
+        isInvalid={!formData.acceptTerms}
+      >
+        I accept the terms and conditions
+      </Checkbox>
+      <Checkbox
+        isSelected={formData.subscribeNewsletter}
+        onChange={handleChange('subscribeNewsletter')}
+      >
+        Subscribe to newsletter
+      </Checkbox>
+      <Checkbox
+        isSelected={formData.shareData}
+        onChange={handleChange('shareData')}
+      >
+        Allow data sharing for analytics
+      </Checkbox>
+      <Button onClick={handleSubmit}>Submit</Button>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Checkbox within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: checkbox.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-checkbox--docs)
+- [React Aria Checkbox](https://react-spectrum.adobe.com/react-aria/Checkbox.html)
+- [ARIA Checkbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/)
+

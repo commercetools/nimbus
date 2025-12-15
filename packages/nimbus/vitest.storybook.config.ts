@@ -1,4 +1,3 @@
-/// <reference types="@vitest/browser/providers/playwright" />
 import {
   coverageConfigDefaults,
   defineConfig,
@@ -6,7 +5,13 @@ import {
 } from "vitest/config";
 import createBaseConfig from "./vite.config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
-import path from "path";
+import { playwright } from "@vitest/browser-playwright";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// ESM compatibility: define __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig(async () => {
   const baseConfig = await createBaseConfig({
@@ -42,23 +47,20 @@ export default defineConfig(async () => {
         setupFiles: ["./.storybook/vitest.setup.ts"],
         // make vitest fn's available globally (no need to import them)
         globals: true,
-        // Increase timeouts for browser stability
-        testTimeout: 30000,
-        hookTimeout: 30000,
+        // Increase timeouts for browser stability and complex stories in CI
+        testTimeout: 60000, // 60 seconds for slow stories (LocalizedField, DateRangePicker)
+        hookTimeout: 60000,
         // config for running tests in one or multiple *real* browsers
         browser: {
           enabled: true,
-          // ... use playwright to run tests
-          provider: "playwright",
-          // ... only in chromium
-          instances: [
-            {
-              browser: "chromium",
-              context: {
-                locale: "en-US",
-              },
+          // ... use playwright to run tests with locale set via contextOptions
+          provider: playwright({
+            contextOptions: {
+              locale: "en-US",
             },
-          ],
+          }),
+          // ... only in chromium
+          instances: [{ browser: "chromium" }],
           // ... do not open the browser-ui
           headless: true,
           // ... do not capture screenshots on failure

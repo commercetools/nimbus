@@ -20,9 +20,12 @@ Parse the arguments to extract:
 
 ## **Your Mission**
 
-Create complete engineering documentation (`.dev.mdx` file) for the specified
-component using the standard template at `@docs/engineering-docs-template.mdx`
-and following the guidance in `@docs/engineering-docs-template-guide.md`.
+Create complete engineering documentation for the specified component:
+
+1. **`.dev.mdx` file** - Engineering documentation using the standard template at `@docs/engineering-docs-template.mdx`
+2. **`.docs.spec.tsx` file** - Companion test file with executable test examples (MANDATORY)
+
+Follow the guidance in `@docs/engineering-docs-template-guide.md` and `@docs/engineering-docs-validation.md`.
 
 ## **Execution Flow**
 
@@ -119,7 +122,12 @@ Based on your analysis, create a documentation plan:
 - **Controlled/Uncontrolled**: [Both / Controlled only / Uncontrolled only]
 - **Key Features**: [List 3-5 main features or props]
 
-### Sections to Include
+### Files to Create
+
+- [ ] `{component-name}.dev.mdx` - Engineering documentation
+- [ ] `{component-name}.docs.spec.tsx` - Companion test file (MANDATORY)
+
+### Sections to Include (in .dev.mdx)
 
 Based on component type and features:
 
@@ -138,7 +146,7 @@ Based on component type and features:
 - [ ] Form integration (field patterns only)
 - [ ] API reference (required)
 - [ ] Common patterns (recommended)
-- [ ] Testing your implementation (required)
+- [ ] Testing your implementation (required) - uses `{{docs-tests:}}` injection token
 - [ ] Resources (required)
 
 ### Example Generation Strategy
@@ -215,19 +223,20 @@ Once confirmed, create the documentation file:
        > is good practice to add a **persistent**, **unique** id to the
        > component:
    - **Testing**:
+
 - Testing examples are auto-generated from `.docs.spec.tsx` files
-     - **Mandatory**: Include this text before the injection token:
-       > These examples demonstrate how to test your implementation when using
-       > [Component] in your application. The component's internal functionality
-       > is already tested by Nimbus - these patterns help you verify your
-       > integration and application-specific logic.
-     - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
-     - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
-   - **Resources**:
-     - Link to Storybook (use "link-tbd" placeholder)
-     - **Internal component links must start with '/'** (e.g.,
-       `/components/inputs/searchinput`) to ensure absolute paths from root, not
-       relative to current page
+  - **Mandatory**: Include this text before the injection token:
+    > These examples demonstrate how to test your implementation when using
+    > [Component] within your application. As the component's internal
+    > functionality is already tested by Nimbus, these patterns help you verify
+    > your integration and application-specific logic.
+  - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
+  - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
+  - **Resources**:
+    - Link to Storybook (use "link-tbd" placeholder)
+    - **Internal component links must start with '/'** (e.g.,
+      `/components/inputs/searchinput`) to ensure absolute paths from root, not
+      relative to current page
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -237,15 +246,20 @@ Once confirmed, create the documentation file:
    - Field patterns:
      `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
 
-9. **Write the file** using the Write tool
+9. **Write the `.dev.mdx` file** using the Write tool
 
-### **Step 6.1: Create Documentation Test File**
+10. **Create the companion `.docs.spec.tsx` test file** (see Step 6.1 for details)
 
-**IMPORTANT**: After creating the `.dev.mdx` file, create the companion `.docs.spec.tsx` test file.
+11. **Write the `.docs.spec.tsx` file** using the Write tool
+
+### **Step 6.1: Documentation Test File Structure**
+
+**MANDATORY**: Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test file. The testing section in the MDX uses an injection token that pulls from this file at build time.
 
 1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as component
 
 2. **File structure**:
+
    ```typescript
    import { describe, it, expect, vi } from 'vitest';
    import { render, screen } from '@testing-library/react';
@@ -300,7 +314,8 @@ Once confirmed, create the documentation file:
    - Basic rendering (always)
    - Interactions (if interactive)
    - Controlled mode (if supports value/onChange)
-   - States (disabled, invalid, readonly, required - if component has these props)
+   - States (disabled, invalid, readonly, required - if component has these
+     props)
    - Component-specific features
 
 5. **Critical rules**:
@@ -395,9 +410,9 @@ Provide a final summary:
 ````markdown
 ## Documentation Created
 
-**Component**: {ComponentName}
-**Type**: [Base Component / Field Pattern]
+**Component**: {ComponentName} **Type**: [Base Component / Field Pattern]
 **Files Created**:
+
 - `.dev.mdx`: {full-path-to-dev-mdx}
 - `.docs.spec.tsx`: {full-path-to-docs-spec}
 

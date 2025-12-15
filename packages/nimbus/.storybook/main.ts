@@ -1,13 +1,19 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import { join, dirname, resolve } from "path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { mergeConfig } from "vite";
+
+// ESM compatibility: define __dirname since CJS constants are not available
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
+ * Uses import.meta.resolve for ESM compatibility (required for Storybook 10+).
  */
 function getAbsolutePackagePath(value: string): string {
-  return dirname(require.resolve(join(value, "package.json")));
+  return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }
 
 const config: StorybookConfig = {

@@ -32,7 +32,8 @@ type DefaultExcludedProps = "css" | "asChild" | "as" | "colorScheme";
 // ============================================================
 
 export interface GroupProps
-  extends Omit<GroupRootSlotProps, DefaultExcludedProps>,
+  extends
+    Omit<GroupRootSlotProps, DefaultExcludedProps>,
     Pick<
       RaGroupProps,
       | "isDisabled"
