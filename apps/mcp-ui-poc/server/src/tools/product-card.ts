@@ -2,7 +2,7 @@ import { createUIResource } from "@mcp-ui/server";
 import { escapeForJS } from "../utils/escape-for-js.js";
 
 export interface ProductCardArgs {
-  productId?: string;
+  productId: string;
   productName: string;
   price: string;
   description?: string;
@@ -12,6 +12,7 @@ export interface ProductCardArgs {
 
 export function createProductCard(args: ProductCardArgs) {
   const {
+    productId,
     productName,
     price,
     description = "",
@@ -19,6 +20,8 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
+  // Use improved escaping for template literal safety
+  const escapedProductId = escapeForJS(productId);
   const escapedName = escapeForJS(productName);
   const escapedPrice = escapeForJS(price);
   const escapedDescription = escapeForJS(description);
@@ -87,60 +90,15 @@ export function createProductCard(args: ProductCardArgs) {
     descriptionText.style.overflowWrap = 'break-word';
 
     const button = document.createElement('nimbus-button');
-    button.setAttribute('variant', 'solid');
+    button.setAttribute('variant', 'outline');
     button.setAttribute('color-palette', 'primary');
     button.setAttribute('width', 'full');
-    button.setAttribute('data-label', '${escapedName} Added to Cart');
-    ${!inStock ? "button.setAttribute('is-disabled', 'true');" : ""}
-    button.textContent = 'Add to Cart';
-    console.log('Button color-palette set to:', button.getAttribute('color-palette'));
+    button.textContent = 'View Details';
 
-    // Create success alert structure (will be added to DOM when needed)
-    let alertContainer = null;
-
-    function createAlert() {
-      const alert = document.createElement('nimbus-alert-root');
-      alert.setAttribute('tone', 'positive');
-      alert.setAttribute('variant', 'subtle');
-
-      const alertTitle = document.createElement('nimbus-alert-title');
-      alertTitle.textContent = 'Added to Cart';
-
-      const alertDescription = document.createElement('nimbus-alert-description');
-      alertDescription.textContent = 'Added ${escapedName} to your cart!';
-
-      const alertDismiss = document.createElement('nimbus-alert-dismiss-button');
-
-      alertDismiss.onclick = function() {
-        if (alertContainer && alertContainer.parentNode) {
-          container.removeChild(alertContainer);
-          alertContainer = null;
-        }
-      };
-
-      alert.appendChild(alertTitle);
-      alert.appendChild(alertDescription);
-      alert.appendChild(alertDismiss);
-
-      return alert;
-    }
-
-    // Add click handler to button
-    button.onclick = function() {
-      // Only create and show alert if it doesn't exist
-      if (!alertContainer) {
-        alertContainer = createAlert();
-        container.insertBefore(alertContainer, card);
-      }
-
-      // If postUIActionResult is available, use it
-      if (typeof window.postUIActionResult === 'function') {
-        window.postUIActionResult({
-          type: 'notify',
-          payload: { message: 'Item added to cart' }
-        });
-      }
-    };
+    // Add intent data as data attributes (for event handler to read)
+    button.setAttribute('data-intent-type', 'view_details');
+    button.setAttribute('data-product-id', '${escapedProductId}');
+    button.setAttribute('data-product-name', '${escapedName}');
 
     // Build structure
     cardHeader.appendChild(heading);
@@ -152,13 +110,12 @@ export function createProductCard(args: ProductCardArgs) {
     card.appendChild(cardHeader);
     card.appendChild(cardContent);
 
-    // Only add card initially (no alert)
     container.appendChild(card);
     root.appendChild(container);
   `;
 
   return createUIResource({
-    uri: `ui://product-card/${Date.now()}`,
+    uri: `ui://product-card/${productId}-${Date.now()}`,
     content: {
       type: "remoteDom",
       script: remoteDomScript,
@@ -166,8 +123,8 @@ export function createProductCard(args: ProductCardArgs) {
     },
     encoding: "text",
     metadata: {
-      title: "Product Card",
-      description: `Product card for ${productName}`,
+      title: `Product Card: ${productName}`,
+      description: `Product card for ${productName} with view details intent`,
       created: new Date().toISOString(),
     },
   });

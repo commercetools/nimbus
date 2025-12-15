@@ -285,14 +285,11 @@ function registerTools(server: McpServer) {
     {
       title: "Create Product Card",
       description:
-        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
+        "Creates a product card UI component with name, price, description, image, stock status, and a 'View Details' button that emits an intent when clicked.",
       inputSchema: z.object({
         productId: z
           .string()
-          .optional()
-          .describe(
-            "Optional unique product ID (auto-generated if not provided)"
-          ),
+          .describe("Unique identifier for the product (required for intents)"),
         productName: z.string().describe("The name of the product"),
         price: z.string().describe("The price of the product (e.g., '$999')"),
         description: z
