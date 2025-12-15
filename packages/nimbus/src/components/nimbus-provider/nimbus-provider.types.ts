@@ -1,4 +1,5 @@
 import type { ThemeProviderProps } from "next-themes";
+import type { IntlConfig } from "react-intl";
 
 // ============================================================
 // HELPER TYPES
@@ -112,7 +113,7 @@ export type NimbusProviderProps = ColorModeProviderProps & {
    * Should be in FormatJS compiled format for best performance
    * @see https://formatjs.io/docs/getting-started/message-distribution
    */
-  messages?: Record<string, any>;
+  messages?: IntlConfig["messages"];
   /**
    * Router configuration for client-side navigation
    * When provided, all Nimbus components with href props will use client-side routing
