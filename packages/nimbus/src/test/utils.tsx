@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import { type ReactNode } from "react";
 import {
   render as rtlRender,

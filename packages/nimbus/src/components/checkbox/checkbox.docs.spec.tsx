@@ -140,7 +140,7 @@ describe("Checkbox - Controlled mode", () => {
   });
 
   it("updates when controlled value changes", () => {
-    const { unmount } = render(
+    const { rerender, unmount } = render(
       <Checkbox isSelected={false} onChange={() => {}}>
         Controlled checkbox
       </Checkbox>
@@ -148,7 +148,8 @@ describe("Checkbox - Controlled mode", () => {
 
     expect(screen.getByRole("checkbox")).not.toBeChecked();
 
-    // Unmount and remount with new value since rerender doesn't re-wrap with providers
+    // Unmount and remount with new value
+    // Note: rerender doesn't automatically re-wrap with providers
     unmount();
     render(
       <Checkbox isSelected={true} onChange={() => {}}>
