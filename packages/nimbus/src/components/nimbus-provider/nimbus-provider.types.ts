@@ -108,6 +108,12 @@ export type NimbusProviderProps = ColorModeProviderProps & {
    */
   locale?: string;
   /**
+   * Translation messages for react-intl
+   * Should be in FormatJS compiled format for best performance
+   * @see https://formatjs.io/docs/getting-started/message-distribution
+   */
+  messages?: Record<string, any>;
+  /**
    * Router configuration for client-side navigation
    * When provided, all Nimbus components with href props will use client-side routing
    * - `navigate`: Function to programmatically navigate to routes

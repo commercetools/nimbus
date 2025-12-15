@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { Card, NimbusProvider } from "@commercetools/nimbus";
+import { render, screen } from "@/test/utils";
+import { Card } from "@/components/card";
 
 /**
  * @docs-section basic-rendering
@@ -11,12 +11,10 @@ import { Card, NimbusProvider } from "@commercetools/nimbus";
 describe("Card - Basic rendering", () => {
   it("renders project details", () => {
     render(
-      <NimbusProvider>
-        <Card.Root>
-          <Card.Header>Project X</Card.Header>
-          <Card.Content>Status: Active</Card.Content>
-        </Card.Root>
-      </NimbusProvider>
+      <Card.Root>
+        <Card.Header>Project X</Card.Header>
+        <Card.Content>Status: Active</Card.Content>
+      </Card.Root>
     );
 
     expect(screen.getByText("Project X")).toBeInTheDocument();
@@ -25,11 +23,9 @@ describe("Card - Basic rendering", () => {
 
   it("renders with header only", () => {
     render(
-      <NimbusProvider>
-        <Card.Root>
-          <Card.Header>Card Title</Card.Header>
-        </Card.Root>
-      </NimbusProvider>
+      <Card.Root>
+        <Card.Header>Card Title</Card.Header>
+      </Card.Root>
     );
 
     expect(screen.getByText("Card Title")).toBeInTheDocument();
@@ -37,11 +33,9 @@ describe("Card - Basic rendering", () => {
 
   it("renders with content only", () => {
     render(
-      <NimbusProvider>
-        <Card.Root>
-          <Card.Content>This is the main content.</Card.Content>
-        </Card.Root>
-      </NimbusProvider>
+      <Card.Root>
+        <Card.Content>This is the main content.</Card.Content>
+      </Card.Root>
     );
 
     expect(screen.getByText("This is the main content.")).toBeInTheDocument();

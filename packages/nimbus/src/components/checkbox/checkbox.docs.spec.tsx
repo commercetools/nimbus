@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/test/utils";
 import userEvent from "@testing-library/user-event";
-import { Checkbox, NimbusProvider } from "@commercetools/nimbus";
+import { Checkbox } from "@/components/checkbox";
 
 /**
  * @docs-section basic-rendering
@@ -11,32 +11,19 @@ import { Checkbox, NimbusProvider } from "@commercetools/nimbus";
  */
 describe("Checkbox - Basic rendering", () => {
   it("renders checkbox element", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox>Test checkbox</Checkbox>
-      </NimbusProvider>
-    );
-
+    render(<Checkbox>Test checkbox</Checkbox>);
     // Verify checkbox is present
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
   });
 
   it("renders with label text", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox>Accept terms</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox>Accept terms</Checkbox>);
 
     expect(screen.getByText("Accept terms")).toBeInTheDocument();
   });
 
   it("renders with aria-label when no children provided", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox aria-label="Test checkbox" />
-      </NimbusProvider>
-    );
+    render(<Checkbox aria-label="Test checkbox" />);
 
     expect(
       screen.getByRole("checkbox", { name: /test checkbox/i })
@@ -44,11 +31,7 @@ describe("Checkbox - Basic rendering", () => {
   });
 
   it("renders unchecked by default", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox>Unchecked checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox>Unchecked checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).not.toBeChecked();
@@ -63,22 +46,14 @@ describe("Checkbox - Basic rendering", () => {
  */
 describe("Checkbox - Selection states", () => {
   it("renders checked state", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox isSelected>Checked checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox isSelected>Checked checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).toBeChecked();
   });
 
   it("renders indeterminate state", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox isIndeterminate>Indeterminate checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox isIndeterminate>Indeterminate checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     // React Aria sets indeterminate state on the input element, not aria-checked
@@ -86,11 +61,7 @@ describe("Checkbox - Selection states", () => {
   });
 
   it("renders unchecked state explicitly", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox isSelected={false}>Unchecked checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox isSelected={false}>Unchecked checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).not.toBeChecked();
@@ -106,11 +77,7 @@ describe("Checkbox - Selection states", () => {
 describe("Checkbox - Interactions", () => {
   it("toggles when clicked", async () => {
     const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Checkbox>Toggle me</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox>Toggle me</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).not.toBeChecked();
@@ -123,11 +90,7 @@ describe("Checkbox - Interactions", () => {
   it("calls onChange callback when toggled", async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
-    render(
-      <NimbusProvider>
-        <Checkbox onChange={handleChange}>Test checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox onChange={handleChange}>Test checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     await user.click(checkbox);
@@ -137,11 +100,7 @@ describe("Checkbox - Interactions", () => {
 
   it("toggles with spacebar when focused", async () => {
     const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Checkbox>Keyboard toggle</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox>Keyboard toggle</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     checkbox.focus();
@@ -152,11 +111,7 @@ describe("Checkbox - Interactions", () => {
 
   it("toggles with enter key when focused", async () => {
     const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Checkbox>Enter toggle</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox>Enter toggle</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     checkbox.focus();
@@ -175,11 +130,9 @@ describe("Checkbox - Interactions", () => {
 describe("Checkbox - Controlled mode", () => {
   it("displays controlled value", () => {
     render(
-      <NimbusProvider>
-        <Checkbox isSelected={true} onChange={() => {}}>
-          Controlled checkbox
-        </Checkbox>
-      </NimbusProvider>
+      <Checkbox isSelected={true} onChange={() => {}}>
+        Controlled checkbox
+      </Checkbox>
     );
 
     const checkbox = screen.getByRole("checkbox");
@@ -187,22 +140,21 @@ describe("Checkbox - Controlled mode", () => {
   });
 
   it("updates when controlled value changes", () => {
-    const { rerender } = render(
-      <NimbusProvider>
-        <Checkbox isSelected={false} onChange={() => {}}>
-          Controlled checkbox
-        </Checkbox>
-      </NimbusProvider>
+    const { rerender, unmount } = render(
+      <Checkbox isSelected={false} onChange={() => {}}>
+        Controlled checkbox
+      </Checkbox>
     );
 
     expect(screen.getByRole("checkbox")).not.toBeChecked();
 
-    rerender(
-      <NimbusProvider>
-        <Checkbox isSelected={true} onChange={() => {}}>
-          Controlled checkbox
-        </Checkbox>
-      </NimbusProvider>
+    // Unmount and remount with new value
+    // Note: rerender doesn't automatically re-wrap with providers
+    unmount();
+    render(
+      <Checkbox isSelected={true} onChange={() => {}}>
+        Controlled checkbox
+      </Checkbox>
     );
 
     expect(screen.getByRole("checkbox")).toBeChecked();
@@ -212,11 +164,9 @@ describe("Checkbox - Controlled mode", () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
     render(
-      <NimbusProvider>
-        <Checkbox isSelected={false} onChange={handleChange}>
-          Controlled checkbox
-        </Checkbox>
-      </NimbusProvider>
+      <Checkbox isSelected={false} onChange={handleChange}>
+        Controlled checkbox
+      </Checkbox>
     );
 
     const checkbox = screen.getByRole("checkbox");
@@ -234,11 +184,7 @@ describe("Checkbox - Controlled mode", () => {
  */
 describe("Checkbox - Validation states", () => {
   it("renders disabled state", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox isDisabled>Disabled checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox isDisabled>Disabled checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).toBeDisabled();
@@ -248,11 +194,9 @@ describe("Checkbox - Validation states", () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
     render(
-      <NimbusProvider>
-        <Checkbox isDisabled onChange={handleChange}>
-          Disabled checkbox
-        </Checkbox>
-      </NimbusProvider>
+      <Checkbox isDisabled onChange={handleChange}>
+        Disabled checkbox
+      </Checkbox>
     );
 
     const checkbox = screen.getByRole("checkbox");
@@ -263,11 +207,7 @@ describe("Checkbox - Validation states", () => {
   });
 
   it("renders invalid state", () => {
-    render(
-      <NimbusProvider>
-        <Checkbox isInvalid>Invalid checkbox</Checkbox>
-      </NimbusProvider>
-    );
+    render(<Checkbox isInvalid>Invalid checkbox</Checkbox>);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).toHaveAttribute("aria-invalid", "true");
@@ -275,11 +215,9 @@ describe("Checkbox - Validation states", () => {
 
   it("renders checked and disabled state", () => {
     render(
-      <NimbusProvider>
-        <Checkbox isSelected isDisabled>
-          Checked and disabled
-        </Checkbox>
-      </NimbusProvider>
+      <Checkbox isSelected isDisabled>
+        Checked and disabled
+      </Checkbox>
     );
 
     const checkbox = screen.getByRole("checkbox");
@@ -289,11 +227,9 @@ describe("Checkbox - Validation states", () => {
 
   it("renders indeterminate and invalid state", () => {
     render(
-      <NimbusProvider>
-        <Checkbox isIndeterminate isInvalid>
-          Indeterminate and invalid
-        </Checkbox>
-      </NimbusProvider>
+      <Checkbox isIndeterminate isInvalid>
+        Indeterminate and invalid
+      </Checkbox>
     );
 
     const checkbox = screen.getByRole("checkbox");

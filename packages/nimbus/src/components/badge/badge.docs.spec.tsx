@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { Badge, NimbusProvider } from "@commercetools/nimbus";
+import { render, screen } from "@/test/utils";
+import { Badge } from "@/components/badge";
 
 /**
  * @docs-section basic-rendering
@@ -10,21 +10,13 @@ import { Badge, NimbusProvider } from "@commercetools/nimbus";
  */
 describe("Badge - Basic rendering", () => {
   it("renders content correctly", () => {
-    render(
-      <NimbusProvider>
-        <Badge>Status: Active</Badge>
-      </NimbusProvider>
-    );
+    render(<Badge>Status: Active</Badge>);
 
     expect(screen.getByText("Status: Active")).toBeInTheDocument();
   });
 
   it("renders with icon and text", () => {
-    render(
-      <NimbusProvider>
-        <Badge>Verified</Badge>
-      </NimbusProvider>
-    );
+    render(<Badge>Verified</Badge>);
 
     expect(screen.getByText("Verified")).toBeInTheDocument();
   });
@@ -38,21 +30,13 @@ describe("Badge - Basic rendering", () => {
  */
 describe("Badge - Variants", () => {
   it("renders with specific size", () => {
-    render(
-      <NimbusProvider>
-        <Badge size="xs">Small Badge</Badge>
-      </NimbusProvider>
-    );
+    render(<Badge size="xs">Small Badge</Badge>);
 
     expect(screen.getByText("Small Badge")).toBeInTheDocument();
   });
 
   it("renders with specific color palette", () => {
-    render(
-      <NimbusProvider>
-        <Badge colorPalette="critical">Error</Badge>
-      </NimbusProvider>
-    );
+    render(<Badge colorPalette="critical">Error</Badge>);
 
     expect(screen.getByText("Error")).toBeInTheDocument();
   });
