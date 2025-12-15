@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, within } from "@/test/utils";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Calendar } from "@/components/calendar";
+import { Calendar, NimbusProvider } from "@commercetools/nimbus";
 import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
 
 /**
@@ -12,7 +12,11 @@ import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
  */
 describe("Calendar - Basic rendering", () => {
   it("renders calendar grid", () => {
-    render(<Calendar />);
+    render(
+      <NimbusProvider>
+        <Calendar />
+      </NimbusProvider>
+    );
 
     // Calendar uses grid role for accessibility
     expect(screen.getByRole("grid")).toBeInTheDocument();
@@ -21,7 +25,11 @@ describe("Calendar - Basic rendering", () => {
   it("renders with default value", () => {
     const defaultDate = new CalendarDate(2025, 1, 15);
 
-    render(<Calendar defaultValue={defaultDate} />);
+    render(
+      <NimbusProvider>
+        <Calendar defaultValue={defaultDate} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     expect(grid).toBeInTheDocument();
@@ -39,7 +47,11 @@ describe("Calendar - Basic rendering", () => {
   });
 
   it("renders navigation buttons", () => {
-    render(<Calendar />);
+    render(
+      <NimbusProvider>
+        <Calendar />
+      </NimbusProvider>
+    );
 
     // Calendar header contains previous/next month and year navigation
     const previousButtons = screen.getAllByRole("button", {
@@ -62,7 +74,11 @@ describe("Calendar - Controlled mode", () => {
   it("displays controlled value", () => {
     const controlledDate = new CalendarDate(2025, 1, 15);
 
-    render(<Calendar value={controlledDate} />);
+    render(
+      <NimbusProvider>
+        <Calendar value={controlledDate} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     const dateCells = within(grid).getAllByRole("button");
@@ -81,11 +97,13 @@ describe("Calendar - Controlled mode", () => {
     const handleChange = vi.fn();
 
     render(
-      <Calendar
-        value={null}
-        onChange={handleChange}
-        defaultFocusedValue={new CalendarDate(2025, 1, 15)}
-      />
+      <NimbusProvider>
+        <Calendar
+          value={null}
+          onChange={handleChange}
+          defaultFocusedValue={new CalendarDate(2025, 1, 15)}
+        />
+      </NimbusProvider>
     );
 
     const grid = screen.getByRole("grid");
@@ -109,8 +127,10 @@ describe("Calendar - Controlled mode", () => {
   });
 
   it("allows programmatic value updates", () => {
-    const { unmount } = render(
-      <Calendar value={new CalendarDate(2025, 1, 15)} />
+    const { rerender } = render(
+      <NimbusProvider>
+        <Calendar value={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
     );
 
     let grid = screen.getByRole("grid");
@@ -124,9 +144,11 @@ describe("Calendar - Controlled mode", () => {
     }
 
     // Update to a new date
-    // Note: unmount and remount since rerender doesn't automatically re-wrap with providers
-    unmount();
-    render(<Calendar value={new CalendarDate(2025, 1, 20)} />);
+    rerender(
+      <NimbusProvider>
+        <Calendar value={new CalendarDate(2025, 1, 20)} />
+      </NimbusProvider>
+    );
 
     grid = screen.getByRole("grid");
     dateCells = within(grid).getAllByRole("button");
@@ -150,7 +172,11 @@ describe("Calendar - Date constraints", () => {
   it("disables dates before minValue", () => {
     const minDate = new CalendarDate(2025, 1, 15);
 
-    render(<Calendar minValue={minDate} defaultValue={minDate} />);
+    render(
+      <NimbusProvider>
+        <Calendar minValue={minDate} defaultValue={minDate} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     const dateCells = within(grid).getAllByRole("button");
@@ -166,7 +192,11 @@ describe("Calendar - Date constraints", () => {
   it("disables dates after maxValue", () => {
     const maxDate = new CalendarDate(2025, 1, 15);
 
-    render(<Calendar maxValue={maxDate} defaultValue={maxDate} />);
+    render(
+      <NimbusProvider>
+        <Calendar maxValue={maxDate} defaultValue={maxDate} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     const dateCells = within(grid).getAllByRole("button");
@@ -183,13 +213,15 @@ describe("Calendar - Date constraints", () => {
     const today = new CalendarDate(2025, 1, 15); // Wednesday
 
     render(
-      <Calendar
-        defaultValue={today}
-        isDateUnavailable={(date) => {
-          const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
-          return dayOfWeek === 0 || dayOfWeek === 6; // Weekends
-        }}
-      />
+      <NimbusProvider>
+        <Calendar
+          defaultValue={today}
+          isDateUnavailable={(date) => {
+            const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
+            return dayOfWeek === 0 || dayOfWeek === 6; // Weekends
+          }}
+        />
+      </NimbusProvider>
     );
 
     const grid = screen.getByRole("grid");
@@ -214,10 +246,12 @@ describe("Calendar - Date constraints", () => {
 describe("Calendar - Multi-month display", () => {
   it("renders multiple months when visibleDuration is set", () => {
     render(
-      <Calendar
-        defaultValue={new CalendarDate(2025, 1, 15)}
-        visibleDuration={{ months: 2 }}
-      />
+      <NimbusProvider>
+        <Calendar
+          defaultValue={new CalendarDate(2025, 1, 15)}
+          visibleDuration={{ months: 2 }}
+        />
+      </NimbusProvider>
     );
 
     // Should render multiple grid elements (one per month)
@@ -229,11 +263,13 @@ describe("Calendar - Multi-month display", () => {
     const user = userEvent.setup();
 
     render(
-      <Calendar
-        defaultValue={new CalendarDate(2025, 1, 15)}
-        visibleDuration={{ months: 2 }}
-        pageBehavior="visible"
-      />
+      <NimbusProvider>
+        <Calendar
+          defaultValue={new CalendarDate(2025, 1, 15)}
+          visibleDuration={{ months: 2 }}
+          pageBehavior="visible"
+        />
+      </NimbusProvider>
     );
 
     const nextButtons = screen.getAllByRole("button", { name: /next/i });
@@ -257,7 +293,9 @@ describe("Calendar - Multi-month display", () => {
 describe("Calendar - State props", () => {
   it("disables all interactions when isDisabled is true", () => {
     render(
-      <Calendar isDisabled defaultValue={new CalendarDate(2025, 1, 15)} />
+      <NimbusProvider>
+        <Calendar isDisabled defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
     );
 
     const grid = screen.getByRole("grid");
@@ -274,11 +312,13 @@ describe("Calendar - State props", () => {
     const handleChange = vi.fn();
 
     render(
-      <Calendar
-        isReadOnly
-        value={new CalendarDate(2025, 1, 15)}
-        onChange={handleChange}
-      />
+      <NimbusProvider>
+        <Calendar
+          isReadOnly
+          value={new CalendarDate(2025, 1, 15)}
+          onChange={handleChange}
+        />
+      </NimbusProvider>
     );
 
     const grid = screen.getByRole("grid");
@@ -295,7 +335,11 @@ describe("Calendar - State props", () => {
   });
 
   it("applies invalid styling when isInvalid is true", () => {
-    render(<Calendar isInvalid defaultValue={new CalendarDate(2025, 1, 15)} />);
+    render(
+      <NimbusProvider>
+        <Calendar isInvalid defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     expect(grid).toBeInTheDocument();
@@ -314,7 +358,11 @@ describe("Calendar - Keyboard navigation", () => {
   it("supports arrow key navigation", async () => {
     const user = userEvent.setup();
 
-    render(<Calendar defaultValue={new CalendarDate(2025, 1, 15)} />);
+    render(
+      <NimbusProvider>
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     const dateCells = within(grid).getAllByRole("button");
@@ -343,7 +391,11 @@ describe("Calendar - Keyboard navigation", () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
 
-    render(<Calendar value={null} onChange={handleChange} />);
+    render(
+      <NimbusProvider>
+        <Calendar value={null} onChange={handleChange} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     const dateCells = within(grid).getAllByRole("button");
@@ -368,9 +420,11 @@ describe("Calendar - Keyboard navigation", () => {
  */
 describe("Calendar - Internationalization", () => {
   it("renders with German locale", () => {
-    render(<Calendar defaultValue={new CalendarDate(2025, 1, 15)} />, {
-      locale: "de-DE",
-    });
+    render(
+      <NimbusProvider locale="de-DE">
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     expect(grid).toBeInTheDocument();
@@ -380,9 +434,11 @@ describe("Calendar - Internationalization", () => {
   });
 
   it("renders with French locale", () => {
-    render(<Calendar defaultValue={new CalendarDate(2025, 1, 15)} />, {
-      locale: "fr-FR",
-    });
+    render(
+      <NimbusProvider locale="fr-FR">
+        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+      </NimbusProvider>
+    );
 
     const grid = screen.getByRole("grid");
     expect(grid).toBeInTheDocument();

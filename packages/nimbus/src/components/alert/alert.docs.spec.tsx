@@ -1,8 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@/test/utils";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Alert } from "@/components/alert";
-import { Button } from "@/components/button";
+import { Alert, Button, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -13,10 +12,12 @@ import { Button } from "@/components/button";
 describe("Alert - Basic rendering", () => {
   it("renders the alert message", () => {
     render(
-      <Alert.Root colorPalette="critical">
-        <Alert.Title>Error saving</Alert.Title>
-        <Alert.Description>Connection lost</Alert.Description>
-      </Alert.Root>
+      <NimbusProvider>
+        <Alert.Root colorPalette="critical">
+          <Alert.Title>Error saving</Alert.Title>
+          <Alert.Description>Connection lost</Alert.Description>
+        </Alert.Root>
+      </NimbusProvider>
     );
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
@@ -26,9 +27,11 @@ describe("Alert - Basic rendering", () => {
 
   it("renders with title only", () => {
     render(
-      <Alert.Root colorPalette="positive">
-        <Alert.Title>Success: Item created.</Alert.Title>
-      </Alert.Root>
+      <NimbusProvider>
+        <Alert.Root colorPalette="positive">
+          <Alert.Title>Success: Item created.</Alert.Title>
+        </Alert.Root>
+      </NimbusProvider>
     );
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
@@ -37,11 +40,13 @@ describe("Alert - Basic rendering", () => {
 
   it("renders with description only", () => {
     render(
-      <Alert.Root colorPalette="info">
-        <Alert.Description>
-          System maintenance scheduled for tonight at 02:00 UTC.
-        </Alert.Description>
-      </Alert.Root>
+      <NimbusProvider>
+        <Alert.Root colorPalette="info">
+          <Alert.Description>
+            System maintenance scheduled for tonight at 02:00 UTC.
+          </Alert.Description>
+        </Alert.Root>
+      </NimbusProvider>
     );
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
@@ -63,10 +68,12 @@ describe("Alert - Interactions", () => {
     const handleDismiss = vi.fn();
 
     render(
-      <Alert.Root>
-        <Alert.Title>Notification</Alert.Title>
-        <Alert.DismissButton onPress={handleDismiss} />
-      </Alert.Root>
+      <NimbusProvider>
+        <Alert.Root>
+          <Alert.Title>Notification</Alert.Title>
+          <Alert.DismissButton onPress={handleDismiss} />
+        </Alert.Root>
+      </NimbusProvider>
     );
 
     const dismissBtn = screen.getByRole("button", { name: /dismiss/i });
@@ -80,12 +87,14 @@ describe("Alert - Interactions", () => {
     const handleAction = vi.fn();
 
     render(
-      <Alert.Root>
-        <Alert.Title>Confirmation</Alert.Title>
-        <Alert.Actions>
-          <Button onPress={handleAction}>Confirm</Button>
-        </Alert.Actions>
-      </Alert.Root>
+      <NimbusProvider>
+        <Alert.Root>
+          <Alert.Title>Confirmation</Alert.Title>
+          <Alert.Actions>
+            <Button onPress={handleAction}>Confirm</Button>
+          </Alert.Actions>
+        </Alert.Root>
+      </NimbusProvider>
     );
 
     await user.click(screen.getByRole("button", { name: "Confirm" }));

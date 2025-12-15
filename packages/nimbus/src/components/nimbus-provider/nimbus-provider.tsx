@@ -16,18 +16,13 @@ import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode
 export function NimbusProvider({
   children,
   locale,
-  messages,
   router,
   ...props
 }: NimbusProviderProps) {
   // Inner content with all the existing providers
   // If no locale is provided, use browser's locale as fallback
   const content = (
-    <IntlProvider
-      locale={locale ?? navigator.language}
-      messages={messages}
-      defaultLocale="en"
-    >
+    <IntlProvider locale={locale ?? navigator.language} defaultLocale="en">
       <ChakraProvider value={system}>
         <NimbusColorModeProvider enableSystem={false} {...props}>
           <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
