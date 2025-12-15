@@ -1,5 +1,5 @@
 import { createUIResource } from "@mcp-ui/server";
-import { escapeForJS } from "./shared-types.js";
+import { escapeForJS } from "../utils/escape-for-js";
 
 export interface CreateTextArgs {
   content: string;

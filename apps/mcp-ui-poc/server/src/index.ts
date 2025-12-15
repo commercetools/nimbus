@@ -142,7 +142,7 @@ app.delete("/mcp", async (req, res) => {
 // ============================================================
 
 // Base schemas for child elements (recursive)
-const childElementSchema: z.ZodType<any> = z.lazy(() =>
+const childElementSchema: z.ZodTypeAny = z.lazy(() =>
   z.discriminatedUnion("type", [
     z.object({
       type: z.literal("heading"),

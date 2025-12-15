@@ -7,6 +7,8 @@ import { createPropMappingWrapper } from "../utils/prop-mapping-wrapper";
 
 // Wrapper for DataTable that parses JSON strings and renders complete structure
 const DataTableRootWrapper = (props: Record<string, unknown>) => {
+  // Explicitly remove children to prevent React void element error
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { columns, rows, children, ...restProps } = props;
 
   // Parse JSON strings if they're strings

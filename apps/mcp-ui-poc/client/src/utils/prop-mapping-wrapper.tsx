@@ -58,10 +58,10 @@ export function createPropMappingWrapper<P extends Record<string, unknown>>(
         // Create an event handler that triggers a UI action
         mappedProps[reactEventProp] = (event: unknown) => {
           // Extract element properties from the event target
-          const target = (event as any)?.target;
+          const target = (event as { target?: HTMLElement })?.target;
           const properties: Record<string, unknown> = {};
 
-          if (target && target.getAttribute) {
+          if (target) {
             // Collect all data attributes
             const attributes = target.attributes;
             for (let i = 0; i < attributes.length; i++) {

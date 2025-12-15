@@ -1,9 +1,7 @@
 import { createUIResource } from "@mcp-ui/server";
-import {
-  type ChildElement,
-  generateChildrenScript,
-  escapeForJS,
-} from "./shared-types.js";
+import type { ChildElement } from "../types/index";
+import { generateChildrenScript } from "../utils/children-generator";
+import { escapeForJS } from "../utils/escape-for-js";
 
 export interface CreateFlexArgs {
   content?: string;

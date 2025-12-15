@@ -1,6 +1,7 @@
 # MCP UI POC - Deployment Scripts
 
-Scripts for building, pushing, and deploying the MCP UI POC to Google Kubernetes Engine (GKE) with basic authentication.
+Scripts for building, pushing, and deploying the MCP UI POC to Google Kubernetes
+Engine (GKE) with basic authentication.
 
 ## Prerequisites
 
@@ -15,6 +16,7 @@ Scripts for building, pushing, and deploying the MCP UI POC to Google Kubernetes
    gcloud container clusters get-credentials playground --region=europe-west1-c
    ```
 4. **apache2-utils**: For htpasswd command (password management)
+
    ```bash
    # macOS
    brew install httpd
@@ -25,6 +27,7 @@ Scripts for building, pushing, and deploying the MCP UI POC to Google Kubernetes
    # RHEL/CentOS
    sudo yum install httpd-tools
    ```
+
 5. **Environment file**: Create `.env` in `apps/mcp-ui-poc/` from `.env.example`
    ```bash
    cd apps/mcp-ui-poc
@@ -34,18 +37,19 @@ Scripts for building, pushing, and deploying the MCP UI POC to Google Kubernetes
 
 ## Scripts Overview
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `build.sh` | Build Docker images for server and/or client | `./build.sh [server\|client\|both]` |
-| `push.sh` | Push images to Google Artifact Registry | `./push.sh [server\|client\|both]` |
-| `deploy.sh` | Deploy to active GKE cluster | `./deploy.sh [NAMESPACE]` |
-| `setup-auth.sh` | Configure basic authentication | `./setup-auth.sh [NAMESPACE]` |
+| Script          | Purpose                                      | Usage                               |
+| --------------- | -------------------------------------------- | ----------------------------------- |
+| `build.sh`      | Build Docker images for server and/or client | `./build.sh [server\|client\|both]` |
+| `push.sh`       | Push images to Google Artifact Registry      | `./push.sh [server\|client\|both]`  |
+| `deploy.sh`     | Deploy to active GKE cluster                 | `./deploy.sh [NAMESPACE]`           |
+| `setup-auth.sh` | Configure basic authentication               | `./setup-auth.sh [NAMESPACE]`       |
 
 ## Configuration
 
 ### Registry Settings
 
 Images are pushed to:
+
 - **Registry**: `us-east1-docker.pkg.dev/ctp-playground/byron-wall`
 - **Server Image**: `mcp-ui-poc-server:latest`
 - **Client Image**: `mcp-ui-poc-client:latest`
@@ -60,18 +64,21 @@ ANTHROPIC_API_KEY=sk-ant-api...
 SERVER_URL=http://34.77.253.174:80  # Server LoadBalancer IP
 ```
 
-**Important**: The client is built with these values baked into the JavaScript bundle. You must rebuild the client whenever `SERVER_URL` changes.
+**Important**: The client is built with these values baked into the JavaScript
+bundle. You must rebuild the client whenever `SERVER_URL` changes.
 
 ## Deployment Workflow
 
 ### First-Time Setup
 
 1. **Setup authentication** (creates htpasswd file and Kubernetes secret):
+
    ```bash
    ./scripts/setup-auth.sh byronw
    ```
 
 2. **Deploy server** to get LoadBalancer IP:
+
    ```bash
    ./scripts/build.sh server
    ./scripts/push.sh server
@@ -79,6 +86,7 @@ SERVER_URL=http://34.77.253.174:80  # Server LoadBalancer IP
    ```
 
 3. **Get server IP** and update `.env`:
+
    ```bash
    kubectl get service mcp-ui-poc-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
    # Update SERVER_URL in .env with the IP
@@ -131,7 +139,8 @@ kubectl rollout restart deployment/mcp-ui-poc-client -n byronw
 kubectl rollout status deployment/mcp-ui-poc-client -n byronw
 ```
 
-**Note**: The `build.sh` script verifies that the SERVER_URL was correctly baked into the client bundle.
+**Note**: The `build.sh` script verifies that the SERVER_URL was correctly baked
+into the client bundle.
 
 ### Updating Both Server and Client
 
@@ -162,6 +171,7 @@ The application uses nginx basic authentication to protect the UI.
 ```
 
 This will:
+
 1. Prompt for username (default: `admin`)
 2. Prompt for password
 3. Create `.htpasswd` file in `client/.htpasswd`
@@ -190,6 +200,7 @@ kubectl get service mcp-ui-poc-client-loadbalancer -n byronw
 ```
 
 Visit the IP in your browser. You'll be prompted for:
+
 - **Username**: The username you configured
 - **Password**: The password you configured
 
@@ -202,11 +213,13 @@ Visit the IP in your browser. You'll be prompted for:
 ```
 
 **Modes**:
+
 - `server` - Build server only
 - `client` - Build client only (requires SERVER_URL and API_KEY)
 - `both` - Build both (default, uses .env file)
 
 **Examples**:
+
 ```bash
 # Build both using .env file
 ./scripts/build.sh
@@ -221,7 +234,8 @@ Visit the IP in your browser. You'll be prompted for:
 ./scripts/build.sh both
 ```
 
-**Client Build Verification**: The script automatically verifies that the SERVER_URL was correctly baked into the JavaScript bundle.
+**Client Build Verification**: The script automatically verifies that the
+SERVER_URL was correctly baked into the JavaScript bundle.
 
 ## Common Tasks
 
@@ -281,17 +295,20 @@ kubectl rollout undo deployment/mcp-ui-poc-client -n byronw --to-revision=3
 ### Build Fails
 
 **Check Docker**:
+
 ```bash
 docker ps  # Verify Docker is running
 ```
 
 **Verify .env file**:
+
 ```bash
 cat apps/mcp-ui-poc/.env
 # Must contain ANTHROPIC_API_KEY and SERVER_URL for client builds
 ```
 
 **Common Issues**:
+
 - Missing `.env` file → Copy from `.env.example`
 - Wrong directory → Run from `apps/mcp-ui-poc` or repository root
 - Docker not running → Start Docker Desktop
@@ -299,11 +316,13 @@ cat apps/mcp-ui-poc/.env
 ### Push Fails
 
 **Configure Docker authentication**:
+
 ```bash
 gcloud auth configure-docker us-east1-docker.pkg.dev
 ```
 
 **Verify access**:
+
 ```bash
 gcloud projects list
 gcloud auth list
@@ -312,17 +331,20 @@ gcloud auth list
 ### Deploy Fails
 
 **Verify kubectl configuration**:
+
 ```bash
 kubectl cluster-info
 kubectl config current-context
 ```
 
 **Get cluster credentials**:
+
 ```bash
 gcloud container clusters get-credentials playground --region=europe-west1-c
 ```
 
 **Check authentication secret**:
+
 ```bash
 kubectl get secret mcp-ui-poc-auth -n byronw
 # If missing, run: ./scripts/setup-auth.sh byronw
@@ -331,6 +353,7 @@ kubectl get secret mcp-ui-poc-auth -n byronw
 ### Pods Not Starting
 
 **Check pod status**:
+
 ```bash
 kubectl get pods -n byronw
 kubectl describe pod <pod-name> -n byronw
@@ -338,6 +361,7 @@ kubectl logs <pod-name> -n byronw
 ```
 
 **Common Issues**:
+
 - `ImagePullBackOff` → Image not pushed to registry or wrong tag
 - `CrashLoopBackOff` → Application error, check logs
 - `Pending` → Resource constraints or node issues
@@ -347,16 +371,19 @@ kubectl logs <pod-name> -n byronw
 This means the client was built with the wrong SERVER_URL:
 
 1. **Check current SERVER_URL in .env**:
+
    ```bash
    cat apps/mcp-ui-poc/.env | grep SERVER_URL
    ```
 
 2. **Get correct server IP**:
+
    ```bash
    kubectl get service mcp-ui-poc-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
    ```
 
 3. **Update .env with correct IP**:
+
    ```bash
    # Edit apps/mcp-ui-poc/.env
    SERVER_URL=http://34.77.253.174:80  # Use actual IP
@@ -374,11 +401,13 @@ This means the client was built with the wrong SERVER_URL:
 If you see "Session not found" or "Connection closed" errors after refreshing:
 
 1. **Check server logs**:
+
    ```bash
    kubectl logs -l app=mcp-ui-poc-server -n byronw --tail=50
    ```
 
 2. **Restart both deployments**:
+
    ```bash
    kubectl rollout restart deployment/mcp-ui-poc-server -n byronw
    kubectl rollout restart deployment/mcp-ui-poc-client -n byronw
@@ -414,17 +443,21 @@ rm client/.htpasswd.example
 
 ### Image Tags
 
-All scripts use the `latest` tag by default. The deployment uses `imagePullPolicy: Always` to ensure new images are pulled on restart.
+All scripts use the `latest` tag by default. The deployment uses
+`imagePullPolicy: Always` to ensure new images are pulled on restart.
 
 ### Session Management
 
-- **Client**: Clears localStorage session data on initialization to prevent stale sessions
-- **Server**: Handles stale session IDs gracefully by returning proper error responses
+- **Client**: Clears localStorage session data on initialization to prevent
+  stale sessions
+- **Server**: Handles stale session IDs gracefully by returning proper error
+  responses
 - **On refresh**: Client creates a fresh MCP session automatically
 
 ### Build Process
 
 The client build is a multi-stage Docker build:
+
 1. **Stage 1**: Build workspace dependencies (nimbus, nimbus-icons)
 2. **Stage 2**: Build client application with environment variables baked in
 3. **Stage 3**: Create nginx production image with built assets
