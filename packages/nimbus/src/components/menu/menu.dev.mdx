@@ -364,6 +364,7 @@ const App = () => {
       <Menu.Root
         onAction={(key) => setLastAction(key as string)}
         onOpenChange={(isOpen) => console.log("Menu open:", isOpen)}
+        placement="bottom end"
       >
         <Menu.Trigger>Quick Actions</Menu.Trigger>
         <Menu.Content>
