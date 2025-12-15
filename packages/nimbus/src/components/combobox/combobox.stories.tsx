@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { Box, FormField, Stack, Text } from "@commercetools/nimbus";
+import { ButtonContext } from "react-aria-components";
+import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/test-data";
@@ -5819,5 +5820,147 @@ export const StateIsInvalid: Story = {
 
     // Should be styled when invalid
     expect(borderColor).toContain("hsl(359, 77%, 81%)");
+  },
+};
+
+// ============================================================
+// PORTAL POSITIONING - COMBOBOX IN DIALOG/MODAL
+// ============================================================
+
+/**
+ * Portal Positioning: ComboBox in Dialog
+ * Tests that ComboBox popover maintains proper positioning relative to trigger
+ * when rendered inside a Dialog/Modal portal (regression test for CRAFT-2013)
+ */
+export const PortalPositioningInDialog: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <Stack direction="column" gap="400">
+        {/* Note: Using uncontrolled Dialog to test ComboBox positioning in modals */}
+        <Dialog.Root>
+          <Dialog.Trigger>Open Dialog with ComboBox</Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Select Options</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              <Stack direction="column" gap="400">
+                <Text>Select your favorite animals from the list below:</Text>
+                <FormField.Root>
+                  <FormField.Label>Animals</FormField.Label>
+                  {/* Clear Dialog's ButtonContext to prevent slot conflicts with ComboBox */}
+                  <ButtonContext.Provider value={null}>
+                    <ComposedComboBox
+                      aria-label="Animals in dialog"
+                      items={simpleOptions}
+                      selectionMode="single"
+                      selectedKeys={selectedKeys}
+                      onSelectionChange={setSelectedKeys}
+                    />
+                  </ButtonContext.Provider>
+                </FormField.Root>
+              </Stack>
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    // Use parentNode to capture both canvas and portal content (Dialog pattern)
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open dialog", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Dialog with ComboBox",
+      });
+      await userEvent.click(trigger);
+
+      // Wait for dialog to appear in portal
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Open ComboBox listbox", async () => {
+      const combobox = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      });
+
+      // Focus the combobox first to ensure it's interactive
+      await userEvent.click(combobox);
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Wait for listbox to appear (ComboBox also uses portal)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Verify listbox positioning relative to trigger", async () => {
+      const combobox = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      });
+      const listbox = getListBox(document) as HTMLElement;
+
+      expect(listbox).toBeInTheDocument();
+
+      // Get bounding rectangles
+      const comboboxRect = combobox.getBoundingClientRect();
+      const listboxRect = listbox.getBoundingClientRect();
+
+      // Verify listbox appears above OR below the combobox trigger within tolerance
+      // React Aria will flip the popover based on available space
+      const tolerance = 5;
+      const isBelow = listboxRect.top >= comboboxRect.bottom - tolerance;
+      const isAbove = listboxRect.bottom <= comboboxRect.top + tolerance;
+
+      expect(isBelow || isAbove).toBe(true);
+
+      // Verify horizontal alignment (listbox should be aligned with combobox)
+      // Allow tolerance for borders/padding/scrollbars
+      expect(Math.abs(listboxRect.left - comboboxRect.left)).toBeLessThan(20);
+    });
+
+    await step("Select an option and verify behavior", async () => {
+      // Select "Koala" option
+      await selectOptionsByName(["Koala"]);
+
+      // Wait for listbox to close after selection (single-select closes automatically)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+
+      // Verify combobox input now shows the selected value
+      const comboboxInput = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      }) as HTMLInputElement;
+      await waitFor(() => {
+        expect(comboboxInput.value).toBe("Koala");
+      });
+    });
+
+    await step("Close dialog and verify cleanup", async () => {
+      // Close via Escape key
+      await userEvent.keyboard("{Escape}");
+
+      // Wait for dialog to disappear
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+
+      // Verify listbox is also cleaned up
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
   },
 };
