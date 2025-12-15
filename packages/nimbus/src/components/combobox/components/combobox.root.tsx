@@ -1410,7 +1410,6 @@ const ComboBoxRootInner = <T extends object>(
         ref: listBoxRef, // Ref for scroll positioning
         renderEmptyState, // Custom empty state renderer
         shouldFocusWrap, // Whether to wrap focus from last to first item
-        shouldFocusOnHover: true, // Sync virtual focus with mouse hover
         "aria-label": intl.formatMessage(messages.options),
       },
     ],
