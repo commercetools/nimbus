@@ -15,7 +15,29 @@ export class ClaudeClient {
 
   async initialize() {
     try {
+      // Clear any stored session data from localStorage
+      // The MCP SDK may cache session IDs - force a clean slate
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes("mcp") || key.includes("session"))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((key) => localStorage.removeItem(key));
+        if (keysToRemove.length > 0) {
+          console.log("🧹 Cleared stale session data:", keysToRemove);
+        }
+      } catch (e) {
+        // Ignore localStorage errors
+        console.log("⚠️ Could not clear localStorage (ignored):", e);
+      }
+
       // Create MCP client and connect to server
+      // Note: We create a new client each time instead of trying to close the old one
+      // to avoid async event handler errors from the close operation.
+      // The old client will be garbage collected and cleanup() handles proper shutdown on unmount.
       console.log("🔌 Creating MCP client...");
       this.mcpClient = new Client({
         name: "nimbus-mcp-ui-poc",
@@ -62,12 +84,15 @@ export class ClaudeClient {
     }
   }
 
-  async sendMessage(message: string) {
+  async sendMessage(message: string, options: { toolsEnabled?: boolean } = {}) {
     if (!this.anthropic) {
       throw new Error("Claude client not initialized");
     }
 
+    const { toolsEnabled = true } = options;
+
     console.log("📤 Sending message to Claude:", message);
+    console.log("🔧 Tools enabled:", toolsEnabled);
 
     // Add user message to history
     this.conversationHistory.push({
@@ -81,14 +106,13 @@ export class ClaudeClient {
     // Loop to handle tool use (Claude may need multiple rounds)
     let continueLoop = true;
     while (continueLoop) {
-      const response = await this.anthropic.messages.create({
-        model: "claude-sonnet-4-5-20250929",
-        max_tokens: 4096,
-        system: `You are a helpful AI assistant that creates rich, visual UI components using the Nimbus design system.
+      // Adapt system prompt based on tools availability
+      const systemPrompt = toolsEnabled
+        ? `You are a helpful AI assistant that creates rich, visual UI components using the Nimbus design system.
 
 CRITICAL: RESPONSE FORMAT
 - When you create UI components using tools, the user can SEE the rendered components in the interface
-- Only include text responses that provide NEW information not visible in the UI. 
+- Only include text responses that provide NEW information not visible in the UI.
 - If there is no unique information to return, return 'here's what I found' along with the UI component.
 - Do NOT describe what components you created or what they look like - the user can already see them
 - Keep text responses concise - only explain concepts, provide context, or answer questions
@@ -102,20 +126,14 @@ CRITICAL INSTRUCTIONS FOR IMAGE URLS:
 - Use real product images from reputable sources or stock photo services
 
 RECOMMENDED IMAGE SOURCES (in order of preference):
-1. **Unsplash** (high-quality, searchable stock photos):
-   - Format: https://images.unsplash.com/photo-[id]?w=[width]&q=80
-   - Use search terms that match the product (e.g., "headphones", "mouse", "keyboard")
-   - Example: For headphones, use a direct Unsplash URL with headphones in the photo
-
-2. **Product-specific stock photos** (when product name is specific):
-   - Search for publicly available product images
-   - Use CDN URLs from reputable retailers or manufacturers
-   - Ensure images are appropriate dimensions (typically 400x400 for product cards)
-
-3. **Picsum Photos** (ONLY as last resort for generic/abstract content):
+1. **Picsum Photos** (for all content - simple and reliable):
    - Format: https://picsum.photos/[width]/[height]
-   - Use ONLY when content is generic or abstract
+   - Works for any content type
    - Example: https://picsum.photos/400/400
+
+2. **Placeholder.com** (alternative placeholder service):
+   - Format: https://via.placeholder.com/[width]x[height]
+   - Example: https://via.placeholder.com/400x400
 
 IMPORTANT MATCHING RULES:
 - Product name "Wireless Headphones" → Find a headphones image
@@ -135,8 +153,14 @@ NEVER:
 - Use completely irrelevant images (e.g., a sunset for headphones)
 - Use broken or invalid URLs
 
-Always provide engaging, visually complete, and contextually appropriate UI components.`,
-        tools: this.mcpTools,
+Always provide engaging, visually complete, and contextually appropriate UI components.`
+        : `You are a helpful AI assistant. UI component creation tools are currently disabled, so please provide text-based responses to help the user.`;
+
+      const response = await this.anthropic.messages.create({
+        model: "claude-sonnet-4-5-20250929",
+        max_tokens: 4096,
+        system: systemPrompt,
+        tools: toolsEnabled ? this.mcpTools : undefined,
         messages: this.conversationHistory,
       });
 

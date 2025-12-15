@@ -1,0 +1,29 @@
+# Google-managed SSL certificate for GKE
+# This is an alternative to cert-manager for automatic SSL certificate provisioning
+# Requires: GKE cluster and a domain with DNS pointing to the load balancer IP
+
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: mcp-ui-poc-cert
+  labels:
+    app: mcp-ui-poc
+spec:
+  domains:
+    - mcp-ui-poc.example.com  # Replace with your actual domain
+
+---
+# Alternative ingress configuration using managed certificate
+# Use this instead of the cert-manager approach if preferred
+
+# To use this:
+# 1. Apply this file: kubectl apply -f managed-certificate.yaml
+# 2. Update ingress.yaml to uncomment the managed-certificates annotation
+# 3. Comment out the cert-manager annotation in ingress.yaml
+# 4. Apply updated ingress: kubectl apply -f ingress.yaml
+
+# Check certificate status:
+# kubectl describe managedcertificate mcp-ui-poc-cert
+
+# Note: It can take 10-60 minutes for Google to provision the certificate
+# DNS must be properly configured pointing to the load balancer IP before provisioning

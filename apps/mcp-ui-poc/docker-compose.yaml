@@ -11,6 +11,7 @@ services:
   # MCP UI POC Server
   # ============================================================
   mcp-ui-poc-server:
+    platform: linux/amd64
     build:
       context: ../..
       dockerfile: apps/mcp-ui-poc/server/Dockerfile
@@ -34,6 +35,7 @@ services:
   # MCP UI POC Client
   # ============================================================
   mcp-ui-poc-client:
+    platform: linux/amd64
     build:
       context: ../..
       dockerfile: apps/mcp-ui-poc/client/Dockerfile

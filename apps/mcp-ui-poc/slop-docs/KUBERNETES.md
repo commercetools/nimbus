@@ -6,7 +6,6 @@ Complete guide for running MCP UI POC in Minikube.
 
 - Docker installed and running
 - `kubectl` CLI installed
-- Node.js 22+ and pnpm 10+
 - Anthropic API key
 
 ## Setup Minikube
@@ -29,15 +28,7 @@ kubectl get nodes
 
 ## Build and Deploy
 
-### 1. Build Workspace Packages
-
-```bash
-# From repository root
-cd /Users/byronwall/workspaces/ct/nimbus
-pnpm build:packages
-```
-
-### 2. Build Docker Images
+### 1. Build Docker Images
 
 ```bash
 # Navigate to MCP UI POC
@@ -47,14 +38,14 @@ cd apps/mcp-ui-poc
 ./scripts/k8s-build.sh
 ```
 
-### 3. Load Images into Minikube
+### 2. Load Images into Minikube
 
 ```bash
 # Load both images into Minikube's Docker daemon
 ./scripts/k8s-load-minikube.sh
 ```
 
-### 4. Create Secret
+### 3. Create Secret
 
 ```bash
 # Create .env file with your API key
@@ -65,7 +56,7 @@ cp .env.example .env
 ./scripts/k8s-create-secret.sh
 ```
 
-### 5. Deploy to Cluster
+### 4. Deploy to Cluster
 
 ```bash
 # Apply all manifests
@@ -76,7 +67,7 @@ kubectl wait --for=condition=ready pod -l app=mcp-ui-poc-server --timeout=120s
 kubectl wait --for=condition=ready pod -l app=mcp-ui-poc-client --timeout=120s
 ```
 
-### 6. Access Application
+### 5. Access Application
 
 ```bash
 # Port forward the client

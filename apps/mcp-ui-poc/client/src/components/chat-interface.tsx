@@ -7,6 +7,7 @@ import {
   Button,
   TextInput,
   Text,
+  Switch,
 } from "@commercetools/nimbus";
 import { UIResourceRenderer, isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
@@ -25,6 +26,7 @@ export function ChatInterface() {
   const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
+  const [toolsEnabled, setToolsEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -76,7 +78,9 @@ export function ChatInterface() {
 
     try {
       // Send message - Claude handles all tool calling automatically
-      const { text, uiResources } = await claudeClient.sendMessage(input);
+      const { text, uiResources } = await claudeClient.sendMessage(input, {
+        toolsEnabled,
+      });
 
       // Add response to messages
       setMessages((prev) => [
@@ -136,7 +140,22 @@ export function ChatInterface() {
 
   return (
     <Flex direction="column" height="100vh" padding="600">
-      <Heading marginBottom="600">Nimbus MCP-UI + Claude Chat</Heading>
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom="600"
+      >
+        <Heading>Nimbus MCP-UI + Claude Chat</Heading>
+        <Flex alignItems="center" gap="300">
+          <Text fontSize="sm">{`Nimbus MCP-UI ${toolsEnabled ? "Enabled" : "Disabled"}`}</Text>
+          <Switch
+            aria-label="enable nimbus mcp-ui"
+            defaultSelected={toolsEnabled}
+            onChange={(checked) => setToolsEnabled(checked)}
+            isDisabled={!isReady}
+          />
+        </Flex>
+      </Flex>
 
       {!isReady && (
         <Box

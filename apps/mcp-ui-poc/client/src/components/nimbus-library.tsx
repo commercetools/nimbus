@@ -5,9 +5,9 @@ import type {
 import * as Nimbus from "@commercetools/nimbus";
 import { createPropMappingWrapper } from "../utils/prop-mapping-wrapper";
 
-// Wrapper for DataTable.Root that parses JSON strings
+// Wrapper for DataTable that parses JSON strings and renders complete structure
 const DataTableRootWrapper = (props: Record<string, unknown>) => {
-  const { columns, rows, ...restProps } = props;
+  const { columns, rows, children, ...restProps } = props;
 
   // Parse JSON strings if they're strings
   const parsedColumns =
@@ -32,12 +32,19 @@ const DataTableRootWrapper = (props: Record<string, unknown>) => {
     }
   );
 
+  // Render complete DataTable structure (Root > Table > Header + Body)
+  // This ensures proper styling and context for all child components
   return (
     <Nimbus.DataTable.Root
       columns={transformedColumns}
       rows={parsedRows}
       {...restProps}
-    />
+    >
+      <Nimbus.DataTable.Table>
+        <Nimbus.DataTable.Header />
+        <Nimbus.DataTable.Body />
+      </Nimbus.DataTable.Table>
+    </Nimbus.DataTable.Root>
   );
 };
 
@@ -73,6 +80,7 @@ export const nimbusLibrary: ComponentLibrary = {
       component: createWrappedComponent(Nimbus.Card.Root, {
         "card-padding": "cardPadding",
         "border-style": "borderStyle",
+        "background-style": "backgroundStyle",
         elevation: "elevation",
         "max-width": "maxWidth",
         width: "width",
@@ -80,6 +88,7 @@ export const nimbusLibrary: ComponentLibrary = {
       propMapping: {
         "card-padding": "cardPadding",
         "border-style": "borderStyle",
+        "background-style": "backgroundStyle",
         elevation: "elevation",
         "max-width": "maxWidth",
         width: "width",
@@ -345,6 +354,8 @@ export const nimbusLibrary: ComponentLibrary = {
         "allows-sorting": "allowsSorting",
         "selection-mode": "selectionMode",
         "is-resizable": "isResizable",
+        "max-width": "maxWidth",
+        width: "width",
       }),
       propMapping: {
         columns: "columns",
@@ -354,6 +365,8 @@ export const nimbusLibrary: ComponentLibrary = {
         "allows-sorting": "allowsSorting",
         "selection-mode": "selectionMode",
         "is-resizable": "isResizable",
+        "max-width": "maxWidth",
+        width: "width",
       },
     },
     {
@@ -381,6 +394,7 @@ export const nimbusRemoteElements: RemoteElementConfiguration[] = [
     remoteAttributes: [
       "card-padding",
       "border-style",
+      "background-style",
       "elevation",
       "max-width",
       "width",
@@ -512,6 +526,8 @@ export const nimbusRemoteElements: RemoteElementConfiguration[] = [
       "allows-sorting",
       "selection-mode",
       "is-resizable",
+      "max-width",
+      "width",
     ],
   },
   {

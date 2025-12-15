@@ -5,7 +5,7 @@ import { NimbusProvider } from "@commercetools/nimbus";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <NimbusProvider>
+    <NimbusProvider forcedTheme="dark">
       <App />
     </NimbusProvider>
   </StrictMode>

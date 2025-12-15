@@ -47,7 +47,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           right: 0,
           zIndex: 10,
-          backgroundColor: "white",
+          backgroundColor: "bg",
         },
       },
       "& .data-table-row": {
@@ -144,7 +144,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           left: "72px", // Width of selection column
         },
         "& [data-slot='pin-row-cell']": {
-          backgroundColor: "white",
+          backgroundColor: "bg",
           position: "sticky",
           clipPath: "inset(2px 2px 2px 0)",
         },

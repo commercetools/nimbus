@@ -46,6 +46,8 @@ export function createDataTable(args: DataTableArgs) {
     const card = document.createElement('nimbus-card-root');
     card.setAttribute('elevation', 'elevated');
     card.setAttribute('border-style', 'outlined');
+    card.setAttribute('width', '100%');
+    card.setAttribute('max-width', '100%');
 
     const cardHeader = document.createElement('nimbus-card-header');
     const heading = document.createElement('nimbus-heading');
@@ -60,22 +62,13 @@ export function createDataTable(args: DataTableArgs) {
     }
 
     // Create DataTable structure
+    // Note: Only create the root element - the wrapper will render Table, Header, and Body
     const dataTableRoot = document.createElement('nimbus-data-table-root');
     dataTableRoot.setAttribute('columns', "${columnsJson}");
     dataTableRoot.setAttribute('rows', "${rowsJson}");
     dataTableRoot.setAttribute('allows-sorting', 'true');
     dataTableRoot.setAttribute('density', 'default');
-
-    const dataTableTable = document.createElement('nimbus-data-table-table');
-
-    const dataTableHeader = document.createElement('nimbus-data-table-header');
-
-    const dataTableBody = document.createElement('nimbus-data-table-body');
-
-    // Build structure
-    dataTableTable.appendChild(dataTableHeader);
-    dataTableTable.appendChild(dataTableBody);
-    dataTableRoot.appendChild(dataTableTable);
+    dataTableRoot.setAttribute('max-width', '100%');
 
     ${
       title

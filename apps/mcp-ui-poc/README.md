@@ -1,6 +1,7 @@
 # MCP UI POC
 
-A proof-of-concept application demonstrating Model Context Protocol (MCP) integration with the Nimbus design system.
+A proof-of-concept application demonstrating Model Context Protocol (MCP)
+integration with the Nimbus design system.
 
 ## Structure
 
@@ -18,38 +19,57 @@ apps/mcp-ui-poc/
     └── k8s/             # Kubernetes manifests
 ```
 
+## Development
+
+### Running Locally (without Docker)
+
+#### Server
+
+```bash
+cd server
+pnpm install
+pnpm dev
+```
+
+#### Client
+
+```bash
+cd client
+cp .env.example .env  # Add your API key
+pnpm install
+pnpm dev
+```
+
+## Architecture
+
+- **Server**: Express server providing MCP endpoints for UI component creation
+- **Client**: React/Vite application that connects to Claude AI via MCP server
+- **Communication**: Browser → MCP Server → Claude API
+
 ## Quick Start with Docker
 
 ### Prerequisites
 
 - Docker Desktop installed and running
 - Anthropic API key ([get one here](https://console.anthropic.com/))
-- Node.js 22+ and pnpm 10+ installed (for building workspace packages)
 
 ### Steps
 
-1. **Build workspace packages (REQUIRED):**
-   ```bash
-   # From repository root
-   pnpm build:packages
-   ```
+1. **Create .env file:**
 
-   This builds the required Nimbus packages (`nimbus`, `nimbus-icons`, `tokens`).
-   Docker will copy these pre-built packages instead of building them inside containers.
-
-2. **Create .env file:**
    ```bash
    cd apps/mcp-ui-poc
    cp .env.example .env
    # Edit .env and add your ANTHROPIC_API_KEY
    ```
 
-3. **Start services:**
+2. **Start services:**
+
    ```bash
    docker-compose up --build
    ```
 
-4. **Access applications:**
+3. **Access applications:**
    - Client UI: http://localhost:8080
    - Server API: http://localhost:3001/elements
 
@@ -75,93 +95,6 @@ docker-compose build mcp-ui-poc-client
 docker-compose up -d mcp-ui-poc-client
 ```
 
-## Development
+## GKE Deployment
 
-### Running Locally (without Docker)
-
-#### Server
-```bash
-cd server
-pnpm install
-pnpm dev
-```
-
-#### Client
-```bash
-cd client
-cp .env.example .env  # Add your API key
-pnpm install
-pnpm dev
-```
-
-## Architecture
-
-- **Server**: Express server providing MCP endpoints for UI component creation
-- **Client**: React/Vite application that connects to Claude AI via MCP server
-- **Communication**: Browser → MCP Server → Claude API
-
-## Documentation
-
-- [Server Deployment Guide](./server/DEPLOYMENT.md)
-- [Client Deployment Guide](./client/DEPLOYMENT.md)
-- [Kubernetes Deployment](./server/k8s/) and [Client K8s](./client/k8s/)
-
-## Kubernetes Deployment (Minikube)
-
-### Quick Start
-
-```bash
-# One-command setup and deployment
-./scripts/k8s-quickstart.sh
-```
-
-This script will:
-1. Build Docker images
-2. Load images into Minikube
-3. Create secrets from .env
-4. Deploy all resources
-5. Guide you to access the application
-
-### Manual Deployment
-
-```bash
-# Build packages (from repository root)
-pnpm build:packages
-
-# Navigate to MCP UI POC
-cd apps/mcp-ui-poc
-
-# Build Docker images
-./scripts/k8s-build.sh
-
-# Load into Minikube
-./scripts/k8s-load-minikube.sh
-
-# Create secret from .env
-./scripts/k8s-create-secret.sh
-
-# Deploy to cluster
-./scripts/k8s-deploy.sh
-
-# Access application
-kubectl port-forward svc/mcp-ui-poc-client 8080:80
-# Open http://localhost:8080
-```
-
-### Helper Scripts
-
-- `k8s-quickstart.sh` - Complete setup and deployment
-- `k8s-build.sh` - Build Docker images
-- `k8s-load-minikube.sh` - Load images into Minikube
-- `k8s-create-secret.sh` - Create secrets from .env
-- `k8s-deploy.sh` - Deploy all resources
-- `k8s-status.sh` - Check deployment status
-- `k8s-logs.sh` - View pod logs
-- `k8s-rebuild.sh` - Full rebuild and redeploy
-- `k8s-cleanup.sh` - Remove all resources
-
-### Documentation
-
-- [Detailed Kubernetes Guide](./slop-docs/KUBERNETES.md) - Complete setup and troubleshooting
-- [Server Deployment Guide](./server/DEPLOYMENT.md)
-- [Client Deployment Guide](./client/DEPLOYMENT.md)
+See `./scripts/README.md`

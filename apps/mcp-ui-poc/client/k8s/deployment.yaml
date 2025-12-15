@@ -18,12 +18,17 @@ spec:
     spec:
       containers:
         - name: client
-          image: mcp-ui-poc-client:latest
-          imagePullPolicy: IfNotPresent
+          image: us-east1-docker.pkg.dev/ctp-playground/byron-wall/mcp-ui-poc-client:latest
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          volumeMounts:
+            - name: auth
+              mountPath: /etc/nginx/.htpasswd
+              subPath: .htpasswd
+              readOnly: true
           resources:
             requests:
               memory: "128Mi"
@@ -47,6 +52,10 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3
+      volumes:
+        - name: auth
+          secret:
+            secretName: mcp-ui-poc-auth
 ---
 apiVersion: v1
 kind: Service
@@ -55,6 +64,11 @@ metadata:
   labels:
     app: mcp-ui-poc-client
     component: frontend
+  annotations:
+    # Link to BackendConfig for IAP
+    cloud.google.com/backend-config: '{"default": "mcp-ui-poc-backend-config"}'
+    # Expose service on specific port for load balancer health checks
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   ports:

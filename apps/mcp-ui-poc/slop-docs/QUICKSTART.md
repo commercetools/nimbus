@@ -9,7 +9,7 @@ brew install minikube
 # Install kubectl
 brew install kubectl
 
-# Start Minikube
+# Start Minikube (adjust memory if needed)
 minikube start --cpus=4 --memory=6144
 ```
 
@@ -17,6 +17,8 @@ minikube start --cpus=4 --memory=6144
 
 ```bash
 cd apps/mcp-ui-poc
+
+# Builds images from npm packages and deploys
 ./scripts/k8s-quickstart.sh
 ```
 

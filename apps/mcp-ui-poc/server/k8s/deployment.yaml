@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
         - name: server
-          image: mcp-ui-poc-server:latest
-          imagePullPolicy: IfNotPresent
+          image: us-east1-docker.pkg.dev/ctp-playground/byron-wall/mcp-ui-poc-server:latest
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 3001
@@ -60,6 +60,11 @@ metadata:
   labels:
     app: mcp-ui-poc-server
     component: backend
+  annotations:
+    # Link to BackendConfig for IAP
+    cloud.google.com/backend-config: '{"default": "mcp-ui-poc-server-backend-config"}'
+    # Expose service on specific port for load balancer health checks
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   ports:

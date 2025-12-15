@@ -1,0 +1,59 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: mcp-ui-poc-backend-config
+  labels:
+    app: mcp-ui-poc
+spec:
+  # IAP disabled - using nginx basic auth instead
+  # iap:
+  #   enabled: false
+
+  # Health check configuration
+  healthCheck:
+    checkIntervalSec: 30
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /
+    port: 80
+
+  # Session affinity for consistent routing
+  sessionAffinity:
+    affinityType: "CLIENT_IP"
+    affinityCookieTtlSec: 3600
+
+  # Connection draining for graceful shutdown
+  connectionDraining:
+    drainingTimeoutSec: 60
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: mcp-ui-poc-server-backend-config
+  labels:
+    app: mcp-ui-poc
+spec:
+  # Enable IAP for backend API
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: mcp-ui-poc-oauth-secret
+
+  # Health check configuration for server
+  healthCheck:
+    checkIntervalSec: 30
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /elements
+    port: 3001
+
+  # Timeout settings for API calls
+  timeoutSec: 30
+
+  # Connection draining
+  connectionDraining:
+    drainingTimeoutSec: 60

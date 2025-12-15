@@ -487,44 +487,44 @@ importers:
         specifier: ^1.24.3
         version: 1.24.3(zod@4.1.12)
       react:
-        specifier: catalog:react
+        specifier: ^19.0.0
         version: 19.2.0
       react-dom:
-        specifier: catalog:react
+        specifier: ^19.0.0
         version: 19.2.0(react@19.2.0)
     devDependencies:
       '@eslint/js':
-        specifier: catalog:tooling
+        specifier: ^9.39.1
         version: 9.39.1
       '@types/react':
-        specifier: catalog:react
+        specifier: ^19.0.0
         version: 19.2.2
       '@types/react-dom':
-        specifier: catalog:react
+        specifier: ^19.0.0
         version: 19.2.2(@types/react@19.2.2)
       '@vitejs/plugin-react-swc':
-        specifier: catalog:tooling
+        specifier: ^4.2.2
         version: 4.2.2(@swc/helpers@0.5.17)(vite@7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       eslint:
-        specifier: catalog:tooling
+        specifier: ^9.39.1
         version: 9.39.1
       eslint-plugin-react-hooks:
-        specifier: catalog:tooling
+        specifier: ^5.2.0
         version: 5.2.0(eslint@9.39.1)
       eslint-plugin-react-refresh:
-        specifier: catalog:tooling
+        specifier: ^0.4.24
         version: 0.4.24(eslint@9.39.1)
       globals:
-        specifier: catalog:tooling
+        specifier: ^16.5.0
         version: 16.5.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
       typescript-eslint:
-        specifier: catalog:tooling
+        specifier: ^8.48.0
         version: 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       vite:
-        specifier: catalog:tooling
+        specifier: ^7.2.6
         version: 7.2.6(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   apps/mcp-ui-poc/server:

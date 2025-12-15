@@ -1,14 +1,42 @@
-# Multi-stage build for mcp-ui-poc-client
-# This Dockerfile uses pre-built workspace packages
-#
-# IMPORTANT: Build workspace packages locally BEFORE running docker build:
-#   pnpm build:packages
-#
-# This dramatically speeds up Docker builds by skipping the heavy
-# nimbus-icons generation (hundreds of SVG -> React components)
+# Multi-stage build for mcp-ui-poc-client with workspace dependencies
+# Builds workspace packages (@commercetools/nimbus, @commercetools/nimbus-icons)
+# then builds the client application
 
 # ============================================================
-# Stage 1: Build Application
+# Stage 1: Build Workspace Dependencies
+# ============================================================
+FROM node:22-alpine AS workspace-builder
+
+WORKDIR /workspace
+
+# Install pnpm
+RUN npm install -g pnpm@10
+
+# Copy workspace configuration files
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY .npmrc ./
+
+# Copy tokens package (required by nimbus)
+COPY packages/tokens ./packages/tokens
+
+# Copy nimbus packages that client depends on
+COPY packages/nimbus ./packages/nimbus
+COPY packages/nimbus-icons ./packages/nimbus-icons
+
+# Install workspace dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build tokens first (nimbus depends on it)
+RUN pnpm --filter @commercetools/nimbus-tokens build
+
+# Build nimbus packages
+RUN pnpm --filter @commercetools/nimbus build
+RUN pnpm --filter @commercetools/nimbus-icons build
+
+# ============================================================
+# Stage 2: Build Client Application
 # ============================================================
 FROM node:22-alpine AS app-builder
 
@@ -17,45 +45,33 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm@10
 
-# Copy workspace configuration
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace files from workspace-builder
+COPY --from=workspace-builder /workspace/pnpm-workspace.yaml ./
+COPY --from=workspace-builder /workspace/package.json ./
+COPY --from=workspace-builder /workspace/pnpm-lock.yaml ./
+COPY --from=workspace-builder /workspace/.npmrc ./
 
-# Copy package.json files for workspace dependencies
-COPY packages/nimbus/package.json ./packages/nimbus/
-COPY packages/nimbus-icons/package.json ./packages/nimbus-icons/
-COPY packages/tokens/package.json ./packages/tokens/
-COPY apps/mcp-ui-poc/client/package.json ./apps/mcp-ui-poc/client/
+# Copy built workspace packages
+COPY --from=workspace-builder /workspace/packages ./packages
 
-# Install dependencies (uses workspace protocol)
+# Copy client source
+COPY apps/mcp-ui-poc/client ./apps/mcp-ui-poc/client
+
+# Install all dependencies (will use built workspace packages)
+WORKDIR /app/apps/mcp-ui-poc/client
 RUN pnpm install --frozen-lockfile
-
-# Copy PRE-BUILT workspace packages (built locally before Docker)
-# These must exist or the build will fail:
-#   - packages/nimbus/dist
-#   - packages/nimbus-icons/dist
-#   - packages/tokens/dist + generated + css
-COPY packages/nimbus/dist ./packages/nimbus/dist
-COPY packages/nimbus/package.json ./packages/nimbus/
-COPY packages/nimbus-icons/dist ./packages/nimbus-icons/dist
-COPY packages/nimbus-icons/package.json ./packages/nimbus-icons/
-COPY packages/tokens/dist ./packages/tokens/dist
-COPY packages/tokens/generated ./packages/tokens/generated
-COPY packages/tokens/css ./packages/tokens/css
-COPY packages/tokens/package.json ./packages/tokens/
-
-# Copy application source
-COPY apps/mcp-ui-poc/client/ ./apps/mcp-ui-poc/client/
 
 # Build arguments for Vite environment variables
 ARG VITE_MCP_SERVER_URL=http://localhost:3001
 ARG VITE_ANTHROPIC_API_KEY
 
-# Build the application
-WORKDIR /app/apps/mcp-ui-poc/client
+# Build the application with environment variables
+ENV VITE_MCP_SERVER_URL=${VITE_MCP_SERVER_URL}
+ENV VITE_ANTHROPIC_API_KEY=${VITE_ANTHROPIC_API_KEY}
 RUN pnpm build
 
 # ============================================================
-# Stage 2: Production (nginx)
+# Stage 3: Production (nginx)
 # ============================================================
 FROM nginx:alpine AS production
 
@@ -64,6 +80,9 @@ COPY apps/mcp-ui-poc/client/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built application from app-builder
 COPY --from=app-builder /app/apps/mcp-ui-poc/client/dist /usr/share/nginx/html
+
+# Note: .htpasswd is NOT included in the image for security
+# It's mounted at runtime via Kubernetes secret (see deployment.yaml)
 
 # Expose port 80
 EXPOSE 80

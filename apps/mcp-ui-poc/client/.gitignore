@@ -1,0 +1,5 @@
+# Authentication credentials
+.htpasswd
+
+# Keep example file
+!.htpasswd.example

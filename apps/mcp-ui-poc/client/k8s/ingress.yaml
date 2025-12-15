@@ -1,44 +1,17 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: mcp-ui-poc-ingress
+  name: mcp-ui-poc-client-loadbalancer
   labels:
-    app: mcp-ui-poc
-  annotations:
-    # Common annotations for ingress controllers
-    # Uncomment and adjust based on your ingress controller
+    app: mcp-ui-poc-client
+    component: frontend
 
-    # For nginx-ingress:
-    # nginx.ingress.kubernetes.io/rewrite-target: /
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-
-    # For cert-manager (TLS):
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
-  # Uncomment if using TLS
-  # tls:
-  #   - hosts:
-  #       - mcp-ui-poc.example.com
-  #     secretName: mcp-ui-poc-tls
-
-  rules:
-    - host: mcp-ui-poc.example.com  # Replace with your domain
-      http:
-        paths:
-          # Route /api/* to the backend server
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: mcp-ui-poc-server
-                port:
-                  number: 3001
-
-          # Route all other traffic to the frontend client
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: mcp-ui-poc-client
-                port:
-                  number: 80
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-client

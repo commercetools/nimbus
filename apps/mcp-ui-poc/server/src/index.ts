@@ -55,8 +55,21 @@ app.post("/mcp", async (req, res) => {
   if (sessionId && transports[sessionId]) {
     // Session exists - reuse existing transport
     transport = transports[sessionId];
-  } else if (!sessionId && isInitializeRequest(req.body)) {
+  } else if (sessionId && !transports[sessionId]) {
+    // Session ID provided but doesn't exist - session expired or server restarted
+    console.log(`❌ Invalid session ID ${sessionId} - session not found`);
+    return res.status(404).json({
+      jsonrpc: "2.0",
+      error: {
+        code: -32001,
+        message: "Session not found. Please reconnect.",
+      },
+      id: req.body.id || null,
+    });
+  } else if (isInitializeRequest(req.body)) {
     // New session initialization request
+    console.log(`🆕 Creating new MCP session...`);
+
     transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
       onsessioninitialized: (sid) => {
@@ -85,9 +98,16 @@ app.post("/mcp", async (req, res) => {
     // Connect server to transport
     await server.connect(transport);
   } else {
-    // Invalid request - no session ID and not an initialization request
+    // No session ID and not an initialization request
+    console.log(`❌ No session ID provided and not an initialization request`);
     return res.status(400).json({
-      error: { message: "Bad Request: No valid session ID provided" },
+      jsonrpc: "2.0",
+      error: {
+        code: -32000,
+        message:
+          "Bad Request: No session ID provided. Please initialize a session first.",
+      },
+      id: req.body.id || null,
     });
   }
 

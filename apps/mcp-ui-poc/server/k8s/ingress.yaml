@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-ui-poc-server-loadbalancer
+  labels:
+    app: mcp-ui-poc-server
+    component: backend
+  annotations:
+    # Explicitly allow HTTP traffic
+    cloud.google.com/load-balancer-type: "External"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 3001
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-server
