@@ -13,7 +13,6 @@ const COMMERCE_MCP_SERVER_URL =
 export class ClaudeClient {
   private anthropic!: Anthropic;
   private mcpClients: Map<string, Client> = new Map();
-  private conversationHistory: Anthropic.MessageParam[] = [];
   private allTools: Tool[] = [];
   private serverStats = { ui: 0, commerce: 0 };
   private isInitializing = false;
@@ -189,14 +188,16 @@ export class ClaudeClient {
     console.log("📤 Sending message to Claude:", message);
     console.log("🔧 Tools enabled:", toolsEnabled);
 
-    // Add user message to history
-    this.conversationHistory.push({
-      role: "user",
-      content: message,
-    });
-
     const uiResources: UIResource[] = [];
     let textResponse = "";
+
+    // Create a temporary conversation for this message only (no history)
+    const currentConversation: Anthropic.MessageParam[] = [
+      {
+        role: "user",
+        content: message,
+      },
+    ];
 
     // Loop to handle tool use (Claude may need multiple rounds)
     let continueLoop = true;
@@ -283,13 +284,13 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
         max_tokens: 4096,
         system: systemPrompt,
         tools: toolsEnabled ? this.allTools : undefined,
-        messages: this.conversationHistory,
+        messages: currentConversation,
       });
 
       console.log("📥 Received response from Claude:", response);
 
-      // Add assistant response to history
-      this.conversationHistory.push({
+      // Add assistant response to current conversation (for this message only)
+      currentConversation.push({
         role: "assistant",
         content: response.content,
       });
@@ -386,8 +387,8 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
           }
         }
 
-        // Add tool results to conversation history
-        this.conversationHistory.push(toolResults);
+        // Add tool results to current conversation
+        currentConversation.push(toolResults);
 
         // Continue the loop to get Claude's next response
         continueLoop = true;
