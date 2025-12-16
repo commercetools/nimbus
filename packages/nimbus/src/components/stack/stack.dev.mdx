@@ -367,10 +367,18 @@ const App = () => (
     <Box>
       <Text fontWeight="600" mb="300">Icon Buttons:</Text>
       <Stack direction="row" gap="100">
-        <IconButton icon={Edit} aria-label="Edit" size="xs" variant="ghost" />
-        <IconButton icon={Copy} aria-label="Copy" size="xs" variant="ghost" />
-        <IconButton icon={Share} aria-label="Share" size="xs" variant="ghost" />
-        <IconButton icon={Delete} aria-label="Delete" size="xs" variant="ghost" colorPalette="critical" />
+        <IconButton aria-label="Edit" size="xs" variant="ghost">
+          <Icons.Edit />
+        </IconButton>
+        <IconButton aria-label="Copy" size="xs" variant="ghost">
+          <Icons.ContentCopy />
+        </IconButton>
+        <IconButton aria-label="Share" size="xs" variant="ghost">
+          <Icons.Share />
+        </IconButton>
+        <IconButton aria-label="Delete" size="xs" variant="ghost" colorPalette="critical">
+          <Icons.Delete />
+        </IconButton>
       </Stack>
     </Box>
   </Stack>
@@ -389,7 +397,9 @@ const App = () => (
         <Stack direction="column" gap="300">
           <Stack direction="row" justify="space-between" align="center">
             <Text fontWeight="600" fontSize="lg">Product Details</Text>
-            <IconButton icon={MoreVertical} aria-label="More options" size="xs" variant="ghost" />
+            <IconButton aria-label="More options" size="xs" variant="ghost">
+              <Icons.MoreVert />
+            </IconButton>
           </Stack>
           
           <Stack direction="column" gap="200">
