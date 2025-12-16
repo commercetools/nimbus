@@ -188,6 +188,57 @@ export class ClaudeClient {
     console.log("📤 Sending message to Claude:", message);
     console.log("🔧 Tools enabled:", toolsEnabled);
 
+    // Try with retries if we hit token limits
+    const maxRetries = 2;
+    let retryCount = 0;
+    let lastError: Error | null = null;
+
+    while (retryCount <= maxRetries) {
+      try {
+        return await this.sendMessageAttempt(message, toolsEnabled, retryCount);
+      } catch (error) {
+        // Extract error message from various error formats
+        let errorMessage = "";
+        if (error && typeof error === "object") {
+          const err = error as any;
+          errorMessage = err.message || JSON.stringify(err);
+        } else {
+          errorMessage = String(error);
+        }
+
+        // Check if it's a token limit error (various formats)
+        const isTokenLimitError =
+          errorMessage.includes("prompt is too long") ||
+          errorMessage.includes("maximum") ||
+          (errorMessage.includes("token") && errorMessage.includes("200000"));
+
+        if (isTokenLimitError && retryCount < maxRetries) {
+          console.warn(
+            `⚠️ Token limit exceeded (attempt ${retryCount + 1}/${maxRetries + 1}). Retrying with guidance...`
+          );
+          console.warn(`Error details: ${errorMessage.substring(0, 200)}...`);
+          lastError = error as Error;
+          retryCount++;
+          continue;
+        }
+
+        // Not a token limit error or out of retries - throw it
+        throw error;
+      }
+    }
+
+    // If we exhausted retries, throw the last error with context
+    throw new Error(
+      `Failed after ${maxRetries + 1} attempts. Last error: ${lastError?.message || "Unknown error"}. ` +
+        `Suggestion: Try a more specific query with filters, date ranges, or smaller result sets.`
+    );
+  }
+
+  private async sendMessageAttempt(
+    message: string,
+    toolsEnabled: boolean,
+    retryAttempt: number
+  ) {
     const uiResources: UIResource[] = [];
     let textResponse = "";
 
@@ -202,7 +253,37 @@ export class ClaudeClient {
     // Loop to handle tool use (Claude may need multiple rounds)
     let continueLoop = true;
     while (continueLoop) {
-      // Adapt system prompt based on tools availability
+      // Build retry context if this is a retry attempt
+      const retryContext =
+        retryAttempt > 0
+          ? `
+
+🔄 RETRY ATTEMPT ${retryAttempt} - TOKEN LIMIT EXCEEDED ON PREVIOUS ATTEMPT
+
+The previous attempt exceeded the 200K token limit because tool responses were too large.
+
+CRITICAL: You MUST use more restrictive parameters:
+- Use pagination: limit to 5-10 items maximum
+- Add filters: date ranges, categories, status filters
+- Request specific fields only (avoid fetching all data)
+- Use "where" clauses to narrow results
+- Prefer summary/count endpoints over full list endpoints
+
+Examples of good retry parameters:
+- commerce__list_products with limit=5 and where="categories.id=\"cat123\""
+- commerce__read_orders with limit=10 and where="createdAt > \"2024-01-01\""
+- Request only essential fields, not full objects
+
+If you cannot fulfill the request with limited data, explain to the user that the dataset is too large and suggest:
+1. Adding filters (category, date range, status, etc.)
+2. Using pagination to view smaller batches
+3. Being more specific in their query
+
+DO NOT retry with the same parameters - you will hit the token limit again!
+`
+          : "";
+
+      // Adapt system prompt based on tools availability and retry state
       const systemPrompt = toolsEnabled
         ? `You are a helpful AI assistant with access to TWO types of tools:
 
@@ -213,7 +294,7 @@ export class ClaudeClient {
 2. **UI Tools (ui__*)**: Display information using the Nimbus design system
    - Create visual components like cards, tables, forms, etc.
    - These tools RENDER data visually for the user
-
+${retryContext}
 CRITICAL WORKFLOW - ALWAYS USE THIS PATTERN:
 
 When the user asks about products, orders, customers, inventory, or any commerce data:
@@ -222,10 +303,16 @@ When the user asks about products, orders, customers, inventory, or any commerce
 
 NEVER create mock/fake data when real data is available via commerce tools!
 
+⚠️ IMPORTANT: Token Limit Management
+- Large datasets can exceed the 200K token limit
+- ALWAYS use pagination: Start with limit=10-20 items for list endpoints
+- Use filters when possible: categories, date ranges, status filters
+- If user asks for "all products", explain you'll show a limited set and they can refine
+
 Examples:
-- "Show me products" → commerce__list_products THEN ui__createDataTable
-- "Show a product" → commerce__list_products (get one) THEN ui__createProductCard
-- "Display orders" → commerce__read_orders THEN ui__createDataTable
+- "Show me products" → commerce__list_products(limit=10) THEN ui__createDataTable
+- "Show a product" → commerce__list_products(limit=1) THEN ui__createProductCard
+- "Display orders" → commerce__read_orders(limit=10) THEN ui__createDataTable
 - "Customer info" → commerce__customers_read THEN ui__createCard
 
 Use the available Nimbus components via tool calls whenever possible - prioritize minimizing text in the response.
