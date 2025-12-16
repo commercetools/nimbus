@@ -10,6 +10,10 @@ metadata:
     cloud.google.com/load-balancer-type: "External"
 spec:
   type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours - MCP sessions can be long-lived
   ports:
     - port: 80
       targetPort: 3001

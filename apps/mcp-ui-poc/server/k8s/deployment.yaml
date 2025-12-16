@@ -6,7 +6,7 @@ metadata:
     app: mcp-ui-poc-server
     component: backend
 spec:
-  replicas: 2
+  replicas: 1  # Temporary: Single replica until session storage is implemented
   selector:
     matchLabels:
       app: mcp-ui-poc-server
@@ -67,6 +67,10 @@ metadata:
     cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours - MCP sessions can be long-lived
   ports:
     - port: 3001
       targetPort: 3001
