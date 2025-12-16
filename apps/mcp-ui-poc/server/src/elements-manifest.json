@@ -309,17 +309,38 @@
         {
           "name": "name",
           "type": "string",
-          "description": "Input name attribute"
+          "description": "Input name attribute for form submission"
         },
         {
           "name": "placeholder",
           "type": "string",
-          "description": "Placeholder text"
+          "description": "Placeholder text shown when input is empty"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "Input value (controlled or default)"
         },
         {
           "name": "is-required",
           "type": "boolean",
-          "description": "Required field indicator"
+          "description": "Whether the input is required"
+        },
+        {
+          "name": "is-disabled",
+          "type": "boolean",
+          "description": "Whether the input is disabled"
+        },
+        {
+          "name": "is-read-only",
+          "type": "boolean",
+          "description": "Whether the input is read-only"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "values": ["text", "email", "url", "tel"],
+          "description": "Input type for validation and keyboard behavior"
         }
       ]
     },
@@ -347,6 +368,18 @@
           "name": "is-read-only",
           "type": "boolean",
           "description": "Makes field read-only"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "values": ["sm", "md"],
+          "description": "Size variant of the form field (default: 'md')"
+        },
+        {
+          "name": "direction",
+          "type": "string",
+          "values": ["row", "column"],
+          "description": "Layout direction for label and input positioning (default: 'column')"
         }
       ]
     },

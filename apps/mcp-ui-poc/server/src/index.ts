@@ -8,9 +8,11 @@ import { randomUUID } from "crypto";
 import elementsManifest from "./elements-manifest.json" with { type: "json" };
 import { createProductCard } from "./tools/product-card.js";
 import { createForm } from "./tools/form.js";
+import { createFormField } from "./tools/form-field.js";
 import { createDataTable } from "./tools/data-table.js";
 import { createCard } from "./tools/card.js";
 import { createText } from "./tools/text.js";
+import { createTextInput } from "./tools/text-input.js";
 import { createButton } from "./tools/button.js";
 import { createBadge } from "./tools/badge.js";
 import { createFlex } from "./tools/flex.js";
@@ -198,6 +200,29 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       width: z.string().optional(),
       children: z.array(childElementSchema).optional(),
     }),
+    z.object({
+      type: z.literal("formField"),
+      labelChildren: z.array(childElementSchema),
+      inputChildren: z.array(childElementSchema),
+      description: z.string().optional(),
+      errorMessage: z.string().optional(),
+      isRequired: z.boolean().optional(),
+      isInvalid: z.boolean().optional(),
+      isDisabled: z.boolean().optional(),
+      isReadOnly: z.boolean().optional(),
+      size: z.string().optional(),
+      direction: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("textInput"),
+      name: z.string().optional(),
+      placeholder: z.string().optional(),
+      defaultValue: z.string().optional(),
+      isRequired: z.boolean().optional(),
+      isDisabled: z.boolean().optional(),
+      isReadOnly: z.boolean().optional(),
+      inputType: z.string().optional(),
+    }),
   ])
 );
 
@@ -206,7 +231,6 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
 // ============================================================
 
 function registerTools(server: McpServer) {
-  // Tool 1: Create Product Card
   server.registerTool(
     "createProductCard",
     {
@@ -238,7 +262,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 2: Create Form
   server.registerTool(
     "createForm",
     {
@@ -277,7 +300,65 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 3: Create Data Table
+  server.registerTool(
+    "createFormField",
+    {
+      title: "Create Form Field",
+      description:
+        "Creates a form field UI component with composable label and input sections, plus optional description and error message. Supports full composition for label and input content.",
+      inputSchema: z.object({
+        labelChildren: z
+          .array(childElementSchema)
+          .describe(
+            "Array of child elements for the label. For simple text labels, use a single 'text' element - this is easier and preferred. Only use complex composition (with icons, tooltips, etc.) when needed."
+          ),
+        inputChildren: z
+          .array(childElementSchema)
+          .describe(
+            "Array of child elements for the input wrapper. MUST contain valid Nimbus input components only: 'text' (nimbus-text-input), 'number' (nimbus-number-input), 'password' (nimbus-password-input), or 'textarea' (nimbus-multiline-text-input). Typically a single input element."
+          ),
+        description: z
+          .string()
+          .optional()
+          .describe("Optional helper text displayed below the input"),
+        errorMessage: z
+          .string()
+          .optional()
+          .describe("Optional error message (shown when isInvalid is true)"),
+        isRequired: z
+          .boolean()
+          .optional()
+          .describe("Whether the field is required (shows indicator)"),
+        isInvalid: z
+          .boolean()
+          .optional()
+          .describe("Whether the field has a validation error"),
+        isDisabled: z
+          .boolean()
+          .optional()
+          .describe("Whether the field is disabled"),
+        isReadOnly: z
+          .boolean()
+          .optional()
+          .describe("Whether the field is read-only"),
+        size: z
+          .enum(["sm", "md"])
+          .optional()
+          .describe("Size variant (default: 'md')"),
+        direction: z
+          .enum(["row", "column"])
+          .optional()
+          .describe("Layout direction (default: 'column')"),
+      }),
+    },
+    async (args) => {
+      const uiResource = createFormField(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
+
   server.registerTool(
     "createDataTable",
     {
@@ -305,7 +386,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 4: Create Card
   server.registerTool(
     "createCard",
     {
@@ -345,7 +425,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 5: Create Text
   server.registerTool(
     "createText",
     {
@@ -373,7 +452,51 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 6: Create Button
+  server.registerTool(
+    "createTextInput",
+    {
+      title: "Create Text Input",
+      description:
+        "Creates a text input UI component using Nimbus design system. Can be used standalone or composed inside FormField.Input.",
+      inputSchema: z.object({
+        name: z
+          .string()
+          .optional()
+          .describe("Input name attribute for form submission"),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text shown when input is empty"),
+        defaultValue: z
+          .string()
+          .optional()
+          .describe("Initial/default value for the input"),
+        isRequired: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is required"),
+        isDisabled: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is disabled"),
+        isReadOnly: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is read-only"),
+        type: z
+          .enum(["text", "email", "url", "tel"])
+          .optional()
+          .describe("Input type for validation and keyboard (default: 'text')"),
+      }),
+    },
+    async (args) => {
+      const uiResource = createTextInput(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
+
   server.registerTool(
     "createButton",
     {
@@ -404,7 +527,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 7: Create Badge
   server.registerTool(
     "createBadge",
     {
@@ -431,7 +553,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 8: Create Flex
   server.registerTool(
     "createFlex",
     {
@@ -463,7 +584,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 9: Create Stack
   server.registerTool(
     "createStack",
     {
@@ -495,7 +615,6 @@ function registerTools(server: McpServer) {
     }
   );
 
-  // Tool 10: Create Heading
   server.registerTool(
     "createHeading",
     {

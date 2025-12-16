@@ -7,7 +7,9 @@ export type ChildElement =
   | BadgeChild
   | StackChild
   | FlexChild
-  | CardChild;
+  | CardChild
+  | FormFieldChild
+  | TextInputChild;
 
 export interface HeadingChild {
   type: "heading";
@@ -68,4 +70,29 @@ export interface CardChild {
   maxWidth?: string;
   width?: string;
   children?: ChildElement[];
+}
+
+export interface FormFieldChild {
+  type: "formField";
+  labelChildren: ChildElement[];
+  inputChildren: ChildElement[];
+  description?: string;
+  errorMessage?: string;
+  isRequired?: boolean;
+  isInvalid?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  size?: string;
+  direction?: string;
+}
+
+export interface TextInputChild {
+  type: "textInput";
+  name?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  isRequired?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  inputType?: string;
 }
