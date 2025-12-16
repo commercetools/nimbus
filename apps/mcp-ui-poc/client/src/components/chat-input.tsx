@@ -15,7 +15,7 @@ export function ChatInput({
   autoFocus = false,
 }: ChatInputProps) {
   const [input, setInput] = useState("");
-  const [debouncedInput, setDebouncedInput] = useState("");
+  const [, setDebouncedInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Debounce input changes (300ms delay)
