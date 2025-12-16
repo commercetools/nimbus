@@ -1,5 +1,5 @@
-import type { ChildElement } from "../types/index";
-import { escapeForJS } from "./escape-for-js";
+import type { ChildElement } from "../types/index.js";
+import { escapeForJS } from "./escape-for-js.js";
 
 /**
  * Generate Remote DOM script for creating child elements

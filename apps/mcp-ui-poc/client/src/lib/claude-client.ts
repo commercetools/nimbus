@@ -6,7 +6,7 @@ import type { Tool } from "@anthropic-ai/sdk/resources/messages.mjs";
 
 // Multi-server configuration
 const UI_MCP_SERVER_URL =
-  import.meta.env.VITE_UI_MCP_SERVER_URL || "http://localhost:3001";
+  import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001";
 const COMMERCE_MCP_SERVER_URL =
   import.meta.env.VITE_COMMERCE_MCP_SERVER_URL || "http://localhost:8888";
 

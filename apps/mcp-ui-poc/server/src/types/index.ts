@@ -53,6 +53,11 @@ export interface StackChild {
   width?: string;
   marginBottom?: string;
   children?: ChildElement[];
+  // Form attributes
+  as?: "form";
+  action?: string;
+  method?: string;
+  enctype?: string;
 }
 
 export interface FlexChild {
@@ -62,6 +67,11 @@ export interface FlexChild {
   padding?: string;
   backgroundColor?: string;
   children?: ChildElement[];
+  // Form attributes
+  as?: "form";
+  action?: string;
+  method?: string;
+  enctype?: string;
 }
 
 export interface CardChild {
@@ -98,6 +108,10 @@ export interface TextInputChild {
   isReadOnly?: boolean;
   inputType?: string;
   ariaLabel?: string;
+  // HTML5 input attributes
+  pattern?: string;
+  accept?: string;
+  autoComplete?: string;
 }
 
 export interface MoneyInputChild {

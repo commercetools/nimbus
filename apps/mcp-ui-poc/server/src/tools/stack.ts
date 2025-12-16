@@ -1,7 +1,7 @@
 import { createUIResource } from "@mcp-ui/server";
-import type { ChildElement } from "../types/index";
-import { generateChildrenScript } from "../utils/children-generator";
-import { escapeForJS } from "../utils/escape-for-js";
+import type { ChildElement } from "../types/index.js";
+import { generateChildrenScript } from "../utils/children-generator.js";
+import { escapeForJS } from "../utils/escape-for-js.js";
 
 export interface CreateStackArgs {
   content?: string;

@@ -3,6 +3,7 @@ import type {
   RemoteElementConfiguration,
 } from "@mcp-ui/client";
 import * as Nimbus from "@commercetools/nimbus";
+import type { MoneyInputValue } from "@commercetools/nimbus";
 import { createPropMappingWrapper } from "../utils/prop-mapping-wrapper";
 
 // Wrapper for DataTable that parses JSON strings and renders complete structure
@@ -68,8 +69,11 @@ const MoneyInputWrapper = (props: Record<string, unknown>) => {
     typeof currencies === "string" ? JSON.parse(currencies) : currencies;
 
   // Construct the value object from currencyCode and amount
-  const value = {
-    currencyCode: (currencyCode as string) || "USD",
+  // Server provides currency code as string, which may not match the strict CurrencyCode union type
+  // We trust the server to provide valid ISO 4217 codes, so we satisfy TypeScript's type checking
+  const value: MoneyInputValue = {
+    currencyCode: ((currencyCode as string) ||
+      "USD") as MoneyInputValue["currencyCode"],
     amount: (amount as string) || "",
   };
 

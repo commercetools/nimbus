@@ -32,6 +32,35 @@ services:
     restart: unless-stopped
 
   # ============================================================
+  # Commerce MCP Server (optional)
+  # ============================================================
+  mcp-ui-poc-commerce-server:
+    platform: linux/amd64
+    build:
+      context: ../..
+      dockerfile: apps/mcp-ui-poc/commerce-mcp-server/Dockerfile
+    container_name: mcp-ui-poc-commerce-server
+    ports:
+      - "8888:8888"
+    environment:
+      - NODE_ENV=production
+      - COMMERCE_MCP_PORT=8888
+      - CT_CLIENT_ID=${CT_CLIENT_ID}
+      - CT_CLIENT_SECRET=${CT_CLIENT_SECRET}
+      - CT_PROJECT_KEY=${CT_PROJECT_KEY}
+      - CT_AUTH_URL=${CT_AUTH_URL}
+      - CT_API_URL=${CT_API_URL}
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8888/mcp', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mcp-ui-poc-network
+    restart: unless-stopped
+
+  # ============================================================
   # MCP UI POC Client
   # ============================================================
   mcp-ui-poc-client:
@@ -44,12 +73,15 @@ services:
         # These are baked into the JavaScript bundle during build
         # Note: Client runs in browser, so it connects to localhost (not Docker service name)
         VITE_MCP_SERVER_URL: http://localhost:3001
+        VITE_COMMERCE_MCP_SERVER_URL: http://localhost:8888
         VITE_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     container_name: mcp-ui-poc-client
     ports:
       - "8080:80"
     depends_on:
       mcp-ui-poc-server:
+        condition: service_healthy
+      mcp-ui-poc-commerce-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
@@ -80,8 +112,10 @@ networks:
 #
 # 3. Access the applications:
 #    - Client: http://localhost:8080
-#    - Server: http://localhost:3001
-#    - Server health: http://localhost:3001/elements
+#    - UI MCP Server: http://localhost:3001
+#    - UI MCP Server health: http://localhost:3001/elements
+#    - Commerce MCP Server: http://localhost:8888
+#    - Commerce MCP Server health: http://localhost:8888/mcp
 #
 # 4. Stop the services:
 #    docker-compose down

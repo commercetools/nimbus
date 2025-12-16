@@ -17,6 +17,11 @@ app.use(
   })
 );
 
+// Health check endpoint for Kubernetes probes
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok", service: "commerce-mcp-server" });
+});
+
 // Validate required environment variables
 const requiredEnvVars = [
   "CT_CLIENT_ID",

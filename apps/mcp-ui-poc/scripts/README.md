@@ -32,7 +32,7 @@ Engine (GKE) with basic authentication.
    ```bash
    cd apps/mcp-ui-poc
    cp .env.example .env
-   # Edit .env to set SERVER_URL and ANTHROPIC_API_KEY
+   # Edit .env to set UI_MCP_SERVER_URL, ANTHROPIC_API_KEY, and optionally COMMERCE_MCP_SERVER_URL
    ```
 
 ## Scripts Overview
@@ -61,11 +61,14 @@ The `.env` file in `apps/mcp-ui-poc/` controls build configuration:
 ```bash
 # Required for client build
 ANTHROPIC_API_KEY=sk-ant-api...
-SERVER_URL=http://34.77.253.174:80  # Server LoadBalancer IP
+UI_MCP_SERVER_URL=http://34.77.253.174:80  # UI Server LoadBalancer IP
+
+# Optional for client build
+COMMERCE_MCP_SERVER_URL=http://35.123.45.67:80  # Commerce Server LoadBalancer IP
 ```
 
 **Important**: The client is built with these values baked into the JavaScript
-bundle. You must rebuild the client whenever `SERVER_URL` changes.
+bundle. You must rebuild the client whenever `UI_MCP_SERVER_URL` or `COMMERCE_MCP_SERVER_URL` changes.
 
 ## Deployment Workflow
 
@@ -85,11 +88,16 @@ bundle. You must rebuild the client whenever `SERVER_URL` changes.
    ./scripts/deploy.sh byronw
    ```
 
-3. **Get server IP** and update `.env`:
+3. **Get server IPs** and update `.env`:
 
    ```bash
+   # Get UI MCP server IP
    kubectl get service mcp-ui-poc-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-   # Update SERVER_URL in .env with the IP
+   # Update UI_MCP_SERVER_URL in .env with the IP
+
+   # Get Commerce MCP server IP (if deployed)
+   kubectl get service mcp-ui-poc-commerce-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+   # Update COMMERCE_MCP_SERVER_URL in .env with the IP
    ```
 
 4. **Build and deploy client** with correct server URL:
@@ -123,10 +131,10 @@ kubectl rollout status deployment/mcp-ui-poc-server -n byronw
 When you make changes to client code:
 
 ```bash
-# 1. Ensure .env has correct SERVER_URL
-cat .env  # Verify SERVER_URL
+# 1. Ensure .env has correct server URLs
+cat .env  # Verify UI_MCP_SERVER_URL and COMMERCE_MCP_SERVER_URL
 
-# 2. Build new client image (uses SERVER_URL from .env)
+# 2. Build new client image (uses server URLs from .env)
 ./scripts/build.sh client
 
 # 3. Push to registry
@@ -139,7 +147,7 @@ kubectl rollout restart deployment/mcp-ui-poc-client -n byronw
 kubectl rollout status deployment/mcp-ui-poc-client -n byronw
 ```
 
-**Note**: The `build.sh` script verifies that the SERVER_URL was correctly baked
+**Note**: The `build.sh` script verifies that the UI_MCP_SERVER_URL was correctly baked
 into the client bundle.
 
 ### Updating Both Server and Client
@@ -209,14 +217,15 @@ Visit the IP in your browser. You'll be prompted for:
 ### build.sh Usage
 
 ```bash
-./scripts/build.sh [MODE] [SERVER_URL] [API_KEY]
+./scripts/build.sh [server|commerce|client|all]
 ```
 
 **Modes**:
 
-- `server` - Build server only
-- `client` - Build client only (requires SERVER_URL and API_KEY)
-- `both` - Build both (default, uses .env file)
+- `server` - Build UI MCP server only
+- `commerce` - Build commerce MCP server only
+- `client` - Build client only (requires UI_MCP_SERVER_URL and ANTHROPIC_API_KEY from .env)
+- `all` - Build all three (default, uses .env file)
 
 **Examples**:
 
@@ -304,7 +313,8 @@ docker ps  # Verify Docker is running
 
 ```bash
 cat apps/mcp-ui-poc/.env
-# Must contain ANTHROPIC_API_KEY and SERVER_URL for client builds
+# Must contain ANTHROPIC_API_KEY and UI_MCP_SERVER_URL for client builds
+# Optionally COMMERCE_MCP_SERVER_URL if commerce server is deployed
 ```
 
 **Common Issues**:
@@ -368,25 +378,30 @@ kubectl logs <pod-name> -n byronw
 
 ### Client Shows "localhost" CORS Error
 
-This means the client was built with the wrong SERVER_URL:
+This means the client was built with the wrong server URL:
 
-1. **Check current SERVER_URL in .env**:
+1. **Check current server URLs in .env**:
 
    ```bash
-   cat apps/mcp-ui-poc/.env | grep SERVER_URL
+   cat apps/mcp-ui-poc/.env | grep MCP_SERVER_URL
    ```
 
-2. **Get correct server IP**:
+2. **Get correct server IPs**:
 
    ```bash
+   # UI MCP server
    kubectl get service mcp-ui-poc-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+
+   # Commerce MCP server (if deployed)
+   kubectl get service mcp-ui-poc-commerce-server-loadbalancer -n byronw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
    ```
 
-3. **Update .env with correct IP**:
+3. **Update .env with correct IPs**:
 
    ```bash
    # Edit apps/mcp-ui-poc/.env
-   SERVER_URL=http://34.77.253.174:80  # Use actual IP
+   UI_MCP_SERVER_URL=http://34.77.253.174:80  # Use actual UI server IP
+   COMMERCE_MCP_SERVER_URL=http://35.123.45.67:80  # Use actual commerce server IP (optional)
    ```
 
 4. **Rebuild and redeploy client**:

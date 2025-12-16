@@ -1,13 +1,13 @@
-# Multi-stage build for mcp-ui-poc-client with workspace dependencies
-# Builds workspace packages (@commercetools/nimbus, @commercetools/nimbus-icons)
-# then builds the client application
+# Multi-stage build for mcp-ui-poc-client
+# Assumes workspace packages are already built on host (packages/*/dist exists)
+# This makes builds much faster by skipping workspace package compilation
 
 # ============================================================
-# Stage 1: Build Workspace Dependencies
+# Stage 1: Build Client Application
 # ============================================================
-FROM node:22-alpine AS workspace-builder
+FROM node:22-alpine AS app-builder
 
-WORKDIR /workspace
+WORKDIR /app
 
 # Install pnpm
 RUN npm install -g pnpm@10
@@ -18,60 +18,37 @@ COPY package.json ./
 COPY pnpm-lock.yaml ./
 COPY .npmrc ./
 
-# Copy tokens package (required by nimbus)
-COPY packages/tokens ./packages/tokens
+# Copy workspace package.json files and built artifacts only
+COPY packages/tokens/package.json ./packages/tokens/
+COPY packages/tokens/dist ./packages/tokens/dist
+COPY packages/tokens/generated ./packages/tokens/generated
 
-# Copy nimbus packages that client depends on
-COPY packages/nimbus ./packages/nimbus
-COPY packages/nimbus-icons ./packages/nimbus-icons
+COPY packages/nimbus/package.json ./packages/nimbus/
+COPY packages/nimbus/dist ./packages/nimbus/dist
 
-# Install workspace dependencies
-RUN pnpm install --frozen-lockfile
-
-# Build tokens first (nimbus depends on it)
-RUN pnpm --filter @commercetools/nimbus-tokens build
-
-# Build nimbus packages
-RUN pnpm --filter @commercetools/nimbus build
-RUN pnpm --filter @commercetools/nimbus-icons build
-
-# ============================================================
-# Stage 2: Build Client Application
-# ============================================================
-FROM node:22-alpine AS app-builder
-
-WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm@10
-
-# Copy workspace files from workspace-builder
-COPY --from=workspace-builder /workspace/pnpm-workspace.yaml ./
-COPY --from=workspace-builder /workspace/package.json ./
-COPY --from=workspace-builder /workspace/pnpm-lock.yaml ./
-COPY --from=workspace-builder /workspace/.npmrc ./
-
-# Copy built workspace packages
-COPY --from=workspace-builder /workspace/packages ./packages
+COPY packages/nimbus-icons/package.json ./packages/nimbus-icons/
+COPY packages/nimbus-icons/dist ./packages/nimbus-icons/dist
 
 # Copy client source
 COPY apps/mcp-ui-poc/client ./apps/mcp-ui-poc/client
 
-# Install all dependencies (will use built workspace packages)
+# Install all dependencies (will use pre-built workspace packages)
 WORKDIR /app/apps/mcp-ui-poc/client
 RUN pnpm install --frozen-lockfile
 
 # Build arguments for Vite environment variables
 ARG VITE_MCP_SERVER_URL=http://localhost:3001
 ARG VITE_ANTHROPIC_API_KEY
+ARG VITE_COMMERCE_MCP_SERVER_URL=http://localhost:8888
 
 # Build the application with environment variables
 ENV VITE_MCP_SERVER_URL=${VITE_MCP_SERVER_URL}
 ENV VITE_ANTHROPIC_API_KEY=${VITE_ANTHROPIC_API_KEY}
+ENV VITE_COMMERCE_MCP_SERVER_URL=${VITE_COMMERCE_MCP_SERVER_URL}
 RUN pnpm build
 
 # ============================================================
-# Stage 3: Production (nginx)
+# Stage 2: Production (nginx)
 # ============================================================
 FROM nginx:alpine AS production
 

@@ -57,3 +57,33 @@ spec:
   # Connection draining
   connectionDraining:
     drainingTimeoutSec: 60
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: mcp-ui-poc-commerce-server-backend-config
+  labels:
+    app: mcp-ui-poc
+spec:
+  # Enable IAP for commerce backend API
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: mcp-ui-poc-oauth-secret
+
+  # Health check configuration for commerce server
+  healthCheck:
+    checkIntervalSec: 30
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 8888
+
+  # Timeout settings for API calls
+  timeoutSec: 30
+
+  # Connection draining
+  connectionDraining:
+    drainingTimeoutSec: 60
