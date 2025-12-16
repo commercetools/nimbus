@@ -4,17 +4,38 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import type { UIResource } from "../types/virtual-dom";
 import type { Tool } from "@anthropic-ai/sdk/resources/messages.mjs";
 
-const MCP_SERVER_URL =
-  import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001";
+// Multi-server configuration
+const UI_MCP_SERVER_URL =
+  import.meta.env.VITE_UI_MCP_SERVER_URL || "http://localhost:3001";
+const COMMERCE_MCP_SERVER_URL =
+  import.meta.env.VITE_COMMERCE_MCP_SERVER_URL || "http://localhost:8888";
 
 export class ClaudeClient {
   private anthropic!: Anthropic;
-  private mcpClient!: Client;
+  private mcpClients: Map<string, Client> = new Map();
   private conversationHistory: Anthropic.MessageParam[] = [];
-  private mcpTools: Tool[] = [];
+  private allTools: Tool[] = [];
+  private serverStats = { ui: 0, commerce: 0 };
+  private isInitializing = false;
+  private isInitialized = false;
 
   async initialize() {
+    // Prevent concurrent initialization (React StrictMode runs effects twice)
+    if (this.isInitializing) {
+      console.log("⏸️ Already initializing, skipping duplicate call");
+      return;
+    }
+
+    if (this.isInitialized) {
+      console.log("✅ Already initialized, skipping");
+      return;
+    }
+
+    this.isInitializing = true;
+
     try {
+      console.log("🔌 Initializing multi-server MCP client...");
+
       // Clear any stored session data from localStorage
       // The MCP SDK may cache session IDs - force a clean slate
       try {
@@ -34,35 +55,44 @@ export class ClaudeClient {
         console.log("⚠️ Could not clear localStorage (ignored):", e);
       }
 
-      // Create MCP client and connect to server
-      // Note: We create a new client each time instead of trying to close the old one
-      // to avoid async event handler errors from the close operation.
-      // The old client will be garbage collected and cleanup() handles proper shutdown on unmount.
-      console.log("🔌 Creating MCP client...");
-      this.mcpClient = new Client({
-        name: "nimbus-mcp-ui-poc",
-        version: "1.0.0",
-      });
+      // Clear previous state to prevent duplicates
+      this.allTools = [];
+      this.serverStats = { ui: 0, commerce: 0 };
 
-      console.log("🔌 Connecting to MCP server...");
-      const transport = new StreamableHTTPClientTransport(
-        new URL(`${MCP_SERVER_URL}/mcp`)
+      // Close any existing connections before reconnecting
+      for (const [, client] of this.mcpClients.entries()) {
+        try {
+          await client.close();
+        } catch {
+          // Ignore close errors
+        }
+      }
+      this.mcpClients.clear();
+
+      // Connect to UI MCP Server
+      await this.connectToMCPServer("ui", UI_MCP_SERVER_URL);
+
+      // Connect to Commerce MCP Server
+      await this.connectToMCPServer("commerce", COMMERCE_MCP_SERVER_URL);
+
+      console.log(
+        `✅ Multi-server MCP client initialized with ${this.allTools.length} total tools from ${this.mcpClients.size} servers`
+      );
+      console.log(
+        "🔍 All tool names:",
+        this.allTools.map((t) => t.name)
       );
 
-      await this.mcpClient.connect(transport);
-      console.log("✅ MCP client connected to server");
-
-      // Get available MCP tools and convert to Anthropic format
-      const toolsList = await this.mcpClient.listTools();
-      console.log("🔧 Available MCP tools:", toolsList.tools);
-
-      this.mcpTools = toolsList.tools.map((tool) => ({
-        name: tool.name,
-        description: tool.description || "",
-        input_schema: tool.inputSchema,
-      }));
-
-      console.log("✅ MCP tools converted to Anthropic format");
+      // Check for duplicates
+      const toolNames = this.allTools.map((t) => t.name);
+      const duplicates = toolNames.filter(
+        (name, index) => toolNames.indexOf(name) !== index
+      );
+      if (duplicates.length > 0) {
+        console.error("❌ DUPLICATE TOOL NAMES DETECTED:", [
+          ...new Set(duplicates),
+        ]);
+      }
 
       // Initialize Anthropic client
       const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
@@ -77,11 +107,76 @@ export class ClaudeClient {
         dangerouslyAllowBrowser: true, // Required for browser usage
       });
 
-      console.log("✅ Claude client initialized with MCP tools");
+      console.log(
+        `✅ Claude client initialized (UI: ${this.serverStats.ui} tools, Commerce: ${this.serverStats.commerce} tools)`
+      );
+
+      this.isInitialized = true;
     } catch (error) {
       console.error("❌ Initialization error:", error);
+      this.isInitializing = false; // Reset on error
       throw error;
+    } finally {
+      this.isInitializing = false;
     }
+  }
+
+  private async connectToMCPServer(serverName: string, serverUrl: string) {
+    try {
+      console.log(
+        `🔌 Connecting to ${serverName} MCP server at ${serverUrl}...`
+      );
+
+      const client = new Client({
+        name: `mcp-ui-${serverName}-client`,
+        version: "1.0.0",
+      });
+
+      const transport = new StreamableHTTPClientTransport(
+        new URL(`${serverUrl}/mcp`)
+      );
+
+      await client.connect(transport);
+      console.log(`✅ Connected to ${serverName} MCP server`);
+
+      // Get tools from this server
+      const toolsList = await client.listTools();
+      console.log(`🔧 ${serverName} MCP tools:`, toolsList.tools.length);
+
+      // Convert to Anthropic format with server prefix
+      const anthropicTools: Tool[] = toolsList.tools.map((tool) => ({
+        name: `${serverName}__${tool.name}`,
+        description: `[${serverName.toUpperCase()}] ${tool.description || ""}`,
+        input_schema: tool.inputSchema,
+      }));
+
+      // Store client and add tools
+      this.mcpClients.set(serverName, client);
+      this.allTools.push(...anthropicTools);
+
+      // Update stats
+      if (serverName === "ui") {
+        this.serverStats.ui = anthropicTools.length;
+      } else if (serverName === "commerce") {
+        this.serverStats.commerce = anthropicTools.length;
+      }
+
+      console.log(
+        `✅ ${serverName} server registered with ${anthropicTools.length} tools`
+      );
+      console.log(
+        `📋 ${serverName} tool names:`,
+        anthropicTools.map((t) => t.name)
+      );
+    } catch (error) {
+      console.error(`❌ Failed to connect to ${serverName} MCP server:`, error);
+      // Don't throw - allow partial initialization
+      console.warn(`⚠️ Continuing without ${serverName} server`);
+    }
+  }
+
+  getServerStats() {
+    return { ...this.serverStats };
   }
 
   async sendMessage(message: string, options: { toolsEnabled?: boolean } = {}) {
@@ -108,7 +203,30 @@ export class ClaudeClient {
     while (continueLoop) {
       // Adapt system prompt based on tools availability
       const systemPrompt = toolsEnabled
-        ? `You are a helpful AI assistant that creates rich, visual UI components using the Nimbus design system. 
+        ? `You are a helpful AI assistant with access to TWO types of tools:
+
+1. **Commerce Tools (commerce__*)**: Access REAL data from the commercetools platform
+   - Products, orders, customers, inventory, categories, etc.
+   - These tools fetch ACTUAL data from the connected commercetools project
+
+2. **UI Tools (ui__*)**: Display information using the Nimbus design system
+   - Create visual components like cards, tables, forms, etc.
+   - These tools RENDER data visually for the user
+
+CRITICAL WORKFLOW - ALWAYS USE THIS PATTERN:
+
+When the user asks about products, orders, customers, inventory, or any commerce data:
+1. **FIRST**: Use commerce tools to fetch the REAL data (e.g., commerce__list_products)
+2. **THEN**: Use UI tools to display that data beautifully (e.g., ui__createDataTable)
+
+NEVER create mock/fake data when real data is available via commerce tools!
+
+Examples:
+- "Show me products" → commerce__list_products THEN ui__createDataTable
+- "Show a product" → commerce__list_products (get one) THEN ui__createProductCard
+- "Display orders" → commerce__read_orders THEN ui__createDataTable
+- "Customer info" → commerce__customers_read THEN ui__createCard
+
 Use the available Nimbus components via tool calls whenever possible - prioritize minimizing text in the response.
 
 CRITICAL: RESPONSE FORMAT
@@ -164,7 +282,7 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
         model: "claude-sonnet-4-5-20250929",
         max_tokens: 4096,
         system: systemPrompt,
-        tools: toolsEnabled ? this.mcpTools : undefined,
+        tools: toolsEnabled ? this.allTools : undefined,
         messages: this.conversationHistory,
       });
 
@@ -195,9 +313,22 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
             console.log(`🔧 Calling MCP tool: ${toolUse.name}`, toolUse.input);
 
             try {
-              // Call the MCP tool
-              const result = await this.mcpClient.callTool({
-                name: toolUse.name,
+              // Parse server name from tool name (format: "serverName__toolName")
+              const [serverName, ...toolNameParts] = toolUse.name.split("__");
+              const actualToolName = toolNameParts.join("__");
+
+              const client = this.mcpClients.get(serverName);
+              if (!client) {
+                throw new Error(`Unknown MCP server: ${serverName}`);
+              }
+
+              console.log(
+                `🔧 Routing to ${serverName} server: ${actualToolName}`
+              );
+
+              // Call the MCP tool on the correct server
+              const result = await client.callTool({
+                name: actualToolName,
                 arguments: (toolUse.input || {}) as Record<string, unknown>,
               });
 
@@ -282,10 +413,15 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
   }
 
   async cleanup() {
-    // Close MCP connection
-    if (this.mcpClient) {
-      await this.mcpClient.close();
-      console.log("🔌 MCP client disconnected");
+    // Close all MCP connections
+    for (const [serverName, client] of this.mcpClients.entries()) {
+      try {
+        await client.close();
+        console.log(`🔌 ${serverName} MCP client disconnected`);
+      } catch (error) {
+        console.error(`❌ Error closing ${serverName} client:`, error);
+      }
     }
+    this.mcpClients.clear();
   }
 }
