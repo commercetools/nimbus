@@ -57,8 +57,20 @@ export function createPropMappingWrapper<P extends Record<string, unknown>>(
       )) {
         // Create an event handler that triggers a UI action
         mappedProps[reactEventProp] = (event: unknown) => {
+          console.log("🎬 Event handler called in wrapper:", event);
+
           // Extract element properties from the event target
-          const target = (event as { target?: HTMLElement })?.target;
+          // Try both target and currentTarget for React events
+          const reactEvent = event as {
+            target?: HTMLElement;
+            currentTarget?: HTMLElement;
+          };
+          const target = reactEvent.currentTarget || reactEvent.target;
+
+          console.log("🎯 Target element:", target);
+          console.log("🎯 Target tagName:", target?.tagName);
+          console.log("🎯 Target attributes:", target?.attributes);
+
           const properties: Record<string, unknown> = {};
 
           if (target) {
@@ -72,6 +84,32 @@ export function createPropMappingWrapper<P extends Record<string, unknown>>(
 
           // Also include any props passed to this component
           Object.assign(properties, props);
+
+          console.log("📦 Properties collected:", properties);
+
+          // Check if this is a submit button - if so, trigger form submission
+          const buttonType = properties.type || target?.getAttribute("type");
+          console.log("🔘 Button type:", buttonType);
+
+          if (buttonType === "submit" && target) {
+            console.log("🔘 Submit button detected, finding parent form...");
+            // Find the parent form
+            const form = target.closest("form");
+            console.log("📋 Form found:", form);
+
+            if (form) {
+              console.log("📋 Found parent form, requesting submit...");
+              // Use requestSubmit() which triggers validation and submit event
+              form.requestSubmit();
+            } else {
+              console.warn("⚠️ Submit button has no parent form");
+              console.log(
+                "⚠️ Parent elements:",
+                target.parentElement,
+                target.parentElement?.parentElement
+              );
+            }
+          }
 
           // Trigger the UI action with Remote DOM event format
           onUIAction({

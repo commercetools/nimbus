@@ -10,6 +10,15 @@ export interface CreateStackArgs {
   width?: string;
   marginBottom?: string;
   children?: ChildElement[];
+  // Form support
+  as?: "div" | "form";
+  // action is optional - if omitted, form data will be displayed in a dialog
+  action?: string;
+  method?: "get" | "post";
+  enctype?:
+    | "application/x-www-form-urlencoded"
+    | "multipart/form-data"
+    | "text/plain";
 }
 
 export function createStack(args: CreateStackArgs) {
@@ -20,10 +29,15 @@ export function createStack(args: CreateStackArgs) {
     width,
     marginBottom,
     children,
+    as = "div",
+    action,
+    method,
+    enctype,
   } = args;
 
   // Use improved escaping for template literal safety
   const escapedContent = escapeForJS(content);
+  const escapedAction = action ? escapeForJS(action) : undefined;
 
   const remoteDomScript = `
     const stack = document.createElement('nimbus-stack');
@@ -31,6 +45,10 @@ export function createStack(args: CreateStackArgs) {
     ${gap ? `stack.setAttribute('gap', '${gap}');` : ""}
     ${width ? `stack.setAttribute('width', '${width}');` : ""}
     ${marginBottom ? `stack.setAttribute('margin-bottom', '${marginBottom}');` : ""}
+    ${as === "form" ? `stack.setAttribute('as', 'form');` : ""}
+    ${escapedAction ? `stack.setAttribute('action', '${escapedAction}');` : ""}
+    ${method ? `stack.setAttribute('method', '${method}');` : ""}
+    ${enctype ? `stack.setAttribute('enctype', '${enctype}');` : ""}
     ${content ? `stack.textContent = '${escapedContent}';` : ""}
     ${children ? generateChildrenScript(children, "stack") : ""}
 

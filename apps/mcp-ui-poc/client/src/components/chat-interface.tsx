@@ -1,14 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  Stack,
-  Flex,
-  Heading,
-  Button,
-  TextInput,
-  Text,
-  Switch,
-} from "@commercetools/nimbus";
+import { Box, Stack, Flex, Heading, Text, Switch } from "@commercetools/nimbus";
 import { UIResourceRenderer, isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
 import {
@@ -17,30 +8,77 @@ import {
   validateNimbusLibrary,
 } from "./nimbus-library";
 import { UIActionProvider } from "../utils/prop-mapping-wrapper";
+import { FormSubmissionDialog } from "./form-submission-dialog";
+import { ChatInput } from "./chat-input";
 import type { Message } from "../types/virtual-dom";
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
   const [claudeClient] = useState(() => new ClaudeClient());
   const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const [toolsEnabled, setToolsEnabled] = useState(true);
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  const [formData, setFormData] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom when messages or loading state changes
   useEffect(() => {
+    // Immediate scroll for text content
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    // Delayed scroll to account for UI resource rendering
+    // UI resources may take time to render, so we scroll again after a short delay
+    const timeoutId = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
   }, [messages, isLoading]);
 
-  // Focus input after initialization
+  // Intercept form submissions globally
   useEffect(() => {
-    if (isReady) {
-      inputRef.current?.focus();
-    }
-  }, [isReady]);
+    const handleFormSubmit = (event: SubmitEvent) => {
+      console.log("📋 Form submit event fired!", event);
+      const form = event.target as HTMLFormElement;
+      console.log("📋 Form element:", form);
+      console.log("📋 Form action:", form.action);
+
+      // Only intercept forms without an action attribute (or with empty action)
+      if (form.action && form.action !== window.location.href) {
+        console.log("📋 Form has real action, allowing normal submission");
+        return; // Let forms with real actions submit normally
+      }
+
+      console.log("📋 Intercepting form submission");
+
+      // Prevent default submission
+      event.preventDefault();
+
+      // Extract form data
+      const formDataObj = new FormData(form);
+      const data: Record<string, string> = {};
+
+      formDataObj.forEach((value, key) => {
+        data[key] = value.toString();
+      });
+
+      console.log("📝 Form submitted:", data);
+
+      // Show form data in dialog
+      setFormData(data);
+      setFormDialogOpen(true);
+    };
+
+    document.addEventListener("submit", handleFormSubmit);
+    console.log("✅ Form submit listener attached");
+
+    return () => {
+      document.removeEventListener("submit", handleFormSubmit);
+      console.log("❌ Form submit listener removed");
+    };
+  }, []);
 
   // Initialize: validate element manifest, then Claude
   useEffect(() => {
@@ -68,17 +106,16 @@ export function ChatInterface() {
     };
   }, [claudeClient]);
 
-  async function handleSendMessage() {
-    if (!input.trim() || !isReady) return;
+  async function handleSendMessage(message: string) {
+    if (!message.trim() || !isReady) return;
 
-    const userMessage: Message = { role: "user", content: input };
+    const userMessage: Message = { role: "user", content: message };
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
     setIsLoading(true);
 
     try {
       // Send message - Claude handles all tool calling automatically
-      const { text, uiResources } = await claudeClient.sendMessage(input, {
+      const { text, uiResources } = await claudeClient.sendMessage(message, {
         toolsEnabled,
       });
 
@@ -102,10 +139,6 @@ export function ChatInterface() {
       ]);
     } finally {
       setIsLoading(false);
-      // Focus input after response is received
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
     }
   }
 
@@ -243,7 +276,19 @@ export function ChatInterface() {
                       const properties = typedAction.properties as
                         | Record<string, unknown>
                         | undefined;
+                      const buttonType = properties?.type;
                       const label = properties?.["data-label"] || "Unknown";
+
+                      // Don't intercept submit buttons - let form submission happen
+                      if (buttonType === "submit") {
+                        console.log(
+                          "🔘 Submit button pressed:",
+                          label,
+                          "- allowing form submission"
+                        );
+                        return;
+                      }
+
                       console.log("🔘 Button pressed:", label);
                       alert(`Button "${label}" was clicked!`);
                     }
@@ -372,27 +417,18 @@ export function ChatInterface() {
         <div ref={messagesEndRef} />
       </Stack>
 
-      <Flex gap="300">
-        <TextInput
-          ref={inputRef}
-          aria-label="chat input"
-          flex="1"
-          value={input}
-          onChange={(value) => setInput(value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-          placeholder="Ask Claude to create UI components..."
-          isDisabled={isLoading || !isReady}
-        />
-        <Button
-          aria-label="send message"
-          onPress={handleSendMessage}
-          isDisabled={isLoading || !isReady || !input.trim()}
-          variant="solid"
-          colorPalette="primary"
-        >
-          Send
-        </Button>
-      </Flex>
+      <ChatInput
+        onSend={handleSendMessage}
+        isDisabled={isLoading || !isReady}
+        autoFocus={isReady}
+      />
+
+      {/* Form submission dialog */}
+      <FormSubmissionDialog
+        isOpen={formDialogOpen}
+        onClose={() => setFormDialogOpen(false)}
+        formData={formData}
+      />
     </Flex>
   );
 }

@@ -7,7 +7,7 @@ import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import elementsManifest from "./elements-manifest.json" with { type: "json" };
 import { createProductCard } from "./tools/product-card.js";
-import { createForm } from "./tools/form.js";
+import { createSimpleForm } from "./tools/simple-form.js";
 import { createFormField } from "./tools/form-field.js";
 import { createDataTable } from "./tools/data-table.js";
 import { createCard } from "./tools/card.js";
@@ -167,6 +167,8 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       colorPalette: z.string().optional(),
       width: z.string().optional(),
       isDisabled: z.boolean().optional(),
+      buttonType: z.enum(["button", "submit", "reset"]).optional(),
+      ariaLabel: z.string().optional(),
     }),
     z.object({
       type: z.literal("badge"),
@@ -182,6 +184,16 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       width: z.string().optional(),
       marginBottom: z.string().optional(),
       children: z.array(childElementSchema).optional(),
+      as: z.enum(["div", "form"]).optional(),
+      action: z.string().optional(),
+      method: z.enum(["get", "post"]).optional(),
+      enctype: z
+        .enum([
+          "application/x-www-form-urlencoded",
+          "multipart/form-data",
+          "text/plain",
+        ])
+        .optional(),
     }),
     z.object({
       type: z.literal("flex"),
@@ -190,6 +202,16 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       padding: z.string().optional(),
       backgroundColor: z.string().optional(),
       children: z.array(childElementSchema).optional(),
+      as: z.enum(["div", "form"]).optional(),
+      action: z.string().optional(),
+      method: z.enum(["get", "post"]).optional(),
+      enctype: z
+        .enum([
+          "application/x-www-form-urlencoded",
+          "multipart/form-data",
+          "text/plain",
+        ])
+        .optional(),
     }),
     z.object({
       type: z.literal("card"),
@@ -222,6 +244,16 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       isDisabled: z.boolean().optional(),
       isReadOnly: z.boolean().optional(),
       inputType: z.string().optional(),
+      minLength: z.number().optional(),
+      maxLength: z.number().optional(),
+      pattern: z.string().optional(),
+      min: z.union([z.number(), z.string()]).optional(),
+      max: z.union([z.number(), z.string()]).optional(),
+      step: z.union([z.number(), z.string()]).optional(),
+      accept: z.string().optional(),
+      multiple: z.boolean().optional(),
+      autoComplete: z.string().optional(),
+      ariaLabel: z.string().optional(),
     }),
   ])
 );
@@ -238,6 +270,12 @@ function registerTools(server: McpServer) {
       description:
         "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
       inputSchema: z.object({
+        productId: z
+          .string()
+          .optional()
+          .describe(
+            "Optional unique product ID (auto-generated if not provided)"
+          ),
         productName: z.string().describe("The name of the product"),
         price: z.string().describe("The price of the product (e.g., '$999')"),
         description: z
@@ -263,26 +301,36 @@ function registerTools(server: McpServer) {
   );
 
   server.registerTool(
-    "createForm",
+    "createSimpleForm",
     {
-      title: "Create Form",
+      title: "Create Simple Form",
       description:
-        "Creates a form UI component with text inputs and submit button using Nimbus design system components.",
+        "Creates a simple form UI component with text inputs and submit button using Nimbus design system components. NOTE: This is a convenience tool for VERY SIMPLE forms only. For more complex forms with custom layouts or additional components, compose your own form using createStack (with as='form'), createFormField, createTextInput, and createButton tools.",
       inputSchema: z.object({
         title: z.string().optional().describe("Form title"),
         fields: z
           .array(
             z.object({
-              name: z.string().describe("Field name"),
+              name: z
+                .string()
+                .describe("Field name (required for form submission)"),
               label: z.string().describe("Field label"),
               type: z
-                .enum(["text", "email", "number", "textarea"])
+                .enum(["text", "email", "number", "password", "tel", "url"])
                 .optional()
-                .describe("Field type (default: text)"),
+                .describe(
+                  "Input type for validation and keyboard (default: 'text')"
+                ),
               required: z
                 .boolean()
                 .optional()
                 .describe("Whether field is required"),
+              minLength: z.number().optional().describe("Minimum input length"),
+              maxLength: z.number().optional().describe("Maximum input length"),
+              pattern: z
+                .string()
+                .optional()
+                .describe("Regex pattern for validation"),
             })
           )
           .describe("Array of form fields"),
@@ -290,10 +338,30 @@ function registerTools(server: McpServer) {
           .string()
           .optional()
           .describe("Submit button label (default: 'Submit')"),
+        action: z
+          .string()
+          .optional()
+          .describe(
+            "Form submission URL. OPTIONAL - if omitted, form data will be displayed in a dialog on submit instead of navigating to a URL."
+          ),
+        method: z
+          .enum(["get", "post"])
+          .optional()
+          .describe("HTTP method for form submission (default: 'post')"),
+        enctype: z
+          .enum([
+            "application/x-www-form-urlencoded",
+            "multipart/form-data",
+            "text/plain",
+          ])
+          .optional()
+          .describe(
+            "Form encoding type (default: 'application/x-www-form-urlencoded')"
+          ),
       }),
     },
     async (args) => {
-      const uiResource = createForm(args);
+      const uiResource = createSimpleForm(args);
       return {
         content: [uiResource],
       };
@@ -310,12 +378,12 @@ function registerTools(server: McpServer) {
         labelChildren: z
           .array(childElementSchema)
           .describe(
-            "Array of child elements for the label. For simple text labels, use a single 'text' element - this is easier and preferred. Only use complex composition (with icons, tooltips, etc.) when needed."
+            "Array of child elements for the label. For simple text labels, use a single element: { type: 'text', content: 'Label text' }. Only use complex composition (with multiple elements, icons, etc.) when needed."
           ),
         inputChildren: z
           .array(childElementSchema)
           .describe(
-            "Array of child elements for the input wrapper. MUST contain valid Nimbus input components only: 'text' (nimbus-text-input), 'number' (nimbus-number-input), 'password' (nimbus-password-input), or 'textarea' (nimbus-multiline-text-input). Typically a single input element."
+            "Array of child elements for the input wrapper. MUST contain valid input elements with type discriminator 'textInput'. Typically a single element: { type: 'textInput', name: 'fieldName', placeholder: 'Enter value', inputType: 'email' }. The inputType property (optional) specifies the HTML input type (text, email, password, etc.)."
           ),
         description: z
           .string()
@@ -364,7 +432,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Data Table",
       description:
-        "Creates a data table UI component with headers and rows using Nimbus design system components.",
+        "Creates a data table UI component with headers and rows using Nimbus design system components. IMPORTANT: Always provide a descriptive aria-label for accessibility.",
       inputSchema: z.object({
         title: z.string().optional().describe("Table title"),
         columns: z
@@ -376,6 +444,11 @@ function registerTools(server: McpServer) {
           )
           .describe("Array of column definitions"),
         data: z.array(z.record(z.any())).describe("Array of data objects"),
+        ariaLabel: z
+          .string()
+          .describe(
+            "Accessible label for the table (REQUIRED for accessibility)"
+          ),
       }),
     },
     async (args) => {
@@ -457,12 +530,14 @@ function registerTools(server: McpServer) {
     {
       title: "Create Text Input",
       description:
-        "Creates a text input UI component using Nimbus design system. Can be used standalone or composed inside FormField.Input.",
+        "Creates a text input UI component using Nimbus design system. Can be used standalone or composed inside FormField.Input. Supports HTML5 validation attributes for native browser validation in forms.",
       inputSchema: z.object({
         name: z
           .string()
           .optional()
-          .describe("Input name attribute for form submission"),
+          .describe(
+            "Input name attribute for form submission (CRITICAL for HTML forms)"
+          ),
         placeholder: z
           .string()
           .optional()
@@ -484,9 +559,62 @@ function registerTools(server: McpServer) {
           .optional()
           .describe("Whether the input is read-only"),
         type: z
-          .enum(["text", "email", "url", "tel"])
+          .enum([
+            "text",
+            "email",
+            "url",
+            "tel",
+            "password",
+            "search",
+            "number",
+            "date",
+            "time",
+            "datetime-local",
+            "month",
+            "week",
+            "file",
+          ])
           .optional()
           .describe("Input type for validation and keyboard (default: 'text')"),
+        minLength: z
+          .number()
+          .optional()
+          .describe("Minimum input length for validation"),
+        maxLength: z
+          .number()
+          .optional()
+          .describe("Maximum input length for validation"),
+        pattern: z.string().optional().describe("Regex pattern for validation"),
+        min: z
+          .union([z.number(), z.string()])
+          .optional()
+          .describe("Minimum value (for number/date inputs)"),
+        max: z
+          .union([z.number(), z.string()])
+          .optional()
+          .describe("Maximum value (for number/date inputs)"),
+        step: z
+          .union([z.number(), z.string()])
+          .optional()
+          .describe("Step value (for number inputs)"),
+        accept: z
+          .string()
+          .optional()
+          .describe("Accepted file types (for file inputs, e.g., 'image/*')"),
+        multiple: z
+          .boolean()
+          .optional()
+          .describe("Allow multiple values (for file/email inputs)"),
+        autoComplete: z
+          .string()
+          .optional()
+          .describe(
+            "Autocomplete hint (e.g., 'email', 'username', 'current-password')"
+          ),
+        ariaLabel: z
+          .string()
+          .optional()
+          .describe("Accessible label for the input"),
       }),
     },
     async (args) => {
@@ -501,7 +629,8 @@ function registerTools(server: McpServer) {
     "createButton",
     {
       title: "Create Button",
-      description: "Creates a button UI component using Nimbus design system.",
+      description:
+        "Creates a button UI component using Nimbus design system. Supports HTML form submission types.",
       inputSchema: z.object({
         label: z.string().describe("Button label text"),
         variant: z
@@ -517,6 +646,18 @@ function registerTools(server: McpServer) {
           .boolean()
           .optional()
           .describe("Whether the button is disabled"),
+        type: z
+          .enum(["button", "submit", "reset"])
+          .optional()
+          .describe(
+            "Button type for HTML forms (default: 'button'). Use 'submit' for form submission buttons."
+          ),
+        ariaLabel: z
+          .string()
+          .optional()
+          .describe(
+            "Accessible label for the button (overrides visible label for screen readers)"
+          ),
       }),
     },
     async (args) => {
@@ -558,7 +699,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Flex",
       description:
-        "Creates a flex layout container UI component using Nimbus design system. Can contain child elements for composition.",
+        "Creates a flex layout container UI component using Nimbus design system. Can contain child elements for composition. Can be rendered as an HTML <form> element for native form submission.",
       inputSchema: z.object({
         content: z.string().optional().describe("Flex content text"),
         direction: z
@@ -574,6 +715,32 @@ function registerTools(server: McpServer) {
           .describe(
             "Array of child elements to nest inside the flex container"
           ),
+        as: z
+          .enum(["div", "form"])
+          .optional()
+          .describe(
+            "Render as HTML element (default: 'div'). Use 'form' for native HTML form submission."
+          ),
+        action: z
+          .string()
+          .optional()
+          .describe(
+            "Form submission URL (only used when as='form'). OPTIONAL - if omitted, form data will be displayed in a dialog on submit."
+          ),
+        method: z
+          .enum(["get", "post"])
+          .optional()
+          .describe(
+            "HTTP method for form submission (only used when as='form')"
+          ),
+        enctype: z
+          .enum([
+            "application/x-www-form-urlencoded",
+            "multipart/form-data",
+            "text/plain",
+          ])
+          .optional()
+          .describe("Form encoding type (only used when as='form')"),
       }),
     },
     async (args) => {
@@ -589,7 +756,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Stack",
       description:
-        "Creates a stack layout container UI component using Nimbus design system. Can contain child elements for composition.",
+        "Creates a stack layout container UI component using Nimbus design system. Can contain child elements for composition. Can be rendered as an HTML <form> element for native form submission.",
       inputSchema: z.object({
         content: z.string().optional().describe("Stack content text"),
         direction: z
@@ -605,6 +772,32 @@ function registerTools(server: McpServer) {
           .describe(
             "Array of child elements to nest inside the stack container"
           ),
+        as: z
+          .enum(["div", "form"])
+          .optional()
+          .describe(
+            "Render as HTML element (default: 'div'). Use 'form' for native HTML form submission."
+          ),
+        action: z
+          .string()
+          .optional()
+          .describe(
+            "Form submission URL (only used when as='form'). OPTIONAL - if omitted, form data will be displayed in a dialog on submit."
+          ),
+        method: z
+          .enum(["get", "post"])
+          .optional()
+          .describe(
+            "HTTP method for form submission (only used when as='form')"
+          ),
+        enctype: z
+          .enum([
+            "application/x-www-form-urlencoded",
+            "multipart/form-data",
+            "text/plain",
+          ])
+          .optional()
+          .describe("Form encoding type (only used when as='form')"),
       }),
     },
     async (args) => {

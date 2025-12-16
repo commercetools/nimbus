@@ -10,10 +10,11 @@ export interface DataTableArgs {
   title?: string;
   columns: ColumnDef[];
   data: Record<string, unknown>[];
+  ariaLabel: string;
 }
 
 export function createDataTable(args: DataTableArgs) {
-  const { title, columns, data } = args;
+  const { title, columns, data, ariaLabel } = args;
 
   // Transform column definitions to DataTable format
   const dataTableColumns = columns.map((col) => ({
@@ -37,6 +38,7 @@ export function createDataTable(args: DataTableArgs) {
     .replace(/\\/g, "\\\\") // Escape backslashes first
     .replace(/"/g, '\\"'); // Then escape double quotes
   const escapedTitle = title ? escapeForJS(title) : undefined;
+  const escapedAriaLabel = escapeForJS(ariaLabel);
 
   const remoteDomScript = `
     ${
@@ -69,6 +71,7 @@ export function createDataTable(args: DataTableArgs) {
     dataTableRoot.setAttribute('allows-sorting', 'true');
     dataTableRoot.setAttribute('density', 'default');
     dataTableRoot.setAttribute('max-width', '100%');
+    dataTableRoot.setAttribute('aria-label', '${escapedAriaLabel}');
 
     ${
       title

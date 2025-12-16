@@ -1,30 +1,52 @@
 import { createUIResource } from "@mcp-ui/server";
 import { escapeForJS } from "../utils/escape-for-js";
 
-export interface FormField {
+export interface SimpleFormField {
   name: string;
   label: string;
-  type?: "text" | "email" | "number" | "textarea";
+  type?: "text" | "email" | "number" | "password" | "tel" | "url";
   required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
 }
 
-export interface FormArgs {
+export interface SimpleFormArgs {
   title?: string;
-  fields: FormField[];
+  fields: SimpleFormField[];
   submitLabel?: string;
+  // HTML form submission support
+  // action is optional - if omitted, form data will be displayed in a dialog
+  action?: string;
+  method?: "get" | "post";
+  enctype?:
+    | "application/x-www-form-urlencoded"
+    | "multipart/form-data"
+    | "text/plain";
 }
 
-export function createForm(args: FormArgs) {
-  const { title, fields, submitLabel = "Submit" } = args;
+export function createSimpleForm(args: SimpleFormArgs) {
+  const {
+    title,
+    fields,
+    submitLabel = "Submit",
+    action,
+    method = "post",
+    enctype,
+  } = args;
 
   // Use improved escaping for template literal safety
   const escapedTitle = title ? escapeForJS(title) : undefined;
   const escapedSubmitLabel = escapeForJS(submitLabel);
+  const escapedAction = action ? escapeForJS(action) : undefined;
 
   const fieldsScript = fields
     .map((field) => {
       const escapedLabel = escapeForJS(field.label);
       const escapedName = escapeForJS(field.name);
+      const escapedPattern = field.pattern
+        ? escapeForJS(field.pattern)
+        : undefined;
 
       return `
     const fieldRoot${field.name} = document.createElement('nimbus-form-field-root');
@@ -38,6 +60,11 @@ export function createForm(args: FormArgs) {
     const input${field.name} = document.createElement('nimbus-text-input');
     input${field.name}.setAttribute('name', '${escapedName}');
     input${field.name}.setAttribute('placeholder', '${escapedLabel}');
+    ${field.type && field.type !== "text" ? `input${field.name}.setAttribute('type', '${field.type}');` : ""}
+    ${field.required ? `input${field.name}.setAttribute('is-required', 'true');` : ""}
+    ${field.minLength !== undefined ? `input${field.name}.setAttribute('min-length', '${field.minLength}');` : ""}
+    ${field.maxLength !== undefined ? `input${field.name}.setAttribute('max-length', '${field.maxLength}');` : ""}
+    ${escapedPattern ? `input${field.name}.setAttribute('pattern', '${escapedPattern}');` : ""}
 
     fieldInput${field.name}.appendChild(input${field.name});
     fieldRoot${field.name}.appendChild(fieldLabel${field.name});
@@ -67,9 +94,14 @@ export function createForm(args: FormArgs) {
         : ""
     }
 
+    // Create form element using Stack with as="form"
     const formBody = document.createElement('nimbus-stack');
     formBody.setAttribute('direction', 'column');
     formBody.setAttribute('gap', '400');
+    formBody.setAttribute('as', 'form');
+    ${escapedAction ? `formBody.setAttribute('action', '${escapedAction}');` : ""}
+    ${method ? `formBody.setAttribute('method', '${method}');` : ""}
+    ${enctype ? `formBody.setAttribute('enctype', '${enctype}');` : ""}
 
     ${fieldsScript}
 
@@ -78,38 +110,8 @@ export function createForm(args: FormArgs) {
     submitButton.setAttribute('color-palette', 'primary');
     submitButton.setAttribute('width', 'full');
     submitButton.setAttribute('margin-top', '400');
+    submitButton.setAttribute('type', 'submit');
     submitButton.textContent = '${escapedSubmitLabel}';
-
-    // Add submit handler with form data collection
-    submitButton.onclick = function() {
-      // Collect form data from inputs
-      const formData = {};
-      ${fields
-        .map((field) => {
-          return `
-      const input${field.name} = document.querySelector('[name="${field.name}"]');
-      if (input${field.name}) {
-        formData['${field.name}'] = input${field.name}.value || '';
-      }`;
-        })
-        .join("")}
-
-      console.log('Form data collected:', formData);
-
-      // Send form data to host via UI Action
-      if (typeof window.postUIActionResult === 'function') {
-        window.postUIActionResult({
-          type: 'tool',
-          payload: {
-            toolName: 'submitForm',
-            params: {
-              formTitle: '${escapedTitle || "Form"}',
-              fields: formData
-            }
-          }
-        });
-      }
-    };
 
     formBody.appendChild(submitButton);
     cardContent.appendChild(formBody);
@@ -118,7 +120,7 @@ export function createForm(args: FormArgs) {
   `;
 
   return createUIResource({
-    uri: `ui://form/${Date.now()}`,
+    uri: `ui://simple-form/${Date.now()}`,
     content: {
       type: "remoteDom",
       script: remoteDomScript,
@@ -126,8 +128,8 @@ export function createForm(args: FormArgs) {
     },
     encoding: "text",
     metadata: {
-      title: "Form",
-      description: title || "Form component",
+      title: "Simple Form",
+      description: title || "Simple form component for basic use cases",
       created: new Date().toISOString(),
     },
   });

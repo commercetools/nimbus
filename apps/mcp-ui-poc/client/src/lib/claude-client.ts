@@ -149,7 +149,7 @@ IMPORTANT MATCHING RULES:
 DIMENSION GUIDELINES:
 - Product cards: 400x400 (square)
 - Banner images: 800x400 (wide aspect ratio)
-- Profile images: 200x200 (small square)
+- Profile images: 150x150 (small square)
 - Hero images: 1200x600 (large landscape)
 
 NEVER:

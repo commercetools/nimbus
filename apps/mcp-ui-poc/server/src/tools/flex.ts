@@ -10,6 +10,15 @@ export interface CreateFlexArgs {
   padding?: string;
   backgroundColor?: string;
   children?: ChildElement[];
+  // Form support
+  as?: "div" | "form";
+  // action is optional - if omitted, form data will be displayed in a dialog
+  action?: string;
+  method?: "get" | "post";
+  enctype?:
+    | "application/x-www-form-urlencoded"
+    | "multipart/form-data"
+    | "text/plain";
 }
 
 export function createFlex(args: CreateFlexArgs) {
@@ -20,10 +29,15 @@ export function createFlex(args: CreateFlexArgs) {
     padding,
     backgroundColor,
     children,
+    as = "div",
+    action,
+    method,
+    enctype,
   } = args;
 
   // Use improved escaping for template literal safety
   const escapedContent = escapeForJS(content);
+  const escapedAction = action ? escapeForJS(action) : undefined;
 
   const remoteDomScript = `
     const flex = document.createElement('nimbus-flex');
@@ -31,6 +45,10 @@ export function createFlex(args: CreateFlexArgs) {
     ${gap ? `flex.setAttribute('gap', '${gap}');` : ""}
     ${padding ? `flex.setAttribute('padding', '${padding}');` : ""}
     ${backgroundColor ? `flex.setAttribute('background-color', '${backgroundColor}');` : ""}
+    ${as === "form" ? `flex.setAttribute('as', 'form');` : ""}
+    ${escapedAction ? `flex.setAttribute('action', '${escapedAction}');` : ""}
+    ${method ? `flex.setAttribute('method', '${method}');` : ""}
+    ${enctype ? `flex.setAttribute('enctype', '${enctype}');` : ""}
     ${content ? `flex.textContent = '${escapedContent}';` : ""}
     ${children ? generateChildrenScript(children, "flex") : ""}
 

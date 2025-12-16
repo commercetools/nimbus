@@ -2,6 +2,7 @@ import { createUIResource } from "@mcp-ui/server";
 import { escapeForJS } from "../utils/escape-for-js";
 
 export interface ProductCardArgs {
+  productId?: string;
   productName: string;
   price: string;
   description?: string;
@@ -11,6 +12,7 @@ export interface ProductCardArgs {
 
 export function createProductCard(args: ProductCardArgs) {
   const {
+    productId,
     productName,
     price,
     description = "",
@@ -18,7 +20,13 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
+  // Generate productId if not provided (using timestamp + random)
+  const finalProductId =
+    productId ||
+    `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
   // Use improved escaping for template literal safety
+  const escapedId = escapeForJS(finalProductId);
   const escapedName = escapeForJS(productName);
   const escapedPrice = escapeForJS(price);
   const escapedDescription = escapeForJS(description);
@@ -35,8 +43,8 @@ export function createProductCard(args: ProductCardArgs) {
     // Create Nimbus card structure
     const card = document.createElement('nimbus-card-root');
     card.setAttribute('elevation', 'elevated');
-    card.setAttribute('width', 'fit-content');
-    card.setAttribute('max-width', '432px');
+    ${imageUrl ? "" : "card.setAttribute('width', 'fit-content');"}
+    ${imageUrl ? "card.setAttribute('max-width', '432px');" : ""}
     card.setAttribute('border-style', 'outlined');
 
     const cardHeader = document.createElement('nimbus-card-header');
@@ -51,6 +59,8 @@ export function createProductCard(args: ProductCardArgs) {
     image.setAttribute('alt', '${escapedName}');
     image.setAttribute('border-radius', '200');
     image.setAttribute('margin-bottom', '400');
+    image.style.width = '100%';
+    image.style.display = 'block';
     cardContent.appendChild(image);
     `
         : ""
@@ -60,6 +70,8 @@ export function createProductCard(args: ProductCardArgs) {
     heading.setAttribute('size', 'lg');
     heading.setAttribute('margin-bottom', '200');
     heading.textContent = '${escapedName}';
+    heading.style.wordWrap = 'break-word';
+    heading.style.overflowWrap = 'break-word';
 
     const stack = document.createElement('nimbus-stack');
 
@@ -79,11 +91,14 @@ export function createProductCard(args: ProductCardArgs) {
 
     const descriptionText = document.createElement('nimbus-text');
     descriptionText.textContent = '${escapedDescription}';
+    descriptionText.style.wordWrap = 'break-word';
+    descriptionText.style.overflowWrap = 'break-word';
 
     const button = document.createElement('nimbus-button');
     button.setAttribute('variant', 'solid');
     button.setAttribute('color-palette', 'primary');
     button.setAttribute('width', 'full');
+    button.setAttribute('data-label', '${escapedName} Added to Cart');
     ${!inStock ? "button.setAttribute('is-disabled', 'true');" : ""}
     button.textContent = 'Add to Cart';
     console.log('Button color-palette set to:', button.getAttribute('color-palette'));

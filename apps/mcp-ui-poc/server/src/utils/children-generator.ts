@@ -44,12 +44,18 @@ export function generateChildrenScript(
 
         case "button": {
           const escapedLabel = escapeForJS(child.label);
+          const escapedAriaLabel =
+            "ariaLabel" in child && child.ariaLabel
+              ? escapeForJS(child.ariaLabel)
+              : undefined;
           script = `
     const ${childVar} = document.createElement('nimbus-button');
     ${childVar}.setAttribute('variant', '${child.variant || "solid"}');
     ${childVar}.setAttribute('color-palette', '${child.colorPalette || "primary"}');
     ${child.width ? `${childVar}.setAttribute('width', '${child.width}');` : ""}
     ${child.isDisabled ? `${childVar}.setAttribute('is-disabled', 'true');` : ""}
+    ${"buttonType" in child && child.buttonType ? `${childVar}.setAttribute('type', '${child.buttonType}');` : ""}
+    ${escapedAriaLabel ? `${childVar}.setAttribute('aria-label', '${escapedAriaLabel}');` : ""}
     ${childVar}.textContent = '${escapedLabel}';
     ${childVar}.setAttribute('data-label', '${escapedLabel}');
     ${parentVar}.appendChild(${childVar});`;
@@ -68,27 +74,45 @@ export function generateChildrenScript(
           break;
         }
 
-        case "stack":
+        case "stack": {
+          const escapedAction =
+            "action" in child && child.action
+              ? escapeForJS(child.action)
+              : undefined;
           script = `
     const ${childVar} = document.createElement('nimbus-stack');
     ${childVar}.setAttribute('direction', '${child.direction || "column"}');
     ${child.gap ? `${childVar}.setAttribute('gap', '${child.gap}');` : ""}
     ${child.width ? `${childVar}.setAttribute('width', '${child.width}');` : ""}
     ${child.marginBottom ? `${childVar}.setAttribute('margin-bottom', '${child.marginBottom}');` : ""}
+    ${"as" in child && child.as === "form" ? `${childVar}.setAttribute('as', 'form');` : ""}
+    ${escapedAction ? `${childVar}.setAttribute('action', '${escapedAction}');` : ""}
+    ${"method" in child && child.method ? `${childVar}.setAttribute('method', '${child.method}');` : ""}
+    ${"enctype" in child && child.enctype ? `${childVar}.setAttribute('enctype', '${child.enctype}');` : ""}
     ${child.children ? generateChildrenScript(child.children, childVar) : ""}
     ${parentVar}.appendChild(${childVar});`;
           break;
+        }
 
-        case "flex":
+        case "flex": {
+          const escapedAction =
+            "action" in child && child.action
+              ? escapeForJS(child.action)
+              : undefined;
           script = `
     const ${childVar} = document.createElement('nimbus-flex');
     ${childVar}.setAttribute('direction', '${child.direction || "row"}');
     ${child.gap ? `${childVar}.setAttribute('gap', '${child.gap}');` : ""}
     ${child.padding ? `${childVar}.setAttribute('padding', '${child.padding}');` : ""}
     ${child.backgroundColor ? `${childVar}.setAttribute('background-color', '${child.backgroundColor}');` : ""}
+    ${"as" in child && child.as === "form" ? `${childVar}.setAttribute('as', 'form');` : ""}
+    ${escapedAction ? `${childVar}.setAttribute('action', '${escapedAction}');` : ""}
+    ${"method" in child && child.method ? `${childVar}.setAttribute('method', '${child.method}');` : ""}
+    ${"enctype" in child && child.enctype ? `${childVar}.setAttribute('enctype', '${child.enctype}');` : ""}
     ${child.children ? generateChildrenScript(child.children, childVar) : ""}
     ${parentVar}.appendChild(${childVar});`;
           break;
+        }
 
         case "card":
           script = `
@@ -174,6 +198,22 @@ export function generateChildrenScript(
           const escapedDefaultValue = child.defaultValue
             ? escapeForJS(child.defaultValue)
             : undefined;
+          const escapedPattern =
+            "pattern" in child && child.pattern
+              ? escapeForJS(child.pattern)
+              : undefined;
+          const escapedAccept =
+            "accept" in child && child.accept
+              ? escapeForJS(child.accept)
+              : undefined;
+          const escapedAutoComplete =
+            "autoComplete" in child && child.autoComplete
+              ? escapeForJS(child.autoComplete)
+              : undefined;
+          const escapedAriaLabel =
+            "ariaLabel" in child && child.ariaLabel
+              ? escapeForJS(child.ariaLabel)
+              : undefined;
 
           script = `
     const ${childVar} = document.createElement('nimbus-text-input');
@@ -184,6 +224,16 @@ export function generateChildrenScript(
     ${child.isDisabled ? `${childVar}.setAttribute('is-disabled', 'true');` : ""}
     ${child.isReadOnly ? `${childVar}.setAttribute('is-read-only', 'true');` : ""}
     ${child.inputType ? `${childVar}.setAttribute('type', '${child.inputType}');` : ""}
+    ${"minLength" in child && child.minLength !== undefined ? `${childVar}.setAttribute('min-length', '${child.minLength}');` : ""}
+    ${"maxLength" in child && child.maxLength !== undefined ? `${childVar}.setAttribute('max-length', '${child.maxLength}');` : ""}
+    ${escapedPattern ? `${childVar}.setAttribute('pattern', '${escapedPattern}');` : ""}
+    ${"min" in child && child.min !== undefined ? `${childVar}.setAttribute('min', '${child.min}');` : ""}
+    ${"max" in child && child.max !== undefined ? `${childVar}.setAttribute('max', '${child.max}');` : ""}
+    ${"step" in child && child.step !== undefined ? `${childVar}.setAttribute('step', '${child.step}');` : ""}
+    ${escapedAccept ? `${childVar}.setAttribute('accept', '${escapedAccept}');` : ""}
+    ${"multiple" in child && child.multiple ? `${childVar}.setAttribute('multiple', 'true');` : ""}
+    ${escapedAutoComplete ? `${childVar}.setAttribute('auto-complete', '${escapedAutoComplete}');` : ""}
+    ${escapedAriaLabel ? `${childVar}.setAttribute('aria-label', '${escapedAriaLabel}');` : ""}
     ${parentVar}.appendChild(${childVar});`;
           break;
         }

@@ -34,6 +34,7 @@ export interface ButtonChild {
   colorPalette?: string;
   width?: string;
   isDisabled?: boolean;
+  ariaLabel?: string;
 }
 
 export interface BadgeChild {
@@ -95,4 +96,5 @@ export interface TextInputChild {
   isDisabled?: boolean;
   isReadOnly?: boolean;
   inputType?: string;
+  ariaLabel?: string;
 }

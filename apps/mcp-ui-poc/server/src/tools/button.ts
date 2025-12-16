@@ -7,6 +7,8 @@ export interface CreateButtonArgs {
   colorPalette?: string;
   width?: string;
   isDisabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  ariaLabel?: string;
 }
 
 export function createButton(args: CreateButtonArgs) {
@@ -16,10 +18,13 @@ export function createButton(args: CreateButtonArgs) {
     colorPalette = "primary",
     width,
     isDisabled = false,
+    type = "button",
+    ariaLabel,
   } = args;
 
   // Use improved escaping for template literal safety
   const escapedLabel = escapeForJS(label);
+  const escapedAriaLabel = ariaLabel ? escapeForJS(ariaLabel) : undefined;
 
   const remoteDomScript = `
     const button = document.createElement('nimbus-button');
@@ -27,6 +32,8 @@ export function createButton(args: CreateButtonArgs) {
     button.setAttribute('color-palette', '${colorPalette}');
     ${width ? `button.setAttribute('width', '${width}');` : ""}
     ${isDisabled ? `button.setAttribute('is-disabled', 'true');` : ""}
+    ${type !== "button" ? `button.setAttribute('type', '${type}');` : ""}
+    ${escapedAriaLabel ? `button.setAttribute('aria-label', '${escapedAriaLabel}');` : ""}
     button.textContent = '${escapedLabel}';
 
     // Store label as data attribute for event handling
