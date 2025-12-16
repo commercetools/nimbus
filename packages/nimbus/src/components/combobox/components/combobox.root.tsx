@@ -384,54 +384,63 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   );
 
   return (
-    <ComboBoxRootContext.Provider
-      value={rootContextValue as ComboBoxRootContextValue<object>}
+    <Provider
+      // clear child contexts so that parent wrappers do not affect this component
+      values={[
+        [ButtonContext, {}],
+        [InputContext, {}],
+        [TagGroupContext, {}],
+      ]}
     >
-      <ComboBoxRootSlot
-        ref={ref}
-        {...recipeProps}
-        {...styleProps}
-        size={size}
-        data-disabled={isDisabled}
-        data-invalid={isInvalid}
-        data-required={isRequired}
-        data-readonly={isReadOnly}
-        data-open={props.isOpen}
-        role="group"
+      <ComboBoxRootContext.Provider
+        value={rootContextValue as ComboBoxRootContextValue<object>}
       >
-        {/* CollectionBuilder parses 'content' JSX into a Collection object */}
-        <CollectionBuilder content={content}>
-          {(collection) => (
-            // Pass the built collection to ComboBoxRootInner which handles all behavior
-            <ComboBoxRootInner<T>
-              {...functionalProps}
-              size={size}
-              selectionMode={selectionMode}
-              inputValue={inputValue}
-              onInputChange={onInputChange}
-              getKey={getKey}
-              getTextValue={getTextValue}
-              allowsEmptyMenu={allowsEmptyMenu}
-              renderEmptyState={renderEmptyState}
-              isDisabled={isDisabled}
-              isRequired={isRequired}
-              isInvalid={isInvalid}
-              isReadOnly={isReadOnly}
-              collection={collection as unknown as Collection<Node<T>>}
-              allowsCustomOptions={allowsCustomOptions}
-              asyncConfig={asyncConfig}
-              onAsyncSelectedItemsChange={
-                asyncConfig && selectionMode === "multiple"
-                  ? setAsyncSelectedItems
-                  : undefined
-              }
-              onAddCustomItem={setCustomCreatedItems}
-              onAddAsyncSelectedItem={setAsyncSelectedItems}
-            />
-          )}
-        </CollectionBuilder>
-      </ComboBoxRootSlot>
-    </ComboBoxRootContext.Provider>
+        <ComboBoxRootSlot
+          ref={ref}
+          {...recipeProps}
+          {...styleProps}
+          size={size}
+          data-disabled={isDisabled}
+          data-invalid={isInvalid}
+          data-required={isRequired}
+          data-readonly={isReadOnly}
+          data-open={props.isOpen}
+          role="group"
+        >
+          {/* CollectionBuilder parses 'content' JSX into a Collection object */}
+          <CollectionBuilder content={content}>
+            {(collection) => (
+              // Pass the built collection to ComboBoxRootInner which handles all behavior
+              <ComboBoxRootInner<T>
+                {...functionalProps}
+                size={size}
+                selectionMode={selectionMode}
+                inputValue={inputValue}
+                onInputChange={onInputChange}
+                getKey={getKey}
+                getTextValue={getTextValue}
+                allowsEmptyMenu={allowsEmptyMenu}
+                renderEmptyState={renderEmptyState}
+                isDisabled={isDisabled}
+                isRequired={isRequired}
+                isInvalid={isInvalid}
+                isReadOnly={isReadOnly}
+                collection={collection as unknown as Collection<Node<T>>}
+                allowsCustomOptions={allowsCustomOptions}
+                asyncConfig={asyncConfig}
+                onAsyncSelectedItemsChange={
+                  asyncConfig && selectionMode === "multiple"
+                    ? setAsyncSelectedItems
+                    : undefined
+                }
+                onAddCustomItem={setCustomCreatedItems}
+                onAddAsyncSelectedItem={setAsyncSelectedItems}
+              />
+            )}
+          </CollectionBuilder>
+        </ComboBoxRootSlot>
+      </ComboBoxRootContext.Provider>
+    </Provider>
   );
 }
 
