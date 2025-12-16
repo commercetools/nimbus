@@ -90,11 +90,11 @@ The component supports three size variants to match your interface density:
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center" wrap="wrap">
     <ToggleButton size="2xs">
-      Extra Small
+      2x Small
     </ToggleButton>
 
     <ToggleButton size="xs">
-      Small
+      Extra Small
     </ToggleButton>
 
     <ToggleButton size="md">
@@ -350,7 +350,7 @@ const App = () => {
           variant="outline"
           isSelected={showInactive}
           onChange={setShowInactive}
-          colorPalette="neutral"
+          colorPalette="primary"
         >
           Inactive
         </ToggleButton>
@@ -360,7 +360,7 @@ const App = () => {
           variant="outline"
           isSelected={showArchived}
           onChange={setShowArchived}
-          colorPalette="neutral"
+          colorPalette="primary"
         >
           Archived
         </ToggleButton>

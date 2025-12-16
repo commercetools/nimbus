@@ -5,7 +5,7 @@ import { ToggleButton, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
- * @docs-title Basic Rendering Tests
+ * @docs-title Basic rendering tests
  * @docs-description Verify the component renders with expected elements and states
  * @docs-order 1
  */
