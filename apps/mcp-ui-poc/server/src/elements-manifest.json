@@ -345,6 +345,74 @@
       ]
     },
     {
+      "tagName": "nimbus-money-input",
+      "description": "Money input component with currency selection and amount input",
+      "category": "interactive",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Input name prefix for form submission (creates ${name}.amount and ${name}.currencyCode)"
+        },
+        {
+          "name": "currency-code",
+          "type": "string",
+          "description": "Currency code (e.g., 'USD', 'EUR', 'GBP')"
+        },
+        {
+          "name": "amount",
+          "type": "string",
+          "description": "Amount value as string (e.g., '100.00')"
+        },
+        {
+          "name": "currencies",
+          "type": "string",
+          "description": "JSON array of available currency codes for dropdown"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "description": "Placeholder text for the amount input"
+        },
+        {
+          "name": "is-required",
+          "type": "boolean",
+          "description": "Whether the input is required"
+        },
+        {
+          "name": "is-disabled",
+          "type": "boolean",
+          "description": "Whether the input is disabled"
+        },
+        {
+          "name": "is-read-only",
+          "type": "boolean",
+          "description": "Whether the input is read-only"
+        },
+        {
+          "name": "is-invalid",
+          "type": "boolean",
+          "description": "Whether the input has validation errors"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "values": ["sm", "md"],
+          "description": "Size variant (default: 'md')"
+        },
+        {
+          "name": "has-high-precision-badge",
+          "type": "boolean",
+          "description": "Shows high precision badge when value uses high precision"
+        },
+        {
+          "name": "is-currency-input-disabled",
+          "type": "boolean",
+          "description": "Disables only the currency dropdown while keeping amount input enabled"
+        }
+      ]
+    },
+    {
       "tagName": "nimbus-form-field-root",
       "description": "Form field container providing context and state management",
       "category": "forms",

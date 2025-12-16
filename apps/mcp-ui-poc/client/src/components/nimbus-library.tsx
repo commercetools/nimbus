@@ -58,6 +58,30 @@ const ImageWrapper = (props: Record<string, unknown>) => {
   return <Nimbus.Image {...imageProps} />;
 };
 
+// Wrapper for MoneyInput to handle value prop construction
+const MoneyInputWrapper = (props: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { currencyCode, amount, currencies, children, ...restProps } = props;
+
+  // Parse currencies if it's a JSON string
+  const parsedCurrencies =
+    typeof currencies === "string" ? JSON.parse(currencies) : currencies;
+
+  // Construct the value object from currencyCode and amount
+  const value = {
+    currencyCode: (currencyCode as string) || "USD",
+    amount: (amount as string) || "",
+  };
+
+  return (
+    <Nimbus.MoneyInput
+      {...restProps}
+      value={value}
+      currencies={parsedCurrencies}
+    />
+  );
+};
+
 // Helper function to create wrapped components with prop mapping and event mapping
 function createWrappedComponent<P extends Record<string, unknown>>(
   component: React.ComponentType<P>,
@@ -390,6 +414,39 @@ export const nimbusLibrary: ComponentLibrary = {
         "aria-label": "aria-label",
       },
     },
+    {
+      tagName: "nimbus-money-input",
+      component: createWrappedComponent(MoneyInputWrapper, {
+        name: "name",
+        "currency-code": "currencyCode",
+        amount: "amount",
+        currencies: "currencies",
+        placeholder: "placeholder",
+        "is-required": "isRequired",
+        "is-disabled": "isDisabled",
+        "is-read-only": "isReadOnly",
+        "is-invalid": "isInvalid",
+        size: "size",
+        "has-high-precision-badge": "hasHighPrecisionBadge",
+        "is-currency-input-disabled": "isCurrencyInputDisabled",
+        "aria-label": "aria-label",
+      }),
+      propMapping: {
+        name: "name",
+        "currency-code": "currencyCode",
+        amount: "amount",
+        currencies: "currencies",
+        placeholder: "placeholder",
+        "is-required": "isRequired",
+        "is-disabled": "isDisabled",
+        "is-read-only": "isReadOnly",
+        "is-invalid": "isInvalid",
+        size: "size",
+        "has-high-precision-badge": "hasHighPrecisionBadge",
+        "is-currency-input-disabled": "isCurrencyInputDisabled",
+        "aria-label": "aria-label",
+      },
+    },
 
     // DataTable components
     {
@@ -593,6 +650,24 @@ export const nimbusRemoteElements: RemoteElementConfiguration[] = [
       "accept",
       "multiple",
       "auto-complete",
+      "aria-label",
+    ],
+  },
+  {
+    tagName: "nimbus-money-input",
+    remoteAttributes: [
+      "name",
+      "currency-code",
+      "amount",
+      "currencies",
+      "placeholder",
+      "is-required",
+      "is-disabled",
+      "is-read-only",
+      "is-invalid",
+      "size",
+      "has-high-precision-badge",
+      "is-currency-input-disabled",
       "aria-label",
     ],
   },

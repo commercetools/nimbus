@@ -9,7 +9,8 @@ export type ChildElement =
   | FlexChild
   | CardChild
   | FormFieldChild
-  | TextInputChild;
+  | TextInputChild
+  | MoneyInputChild;
 
 export interface HeadingChild {
   type: "heading";
@@ -96,5 +97,22 @@ export interface TextInputChild {
   isDisabled?: boolean;
   isReadOnly?: boolean;
   inputType?: string;
+  ariaLabel?: string;
+}
+
+export interface MoneyInputChild {
+  type: "moneyInput";
+  name?: string;
+  currencyCode?: string;
+  amount?: string;
+  currencies?: string[];
+  placeholder?: string;
+  isRequired?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isInvalid?: boolean;
+  size?: "sm" | "md";
+  hasHighPrecisionBadge?: boolean;
+  isCurrencyInputDisabled?: boolean;
   ariaLabel?: string;
 }

@@ -18,6 +18,7 @@ import { createBadge } from "./tools/badge.js";
 import { createFlex } from "./tools/flex.js";
 import { createStack } from "./tools/stack.js";
 import { createHeading } from "./tools/heading.js";
+import { createMoneyInput } from "./tools/money-input.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -253,6 +254,22 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       accept: z.string().optional(),
       multiple: z.boolean().optional(),
       autoComplete: z.string().optional(),
+      ariaLabel: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("moneyInput"),
+      name: z.string().optional(),
+      currencyCode: z.string().optional(),
+      amount: z.string().optional(),
+      currencies: z.array(z.string()).optional(),
+      placeholder: z.string().optional(),
+      isRequired: z.boolean().optional(),
+      isDisabled: z.boolean().optional(),
+      isReadOnly: z.boolean().optional(),
+      isInvalid: z.boolean().optional(),
+      size: z.enum(["sm", "md"]).optional(),
+      hasHighPrecisionBadge: z.boolean().optional(),
+      isCurrencyInputDisabled: z.boolean().optional(),
       ariaLabel: z.string().optional(),
     }),
   ])
@@ -824,6 +841,85 @@ function registerTools(server: McpServer) {
     },
     async (args) => {
       const uiResource = createHeading(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
+
+  server.registerTool(
+    "createMoneyInput",
+    {
+      title: "Create Money Input",
+      description:
+        "Creates a money input UI component using Nimbus design system. Handles currency and amount input with support for multiple currencies. Can be used standalone or composed inside FormField.Input.",
+      inputSchema: z.object({
+        name: z
+          .string()
+          .optional()
+          .describe(
+            "Input name attribute prefix for form submission (creates ${name}.amount and ${name}.currencyCode fields)"
+          ),
+        currencyCode: z
+          .string()
+          .optional()
+          .describe(
+            "Initial currency code (e.g., 'USD', 'EUR', 'GBP'). Default: 'USD'"
+          ),
+        amount: z
+          .string()
+          .optional()
+          .describe("Initial amount value as string (e.g., '100.00')"),
+        currencies: z
+          .array(z.string())
+          .optional()
+          .describe(
+            "Array of available currency codes for dropdown. If not provided or empty, shows a label instead of dropdown."
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text for the amount input"),
+        isRequired: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is required"),
+        isDisabled: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is disabled"),
+        isReadOnly: z
+          .boolean()
+          .optional()
+          .describe("Whether the input is read-only"),
+        isInvalid: z
+          .boolean()
+          .optional()
+          .describe("Whether the input has validation errors"),
+        size: z
+          .enum(["sm", "md"])
+          .optional()
+          .describe("Size variant (default: 'md')"),
+        hasHighPrecisionBadge: z
+          .boolean()
+          .optional()
+          .describe(
+            "Shows high precision badge when value uses high precision"
+          ),
+        isCurrencyInputDisabled: z
+          .boolean()
+          .optional()
+          .describe(
+            "Disables only the currency dropdown/label while keeping amount input enabled"
+          ),
+        ariaLabel: z
+          .string()
+          .optional()
+          .describe("Accessible label for the input"),
+      }),
+    },
+    async (args) => {
+      const uiResource = createMoneyInput(args);
       return {
         content: [uiResource],
       };

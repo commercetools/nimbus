@@ -237,6 +237,43 @@ export function generateChildrenScript(
     ${parentVar}.appendChild(${childVar});`;
           break;
         }
+
+        case "moneyInput": {
+          const escapedName = child.name ? escapeForJS(child.name) : undefined;
+          const escapedCurrencyCode = child.currencyCode
+            ? escapeForJS(child.currencyCode)
+            : "USD";
+          const escapedAmount = child.amount ? escapeForJS(child.amount) : "";
+          const escapedPlaceholder = child.placeholder
+            ? escapeForJS(child.placeholder)
+            : undefined;
+          const escapedCurrencies =
+            "currencies" in child && child.currencies
+              ? JSON.stringify(child.currencies.map(escapeForJS))
+              : undefined;
+          const escapedAriaLabel =
+            "ariaLabel" in child && child.ariaLabel
+              ? escapeForJS(child.ariaLabel)
+              : undefined;
+
+          script = `
+    const ${childVar} = document.createElement('nimbus-money-input');
+    ${escapedName ? `${childVar}.setAttribute('name', '${escapedName}');` : ""}
+    ${childVar}.setAttribute('currency-code', '${escapedCurrencyCode}');
+    ${childVar}.setAttribute('amount', '${escapedAmount}');
+    ${escapedCurrencies ? `${childVar}.setAttribute('currencies', '${escapedCurrencies}');` : ""}
+    ${escapedPlaceholder ? `${childVar}.setAttribute('placeholder', '${escapedPlaceholder}');` : ""}
+    ${child.isRequired ? `${childVar}.setAttribute('is-required', 'true');` : ""}
+    ${child.isDisabled ? `${childVar}.setAttribute('is-disabled', 'true');` : ""}
+    ${child.isReadOnly ? `${childVar}.setAttribute('is-read-only', 'true');` : ""}
+    ${child.isInvalid ? `${childVar}.setAttribute('is-invalid', 'true');` : ""}
+    ${"size" in child && child.size ? `${childVar}.setAttribute('size', '${child.size}');` : ""}
+    ${"hasHighPrecisionBadge" in child && child.hasHighPrecisionBadge ? `${childVar}.setAttribute('has-high-precision-badge', 'true');` : ""}
+    ${"isCurrencyInputDisabled" in child && child.isCurrencyInputDisabled ? `${childVar}.setAttribute('is-currency-input-disabled', 'true');` : ""}
+    ${escapedAriaLabel ? `${childVar}.setAttribute('aria-label', '${escapedAriaLabel}');` : ""}
+    ${parentVar}.appendChild(${childVar});`;
+          break;
+        }
       }
 
       return script;
