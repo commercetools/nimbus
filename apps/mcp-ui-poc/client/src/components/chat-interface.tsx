@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Box, Stack, Flex, Heading, Text, Switch } from "@commercetools/nimbus";
+import {
+  Box,
+  Stack,
+  Flex,
+  Heading,
+  Text,
+  Badge,
+  Switch,
+} from "@commercetools/nimbus";
 import { UIResourceRenderer, isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
 import {
@@ -21,6 +29,7 @@ export function ChatInterface() {
   const [toolsEnabled, setToolsEnabled] = useState(true);
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages or loading state changes
@@ -92,6 +101,12 @@ export function ChatInterface() {
 
         // 2. Initialize Claude with MCP
         await claudeClient.initialize();
+
+        // 3. Get server stats
+        const stats = claudeClient.getServerStats();
+        setServerStats(stats);
+        console.log("📊 Server stats:", stats);
+
         setIsReady(true);
       } catch (error) {
         console.error("❌ Initialization failed:", error);
@@ -178,7 +193,20 @@ export function ChatInterface() {
         alignItems="center"
         marginBottom="600"
       >
-        <Heading>Nimbus MCP-UI + Claude Chat</Heading>
+        <Flex alignItems="center" gap="400">
+          <Heading>Nimbus MCP-UI + Claude Chat</Heading>
+          {isReady && (
+            <Flex gap="200">
+              <Badge colorPalette="primary">UI Tools: {serverStats.ui}</Badge>
+              <Badge colorPalette="positive">
+                Commerce Tools: {serverStats.commerce}
+              </Badge>
+              <Badge colorPalette="neutral">
+                Total: {serverStats.ui + serverStats.commerce}
+              </Badge>
+            </Flex>
+          )}
+        </Flex>
         <Flex alignItems="center" gap="300">
           <Text fontSize="sm">{`Nimbus MCP-UI ${toolsEnabled ? "Enabled" : "Disabled"}`}</Text>
           <Switch

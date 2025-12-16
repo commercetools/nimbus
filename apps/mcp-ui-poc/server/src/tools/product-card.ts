@@ -12,7 +12,6 @@ export interface ProductCardArgs {
 
 export function createProductCard(args: ProductCardArgs) {
   const {
-    productId,
     productName,
     price,
     description = "",
@@ -20,13 +19,6 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
-  // Generate productId if not provided (using timestamp + random)
-  const finalProductId =
-    productId ||
-    `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-  // Use improved escaping for template literal safety
-  const escapedId = escapeForJS(finalProductId);
   const escapedName = escapeForJS(productName);
   const escapedPrice = escapeForJS(price);
   const escapedDescription = escapeForJS(description);
