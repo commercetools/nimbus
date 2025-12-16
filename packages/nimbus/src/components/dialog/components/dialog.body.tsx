@@ -1,13 +1,9 @@
-import { ButtonContext } from "react-aria-components";
 import { DialogBodySlot } from "../dialog.slots";
 import type { DialogBodyProps } from "../dialog.types";
 import { useDialogRootContext } from "./dialog.context";
 
 /**
  * Dialog.Body - The main body content section
- *
- * Clears ButtonContext to prevent slot validation conflicts with nested
- * components that use button slots (e.g., ComboBox).
  *
  * @supportsStyleProps
  */
@@ -26,7 +22,7 @@ export const DialogBody = (props: DialogBodyProps) => {
 
   return (
     <DialogBodySlot ref={forwardedRef} {...defaultProps} {...restProps}>
-      <ButtonContext.Provider value={null}>{children}</ButtonContext.Provider>
+      {children}
     </DialogBodySlot>
   );
 };

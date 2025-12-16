@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
+import { ButtonContext } from "react-aria-components";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
@@ -5849,13 +5850,16 @@ export const PortalPositioningInDialog: Story = {
                 <Text>Select your favorite animals from the list below:</Text>
                 <FormField.Root>
                   <FormField.Label>Animals</FormField.Label>
-                  <ComposedComboBox
-                    aria-label="Animals in dialog"
-                    items={simpleOptions}
-                    selectionMode="single"
-                    selectedKeys={selectedKeys}
-                    onSelectionChange={setSelectedKeys}
-                  />
+                  {/* Clear Dialog's ButtonContext to prevent slot conflicts with ComboBox */}
+                  <ButtonContext.Provider value={null}>
+                    <ComposedComboBox
+                      aria-label="Animals in dialog"
+                      items={simpleOptions}
+                      selectionMode="single"
+                      selectedKeys={selectedKeys}
+                      onSelectionChange={setSelectedKeys}
+                    />
+                  </ButtonContext.Provider>
                 </FormField.Root>
               </Stack>
             </Dialog.Body>
