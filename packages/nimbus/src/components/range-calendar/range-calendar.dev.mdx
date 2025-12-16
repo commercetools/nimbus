@@ -281,7 +281,10 @@ For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
 ```jsx-live-dev
 const App = () => {
-  const [selectedRange, setSelectedRange] = useState<string>('No selection');
+  const [selectedRange, setSelectedRange] = useState<RangeCalendarProps["value"]>({
+    start: today(getLocalTimeZone()).add({ days: 3 }),
+    end: today(getLocalTimeZone()).add({ days: 8 }),
+  });
 
   const formatDate = (date) => {
     return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {
@@ -299,15 +302,16 @@ const App = () => {
           start: today(getLocalTimeZone()).add({ days: 3 }),
           end: today(getLocalTimeZone()).add({ days: 8 }),
         }}
-        onChange={(range) => {
-          if (range) {
-            setSelectedRange(`${formatDate(range.start)} to ${formatDate(range.end)}`);
-          } else {
-            setSelectedRange('No selection');
-          }
-        }}
+        onChange={setSelectedRange}
       />
-      <Text textStyle="sm">{selectedRange}</Text>
+      <Box p="200" bg="neutral.2" borderRadius="200">
+        <Text fontWeight="600" mb="200">Selected Range:</Text>
+        <Text>
+          {selectedRange
+            ? `${formatDate(selectedRange.start)} to ${formatDate(selectedRange.end)}`
+            : 'No range selected'}
+        </Text>
+      </Box>
     </Stack>
   );
 }
@@ -321,7 +325,10 @@ For scenarios requiring programmatic control or coordination with other componen
 
 ```jsx-live-dev
 const App = () => {
-  const [value, setValue] = useState<RangeCalendarProps["value"]>(null);
+  const [value, setValue] = useState<RangeCalendarProps["value"]>({
+    start: today(getLocalTimeZone()).add({ days: 3 }),
+    end: today(getLocalTimeZone()).add({ days: 8 }),
+  });
 
   const formatDate = (date) => {
     return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {
