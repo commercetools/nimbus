@@ -1,4 +1,4 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
+import type { ElementDefinition, Intent } from "../types/remote-dom.js";
 
 export interface ButtonElementArgs {
   label: string;
@@ -8,6 +8,8 @@ export interface ButtonElementArgs {
   isDisabled?: boolean;
   type?: "button" | "submit" | "reset";
   ariaLabel?: string;
+  /** Optional intent to emit when button is pressed */
+  intent?: Intent;
 }
 
 /**
@@ -23,6 +25,7 @@ export function buildButtonElement(args: ButtonElementArgs): ElementDefinition {
     isDisabled = false,
     type = "button",
     ariaLabel,
+    intent,
   } = args;
 
   return {
@@ -37,5 +40,6 @@ export function buildButtonElement(args: ButtonElementArgs): ElementDefinition {
       "aria-label": ariaLabel,
     },
     children: [label],
+    events: intent ? { onPress: intent } : undefined,
   };
 }

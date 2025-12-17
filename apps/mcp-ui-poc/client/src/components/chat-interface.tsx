@@ -17,6 +17,7 @@ import type { Message } from "../types/virtual-dom";
 import {
   StructuredDomRenderer,
   type StructuredDomContent,
+  type Intent,
 } from "./structured-dom-renderer";
 
 export function ChatInterface() {
@@ -147,6 +148,67 @@ export function ChatInterface() {
       ]);
     } catch (error) {
       console.error("Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Error: ${(error as Error).message}`,
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  // Handle intents emitted from UI components
+  async function handleIntentEmit(intent: Intent) {
+    console.log("🎯 Intent received:", intent);
+
+    // Combine description + structured payload for Claude
+    const message = `${intent.description}
+
+[Intent Context]
+Type: ${intent.type}
+Payload: ${JSON.stringify(intent.payload, null, 2)}`;
+
+    console.log("💬 Forwarding intent to Claude:", message);
+
+    // Add user message to chat (show cleaner version to user)
+    const userMessage: Message = {
+      role: "user",
+      content: `[Intent: ${intent.type}] ${intent.description}`,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+
+    setIsLoading(true);
+
+    try {
+      // Build message history for context
+      const messageHistory = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content || "",
+      }));
+
+      // Send to Claude with full description + payload
+      const { text, uiResources } = await claudeClient.sendMessage(message, {
+        uiToolsEnabled,
+        commerceToolsEnabled,
+        messageHistory,
+      });
+
+      // Add Claude's response
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: text,
+          uiResources,
+        },
+      ]);
+
+      console.log("✅ Intent processed successfully");
+    } catch (error) {
+      console.error("❌ Error handling intent:", error);
       setMessages((prev) => [
         ...prev,
         {
@@ -305,7 +367,10 @@ export function ChatInterface() {
                 console.log("✨ Using StructuredDomRenderer");
                 return (
                   <Box key={i} marginTop="300">
-                    <StructuredDomRenderer content={parsedContent} />
+                    <StructuredDomRenderer
+                      content={parsedContent}
+                      onIntentEmit={handleIntentEmit}
+                    />
                   </Box>
                 );
               } catch (error) {

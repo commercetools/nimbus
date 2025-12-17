@@ -3,6 +3,26 @@
  */
 
 /**
+ * Intent structure for user actions that bubble up from components.
+ * The description field is human-readable text that Claude interprets directly.
+ */
+export interface Intent {
+  /** Intent type identifier (e.g., "view_details", "add_to_cart") */
+  type: string;
+  /**
+   * Human-readable description of what the user wants to do.
+   * This is what Claude will see and interpret.
+   * Should be written as if the user is speaking to Claude.
+   */
+  description: string;
+  /**
+   * Structured payload with intent-specific data.
+   * Claude can use this for tool calls or additional context.
+   */
+  payload: Record<string, unknown>;
+}
+
+/**
  * Structured element definition for type-safe UI serialization
  */
 export interface ElementDefinition {
@@ -12,6 +32,11 @@ export interface ElementDefinition {
   attributes?: Record<string, string | boolean | number | undefined>;
   /** Child elements (can be nested ElementDefinitions or text nodes) */
   children?: (ElementDefinition | string)[];
+  /** Event handlers for user interactions */
+  events?: {
+    /** Press event (for buttons) - emits an intent */
+    onPress?: Intent;
+  };
 }
 
 // Re-export from index for convenience
