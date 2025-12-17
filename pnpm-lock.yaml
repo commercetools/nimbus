@@ -499,6 +499,9 @@ importers:
 
   packages/nimbus:
     dependencies:
+      '@commercetools/nimbus-i18n':
+        specifier: workspace:^
+        version: link:../i18n
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.4.0

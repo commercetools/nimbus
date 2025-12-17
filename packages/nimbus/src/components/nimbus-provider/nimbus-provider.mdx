@@ -36,24 +36,95 @@ function App() {
 }
 ```
 
-## Set up locale
+## Set up translation messages
 
-The `NimbusProvider` supports internationalization through the `locale` prop. You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to set the locale for all Nimbus components.
+To enable translations for Nimbus components, you need to load and provide translation messages to the `NimbusProvider`. This is a **one-time setup at your application's root level**. Once configured, all Nimbus components throughout your application will automatically use the correct translations. Nimbus provides utilities to load these messages from the `@commercetools/nimbus-i18n` package.
+
+You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., `"en-US"`, `"de-DE"`, `"fr-FR"`) via the `locale` prop. If no locale is provided, it defaults to the user's browser locale.
+
+### Using the useNimbusMessages hook (Recommended)
+
+The easiest way to load translation messages is using the `useNimbusMessages` hook:
 
 ```tsx
-import { NimbusProvider } from "@commercetools/nimbus";
+import { NimbusProvider, useNimbusMessages } from "@commercetools/nimbus";
 
 function App() {
+  const locale = navigator.language || "en";
+  const { messages, isLoading } = useNimbusMessages(locale);
+
+  if (isLoading) {
+    return <div>Loading translations...</div>;
+  }
+
   return (
-    <NimbusProvider locale="de-DE">
+    <NimbusProvider locale={locale} messages={messages}>
       <YourApp />
     </NimbusProvider>
   );
 }
 ```
 
-If no locale is provided, it defaults to the user's browser locale.
+### Using getMessagesForLocale directly
 
+For more control, you can use `getMessagesForLocale` directly:
+
+```tsx
+import { useEffect, useState } from "react";
+import { NimbusProvider, getMessagesForLocale, type IntlMessages } from "@commercetools/nimbus";
+
+function App() {
+  const locale = navigator.language || "en";
+  const [messages, setMessages] = useState<IntlMessages>({});
+
+  useEffect(() => {
+    getMessagesForLocale(locale).then(setMessages);
+  }, [locale]);
+
+  return (
+    <NimbusProvider locale={locale} messages={messages}>
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+### Supported locales
+
+The following locales are supported:
+- `en` (English) - default fallback
+- `de` (German)
+- `es` (Spanish)
+- `fr-FR` (French)
+- `pt-BR` (Portuguese - Brazil)
+
+Region-specific codes (e.g., `en-US`, `de-DE`) are automatically normalized to their base locale. If a locale is not supported, it falls back to English.
+
+> [!NOTE]\
+> Without providing `messages`, Nimbus components will still work but may show `MISSING_TRANSLATION` errors in the console for components that require translations.
+
+### Using components with translations
+
+Once you've provided `messages` to `NimbusProvider` at your app's root level, all Nimbus components throughout your entire application will automatically use the correct translations based on the `locale` prop. **No additional configuration is needed for individual components**s.
+
+```tsx
+import { Alert } from "@commercetools/nimbus";
+
+function MyComponent() {
+  return (
+    <Alert.Root colorPalette="info" variant="outline">
+      <Alert.Title>Success!</Alert.Title>
+      <Alert.Description>
+        Your changes have been saved successfully.
+      </Alert.Description>
+      <Alert.DismissButton />
+      {/* The dismiss button automatically uses the correct translation */}
+    </Alert.Root>
+  );
+}
+```
+
+The `Alert.DismissButton` will automatically display the translated text (e.g., "Dismiss" in English, "Schließen" in German) based on the locale you set in `NimbusProvider`. This same pattern applies to all Nimbus components that use translations.
 
 ## Set up router
 

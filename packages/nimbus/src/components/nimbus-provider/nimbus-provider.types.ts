@@ -1,4 +1,5 @@
 import type { ThemeProviderProps } from "next-themes";
+import type { IntlConfig } from "react-intl";
 
 // ============================================================
 // HELPER TYPES
@@ -107,6 +108,13 @@ export type NimbusProviderProps = ColorModeProviderProps & {
    * @default User's browser locale
    */
   locale?: string;
+  /**
+   * Translation messages for react-intl
+   * Should be in FormatJS compiled format for best performance
+   * Use `getMessagesForLocale()` from @commercetools/nimbus to load messages
+   * @see https://formatjs.io/docs/getting-started/message-distribution
+   */
+  messages?: IntlConfig["messages"];
   /**
    * Router configuration for client-side navigation
    * When provided, all Nimbus components with href props will use client-side routing

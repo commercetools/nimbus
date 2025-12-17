@@ -49,6 +49,7 @@
     }
   },
   "dependencies": {
+    "@commercetools/nimbus-i18n": "workspace:^",
     "@emotion/is-prop-valid": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "dequal": "catalog:utils",
