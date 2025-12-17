@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-ui-poc-commerce-server-loadbalancer
+  labels:
+    app: mcp-ui-poc-commerce-server
+    component: commerce-backend
+  annotations:
+    # Explicitly allow HTTP traffic
+    cloud.google.com/load-balancer-type: "External"
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours - MCP sessions can be long-lived
+  ports:
+    - port: 80
+      targetPort: 8888
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-commerce-server

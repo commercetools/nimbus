@@ -1,0 +1,10 @@
+# Ignore these in Docker context to speed up builds
+node_modules
+.git
+.env
+.env.local
+*.log
+.DS_Store
+
+# Don't ignore dist folders - we need pre-built packages!
+# !packages/*/dist
