@@ -1,7 +1,8 @@
 import { createUIResource } from "@mcp-ui/server";
 import type { ChildElement } from "../types/index.js";
-import { generateChildrenScript } from "../utils/children-generator.js";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import { buildFlexElement } from "../elements/flex.js";
+import { convertChildrenToElements } from "../utils/element-converter.js";
 
 export interface CreateFlexArgs {
   content?: string;
@@ -12,7 +13,6 @@ export interface CreateFlexArgs {
   children?: ChildElement[];
   // Form support
   as?: "div" | "form";
-  // action is optional - if omitted, form data will be displayed in a dialog
   action?: string;
   method?: "get" | "post";
   enctype?:
@@ -22,44 +22,25 @@ export interface CreateFlexArgs {
 }
 
 export function createFlex(args: CreateFlexArgs) {
-  const {
-    content = "",
-    direction = "row",
-    gap,
-    padding,
-    backgroundColor,
-    children,
-    as = "div",
-    action,
-    method,
-    enctype,
-  } = args;
+  const { content, children, ...flexArgs } = args;
 
-  // Use improved escaping for template literal safety
-  const escapedContent = escapeForJS(content);
-  const escapedAction = action ? escapeForJS(action) : undefined;
-
-  const remoteDomScript = `
-    const flex = document.createElement('nimbus-flex');
-    flex.setAttribute('direction', '${direction}');
-    ${gap ? `flex.setAttribute('gap', '${gap}');` : ""}
-    ${padding ? `flex.setAttribute('padding', '${padding}');` : ""}
-    ${backgroundColor ? `flex.setAttribute('background-color', '${backgroundColor}');` : ""}
-    ${as === "form" ? `flex.setAttribute('as', 'form');` : ""}
-    ${escapedAction ? `flex.setAttribute('action', '${escapedAction}');` : ""}
-    ${method ? `flex.setAttribute('method', '${method}');` : ""}
-    ${enctype ? `flex.setAttribute('enctype', '${enctype}');` : ""}
-    ${content ? `flex.textContent = '${escapedContent}';` : ""}
-    ${children ? generateChildrenScript(children, "flex") : ""}
-
-    root.appendChild(flex);
-  `;
+  // Build children array - can contain text or nested elements
+  const elementChildren: (ElementDefinition | string)[] = [];
+  if (content) elementChildren.push(content);
+  if (children) elementChildren.push(...convertChildrenToElements(children));
 
   return createUIResource({
     uri: `ui://flex/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: buildFlexElement({
+          ...flexArgs,
+          children: elementChildren.length > 0 ? elementChildren : undefined,
+        }),
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

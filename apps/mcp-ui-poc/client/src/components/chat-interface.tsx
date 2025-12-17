@@ -8,18 +8,16 @@ import {
   Badge,
   Switch,
 } from "@commercetools/nimbus";
-import { UIResourceRenderer, isUIResource } from "@mcp-ui/client";
+import { isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
-import {
-  nimbusLibrary,
-  nimbusRemoteElements,
-  validateNimbusLibrary,
-} from "./nimbus-library";
-import { UIActionProvider } from "../utils/prop-mapping-wrapper";
 import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
 import type { Message } from "../types/virtual-dom";
+import {
+  StructuredDomRenderer,
+  type StructuredDomContent,
+} from "./structured-dom-renderer";
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -91,20 +89,14 @@ export function ChatInterface() {
     };
   }, []);
 
-  // Initialize: validate element manifest, then Claude
+  // Initialize Claude client
   useEffect(() => {
     async function init() {
       try {
-        // 1. Validate element manifest
-        const serverUrl =
-          import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001";
-        await validateNimbusLibrary(serverUrl);
-        console.log("✅ Element manifest validated successfully");
-
-        // 2. Initialize Claude with MCP
+        // Initialize Claude with MCP
         await claudeClient.initialize();
 
-        // 3. Get server stats
+        // Get server stats
         const stats = claudeClient.getServerStats();
         setServerStats(stats);
         console.log("📊 Server stats:", stats);
@@ -188,8 +180,8 @@ export function ChatInterface() {
           </Heading>
           <Text color="critical.11">{initError}</Text>
           <Text marginTop="300" fontSize="sm" color="critical.10">
-            Make sure the MCP-UI server is running and the element manifest is
-            valid.
+            Make sure the MCP-UI server is running and Claude API key is
+            configured.
           </Text>
         </Box>
       </Flex>
@@ -252,9 +244,7 @@ export function ChatInterface() {
           borderRadius="200"
           marginBottom="400"
         >
-          <Text>
-            Initializing... Validating element manifest and connecting to Claude
-          </Text>
+          <Text>Initializing...</Text>
         </Box>
       )}
 
@@ -306,105 +296,16 @@ export function ChatInterface() {
 
               try {
                 console.log("🎨 Rendering UIResource:", resource.resource.uri);
-                console.log("📚 Using library config:", nimbusLibrary);
-                console.log("🔧 Remote elements config:", nimbusRemoteElements);
 
-                // Define onUIAction handler
-                const handleUIAction = async (action: unknown) => {
-                  // Filter out internal protocol messages
-                  if (
-                    !action ||
-                    typeof action !== "object" ||
-                    Array.isArray(action)
-                  ) {
-                    return;
-                  }
+                // Parse structured DOM content
+                const parsedContent = JSON.parse(
+                  resource.resource.text
+                ) as StructuredDomContent;
 
-                  const typedAction = action as Record<string, unknown>;
-                  console.log("🎬 UI Action received:", typedAction);
-
-                  // Handle Remote DOM events (from our custom event wrapper)
-                  if (typedAction.type === "event") {
-                    console.log("🎯 Event:", typedAction.event, typedAction);
-
-                    // Handle button press events
-                    if (typedAction.event === "press") {
-                      const properties = typedAction.properties as
-                        | Record<string, unknown>
-                        | undefined;
-                      const buttonType = properties?.type;
-                      const label = properties?.["data-label"] || "Unknown";
-
-                      // Don't intercept submit buttons - let form submission happen
-                      if (buttonType === "submit") {
-                        console.log(
-                          "🔘 Submit button pressed:",
-                          label,
-                          "- allowing form submission"
-                        );
-                        return;
-                      }
-
-                      console.log("🔘 Button pressed:", label);
-                      alert(`Button "${label}" was clicked!`);
-                    }
-                    return;
-                  }
-
-                  const payload = typedAction.payload as
-                    | Record<string, unknown>
-                    | undefined;
-
-                  // Handle different action types
-                  switch (typedAction.type) {
-                    case "notify":
-                      console.log("📢 Notification:", payload?.message);
-                      if (payload?.message) {
-                        alert(String(payload.message));
-                      }
-                      break;
-
-                    case "tool":
-                      console.log(
-                        "🔧 Tool call:",
-                        payload?.toolName,
-                        payload?.params
-                      );
-
-                      // Handle form submission
-                      if (payload?.toolName === "submitForm") {
-                        const params = payload.params as Record<
-                          string,
-                          unknown
-                        >;
-                        console.log("📝 Form submitted with data:", params);
-                        alert(
-                          `Form "${params.formTitle}" submitted!\n\nData: ${JSON.stringify(params.fields, null, 2)}`
-                        );
-                      }
-                      break;
-
-                    case "prompt":
-                      console.log("💬 Prompt:", payload?.prompt);
-                      break;
-
-                    default:
-                      break;
-                  }
-                };
-
+                console.log("✨ Using StructuredDomRenderer");
                 return (
                   <Box key={i} marginTop="300">
-                    <UIActionProvider value={handleUIAction}>
-                      <UIResourceRenderer
-                        resource={resource.resource}
-                        remoteDomProps={{
-                          library: nimbusLibrary,
-                          remoteElements: nimbusRemoteElements,
-                        }}
-                        onUIAction={handleUIAction}
-                      />
-                    </UIActionProvider>
+                    <StructuredDomRenderer content={parsedContent} />
                   </Box>
                 );
               } catch (error) {
