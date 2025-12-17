@@ -1,5 +1,15 @@
 import { createUIResource } from "@mcp-ui/server";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import {
+  buildCardElement,
+  buildCardContentElement,
+  buildHeadingElement,
+  buildStackElement,
+  buildFormFieldElement,
+  buildTextInputElement,
+  buildTextElement,
+  buildButtonElement,
+} from "../elements/index.js";
 
 export interface SimpleFormField {
   name: string;
@@ -35,95 +45,82 @@ export function createSimpleForm(args: SimpleFormArgs) {
     enctype,
   } = args;
 
-  // Use improved escaping for template literal safety
-  const escapedTitle = title ? escapeForJS(title) : undefined;
-  const escapedSubmitLabel = escapeForJS(submitLabel);
-  const escapedAction = action ? escapeForJS(action) : undefined;
+  // ✅ Build structured form using element builders
+  const cardChildren: (ElementDefinition | string)[] = [];
 
-  const fieldsScript = fields
-    .map((field) => {
-      const escapedLabel = escapeForJS(field.label);
-      const escapedName = escapeForJS(field.name);
-      const escapedPattern = field.pattern
-        ? escapeForJS(field.pattern)
-        : undefined;
+  // Add title heading if provided
+  if (title) {
+    cardChildren.push(
+      buildHeadingElement({
+        content: title,
+        size: "lg",
+        marginBottom: "500",
+      })
+    );
+  }
 
-      return `
-    const fieldRoot${field.name} = document.createElement('nimbus-form-field-root');
-    ${field.required ? `fieldRoot${field.name}.setAttribute('is-required', 'true');` : ""}
-
-    const fieldLabel${field.name} = document.createElement('nimbus-form-field-label');
-    fieldLabel${field.name}.textContent = '${escapedLabel}';
-
-    const fieldInput${field.name} = document.createElement('nimbus-form-field-input');
-
-    const input${field.name} = document.createElement('nimbus-text-input');
-    input${field.name}.setAttribute('name', '${escapedName}');
-    input${field.name}.setAttribute('placeholder', '${escapedLabel}');
-    ${field.type && field.type !== "text" ? `input${field.name}.setAttribute('type', '${field.type}');` : ""}
-    ${field.required ? `input${field.name}.setAttribute('is-required', 'true');` : ""}
-    ${field.minLength !== undefined ? `input${field.name}.setAttribute('min-length', '${field.minLength}');` : ""}
-    ${field.maxLength !== undefined ? `input${field.name}.setAttribute('max-length', '${field.maxLength}');` : ""}
-    ${escapedPattern ? `input${field.name}.setAttribute('pattern', '${escapedPattern}');` : ""}
-
-    fieldInput${field.name}.appendChild(input${field.name});
-    fieldRoot${field.name}.appendChild(fieldLabel${field.name});
-    fieldRoot${field.name}.appendChild(fieldInput${field.name});
-    formBody.appendChild(fieldRoot${field.name});
-    `;
+  // Build form fields
+  const formFields = fields.map((field) =>
+    buildFormFieldElement({
+      labelChildren: [buildTextElement({ content: field.label })],
+      inputChildren: [
+        buildTextInputElement({
+          name: field.name,
+          placeholder: field.label,
+          type: field.type,
+          isRequired: field.required,
+          minLength: field.minLength,
+          maxLength: field.maxLength,
+          pattern: field.pattern,
+        }),
+      ],
+      isRequired: field.required,
     })
-    .join("\n");
+  );
 
-  const remoteDomScript = `
-    const card = document.createElement('nimbus-card-root');
-    card.setAttribute('elevation', 'elevated');
-    card.setAttribute('max-width', '600px');
-    card.setAttribute('border-style', 'outlined');
+  // Build submit button
+  const submitButton = buildButtonElement({
+    label: submitLabel,
+    variant: "solid",
+    colorPalette: "primary",
+    width: "full",
+    type: "submit",
+  });
 
-    const cardContent = document.createElement('nimbus-card-content');
+  // Build form stack
+  const formStack = buildStackElement({
+    direction: "column",
+    gap: "400",
+    as: "form",
+    action,
+    method,
+    enctype,
+    children: [...formFields, submitButton],
+  });
 
-    ${
-      title
-        ? `
-    const heading = document.createElement('nimbus-heading');
-    heading.setAttribute('size', 'lg');
-    heading.setAttribute('margin-bottom', '500');
-    heading.textContent = '${escapedTitle}';
-    cardContent.appendChild(heading);
-    `
-        : ""
-    }
+  cardChildren.push(formStack);
 
-    // Create form element using Stack with as="form"
-    const formBody = document.createElement('nimbus-stack');
-    formBody.setAttribute('direction', 'column');
-    formBody.setAttribute('gap', '400');
-    formBody.setAttribute('as', 'form');
-    ${escapedAction ? `formBody.setAttribute('action', '${escapedAction}');` : ""}
-    ${method ? `formBody.setAttribute('method', '${method}');` : ""}
-    ${enctype ? `formBody.setAttribute('enctype', '${enctype}');` : ""}
-
-    ${fieldsScript}
-
-    const submitButton = document.createElement('nimbus-button');
-    submitButton.setAttribute('variant', 'solid');
-    submitButton.setAttribute('color-palette', 'primary');
-    submitButton.setAttribute('width', 'full');
-    submitButton.setAttribute('margin-top', '400');
-    submitButton.setAttribute('type', 'submit');
-    submitButton.textContent = '${escapedSubmitLabel}';
-
-    formBody.appendChild(submitButton);
-    cardContent.appendChild(formBody);
-    card.appendChild(cardContent);
-    root.appendChild(card);
-  `;
+  // Build final card structure
+  const card = buildCardElement({
+    elevation: "elevated",
+    borderStyle: "outlined",
+    maxWidth: "600px",
+    children: [
+      buildCardContentElement({
+        children: cardChildren,
+      }),
+    ],
+  });
 
   return createUIResource({
     uri: `ui://simple-form/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: card,
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

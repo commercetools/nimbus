@@ -1,7 +1,8 @@
 import { createUIResource } from "@mcp-ui/server";
 import type { ChildElement } from "../types/index.js";
-import { generateChildrenScript } from "../utils/children-generator.js";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import { buildCardElement, buildCardContentElement } from "../elements/card.js";
+import { convertChildrenToElements } from "../utils/element-converter.js";
 
 export interface CreateCardArgs {
   content?: string;
@@ -14,40 +15,30 @@ export interface CreateCardArgs {
 }
 
 export function createCard(args: CreateCardArgs) {
-  const {
-    content = "",
-    elevation = "elevated",
-    borderStyle = "outlined",
-    cardPadding,
-    maxWidth,
-    width,
-    children,
-  } = args;
+  const { content, children, ...cardArgs } = args;
 
-  // Use improved escaping for template literal safety
-  const escapedContent = escapeForJS(content);
-
-  const remoteDomScript = `
-    const card = document.createElement('nimbus-card-root');
-    card.setAttribute('elevation', '${elevation}');
-    card.setAttribute('border-style', '${borderStyle}');
-    ${cardPadding ? `card.setAttribute('card-padding', '${cardPadding}');` : ""}
-    ${maxWidth ? `card.setAttribute('max-width', '${maxWidth}');` : ""}
-    ${width ? `card.setAttribute('width', '${width}');` : ""}
-
-    const cardContent = document.createElement('nimbus-card-content');
-    ${content ? `cardContent.textContent = '${escapedContent}';` : ""}
-    ${children ? generateChildrenScript(children, "cardContent") : ""}
-
-    card.appendChild(cardContent);
-    root.appendChild(card);
-  `;
+  // Build children array
+  const elementChildren: (ElementDefinition | string)[] = [];
+  if (content) elementChildren.push(content);
+  if (children) elementChildren.push(...convertChildrenToElements(children));
 
   return createUIResource({
     uri: `ui://card/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: buildCardElement({
+          ...cardArgs,
+          children: [
+            buildCardContentElement({
+              children:
+                elementChildren.length > 0 ? elementChildren : undefined,
+            }),
+          ],
+        }),
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

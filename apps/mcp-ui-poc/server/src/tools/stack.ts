@@ -1,7 +1,8 @@
 import { createUIResource } from "@mcp-ui/server";
 import type { ChildElement } from "../types/index.js";
-import { generateChildrenScript } from "../utils/children-generator.js";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import { buildStackElement } from "../elements/stack.js";
+import { convertChildrenToElements } from "../utils/element-converter.js";
 
 export interface CreateStackArgs {
   content?: string;
@@ -12,7 +13,6 @@ export interface CreateStackArgs {
   children?: ChildElement[];
   // Form support
   as?: "div" | "form";
-  // action is optional - if omitted, form data will be displayed in a dialog
   action?: string;
   method?: "get" | "post";
   enctype?:
@@ -22,44 +22,25 @@ export interface CreateStackArgs {
 }
 
 export function createStack(args: CreateStackArgs) {
-  const {
-    content = "",
-    direction = "column",
-    gap,
-    width,
-    marginBottom,
-    children,
-    as = "div",
-    action,
-    method,
-    enctype,
-  } = args;
+  const { content, children, ...stackArgs } = args;
 
-  // Use improved escaping for template literal safety
-  const escapedContent = escapeForJS(content);
-  const escapedAction = action ? escapeForJS(action) : undefined;
-
-  const remoteDomScript = `
-    const stack = document.createElement('nimbus-stack');
-    stack.setAttribute('direction', '${direction}');
-    ${gap ? `stack.setAttribute('gap', '${gap}');` : ""}
-    ${width ? `stack.setAttribute('width', '${width}');` : ""}
-    ${marginBottom ? `stack.setAttribute('margin-bottom', '${marginBottom}');` : ""}
-    ${as === "form" ? `stack.setAttribute('as', 'form');` : ""}
-    ${escapedAction ? `stack.setAttribute('action', '${escapedAction}');` : ""}
-    ${method ? `stack.setAttribute('method', '${method}');` : ""}
-    ${enctype ? `stack.setAttribute('enctype', '${enctype}');` : ""}
-    ${content ? `stack.textContent = '${escapedContent}';` : ""}
-    ${children ? generateChildrenScript(children, "stack") : ""}
-
-    root.appendChild(stack);
-  `;
+  // Build children array - can contain text or nested elements
+  const elementChildren: (ElementDefinition | string)[] = [];
+  if (content) elementChildren.push(content);
+  if (children) elementChildren.push(...convertChildrenToElements(children));
 
   return createUIResource({
     uri: `ui://stack/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: buildStackElement({
+          ...stackArgs,
+          children: elementChildren.length > 0 ? elementChildren : undefined,
+        }),
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

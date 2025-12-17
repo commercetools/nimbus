@@ -1,5 +1,16 @@
 import { createUIResource } from "@mcp-ui/server";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import {
+  buildStackElement,
+  buildHeadingElement,
+  buildTextElement,
+  buildBadgeElement,
+  buildButtonElement,
+  buildImageElement,
+  buildCardElement,
+  buildCardHeaderElement,
+  buildCardContentElement,
+} from "../elements/index.js";
 
 export interface ProductCardArgs {
   productId?: string;
@@ -19,149 +30,95 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
-  const escapedName = escapeForJS(productName);
-  const escapedPrice = escapeForJS(price);
-  const escapedDescription = escapeForJS(description);
-  const escapedImageUrl = imageUrl ? escapeForJS(imageUrl) : undefined;
+  // ✅ Build structured product card using element builders
+  const cardChildren: ElementDefinition[] = [];
 
-  const remoteDomScript = `
-    // Create container for alert and card
-    const container = document.createElement('nimbus-stack');
-    container.setAttribute('direction', 'column');
-    container.setAttribute('gap', '400');
-    container.setAttribute('width', 'fit-content');
+  // Add image if provided
+  if (imageUrl) {
+    cardChildren.push(
+      buildImageElement({
+        src: imageUrl,
+        alt: productName,
+        borderRadius: "200",
+        marginBottom: "400",
+      })
+    );
+  }
 
+  // Add product heading
+  cardChildren.push(
+    buildHeadingElement({
+      content: productName,
+      size: "lg",
+      marginBottom: "200",
+    })
+  );
 
-    // Create Nimbus card structure
-    const card = document.createElement('nimbus-card-root');
-    card.setAttribute('elevation', 'elevated');
-    ${imageUrl ? "" : "card.setAttribute('width', 'fit-content');"}
-    ${imageUrl ? "card.setAttribute('max-width', '432px');" : ""}
-    card.setAttribute('border-style', 'outlined');
+  // Build content stack: price, stock badge, description, button
+  const contentStack = buildStackElement({
+    direction: "column",
+    gap: "200",
+    children: [
+      buildTextElement({
+        content: price,
+        fontSize: "xl",
+        fontWeight: "bold",
+        color: "primary.11",
+      }),
+      buildBadgeElement({
+        label: inStock ? "In Stock" : "Out of Stock",
+        colorPalette: inStock ? "positive" : "critical",
+        size: "2xs",
+        width: "fit-content",
+      }),
+      buildTextElement({
+        content: description,
+      }),
+      buildButtonElement({
+        label: "Add to Cart",
+        variant: "solid",
+        colorPalette: "primary",
+        width: "full",
+        isDisabled: !inStock,
+        type: "button",
+      }),
+    ],
+  });
 
-    const cardHeader = document.createElement('nimbus-card-header');
+  cardChildren.push(contentStack);
 
-    const cardContent = document.createElement('nimbus-card-content');
+  // Build card with nested structure (header + content)
+  const contentChildren: ElementDefinition[] = [];
+  if (imageUrl) contentChildren.push(cardChildren[0]); // image
+  contentChildren.push(cardChildren[2]); // content stack
 
-    ${
-      imageUrl
-        ? `
-    const image = document.createElement('nimbus-image');
-    image.setAttribute('src', '${escapedImageUrl}');
-    image.setAttribute('alt', '${escapedName}');
-    image.setAttribute('border-radius', '200');
-    image.setAttribute('margin-bottom', '400');
-    image.style.width = '100%';
-    image.style.display = 'block';
-    cardContent.appendChild(image);
-    `
-        : ""
-    }
+  const card = buildCardElement({
+    elevation: "elevated",
+    borderStyle: "outlined",
+    maxWidth: imageUrl ? "432px" : undefined,
+    width: imageUrl ? undefined : "fit-content",
+    children: [
+      buildCardHeaderElement({
+        children: [cardChildren[1]], // heading
+      }),
+      buildCardContentElement({
+        children: contentChildren,
+      }),
+    ],
+  });
 
-    const heading = document.createElement('nimbus-heading');
-    heading.setAttribute('size', 'lg');
-    heading.setAttribute('margin-bottom', '200');
-    heading.textContent = '${escapedName}';
-    heading.style.wordWrap = 'break-word';
-    heading.style.overflowWrap = 'break-word';
-
-    const stack = document.createElement('nimbus-stack');
-
-    const priceText = document.createElement('nimbus-text');
-    priceText.setAttribute('font-size', 'xl');
-    priceText.setAttribute('font-weight', 'bold');
-    priceText.setAttribute('color', 'primary.11');
-    priceText.textContent = '${escapedPrice}';
-
-    const badge = document.createElement('nimbus-badge');
-    badge.setAttribute('color-palette', '${inStock ? "positive" : "critical"}');
-    badge.setAttribute('size', '2xs');
-    badge.setAttribute('width', 'fit-content');
-    badge.textContent = '${inStock ? "In Stock" : "Out of Stock"}';
-    console.log('Badge color-palette set to:', badge.getAttribute('color-palette'));
-    console.log('Badge size set to:', badge.getAttribute('size'));
-
-    const descriptionText = document.createElement('nimbus-text');
-    descriptionText.textContent = '${escapedDescription}';
-    descriptionText.style.wordWrap = 'break-word';
-    descriptionText.style.overflowWrap = 'break-word';
-
-    const button = document.createElement('nimbus-button');
-    button.setAttribute('variant', 'solid');
-    button.setAttribute('color-palette', 'primary');
-    button.setAttribute('width', 'full');
-    button.setAttribute('data-label', '${escapedName} Added to Cart');
-    ${!inStock ? "button.setAttribute('is-disabled', 'true');" : ""}
-    button.textContent = 'Add to Cart';
-    console.log('Button color-palette set to:', button.getAttribute('color-palette'));
-
-    // Create success alert structure (will be added to DOM when needed)
-    let alertContainer = null;
-
-    function createAlert() {
-      const alert = document.createElement('nimbus-alert-root');
-      alert.setAttribute('tone', 'positive');
-      alert.setAttribute('variant', 'subtle');
-
-      const alertTitle = document.createElement('nimbus-alert-title');
-      alertTitle.textContent = 'Added to Cart';
-
-      const alertDescription = document.createElement('nimbus-alert-description');
-      alertDescription.textContent = 'Added ${escapedName} to your cart!';
-
-      const alertDismiss = document.createElement('nimbus-alert-dismiss-button');
-
-      alertDismiss.onclick = function() {
-        if (alertContainer && alertContainer.parentNode) {
-          container.removeChild(alertContainer);
-          alertContainer = null;
-        }
-      };
-
-      alert.appendChild(alertTitle);
-      alert.appendChild(alertDescription);
-      alert.appendChild(alertDismiss);
-
-      return alert;
-    }
-
-    // Add click handler to button
-    button.onclick = function() {
-      // Only create and show alert if it doesn't exist
-      if (!alertContainer) {
-        alertContainer = createAlert();
-        container.insertBefore(alertContainer, card);
-      }
-
-      // If postUIActionResult is available, use it
-      if (typeof window.postUIActionResult === 'function') {
-        window.postUIActionResult({
-          type: 'notify',
-          payload: { message: 'Item added to cart' }
-        });
-      }
-    };
-
-    // Build structure
-    cardHeader.appendChild(heading);
-    stack.appendChild(priceText);
-    stack.appendChild(badge);
-    stack.appendChild(descriptionText);
-    stack.appendChild(button);
-    cardContent.appendChild(stack);
-    card.appendChild(cardHeader);
-    card.appendChild(cardContent);
-
-    // Only add card initially (no alert)
-    container.appendChild(card);
-    root.appendChild(container);
-  `;
+  // Note: Dynamic alert behavior removed in Phase 1 (no state management)
+  // This could be re-added in Phase 2 with full Remote DOM support
 
   return createUIResource({
     uri: `ui://product-card/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: card,
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

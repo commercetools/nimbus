@@ -1,5 +1,11 @@
 import { createUIResource } from "@mcp-ui/server";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import type { ElementDefinition } from "../types/remote-dom.js";
+import {
+  buildCardElement,
+  buildCardHeaderElement,
+  buildCardContentElement,
+  buildHeadingElement,
+} from "../elements/index.js";
 
 export interface ColumnDef {
   key: string;
@@ -16,7 +22,7 @@ export interface DataTableArgs {
 export function createDataTable(args: DataTableArgs) {
   const { title, columns, data, ariaLabel } = args;
 
-  // Transform column definitions to DataTable format
+  // ✅ Transform column definitions to DataTable format
   const dataTableColumns = columns.map((col) => ({
     id: col.key,
     header: col.label,
@@ -29,70 +35,51 @@ export function createDataTable(args: DataTableArgs) {
     ...row,
   }));
 
-  // Serialize for JSON and escape for JavaScript template literal
-  // Must escape backslashes first, then double quotes
-  const columnsJson = JSON.stringify(dataTableColumns)
-    .replace(/\\/g, "\\\\") // Escape backslashes first
-    .replace(/"/g, '\\"'); // Then escape double quotes
-  const rowsJson = JSON.stringify(dataTableRows)
-    .replace(/\\/g, "\\\\") // Escape backslashes first
-    .replace(/"/g, '\\"'); // Then escape double quotes
-  const escapedTitle = title ? escapeForJS(title) : undefined;
-  const escapedAriaLabel = escapeForJS(ariaLabel);
+  // ✅ Build DataTable element - use convenience component tag
+  const dataTable: ElementDefinition = {
+    tagName: "nimbus-data-table",
+    attributes: {
+      columns: JSON.stringify(dataTableColumns), // Client will parse
+      rows: JSON.stringify(dataTableRows), // Client will parse
+      allowsSorting: true,
+      density: "default",
+      width: "100%",
+      "aria-label": ariaLabel, // Keep kebab for aria
+    },
+  };
 
-  const remoteDomScript = `
-    ${
-      title
-        ? `
-    // Wrap in card with title
-    const card = document.createElement('nimbus-card-root');
-    card.setAttribute('elevation', 'elevated');
-    card.setAttribute('border-style', 'outlined');
-    card.setAttribute('width', '100%');
-    card.setAttribute('max-width', '100%');
-
-    const cardHeader = document.createElement('nimbus-card-header');
-    const heading = document.createElement('nimbus-heading');
-    heading.setAttribute('size', 'lg');
-    heading.textContent = '${escapedTitle}';
-    cardHeader.appendChild(heading);
-    card.appendChild(cardHeader);
-
-    const cardContent = document.createElement('nimbus-card-content');
-    `
-        : ""
-    }
-
-    // Create DataTable structure
-    // Note: Only create the root element - the wrapper will render Table, Header, and Body
-    const dataTableRoot = document.createElement('nimbus-data-table-root');
-    dataTableRoot.setAttribute('columns', "${columnsJson}");
-    dataTableRoot.setAttribute('rows', "${rowsJson}");
-    dataTableRoot.setAttribute('allows-sorting', 'true');
-    dataTableRoot.setAttribute('density', 'default');
-    dataTableRoot.setAttribute('width', '100%');
-    dataTableRoot.setAttribute('overflow-x', 'auto');
-    dataTableRoot.setAttribute('display', 'block');
-    dataTableRoot.setAttribute('aria-label', '${escapedAriaLabel}');
-
-    ${
-      title
-        ? `
-    cardContent.appendChild(dataTableRoot);
-    card.appendChild(cardContent);
-    root.appendChild(card);
-    `
-        : `
-    root.appendChild(dataTableRoot);
-    `
-    }
-  `;
+  // Wrap in card if title provided
+  const element = title
+    ? buildCardElement({
+        elevation: "elevated",
+        borderStyle: "outlined",
+        width: "100%",
+        maxWidth: "100%",
+        children: [
+          buildCardHeaderElement({
+            children: [
+              buildHeadingElement({
+                content: title,
+                size: "lg",
+              }),
+            ],
+          }),
+          buildCardContentElement({
+            children: [dataTable],
+          }),
+        ],
+      })
+    : dataTable;
 
   return createUIResource({
     uri: `ui://data-table/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element,
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",

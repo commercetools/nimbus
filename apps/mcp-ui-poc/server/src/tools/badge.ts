@@ -1,40 +1,24 @@
 import { createUIResource } from "@mcp-ui/server";
-import { escapeForJS } from "../utils/escape-for-js.js";
+import { buildBadgeElement, type BadgeElementArgs } from "../elements/badge.js";
 
-export interface CreateBadgeArgs {
-  label: string;
-  colorPalette?: string;
-  size?: string;
-  width?: string;
-}
+export type CreateBadgeArgs = BadgeElementArgs;
 
 export function createBadge(args: CreateBadgeArgs) {
-  const { label, colorPalette = "primary", size = "md", width } = args;
-
-  // Use improved escaping for template literal safety
-  const escapedLabel = escapeForJS(label);
-
-  const remoteDomScript = `
-    const badge = document.createElement('nimbus-badge');
-    badge.setAttribute('color-palette', '${colorPalette}');
-    badge.setAttribute('size', '${size}');
-    ${width ? `badge.setAttribute('width', '${width}');` : ""}
-    badge.textContent = '${escapedLabel}';
-
-    root.appendChild(badge);
-  `;
-
   return createUIResource({
     uri: `ui://badge/${Date.now()}`,
     content: {
       type: "remoteDom",
-      script: remoteDomScript,
+      script: JSON.stringify({
+        type: "structuredDom",
+        element: buildBadgeElement(args),
+        framework: "react",
+      }),
       framework: "react",
     },
     encoding: "text",
     metadata: {
       title: "Badge",
-      description: `Badge: ${label}`,
+      description: `Badge: ${args.label}`,
       created: new Date().toISOString(),
     },
   });

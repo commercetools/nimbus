@@ -5,7 +5,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
-import elementsManifest from "./elements-manifest.json" with { type: "json" };
 import { createProductCard } from "./tools/product-card.js";
 import { createSimpleForm } from "./tools/simple-form.js";
 import { createFormField } from "./tools/form-field.js";
@@ -37,13 +36,17 @@ app.use(express.json());
 const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 
 // ============================================================
-// HELPER ENDPOINT (Non-MCP)
+// HEALTH ENDPOINT (for Kubernetes probes)
 // ============================================================
 
-// Serve element manifest for client validation
-// This helps the client verify it has all required Nimbus components
-app.get("/elements", (req, res) => {
-  res.json(elementsManifest);
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    server: "nimbus-mcp-ui-server",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+    activeSessions: Object.keys(transports).length,
+  });
 });
 
 // ============================================================
@@ -930,6 +933,6 @@ function registerTools(server: McpServer) {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 MCP-UI Server running on port ${PORT}`);
-  console.log(`📦 Element manifest: http://localhost:${PORT}/elements`);
+  console.log(`💚 Health endpoint: http://localhost:${PORT}/health`);
   console.log(`🔌 MCP endpoint: http://localhost:${PORT}/mcp`);
 });
