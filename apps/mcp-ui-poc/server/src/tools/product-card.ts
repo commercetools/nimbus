@@ -1,5 +1,6 @@
 import { createUIResource } from "@mcp-ui/server";
 import { escapeForJS } from "../utils/escape-for-js.js";
+import { createIntentAction } from "../utils/create-intent-action.js";
 
 export interface ProductCardArgs {
   productId: string;
@@ -21,11 +22,25 @@ export function createProductCard(args: ProductCardArgs) {
   } = args;
 
   // Use improved escaping for template literal safety
-  const escapedProductId = escapeForJS(productId);
   const escapedName = escapeForJS(productName);
   const escapedPrice = escapeForJS(price);
   const escapedDescription = escapeForJS(description);
   const escapedImageUrl = imageUrl ? escapeForJS(imageUrl) : undefined;
+
+  // Create intent action with description that Claude can interpret directly
+  const viewDetailsIntent = createIntentAction({
+    type: "view_details",
+    description: `User wants to see detailed information about the product. Please provide comprehensive details including specifications, availability, pricing breakdown, and any related products.`,
+    payload: {
+      productId,
+      productName,
+      price,
+      inStock,
+    },
+  });
+
+  // Escape the JSON for embedding in JavaScript string
+  const escapedIntent = escapeForJS(viewDetailsIntent);
 
   const remoteDomScript = `
     // Create container for alert and card
@@ -95,10 +110,9 @@ export function createProductCard(args: ProductCardArgs) {
     button.setAttribute('width', 'full');
     button.textContent = 'View Details';
 
-    // Add intent data as data attributes (for event handler to read)
-    button.setAttribute('data-intent-type', 'view_details');
-    button.setAttribute('data-product-id', '${escapedProductId}');
-    button.setAttribute('data-product-name', '${escapedName}');
+    // Store the complete intent action as a single data attribute
+    // The client will emit this directly without interpretation
+    button.setAttribute('data-intent-action', '${escapedIntent}');
 
     // Build structure
     cardHeader.appendChild(heading);

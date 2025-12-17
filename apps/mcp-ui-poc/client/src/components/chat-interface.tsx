@@ -281,7 +281,7 @@ export function ChatInterface() {
                 console.log("📚 Using library config:", nimbusLibrary);
                 console.log("🔧 Remote elements config:", nimbusRemoteElements);
 
-                // Define onUIAction handler
+                // Define onUIAction handler - simplified to forward intents directly
                 const handleUIAction = async (action: unknown) => {
                   // Filter out internal protocol messages
                   if (
@@ -295,59 +295,67 @@ export function ChatInterface() {
                   const typedAction = action as Record<string, unknown>;
                   console.log("🎬 UI Action received:", typedAction);
 
-                  // Handle Intent Actions (NEW!)
+                  // Handle Intent Actions - simply forward to Claude
                   if (typedAction.type === "intent") {
                     const intent = typedAction.intent as {
                       type: string;
-                      productId?: string;
-                      productName?: string;
+                      description: string;
+                      payload: Record<string, unknown>;
                     };
 
                     console.log("🎯 Intent received:", intent);
 
-                    // Convert intent to natural language message for Claude
-                    if (intent.type === "view_details") {
-                      const message = `Show me detailed information for ${intent.productName} (product ID: ${intent.productId})`;
+                    // Combine description + structured payload for Claude
+                    const message = `${intent.description}
 
-                      console.log("💬 Auto-sending intent message:", message);
+                      [Intent Context]
+                      Type: ${intent.type}
+                      Payload: ${JSON.stringify(intent.payload, null, 2)}`;
 
-                      // 1. Add user message to chat
-                      const userMessage: Message = { role: "user", content: message };
-                      setMessages((prev) => [...prev, userMessage]);
+                    console.log("💬 Forwarding intent to Claude:", message);
 
-                      // 2. Set loading state
-                      setIsLoading(true);
+                    // 1. Add user message to chat (show cleaner version to user)
+                    const userMessage: Message = {
+                      role: "user",
+                      content: `[Intent: ${intent.type}] ${intent.description}`,
+                    };
+                    setMessages((prev) => [...prev, userMessage]);
 
-                      // 3. Send to Claude
-                      try {
-                        const { text, uiResources } = await claudeClient.sendMessage(message);
+                    // 2. Set loading state
+                    setIsLoading(true);
 
-                        // 4. Add Claude's response (should include enhanced product card)
-                        setMessages((prev) => [
-                          ...prev,
-                          {
-                            role: "assistant",
-                            content: text,
-                            uiResources,
-                          },
-                        ]);
+                    // 3. Send to Claude with full description + payload
+                    try {
+                      const { text, uiResources } =
+                        await claudeClient.sendMessage(message, {
+                          toolsEnabled,
+                        });
 
-                        console.log("✅ Intent processed successfully");
-                      } catch (error) {
-                        console.error("❌ Error handling intent:", error);
-                        setMessages((prev) => [
-                          ...prev,
-                          {
-                            role: "assistant",
-                            content: `Error: ${(error as Error).message}`,
-                          },
-                        ]);
-                      } finally {
-                        setIsLoading(false);
-                      }
+                      // 4. Add Claude's response
+                      setMessages((prev) => [
+                        ...prev,
+                        {
+                          role: "assistant",
+                          content: text,
+                          uiResources,
+                        },
+                      ]);
+
+                      console.log("✅ Intent processed successfully");
+                    } catch (error) {
+                      console.error("❌ Error handling intent:", error);
+                      setMessages((prev) => [
+                        ...prev,
+                        {
+                          role: "assistant",
+                          content: `Error: ${(error as Error).message}`,
+                        },
+                      ]);
+                    } finally {
+                      setIsLoading(false);
                     }
 
-                    return;  // Exit after handling intent
+                    return;
                   }
 
                   // Handle Remote DOM events (from our custom event wrapper)
@@ -360,67 +368,26 @@ export function ChatInterface() {
                         | Record<string, unknown>
                         | undefined;
 
-                      // Debug: Log all properties to see what we have
-                      console.log("🔍 Button properties (full):", properties);
-                      console.log("🔍 Looking for data-intent-type:", properties?.["data-intent-type"]);
+                      console.log("🔍 Button properties:", properties);
 
-                      // Check if button has intent data attributes
-                      const intentType = properties?.["data-intent-type"];
-                      if (intentType === "view_details") {
-                        // Convert event to intent action
-                        const productId = properties?.["data-product-id"] as string;
-                        const productName = properties?.["data-product-name"] as string;
+                      // Check if button has intent action data attribute
+                      const intentActionStr = properties?.[
+                        "data-intent-action"
+                      ] as string | undefined;
 
-                        console.log("🎯 Intent detected from button press:", {
-                          type: intentType,
-                          productId,
-                          productName,
-                        });
-
-                        const message = `Show me detailed information for ${productName} (product ID: ${productId})`;
-
-                        console.log("💬 Auto-sending intent message:", message);
-
-                        // 1. Add user message to chat
-                        const userMessage: Message = {
-                          role: "user",
-                          content: message,
-                        };
-                        setMessages((prev) => [...prev, userMessage]);
-
-                        // 2. Set loading state
-                        setIsLoading(true);
-
-                        // 3. Send to Claude
+                      if (intentActionStr) {
                         try {
-                          const { text, uiResources } =
-                            await claudeClient.sendMessage(message);
+                          // Parse the intent action and handle it
+                          const intentAction = JSON.parse(intentActionStr);
 
-                          // 4. Add Claude's response
-                          setMessages((prev) => [
-                            ...prev,
-                            {
-                              role: "assistant",
-                              content: text,
-                              uiResources,
-                            },
-                          ]);
-
-                          console.log("✅ Intent processed successfully");
-                        } catch (error) {
-                          console.error("❌ Error handling intent:", error);
-                          setMessages((prev) => [
-                            ...prev,
-                            {
-                              role: "assistant",
-                              content: `Error: ${(error as Error).message}`,
-                            },
-                          ]);
-                        } finally {
-                          setIsLoading(false);
+                          if (intentAction.type === "intent") {
+                            // Recursively handle as intent action
+                            await handleUIAction(intentAction);
+                            return;
+                          }
+                        } catch (e) {
+                          console.error("Failed to parse intent action:", e);
                         }
-
-                        return; // Exit after handling intent
                       }
 
                       // Regular button press (no intent)
