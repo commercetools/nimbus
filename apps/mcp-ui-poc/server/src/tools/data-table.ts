@@ -70,7 +70,9 @@ export function createDataTable(args: DataTableArgs) {
     dataTableRoot.setAttribute('rows', "${rowsJson}");
     dataTableRoot.setAttribute('allows-sorting', 'true');
     dataTableRoot.setAttribute('density', 'default');
-    dataTableRoot.setAttribute('max-width', '100%');
+    dataTableRoot.setAttribute('width', '100%');
+    dataTableRoot.setAttribute('overflow-x', 'auto');
+    dataTableRoot.setAttribute('display', 'block');
     dataTableRoot.setAttribute('aria-label', '${escapedAriaLabel}');
 
     ${

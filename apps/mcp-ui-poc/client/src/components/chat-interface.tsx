@@ -18,6 +18,7 @@ import {
 import { UIActionProvider } from "../utils/prop-mapping-wrapper";
 import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
+import { ChatLoadingIndicator } from "./chat-loading-indicator";
 import type { Message } from "../types/virtual-dom";
 
 export function ChatInterface() {
@@ -26,7 +27,8 @@ export function ChatInterface() {
   const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
-  const [toolsEnabled, setToolsEnabled] = useState(true);
+  const [uiToolsEnabled, setUiToolsEnabled] = useState(true);
+  const [commerceToolsEnabled, setCommerceToolsEnabled] = useState(true);
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
@@ -129,9 +131,17 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
+      // Build message history for context (only text content)
+      const messageHistory = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content || "",
+      }));
+
       // Send message - Claude handles all tool calling automatically
       const { text, uiResources } = await claudeClient.sendMessage(message, {
-        toolsEnabled,
+        uiToolsEnabled,
+        commerceToolsEnabled,
+        messageHistory,
       });
 
       // Add response to messages
@@ -192,30 +202,47 @@ export function ChatInterface() {
         justifyContent="space-between"
         alignItems="center"
         marginBottom="600"
+        flexWrap="wrap"
+        gap="200"
       >
-        <Flex alignItems="center" gap="400">
+        <Flex alignItems="center" gap="400" flexWrap="wrap">
           <Heading>Nimbus MCP-UI + Claude Chat</Heading>
           {isReady && (
             <Flex gap="200">
-              <Badge colorPalette="primary">UI Tools: {serverStats.ui}</Badge>
-              <Badge colorPalette="positive">
+              <Badge colorPalette="primary" size="xs">
+                UI Tools: {serverStats.ui}
+              </Badge>
+              <Badge colorPalette="neutral" size="xs">
                 Commerce Tools: {serverStats.commerce}
               </Badge>
-              <Badge colorPalette="neutral">
+              <Badge colorPalette="positive" size="xs">
                 Total: {serverStats.ui + serverStats.commerce}
               </Badge>
             </Flex>
           )}
         </Flex>
-        <Flex alignItems="center" gap="300">
-          <Text fontSize="sm">{`Nimbus MCP-UI ${toolsEnabled ? "Enabled" : "Disabled"}`}</Text>
-          <Switch
-            aria-label="enable nimbus mcp-ui"
-            defaultSelected={toolsEnabled}
-            onChange={(checked) => setToolsEnabled(checked)}
-            isDisabled={!isReady}
-          />
-        </Flex>
+        <Box alignItems="center" gap="400">
+          <Flex alignItems="center" justifyContent="space-between" gap="300">
+            <Text fontSize="350">{`Nimbus MCP-UI ${uiToolsEnabled ? "Enabled" : "Disabled"}`}</Text>
+            <Switch
+              size="sm"
+              aria-label="enable ui mcp"
+              defaultSelected={uiToolsEnabled}
+              onChange={(checked) => setUiToolsEnabled(checked)}
+              isDisabled={!isReady}
+            />
+          </Flex>
+          <Flex alignItems="center" justifyContent="space-between" gap="300">
+            <Text fontSize="350">{`Commerce MCP ${commerceToolsEnabled ? "Enabled" : "Disabled"}`}</Text>
+            <Switch
+              size="sm"
+              aria-label="enable commerce mcp"
+              defaultSelected={commerceToolsEnabled}
+              onChange={(checked) => setCommerceToolsEnabled(checked)}
+              isDisabled={!isReady}
+            />
+          </Flex>
+        </Box>
       </Flex>
 
       {!isReady && (
@@ -244,7 +271,8 @@ export function ChatInterface() {
             padding="400"
             backgroundColor={msg.role === "user" ? "primary.2" : "neutral.2"}
             borderRadius="200"
-            maxW={"max-content"}
+            maxW={msg.role === "user" ? "max-content" : "100%"}
+            width={msg.role === "assistant" ? "100%" : undefined}
             alignSelf={msg.role === "user" ? "flex-end" : undefined}
           >
             <Text fontWeight="bold" marginBottom="200">
@@ -400,51 +428,11 @@ export function ChatInterface() {
         ))}
 
         {/* Loading indicator */}
-        {isLoading && (
-          <Box
-            padding="400"
-            backgroundColor="neutral.2"
-            borderRadius="200"
-            width="fit-content"
-          >
-            <Flex gap="200" alignItems="center">
-              <Box
-                as="span"
-                display="inline-block"
-                width="8px"
-                height="8px"
-                borderRadius="full"
-                backgroundColor="primary.9"
-                animation="pulse"
-              />
-              <Box
-                as="span"
-                display="inline-block"
-                width="8px"
-                height="8px"
-                borderRadius="full"
-                backgroundColor="primary.9"
-                animation="pulse"
-                animationDelay="0.2s"
-              />
-              <Box
-                as="span"
-                display="inline-block"
-                width="8px"
-                height="8px"
-                borderRadius="full"
-                backgroundColor="primary.9"
-                animation="pulse"
-                animationDelay="0.4s"
-              />
-            </Flex>
-          </Box>
-        )}
+        {isLoading && <ChatLoadingIndicator />}
 
         {/* Scroll anchor */}
         <div ref={messagesEndRef} />
       </Stack>
-
       <ChatInput
         onSend={handleSendMessage}
         isDisabled={isLoading || !isReady}

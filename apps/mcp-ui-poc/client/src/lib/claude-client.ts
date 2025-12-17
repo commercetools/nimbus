@@ -178,15 +178,27 @@ export class ClaudeClient {
     return { ...this.serverStats };
   }
 
-  async sendMessage(message: string, options: { toolsEnabled?: boolean } = {}) {
+  async sendMessage(
+    message: string,
+    options: {
+      uiToolsEnabled?: boolean;
+      commerceToolsEnabled?: boolean;
+      messageHistory?: { role: "user" | "assistant"; content: string }[];
+    } = {}
+  ) {
     if (!this.anthropic) {
       throw new Error("Claude client not initialized");
     }
 
-    const { toolsEnabled = true } = options;
+    const {
+      uiToolsEnabled = true,
+      commerceToolsEnabled = true,
+      messageHistory = [],
+    } = options;
 
     console.log("📤 Sending message to Claude:", message);
-    console.log("🔧 Tools enabled:", toolsEnabled);
+    console.log("🔧 UI Tools enabled:", uiToolsEnabled);
+    console.log("🔧 Commerce Tools enabled:", commerceToolsEnabled);
 
     // Try with retries if we hit token limits
     const maxRetries = 2;
@@ -195,12 +207,18 @@ export class ClaudeClient {
 
     while (retryCount <= maxRetries) {
       try {
-        return await this.sendMessageAttempt(message, toolsEnabled, retryCount);
+        return await this.sendMessageAttempt(
+          message,
+          uiToolsEnabled,
+          commerceToolsEnabled,
+          messageHistory,
+          retryCount
+        );
       } catch (error) {
         // Extract error message from various error formats
         let errorMessage = "";
         if (error && typeof error === "object") {
-          const err = error as any;
+          const err = error as { message?: string };
           errorMessage = err.message || JSON.stringify(err);
         } else {
           errorMessage = String(error);
@@ -236,19 +254,38 @@ export class ClaudeClient {
 
   private async sendMessageAttempt(
     message: string,
-    toolsEnabled: boolean,
+    uiToolsEnabled: boolean,
+    commerceToolsEnabled: boolean,
+    messageHistory: { role: "user" | "assistant"; content: string }[],
     retryAttempt: number
   ) {
     const uiResources: UIResource[] = [];
     let textResponse = "";
 
-    // Create a temporary conversation for this message only (no history)
-    const currentConversation: Anthropic.MessageParam[] = [
-      {
-        role: "user",
-        content: message,
-      },
-    ];
+    // Build conversation with history if provided (when tools are disabled)
+    // Include message history only when commerce tools are disabled
+    const currentConversation: Anthropic.MessageParam[] = [];
+
+    // Add message history if commerce tools are disabled
+    if (!commerceToolsEnabled && messageHistory.length > 0) {
+      console.log(
+        "📜 Including message history:",
+        messageHistory.length,
+        "messages"
+      );
+      for (const msg of messageHistory) {
+        currentConversation.push({
+          role: msg.role,
+          content: msg.content,
+        });
+      }
+    }
+
+    // Add current message
+    currentConversation.push({
+      role: "user",
+      content: message,
+    });
 
     // Loop to handle tool use (Claude may need multiple rounds)
     let continueLoop = true;
@@ -270,8 +307,8 @@ CRITICAL: You MUST use more restrictive parameters:
 - Prefer summary/count endpoints over full list endpoints
 
 Examples of good retry parameters:
-- commerce__list_products with limit=5 and where="categories.id=\"cat123\""
-- commerce__read_orders with limit=10 and where="createdAt > \"2024-01-01\""
+- commerce__list_products with limit=5 and where="categories.id='cat123'"
+- commerce__read_orders with limit=10 and where="createdAt > '2024-01-01'"
 - Request only essential fields, not full objects
 
 If you cannot fulfill the request with limited data, explain to the user that the dataset is too large and suggest:
@@ -283,8 +320,20 @@ DO NOT retry with the same parameters - you will hit the token limit again!
 `
           : "";
 
+      // Filter tools based on enabled servers
+      const filteredTools = this.allTools.filter((tool) => {
+        if (tool.name.startsWith("ui__")) return uiToolsEnabled;
+        if (tool.name.startsWith("commerce__")) return commerceToolsEnabled;
+        return false; // Unknown tool prefix
+      });
+
+      const anyToolsEnabled = uiToolsEnabled || commerceToolsEnabled;
+      console.log(
+        `🔧 Filtered tools: ${filteredTools.length} (UI: ${uiToolsEnabled}, Commerce: ${commerceToolsEnabled})`
+      );
+
       // Adapt system prompt based on tools availability and retry state
-      const systemPrompt = toolsEnabled
+      const systemPrompt = anyToolsEnabled
         ? `You are a helpful AI assistant with access to TWO types of tools:
 
 1. **Commerce Tools (commerce__*)**: Access REAL data from the commercetools platform
@@ -370,7 +419,7 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
         model: "claude-sonnet-4-5-20250929",
         max_tokens: 4096,
         system: systemPrompt,
-        tools: toolsEnabled ? this.allTools : undefined,
+        tools: anyToolsEnabled ? filteredTools : undefined,
         messages: currentConversation,
       });
 
