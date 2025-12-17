@@ -14,8 +14,6 @@
  * which react-intl can use directly for optimal performance.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
-
 import type { IntlConfig } from "react-intl";
 
 /**
@@ -104,7 +102,7 @@ export async function getMessagesForLocale(
     const messages = (messagesModule.default || messagesModule) as IntlMessages;
 
     return messages;
-  } catch (error) {
+  } catch {
     // Fallback to English
     if (normalizedLocale !== "en") {
       try {
