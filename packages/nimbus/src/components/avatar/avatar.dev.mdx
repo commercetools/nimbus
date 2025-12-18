@@ -1,0 +1,290 @@
+---
+title: Avatar Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Avatar, type AvatarProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation displays an avatar with initials derived from first
+and last names:
+
+```jsx-live-dev
+const App = () => (
+  <Avatar firstName="John" lastName="Doe" />
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `2xs`, `xs`, and `md` size variants are available to match your interface
+density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar firstName="John" lastName="Doe" size="2xs" />
+    <Avatar firstName="John" lastName="Doe" size="xs" />
+    <Avatar firstName="John" lastName="Doe" size="md" />
+  </Stack>
+)
+```
+
+### Color palettes
+
+Avatars support different color palettes to convey semantic meaning or match
+your design theme:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar firstName="John" lastName="Doe" colorPalette="primary" />
+    <Avatar firstName="Jane" lastName="Smith" colorPalette="positive" />
+    <Avatar firstName="Alex" lastName="Chen" colorPalette="info" />
+    <Avatar firstName="Maria" lastName="Garcia" colorPalette="critical" />
+    <Avatar firstName="Sam" lastName="Wilson" colorPalette="cyan" />
+  </Stack>
+)
+```
+
+### With image
+
+When a `src` prop is provided, the Avatar displays the image. If the image fails
+to load, it automatically falls back to initials:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar
+      firstName="Jane"
+      lastName="Smith"
+      src="https://i.pravatar.cc/150?img=1"
+      alt="Jane Smith's profile picture"
+    />
+    <Avatar
+      firstName="Alex"
+      lastName="Johnson"
+      src="https://i.pravatar.cc/150?img=2"
+      alt="Alex Johnson's profile picture"
+    />
+  </Stack>
+)
+```
+
+### Initials fallback
+
+The Avatar automatically extracts and displays initials from the provided first
+and last names. This serves as a fallback when no image is available or when the
+image fails to load:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Avatar
+      firstName="Maria"
+      lastName="Garcia"
+      src="https://www.gravatar.com/avatar/thisWill404?s=200&d=404" />
+    <Avatar
+      firstName="Chen"
+      lastName="Wei"
+      src="https://www.gravatar.com/avatar/thisWill404?s=200&d=404" />
+    <Avatar
+      firstName="Aisha"
+      lastName="Patel"
+      src="https://www.gravatar.com/avatar/thisWill404?s=200&d=404" />
+  </Stack>
+)
+```
+
+### Disabled state
+
+The `isDisabled` prop visually indicates that the avatar is in a disabled state:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar firstName="John" lastName="Doe" isDisabled />
+    <Avatar
+      firstName="Jane"
+      lastName="Smith"
+      src="https://i.pravatar.cc/150?img=1"
+      isDisabled
+    />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Avatar component handles most accessibility requirements internally,
+including automatic labeling with the user's full name.
+
+#### Role
+
+The Avatar is rendered as a `<figure>` element with an automatic `aria-label`
+that includes the full name (e.g., "John Doe").
+
+#### Labeling
+
+The component automatically generates an accessible label from the `firstName`
+and `lastName` props. This label is internationalized and follows the pattern:
+`"{firstName} {lastName}"`.
+
+When providing an image via the `src` prop, always include an `alt` attribute
+for screen readers:
+
+```tsx
+<Avatar
+  firstName="Jane"
+  lastName="Smith"
+  src="https://example.com/avatar.jpg"
+  alt="Jane Smith's profile picture"
+/>
+```
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-avatar";
+
+export const Example = () => (
+  <Avatar id={PERSISTENT_ID} firstName="John" lastName="Doe" />
+);
+```
+
+#### Keyboard navigation
+
+Avatars are non-interactive elements and do not receive focus or support
+keyboard interaction by default. If you need to make an avatar interactive
+(e.g., clickable), wrap it in a button or interactive element:
+
+```tsx
+<button onClick={handleClick} aria-label="View profile">
+  <Avatar firstName="John" lastName="Doe" />
+</button>
+```
+
+## API reference
+
+<PropsTable id="Avatar" />
+
+## Common patterns
+
+### User profile header
+
+Combine Avatar with text components to create a user profile header:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar
+      firstName="Sarah"
+      lastName="Johnson"
+      src="https://i.pravatar.cc/150?img=5"
+      size="md"
+    />
+    <Stack direction="column" gap="100">
+      <Text fontSize="md" fontWeight="600">Sarah Johnson</Text>
+      <Text fontSize="sm" color="neutral.11">Product Manager</Text>
+    </Stack>
+  </Stack>
+)
+```
+
+### Comment or message list
+
+Display avatars alongside user content in comments or messages:
+
+```jsx-live-dev
+const App = () => {
+  const comments = [
+    { id: 1, author: { firstName: "Alex", lastName: "Chen" }, text: "Great work on this feature!", time: "2 hours ago" },
+    { id: 2, author: { firstName: "Maria", lastName: "Garcia" }, text: "I agree, this is really helpful.", time: "1 hour ago" },
+    { id: 3, author: { firstName: "James", lastName: "Wilson" }, text: "Looking forward to the next update.", time: "30 minutes ago" },
+  ];
+
+  return (
+    <Stack direction="column" gap="600">
+      {comments.map((comment) => (
+        <Stack key={comment.id} direction="row" gap="400">
+          <Avatar
+            firstName={comment.author.firstName}
+            lastName={comment.author.lastName}
+            size="xs"
+          />
+          <Stack direction="column" gap="100" flex="1">
+            <Stack direction="row" gap="200" alignItems="baseline">
+              <Text fontSize="sm" fontWeight="600">
+                {comment.author.firstName} {comment.author.lastName}
+              </Text>
+              <Text fontSize="xs" color="neutral.11">{comment.time}</Text>
+            </Stack>
+            <Text fontSize="sm">{comment.text}</Text>
+          </Stack>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### User list with avatars
+
+Create a list of users with avatars and additional information:
+
+```jsx-live-dev
+const App = () => {
+  const users = [
+    { id: 1, firstName: "Emma", lastName: "Thompson", role: "Designer", image: "https://i.pravatar.cc/150?img=9" },
+    { id: 2, firstName: "Michael", lastName: "Chen", role: "Developer", image: "https://i.pravatar.cc/150?img=12" },
+    { id: 3, firstName: "Sofia", lastName: "Rodriguez", role: "Manager" },
+  ];
+
+  return (
+    <Stack direction="column" gap="400" width="300px">
+      {users.map((user) => (
+        <Stack key={user.id} direction="row" gap="400" alignItems="center">
+          <Avatar
+            firstName={user.firstName}
+            lastName={user.lastName}
+            src={user.image}
+            size="xs"
+          />
+          <Stack direction="column" gap="50" flex="1">
+            <Text fontSize="sm" fontWeight="500">
+              {user.firstName} {user.lastName}
+            </Text>
+            <Text fontSize="xs" color="neutral.11">{user.role}</Text>
+          </Stack>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Avatar
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: avatar.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-avatar--docs)
