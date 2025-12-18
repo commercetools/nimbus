@@ -50,8 +50,47 @@ function renderElement(
   // Attach event handlers if present
   if (element.events?.onPress && onIntentEmit) {
     const intent = element.events.onPress;
+
     props.onPress = () => {
       console.log("🎯 Intent emitted:", intent);
+
+      // Simple rule: If button is in a form, automatically capture form data
+      const formElement = document.querySelector("form");
+      if (formElement) {
+        console.log("📝 Button is in a form, capturing form data...");
+
+        const formData = new FormData(formElement);
+        const data: Record<string, unknown> = {};
+
+        // Extract all form fields
+        formData.forEach((value, key) => {
+          // Handle file inputs specially (can't serialize File objects)
+          if (value instanceof File) {
+            data[key] = {
+              fileName: value.name,
+              fileSize: value.size,
+              fileType: value.type,
+            };
+          } else {
+            data[key] = value;
+          }
+        });
+
+        // Enhance intent with captured form data
+        const enhancedIntent = {
+          ...intent,
+          payload: {
+            ...intent.payload,
+            formData: data,
+          },
+        };
+
+        console.log("📝 Form data captured:", data);
+        onIntentEmit(enhancedIntent);
+        return;
+      }
+
+      // No form found, send intent as-is
       onIntentEmit(intent);
     };
   }

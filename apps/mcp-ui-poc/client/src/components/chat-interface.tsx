@@ -10,7 +10,6 @@ import {
 } from "@commercetools/nimbus";
 import { isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
-import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
 import type { Message } from "../types/virtual-dom";
@@ -28,8 +27,6 @@ export function ChatInterface() {
   const [initError, setInitError] = useState<string | null>(null);
   const [uiToolsEnabled, setUiToolsEnabled] = useState(true);
   const [commerceToolsEnabled, setCommerceToolsEnabled] = useState(true);
-  const [formDialogOpen, setFormDialogOpen] = useState(false);
-  const [formData, setFormData] = useState<Record<string, string>>({});
   const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -47,48 +44,9 @@ export function ChatInterface() {
     return () => clearTimeout(timeoutId);
   }, [messages, isLoading]);
 
-  // Intercept form submissions globally
-  useEffect(() => {
-    const handleFormSubmit = (event: SubmitEvent) => {
-      console.log("📋 Form submit event fired!", event);
-      const form = event.target as HTMLFormElement;
-      console.log("📋 Form element:", form);
-      console.log("📋 Form action:", form.action);
-
-      // Only intercept forms without an action attribute (or with empty action)
-      if (form.action && form.action !== window.location.href) {
-        console.log("📋 Form has real action, allowing normal submission");
-        return; // Let forms with real actions submit normally
-      }
-
-      console.log("📋 Intercepting form submission");
-
-      // Prevent default submission
-      event.preventDefault();
-
-      // Extract form data
-      const formDataObj = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formDataObj.forEach((value, key) => {
-        data[key] = value.toString();
-      });
-
-      console.log("📝 Form submitted:", data);
-
-      // Show form data in dialog
-      setFormData(data);
-      setFormDialogOpen(true);
-    };
-
-    document.addEventListener("submit", handleFormSubmit);
-    console.log("✅ Form submit listener attached");
-
-    return () => {
-      document.removeEventListener("submit", handleFormSubmit);
-      console.log("❌ Form submit listener removed");
-    };
-  }, []);
+  // Note: Form submission is now handled via intent system
+  // Submit buttons with intents automatically capture form data
+  // No need for global form interceptor anymore
 
   // Initialize Claude client
   useEffect(() => {
@@ -403,13 +361,6 @@ Payload: ${JSON.stringify(intent.payload, null, 2)}`;
         onSend={handleSendMessage}
         isDisabled={isLoading || !isReady}
         autoFocus={isReady}
-      />
-
-      {/* Form submission dialog */}
-      <FormSubmissionDialog
-        isOpen={formDialogOpen}
-        onClose={() => setFormDialogOpen(false)}
-        formData={formData}
       />
     </Flex>
   );

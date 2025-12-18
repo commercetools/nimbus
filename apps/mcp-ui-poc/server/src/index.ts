@@ -681,7 +681,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Button",
       description:
-        "Creates a button UI component using Nimbus design system. Supports HTML form submission types and optional intent emission for interactive workflows.",
+        "Creates a button UI component using Nimbus design system. IMPORTANT FOR FORMS: Buttons with intents inside forms automatically capture all form field values when clicked, regardless of button type.",
       inputSchema: z.object({
         label: z.string().describe("Button label text"),
         variant: z
@@ -701,7 +701,7 @@ function registerTools(server: McpServer) {
           .enum(["button", "submit", "reset"])
           .optional()
           .describe(
-            "Button type for HTML forms (default: 'button'). Use 'submit' for form submission buttons."
+            "Button type for HTML forms (default: 'button'). Note: Form data capture is automatic - any button with an intent inside a form will automatically capture form field values, regardless of type."
           ),
         ariaLabel: z
           .string()

@@ -44,7 +44,7 @@ export function buildTextInputElement(
     attributes: {
       name: args.name,
       placeholder: args.placeholder,
-      value: args.defaultValue,
+      defaultValue: args.defaultValue,
       isRequired: args.isRequired,
       isDisabled: args.isDisabled,
       isReadOnly: args.isReadOnly,
