@@ -241,41 +241,6 @@ const App = () => {
 }
 ```
 
-### User list with avatars
-
-Create a list of users with avatars and additional information:
-
-```jsx-live-dev
-const App = () => {
-  const users = [
-    { id: 1, firstName: "Emma", lastName: "Thompson", role: "Designer", image: "https://i.pravatar.cc/150?img=9" },
-    { id: 2, firstName: "Michael", lastName: "Chen", role: "Developer", image: "https://i.pravatar.cc/150?img=12" },
-    { id: 3, firstName: "Sofia", lastName: "Rodriguez", role: "Manager" },
-  ];
-
-  return (
-    <Stack direction="column" gap="400" width="300px">
-      {users.map((user) => (
-        <Stack key={user.id} direction="row" gap="400" alignItems="center">
-          <Avatar
-            firstName={user.firstName}
-            lastName={user.lastName}
-            src={user.image}
-            size="xs"
-          />
-          <Stack direction="column" gap="50" flex="1">
-            <Text fontSize="sm" fontWeight="500">
-              {user.firstName} {user.lastName}
-            </Text>
-            <Text fontSize="xs" color="neutral.11">{user.role}</Text>
-          </Stack>
-        </Stack>
-      ))}
-    </Stack>
-  );
-}
-```
-
 ## Testing your implementation
 
 These examples demonstrate how to test your implementation when using Avatar
