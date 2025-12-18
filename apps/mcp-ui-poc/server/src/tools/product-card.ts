@@ -1,4 +1,5 @@
-import { createUIResource } from "@mcp-ui/server";
+import { z } from "zod";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { ElementDefinition } from "../types/remote-dom.js";
 import {
   buildStackElement,
@@ -11,6 +12,7 @@ import {
   buildCardHeaderElement,
   buildCardContentElement,
 } from "../elements/index.js";
+import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
 
 export interface ProductCardArgs {
   productId?: string;
@@ -107,25 +109,50 @@ export function createProductCard(args: ProductCardArgs) {
     ],
   });
 
-  // Note: Dynamic alert behavior removed in Phase 1 (no state management)
-  // This could be re-added in Phase 2 with full Remote DOM support
+  // Note: Now using Remote DOM Phase 2 with full type preservation
 
-  return createUIResource({
-    uri: `ui://product-card/${Date.now()}`,
-    content: {
-      type: "remoteDom",
-      script: JSON.stringify({
-        type: "structuredDom",
-        element: card,
-        framework: "react",
-      }),
-      framework: "react",
-    },
-    encoding: "text",
-    metadata: {
-      title: "Product Card",
-      description: `Product card for ${productName}`,
-      created: new Date().toISOString(),
-    },
+  return createRemoteDomResource(card, {
+    name: "product-card",
+    title: "Product Card",
+    description: `Card for ${productName}`,
   });
+}
+
+export function registerProductCardTool(server: McpServer) {
+  server.registerTool(
+    "createProductCard",
+    {
+      title: "Create Product Card",
+      description:
+        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
+      inputSchema: z.object({
+        productId: z
+          .string()
+          .optional()
+          .describe(
+            "Optional unique product ID (auto-generated if not provided)"
+          ),
+        productName: z.string().describe("The name of the product"),
+        price: z.string().describe("The price of the product (e.g., '$999')"),
+        description: z
+          .string()
+          .optional()
+          .describe("Optional product description"),
+        imageUrl: z
+          .string()
+          .optional()
+          .describe("Optional URL to product image"),
+        inStock: z
+          .boolean()
+          .optional()
+          .describe("Whether the product is in stock (default: true)"),
+      }),
+    },
+    async (args) => {
+      const uiResource = createProductCard(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
 }

@@ -1,4 +1,27 @@
+import { z } from "zod";
 import type { ElementDefinition } from "../types/remote-dom.js";
+
+// Forward reference - will be defined in constants/child-element-schema.ts
+const childElementSchema: z.ZodTypeAny = z.any();
+
+export const cardElementSchema = z.object({
+  type: z.literal("card"),
+  elevation: z
+    .string()
+    .optional()
+    .describe("Card elevation (e.g., 'elevated', 'flat')"),
+  borderStyle: z
+    .string()
+    .optional()
+    .describe("Border style (e.g., 'outlined', 'none')"),
+  cardPadding: z.string().optional().describe("Card padding size"),
+  maxWidth: z.string().optional().describe("Maximum width (e.g., '432px')"),
+  width: z.string().optional().describe("Width (e.g., 'fit-content', 'full')"),
+  children: z
+    .array(childElementSchema)
+    .optional()
+    .describe("Array of child elements to nest inside the card"),
+});
 
 export interface CardHeaderElementArgs {
   children?: (ElementDefinition | string)[];

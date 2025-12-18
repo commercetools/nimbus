@@ -13,11 +13,12 @@ import { ClaudeClient } from "../lib/claude-client";
 import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
+import { UIErrorBoundary } from "./ui-error-boundary";
 import type { Message } from "../types/virtual-dom";
 import {
-  StructuredDomRenderer,
-  type StructuredDomContent,
-} from "./structured-dom-renderer";
+  RemoteDomRenderer,
+  type RemoteDomContent,
+} from "./remote-dom-renderer";
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -272,9 +273,6 @@ export function ChatInterface() {
             {msg.content && <Text>{msg.content}</Text>}
 
             {msg.uiResources?.map((resource, i) => {
-              console.log("🔍 Checking resource:", resource);
-              console.log("🔍 isUIResource result:", isUIResource(resource));
-
               if (!isUIResource(resource)) {
                 return (
                   <Box
@@ -295,21 +293,20 @@ export function ChatInterface() {
               }
 
               try {
-                console.log("🎨 Rendering UIResource:", resource.resource.uri);
-
-                // Parse structured DOM content
+                // Parse Remote DOM content
                 const parsedContent = JSON.parse(
                   resource.resource.text
-                ) as StructuredDomContent;
+                ) as RemoteDomContent;
 
-                console.log("✨ Using StructuredDomRenderer");
                 return (
                   <Box key={i} marginTop="300">
-                    <StructuredDomRenderer content={parsedContent} />
+                    <UIErrorBoundary>
+                      <RemoteDomRenderer content={parsedContent} />
+                    </UIErrorBoundary>
                   </Box>
                 );
               } catch (error) {
-                console.error("❌ Error rendering UIResource:", error);
+                console.error("❌ Error parsing UIResource:", error);
                 return (
                   <Box
                     key={i}
@@ -317,7 +314,7 @@ export function ChatInterface() {
                     padding="400"
                     backgroundColor="critical.2"
                   >
-                    <Text color="critical.11">Error rendering UI resource</Text>
+                    <Text color="critical.11">Error parsing UI resource</Text>
                     <Text fontSize="sm" color="critical.10">
                       {(error as Error).message}
                     </Text>

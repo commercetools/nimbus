@@ -1,25 +1,33 @@
-import { createUIResource } from "@mcp-ui/server";
-import { buildBadgeElement, type BadgeElementArgs } from "../elements/badge.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import {
+  buildBadgeElement,
+  badgeElementSchema,
+  type BadgeElementArgs,
+} from "../elements/badge.js";
+import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
 
-export type CreateBadgeArgs = BadgeElementArgs;
-
-export function createBadge(args: CreateBadgeArgs) {
-  return createUIResource({
-    uri: `ui://badge/${Date.now()}`,
-    content: {
-      type: "remoteDom",
-      script: JSON.stringify({
-        type: "structuredDom",
-        element: buildBadgeElement(args),
-        framework: "react",
-      }),
-      framework: "react",
-    },
-    encoding: "text",
-    metadata: {
-      title: "Badge",
-      description: `Badge: ${args.label}`,
-      created: new Date().toISOString(),
-    },
+function createBadge(args: BadgeElementArgs) {
+  const element = buildBadgeElement(args);
+  return createRemoteDomResource(element, {
+    name: "badge",
+    title: "Badge",
+    description: `Badge: ${args.label}`,
   });
+}
+
+export function registerBadgeTool(server: McpServer) {
+  server.registerTool(
+    "createBadge",
+    {
+      title: "Create Badge",
+      description: "Creates a badge UI component using Nimbus design system.",
+      inputSchema: badgeElementSchema.omit({ type: true }),
+    },
+    async (args) => {
+      const uiResource = createBadge(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
 }
