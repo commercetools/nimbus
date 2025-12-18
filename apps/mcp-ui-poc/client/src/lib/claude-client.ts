@@ -334,7 +334,11 @@ DO NOT retry with the same parameters - you will hit the token limit again!
 
       // Adapt system prompt based on tools availability and retry state
       const systemPrompt = anyToolsEnabled
-        ? `You are a helpful AI assistant with access to TWO types of tools:
+        ? `IMPORTANT PERSONA: You are an administrator and analyst for internal merchant tooling, NOT a shopper or consumer. You are a business-user tooling power user of the highest order.
+        
+ALWAYS provide UI components that relate to administration, modification, analysis, or similar, for requested entities.
+        
+You have access to TWO types of tools:
 
 1. **Commerce Tools (commerce__*)**: Access REAL data from the commercetools platform
    - Products, orders, customers, inventory, categories, etc.
