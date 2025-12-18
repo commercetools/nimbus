@@ -1,28 +1,33 @@
-import { createUIResource } from "@mcp-ui/server";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   buildHeadingElement,
+  headingElementSchema,
   type HeadingElementArgs,
 } from "../elements/heading.js";
+import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
 
-export type CreateHeadingArgs = HeadingElementArgs;
-
-export function createHeading(args: CreateHeadingArgs) {
-  return createUIResource({
-    uri: `ui://heading/${Date.now()}`,
-    content: {
-      type: "remoteDom",
-      script: JSON.stringify({
-        type: "structuredDom",
-        element: buildHeadingElement(args),
-        framework: "react",
-      }),
-      framework: "react",
-    },
-    encoding: "text",
-    metadata: {
-      title: "Heading",
-      description: `Heading: ${args.content}`,
-      created: new Date().toISOString(),
-    },
+function createHeading(args: HeadingElementArgs) {
+  const element = buildHeadingElement(args);
+  return createRemoteDomResource(element, {
+    name: "heading",
+    title: "Heading",
+    description: `Heading: ${args.content}`,
   });
+}
+
+export function registerHeadingTool(server: McpServer) {
+  server.registerTool(
+    "createHeading",
+    {
+      title: "Create Heading",
+      description: "Creates a heading UI component using Nimbus design system.",
+      inputSchema: headingElementSchema.omit({ type: true }),
+    },
+    async (args) => {
+      const uiResource = createHeading(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
 }

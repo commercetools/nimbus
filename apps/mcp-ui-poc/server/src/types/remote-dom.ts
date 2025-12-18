@@ -18,28 +18,14 @@ export interface ElementDefinition {
 export type { ElementDefinition as ElementDef };
 
 /**
- * Structured DOM content - new approach using data instead of code
- */
-export interface StructuredDomContent {
-  type: "structuredDom";
-  element: ElementDefinition;
-  framework: "react";
-}
-
-/**
- * Remote DOM content - legacy approach using script strings
- * @deprecated Use StructuredDomContent instead for better type safety
+ * Remote DOM content - uses mutation observer for live incremental updates
+ * The script field contains the serialized DOM tree as a JSON string
  */
 export interface RemoteDomContent {
   type: "remoteDom";
   script: string;
   framework: "react";
 }
-
-/**
- * Union type supporting both old and new approaches during migration
- */
-export type DomContent = StructuredDomContent | RemoteDomContent;
 
 export interface UIResourceMetadata {
   title?: string;

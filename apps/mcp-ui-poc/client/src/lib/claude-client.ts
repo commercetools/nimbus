@@ -454,6 +454,17 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
               const [serverName, ...toolNameParts] = toolUse.name.split("__");
               const actualToolName = toolNameParts.join("__");
 
+              // Check if this server's tools are enabled
+              const isToolEnabled =
+                (serverName === "ui" && uiToolsEnabled) ||
+                (serverName === "commerce" && commerceToolsEnabled);
+
+              if (!isToolEnabled) {
+                throw new Error(
+                  `Tool from ${serverName} server is currently disabled. Enable it using the switch in the UI.`
+                );
+              }
+
               const client = this.mcpClients.get(serverName);
               if (!client) {
                 throw new Error(`Unknown MCP server: ${serverName}`);

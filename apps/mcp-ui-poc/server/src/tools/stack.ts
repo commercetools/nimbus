@@ -1,8 +1,11 @@
-import { createUIResource } from "@mcp-ui/server";
+import { z } from "zod";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { ChildElement } from "../types/index.js";
 import type { ElementDefinition } from "../types/remote-dom.js";
-import { buildStackElement } from "../elements/stack.js";
+import { buildStackElement, stackElementSchema } from "../elements/stack.js";
 import { convertChildrenToElements } from "../utils/element-converter.js";
+import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
+import { childElementSchema } from "../constants/child-element-schema.js";
 
 export interface CreateStackArgs {
   content?: string;
@@ -11,7 +14,6 @@ export interface CreateStackArgs {
   width?: string;
   marginBottom?: string;
   children?: ChildElement[];
-  // Form support
   as?: "div" | "form";
   action?: string;
   method?: "get" | "post";
@@ -21,33 +23,42 @@ export interface CreateStackArgs {
     | "text/plain";
 }
 
-export function createStack(args: CreateStackArgs) {
+function createStack(args: CreateStackArgs) {
   const { content, children, ...stackArgs } = args;
 
-  // Build children array - can contain text or nested elements
   const elementChildren: (ElementDefinition | string)[] = [];
   if (content) elementChildren.push(content);
   if (children) elementChildren.push(...convertChildrenToElements(children));
 
-  return createUIResource({
-    uri: `ui://stack/${Date.now()}`,
-    content: {
-      type: "remoteDom",
-      script: JSON.stringify({
-        type: "structuredDom",
-        element: buildStackElement({
-          ...stackArgs,
-          children: elementChildren.length > 0 ? elementChildren : undefined,
-        }),
-        framework: "react",
-      }),
-      framework: "react",
-    },
-    encoding: "text",
-    metadata: {
-      title: "Stack",
-      description: "A stack layout component",
-      created: new Date().toISOString(),
-    },
+  const element = buildStackElement({
+    ...stackArgs,
+    children: elementChildren.length > 0 ? elementChildren : undefined,
   });
+
+  return createRemoteDomResource(element, {
+    name: "stack",
+    title: "Stack",
+    description: "A stack layout component",
+  });
+}
+
+export function registerStackTool(server: McpServer) {
+  server.registerTool(
+    "createStack",
+    {
+      title: "Create Stack",
+      description:
+        "Creates a stack layout container UI component using Nimbus design system. Can contain child elements for composition. Can be rendered as an HTML <form> element for native form submission.",
+      inputSchema: stackElementSchema.omit({ type: true }).extend({
+        content: z.string().optional().describe("Stack content text"),
+        children: z.array(childElementSchema).optional(),
+      }),
+    },
+    async (args) => {
+      const uiResource = createStack(args);
+      return {
+        content: [uiResource],
+      };
+    }
+  );
 }
