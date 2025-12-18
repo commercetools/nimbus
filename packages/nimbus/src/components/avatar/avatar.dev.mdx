@@ -131,28 +131,12 @@ const App = () => (
 The Avatar component handles most accessibility requirements internally,
 including automatic labeling with the user's full name.
 
-#### Role
-
-The Avatar is rendered as a `<figure>` element with an automatic `aria-label`
-that includes the full name (e.g., "John Doe").
-
-#### Labeling
-
-The component automatically generates an accessible label from the `firstName`
-and `lastName` props. This label is internationalized and follows the pattern:
-`"{firstName} {lastName}"`.
-
-When providing an image via the `src` prop, always include an `alt` attribute
-for screen readers:
-
-```tsx
-<Avatar
-  firstName="Jane"
-  lastName="Smith"
-  src="https://example.com/avatar.jpg"
-  alt="Jane Smith's profile picture"
-/>
-```
+- **Labeling**: The component automatically generates an internationalized
+  accessible label from the `firstName` and `lastName` props. When providing an
+  image via the `src` prop, always include an `alt` attribute for screen
+  readers.
+- **Role**: Renders as a `<figure>` element with an `aria-label` that includes
+  the full name (e.g., "Avatar image for John Doe").
 
 If your use case requires tracking and analytics for this component, it is good
 practice to add a **persistent**, **unique** id to the component:
