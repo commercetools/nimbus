@@ -38,36 +38,37 @@ function App() {
 
 ## Set up translation messages
 
-To enable translations for Nimbus components, you need to load and provide translation messages to the `NimbusProvider`. This is a **one-time setup at your application's root level**. Once configured, all Nimbus components throughout your application will automatically use the correct translations. Nimbus provides utilities to load these messages from the `@commercetools/nimbus-i18n` package.
+`NimbusProvider` automatically loads translation messages from `@commercetools/nimbus-i18n` for the given locale. Simply wrap your application with `NimbusProvider` at the root level, and all Nimbus components throughout your application will automatically use the correct translations.
 
 You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g., `"en-US"`, `"de-DE"`, `"fr-FR"`) via the `locale` prop. If no locale is provided, it defaults to the user's browser locale.
 
-### Using the useNimbusMessages hook (Recommended)
+### Automatic message loading (Recommended)
 
-The easiest way to load translation messages is using the `useNimbusMessages` hook:
+Simply pass the `locale` prop and `NimbusProvider` will handle loading messages automatically:
 
 ```tsx
-import { NimbusProvider, useNimbusMessages } from "@commercetools/nimbus";
+import { NimbusProvider } from "@commercetools/nimbus";
 
 function App() {
   const locale = navigator.language || "en";
-  const { messages, isLoading } = useNimbusMessages(locale);
-
-  if (isLoading) {
-    return <div>Loading translations...</div>;
-  }
 
   return (
-    <NimbusProvider locale={locale} messages={messages}>
+    <NimbusProvider locale={locale}>
       <YourApp />
     </NimbusProvider>
   );
 }
 ```
 
-### Using getMessagesForLocale directly
+The provider will automatically:
+- Load messages from `@commercetools/nimbus-i18n` for the given locale
+- Handle loading states (returns `null` while loading to prevent `MISSING_TRANSLATION` errors)
+- Fall back to English if the locale is not supported
+- Normalize region-specific codes (e.g., `en-US` → `en`, `de-DE` → `de`)
 
-For more control, you can use `getMessagesForLocale` directly:
+### Providing custom messages
+
+If you want to override or extend the default Nimbus messages, you can provide your own `messages` prop using `getMessagesForLocale`:
 
 ```tsx
 import { useEffect, useState } from "react";
@@ -78,7 +79,13 @@ function App() {
   const [messages, setMessages] = useState<IntlMessages>({});
 
   useEffect(() => {
-    getMessagesForLocale(locale).then(setMessages);
+    getMessagesForLocale(locale).then((nimbusMessages) => {
+      // Extend with your own messages
+      setMessages({
+        ...nimbusMessages,
+        "my.custom.key": "My custom translation",
+      });
+    });
   }, [locale]);
 
   return (
@@ -99,9 +106,6 @@ The following locales are supported:
 - `pt-BR` (Portuguese - Brazil)
 
 Region-specific codes (e.g., `en-US`, `de-DE`) are automatically normalized to their base locale. If a locale is not supported, it falls back to English.
-
-> [!NOTE]\
-> Without providing `messages`, Nimbus components will still work but may show `MISSING_TRANSLATION` errors in the console for components that require translations.
 
 ### Using components with translations
 

@@ -10,25 +10,17 @@ import { DynamicLayout } from "./layouts/dynamic-layout";
 import { ManifestProvider } from "./contexts/manifest-context";
 import { BreadcrumbProvider } from "./contexts/breadcrumb-context";
 import { ErrorBoundary } from "./components/error-boundary";
-import { NimbusProvider, Box, useNimbusMessages } from "@commercetools/nimbus";
+import { NimbusProvider, Box } from "@commercetools/nimbus";
 import DynamicRoute from "./routes/dynamic-route";
 
 function App() {
   const navigate = useNavigate();
   const locale = navigator.language || "en";
-  const { messages, isLoading } = useNimbusMessages(locale);
 
-  // Wait for messages to load before rendering.
-  // The useNimbusMessages hook starts with an empty messages object {} and loads
-  // translations asynchronously. If we render components before messages are loaded,
-  // components that use translations will show
-  // MISSING_TRANSLATION errors in the console.
-  if (isLoading) {
-    return null;
-  }
-
+  // NimbusProvider automatically loads translation messages from
+  // @commercetools/nimbus-i18n for the given locale. No additional setup needed.
   return (
-    <NimbusProvider locale={locale} messages={messages} router={{ navigate }}>
+    <NimbusProvider locale={locale} router={{ navigate }}>
       <ManifestProvider>
         <BreadcrumbProvider>
           <Routes>
