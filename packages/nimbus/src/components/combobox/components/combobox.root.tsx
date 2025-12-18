@@ -104,6 +104,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
     allowsEmptyMenu: allowsEmptyMenuFromProps,
     renderEmptyState: renderEmptyStateFromProps,
     async: asyncConfig,
+    filter,
     allowsCustomOptions = false,
     isDisabled = false,
     isInvalid = false,
@@ -414,6 +415,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
               <ComboBoxRootInner<T>
                 {...functionalProps}
                 size={size}
+                filter={filter}
                 selectionMode={selectionMode}
                 inputValue={inputValue}
                 onInputChange={onInputChange}
@@ -851,8 +853,9 @@ const ComboBoxRootInner = <T extends object>(
     // Early exit: empty input
     if (!trimmedInput) return false;
 
-    // Check if option already exists (case-insensitive)
-    const matchesExisting = Array.from(state.collection).some(
+    // Check if option already exists in the UNFILTERED collection (not state.collection which is filtered)
+    // This prevents duplicates even when the current filter hides the existing option
+    const matchesExisting = Array.from(collection).some(
       (node) => node.textValue?.toLowerCase() === trimmedInput.toLowerCase()
     );
     if (matchesExisting) {
@@ -870,7 +873,7 @@ const ComboBoxRootInner = <T extends object>(
     // Notify outer component to add to custom items and handle selection internally
     handleCustomOptionCreated(newItem);
 
-    // Clear input for multi-select, keep it for single-select
+    // Clear input for multi-select, set to created text for single-select
     // Note: Selection happens in handleCustomOptionCreated
     if (selectionMode === "multiple") {
       // Multi-select: clear input after creating option
@@ -880,8 +883,15 @@ const ComboBoxRootInner = <T extends object>(
       }
       onInputChange?.("");
     } else {
-      // Single-select: keep the input as-is (will be updated when item is selected)
-      // Don't clear or change input here to avoid confusion
+      // Single-select: explicitly set input to the created option's text
+      // We must set it here because handleSelectionChange cannot find the item
+      // in the collection yet (the state update hasn't triggered a re-render,
+      // so the collection hasn't been rebuilt to include the new item)
+      if (!isInputControlled) {
+        setInternalInputValue(trimmedInput);
+        prevInputValueRef.current = trimmedInput;
+      }
+      onInputChange?.(trimmedInput);
     }
 
     // Notify parent component
@@ -893,7 +903,7 @@ const ComboBoxRootInner = <T extends object>(
     getNewOptionData,
     isValidNewOption,
     inputValue,
-    state,
+    collection,
     selectionMode,
     onInputChange,
     onCreateOption,
@@ -1150,10 +1160,20 @@ const ComboBoxRootInner = <T extends object>(
     if (currentSelectedKey === lastSelectedKeyRef.current) return;
     lastSelectedKeyRef.current = currentSelectedKey;
 
-    const itemText =
+    const selectedNode =
       currentSelectedKey !== null
-        ? (state.collection.getItem(currentSelectedKey)?.textValue ?? "")
-        : "";
+        ? state.collection.getItem(currentSelectedKey)
+        : null;
+
+    // If the selected item is not in the collection yet, it might be a newly created custom option
+    // In that case, keep the current input value instead of clearing it
+    if (currentSelectedKey !== null && !selectedNode) {
+      // Item not in collection yet (likely a just-created custom option)
+      // Don't overwrite the input value - it was already set correctly in handleCreateOption
+      return;
+    }
+
+    const itemText = selectedNode?.textValue ?? "";
 
     // Update input value (respecting controlled/uncontrolled pattern)
     if (!isInputControlled) {
@@ -1390,7 +1410,6 @@ const ComboBoxRootInner = <T extends object>(
         ref: listBoxRef, // Ref for scroll positioning
         renderEmptyState, // Custom empty state renderer
         shouldFocusWrap, // Whether to wrap focus from last to first item
-        shouldFocusOnHover: true, // Sync virtual focus with mouse hover
         "aria-label": intl.formatMessage(messages.options),
       },
     ],
