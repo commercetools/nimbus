@@ -46,7 +46,7 @@ const App = () => {
 
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
-      <ComboBox.Root size="md" defaultItems={options} placeholder="Search...">
+      <ComboBox.Root size="md" items={options} placeholder="Search...">
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -57,7 +57,7 @@ const App = () => {
         )}
       </ComboBox.Root>
       
-      <ComboBox.Root size="sm" defaultItems={options} placeholder="Search...">
+      <ComboBox.Root size="sm" items={options} placeholder="Search...">
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -86,7 +86,7 @@ const App = () => {
 
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
-      <ComboBox.Root variant="solid" defaultItems={options} placeholder="Search...">
+      <ComboBox.Root variant="solid" items={options} placeholder="Search...">
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -97,7 +97,7 @@ const App = () => {
         )}
       </ComboBox.Root>
       
-      <ComboBox.Root variant="ghost" defaultItems={options} placeholder="Search...">
+      <ComboBox.Root variant="ghost" items={options} placeholder="Search...">
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -126,7 +126,7 @@ const App = () => {
 
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
-      <ComboBox.Root defaultItems={options} placeholder="Search...">
+      <ComboBox.Root items={options} placeholder="Search...">
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -137,12 +137,10 @@ const App = () => {
         )}
       </ComboBox.Root>
       
-      <ComboBox.Root 
+      <ComboBox.Root
         selectionMode="multiple"
-        defaultItems={options} 
+        items={options}
         placeholder="Search..."
-        itemId="id"
-        itemValue="name"
       >
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
@@ -157,6 +155,104 @@ const App = () => {
   )
 }
 ```
+
+### Async Loading
+
+ComboBox supports async data loading by managing the async state externally using React Stately's `useAsyncList` hook. This pattern gives you full control over data fetching and works seamlessly with ComboBox's filtering and selection features.
+
+**Use cases:**
+- Loading large datasets on demand
+- Providing search suggestions from a server
+- Fetching filtered results based on user input
+
+```jsx-live
+const App = () => {
+  const [error, setError] = useState(null);
+  const minSearchLength = 2;
+
+  // Manage async data loading with useAsyncList
+  const list = useAsyncList({
+    async load({ signal, filterText }) {
+      setError(null);
+
+      // Don't load if below minimum search length
+      if (!filterText || filterText.length < minSearchLength) {
+        return { items: [] };
+      }
+
+      try {
+        const response = await fetch(
+          `https://swapi.py4e.com/api/people/?search=${encodeURIComponent(filterText)}`,
+          { signal }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return { items: data.results || [] };
+      } catch (err) {
+        if (err.name === "AbortError") {
+          throw err;
+        }
+        setError(err.message);
+        return { items: [] };
+      }
+    }
+  });
+
+  // Add debouncing to reduce API calls while typing
+  const debouncedSetFilterText = useDebouncedCallback(
+    (value) => {
+      list.setFilterText(value);
+    },
+    300
+  );
+
+  return (
+    <FormField.Root invalid={!!error}>
+      <ComboBox.Root
+        label="Search Star Wars Characters"
+        placeholder="Type to search (min 2 characters)..."
+        items={list.items}
+        inputValue={list.filterText}
+        onInputChange={debouncedSetFilterText}
+        isLoading={list.loadingState === "loading"}
+        renderEmptyState={({ isLoading }) => {
+          if (isLoading) {
+            return <Text padding="300">Loading...</Text>;
+          }
+          if (!list.filterText || list.filterText.length < minSearchLength) {
+            return <Text padding="300">Type at least {minSearchLength} characters to search</Text>;
+          }
+          return <Text padding="300">No results found</Text>;
+        }}
+      >
+        {(character) => (
+          <ComboBox.Option textValue={character.name}>
+            <Stack gap="100">
+              <Text textStyle="sm">{character.name}</Text>
+              <Text textStyle="xs" color="neutral.11">
+                {character.gender} • Born {character.birth_year}
+              </Text>
+            </Stack>
+          </ComboBox.Option>
+        )}
+      </ComboBox.Root>
+      {error && <FormField.ErrorMessage>{error}</FormField.ErrorMessage>}
+    </FormField.Root>
+  );
+};
+```
+
+**Key features of this pattern:**
+- **External State Management:** Full control over async logic using React Stately's `useAsyncList`
+- **Debouncing:** Use `useDebouncedCallback` from `use-debounce` to reduce API calls while typing
+- **Minimum Search Length:** Implement custom validation in the `load` function
+- **Automatic Cancellation:** `useAsyncList` cancels previous requests via AbortSignal
+- **Loading States:** Access `list.loadingState` to display loading indicators
+- **Error Handling:** Manage errors in your `load` function with full control
 
 ## Guidelines
 
@@ -248,7 +344,7 @@ const App = () => {
   return (
     <ComboBox.Root 
       selectionMode="multiple"
-      defaultItems={options} 
+      items={options} 
       placeholder="Search..."
       aria-label="Food category selection"
       isRequired
@@ -266,7 +362,38 @@ const App = () => {
 }
 ```
 
-### Accessibility standards
+## Specs
+
+<PropsTable id="ComboBox" />
+
+## Accessibility
+
+This component is built with React Aria and follows WCAG 2.1 AA guidelines.
+
+### Keyboard Navigation
+
+| Key          | Action                                      |
+| ------------ | ------------------------------------------- |
+| `Tab`        | Move focus to/from combobox                 |
+| `Enter`      | Select highlighted option or create custom option |
+| `Space`      | Toggle popover open/closed when focused     |
+| `ArrowDown`  | Move focus to next option                   |
+| `ArrowUp`    | Move focus to previous option               |
+| `Home`       | Move focus to first option                  |
+| `End`        | Move focus to last option                   |
+| `Escape`     | Close popover and clear focus               |
+| `Backspace`  | Remove last selected tag (multi-select mode) |
+
+### Screen Reader Support
+
+- Properly announces combobox role and state
+- Announces open/closed state of popover
+- Announces selected options
+- Announces filter results count
+- Announces loading state
+- Provides descriptive labels for all interactive elements
+
+### Accessibility Standards
 
 - Always provide a visible label for the input.
 - If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.
