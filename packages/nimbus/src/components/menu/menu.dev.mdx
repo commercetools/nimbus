@@ -1,0 +1,582 @@
+---
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Menu, type MenuRootProps, type MenuItemProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation creates an action menu with items:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
+    <Menu.Trigger>Actions</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="edit">Edit</Menu.Item>
+      <Menu.Item id="duplicate">Duplicate</Menu.Item>
+      <Menu.Item id="delete">Delete</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+## Usage examples
+
+### Custom triggers
+
+Use `asChild` to render custom trigger elements like Button or IconButton:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Menu.Root>
+      <Menu.Trigger asChild>
+        <Button variant="solid" colorPalette="primary">
+          <Icons.KeyboardArrowDown />
+          Button Trigger
+        </Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="option1">Option 1</Menu.Item>
+        <Menu.Item id="option2">Option 2</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+
+    <Menu.Root>
+      <Menu.Trigger asChild>
+        <IconButton
+          variant="ghost"
+          colorPalette="neutral"
+          aria-label="More options"
+        >
+          <Icons.MoreVert />
+        </IconButton>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="edit">Edit</Menu.Item>
+        <Menu.Item id="delete">Delete</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  </Stack>
+)
+```
+
+### Menu placement
+
+Control where the menu appears relative to the trigger with the `placement` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Menu.Root placement="bottom start">
+      <Menu.Trigger asChild>
+        <Button variant="outline">Bottom Start</Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="1">Item 1</Menu.Item>
+        <Menu.Item id="2">Item 2</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+
+    <Menu.Root placement="bottom end">
+      <Menu.Trigger asChild>
+        <Button variant="outline">Bottom End</Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="1">Item 1</Menu.Item>
+        <Menu.Item id="2">Item 2</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+
+    <Menu.Root placement="right">
+      <Menu.Trigger asChild>
+        <Button variant="outline">Right</Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="1">Item 1</Menu.Item>
+        <Menu.Item id="2">Item 2</Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  </Stack>
+)
+```
+
+### Rich item content
+
+Menu items support icons, labels, descriptions, and keyboard shortcuts using slots:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger>Edit Menu</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="copy">
+        <Icon slot="icon"><Icons.ContentCopy /></Icon>
+        <Text slot="label">Copy</Text>
+        <Text slot="description">Copy to clipboard</Text>
+        <Kbd slot="keyboard">⌘C</Kbd>
+      </Menu.Item>
+      <Menu.Item id="paste">
+        <Icon slot="icon"><Icons.ContentPaste /></Icon>
+        <Text slot="label">Paste</Text>
+        <Text slot="description">Paste from clipboard</Text>
+        <Kbd slot="keyboard">⌘V</Kbd>
+      </Menu.Item>
+      <Menu.Item id="cut">
+        <Icon slot="icon"><Icons.ContentCut /></Icon>
+        <Text slot="label">Cut</Text>
+        <Kbd slot="keyboard">⌘X</Kbd>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+### Critical items
+
+Use `isCritical` to highlight destructive actions:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger>File Actions</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="rename">
+        <Icon slot="icon"><Icons.Edit /></Icon>
+        <Text slot="label">Rename</Text>
+      </Menu.Item>
+      <Menu.Item id="archive">
+        <Icon slot="icon"><Icons.Archive /></Icon>
+        <Text slot="label">Archive</Text>
+      </Menu.Item>
+      <Separator />
+      <Menu.Item id="delete" isCritical>
+        <Icon slot="icon"><Icons.Delete /></Icon>
+        <Text slot="label">Delete</Text>
+        <Text slot="description">This action cannot be undone</Text>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+### Disabled items
+
+Use `isDisabled` on individual items to prevent interaction:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger>Edit</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="undo">
+        <Text slot="label">Undo</Text>
+        <Kbd slot="keyboard">⌘Z</Kbd>
+      </Menu.Item>
+      <Menu.Item id="redo" isDisabled>
+        <Text slot="label">Redo</Text>
+        <Text slot="description">Nothing to redo</Text>
+        <Kbd slot="keyboard">⌘⇧Z</Kbd>
+      </Menu.Item>
+      <Separator />
+      <Menu.Item id="paste" isDisabled>
+        <Text slot="label">Paste</Text>
+        <Text slot="description">Clipboard is empty</Text>
+        <Kbd slot="keyboard">⌘V</Kbd>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+### Sections with labels
+
+Group related items using `Menu.Section` with a label:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger>Application Menu</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Section label="File">
+        <Menu.Item id="new">New Document</Menu.Item>
+        <Menu.Item id="open">Open</Menu.Item>
+        <Menu.Item id="save">Save</Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Edit">
+        <Menu.Item id="undo">Undo</Menu.Item>
+        <Menu.Item id="redo">Redo</Menu.Item>
+      </Menu.Section>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+### Single selection mode
+
+Use `selectionMode="single"` for radio-button-like behavior within a section:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = useState<string>("medium");
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Menu.Root
+        selectionMode="single"
+        selectedKeys={new Set([selected])}
+        onSelectionChange={(keys) => {
+          if (keys !== "all") {
+            const newKey = Array.from(keys)[0] as string;
+            setSelected(newKey);
+          }
+        }}
+      >
+        <Menu.Trigger asChild>
+          <Button variant="outline">Text Size: {selected}</Button>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Section label="Choose Size">
+            <Menu.Item id="small">
+              <Text slot="label">Small</Text>
+            </Menu.Item>
+            <Menu.Item id="medium">
+              <Text slot="label">Medium</Text>
+            </Menu.Item>
+            <Menu.Item id="large">
+              <Text slot="label">Large</Text>
+            </Menu.Item>
+          </Menu.Section>
+        </Menu.Content>
+      </Menu.Root>
+      <Text fontSize="sm">Selected: {selected}</Text>
+    </Stack>
+  );
+}
+```
+
+### Multiple selection mode
+
+Use `selectionMode="multiple"` for checkbox-like behavior:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = useState<Set<string>>(new Set(["bold"]));
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Menu.Root
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={(keys) => {
+          if (keys !== "all") {
+            setSelected(new Set(Array.from(keys) as string[]));
+          }
+        }}
+      >
+        <Menu.Trigger asChild>
+          <Button variant="outline">Text Formatting</Button>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Section label="Style Options">
+            <Menu.Item id="bold">
+              <Text slot="label">Bold</Text>
+              <Kbd slot="keyboard">⌘B</Kbd>
+            </Menu.Item>
+            <Menu.Item id="italic">
+              <Text slot="label">Italic</Text>
+              <Kbd slot="keyboard">⌘I</Kbd>
+            </Menu.Item>
+            <Menu.Item id="underline">
+              <Text slot="label">Underline</Text>
+              <Kbd slot="keyboard">⌘U</Kbd>
+            </Menu.Item>
+          </Menu.Section>
+        </Menu.Content>
+      </Menu.Root>
+      <Text fontSize="sm">
+        Selected: {Array.from(selected).join(", ") || "None"}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Submenus
+
+Create nested menus using `Menu.SubmenuTrigger` and `Menu.Submenu`:
+
+```jsx-live-dev
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger>Settings</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="general">
+        <Icon slot="icon"><Icons.Settings /></Icon>
+        <Text slot="label">General</Text>
+      </Menu.Item>
+      <Menu.SubmenuTrigger>
+        <Menu.Item>
+          <Icon slot="icon"><Icons.AccountCircle /></Icon>
+          <Text slot="label">Account</Text>
+          <Text slot="description">Manage your account</Text>
+        </Menu.Item>
+        <Menu.Submenu>
+          <Menu.Item id="profile">Profile</Menu.Item>
+          <Menu.Item id="security">Security</Menu.Item>
+          <Menu.Item id="notifications">Notifications</Menu.Item>
+        </Menu.Submenu>
+      </Menu.SubmenuTrigger>
+      <Menu.SubmenuTrigger>
+        <Menu.Item>
+          <Icon slot="icon"><Icons.Palette /></Icon>
+          <Text slot="label">Appearance</Text>
+        </Menu.Item>
+        <Menu.Submenu>
+          <Menu.Item id="theme">Theme</Menu.Item>
+          <Menu.Item id="language">Language</Menu.Item>
+        </Menu.Submenu>
+      </Menu.SubmenuTrigger>
+    </Menu.Content>
+  </Menu.Root>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use `defaultOpen` and `onOpenChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [lastAction, setLastAction] = useState<string>("None");
+
+  return (
+    <Stack direction="column" gap="400">
+      <Menu.Root
+        onAction={(key) => setLastAction(key as string)}
+        onOpenChange={(isOpen) => console.log("Menu open:", isOpen)}
+        placement="bottom end"
+      >
+        <Menu.Trigger>Quick Actions</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="new">New File</Menu.Item>
+          <Menu.Item id="open">Open</Menu.Item>
+          <Menu.Item id="save">Save</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+      <Text fontSize="sm">Last action: {lastAction}</Text>
+    </Stack>
+  );
+}
+```
+
+### Controlled mode
+
+For programmatic control, use `isOpen` and `onOpenChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Menu.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Menu.Trigger>Controlled Menu</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="item1">Item 1</Menu.Item>
+          <Menu.Item id="item2">Item 2</Menu.Item>
+          <Menu.Item id="item3">Item 3</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+      <Button onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? "Close" : "Open"} Menu
+      </Button>
+      <Text fontSize="sm">Menu is {isOpen ? "open" : "closed"}</Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The Menu handles most accessibility requirements internally through React Aria. However, you must ensure proper labeling:
+
+- **For default triggers**: The trigger text serves as the accessible name
+- **For icon-only triggers**: Always provide `aria-label`:
+
+```tsx
+<Menu.Trigger asChild>
+  <IconButton aria-label="More options">
+    <Icons.MoreVert />
+  </IconButton>
+</Menu.Trigger>
+```
+
+- **For custom triggers**: Ensure the trigger element has an accessible name
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-menu";
+
+export const Example = () => (
+  <Menu.Root id={PERSISTENT_ID}>
+    <Menu.Trigger>Actions</Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="edit">Edit</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab` / `Shift+Tab`: Navigate to/from the menu trigger
+- `Enter` / `Space`: Open the menu when trigger is focused
+- `Arrow Down` / `Arrow Up`: Navigate through menu items
+- `Arrow Right`: Open submenu (when focused on submenu trigger)
+- `Arrow Left`: Close submenu and return to parent menu
+- `Enter`: Select the focused item
+- `Space`: Toggle selection in selection modes
+- `Escape`: Close the menu
+- `Home` / `End`: Jump to first/last item
+- Type to search: Type characters to jump to matching items
+
+## API reference
+
+<PropsTable id="Menu" />
+
+## Common patterns
+
+### Context menu for list items
+
+A common pattern for providing actions on list items:
+
+```jsx-live-dev
+const App = () => {
+  const items = [
+    { id: "1", name: "Document A.pdf" },
+    { id: "2", name: "Spreadsheet B.xlsx" },
+    { id: "3", name: "Presentation C.pptx" },
+  ];
+
+  const handleAction = (itemId, action) => {
+    alert(`${action} on ${itemId}`);
+  };
+
+  return (
+    <Stack direction="column" gap="200">
+      {items.map((item) => (
+        <Box
+          key={item.id}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          padding="300"
+          borderRadius="200"
+          bg="neutral.2"
+        >
+          <Text>{item.name}</Text>
+          <Menu.Root onAction={(action) => handleAction(item.id, action)}>
+            <Menu.Trigger asChild>
+              <IconButton
+                variant="ghost"
+                aria-label={`Actions for ${item.name}`}
+              >
+                <Icons.MoreVert />
+              </IconButton>
+            </Menu.Trigger>
+            <Menu.Content>
+              <Menu.Item id="open">
+                <Icon slot="icon"><Icons.FolderOpen /></Icon>
+                <Text slot="label">Open</Text>
+              </Menu.Item>
+              <Menu.Item id="rename">
+                <Icon slot="icon"><Icons.Edit /></Icon>
+                <Text slot="label">Rename</Text>
+              </Menu.Item>
+              <Menu.Item id="download">
+                <Icon slot="icon"><Icons.Download /></Icon>
+                <Text slot="label">Download</Text>
+              </Menu.Item>
+              <Separator />
+              <Menu.Item id="delete" isCritical>
+                <Icon slot="icon"><Icons.Delete /></Icon>
+                <Text slot="label">Delete</Text>
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Root>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Dynamic menu items
+
+Build menus from data arrays:
+
+```jsx-live-dev
+const App = () => {
+  const menuItems = [
+    { id: "new", label: "New File", icon: Icons.InsertDriveFile, kbd: "⌘N" },
+    { id: "open", label: "Open", icon: Icons.FolderOpen, kbd: "⌘O" },
+    { id: "save", label: "Save", icon: Icons.Save, kbd: "⌘S" },
+    { id: "divider" },
+    { id: "delete", label: "Delete", icon: Icons.Delete, critical: true },
+  ];
+
+  return (
+    <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
+      <Menu.Trigger asChild>
+        <Button variant="outline">
+          <Icons.MoreVert />
+          File Menu
+        </Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        {menuItems.map((item) => {
+          if (item.id === "divider") {
+            return <Separator key={Math.random()} />;
+          }
+          return (
+            <Menu.Item key={item.id} id={item.id} isCritical={item.critical}>
+              {item.icon && (
+                <Icon slot="icon"><item.icon /></Icon>
+              )}
+              <Text slot="label">{item.label}</Text>
+              {item.kbd && <Kbd slot="keyboard">{item.kbd}</Kbd>}
+            </Menu.Item>
+          );
+        })}
+      </Menu.Content>
+    </Menu.Root>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Menu within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: menu.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-menu--docs)
+- [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
+- [ARIA Menu Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu/)
