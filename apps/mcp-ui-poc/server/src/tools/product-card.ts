@@ -19,16 +19,23 @@ export interface ProductCardArgs {
   description?: string;
   imageUrl?: string;
   inStock?: boolean;
+  buttonLabel: string;
+  buttonIntent: {
+    type: string;
+    description: string;
+    payload: Record<string, unknown>;
+  };
 }
 
 export function createProductCard(args: ProductCardArgs) {
   const {
-    productId,
     productName,
     price,
     description = "",
     imageUrl,
     inStock = true,
+    buttonLabel,
+    buttonIntent,
   } = args;
 
   // ✅ Build structured product card using element builders
@@ -76,21 +83,12 @@ export function createProductCard(args: ProductCardArgs) {
         content: description,
       }),
       buildButtonElement({
-        label: "View Details",
+        label: buttonLabel,
         variant: "outline",
         colorPalette: "primary",
         width: "full",
         type: "button",
-        intent: {
-          type: "view_details",
-          description: `User wants to see detailed information about the product "${productName}"${productId ? ` (ID: ${productId})` : ""}. Please provide comprehensive details including specifications, availability, pricing breakdown, and any related products.`,
-          payload: {
-            productId: productId || productName,
-            productName,
-            price,
-            inStock,
-          },
-        },
+        intent: buttonIntent,
       }),
     ],
   });

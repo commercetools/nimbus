@@ -288,7 +288,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Product Card",
       description:
-        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
+        "Creates a product card UI component with name, price, description, image, stock status, and an action button.",
       inputSchema: z.object({
         productId: z
           .string()
@@ -310,6 +310,32 @@ function registerTools(server: McpServer) {
           .boolean()
           .optional()
           .describe("Whether the product is in stock (default: true)"),
+        buttonLabel: z
+          .string()
+          .describe(
+            "Label text for the action button. Choose based on the intent type and user context."
+          ),
+        buttonIntent: z
+          .object({
+            type: z
+              .string()
+              .describe(
+                "Intent type identifier in underscore_case. Choose based on what makes sense for the user's query context."
+              ),
+            description: z
+              .string()
+              .describe(
+                "Human-readable description of what the user wants to do when clicking this button. Consider the current conversation context and what logical next step."
+              ),
+            payload: z
+              .record(z.any())
+              .describe(
+                "Structured data payload for this intent. Include all relevant entity information."
+              ),
+          })
+          .describe(
+            "Intent configuration for the product card's action button. You decide what this button should do based on the user's query context and next logical steps."
+          ),
       }),
     },
     async (args) => {
@@ -650,7 +676,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Button",
       description:
-        "Creates a button UI component using Nimbus design system. Supports HTML form submission types.",
+        "Creates a button UI component using Nimbus design system. Supports HTML form submission types and optional intent emission for interactive workflows.",
       inputSchema: z.object({
         label: z.string().describe("Button label text"),
         variant: z
@@ -677,6 +703,28 @@ function registerTools(server: McpServer) {
           .optional()
           .describe(
             "Accessible label for the button (overrides visible label for screen readers)"
+          ),
+        intent: z
+          .object({
+            type: z
+              .string()
+              .describe(
+                "Intent type identifier in underscore_case. Choose a name that clearly describes the user's desired action."
+              ),
+            description: z
+              .string()
+              .describe(
+                "Human-readable description of what the user wants to do when clicking this button. Write as if the user is speaking. Be specific and include relevant context from the current interaction."
+              ),
+            payload: z
+              .record(z.any())
+              .describe(
+                "Structured data payload containing relevant information for the agent to act on the intent. Include IDs, names, current state, or any other data the agent might need to fulfill the user's request."
+              ),
+          })
+          .optional()
+          .describe(
+            "Optional intent to emit when button is pressed. When provided, clicking the button sends this intent to the agent, allowing for dynamic, context-aware interactions. Use this for buttons that should trigger the agent to take further action."
           ),
       }),
     },
