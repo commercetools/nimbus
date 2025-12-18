@@ -10,13 +10,13 @@ import {
 } from "@commercetools/nimbus";
 import { isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
-import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
 import type { Message } from "../types/virtual-dom";
 import {
   StructuredDomRenderer,
   type StructuredDomContent,
+  type Intent,
 } from "./structured-dom-renderer";
 
 export function ChatInterface() {
@@ -27,8 +27,6 @@ export function ChatInterface() {
   const [initError, setInitError] = useState<string | null>(null);
   const [uiToolsEnabled, setUiToolsEnabled] = useState(true);
   const [commerceToolsEnabled, setCommerceToolsEnabled] = useState(true);
-  const [formDialogOpen, setFormDialogOpen] = useState(false);
-  const [formData, setFormData] = useState<Record<string, string>>({});
   const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -46,48 +44,9 @@ export function ChatInterface() {
     return () => clearTimeout(timeoutId);
   }, [messages, isLoading]);
 
-  // Intercept form submissions globally
-  useEffect(() => {
-    const handleFormSubmit = (event: SubmitEvent) => {
-      console.log("📋 Form submit event fired!", event);
-      const form = event.target as HTMLFormElement;
-      console.log("📋 Form element:", form);
-      console.log("📋 Form action:", form.action);
-
-      // Only intercept forms without an action attribute (or with empty action)
-      if (form.action && form.action !== window.location.href) {
-        console.log("📋 Form has real action, allowing normal submission");
-        return; // Let forms with real actions submit normally
-      }
-
-      console.log("📋 Intercepting form submission");
-
-      // Prevent default submission
-      event.preventDefault();
-
-      // Extract form data
-      const formDataObj = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formDataObj.forEach((value, key) => {
-        data[key] = value.toString();
-      });
-
-      console.log("📝 Form submitted:", data);
-
-      // Show form data in dialog
-      setFormData(data);
-      setFormDialogOpen(true);
-    };
-
-    document.addEventListener("submit", handleFormSubmit);
-    console.log("✅ Form submit listener attached");
-
-    return () => {
-      document.removeEventListener("submit", handleFormSubmit);
-      console.log("❌ Form submit listener removed");
-    };
-  }, []);
+  // Note: Form submission is now handled via intent system
+  // Submit buttons with intents automatically capture form data
+  // No need for global form interceptor anymore
 
   // Initialize Claude client
   useEffect(() => {
@@ -147,6 +106,67 @@ export function ChatInterface() {
       ]);
     } catch (error) {
       console.error("Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Error: ${(error as Error).message}`,
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  // Handle intents emitted from UI components
+  async function handleIntentEmit(intent: Intent) {
+    console.log("🎯 Intent received:", intent);
+
+    // Combine description + structured payload for Claude
+    const message = `${intent.description}
+
+[Intent Context]
+Type: ${intent.type}
+Payload: ${JSON.stringify(intent.payload, null, 2)}`;
+
+    console.log("💬 Forwarding intent to Claude:", message);
+
+    // Add user message to chat (show cleaner version to user)
+    const userMessage: Message = {
+      role: "user",
+      content: `[Intent: ${intent.type}] ${intent.description}`,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+
+    setIsLoading(true);
+
+    try {
+      // Build message history for context
+      const messageHistory = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content || "",
+      }));
+
+      // Send to Claude with full description + payload
+      const { text, uiResources } = await claudeClient.sendMessage(message, {
+        uiToolsEnabled,
+        commerceToolsEnabled,
+        messageHistory,
+      });
+
+      // Add Claude's response
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: text,
+          uiResources,
+        },
+      ]);
+
+      console.log("✅ Intent processed successfully");
+    } catch (error) {
+      console.error("❌ Error handling intent:", error);
       setMessages((prev) => [
         ...prev,
         {
@@ -305,7 +325,10 @@ export function ChatInterface() {
                 console.log("✨ Using StructuredDomRenderer");
                 return (
                   <Box key={i} marginTop="300">
-                    <StructuredDomRenderer content={parsedContent} />
+                    <StructuredDomRenderer
+                      content={parsedContent}
+                      onIntentEmit={handleIntentEmit}
+                    />
                   </Box>
                 );
               } catch (error) {
@@ -338,13 +361,6 @@ export function ChatInterface() {
         onSend={handleSendMessage}
         isDisabled={isLoading || !isReady}
         autoFocus={isReady}
-      />
-
-      {/* Form submission dialog */}
-      <FormSubmissionDialog
-        isOpen={formDialogOpen}
-        onClose={() => setFormDialogOpen(false)}
-        formData={formData}
       />
     </Flex>
   );

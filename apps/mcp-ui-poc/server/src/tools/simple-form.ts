@@ -78,13 +78,21 @@ export function createSimpleForm(args: SimpleFormArgs) {
     })
   );
 
-  // Build submit button
+  // Build submit button with intent
   const submitButton = buildButtonElement({
     label: submitLabel,
     variant: "solid",
     colorPalette: "primary",
     width: "full",
     type: "submit",
+    intent: {
+      type: "submit_form",
+      description: `User wants to submit the form${title ? ` "${title}"` : ""} with the entered data.`,
+      payload: {
+        formTitle: title || "Form",
+        fieldCount: fields.length,
+      },
+    },
   });
 
   // Build form stack

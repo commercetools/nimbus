@@ -19,6 +19,12 @@ export interface ProductCardArgs {
   description?: string;
   imageUrl?: string;
   inStock?: boolean;
+  buttonLabel: string;
+  buttonIntent: {
+    type: string;
+    description: string;
+    payload: Record<string, unknown>;
+  };
 }
 
 export function createProductCard(args: ProductCardArgs) {
@@ -28,6 +34,8 @@ export function createProductCard(args: ProductCardArgs) {
     description = "",
     imageUrl,
     inStock = true,
+    buttonLabel,
+    buttonIntent,
   } = args;
 
   // ✅ Build structured product card using element builders
@@ -75,12 +83,12 @@ export function createProductCard(args: ProductCardArgs) {
         content: description,
       }),
       buildButtonElement({
-        label: "Add to Cart",
-        variant: "solid",
+        label: buttonLabel,
+        variant: "outline",
         colorPalette: "primary",
         width: "full",
-        isDisabled: !inStock,
         type: "button",
+        intent: buttonIntent,
       }),
     ],
   });

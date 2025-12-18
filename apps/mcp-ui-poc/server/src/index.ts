@@ -173,6 +173,11 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       isDisabled: z.boolean().optional(),
       buttonType: z.enum(["button", "submit", "reset"]).optional(),
       ariaLabel: z.string().optional(),
+      intent: z.object({
+        type: z.string(),
+        description: z.string(),
+        payload: z.record(z.any()),
+      }),
     }),
     z.object({
       type: z.literal("badge"),
@@ -288,7 +293,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Product Card",
       description:
-        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
+        "Creates a product card UI component with name, price, description, image, stock status, and an action button.",
       inputSchema: z.object({
         productId: z
           .string()
@@ -310,6 +315,32 @@ function registerTools(server: McpServer) {
           .boolean()
           .optional()
           .describe("Whether the product is in stock (default: true)"),
+        buttonLabel: z
+          .string()
+          .describe(
+            "Label text for the action button. Choose based on the intent type and user context."
+          ),
+        buttonIntent: z
+          .object({
+            type: z
+              .string()
+              .describe(
+                "Intent type identifier in underscore_case. Choose based on what makes sense for the user's query context."
+              ),
+            description: z
+              .string()
+              .describe(
+                "Human-readable description of what the user wants to do when clicking this button. Consider the current conversation context and what logical next step."
+              ),
+            payload: z
+              .record(z.any())
+              .describe(
+                "Structured data payload for this intent. Include all relevant entity information."
+              ),
+          })
+          .describe(
+            "Intent configuration for the product card's action button. You decide what this button should do based on the user's query context and next logical steps."
+          ),
       }),
     },
     async (args) => {
@@ -650,7 +681,7 @@ function registerTools(server: McpServer) {
     {
       title: "Create Button",
       description:
-        "Creates a button UI component using Nimbus design system. Supports HTML form submission types.",
+        "Creates a button UI component using Nimbus design system. IMPORTANT FOR FORMS: Buttons with intents inside forms automatically capture all form field values when clicked, regardless of button type.",
       inputSchema: z.object({
         label: z.string().describe("Button label text"),
         variant: z
@@ -670,13 +701,34 @@ function registerTools(server: McpServer) {
           .enum(["button", "submit", "reset"])
           .optional()
           .describe(
-            "Button type for HTML forms (default: 'button'). Use 'submit' for form submission buttons."
+            "Button type for HTML forms (default: 'button'). Note: Form data capture is automatic - any button with an intent inside a form will automatically capture form field values, regardless of type."
           ),
         ariaLabel: z
           .string()
           .optional()
           .describe(
             "Accessible label for the button (overrides visible label for screen readers)"
+          ),
+        intent: z
+          .object({
+            type: z
+              .string()
+              .describe(
+                "Intent type identifier in underscore_case. Choose a name that clearly describes the user's desired action."
+              ),
+            description: z
+              .string()
+              .describe(
+                "Human-readable description of what the user wants to do when clicking this button. Write as if the user is speaking. Be specific and include relevant context from the current interaction."
+              ),
+            payload: z
+              .record(z.any())
+              .describe(
+                "Structured data payload containing relevant information for the agent to act on the intent. Include IDs, names, current state, or any other data the agent might need to fulfill the user's request."
+              ),
+          })
+          .describe(
+            "Intent to emit when button is pressed (REQUIRED). Every button must have an intent so the agent knows what action the user wants to take. Even submit/cancel buttons need intents like { type: 'submit_form', description: 'User wants to submit the form', payload: { formId: '...' } }. This enables the agent to respond intelligently to all button interactions."
           ),
       }),
     },
