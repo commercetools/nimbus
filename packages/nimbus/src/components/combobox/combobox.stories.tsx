@@ -3046,8 +3046,10 @@ export const ClearDoesNotCloseMenu: Story = {
 
     await step("Menu remains open", async () => {
       // Menu should STILL be open after clearing
-      const listbox = getListBox(document);
-      expect(listbox).toBeInTheDocument();
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
     });
   },
 };
