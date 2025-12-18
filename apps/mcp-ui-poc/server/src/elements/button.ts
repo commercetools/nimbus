@@ -8,8 +8,8 @@ export interface ButtonElementArgs {
   isDisabled?: boolean;
   type?: "button" | "submit" | "reset";
   ariaLabel?: string;
-  /** Optional intent to emit when button is pressed */
-  intent?: Intent;
+  /** Intent to emit when button is pressed (required) */
+  intent: Intent;
 }
 
 /**
@@ -40,6 +40,6 @@ export function buildButtonElement(args: ButtonElementArgs): ElementDefinition {
       "aria-label": ariaLabel,
     },
     children: [label],
-    events: intent ? { onPress: intent } : undefined,
+    events: { onPress: intent },
   };
 }

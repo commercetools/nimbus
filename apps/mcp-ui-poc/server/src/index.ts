@@ -173,6 +173,11 @@ const childElementSchema: z.ZodTypeAny = z.lazy(() =>
       isDisabled: z.boolean().optional(),
       buttonType: z.enum(["button", "submit", "reset"]).optional(),
       ariaLabel: z.string().optional(),
+      intent: z.object({
+        type: z.string(),
+        description: z.string(),
+        payload: z.record(z.any()),
+      }),
     }),
     z.object({
       type: z.literal("badge"),
@@ -722,9 +727,8 @@ function registerTools(server: McpServer) {
                 "Structured data payload containing relevant information for the agent to act on the intent. Include IDs, names, current state, or any other data the agent might need to fulfill the user's request."
               ),
           })
-          .optional()
           .describe(
-            "Optional intent to emit when button is pressed. When provided, clicking the button sends this intent to the agent, allowing for dynamic, context-aware interactions. Use this for buttons that should trigger the agent to take further action."
+            "Intent to emit when button is pressed (REQUIRED). Every button must have an intent so the agent knows what action the user wants to take. Even submit/cancel buttons need intents like { type: 'submit_form', description: 'User wants to submit the form', payload: { formId: '...' } }. This enables the agent to respond intelligently to all button interactions."
           ),
       }),
     },

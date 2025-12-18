@@ -36,6 +36,11 @@ export interface ButtonChild {
   width?: string;
   isDisabled?: boolean;
   ariaLabel?: string;
+  intent: {
+    type: string;
+    description: string;
+    payload: Record<string, unknown>;
+  };
 }
 
 export interface BadgeChild {

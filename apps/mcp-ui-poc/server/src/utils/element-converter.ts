@@ -33,7 +33,16 @@ function convertChildToElement(child: ChildElement): ElementDefinition {
       return buildTextElement(child);
 
     case "button":
-      return buildButtonElement(child);
+      return buildButtonElement({
+        label: child.label,
+        variant: child.variant,
+        colorPalette: child.colorPalette,
+        width: child.width,
+        isDisabled: child.isDisabled,
+        type: child.type,
+        ariaLabel: child.ariaLabel,
+        intent: child.intent,
+      });
 
     case "badge":
       return buildBadgeElement(child);
