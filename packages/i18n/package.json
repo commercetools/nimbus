@@ -9,14 +9,30 @@
     "directory": "packages/i18n"
   },
   "homepage": "https://nimbus-documentation.vercel.app/home",
-  "keywords": ["typescript", "design-system", "react", "nimbus"],
+  "keywords": [
+    "typescript",
+    "design-system",
+    "react",
+    "nimbus"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
-  "files": ["data", "compiled-data"],
+  "files": [
+    "data",
+    "compiled-data"
+  ],
   "scripts": {
-    "build": "pnpm dlx @formatjs/cli compile-folder --format=transifex --ast data compiled-data"
+    "build": "pnpm build:compile",
+    "build:compile": "pnpm build:transform && pnpm build:split && pnpm build:compile-strings && pnpm build:dictionaries",
+    "build:transform": "tsx scripts/transform-to-icu.ts",
+    "build:split": "tsx scripts/split-by-component.ts",
+    "build:compile-strings": "tsx scripts/compile-component-messages.ts",
+    "build:dictionaries": "tsx scripts/generate-dictionaries.ts"
+  },
+  "devDependencies": {
+    "@internationalized/string-compiler": "catalog:"
   }
 }

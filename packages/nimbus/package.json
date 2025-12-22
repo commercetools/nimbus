@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@emotion/is-prop-valid": "catalog:react",
+    "@internationalized/message": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "dequal": "catalog:utils",
     "escape-html": "^1.0.3",
