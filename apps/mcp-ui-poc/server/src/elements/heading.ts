@@ -1,37 +1,21 @@
-import { z } from "zod";
-import type { ElementDefinition } from "../types/remote-dom.js";
+/**
+ * Heading Remote DOM Custom Element
+ */
 
-export interface HeadingElementArgs {
-  content: string;
-  size?: string;
-  marginBottom?: string;
-}
+import { createRemoteElement } from "@remote-dom/core/elements";
 
-export const headingElementSchema = z.object({
-  type: z.literal("heading"),
-  content: z.string().describe("Heading text content"),
-  size: z
-    .string()
-    .optional()
-    .describe("Heading size (e.g., 'xs', 'sm', 'md', 'lg', 'xl')"),
-  marginBottom: z.string().optional().describe("Bottom margin"),
+export const NimbusHeading = createRemoteElement({
+  properties: {
+    styleProps: true,
+    size: true,
+    as: true,
+  },
 });
 
-/**
- * Build a heading ElementDefinition
- * Shared by createHeading tool and child element converter
- */
-export function buildHeadingElement(
-  args: HeadingElementArgs
-): ElementDefinition {
-  const { content, size = "lg", marginBottom } = args;
-
-  return {
-    tagName: "nimbus-heading",
-    attributes: {
-      size,
-      marginBottom,
-    },
-    children: [content],
-  };
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-heading")
+) {
+  customElements.define("nimbus-heading", NimbusHeading);
 }

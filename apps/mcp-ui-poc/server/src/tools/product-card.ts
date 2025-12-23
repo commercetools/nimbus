@@ -1,18 +1,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ElementDefinition } from "../types/remote-dom.js";
-import {
-  buildStackElement,
-  buildHeadingElement,
-  buildTextElement,
-  buildBadgeElement,
-  buildButtonElement,
-  buildImageElement,
-  buildCardElement,
-  buildCardHeaderElement,
-  buildCardContentElement,
-} from "../elements/index.js";
+import type { RemoteDomElement } from "../types/remote-dom.js";
 import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
+import { commonStyleSchema } from "../utils/common-schemas.js";
 
 export interface ProductCardArgs {
   productId?: string;
@@ -32,86 +22,91 @@ export function createProductCard(args: ProductCardArgs) {
     inStock = true,
   } = args;
 
-  // ✅ Build structured product card using element builders
-  const cardChildren: ElementDefinition[] = [];
+  // Create card root element
+  const cardRoot = document.createElement(
+    "nimbus-card-root"
+  ) as RemoteDomElement;
+  cardRoot.elevation = "elevated";
+  cardRoot.styleProps = {
+    maxWidth: imageUrl ? "432px" : undefined,
+    width: imageUrl ? undefined : "fit-content",
+  };
+
+  // Create card header with product name
+  const cardHeader = document.createElement(
+    "nimbus-card-header"
+  ) as RemoteDomElement;
+  const heading = document.createElement("nimbus-heading") as RemoteDomElement;
+  heading.size = "lg";
+  heading.styleProps = { marginBottom: "200" };
+  heading.textContent = productName;
+  cardHeader.appendChild(heading);
+  cardRoot.appendChild(cardHeader);
+
+  // Create card content
+  const cardContent = document.createElement(
+    "nimbus-card-content"
+  ) as RemoteDomElement;
 
   // Add image if provided
   if (imageUrl) {
-    cardChildren.push(
-      buildImageElement({
-        src: imageUrl,
-        alt: productName,
-        borderRadius: "200",
-        marginBottom: "400",
-      })
-    );
+    const image = document.createElement("nimbus-image") as RemoteDomElement;
+    image.src = imageUrl;
+    image.alt = productName;
+    image.styleProps = {
+      borderRadius: "200",
+      marginBottom: "400",
+    };
+    cardContent.appendChild(image);
   }
 
-  // Add product heading
-  cardChildren.push(
-    buildHeadingElement({
-      content: productName,
-      size: "lg",
-      marginBottom: "200",
-    })
-  );
+  // Create content stack for price, badge, description, and button
+  const contentStack = document.createElement(
+    "nimbus-stack"
+  ) as RemoteDomElement;
+  contentStack.direction = "column";
+  contentStack.styleProps = { gap: "200" };
 
-  // Build content stack: price, stock badge, description, button
-  const contentStack = buildStackElement({
-    direction: "column",
-    gap: "200",
-    children: [
-      buildTextElement({
-        content: price,
-        fontSize: "xl",
-        fontWeight: "bold",
-        color: "primary.11",
-      }),
-      buildBadgeElement({
-        label: inStock ? "In Stock" : "Out of Stock",
-        colorPalette: inStock ? "positive" : "critical",
-        size: "2xs",
-        width: "fit-content",
-      }),
-      buildTextElement({
-        content: description,
-      }),
-      buildButtonElement({
-        label: "Add to Cart",
-        variant: "solid",
-        colorPalette: "primary",
-        width: "full",
-        isDisabled: !inStock,
-        type: "button",
-      }),
-    ],
-  });
+  // Add price
+  const priceText = document.createElement("nimbus-text") as RemoteDomElement;
+  priceText.textContent = price;
+  priceText.styleProps = {
+    fontSize: "xl",
+    fontWeight: "bold",
+    color: "primary.11",
+  };
+  contentStack.appendChild(priceText);
 
-  cardChildren.push(contentStack);
+  // Add stock badge
+  const stockBadge = document.createElement("nimbus-badge") as RemoteDomElement;
+  stockBadge.textContent = inStock ? "In Stock" : "Out of Stock";
+  stockBadge.colorPalette = inStock ? "positive" : "critical";
+  stockBadge.size = "2xs";
+  stockBadge.styleProps = { width: "fit-content" };
+  contentStack.appendChild(stockBadge);
 
-  // Build card with nested structure (header + content)
-  const contentChildren: ElementDefinition[] = [];
-  if (imageUrl) contentChildren.push(cardChildren[0]); // image
-  contentChildren.push(cardChildren[2]); // content stack
+  // Add description
+  if (description) {
+    const descText = document.createElement("nimbus-text") as RemoteDomElement;
+    descText.textContent = description;
+    contentStack.appendChild(descText);
+  }
 
-  const card = buildCardElement({
-    elevation: "elevated",
-    borderStyle: "outlined",
-    maxWidth: imageUrl ? "432px" : undefined,
-    width: imageUrl ? undefined : "fit-content",
-    children: [
-      buildCardHeaderElement({
-        children: [cardChildren[1]], // heading
-      }),
-      buildCardContentElement({
-        children: contentChildren,
-      }),
-    ],
-  });
+  // Add "Add to Cart" button
+  const addButton = document.createElement("nimbus-button") as RemoteDomElement;
+  addButton.textContent = "Add to Cart";
+  addButton.variant = "solid";
+  addButton.colorPalette = "primary";
+  addButton.isDisabled = !inStock;
+  addButton.type = "button";
+  addButton.styleProps = { width: "full" };
+  contentStack.appendChild(addButton);
 
-  // Note: Now using Remote DOM Phase 2 with full type preservation
+  // Append content stack to card content
+  cardContent.appendChild(contentStack);
+  cardRoot.appendChild(cardContent);
 
-  return createRemoteDomResource(card, {
+  return createRemoteDomResource(cardRoot, {
     name: "product-card",
     title: "Product Card",
     description: `Card for ${productName}`,
@@ -124,7 +119,7 @@ export function registerProductCardTool(server: McpServer) {
     {
       title: "Create Product Card",
       description:
-        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components.",
+        "Creates a product card UI component with name, price, description, image, and stock status using Nimbus design system components. Supports all Chakra UI style properties.",
       inputSchema: z.object({
         productId: z
           .string()
@@ -146,6 +141,9 @@ export function registerProductCardTool(server: McpServer) {
           .boolean()
           .optional()
           .describe("Whether the product is in stock (default: true)"),
+
+        // All Chakra UI style properties
+        ...commonStyleSchema,
       }),
     },
     async (args) => {

@@ -16,7 +16,10 @@
     "@commercetools/nimbus-icons": "workspace:*",
     "@mcp-ui/client": "^5.17.1",
     "@modelcontextprotocol/sdk": "^1.24.3",
+    "@remote-dom/core": "catalog:",
+    "@remote-dom/react": "catalog:",
     "react": "^19.0.0",
+    "react-aria": "catalog:",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

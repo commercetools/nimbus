@@ -1,10 +1,17 @@
 import express from "express";
 import cors from "cors";
+import { createServer } from "http";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import * as toolRegistrations from "./tools/index.js";
+import { MutationStreamServer } from "./remote-dom/websocket-server.js";
+import {
+  setMessageSender,
+  setHistoryClearer,
+} from "./remote-dom/environment.js";
+import { setActionBroadcaster } from "./utils/action-queue.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -134,18 +141,58 @@ app.delete("/mcp", async (req, res) => {
 // TOOL REGISTRATION
 // ============================================================
 
+// Create HTTP server
+const httpServer = createServer(app);
+
+// Initialize WebSocket server for Remote DOM protocol streaming
+const mutationServer = new MutationStreamServer(httpServer);
+
+// Export mutationServer for event handler registration
+export { mutationServer };
+
 function registerTools(server: McpServer) {
+  // Tools that need mutationServer for event handling
+  const interactiveTools = ["registerDataTableTool", "registerButtonTool"];
+
   // Register all colocated tool definitions
-  Object.values(toolRegistrations).forEach((registerFn) => {
+  Object.entries(toolRegistrations).forEach(([name, registerFn]) => {
     if (typeof registerFn === "function") {
-      registerFn(server);
+      // Pass mutationServer to interactive tools
+      if (interactiveTools.includes(name)) {
+        (registerFn as (s: McpServer, m: typeof mutationServer) => void)(
+          server,
+          mutationServer
+        );
+      } else {
+        (registerFn as (s: McpServer) => void)(server);
+      }
     }
   });
 }
 
+// Connect Remote DOM message sender to WebSocket broadcaster
+setMessageSender((message) => {
+  mutationServer.broadcastRemoteDomMessage(message);
+});
+
+// Connect Remote DOM history clearer to WebSocket mutation history reset
+setHistoryClearer(() => {
+  mutationServer.clearHistory();
+});
+
+// Connect action queue to WebSocket broadcaster
+setActionBroadcaster((action) => {
+  mutationServer.broadcastActionNotification({
+    id: action.id,
+    toolName: action.toolName,
+    params: action.params,
+  });
+});
+
 // Start server
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`🚀 MCP-UI Server running on port ${PORT}`);
   console.log(`💚 Health endpoint: http://localhost:${PORT}/health`);
   console.log(`🔌 MCP endpoint: http://localhost:${PORT}/mcp`);
+  console.log(`⚡ WebSocket endpoint: ws://localhost:${PORT}/ws`);
 });

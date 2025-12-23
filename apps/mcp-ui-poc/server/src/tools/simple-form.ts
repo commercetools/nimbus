@@ -1,17 +1,9 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ElementDefinition } from "../types/remote-dom.js";
-import {
-  buildCardElement,
-  buildCardContentElement,
-  buildHeadingElement,
-  buildStackElement,
-  buildFormFieldElement,
-  buildTextInputElement,
-  buildTextElement,
-  buildButtonElement,
-} from "../elements/index.js";
+import type { RemoteDomElement } from "../types/remote-dom.js";
 import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
+import { commonStyleSchema } from "../utils/common-schemas.js";
+import { configureButtonAction } from "./button.js";
 
 export interface SimpleFormField {
   name: string;
@@ -21,20 +13,16 @@ export interface SimpleFormField {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
+  defaultValue?: string;
 }
 
 export interface SimpleFormArgs {
   title?: string;
   fields: SimpleFormField[];
   submitLabel?: string;
-  // HTML form submission support
-  // action is optional - if omitted, form data will be displayed in a dialog
-  action?: string;
-  method?: "get" | "post";
-  enctype?:
-    | "application/x-www-form-urlencoded"
-    | "multipart/form-data"
-    | "text/plain";
+  // Action configuration
+  actionToolName?: string;
+  actionParams?: Record<string, unknown>;
 }
 
 export function createSimpleForm(args: SimpleFormArgs) {
@@ -42,82 +30,123 @@ export function createSimpleForm(args: SimpleFormArgs) {
     title,
     fields,
     submitLabel = "Submit",
-    action,
-    method = "post",
-    enctype,
+    actionToolName,
+    actionParams,
   } = args;
 
-  // Build structured form using element builders
-  const cardChildren: (ElementDefinition | string)[] = [];
+  // Create card root element
+  const cardRoot = document.createElement(
+    "nimbus-card-root"
+  ) as RemoteDomElement;
+  cardRoot.elevation = "elevated";
+  cardRoot.styleProps = {
+    maxWidth: "600px",
+  };
+
+  // Create card content
+  const cardContent = document.createElement(
+    "nimbus-card-content"
+  ) as RemoteDomElement;
 
   // Add title heading if provided
   if (title) {
-    cardChildren.push(
-      buildHeadingElement({
-        content: title,
-        size: "lg",
-        marginBottom: "500",
-      })
+    const heading = document.createElement(
+      "nimbus-heading"
+    ) as RemoteDomElement;
+    heading.size = "lg";
+    heading.textContent = title;
+    heading.styleProps = { marginBottom: "500" };
+    cardContent.appendChild(heading);
+  }
+
+  // Generate unique form ID
+  const formId = `form-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+  // Create form stack
+  const formStack = document.createElement("nimbus-stack") as RemoteDomElement;
+  formStack.direction = "column";
+  formStack.as = "form";
+  formStack.setAttribute("id", formId); // Set ID as attribute for event handling
+  formStack.styleProps = { gap: "400" };
+
+  // Build form fields
+  fields.forEach((field) => {
+    // Create form field root
+    const formFieldRoot = document.createElement(
+      "nimbus-form-field-root"
+    ) as RemoteDomElement;
+    if (field.required) formFieldRoot.isRequired = field.required;
+
+    // Create label section
+    const formFieldLabel = document.createElement(
+      "nimbus-form-field-label"
+    ) as RemoteDomElement;
+    const labelText = document.createElement("nimbus-text") as RemoteDomElement;
+    labelText.textContent = field.label;
+    formFieldLabel.appendChild(labelText);
+    formFieldRoot.appendChild(formFieldLabel);
+
+    // Create input section
+    const formFieldInput = document.createElement(
+      "nimbus-form-field-input"
+    ) as RemoteDomElement;
+    const textInput = document.createElement(
+      "nimbus-text-input"
+    ) as RemoteDomElement;
+    textInput.name = field.name;
+    textInput.placeholder = field.label;
+    if (field.type) textInput.type = field.type;
+    if (field.required) textInput.isRequired = field.required;
+    if (field.minLength !== undefined) textInput.minLength = field.minLength;
+    if (field.maxLength !== undefined) textInput.maxLength = field.maxLength;
+    if (field.pattern) textInput.pattern = field.pattern;
+    if (field.defaultValue !== undefined)
+      textInput.defaultValue = field.defaultValue;
+    formFieldInput.appendChild(textInput);
+    formFieldRoot.appendChild(formFieldInput);
+
+    formStack.appendChild(formFieldRoot);
+  });
+
+  // Build submit button (as regular button, not form submit)
+  const submitButtonId = `${formId}-submit`;
+  const submitButton = document.createElement(
+    "nimbus-button"
+  ) as RemoteDomElement;
+  submitButton.setAttribute("id", submitButtonId);
+  submitButton.textContent = submitLabel;
+  submitButton.variant = "solid";
+  submitButton.colorPalette = "primary";
+  submitButton.type = "button"; // Regular button, not submit
+  submitButton.styleProps = { width: "full" };
+  formStack.appendChild(submitButton);
+
+  // Append form to card content
+  cardContent.appendChild(formStack);
+  cardRoot.appendChild(cardContent);
+
+  // Generate URI for this form
+  const uri = `ui://simple-form/${Date.now()}`;
+
+  // Configure submit button action using button tool's system
+  if (actionToolName) {
+    configureButtonAction(
+      submitButtonId,
+      actionToolName,
+      actionParams || {},
+      uri
+    );
+    console.log(
+      `🎯 Form submit button configured with action: ${actionToolName}`,
+      actionParams
     );
   }
 
-  // Build form fields
-  const formFields = fields.map((field) =>
-    buildFormFieldElement({
-      labelChildren: [buildTextElement({ content: field.label })],
-      inputChildren: [
-        buildTextInputElement({
-          name: field.name,
-          placeholder: field.label,
-          type: field.type,
-          isRequired: field.required,
-          minLength: field.minLength,
-          maxLength: field.maxLength,
-          pattern: field.pattern,
-        }),
-      ],
-      isRequired: field.required,
-    })
-  );
-
-  // Build submit button
-  const submitButton = buildButtonElement({
-    label: submitLabel,
-    variant: "solid",
-    colorPalette: "primary",
-    width: "full",
-    type: "submit",
-  });
-
-  // Build form stack
-  const formStack = buildStackElement({
-    direction: "column",
-    gap: "400",
-    as: "form",
-    action,
-    method,
-    enctype,
-    children: [...formFields, submitButton],
-  });
-
-  cardChildren.push(formStack);
-
-  // Build final card structure
-  const card = buildCardElement({
-    elevation: "elevated",
-    borderStyle: "outlined",
-    maxWidth: "600px",
-    children: [
-      buildCardContentElement({
-        children: cardChildren,
-      }),
-    ],
-  });
-
-  return createRemoteDomResource(card, {
+  return createRemoteDomResource(cardRoot, {
     name: "simple-form",
     title: "Simple Form",
     description: title || "Simple form component for basic use cases",
+    uri,
   });
 }
 
@@ -127,7 +156,7 @@ export function registerSimpleFormTool(server: McpServer) {
     {
       title: "Create Simple Form",
       description:
-        "Creates a simple form UI component with text inputs and submit button using Nimbus design system components. NOTE: This is a convenience tool for VERY SIMPLE forms only. For more complex forms with custom layouts or additional components, compose your own form using createStack (with as='form'), createFormField, createTextInput, and createButton tools.",
+        "Creates a form with text inputs using Nimbus design system components. Can optionally trigger an MCP tool call when submitted by specifying actionToolName and actionParams. Form field values will be included in the action params under 'formData'. Supports all Chakra UI style properties.",
       inputSchema: z.object({
         title: z.string().optional().describe("Form title"),
         fields: z
@@ -135,8 +164,8 @@ export function registerSimpleFormTool(server: McpServer) {
             z.object({
               name: z
                 .string()
-                .describe("Field name (required for form submission)"),
-              label: z.string().describe("Field label"),
+                .describe("Field name (used as key in form data)"),
+              label: z.string().describe("Field label text"),
               type: z
                 .enum(["text", "email", "number", "password", "tel", "url"])
                 .optional()
@@ -153,6 +182,12 @@ export function registerSimpleFormTool(server: McpServer) {
                 .string()
                 .optional()
                 .describe("Regex pattern for validation"),
+              defaultValue: z
+                .string()
+                .optional()
+                .describe(
+                  "Default value for the field (pre-populate the input)"
+                ),
             })
           )
           .describe("Array of form fields"),
@@ -160,26 +195,23 @@ export function registerSimpleFormTool(server: McpServer) {
           .string()
           .optional()
           .describe("Submit button label (default: 'Submit')"),
-        action: z
+
+        // Action configuration (optional)
+        actionToolName: z
           .string()
           .optional()
           .describe(
-            "Form submission URL. OPTIONAL - if omitted, form data will be displayed in a dialog on submit instead of navigating to a URL."
+            "Name of MCP tool to call when form is submitted (e.g., 'commerce__createProduct')"
           ),
-        method: z
-          .enum(["get", "post"])
-          .optional()
-          .describe("HTTP method for form submission (default: 'post')"),
-        enctype: z
-          .enum([
-            "application/x-www-form-urlencoded",
-            "multipart/form-data",
-            "text/plain",
-          ])
+        actionParams: z
+          .record(z.any())
           .optional()
           .describe(
-            "Form encoding type (default: 'application/x-www-form-urlencoded')"
+            "Additional parameters to pass to the MCP tool. Form data will be merged with these params under the 'formData' key."
           ),
+
+        // All Chakra UI style properties
+        ...commonStyleSchema,
       }),
     },
     async (args) => {

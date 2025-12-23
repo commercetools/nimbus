@@ -5,6 +5,16 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    '@remote-dom/core':
+      specifier: ^1.10.1
+      version: 1.10.1
+    '@remote-dom/react':
+      specifier: ^1.2.2
+      version: 1.2.2
+    react-aria:
+      specifier: 3.44.0
+      version: 3.44.0
   react:
     '@chakra-ui/cli':
       specifier: ^3.27.1
@@ -486,9 +496,18 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.24.3
         version: 1.24.3(@cfworker/json-schema@4.1.1)(zod@4.1.12)
+      '@remote-dom/core':
+        specifier: 'catalog:'
+        version: 1.10.1(@preact/signals-core@1.12.1)
+      '@remote-dom/react':
+        specifier: 'catalog:'
+        version: 1.2.2(@preact/signals-core@1.12.1)(react@19.2.0)
       react:
         specifier: ^19.0.0
         version: 19.2.0
+      react-aria:
+        specifier: 'catalog:'
+        version: 3.44.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom:
         specifier: ^19.0.0
         version: 19.2.0(react@19.2.0)
@@ -578,6 +597,9 @@ importers:
       express:
         specifier: ^4.18.0
         version: 4.21.2
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.3
       zod:
         specifier: ^3.25.0
         version: 3.25.76
@@ -591,6 +613,9 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.25
+      '@types/ws':
+        specifier: ^8.5.0
+        version: 8.18.1
       tsx:
         specifier: ^4.0.0
         version: 4.21.0

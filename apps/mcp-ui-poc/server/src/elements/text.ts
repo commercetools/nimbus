@@ -1,42 +1,20 @@
-import { z } from "zod";
-import type { ElementDefinition } from "../types/remote-dom.js";
+/**
+ * Text Remote DOM Custom Element
+ */
 
-export interface TextElementArgs {
-  content: string;
-  fontSize?: string;
-  fontWeight?: string;
-  color?: string;
-  marginBottom?: string;
-}
+import { createRemoteElement } from "@remote-dom/core/elements";
 
-export const textElementSchema = z.object({
-  type: z.literal("text"),
-  content: z.string().describe("Text content to display"),
-  fontSize: z
-    .string()
-    .optional()
-    .describe("Font size (e.g., 'sm', 'md', 'lg', 'xl')"),
-  fontWeight: z
-    .string()
-    .optional()
-    .describe("Font weight (e.g., 'normal', 'bold')"),
-  color: z.string().optional().describe("Text color"),
-  marginBottom: z.string().optional().describe("Bottom margin"),
+export const NimbusText = createRemoteElement({
+  properties: {
+    styleProps: true,
+    as: true,
+  },
 });
 
-/**
- * Build a text ElementDefinition
- * Shared by createText tool and child element converter
- */
-export function buildTextElement(args: TextElementArgs): ElementDefinition {
-  return {
-    tagName: "nimbus-text",
-    attributes: {
-      fontSize: args.fontSize,
-      fontWeight: args.fontWeight,
-      color: args.color,
-      marginBottom: args.marginBottom,
-    },
-    children: [args.content],
-  };
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-text")
+) {
+  customElements.define("nimbus-text", NimbusText);
 }

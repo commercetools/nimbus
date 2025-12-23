@@ -7,6 +7,7 @@ export { registerButtonTool } from "./button.js";
 export { registerBadgeTool } from "./badge.js";
 export { registerTextTool } from "./text.js";
 export { registerHeadingTool } from "./heading.js";
+export { registerImageTool } from "./image.js";
 export { registerTextInputTool } from "./text-input.js";
 export { registerMoneyInputTool } from "./money-input.js";
 export { registerCardTool } from "./card.js";

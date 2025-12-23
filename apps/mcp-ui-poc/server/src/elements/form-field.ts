@@ -1,171 +1,63 @@
-import { z } from "zod";
-import type { ElementDefinition } from "../types/remote-dom.js";
+/**
+ * FormField Remote DOM Custom Elements
+ */
 
-// Forward reference - will be defined in constants/child-element-schema.ts
-const childElementSchema: z.ZodTypeAny = z.any();
+import { createRemoteElement } from "@remote-dom/core/elements";
 
-export const formFieldElementSchema = z.object({
-  type: z.literal("formField"),
-  labelChildren: z
-    .array(childElementSchema)
-    .describe(
-      "Array of child elements for the label. For simple text labels, use a single element: { type: 'text', content: 'Label text' }. Only use complex composition (with multiple elements, icons, etc.) when needed."
-    ),
-  inputChildren: z
-    .array(childElementSchema)
-    .describe(
-      "Array of child elements for the input wrapper. MUST contain valid input elements with type discriminator 'textInput'. Typically a single element: { type: 'textInput', name: 'fieldName', placeholder: 'Enter value', inputType: 'email' }. The inputType property (optional) specifies the HTML input type (text, email, password, etc.)."
-    ),
-  description: z
-    .string()
-    .optional()
-    .describe("Optional helper text displayed below the input"),
-  errorMessage: z
-    .string()
-    .optional()
-    .describe("Optional error message (shown when isInvalid is true)"),
-  isRequired: z
-    .boolean()
-    .optional()
-    .describe("Whether the field is required (shows indicator)"),
-  isInvalid: z
-    .boolean()
-    .optional()
-    .describe("Whether the field has a validation error"),
-  isDisabled: z.boolean().optional().describe("Whether the field is disabled"),
-  isReadOnly: z.boolean().optional().describe("Whether the field is read-only"),
-  size: z
-    .enum(["sm", "md"])
-    .optional()
-    .describe("Size variant (default: 'md')"),
-  direction: z
-    .enum(["row", "column"])
-    .optional()
-    .describe("Layout direction (default: 'column')"),
+export const NimbusFormFieldRoot = createRemoteElement({
+  properties: {
+    styleProps: true,
+    isRequired: true,
+    isInvalid: true,
+    isDisabled: true,
+    isReadOnly: true,
+    size: true,
+    direction: true,
+  },
 });
 
-export interface FormFieldLabelElementArgs {
-  children?: (ElementDefinition | string)[];
-}
+export const NimbusFormFieldLabel = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-/**
- * Build a form field label ElementDefinition
- */
-export function buildFormFieldLabelElement(
-  args: FormFieldLabelElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-form-field-label",
-    children: args.children,
-  };
-}
+export const NimbusFormFieldInput = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-export interface FormFieldInputElementArgs {
-  children?: (ElementDefinition | string)[];
-}
+export const NimbusFormFieldDescription = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-/**
- * Build a form field input wrapper ElementDefinition
- */
-export function buildFormFieldInputElement(
-  args: FormFieldInputElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-form-field-input",
-    children: args.children,
-  };
-}
+export const NimbusFormFieldError = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-export interface FormFieldDescriptionElementArgs {
-  children?: (ElementDefinition | string)[];
-}
-
-/**
- * Build a form field description ElementDefinition
- */
-export function buildFormFieldDescriptionElement(
-  args: FormFieldDescriptionElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-form-field-description",
-    children: args.children,
-  };
-}
-
-export interface FormFieldErrorElementArgs {
-  children?: (ElementDefinition | string)[];
-}
-
-/**
- * Build a form field error ElementDefinition
- */
-export function buildFormFieldErrorElement(
-  args: FormFieldErrorElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-form-field-error",
-    children: args.children,
-  };
-}
-
-export interface FormFieldElementArgs {
-  labelChildren: ElementDefinition[];
-  inputChildren: ElementDefinition[];
-  description?: string;
-  errorMessage?: string;
-  isRequired?: boolean;
-  isInvalid?: boolean;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  size?: "sm" | "md";
-  direction?: "row" | "column";
-}
-
-/**
- * Build a form field ElementDefinition
- * FormField has nested structure: Root > Label, Input, Description, Error
- */
-export function buildFormFieldElement(
-  args: FormFieldElementArgs
-): ElementDefinition {
-  const {
-    labelChildren,
-    inputChildren,
-    description,
-    errorMessage,
-    isRequired,
-    isInvalid,
-    isDisabled,
-    isReadOnly,
-    size,
-    direction,
-  } = args;
-
-  const children: ElementDefinition[] = [
-    buildFormFieldLabelElement({ children: labelChildren }),
-    buildFormFieldInputElement({ children: inputChildren }),
-  ];
-
-  if (description) {
-    children.push(
-      buildFormFieldDescriptionElement({ children: [description] })
+// Self-register on import
+if (typeof customElements !== "undefined") {
+  if (!customElements.get("nimbus-form-field-root")) {
+    customElements.define("nimbus-form-field-root", NimbusFormFieldRoot);
+  }
+  if (!customElements.get("nimbus-form-field-label")) {
+    customElements.define("nimbus-form-field-label", NimbusFormFieldLabel);
+  }
+  if (!customElements.get("nimbus-form-field-input")) {
+    customElements.define("nimbus-form-field-input", NimbusFormFieldInput);
+  }
+  if (!customElements.get("nimbus-form-field-description")) {
+    customElements.define(
+      "nimbus-form-field-description",
+      NimbusFormFieldDescription
     );
   }
-
-  if (errorMessage) {
-    children.push(buildFormFieldErrorElement({ children: [errorMessage] }));
+  if (!customElements.get("nimbus-form-field-error")) {
+    customElements.define("nimbus-form-field-error", NimbusFormFieldError);
   }
-
-  return {
-    tagName: "nimbus-form-field-root",
-    attributes: {
-      isRequired,
-      isInvalid,
-      isDisabled,
-      isReadOnly,
-      size,
-      direction,
-    },
-    children,
-  };
 }

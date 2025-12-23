@@ -262,12 +262,11 @@ export class ClaudeClient {
     const uiResources: UIResource[] = [];
     let textResponse = "";
 
-    // Build conversation with history if provided (when tools are disabled)
-    // Include message history only when commerce tools are disabled
+    // Build conversation with full message history
     const currentConversation: Anthropic.MessageParam[] = [];
 
-    // Add message history if commerce tools are disabled
-    if (!commerceToolsEnabled && messageHistory.length > 0) {
+    // Always include message history for multi-turn conversations
+    if (messageHistory.length > 0) {
       console.log(
         "📜 Including message history:",
         messageHistory.length,
@@ -344,13 +343,29 @@ DO NOT retry with the same parameters - you will hit the token limit again!
    - Create visual components like cards, tables, forms, etc.
    - These tools RENDER data visually for the user
 ${retryContext}
-CRITICAL WORKFLOW - ALWAYS USE THIS PATTERN:
+CRITICAL WORKFLOWS:
 
-When the user asks about products, orders, customers, inventory, or any commerce data:
+**READING DATA (GET/LIST/QUERY):**
+When the user asks to view/show/list data:
 1. **FIRST**: Use commerce tools to fetch the REAL data (e.g., commerce__list_products)
 2. **THEN**: Use UI tools to display that data beautifully (e.g., ui__createDataTable)
 
 NEVER create mock/fake data when real data is available via commerce tools!
+
+**CREATING/UPDATING DATA (POST/PUT/PATCH):**
+When the user asks to create, update, add, or modify data:
+1. **CREATE A FORM** using ui__createSimpleForm with the appropriate fields
+2. **CONFIGURE actionToolName** to the commerce tool that will process the data
+3. **CONFIGURE actionParams** with any fixed parameters
+4. **User fills form and clicks submit** → Commerce tool executes automatically
+
+Examples:
+- "Create a new product" → ui__createSimpleForm with actionToolName="commerce__createProduct"
+- "Update customer info" → ui__createSimpleForm with actionToolName="commerce__updateCustomer"
+- "Add inventory" → ui__createSimpleForm with actionToolName="commerce__addInventory"
+
+The form data will be automatically sent to the commerce tool when submitted.
+DO NOT directly call create/update commerce tools - ALWAYS present a form for user input!
 
 ⚠️ IMPORTANT: Token Limit Management
 - Large datasets can exceed the 200K token limit
@@ -358,11 +373,28 @@ NEVER create mock/fake data when real data is available via commerce tools!
 - Use filters when possible: categories, date ranges, status filters
 - If user asks for "all products", explain you'll show a limited set and they can refine
 
-Examples:
+Read Examples:
 - "Show me products" → commerce__list_products(limit=10) THEN ui__createDataTable
 - "Show a product" → commerce__list_products(limit=1) THEN ui__createProductCard
 - "Display orders" → commerce__read_orders(limit=10) THEN ui__createDataTable
 - "Customer info" → commerce__customers_read THEN ui__createCard
+
+Create/Update Examples:
+- "Create a new product" → ui__createSimpleForm(fields=[name, price, sku], actionToolName="commerce__createProduct")
+- "Add a customer" → ui__createSimpleForm(fields=[email, name, address], actionToolName="commerce__createCustomer")
+- "Update inventory" → ui__createSimpleForm(fields=[sku, quantity], actionToolName="commerce__updateInventory")
+
+**INTERACTIVE BUTTONS:**
+When creating buttons with ui__createButton, you can configure them to trigger MCP tool calls:
+- Set actionToolName to the tool to execute (e.g., "commerce__getProducts")
+- Set actionParams to pass fixed parameters
+- When clicked, the tool executes AUTOMATICALLY via WebSocket
+- User sees results immediately without typing commands
+
+Button Examples:
+- "Refresh" button → actionToolName="commerce__list_products", actionParams={limit: 10}
+- "Load More" button → actionToolName="commerce__list_products", actionParams={limit: 20, offset: 10}
+- "Clear Filters" button → actionToolName="commerce__resetFilters"
 
 Use the available Nimbus components via tool calls whenever possible - prioritize minimizing text in the response.
 

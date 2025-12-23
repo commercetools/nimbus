@@ -1,41 +1,22 @@
-import { z } from "zod";
-import type { ElementDefinition } from "../types/remote-dom.js";
+/**
+ * Badge Remote DOM Custom Element
+ */
 
-export interface BadgeElementArgs {
-  label: string;
-  colorPalette?: string;
-  size?: string;
-  width?: string;
-}
+import { createRemoteElement } from "@remote-dom/core/elements";
 
-export const badgeElementSchema = z.object({
-  type: z.literal("badge"),
-  label: z.string().describe("Badge label text"),
-  colorPalette: z
-    .string()
-    .optional()
-    .describe("Color palette (e.g., 'primary', 'positive', 'critical')"),
-  size: z
-    .string()
-    .optional()
-    .describe("Badge size (e.g., '2xs', 'xs', 'sm', 'md')"),
-  width: z.string().optional().describe("Badge width"),
+export const NimbusBadge = createRemoteElement({
+  properties: {
+    styleProps: true,
+    variant: true,
+    size: true,
+    colorPalette: true,
+  },
 });
 
-/**
- * Build a badge ElementDefinition
- * Shared by createBadge tool and child element converter
- */
-export function buildBadgeElement(args: BadgeElementArgs): ElementDefinition {
-  const { label, colorPalette = "primary", size = "md", width } = args;
-
-  return {
-    tagName: "nimbus-badge",
-    attributes: {
-      colorPalette,
-      size,
-      width,
-    },
-    children: [label],
-  };
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-badge")
+) {
+  customElements.define("nimbus-badge", NimbusBadge);
 }
