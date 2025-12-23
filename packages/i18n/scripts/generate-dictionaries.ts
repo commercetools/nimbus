@@ -1,10 +1,16 @@
 /**
- * Generate MessageDictionary files for each component
+ * Generate MessageDictionary files for each component - Step 4 of 4 in the i18n build pipeline
  *
  * Overview:
  * After compiling messages for each locale, we need to create a dictionary
  * file that imports all locale files and wraps them in a MessageDictionary.
  * This dictionary is what components will import and use at runtime.
+ *
+ * This is Step 4 of 4 in the i18n build pipeline:
+ *   1. Transform - Transifex → ICU format
+ *   2. Split - Group messages by component
+ *   3. Compile - ICU → JavaScript functions
+ *   4. Generate (this script) - Create MessageDictionary wrappers
  *
  * Input:  packages/nimbus/src/components/{component}/intl/*.ts (compiled locale files)
  * Output: packages/nimbus/src/components/{component}/{component}.messages.ts (dictionary)
@@ -91,14 +97,13 @@ async function getMessageKeys(localePath: string): Promise<string[] | null> {
 
 /**
  * Check if a compiled locale file contains any message functions (messages with variables)
- * Messages with variables compile to functions: (args: Record<string, MessageValue>) => "..."
+ * Messages with variables compile to functions: (args: Record<string, string | number>) => "..."
  * Plain messages compile to strings: "message"
  */
 async function hasMessageFunctions(localePath: string): Promise<boolean> {
   try {
     const content = await fs.readFile(localePath, "utf-8");
     // Pattern matches function syntax: "key": (args: ...) => or "key": () =>
-    // Matches any function parameter type to detect message functions
     return /\(args[\s\S]*?\)\s*=>|\(\)\s*=>/.test(content);
   } catch {
     return false;
@@ -111,11 +116,10 @@ async function generateDictionaries() {
     "../../nimbus/src/components"
   );
 
-  // Get all component directories
+  // Get all component directories and find those with intl/ directories
   const componentDirs = await fs.readdir(nimbusComponentsDir);
   const componentsWithIntl: string[] = [];
 
-  // Find components that have intl/ directories
   for (const dir of componentDirs) {
     const componentPath = path.join(nimbusComponentsDir, dir);
     const intlPath = path.join(componentPath, "intl");
@@ -126,13 +130,9 @@ async function generateDictionaries() {
         componentsWithIntl.push(dir);
       }
     } catch {
-      // intl/ doesn't exist, skip
+      // intl/ doesn't exist, skip this component
     }
   }
-
-  console.log(
-    `📚 Generating dictionaries for ${componentsWithIntl.length} components...\n`
-  );
 
   for (const componentDir of componentsWithIntl) {
     const componentPath = path.join(nimbusComponentsDir, componentDir);
@@ -151,28 +151,28 @@ async function generateDictionaries() {
     }
 
     if (availableLocales.length === 0) {
-      console.log(`   ⚠️  ${componentDir}: No locale files found, skipping`);
+      // Skip components with no locale files
       continue;
     }
 
-    // Get message keys from first available locale (they should all have same keys)
+    // Get message keys from first available locale (all locales should have same keys)
     const firstLocalePath = path.join(
       intlPath,
       `${availableLocales[0].code}.ts`
     );
     const messageKeys = await getMessageKeys(firstLocalePath);
 
-    // Check if any locale file contains message functions (messages with variables)
+    // Check if component has messages with variables (compile to functions)
     // Only need to check one locale since all should have the same structure
     const hasFunctions = await hasMessageFunctions(firstLocalePath);
 
-    // Generate component names
+    // Generate component names for file and variable naming
     const componentName = dirToComponentName(componentDir);
     const variableName = dirToVariableName(componentDir);
     const fileName = `${componentDir}.messages.ts`;
     const outputPath = path.join(componentPath, fileName);
 
-    // Generate imports
+    // Generate import statements for all available locale files
     const imports = availableLocales
       .map(
         (locale) =>
@@ -180,7 +180,7 @@ async function generateDictionaries() {
       )
       .join("\n");
 
-    // Generate dictionary entries
+    // Generate dictionary entries mapping BCP47 locale codes to imported messages
     const dictionaryEntries = availableLocales
       .map(
         (locale) =>
@@ -188,7 +188,7 @@ async function generateDictionaries() {
       )
       .join("\n");
 
-    // Generate message key type
+    // Generate union type for message keys
     const messageKeyType =
       messageKeys && messageKeys.length > 0
         ? messageKeys.map((key) => `"${key}"`).join(" | ")
@@ -244,12 +244,11 @@ export type ${componentName}MessageKey = ${messageKeyType};
     });
 
     await fs.writeFile(outputPath, formattedContent);
-    console.log(
-      `   ✅ ${componentDir}: ${availableLocales.length} locales, ${messageKeys?.length || 0} messages`
-    );
   }
 
-  console.log(`\n✅ Dictionary generation complete!`);
+  console.log(
+    "✅ Dictionary generation complete! Output: packages/nimbus/src/components/*/*.messages.ts"
+  );
 }
 
 generateDictionaries().catch(console.error);

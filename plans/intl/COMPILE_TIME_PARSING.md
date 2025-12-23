@@ -1018,3 +1018,10 @@ package from publishing & changesets
 
 - update claude and/or copilot instructions re: i18n deprecate i18n package w/
   notice.
+
+  -bundle size analysis
+
+- docs unit tests
+- update all readmes
+- add visuals
+-
