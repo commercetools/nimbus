@@ -21,9 +21,9 @@ import splitButtonMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const splitButtonMessages = new MessageDictionary({
-  "en-US": splitButtonMessages_en,
-  "de-DE": splitButtonMessages_de,
-  "es-ES": splitButtonMessages_es,
+  en: splitButtonMessages_en,
+  de: splitButtonMessages_de,
+  es: splitButtonMessages_es,
   "fr-FR": splitButtonMessages_fr,
   "pt-BR": splitButtonMessages_pt,
 });

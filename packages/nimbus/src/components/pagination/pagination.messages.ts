@@ -34,9 +34,9 @@ type LocalizedStringsWithFunctions = {
  * Contains pre-compiled messages for all supported locales
  */
 export const paginationMessages = new MessageDictionary({
-  "en-US": paginationMessages_en,
-  "de-DE": paginationMessages_de,
-  "es-ES": paginationMessages_es,
+  en: paginationMessages_en,
+  de: paginationMessages_de,
+  es: paginationMessages_es,
   "fr-FR": paginationMessages_fr,
   "pt-BR": paginationMessages_pt,
 } as LocalizedStringsWithFunctions as LocalizedStrings);

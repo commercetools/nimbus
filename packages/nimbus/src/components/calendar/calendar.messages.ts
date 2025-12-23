@@ -21,9 +21,9 @@ import calendarMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const calendarMessages = new MessageDictionary({
-  "en-US": calendarMessages_en,
-  "de-DE": calendarMessages_de,
-  "es-ES": calendarMessages_es,
+  en: calendarMessages_en,
+  de: calendarMessages_de,
+  es: calendarMessages_es,
   "fr-FR": calendarMessages_fr,
   "pt-BR": calendarMessages_pt,
 });

@@ -21,9 +21,9 @@ import moneyInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const moneyInputMessages = new MessageDictionary({
-  "en-US": moneyInputMessages_en,
-  "de-DE": moneyInputMessages_de,
-  "es-ES": moneyInputMessages_es,
+  en: moneyInputMessages_en,
+  de: moneyInputMessages_de,
+  es: moneyInputMessages_es,
   "fr-FR": moneyInputMessages_fr,
   "pt-BR": moneyInputMessages_pt,
 });

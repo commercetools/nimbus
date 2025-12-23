@@ -21,9 +21,9 @@ import localizedFieldMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const localizedFieldMessages = new MessageDictionary({
-  "en-US": localizedFieldMessages_en,
-  "de-DE": localizedFieldMessages_de,
-  "es-ES": localizedFieldMessages_es,
+  en: localizedFieldMessages_en,
+  de: localizedFieldMessages_de,
+  es: localizedFieldMessages_es,
   "fr-FR": localizedFieldMessages_fr,
   "pt-BR": localizedFieldMessages_pt,
 });

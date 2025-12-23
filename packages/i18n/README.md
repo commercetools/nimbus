@@ -60,6 +60,42 @@ from `@internationalized/message`.
 > is part of the [React Spectrum](https://github.com/adobe/react-spectrum)
 > project by Adobe.
 
+### Component Usage
+
+Components import and use the generated message dictionaries:
+
+```typescript
+import { useLocale } from "react-aria-components";
+import { alertMessages } from "./alert.messages";
+
+export const AlertDismissButton = () => {
+  const { locale } = useLocale();
+
+  return (
+    <button aria-label={alertMessages.getStringForLocale("dismiss", locale)}>
+      ...
+    </button>
+  );
+};
+```
+
+**Important Notes:**
+
+- **Locale Format**: Dictionaries use simple locale codes (`en`, `de`, `es`,
+  `fr-FR`, `pt-BR`) that match what `useLocale()` returns from `I18nProvider`.
+- **API Signature**: `getStringForLocale(key, locale)` - **key first, then
+  locale**
+- **Message Keys**: Use the key extracted from the message ID (e.g.,
+  `"Nimbus.Alert.dismiss"` → `"dismiss"`), not the object key from the
+  `.i18n.ts` file
+- **Variable Messages**: Messages with variables (like `{fullName}`) compile to
+  functions. Check the type before calling:
+  ```typescript
+  const message = avatarMessages.getStringForLocale("avatarLabel", locale);
+  const label =
+    typeof message === "function" ? message({ fullName: "John Doe" }) : message;
+  ```
+
 ## Supported Locales
 
 - **English (en)** - Default locale
@@ -85,13 +121,36 @@ pnpm build:dictionaries     # Generate dictionaries
 
 All translation keys follow the pattern: `Nimbus.{ComponentName}.{messageKey}`
 
+**Key Extraction:** When messages are split by component, the `{messageKey}`
+portion becomes the key used in components. The full ID is used for extraction
+and translation, but components use only the extracted key.
+
 Examples:
 
-- `Nimbus.Alert.dismiss` - Dismiss button label
-- `Nimbus.Avatar.avatarLabel` - Avatar accessibility label (with variable:
+- `Nimbus.Alert.dismiss` → Component uses: `"dismiss"`
+- `Nimbus.Avatar.avatarLabel` → Component uses: `"avatarLabel"` (with variable:
   `{fullName}`)
-- `Nimbus.Pagination.ofTotalPages` - Pagination label (with variable:
-  `{totalPages}`)
+- `Nimbus.LoadingSpinner.default` → Component uses: `"default"` (not
+  `"defaultLoadingMessage"` from the object key)
+- `Nimbus.Pagination.ofTotalPages` → Component uses: `"ofTotalPages"` (with
+  variable: `{totalPages}`)
+
+**Note:** The message key in components comes from the `id` field in `.i18n.ts`
+files, not the object key. For example:
+
+```typescript
+// .i18n.ts file
+export const messages = defineMessages({
+  defaultLoadingMessage: {
+    // ← Object key (not used in component)
+    id: "Nimbus.LoadingSpinner.default", // ← ID (extracted to "default")
+    defaultMessage: "Loading data",
+  },
+});
+
+// Component usage
+loadingSpinnerMessages.getStringForLocale("default", locale); // ← Use "default"
+```
 
 ## Internal Package
 

@@ -21,9 +21,9 @@ import passwordInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const passwordInputMessages = new MessageDictionary({
-  "en-US": passwordInputMessages_en,
-  "de-DE": passwordInputMessages_de,
-  "es-ES": passwordInputMessages_es,
+  en: passwordInputMessages_en,
+  de: passwordInputMessages_de,
+  es: passwordInputMessages_es,
   "fr-FR": passwordInputMessages_fr,
   "pt-BR": passwordInputMessages_pt,
 });

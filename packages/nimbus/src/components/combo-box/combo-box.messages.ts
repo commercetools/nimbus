@@ -21,9 +21,9 @@ import comboBoxMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const comboBoxMessages = new MessageDictionary({
-  "en-US": comboBoxMessages_en,
-  "de-DE": comboBoxMessages_de,
-  "es-ES": comboBoxMessages_es,
+  en: comboBoxMessages_en,
+  de: comboBoxMessages_de,
+  es: comboBoxMessages_es,
   "fr-FR": comboBoxMessages_fr,
   "pt-BR": comboBoxMessages_pt,
 });

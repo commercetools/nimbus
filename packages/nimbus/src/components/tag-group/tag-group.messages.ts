@@ -21,9 +21,9 @@ import tagGroupMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const tagGroupMessages = new MessageDictionary({
-  "en-US": tagGroupMessages_en,
-  "de-DE": tagGroupMessages_de,
-  "es-ES": tagGroupMessages_es,
+  en: tagGroupMessages_en,
+  de: tagGroupMessages_de,
+  es: tagGroupMessages_es,
   "fr-FR": tagGroupMessages_fr,
   "pt-BR": tagGroupMessages_pt,
 });

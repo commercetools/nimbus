@@ -21,9 +21,9 @@ import datePickerMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const datePickerMessages = new MessageDictionary({
-  "en-US": datePickerMessages_en,
-  "de-DE": datePickerMessages_de,
-  "es-ES": datePickerMessages_es,
+  en: datePickerMessages_en,
+  de: datePickerMessages_de,
+  es: datePickerMessages_es,
   "fr-FR": datePickerMessages_fr,
   "pt-BR": datePickerMessages_pt,
 });

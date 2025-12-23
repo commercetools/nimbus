@@ -21,9 +21,9 @@ import alertMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const alertMessages = new MessageDictionary({
-  "en-US": alertMessages_en,
-  "de-DE": alertMessages_de,
-  "es-ES": alertMessages_es,
+  en: alertMessages_en,
+  de: alertMessages_de,
+  es: alertMessages_es,
   "fr-FR": alertMessages_fr,
   "pt-BR": alertMessages_pt,
 });

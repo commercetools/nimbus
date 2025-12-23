@@ -27,7 +27,13 @@
  *   import en from "./intl/en";
  *   import de from "./intl/de";
  *   ...
- *   export const alertMessages = new MessageDictionary({ ... });
+ *   export const alertMessages = new MessageDictionary({
+ *     "en": en,
+ *     "de": de,
+ *     "es": es,
+ *     "fr-FR": fr,
+ *     "pt-BR": pt
+ *   });
  *   export type AlertMessageKey = "dismiss";
  */
 
@@ -180,11 +186,11 @@ async function generateDictionaries() {
       )
       .join("\n");
 
-    // Generate dictionary entries mapping BCP47 locale codes to imported messages
+    // Generate dictionary entries mapping locale codes to imported messages
     const dictionaryEntries = availableLocales
       .map(
         (locale) =>
-          `  "${locale.bcp47}": ${variableName}Messages_${locale.importName},`
+          `  "${locale.code}": ${variableName}Messages_${locale.importName},`
       )
       .join("\n");
 

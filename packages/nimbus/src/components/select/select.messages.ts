@@ -21,9 +21,9 @@ import selectMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const selectMessages = new MessageDictionary({
-  "en-US": selectMessages_en,
-  "de-DE": selectMessages_de,
-  "es-ES": selectMessages_es,
+  en: selectMessages_en,
+  de: selectMessages_de,
+  es: selectMessages_es,
   "fr-FR": selectMessages_fr,
   "pt-BR": selectMessages_pt,
 });

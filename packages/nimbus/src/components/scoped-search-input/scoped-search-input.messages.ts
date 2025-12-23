@@ -21,9 +21,9 @@ import scopedSearchInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const scopedSearchInputMessages = new MessageDictionary({
-  "en-US": scopedSearchInputMessages_en,
-  "de-DE": scopedSearchInputMessages_de,
-  "es-ES": scopedSearchInputMessages_es,
+  en: scopedSearchInputMessages_en,
+  de: scopedSearchInputMessages_de,
+  es: scopedSearchInputMessages_es,
   "fr-FR": scopedSearchInputMessages_fr,
   "pt-BR": scopedSearchInputMessages_pt,
 });

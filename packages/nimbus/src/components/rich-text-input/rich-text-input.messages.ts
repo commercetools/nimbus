@@ -21,9 +21,9 @@ import richTextInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const richTextInputMessages = new MessageDictionary({
-  "en-US": richTextInputMessages_en,
-  "de-DE": richTextInputMessages_de,
-  "es-ES": richTextInputMessages_es,
+  en: richTextInputMessages_en,
+  de: richTextInputMessages_de,
+  es: richTextInputMessages_es,
   "fr-FR": richTextInputMessages_fr,
   "pt-BR": richTextInputMessages_pt,
 });

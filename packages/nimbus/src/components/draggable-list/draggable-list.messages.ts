@@ -21,9 +21,9 @@ import draggableListMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const draggableListMessages = new MessageDictionary({
-  "en-US": draggableListMessages_en,
-  "de-DE": draggableListMessages_de,
-  "es-ES": draggableListMessages_es,
+  en: draggableListMessages_en,
+  de: draggableListMessages_de,
+  es: draggableListMessages_es,
   "fr-FR": draggableListMessages_fr,
   "pt-BR": draggableListMessages_pt,
 });

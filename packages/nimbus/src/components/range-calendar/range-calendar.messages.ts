@@ -21,9 +21,9 @@ import rangeCalendarMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const rangeCalendarMessages = new MessageDictionary({
-  "en-US": rangeCalendarMessages_en,
-  "de-DE": rangeCalendarMessages_de,
-  "es-ES": rangeCalendarMessages_es,
+  en: rangeCalendarMessages_en,
+  de: rangeCalendarMessages_de,
+  es: rangeCalendarMessages_es,
   "fr-FR": rangeCalendarMessages_fr,
   "pt-BR": rangeCalendarMessages_pt,
 });
