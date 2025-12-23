@@ -21,9 +21,9 @@ import numberInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const numberInputMessages = new MessageDictionary({
-  "en-US": numberInputMessages_en,
-  "de-DE": numberInputMessages_de,
-  "es-ES": numberInputMessages_es,
+  en: numberInputMessages_en,
+  de: numberInputMessages_de,
+  es: numberInputMessages_es,
   "fr-FR": numberInputMessages_fr,
   "pt-BR": numberInputMessages_pt,
 });

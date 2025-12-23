@@ -21,9 +21,9 @@ import fieldErrorsMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const fieldErrorsMessages = new MessageDictionary({
-  "en-US": fieldErrorsMessages_en,
-  "de-DE": fieldErrorsMessages_de,
-  "es-ES": fieldErrorsMessages_es,
+  en: fieldErrorsMessages_en,
+  de: fieldErrorsMessages_de,
+  es: fieldErrorsMessages_es,
   "fr-FR": fieldErrorsMessages_fr,
   "pt-BR": fieldErrorsMessages_pt,
 });

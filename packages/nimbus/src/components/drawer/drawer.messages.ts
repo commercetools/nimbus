@@ -21,9 +21,9 @@ import drawerMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const drawerMessages = new MessageDictionary({
-  "en-US": drawerMessages_en,
-  "de-DE": drawerMessages_de,
-  "es-ES": drawerMessages_es,
+  en: drawerMessages_en,
+  de: drawerMessages_de,
+  es: drawerMessages_es,
   "fr-FR": drawerMessages_fr,
   "pt-BR": drawerMessages_pt,
 });

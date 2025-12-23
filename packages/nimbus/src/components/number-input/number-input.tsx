@@ -19,8 +19,7 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
-import { useIntl } from "react-intl";
-import { messages } from "./number-input.i18n";
+import { numberInputMessages } from "./number-input.messages";
 /**
  * # NumberInput
  *
@@ -36,7 +35,6 @@ export const NumberInput = (props: NumberInputProps) => {
     ...restProps
   } = props;
   const { locale } = useLocale();
-  const intl = useIntl();
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -51,8 +49,14 @@ export const NumberInput = (props: NumberInputProps) => {
   const enhancedFunctionalProps = {
     ...functionalProps,
     locale: locale,
-    incrementAriaLabel: intl.formatMessage(messages.increment),
-    decrementAriaLabel: intl.formatMessage(messages.decrement),
+    incrementAriaLabel: numberInputMessages.getStringForLocale(
+      "increment",
+      locale
+    ),
+    decrementAriaLabel: numberInputMessages.getStringForLocale(
+      "decrement",
+      locale
+    ),
   };
 
   // Pass enhanced props to react-aria

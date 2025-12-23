@@ -21,9 +21,9 @@ import loadingSpinnerMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const loadingSpinnerMessages = new MessageDictionary({
-  "en-US": loadingSpinnerMessages_en,
-  "de-DE": loadingSpinnerMessages_de,
-  "es-ES": loadingSpinnerMessages_es,
+  en: loadingSpinnerMessages_en,
+  de: loadingSpinnerMessages_de,
+  es: loadingSpinnerMessages_es,
   "fr-FR": loadingSpinnerMessages_fr,
   "pt-BR": loadingSpinnerMessages_pt,
 });

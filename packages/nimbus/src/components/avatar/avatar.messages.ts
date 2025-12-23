@@ -34,9 +34,9 @@ type LocalizedStringsWithFunctions = {
  * Contains pre-compiled messages for all supported locales
  */
 export const avatarMessages = new MessageDictionary({
-  "en-US": avatarMessages_en,
-  "de-DE": avatarMessages_de,
-  "es-ES": avatarMessages_es,
+  en: avatarMessages_en,
+  de: avatarMessages_de,
+  es: avatarMessages_es,
   "fr-FR": avatarMessages_fr,
   "pt-BR": avatarMessages_pt,
 } as LocalizedStringsWithFunctions as LocalizedStrings);

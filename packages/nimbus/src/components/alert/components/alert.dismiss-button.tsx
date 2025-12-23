@@ -12,12 +12,11 @@ import { alertMessages } from "../alert.messages";
  */
 export const AlertDismissButton = ({ ...props }: AlertDismissButtonProps) => {
   const { locale } = useLocale();
-  const dismissLabel = alertMessages.getStringForLocale(locale, "dismiss");
 
   return (
     <AlertDismissButtonSlot>
       <IconButton
-        aria-label={dismissLabel}
+        aria-label={alertMessages.getStringForLocale("dismiss", locale)}
         {...props}
         variant="ghost"
         size="2xs"

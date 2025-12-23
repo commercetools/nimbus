@@ -21,9 +21,9 @@ import dataTableMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const dataTableMessages = new MessageDictionary({
-  "en-US": dataTableMessages_en,
-  "de-DE": dataTableMessages_de,
-  "es-ES": dataTableMessages_es,
+  en: dataTableMessages_en,
+  de: dataTableMessages_de,
+  es: dataTableMessages_es,
   "fr-FR": dataTableMessages_fr,
   "pt-BR": dataTableMessages_pt,
 });

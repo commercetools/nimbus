@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
 import { Image } from "@/components";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";
-import { messages } from "./avatar.i18n";
+import { avatarMessages } from "./avatar.messages";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -34,15 +34,26 @@ function getInitials(firstName: string, lastName: string) {
  * ```
  */
 export const Avatar = (props: AvatarProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
   const { ref, firstName, lastName, src, alt, ...rest } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const fullName = `${firstName} ${lastName}`;
 
+  // Get message function and call it with variables
+  // MessageDictionary returns string | function for messages with variables
+  const avatarLabelMessage = avatarMessages.getStringForLocale(
+    "avatarLabel",
+    locale
+  ) as string | ((args: Record<string, string | number>) => string);
+  const avatarLabel =
+    typeof avatarLabelMessage === "function"
+      ? avatarLabelMessage({ fullName })
+      : avatarLabelMessage;
+
   const sharedProps = {
-    "aria-label": intl.formatMessage(messages.avatarLabel, { fullName }),
+    "aria-label": avatarLabel,
     ref,
     ...rest,
   };

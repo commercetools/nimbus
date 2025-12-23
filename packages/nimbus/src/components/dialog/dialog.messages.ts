@@ -21,9 +21,9 @@ import dialogMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const dialogMessages = new MessageDictionary({
-  "en-US": dialogMessages_en,
-  "de-DE": dialogMessages_de,
-  "es-ES": dialogMessages_es,
+  en: dialogMessages_en,
+  de: dialogMessages_de,
+  es: dialogMessages_es,
   "fr-FR": dialogMessages_fr,
   "pt-BR": dialogMessages_pt,
 });

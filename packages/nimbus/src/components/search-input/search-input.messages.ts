@@ -21,9 +21,9 @@ import searchInputMessages_pt from "./intl/pt-BR";
  * Contains pre-compiled messages for all supported locales
  */
 export const searchInputMessages = new MessageDictionary({
-  "en-US": searchInputMessages_en,
-  "de-DE": searchInputMessages_de,
-  "es-ES": searchInputMessages_es,
+  en: searchInputMessages_en,
+  de: searchInputMessages_de,
+  es: searchInputMessages_es,
   "fr-FR": searchInputMessages_fr,
   "pt-BR": searchInputMessages_pt,
 });
