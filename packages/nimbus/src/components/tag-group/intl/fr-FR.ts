@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "removeTag": `Supprimer la balise`,
-}
+export default { removeTag: `Supprimer la balise` };

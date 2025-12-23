@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "dismiss": `Fermer`,
-}
+export default { dismiss: `Fermer` };

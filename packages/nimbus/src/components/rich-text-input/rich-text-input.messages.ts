@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import richTextInputMessages_en from "./intl/en";
@@ -31,4 +31,28 @@ export const richTextInputMessages = new MessageDictionary({
 /**
  * Available message keys for RichTextInput component
  */
-export type RichTextInputMessageKey = "bold" | "bulletedList" | "code" | "headingFive" | "headingFour" | "headingOne" | "headingThree" | "headingTwo" | "italic" | "listFormatting" | "moreFormattingOptions" | "moreStyles" | "numberedList" | "paragraph" | "quote" | "redo" | "strikethrough" | "subscript" | "superscript" | "textFormatting" | "textStyle" | "textStyleMenu" | "underline" | "undo";
+export type RichTextInputMessageKey =
+  | "bold"
+  | "bulletedList"
+  | "code"
+  | "headingFive"
+  | "headingFour"
+  | "headingOne"
+  | "headingThree"
+  | "headingTwo"
+  | "italic"
+  | "listFormatting"
+  | "moreFormattingOptions"
+  | "moreStyles"
+  | "numberedList"
+  | "paragraph"
+  | "quote"
+  | "redo"
+  | "strikethrough"
+  | "subscript"
+  | "superscript"
+  | "textFormatting"
+  | "textStyle"
+  | "textStyleMenu"
+  | "underline"
+  | "undo";

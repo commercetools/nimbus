@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import datePickerMessages_en from "./intl/en";
@@ -31,4 +31,10 @@ export const datePickerMessages = new MessageDictionary({
 /**
  * Available message keys for DatePicker component
  */
-export type DatePickerMessageKey = "Time.enterTime" | "Time.enterTimeHour" | "Time.enterTimeHourMinute" | "Time.enterTimeHourMinuteSecond" | "Time.startTime" | "clearInput";
+export type DatePickerMessageKey =
+  | "Time.enterTime"
+  | "Time.enterTimeHour"
+  | "Time.enterTimeHourMinute"
+  | "Time.enterTimeHourMinuteSecond"
+  | "Time.startTime"
+  | "clearInput";

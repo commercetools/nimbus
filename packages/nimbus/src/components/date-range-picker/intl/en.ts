@@ -4,17 +4,18 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearInput": `Clear input value`,
-  "clearSelection": `Clear date range`,
-  "endTime": `End time`,
-  "endTimeHour": `End time (hour)`,
-  "endTimeHourMinute": `End time (hour and minute)`,
-  "endTimeHourMinuteSecond": `End time (hour, minute, and second)`,
-  "endTimeLabel": `End time`,
-  "openCalendar": `Open calendar`,
-  "startTime": `Start time`,
-  "startTimeHour": `Start time (hour)`,
-  "startTimeHourMinute": `Start time (hour and minute)`,
-  "startTimeHourMinuteSecond": `Start time (hour, minute, and second)`,
-  "startTimeLabel": `Start time`,
-}
+export default {
+  clearInput: `Clear input value`,
+  clearSelection: `Clear date range`,
+  endTime: `End time`,
+  endTimeHour: `End time (hour)`,
+  endTimeHourMinute: `End time (hour and minute)`,
+  endTimeHourMinuteSecond: `End time (hour, minute, and second)`,
+  endTimeLabel: `End time`,
+  openCalendar: `Open calendar`,
+  startTime: `Start time`,
+  startTimeHour: `Start time (hour)`,
+  startTimeHourMinute: `Start time (hour and minute)`,
+  startTimeHourMinuteSecond: `Start time (hour, minute, and second)`,
+  startTimeLabel: `Start time`,
+};

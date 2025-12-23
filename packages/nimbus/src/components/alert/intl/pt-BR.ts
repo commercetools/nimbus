@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "dismiss": `Dispensar`,
-}
+export default { dismiss: `Dispensar` };

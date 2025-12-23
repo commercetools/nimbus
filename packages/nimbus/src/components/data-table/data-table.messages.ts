@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import dataTableMessages_en from "./intl/en";
@@ -31,4 +31,35 @@ export const dataTableMessages = new MessageDictionary({
 /**
  * Available message keys for DataTable component
  */
-export type DataTableMessageKey = "comfortable" | "comfortableAriaLabel" | "compact" | "compactAriaLabel" | "dataTable" | "dataTableBody" | "dataTableHeader" | "expandRows" | "fullText" | "fullTextAriaLabel" | "hiddenColumns" | "hiddenColumnsAriaLabel" | "hideColumn" | "layoutSettings" | "layoutSettingsAriaLabel" | "noHiddenColumns" | "pinRows" | "reset" | "resizeColumn" | "rowDensity" | "rowDensityAriaLabel" | "searchHiddenColumns" | "selectRow" | "settings" | "textPreviews" | "textPreviewsAriaLabel" | "textVisibility" | "textVisibilityAriaLabel" | "visibleColumns" | "visibleColumnsAria" | "visibleColumnsList";
+export type DataTableMessageKey =
+  | "comfortable"
+  | "comfortableAriaLabel"
+  | "compact"
+  | "compactAriaLabel"
+  | "dataTable"
+  | "dataTableBody"
+  | "dataTableHeader"
+  | "expandRows"
+  | "fullText"
+  | "fullTextAriaLabel"
+  | "hiddenColumns"
+  | "hiddenColumnsAriaLabel"
+  | "hideColumn"
+  | "layoutSettings"
+  | "layoutSettingsAriaLabel"
+  | "noHiddenColumns"
+  | "pinRows"
+  | "reset"
+  | "resizeColumn"
+  | "rowDensity"
+  | "rowDensityAriaLabel"
+  | "searchHiddenColumns"
+  | "selectRow"
+  | "settings"
+  | "textPreviews"
+  | "textPreviewsAriaLabel"
+  | "textVisibility"
+  | "textVisibilityAriaLabel"
+  | "visibleColumns"
+  | "visibleColumnsAria"
+  | "visibleColumnsList";

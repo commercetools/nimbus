@@ -4,6 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "hide": `Ocultar senha`,
-  "show": `Mostrar senha`,
-}
+export default { hide: `Ocultar senha`, show: `Mostrar senha` };

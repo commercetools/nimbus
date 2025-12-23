@@ -4,5 +4,7 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "avatarLabel": (args: Record<string, any>) => `Avatar image for ${args.fullName}`,
-}
+export default {
+  avatarLabel: (args: Record<string, any>) =>
+    `Avatar image for ${args.fullName}`,
+};

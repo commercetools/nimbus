@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "default": `Daten werden geladen`,
-}
+export default { default: `Daten werden geladen` };

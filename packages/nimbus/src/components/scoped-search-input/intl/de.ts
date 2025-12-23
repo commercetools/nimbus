@@ -4,6 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "searchLabel": `Suche`,
-  "selectLabel": `Filtern nach`,
-}
+export default { searchLabel: `Suche`, selectLabel: `Filtern nach` };

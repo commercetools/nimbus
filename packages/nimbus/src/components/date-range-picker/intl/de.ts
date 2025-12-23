@@ -4,17 +4,18 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearInput": `Eingabewert löschen`,
-  "clearSelection": `Datumsbereich löschen`,
-  "endTime": `Endzeit`,
-  "endTimeHour": `Endzeit (Stunde)`,
-  "endTimeHourMinute": `Endzeit (Stunde und Minute)`,
-  "endTimeHourMinuteSecond": `Endzeit (Stunde, Minute und Sekunde)`,
-  "endTimeLabel": `Endzeit`,
-  "openCalendar": `Kalender öffnen`,
-  "startTime": `Startzeit`,
-  "startTimeHour": `Startzeit (Stunde)`,
-  "startTimeHourMinute": `Startzeit (Stunde und Minute)`,
-  "startTimeHourMinuteSecond": `Startzeit (Stunde, Minute und Sekunde)`,
-  "startTimeLabel": `Startzeit`,
-}
+export default {
+  clearInput: `Eingabewert löschen`,
+  clearSelection: `Datumsbereich löschen`,
+  endTime: `Endzeit`,
+  endTimeHour: `Endzeit (Stunde)`,
+  endTimeHourMinute: `Endzeit (Stunde und Minute)`,
+  endTimeHourMinuteSecond: `Endzeit (Stunde, Minute und Sekunde)`,
+  endTimeLabel: `Endzeit`,
+  openCalendar: `Kalender öffnen`,
+  startTime: `Startzeit`,
+  startTimeHour: `Startzeit (Stunde)`,
+  startTimeHourMinute: `Startzeit (Stunde und Minute)`,
+  startTimeHourMinuteSecond: `Startzeit (Stunde, Minute und Sekunde)`,
+  startTimeLabel: `Startzeit`,
+};

@@ -4,7 +4,8 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "amountInputLabel": `Betrag`,
-  "currencySelectLabel": `Währung`,
-  "highPrecisionPrice": `Hochpräzisionspreis`,
-}
+export default {
+  amountInputLabel: `Betrag`,
+  currencySelectLabel: `Währung`,
+  highPrecisionPrice: `Hochpräzisionspreis`,
+};

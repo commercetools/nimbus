@@ -4,10 +4,11 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "Time.enterTime": `Zeit eingeben`,
+export default {
+  "Time.enterTime": `Zeit eingeben`,
   "Time.enterTimeHour": `Zeit eingeben (Stunde)`,
   "Time.enterTimeHourMinute": `Zeit eingeben (Stunde und Minute)`,
   "Time.enterTimeHourMinuteSecond": `Zeit eingeben (Stunde, Minute und Sekunde)`,
   "Time.startTime": `Startzeit`,
-  "clearInput": `Eingabewert löschen`,
-}
+  clearInput: `Eingabewert löschen`,
+};

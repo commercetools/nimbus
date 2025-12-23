@@ -29,6 +29,7 @@
 import { compileStrings } from "@internationalized/string-compiler";
 import fs from "fs/promises";
 import path from "path";
+import { format } from "prettier";
 
 const LOCALES = [
   { code: "en", bcp47: "en-US" },
@@ -120,10 +121,16 @@ async function compileComponentMessages() {
  * DO NOT EDIT MANUALLY
  */
 
-${esModuleCode}
-`;
+${esModuleCode}`;
 
-      await fs.writeFile(outputPath, tsContent);
+      // Format the entire file content with Prettier
+      const formattedContent = await format(tsContent, {
+        parser: "typescript",
+        singleQuote: false,
+        printWidth: 80,
+      });
+
+      await fs.writeFile(outputPath, formattedContent);
       console.log(`   ✅ ${locale.code}`);
     }
   }

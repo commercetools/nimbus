@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Fermer le volet`,
-}
+export default { closeTrigger: `Fermer le volet` };

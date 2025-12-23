@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearInput": `Effacer les données de recherche`,
-}
+export default { clearInput: `Effacer les données de recherche` };

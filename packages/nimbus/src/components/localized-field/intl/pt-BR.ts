@@ -4,10 +4,11 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "hideCurrencies": `Ocultar todas as ocorrências`,
-  "hideLanguages": `Ocultar todos os idiomas`,
-  "infoBoxTriggerAriaLabel": `mais informações`,
-  "missingRequiredField": `Este campo é obrigatório. Forneça pelo menos um valor.`,
-  "showCurrencies": `Mostrar todas as ocorrências`,
-  "showLanguages": `Mostrar todos os idiomas`,
-}
+export default {
+  hideCurrencies: `Ocultar todas as ocorrências`,
+  hideLanguages: `Ocultar todos os idiomas`,
+  infoBoxTriggerAriaLabel: `mais informações`,
+  missingRequiredField: `Este campo é obrigatório. Forneça pelo menos um valor.`,
+  showCurrencies: `Mostrar todas as ocorrências`,
+  showLanguages: `Mostrar todos os idiomas`,
+};

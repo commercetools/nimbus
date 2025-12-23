@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "removeTag": `Tag entfernen`,
-}
+export default { removeTag: `Tag entfernen` };

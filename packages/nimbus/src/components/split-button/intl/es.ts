@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "noActionsAvailable": `No hay acciones disponibles`,
-}
+export default { noActionsAvailable: `No hay acciones disponibles` };

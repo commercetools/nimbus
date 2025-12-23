@@ -4,6 +4,7 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "emptyMessage": `arrastar itens aqui`,
-  "removeButtonLabel": `remover item`,
-}
+export default {
+  emptyMessage: `arrastar itens aqui`,
+  removeButtonLabel: `remover item`,
+};

@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Close drawer`,
-}
+export default { closeTrigger: `Close drawer` };

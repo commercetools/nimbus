@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Cerrar bandeja`,
-}
+export default { closeTrigger: `Cerrar bandeja` };

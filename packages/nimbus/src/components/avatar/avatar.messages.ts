@@ -7,7 +7,10 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import {
+  MessageDictionary,
+  type LocalizedStrings,
+} from "@internationalized/message";
 
 // Pre-compiled message functions
 import avatarMessages_en from "./intl/en";
@@ -41,4 +44,4 @@ export const avatarMessages = new MessageDictionary({
 /**
  * Available message keys for Avatar component
  */
-export type AvatarMessageKey = "avatarLabel";
+export type AvatarMessageKey = "avatarLabel" | "args";
