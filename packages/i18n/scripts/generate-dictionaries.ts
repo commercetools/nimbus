@@ -91,14 +91,15 @@ async function getMessageKeys(localePath: string): Promise<string[] | null> {
 
 /**
  * Check if a compiled locale file contains any message functions (messages with variables)
- * Messages with variables compile to functions: (args: Record<string, any>) => "..."
+ * Messages with variables compile to functions: (args: Record<string, MessageValue>) => "..."
  * Plain messages compile to strings: "message"
  */
 async function hasMessageFunctions(localePath: string): Promise<boolean> {
   try {
     const content = await fs.readFile(localePath, "utf-8");
-    // Pattern matches function syntax: "key": (args: Record<string, any>) => or "key": () =>
-    return /\(args: Record<string, any>\)\s*=>|\(\)\s*=>/.test(content);
+    // Pattern matches function syntax: "key": (args: ...) => or "key": () =>
+    // Matches any function parameter type to detect message functions
+    return /\(args[\s\S]*?\)\s*=>|\(\)\s*=>/.test(content);
   } catch {
     return false;
   }

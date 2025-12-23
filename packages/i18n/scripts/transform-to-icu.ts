@@ -24,6 +24,12 @@ import path from "path";
 
 const LOCALES = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
 
+// Define the Transifex message structure
+type TransifexMessage = {
+  string: string;
+  developer_comment?: string;
+};
+
 async function transformToICU() {
   const dataDir = path.join(__dirname, "../data");
   const tempDir = path.join(__dirname, "../.temp/icu");
@@ -36,12 +42,14 @@ async function transformToICU() {
     const outputPath = path.join(tempDir, `${locale}.json`);
 
     // Read Transifex format
-    const transifexData = JSON.parse(await fs.readFile(inputPath, "utf-8"));
+    const transifexData = JSON.parse(
+      await fs.readFile(inputPath, "utf-8")
+    ) as Record<string, TransifexMessage>;
 
     // Transform to ICU format (extract "string" field)
     const icuData: Record<string, string> = {};
     for (const [key, value] of Object.entries(transifexData)) {
-      icuData[key] = (value as any).string;
+      icuData[key] = value.string;
     }
 
     // Write ICU format

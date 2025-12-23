@@ -5,5 +5,6 @@
  */
 
 export default {
-  avatarLabel: (args: Record<string, any>) => `Avatarbild für ${args.fullName}`,
+  avatarLabel: (args: Record<string, string | number>) =>
+    `Avatarbild für ${args.fullName}`,
 };
