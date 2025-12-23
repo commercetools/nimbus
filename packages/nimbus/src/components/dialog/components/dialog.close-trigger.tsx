@@ -2,8 +2,8 @@ import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
 import { IconButton } from "@/components";
-import { messages } from "../dialog.i18n";
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
+import { dialogMessages } from "../dialog.messages";
 
 /**
  * Dialog.CloseTrigger - A button that closes the dialog
@@ -12,7 +12,7 @@ import { useIntl } from "react-intl";
  */
 export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
   const { ref: forwardedRef, "aria-label": ariaLabel, ...restProps } = props;
-  const intl = useIntl();
+  const { locale } = useLocale();
 
   return (
     <DialogCloseTriggerSlot>
@@ -21,7 +21,9 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
         slot="close"
         size="xs"
         variant="ghost"
-        aria-label={ariaLabel || intl.formatMessage(messages.closeTrigger)}
+        aria-label={
+          ariaLabel || dialogMessages.getStringForLocale("closeTrigger", locale)
+        }
         {...restProps}
       >
         <Close />
