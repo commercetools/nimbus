@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearInput": `Suchfeld löschen`,
-}
+export default { clearInput: `Suchfeld löschen` };

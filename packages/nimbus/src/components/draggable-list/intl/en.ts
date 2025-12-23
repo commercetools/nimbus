@@ -4,6 +4,7 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "emptyMessage": `drop items here`,
-  "removeButtonLabel": `remove item`,
-}
+export default {
+  emptyMessage: `drop items here`,
+  removeButtonLabel: `remove item`,
+};

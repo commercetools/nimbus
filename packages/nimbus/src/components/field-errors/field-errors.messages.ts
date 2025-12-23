@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import fieldErrorsMessages_en from "./intl/en";
@@ -31,4 +31,19 @@ export const fieldErrorsMessages = new MessageDictionary({
 /**
  * Available message keys for FieldErrors component
  */
-export type FieldErrorsMessageKey = "duplicateValue" | "emptyValue" | "invalidFormat" | "invalidFractionalNumber" | "invalidFromServer" | "invalidNegativeNumber" | "invalidValue" | "missingRequiredField" | "resourceNotFound" | "valueAboveMaximum" | "valueBelowMinimum" | "valueBlocked" | "valueOutOfRange" | "valueTooLong" | "valueTooShort";
+export type FieldErrorsMessageKey =
+  | "duplicateValue"
+  | "emptyValue"
+  | "invalidFormat"
+  | "invalidFractionalNumber"
+  | "invalidFromServer"
+  | "invalidNegativeNumber"
+  | "invalidValue"
+  | "missingRequiredField"
+  | "resourceNotFound"
+  | "valueAboveMaximum"
+  | "valueBelowMinimum"
+  | "valueBlocked"
+  | "valueOutOfRange"
+  | "valueTooLong"
+  | "valueTooShort";

@@ -4,6 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "decrement": `Merma`,
-  "increment": `Aumento`,
-}
+export default { decrement: `Merma`, increment: `Aumento` };

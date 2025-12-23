@@ -4,8 +4,9 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "nextMonth": `Próximo mês`,
-  "nextYear": `Próximo ano`,
-  "previousMonth": `Mês anterior`,
-  "previousYear": `Ano anterior`,
-}
+export default {
+  nextMonth: `Próximo mês`,
+  nextYear: `Próximo ano`,
+  previousMonth: `Mês anterior`,
+  previousYear: `Ano anterior`,
+};

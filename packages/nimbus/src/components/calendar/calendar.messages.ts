@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import calendarMessages_en from "./intl/en";
@@ -31,4 +31,8 @@ export const calendarMessages = new MessageDictionary({
 /**
  * Available message keys for Calendar component
  */
-export type CalendarMessageKey = "nextMonth" | "nextYear" | "previousMonth" | "previousYear";
+export type CalendarMessageKey =
+  | "nextMonth"
+  | "nextYear"
+  | "previousMonth"
+  | "previousYear";

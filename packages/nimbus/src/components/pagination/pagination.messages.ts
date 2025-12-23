@@ -7,7 +7,10 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import {
+  MessageDictionary,
+  type LocalizedStrings,
+} from "@internationalized/message";
 
 // Pre-compiled message functions
 import paginationMessages_en from "./intl/en";
@@ -41,4 +44,11 @@ export const paginationMessages = new MessageDictionary({
 /**
  * Available message keys for Pagination component
  */
-export type PaginationMessageKey = "currentPage" | "goToNextPage" | "goToPreviousPage" | "itemsPerPage" | "itemsPerPageText" | "ofTotalPages";
+export type PaginationMessageKey =
+  | "currentPage"
+  | "goToNextPage"
+  | "goToPreviousPage"
+  | "itemsPerPage"
+  | "itemsPerPageText"
+  | "ofTotalPages"
+  | "args";

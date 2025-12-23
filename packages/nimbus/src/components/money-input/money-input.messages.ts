@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import moneyInputMessages_en from "./intl/en";
@@ -31,4 +31,7 @@ export const moneyInputMessages = new MessageDictionary({
 /**
  * Available message keys for MoneyInput component
  */
-export type MoneyInputMessageKey = "amountInputLabel" | "currencySelectLabel" | "highPrecisionPrice";
+export type MoneyInputMessageKey =
+  | "amountInputLabel"
+  | "currencySelectLabel"
+  | "highPrecisionPrice";

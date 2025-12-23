@@ -4,6 +4,7 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "emptyMessage": `Déposer les articles ici`,
-  "removeButtonLabel": `Supprimer l'article`,
-}
+export default {
+  emptyMessage: `Déposer les articles ici`,
+  removeButtonLabel: `Supprimer l'article`,
+};

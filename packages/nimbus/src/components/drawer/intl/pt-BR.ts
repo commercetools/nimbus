@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Fechar gaveta`,
-}
+export default { closeTrigger: `Fechar gaveta` };

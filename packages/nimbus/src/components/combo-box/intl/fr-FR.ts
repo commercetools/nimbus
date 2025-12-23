@@ -4,10 +4,11 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearSelection": `Effacer la sélection`,
-  "comboboxDialog": `Liste déroulante combinée`,
-  "filterOptions": `Filtrer les options de la liste déroulante combinée`,
-  "options": `Options de la liste déroulante combinée`,
-  "selectedValues": `Valeurs sélectionnées`,
-  "toggleCombobox": `Activer/désactiver la liste déroulante combinée`,
-}
+export default {
+  clearSelection: `Effacer la sélection`,
+  comboboxDialog: `Liste déroulante combinée`,
+  filterOptions: `Filtrer les options de la liste déroulante combinée`,
+  options: `Options de la liste déroulante combinée`,
+  selectedValues: `Valeurs sélectionnées`,
+  toggleCombobox: `Activer/désactiver la liste déroulante combinée`,
+};

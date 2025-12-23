@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Fechar caixa de diálogo`,
-}
+export default { closeTrigger: `Fechar caixa de diálogo` };

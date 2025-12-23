@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearSelection": `Auswahl löschen`,
-}
+export default { clearSelection: `Auswahl löschen` };

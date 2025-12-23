@@ -4,10 +4,11 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearSelection": `Auswahl löschen`,
-  "comboboxDialog": `Combobox-Dialog`,
-  "filterOptions": `Combobox-Optionen filtern`,
-  "options": `Combobox-Optionen`,
-  "selectedValues": `Ausgewählte Werte`,
-  "toggleCombobox": `Combobox umschalten`,
-}
+export default {
+  clearSelection: `Auswahl löschen`,
+  comboboxDialog: `Combobox-Dialog`,
+  filterOptions: `Combobox-Optionen filtern`,
+  options: `Combobox-Optionen`,
+  selectedValues: `Ausgewählte Werte`,
+  toggleCombobox: `Combobox umschalten`,
+};

@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "default": `Carregando dados`,
-}
+export default { default: `Carregando dados` };

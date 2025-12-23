@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Dialog schließen`,
-}
+export default { closeTrigger: `Dialog schließen` };

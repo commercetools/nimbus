@@ -4,12 +4,13 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "currentPage": `Aktuelle Seite`,
-  "goToNextPage": `Weiter zur nächsten Seite`,
-  "goToPreviousPage": `Zur vorherigen Seite`,
-  "itemsPerPage": `Artikel pro Seite`,
-  "itemsPerPageText": `Artikel pro Seite`,
-  "ofTotalPages": (args: Record<string, any>) => `von ${args.totalPages}`,
-  "page": `Seite`,
-  "pagination": `Seitennummerierung`,
-}
+export default {
+  currentPage: `Aktuelle Seite`,
+  goToNextPage: `Weiter zur nächsten Seite`,
+  goToPreviousPage: `Zur vorherigen Seite`,
+  itemsPerPage: `Artikel pro Seite`,
+  itemsPerPageText: `Artikel pro Seite`,
+  ofTotalPages: (args: Record<string, any>) => `von ${args.totalPages}`,
+  page: `Seite`,
+  pagination: `Seitennummerierung`,
+};

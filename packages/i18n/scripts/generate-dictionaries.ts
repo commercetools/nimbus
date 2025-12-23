@@ -1,7 +1,7 @@
 /**
  * Generate MessageDictionary files for each component
  *
- * SUMMARY:
+ * Overview:
  * After compiling messages for each locale, we need to create a dictionary
  * file that imports all locale files and wraps them in a MessageDictionary.
  * This dictionary is what components will import and use at runtime.
@@ -27,6 +27,7 @@
 
 import fs from "fs/promises";
 import path from "path";
+import { format, resolveConfig } from "prettier";
 
 const LOCALES = [
   { code: "en", bcp47: "en-US", importName: "en" },
@@ -69,15 +70,17 @@ function dirToVariableName(dirName: string): string {
 async function getMessageKeys(localePath: string): Promise<string[] | null> {
   try {
     const content = await fs.readFile(localePath, "utf-8");
-    // Extract keys from export default { "key": ... }
+    // Extract keys from export default { "key": ... } or { key: ... }
     const match = content.match(/export default\s*\{([^}]+)\}/s);
     if (!match) return null;
 
     const keys: string[] = [];
-    // Match quoted keys: "key" or 'key'
-    const keyMatches = match[1].matchAll(/"([^"]+)":|'([^']+)':/g);
+    // Match quoted keys: "key" or 'key', or unquoted identifiers: key
+    const keyMatches = match[1].matchAll(
+      /"([^"]+)":|'([^']+)':|([a-zA-Z_$][a-zA-Z0-9_$]*):/g
+    );
     for (const keyMatch of keyMatches) {
-      const key = keyMatch[1] || keyMatch[2];
+      const key = keyMatch[1] || keyMatch[2] || keyMatch[3];
       if (key) keys.push(key);
     }
     return keys;
@@ -199,7 +202,7 @@ async function generateDictionaries() {
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary${hasFunctions ? `, type LocalizedStrings` : ``} } from "@internationalized/message";
 
 // Pre-compiled message functions
 ${imports}
@@ -231,8 +234,15 @@ ${dictionaryEntries}
  */
 export type ${componentName}MessageKey = ${messageKeyType};
 `;
+    // Format the entire file content with Prettier
+    // Resolve Prettier config from project root
+    const prettierConfig = await resolveConfig(process.cwd());
+    const formattedContent = await format(fileContent, {
+      ...prettierConfig,
+      parser: "typescript",
+    });
 
-    await fs.writeFile(outputPath, fileContent);
+    await fs.writeFile(outputPath, formattedContent);
     console.log(
       `   ✅ ${componentDir}: ${availableLocales.length} locales, ${messageKeys?.length || 0} messages`
     );

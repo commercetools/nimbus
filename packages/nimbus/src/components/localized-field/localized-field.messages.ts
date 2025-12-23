@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import localizedFieldMessages_en from "./intl/en";
@@ -31,4 +31,10 @@ export const localizedFieldMessages = new MessageDictionary({
 /**
  * Available message keys for LocalizedField component
  */
-export type LocalizedFieldMessageKey = "hideCurrencies" | "hideLanguages" | "infoBoxTriggerAriaLabel" | "missingRequiredField" | "showCurrencies" | "showLanguages";
+export type LocalizedFieldMessageKey =
+  | "hideCurrencies"
+  | "hideLanguages"
+  | "infoBoxTriggerAriaLabel"
+  | "missingRequiredField"
+  | "showCurrencies"
+  | "showLanguages";

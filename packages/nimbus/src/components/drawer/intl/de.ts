@@ -4,5 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "closeTrigger": `Schublade schließen`,
-}
+export default { closeTrigger: `Schublade schließen` };

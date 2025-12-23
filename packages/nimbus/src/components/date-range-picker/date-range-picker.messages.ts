@@ -7,7 +7,7 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+import { MessageDictionary } from "@internationalized/message";
 
 // Pre-compiled message functions
 import dateRangePickerMessages_en from "./intl/en";
@@ -31,4 +31,17 @@ export const dateRangePickerMessages = new MessageDictionary({
 /**
  * Available message keys for DateRangePicker component
  */
-export type DateRangePickerMessageKey = "clearInput" | "clearSelection" | "endTime" | "endTimeHour" | "endTimeHourMinute" | "endTimeHourMinuteSecond" | "endTimeLabel" | "openCalendar" | "startTime" | "startTimeHour" | "startTimeHourMinute" | "startTimeHourMinuteSecond" | "startTimeLabel";
+export type DateRangePickerMessageKey =
+  | "clearInput"
+  | "clearSelection"
+  | "endTime"
+  | "endTimeHour"
+  | "endTimeHourMinute"
+  | "endTimeHourMinuteSecond"
+  | "endTimeLabel"
+  | "openCalendar"
+  | "startTime"
+  | "startTimeHour"
+  | "startTimeHourMinute"
+  | "startTimeHourMinuteSecond"
+  | "startTimeLabel";

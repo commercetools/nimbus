@@ -4,17 +4,18 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default {  "clearInput": `Eliminar valor de entrada`,
-  "clearSelection": `Borrar rango de fechas`,
-  "endTime": `Finalizar tiempo`,
-  "endTimeHour": `Finalizar tiempo (hora)`,
-  "endTimeHourMinute": `Finalizar tiempo (hora y minuto)`,
-  "endTimeHourMinuteSecond": `Finalizar tiempo (hora, minuto, segundo)`,
-  "endTimeLabel": `Finalizar tiempo`,
-  "openCalendar": `Abrir calendario`,
-  "startTime": `Iniciar tiempo`,
-  "startTimeHour": `Iniciar tiempo (hora)`,
-  "startTimeHourMinute": `Iniciar tiempo (hora y minuto)`,
-  "startTimeHourMinuteSecond": `Iniciar tiempo (hora, minuto y segundo)`,
-  "startTimeLabel": `Iniciar tiempo`,
-}
+export default {
+  clearInput: `Eliminar valor de entrada`,
+  clearSelection: `Borrar rango de fechas`,
+  endTime: `Finalizar tiempo`,
+  endTimeHour: `Finalizar tiempo (hora)`,
+  endTimeHourMinute: `Finalizar tiempo (hora y minuto)`,
+  endTimeHourMinuteSecond: `Finalizar tiempo (hora, minuto, segundo)`,
+  endTimeLabel: `Finalizar tiempo`,
+  openCalendar: `Abrir calendario`,
+  startTime: `Iniciar tiempo`,
+  startTimeHour: `Iniciar tiempo (hora)`,
+  startTimeHourMinute: `Iniciar tiempo (hora y minuto)`,
+  startTimeHourMinuteSecond: `Iniciar tiempo (hora, minuto y segundo)`,
+  startTimeLabel: `Iniciar tiempo`,
+};
