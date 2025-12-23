@@ -1,11 +1,17 @@
 /**
- * Compile component messages to JavaScript
+ * Compile component messages to JavaScript - Step 3 of 4 in the i18n build pipeline
  *
  * Overview:
  * Takes the split component messages (ICU format) and compiles them into
  * pre-compiled JavaScript functions using `@internationalized/string-compiler`.
  * Each component gets its own intl/ directory with compiled message files
  * for each locale.
+ *
+ * This is Step 3 of 4 in the i18n build pipeline:
+ *   1. Transform - Transifex → ICU format
+ *   2. Split - Group messages by component
+ *   3. Compile (this script) - ICU → JavaScript functions
+ *   4. Generate - Create MessageDictionary wrappers
  *
  * Input:  .temp/by-component/{Component}/{locale}.json (ICU format)
  * Output: packages/nimbus/src/components/{component}/intl/{locale}.ts (compiled JS)
@@ -14,7 +20,8 @@
  *   1. Read component messages from split files
  *   2. Compile using `@internationalized/string-compiler`
  *   3. Transform CommonJS → ES modules
- *   4. Write to component's intl/ directory
+ *   4. Add type annotations
+ *   5. Write to component's intl/ directory
  *
  * @example
  * Input (.temp/by-component/Alert/en.json):
@@ -57,16 +64,16 @@ async function compileComponentMessages() {
     "../../nimbus/src/components"
   );
 
-  // Get all component directories
+  // Get all component directories (filter out files, keep only directories)
   const componentDirs = await fs.readdir(splitDir);
-  const components = componentDirs.filter((dir) =>
-    fs
-      .stat(path.join(splitDir, dir))
-      .then((stat) => stat.isDirectory())
-      .catch(() => false)
-  );
-
-  console.log(`🔨 Compiling messages for ${components.length} components...\n`);
+  const components: string[] = [];
+  for (const dir of componentDirs) {
+    const dirPath = path.join(splitDir, dir);
+    const stat = await fs.stat(dirPath);
+    if (stat.isDirectory()) {
+      components.push(dir);
+    }
+  }
 
   for (const component of components) {
     const componentDir = path.join(splitDir, component);
@@ -77,10 +84,8 @@ async function compileComponentMessages() {
       "intl"
     );
 
-    // Create intl directory
+    // Create intl directory for this component
     await fs.mkdir(outputIntlDir, { recursive: true });
-
-    console.log(`📦 ${component} (${componentDirName}/)`);
 
     // Process each locale
     for (const locale of LOCALES) {
@@ -90,31 +95,29 @@ async function compileComponentMessages() {
       try {
         await fs.access(inputPath);
       } catch {
-        console.log(`   ⚠️  Skipping ${locale.code} (file not found)`);
+        // Skip missing locale files silently
         continue;
       }
 
-      // Read ICU messages
+      // Read ICU messages from split component files
       const messages = JSON.parse(await fs.readFile(inputPath, "utf-8"));
 
-      // Compile using string-compiler
+      // Compile ICU messages to JavaScript functions using string-compiler
       const compiledCode = compileStrings(messages);
 
-      // Transform CommonJS → ES modules
+      // Transform CommonJS output → ES modules
       let esModuleCode = compiledCode.replace(
         /^module\.exports\s*=\s*/,
         "export default "
       );
 
-      // Add type annotations to function parameters to fix TypeScript errors
-      // Replace (args) => with (args: Record<string, MessageValue>) =>
-      // Using MessageValue union type for type-safe ICU message variables
+      // Add type annotations: messages with variables compile to functions that need typed parameters
       esModuleCode = esModuleCode.replace(
         /\(args\)\s*=>/g,
         "(args: Record<string, string | number>) =>"
       );
 
-      // Write compiled file
+      // Write compiled file (ready for next step: generate-dictionaries)
       const outputPath = path.join(outputIntlDir, `${locale.code}.ts`);
       const tsContent = `/**
  * Pre-compiled ${locale.code} messages for ${component}
@@ -132,11 +135,12 @@ ${esModuleCode}`;
       });
 
       await fs.writeFile(outputPath, formattedContent);
-      console.log(`   ✅ ${locale.code}`);
     }
   }
 
-  console.log(`\n✅ Compilation complete!`);
+  console.log(
+    "✅ Compilation complete! Output: packages/nimbus/src/components/*/intl/"
+  );
 }
 
 compileComponentMessages().catch(console.error);
