@@ -10,7 +10,8 @@ export default {
   goToPreviousPage: `Ir para a página anterior`,
   itemsPerPage: `Itens por página`,
   itemsPerPageText: `Itens por página`,
-  ofTotalPages: (args: Record<string, any>) => `de ${args.totalPages}`,
+  ofTotalPages: (args: Record<string, string | number>) =>
+    `de ${args.totalPages}`,
   page: `Página`,
   pagination: `Paginação`,
 };

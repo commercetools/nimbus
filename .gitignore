@@ -177,6 +177,9 @@ dist
 # Editors
 .vscode/
 
+# Cursor rules
+.cursor/rules/
+
 # Finder (MacOS) folder config
 .DS_Store
 
@@ -185,3 +188,4 @@ dist
 
 # Playwright MCP screenshots
 .playwright-mcp/
+

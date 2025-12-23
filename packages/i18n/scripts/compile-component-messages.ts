@@ -107,10 +107,11 @@ async function compileComponentMessages() {
       );
 
       // Add type annotations to function parameters to fix TypeScript errors
-      // Replace (args) => with (args: Record<string, any>) =>
+      // Replace (args) => with (args: Record<string, MessageValue>) =>
+      // Using MessageValue union type for type-safe ICU message variables
       esModuleCode = esModuleCode.replace(
         /\(args\)\s*=>/g,
-        "(args: Record<string, any>) =>"
+        "(args: Record<string, string | number>) =>"
       );
 
       // Write compiled file
