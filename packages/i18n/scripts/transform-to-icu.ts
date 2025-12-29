@@ -8,7 +8,7 @@
  * the structure to prepare data for compilation.
  *
  * This is Step 1 of 4 in the i18n build pipeline:
- *   1. Transform (this script) - Transifex → ICU format
+ *   1. Transform - Transifex → ICU format --> You are here
  *   2. Split - Group messages by component
  *   3. Compile - ICU → JavaScript functions
  *   4. Generate - Create MessageDictionary wrappers

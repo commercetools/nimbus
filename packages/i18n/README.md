@@ -22,8 +22,8 @@ This is an **internal build tool package** that:
   JavaScript functions
 
 > **Note:** `react-intl` is used only as a dev dependency in the `nimbus`
-> package for `.i18n.ts` source file extraction. It is not a runtime
-> dependency - components use compiled `.messages.ts` dictionaries with
+> package for `.i18n.ts` source file extraction. It is not a runtime dependency.
+> Components use compiled `.messages.ts` dictionaries with
 > `@internationalized/message` at runtime.
 
 ## Architecture
@@ -159,10 +159,11 @@ loadingSpinnerMessages.getStringForLocale("default", locale); // ← Use "defaul
 
 ## Internal Package
 
-**Note:** This package is for internal Nimbus development only. The compiled
-message files are generated in the `@commercetools/nimbus` package and consumed
-directly by components. External consumers do not need to install or use this
-package directly.
+**Note:** This package is **private** (marked as `"private": true` in
+`package.json`) and is for internal Nimbus development only. It will not be
+published to npm. The compiled message files are generated in the
+`@commercetools/nimbus` package and consumed directly by components. External
+consumers do not need to install or use this package directly.
 
 ## Translation Workflow
 

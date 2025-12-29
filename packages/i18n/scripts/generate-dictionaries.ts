@@ -10,7 +10,7 @@
  *   1. Transform - Transifex → ICU format
  *   2. Split - Group messages by component
  *   3. Compile - ICU → JavaScript functions
- *   4. Generate (this script) - Create MessageDictionary wrappers
+ *   4. Generate - Create MessageDictionary wrappers --> You are here
  *
  * Input:  packages/nimbus/src/components/{component}/intl/*.ts (compiled locale files)
  * Output: packages/nimbus/src/components/{component}/{component}.messages.ts (dictionary)
