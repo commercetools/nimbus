@@ -34,6 +34,13 @@ export const formFieldRecipe = defineSlotRecipe({
       color: "neutral.11",
       fontSize: "var(--form-field-font-size)",
       lineHeight: "var(--form-field-line-height)",
+      // ensure the asterisk is always aligned top-right
+      "& > label[data-required='true']": {
+        display: "inline-flex",
+        "& > sup": {
+          lineHeight: "inherit",
+        },
+      },
     },
     input: {
       gridArea: "input",
