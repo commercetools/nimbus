@@ -1,23 +1,21 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
-
-export interface ImageElementArgs {
-  src: string;
-  alt: string;
-  borderRadius?: string;
-  marginBottom?: string;
-}
-
 /**
- * Build an image ElementDefinition
+ * Image Remote DOM Custom Element
  */
-export function buildImageElement(args: ImageElementArgs): ElementDefinition {
-  return {
-    tagName: "nimbus-image",
-    attributes: {
-      src: args.src,
-      alt: args.alt,
-      borderRadius: args.borderRadius,
-      marginBottom: args.marginBottom,
-    },
-  };
+
+import { createRemoteElement } from "@remote-dom/core/elements";
+
+export const NimbusImage = createRemoteElement({
+  properties: {
+    styleProps: true,
+    src: true,
+    alt: true,
+  },
+});
+
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-image")
+) {
+  customElements.define("nimbus-image", NimbusImage);
 }

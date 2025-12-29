@@ -1,59 +1,31 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
-
-export interface MoneyInputElementArgs {
-  name?: string;
-  currencyCode?: string;
-  amount?: string;
-  currencies?: string[];
-  placeholder?: string;
-  isRequired?: boolean;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  isInvalid?: boolean;
-  size?: "sm" | "md";
-  hasHighPrecisionBadge?: boolean;
-  isCurrencyInputDisabled?: boolean;
-  ariaLabel?: string;
-}
-
 /**
- * Build a money input ElementDefinition
+ * MoneyInput Remote DOM Custom Element
  */
-export function buildMoneyInputElement(
-  args: MoneyInputElementArgs
-): ElementDefinition {
-  const {
-    name,
-    currencyCode = "USD",
-    amount = "",
-    currencies,
-    placeholder,
-    isRequired,
-    isDisabled,
-    isReadOnly,
-    isInvalid,
-    size,
-    hasHighPrecisionBadge,
-    isCurrencyInputDisabled,
-    ariaLabel,
-  } = args;
 
-  return {
-    tagName: "nimbus-money-input",
-    attributes: {
-      name,
-      currencyCode,
-      amount,
-      currencies: currencies ? JSON.stringify(currencies) : undefined,
-      placeholder,
-      isRequired,
-      isDisabled,
-      isReadOnly,
-      isInvalid,
-      size,
-      hasHighPrecisionBadge,
-      isCurrencyInputDisabled,
-      "aria-label": ariaLabel, // Keep kebab for aria
-    },
-  };
+import { createRemoteElement } from "@remote-dom/core/elements";
+
+export const NimbusMoneyInput = createRemoteElement({
+  properties: {
+    styleProps: true,
+    name: true,
+    currencyCode: true,
+    amount: true,
+    currencies: true,
+    placeholder: true,
+    isRequired: true,
+    isDisabled: true,
+    isReadOnly: true,
+    isInvalid: true,
+    size: true,
+    hasHighPrecisionBadge: true,
+    isCurrencyInputDisabled: true,
+  },
+});
+
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-money-input")
+) {
+  customElements.define("nimbus-money-input", NimbusMoneyInput);
 }

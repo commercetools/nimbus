@@ -1,69 +1,39 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
-
-export interface CardHeaderElementArgs {
-  children?: (ElementDefinition | string)[];
-}
-
 /**
- * Build a card header ElementDefinition
+ * Card Remote DOM Custom Elements
  */
-export function buildCardHeaderElement(
-  args: CardHeaderElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-card-header",
-    children: args.children,
-  };
-}
 
-export interface CardContentElementArgs {
-  children?: (ElementDefinition | string)[];
-}
+import { createRemoteElement } from "@remote-dom/core/elements";
 
-/**
- * Build a card content ElementDefinition
- */
-export function buildCardContentElement(
-  args: CardContentElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-card-content",
-    children: args.children,
-  };
-}
+export const NimbusCardRoot = createRemoteElement({
+  properties: {
+    styleProps: true,
+    elevation: true,
+    borderStyle: true,
+    cardPadding: true,
+  },
+});
 
-export interface CardElementArgs {
-  elevation?: string;
-  borderStyle?: string;
-  cardPadding?: string;
-  maxWidth?: string;
-  width?: string;
-  children?: (ElementDefinition | string)[];
-}
+export const NimbusCardHeader = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-/**
- * Build a card root ElementDefinition
- * Children should be CardHeader and/or CardContent elements
- */
-export function buildCardElement(args: CardElementArgs): ElementDefinition {
-  const {
-    elevation = "elevated",
-    borderStyle = "outlined",
-    cardPadding,
-    maxWidth,
-    width,
-    children,
-  } = args;
+export const NimbusCardContent = createRemoteElement({
+  properties: {
+    styleProps: true,
+  },
+});
 
-  return {
-    tagName: "nimbus-card-root",
-    attributes: {
-      elevation,
-      borderStyle,
-      cardPadding,
-      maxWidth,
-      width,
-    },
-    children,
-  };
+// Self-register on import
+if (typeof customElements !== "undefined") {
+  if (!customElements.get("nimbus-card-root")) {
+    customElements.define("nimbus-card-root", NimbusCardRoot);
+  }
+  if (!customElements.get("nimbus-card-header")) {
+    customElements.define("nimbus-card-header", NimbusCardHeader);
+  }
+  if (!customElements.get("nimbus-card-content")) {
+    customElements.define("nimbus-card-content", NimbusCardContent);
+  }
 }

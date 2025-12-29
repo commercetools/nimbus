@@ -3,6 +3,12 @@
  */
 
 /**
+ * Type for Remote DOM custom elements
+ * These are created with document.createElement and have dynamic properties
+ */
+export type RemoteDomElement = HTMLElement & Record<string, unknown>;
+
+/**
  * Structured element definition for type-safe UI serialization
  */
 export interface ElementDefinition {
@@ -18,28 +24,15 @@ export interface ElementDefinition {
 export type { ElementDefinition as ElementDef };
 
 /**
- * Structured DOM content - new approach using data instead of code
- */
-export interface StructuredDomContent {
-  type: "structuredDom";
-  element: ElementDefinition;
-  framework: "react";
-}
-
-/**
- * Remote DOM content - legacy approach using script strings
- * @deprecated Use StructuredDomContent instead for better type safety
+ * Remote DOM content - uses mutation observer for live incremental updates
+ * The script field contains the serialized DOM tree and optional mutations
  */
 export interface RemoteDomContent {
   type: "remoteDom";
   script: string;
   framework: "react";
+  mutations?: unknown[]; // Serialized mutations for incremental updates
 }
-
-/**
- * Union type supporting both old and new approaches during migration
- */
-export type DomContent = StructuredDomContent | RemoteDomContent;
 
 export interface UIResourceMetadata {
   title?: string;

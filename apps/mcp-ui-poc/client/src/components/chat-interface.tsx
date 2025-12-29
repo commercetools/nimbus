@@ -10,14 +10,16 @@ import {
 } from "@commercetools/nimbus";
 import { isUIResource } from "@mcp-ui/client";
 import { ClaudeClient } from "../lib/claude-client";
-import { FormSubmissionDialog } from "./form-submission-dialog";
 import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
+import { UIErrorBoundary } from "./ui-error-boundary";
+import { useMutationStream } from "../hooks/use-mutation-stream";
+import { onActionQueued } from "../hooks/use-remote-connection";
 import type { Message } from "../types/virtual-dom";
 import {
-  StructuredDomRenderer,
-  type StructuredDomContent,
-} from "./structured-dom-renderer";
+  RemoteDomRenderer,
+  type RemoteDomContent,
+} from "./remote-dom-renderer";
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -27,10 +29,69 @@ export function ChatInterface() {
   const [initError, setInitError] = useState<string | null>(null);
   const [uiToolsEnabled, setUiToolsEnabled] = useState(true);
   const [commerceToolsEnabled, setCommerceToolsEnabled] = useState(true);
-  const [formDialogOpen, setFormDialogOpen] = useState(false);
-  const [formData, setFormData] = useState<Record<string, string>>({});
   const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // WebSocket connection for real-time mutations
+  const mutationStream = useMutationStream(
+    import.meta.env.VITE_UI_SERVER_URL || "http://localhost:3001"
+  );
+
+  // Register callback for action notifications from UI interactions
+  useEffect(() => {
+    onActionQueued(async (action) => {
+      console.log("🎯 Action queued from UI interaction:", action);
+
+      // Add system notification to chat
+      const notificationMessage: Message = {
+        role: "assistant",
+        content: `🎯 Button clicked - executing ${action.toolName}...`,
+      };
+      setMessages((prev) => [...prev, notificationMessage]);
+      setIsLoading(true);
+
+      try {
+        // Build current message history
+        const messageHistory = messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content || "",
+        }));
+
+        // Execute the tool call directly via Claude
+        const toolInstruction = `Execute the MCP tool ${action.toolName} with these exact parameters: ${JSON.stringify(action.params)}`;
+
+        const { text, uiResources } = await claudeClient.sendMessage(
+          toolInstruction,
+          {
+            uiToolsEnabled,
+            commerceToolsEnabled,
+            messageHistory,
+          }
+        );
+
+        // Add response to messages
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: text,
+            uiResources,
+          },
+        ]);
+      } catch (error) {
+        console.error("Error executing action:", error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: `Error executing action: ${(error as Error).message}`,
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    });
+  }, [messages, claudeClient, uiToolsEnabled, commerceToolsEnabled]);
 
   // Auto-scroll to bottom when messages or loading state changes
   useEffect(() => {
@@ -45,49 +106,6 @@ export function ChatInterface() {
 
     return () => clearTimeout(timeoutId);
   }, [messages, isLoading]);
-
-  // Intercept form submissions globally
-  useEffect(() => {
-    const handleFormSubmit = (event: SubmitEvent) => {
-      console.log("📋 Form submit event fired!", event);
-      const form = event.target as HTMLFormElement;
-      console.log("📋 Form element:", form);
-      console.log("📋 Form action:", form.action);
-
-      // Only intercept forms without an action attribute (or with empty action)
-      if (form.action && form.action !== window.location.href) {
-        console.log("📋 Form has real action, allowing normal submission");
-        return; // Let forms with real actions submit normally
-      }
-
-      console.log("📋 Intercepting form submission");
-
-      // Prevent default submission
-      event.preventDefault();
-
-      // Extract form data
-      const formDataObj = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formDataObj.forEach((value, key) => {
-        data[key] = value.toString();
-      });
-
-      console.log("📝 Form submitted:", data);
-
-      // Show form data in dialog
-      setFormData(data);
-      setFormDialogOpen(true);
-    };
-
-    document.addEventListener("submit", handleFormSubmit);
-    console.log("✅ Form submit listener attached");
-
-    return () => {
-      document.removeEventListener("submit", handleFormSubmit);
-      console.log("❌ Form submit listener removed");
-    };
-  }, []);
 
   // Initialize Claude client
   useEffect(() => {
@@ -123,11 +141,18 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      // Build message history for context (only text content)
-      const messageHistory = messages.map((msg) => ({
-        role: msg.role,
-        content: msg.content || "",
-      }));
+      // Build message history INCLUDING the new user message
+      // (messages state hasn't updated yet due to async React state)
+      const messageHistory = [
+        ...messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content || "",
+        })),
+        {
+          role: "user" as const,
+          content: message,
+        },
+      ];
 
       // Send message - Claude handles all tool calling automatically
       const { text, uiResources } = await claudeClient.sendMessage(message, {
@@ -210,6 +235,14 @@ export function ChatInterface() {
               <Badge colorPalette="positive" size="xs">
                 Total: {serverStats.ui + serverStats.commerce}
               </Badge>
+              <Badge
+                colorPalette={
+                  mutationStream.isConnected ? "positive" : "critical"
+                }
+                size="xs"
+              >
+                {mutationStream.isConnected ? "⚡ Live" : "⚠️ Offline"}
+              </Badge>
             </Flex>
           )}
         </Flex>
@@ -272,9 +305,6 @@ export function ChatInterface() {
             {msg.content && <Text>{msg.content}</Text>}
 
             {msg.uiResources?.map((resource, i) => {
-              console.log("🔍 Checking resource:", resource);
-              console.log("🔍 isUIResource result:", isUIResource(resource));
-
               if (!isUIResource(resource)) {
                 return (
                   <Box
@@ -295,21 +325,24 @@ export function ChatInterface() {
               }
 
               try {
-                console.log("🎨 Rendering UIResource:", resource.resource.uri);
-
-                // Parse structured DOM content
+                // Parse Remote DOM content
                 const parsedContent = JSON.parse(
                   resource.resource.text
-                ) as StructuredDomContent;
+                ) as RemoteDomContent;
 
-                console.log("✨ Using StructuredDomRenderer");
+                // Render with hybrid MCP snapshot + WebSocket live updates
                 return (
                   <Box key={i} marginTop="300">
-                    <StructuredDomRenderer content={parsedContent} />
+                    <UIErrorBoundary>
+                      <RemoteDomRenderer
+                        content={parsedContent}
+                        uri={resource.resource.uri}
+                      />
+                    </UIErrorBoundary>
                   </Box>
                 );
               } catch (error) {
-                console.error("❌ Error rendering UIResource:", error);
+                console.error("❌ Error parsing UIResource:", error);
                 return (
                   <Box
                     key={i}
@@ -317,7 +350,7 @@ export function ChatInterface() {
                     padding="400"
                     backgroundColor="critical.2"
                   >
-                    <Text color="critical.11">Error rendering UI resource</Text>
+                    <Text color="critical.11">Error parsing UI resource</Text>
                     <Text fontSize="sm" color="critical.10">
                       {(error as Error).message}
                     </Text>
@@ -338,13 +371,6 @@ export function ChatInterface() {
         onSend={handleSendMessage}
         isDisabled={isLoading || !isReady}
         autoFocus={isReady}
-      />
-
-      {/* Form submission dialog */}
-      <FormSubmissionDialog
-        isOpen={formDialogOpen}
-        onClose={() => setFormDialogOpen(false)}
-        formData={formData}
       />
     </Flex>
   );

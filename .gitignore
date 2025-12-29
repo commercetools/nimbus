@@ -182,6 +182,7 @@ dist
 
 # Local AI settings
 .claude/settings.local.json
+.mcp.local.json
 
 # Playwright MCP screenshots
 .playwright-mcp/

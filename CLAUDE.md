@@ -21,6 +21,57 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
+## RAG-First Development Pattern (CRITICAL)
+
+**If it is available, ALWAYS use local-nimbus-rag MCP for discovery tasks BEFORE using Glob/Grep/Read tools.**
+
+### When to Use RAG (Top Priority - when available)
+
+Use RAG for ANY discovery or understanding question:
+
+- ❌ **DON'T**: Start with Glob/Grep for "which contexts", "what patterns", "how does X work"
+- ✅ **DO**: Query RAG first, then read specific files it identifies
+
+**RAG Trigger Patterns - Use RAG when question contains:**
+- "which contexts/hooks/patterns are used"
+- "what components use/implement X"
+- "how does Nimbus handle X"
+- "show me examples of X"
+- "find files/components that X"
+- "what's the pattern for X"
+- "where is X defined/used"
+
+**Examples:**
+```
+✅ RAG: "Which contexts are used in the combobox?"
+✅ RAG: "Find examples of compound component implementations"
+✅ RAG: "What are the accessibility requirements for interactive components?"
+✅ RAG: "How do we handle internationalization in forms?"
+✅ RAG: "What's the pattern for slot recipes vs standard recipes?"
+```
+
+### When to Use Direct File Access (After RAG)
+
+Use Glob/Grep/Read ONLY when:
+- RAG system is not available
+- Reading specific known files after RAG identifies them
+- Making edits to files
+- Examining exact file structure or line-by-line code
+- Validating specific implementation details
+
+### RAG Workflow
+
+1. **Query RAG** for patterns and guidelines
+2. **Review results** to understand approach
+3. **Read specific files** identified by RAG for detailed implementation
+4. **Implement** following discovered patterns
+
+**Benefits:**
+- Faster discovery without reading multiple files
+- Semantic understanding across entire codebase
+- Context-aware search beyond simple text matching
+- Reduced token usage by finding relevant files first
+
 ## Development Commands
 
 ### Setup and Installation
@@ -229,6 +280,7 @@ For comprehensive file review procedures, see @docs/file-review-protocol.md
 
 **Quick Reference:**
 
+0. **Check if RAG should be used** - For discovery questions, use RAG before file operations
 1. Identify file type by extension/location
 2. Load corresponding guidelines document
 3. Run validation checklist systematically
@@ -272,6 +324,10 @@ tasks:
 
 ### Available MCP Servers
 
+- **local-nimbus-rag** (if available): Local semantic search and retrieval
+  system for Nimbus codebase using Ollama embeddings. Enables efficient
+  discovery of patterns, guidelines, and implementation examples across the
+  entire repository.
 - **context7**: Primary interface for querying library documentation for React
   Aria, Chakra UI, and other libraries before implementing features.
 - **playwright**: Browser automation for visual testing and web interaction to
@@ -281,6 +337,47 @@ tasks:
   systematic analysis.
 
 ### Usage Guidelines
+
+#### RAG System Usage (local-nimbus-rag - if available)
+
+**If the local-nimbus-rag MCP server is available, prefer RAG queries over direct
+file reading for discovery and understanding tasks.**
+
+**When to use RAG (if available):**
+- **Discovering patterns**: "Find examples of compound component implementations"
+- **Understanding guidelines**: "What are the accessibility requirements for interactive components?"
+- **Finding related code**: "Show me components that use React Aria hooks"
+- **Searching by concept**: "How do we handle internationalization in forms?"
+- **Architecture questions**: "What's the pattern for slot recipes vs standard recipes?"
+
+**When to use direct file access (Read/Glob/Grep):**
+- RAG system is not available
+- Reading specific known files after RAG identifies them
+- Making edits to files
+- Examining exact file structure or line-by-line code
+- Validating specific implementation details
+
+**RAG Query Pattern (if available):**
+```
+Before implementing [feature], query the RAG system:
+"What are the Nimbus patterns for [concept]?"
+"Show examples of [pattern] in the codebase"
+"How does Nimbus handle [requirement]?"
+```
+
+**Workflow Example (with RAG):**
+1. **Query RAG** for patterns and guidelines
+2. **Review results** to understand approach
+3. **Read specific files** identified by RAG for detailed implementation
+4. **Implement** following discovered patterns
+
+**Benefits of RAG (when available):**
+- Faster discovery without reading multiple files
+- Semantic understanding across entire codebase
+- Context-aware search beyond simple text matching
+- Reduced token usage by finding relevant files first
+
+#### Other MCP Tools
 
 - **Always** use context7 to find relevant documentation before implementing new
   components or patterns

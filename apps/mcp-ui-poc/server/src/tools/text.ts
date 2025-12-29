@@ -1,25 +1,66 @@
-import { createUIResource } from "@mcp-ui/server";
-import { buildTextElement, type TextElementArgs } from "../elements/text.js";
+import { z } from "zod";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { RemoteDomElement } from "../types/remote-dom.js";
+import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
+import {
+  commonStyleSchema,
+  extractStyleProps,
+} from "../utils/common-schemas.js";
+import { validateRequiredText } from "../utils/security.js";
 
-export type CreateTextArgs = TextElementArgs;
+/**
+ * Register the createText tool with the MCP server
+ */
+export function registerTextTool(server: McpServer) {
+  server.registerTool(
+    "createText",
+    {
+      title: "Create Text",
+      description:
+        "Creates a text UI component using Nimbus design system. Supports all Chakra UI style properties.",
+      inputSchema: z.object({
+        // Content
+        content: z.string().describe("Text content"),
 
-export function createText(args: CreateTextArgs) {
-  return createUIResource({
-    uri: `ui://text/${Date.now()}`,
-    content: {
-      type: "remoteDom",
-      script: JSON.stringify({
-        type: "structuredDom",
-        element: buildTextElement(args),
-        framework: "react",
+        // Component-specific props
+        as: z
+          .enum(["p", "span", "div", "label"])
+          .optional()
+          .describe("HTML element to render as"),
+
+        // All Chakra UI style properties
+        ...commonStyleSchema,
       }),
-      framework: "react",
     },
-    encoding: "text",
-    metadata: {
-      title: "Text",
-      description: "A text component",
-      created: new Date().toISOString(),
-    },
-  });
+    async (args) => {
+      // Validate and sanitize text content
+      const sanitizedContent = validateRequiredText(args.content, "content");
+
+      // Create text element directly using Remote DOM custom element
+      const text = document.createElement("nimbus-text") as RemoteDomElement;
+
+      // Set component-specific props
+      if (args.as) text.as = args.as;
+
+      // Extract and set style props as object
+      const styleProps = extractStyleProps(args);
+      if (Object.keys(styleProps).length > 0) {
+        text.styleProps = styleProps;
+      }
+
+      // Set text content with sanitized value
+      text.textContent = sanitizedContent;
+
+      // Return resource (createRemoteDomResource handles appending to root)
+      return {
+        content: [
+          createRemoteDomResource(text, {
+            name: "text",
+            title: "Text",
+            description: `Text: ${args.content}`,
+          }),
+        ],
+      };
+    }
+  );
 }

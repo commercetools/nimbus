@@ -1,64 +1,36 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
-
-export interface TextInputElementArgs {
-  name?: string;
-  placeholder?: string;
-  defaultValue?: string;
-  isRequired?: boolean;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  type?:
-    | "text"
-    | "email"
-    | "url"
-    | "tel"
-    | "password"
-    | "search"
-    | "number"
-    | "date"
-    | "time"
-    | "datetime-local"
-    | "month"
-    | "week"
-    | "file";
-  minLength?: number;
-  maxLength?: number;
-  pattern?: string;
-  min?: number | string;
-  max?: number | string;
-  step?: number | string;
-  accept?: string;
-  multiple?: boolean;
-  autoComplete?: string;
-  ariaLabel?: string;
-}
-
 /**
- * Build a text input ElementDefinition
+ * TextInput Remote DOM Custom Element
  */
-export function buildTextInputElement(
-  args: TextInputElementArgs
-): ElementDefinition {
-  return {
-    tagName: "nimbus-text-input",
-    attributes: {
-      name: args.name,
-      placeholder: args.placeholder,
-      value: args.defaultValue,
-      isRequired: args.isRequired,
-      isDisabled: args.isDisabled,
-      isReadOnly: args.isReadOnly,
-      type: args.type,
-      minLength: args.minLength,
-      maxLength: args.maxLength,
-      pattern: args.pattern,
-      min: args.min,
-      max: args.max,
-      step: args.step,
-      accept: args.accept,
-      multiple: args.multiple,
-      autoComplete: args.autoComplete,
-      "aria-label": args.ariaLabel, // Keep kebab for aria
-    },
-  };
+
+import { createRemoteElement } from "@remote-dom/core/elements";
+
+export const NimbusTextInput = createRemoteElement({
+  properties: {
+    styleProps: true,
+    name: true,
+    placeholder: true,
+    type: true,
+    value: true,
+    defaultValue: true,
+    isRequired: true,
+    isDisabled: true,
+    isReadOnly: true,
+    minLength: true,
+    maxLength: true,
+    pattern: true,
+    min: true,
+    max: true,
+    step: true,
+    accept: true,
+    multiple: true,
+    autoComplete: true,
+  },
+});
+
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-text-input")
+) {
+  customElements.define("nimbus-text-input", NimbusTextInput);
 }

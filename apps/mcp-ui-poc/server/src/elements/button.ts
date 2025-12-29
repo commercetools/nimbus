@@ -1,41 +1,31 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
+/**
+ * Button Remote DOM Custom Element
+ */
 
-export interface ButtonElementArgs {
-  label: string;
-  variant?: string;
-  colorPalette?: string;
-  width?: string;
-  isDisabled?: boolean;
-  type?: "button" | "submit" | "reset";
-  ariaLabel?: string;
-}
+import { createRemoteElement } from "@remote-dom/core/elements";
 
 /**
- * Build a button ElementDefinition
- * Shared by createButton tool and child element converter
+ * Nimbus Button custom element for Remote DOM
+ * Tracks variant, size, colorPalette, and style properties
  */
-export function buildButtonElement(args: ButtonElementArgs): ElementDefinition {
-  const {
-    label,
-    variant = "solid",
-    colorPalette = "primary",
-    width,
-    isDisabled = false,
-    type = "button",
-    ariaLabel,
-  } = args;
+export const NimbusButton = createRemoteElement({
+  properties: {
+    styleProps: true, // Chakra UI style props as object
+    variant: true,
+    size: true,
+    colorPalette: true,
+    isDisabled: true,
+    isLoading: true,
+    type: true,
+    id: true, // For event handling and action configuration
+    onPress: { event: true },
+  },
+});
 
-  return {
-    tagName: "nimbus-button",
-    attributes: {
-      variant,
-      colorPalette,
-      isDisabled,
-      type,
-      width,
-      "data-label": label,
-      "aria-label": ariaLabel,
-    },
-    children: [label],
-  };
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-button")
+) {
+  customElements.define("nimbus-button", NimbusButton);
 }

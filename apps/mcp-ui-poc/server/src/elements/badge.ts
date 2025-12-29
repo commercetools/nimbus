@@ -1,26 +1,22 @@
-import type { ElementDefinition } from "../types/remote-dom.js";
-
-export interface BadgeElementArgs {
-  label: string;
-  colorPalette?: string;
-  size?: string;
-  width?: string;
-}
-
 /**
- * Build a badge ElementDefinition
- * Shared by createBadge tool and child element converter
+ * Badge Remote DOM Custom Element
  */
-export function buildBadgeElement(args: BadgeElementArgs): ElementDefinition {
-  const { label, colorPalette = "primary", size = "md", width } = args;
 
-  return {
-    tagName: "nimbus-badge",
-    attributes: {
-      colorPalette,
-      size,
-      width,
-    },
-    children: [label],
-  };
+import { createRemoteElement } from "@remote-dom/core/elements";
+
+export const NimbusBadge = createRemoteElement({
+  properties: {
+    styleProps: true,
+    variant: true,
+    size: true,
+    colorPalette: true,
+  },
+});
+
+// Self-register on import
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("nimbus-badge")
+) {
+  customElements.define("nimbus-badge", NimbusBadge);
 }
