@@ -731,6 +731,63 @@ There's a discrepancy between documentation and implementation:
 **Current status**: Simple codes work everywhere. Documentation may be
 misleading.
 
+### Locale Source Change Impact on Tests
+
+**Issue:** After migration, components use `useLocale()` from
+`react-aria-components` instead of `react-intl`'s `useIntl()`, which changes
+which locale provider controls message localization.
+
+**Before Migration:**
+
+- Components used `react-intl`'s `useIntl()` hook
+- `react-intl` gets locale from `IntlProvider` (from `react-intl`)
+- `NimbusI18nProvider` only affected React Aria components (number/date
+  formatting), not `react-intl` messages
+- Components showed messages based on Storybook's `IntlProvider` or default
+  locale (typically English)
+- Tests searching for English text were correct
+
+**After Migration:**
+
+- Components use `useLocale()` from `react-aria-components`
+- This gets locale from `I18nProvider` (which `NimbusI18nProvider` wraps)
+- Components now use the locale from `NimbusI18nProvider` for messages
+- If a story sets `NimbusI18nProvider locale="de-DE"`, components show German
+  messages
+- Tests must be updated to match the locale set in the story
+
+**Example - MoneyInput Story:**
+
+```typescript
+// Story sets German locale
+export const EULocaleFormattingExample: Story = {
+  render: (args) => (
+    <NimbusI18nProvider locale="de-DE">
+      <MoneyInput {...args} />
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    // ❌ Before: Test searched for English (was correct)
+    const badges = canvas.getAllByLabelText(/high precision price/i);
+
+    // ✅ After: Test must search for German (matches story locale)
+    const badges = canvas.getAllByLabelText(/hochpräzisionspreis/i);
+  },
+};
+```
+
+**Impact:**
+
+- ✅ Components now consistently use the same locale source for both formatting
+  and messages
+- ⚠️ Tests in stories with explicit `NimbusI18nProvider` locale must be updated
+  to match that locale
+- ⚠️ Tests that relied on Storybook's default English locale may need updates
+
+**Pattern for Test Updates:** When a story sets
+`NimbusI18nProvider locale="xx-XX"`, update tests to expect messages in that
+locale, not the default English.
+
 ### Variable Interpolation
 
 Only 2 messages use variables:
@@ -1048,4 +1105,5 @@ package from publishing & changesets
 - update all readmes
 - add visuals
 - do we want to add Ra to react-aria-components hooks as well?
--
+- \_reset locales in Storybook
+- - handle fallback & splits (de-DE, usw)

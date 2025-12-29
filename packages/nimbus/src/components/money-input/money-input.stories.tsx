@@ -16,6 +16,7 @@ import type {
   CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
+import { moneyInputMessages } from "./money-input.messages";
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
@@ -429,12 +430,23 @@ export const EULocaleFormattingExample: Story = {
     const canvas = within(canvasElement);
 
     // All should show high precision badges since they exceed standard fraction digits
-    const badges = canvas.getAllByLabelText(/high precision price/i);
+    // NOTE: This test will fail locally until locale normalization is implemented
+    // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
+    // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
+    const highPrecisionLabel = moneyInputMessages.getStringForLocale(
+      "highPrecisionPrice",
+      "de"
+    );
+    const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
 
     // With German locale NimbusI18nProvider, React Aria formats with German conventions
+    const amountInputLabel = moneyInputMessages.getStringForLocale(
+      "amountInputLabel",
+      "de"
+    );
     const inputs = await canvas.findAllByRole("textbox", {
-      name: /Amount/i,
+      name: amountInputLabel,
     });
 
     // Verify the inputs exist and are working

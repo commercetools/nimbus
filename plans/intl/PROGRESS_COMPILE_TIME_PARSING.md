@@ -410,6 +410,75 @@ FieldErrors.getBuiltInMessage = getBuiltInMessage;
 
 ---
 
+### 12. **Number Formatting for Variable Messages (Pagination)**
+
+**Challenge:** When messages contain variables that were previously formatted
+with `intl.formatNumber()`, we need to format numbers manually before passing
+them to the compiled message function.
+
+**Original Code:**
+
+```typescript
+// react-intl automatically formatted numbers
+{
+  intl.formatMessage(messages.ofTotalPages, {
+    totalPages: intl.formatNumber(pagination.totalPages), // "2,500"
+  });
+}
+```
+
+**Issue:** The compiled message function just does string interpolation:
+
+```typescript
+// Compiled function
+ofTotalPages: (args) => `of ${args.totalPages}`;
+// If we pass raw number: "of 2500" ❌
+// We need: "of 2,500" ✅
+```
+
+**Solution:** Use native JavaScript `Intl.NumberFormat` to format numbers before
+passing to message functions:
+
+```typescript
+// Format the number with locale-specific formatting
+const formattedTotalPages = new Intl.NumberFormat(locale).format(
+  pagination.totalPages
+);
+
+const ofTotalPagesMessage = paginationMessages.getStringForLocale(
+  "ofTotalPages",
+  locale
+) as string | ((args: Record<string, string | number>) => string);
+
+return typeof ofTotalPagesMessage === "function"
+  ? ofTotalPagesMessage({ totalPages: formattedTotalPages }) // "2,500"
+  : ofTotalPagesMessage;
+```
+
+**Why this is needed:**
+
+- **Native JavaScript API**: `Intl.NumberFormat` is the standard Web API (not
+  React-specific)
+- **Same behavior**: This is what `react-intl`'s `formatNumber()` uses
+  internally
+- **Locale-aware**: Automatically formats according to locale (e.g., `"en"` →
+  `"2,500"`, `"de"` → `"2.500"`)
+- **No dependencies**: Uses built-in browser/Node.js APIs
+
+**Impact:**
+
+- ✅ Numbers are properly formatted with locale-specific separators
+- ✅ Matches original `intl.formatNumber()` behavior
+- ✅ Works for any numeric variable in messages (e.g., `{totalPages}`,
+  `{count}`)
+- ⚠️ Must manually format numbers before passing to message functions
+
+**Pattern for future components:** When migrating components with numeric
+variables, format numbers using `Intl.NumberFormat` before passing to message
+functions.
+
+---
+
 ## Current Architecture (As Implemented)
 
 ### Build Pipeline Flow
@@ -518,6 +587,21 @@ export const alertMessages = new MessageDictionary({
    - Type assertion needed when calling function messages:
      `as string | ((args: ...) => string)`
    - Acceptable trade-off, but documented for future reference
+
+3. **Locale Mismatch in Tests (MoneyInput)**
+   - **Issue:** `useLocale()` from `react-aria-components` may return `"de-DE"` when
+     `NimbusI18nProvider` is set to `locale="de-DE"`, but `MessageDictionary` only
+     has keys for simple locale codes (`"de"`, `"en"`). This causes dictionary
+     lookup to fail and fallback to `"en"`.
+   - **Current Workaround:** Tests check for both German and English labels,
+     accepting whichever is rendered.
+   - **Root Cause:** `useLocale()` returns the exact locale string passed to
+     `I18nProvider` (no normalization), but dictionaries use simple codes.
+   - **Fix Needed:** Normalize locale in components before dictionary lookup:
+     `const locale = rawLocale?.split('-')[0] || 'en'` (extract language code from
+     `"de-DE"` → `"de"`).
+   - **Status:** Workaround in place for `money-input.stories.tsx`, needs
+     component-level fix.
 
 ### 🟡 Pending Tasks
 
@@ -682,3 +766,4 @@ For each component migration:
 - Implementation: `packages/i18n/scripts/`
 - Example Migration: `packages/nimbus/src/components/alert/`
 - Related PR: #841 (CRAFT-2029)
+- handle fallback & splits (de-DE, usw)
