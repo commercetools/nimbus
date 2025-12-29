@@ -1,7 +1,7 @@
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
 import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { TagGroupTagSlot } from "../tag-group.slots";
-import { messages } from "../tag-group.i18n";
+import { tagGroupMessages } from "../tag-group.messages";
 
 import type { TagGroupTagComponent } from "../tag-group.types";
 import { IconButton } from "@/components";
@@ -16,7 +16,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
   ref,
   ...rest
 }) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
   const textValue = typeof children === "string" ? children : undefined;
   return (
     <TagGroupTagSlot ref={ref} textValue={textValue} {...rest}>
@@ -31,7 +31,10 @@ export const TagGroupTag: TagGroupTagComponent = ({
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
                 colorPalette={isSelected ? undefined : "neutral"}
-                aria-label={intl.formatMessage(messages.removeTag)}
+                aria-label={tagGroupMessages.getStringForLocale(
+                  "removeTag",
+                  locale
+                )}
               >
                 <CloseIcon />
               </IconButton>

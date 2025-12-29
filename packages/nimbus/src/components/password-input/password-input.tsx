@@ -3,8 +3,8 @@ import { IconButton, Tooltip } from "@/components";
 import { TextInput } from "@/components/text-input/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";
-import { FormattedMessage, useIntl } from "react-intl";
-import { messages } from "./password-input.i18n";
+import { useLocale } from "react-aria-components";
+import { passwordInputMessages } from "./password-input.messages";
 
 /**
  * # PasswordInput
@@ -16,10 +16,15 @@ import { messages } from "./password-input.i18n";
 export const PasswordInput = (props: PasswordInputProps) => {
   const { ref, size = "md", isDisabled } = props;
 
-  const intl = useIntl();
+  const { locale } = useLocale();
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleVisibility = () => setShowPassword(!showPassword);
+
+  const currentLabel = passwordInputMessages.getStringForLocale(
+    showPassword ? "hide" : "show",
+    locale
+  );
 
   return (
     <TextInput
@@ -31,21 +36,13 @@ export const PasswordInput = (props: PasswordInputProps) => {
             size={size === "md" ? "xs" : "2xs"}
             variant="ghost"
             colorPalette="primary"
-            aria-label={
-              showPassword
-                ? intl.formatMessage(messages.hide)
-                : intl.formatMessage(messages.show)
-            }
+            aria-label={currentLabel}
             onPress={toggleVisibility}
             isDisabled={isDisabled}
           >
             {showPassword ? <VisibilityOff /> : <Visibility />}
           </IconButton>
-          <Tooltip.Content>
-            <FormattedMessage
-              {...(showPassword ? messages.hide : messages.show)}
-            />
-          </Tooltip.Content>
+          <Tooltip.Content>{currentLabel}</Tooltip.Content>
         </Tooltip.Root>
       }
       type={showPassword ? "text" : "password"}
