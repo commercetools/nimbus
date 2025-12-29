@@ -1,92 +1,92 @@
-import {
-  createSlotRecipeContext,
-  type HTMLChakraProps,
-} from "@chakra-ui/react";
-import type { SlotComponent } from "@/type-utils";
+import { createSlotRecipeContext } from "@chakra-ui/react";
+
 import type {
-  ComboBoxValueSlotProps,
-  ComboBoxButtonGroupSlotProps,
+  ComboBoxRootSlotProps,
+  ComboBoxTriggerSlotProps,
+  ComboBoxLeadingElementSlotProps,
+  ComboBoxContentSlotProps,
+  ComboBoxTagGroupSlotProps,
+  ComboBoxInputSlotProps,
   ComboBoxPopoverSlotProps,
-  ComboBoxMultiSelectInputSlotProps,
+  ComboBoxListBoxSlotProps,
+  ComboBoxSectionSlotProps,
+  ComboBoxOptionSlotProps,
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
-  ComboBoxMultiSelectRootSlotProps,
-  ComboBoxSingleSelectRootSlotProps,
-  ComboBoxOptionGroupSlotProps,
-  ComboBoxOptionSlotProps,
-  ComboBoxOptionsSlotProps,
 } from "./combobox.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "combobox",
 });
 
-// ComboBox Root
-export const ComboBoxRootSlot: SlotComponent<
+// Root slot - container for entire combobox (provides recipe context)
+export const ComboBoxRootSlot = withProvider<
   HTMLDivElement,
-  | ComboBoxMultiSelectRootSlotProps<object>
-  | ComboBoxSingleSelectRootSlotProps<object>
-> = withProvider<
-  HTMLDivElement,
-  | ComboBoxMultiSelectRootSlotProps<object>
-  | ComboBoxSingleSelectRootSlotProps<object>
+  ComboBoxRootSlotProps
 >("div", "root");
 
+// Trigger slot - container for input trigger area (input + tags + buttons)
+export const ComboBoxTriggerSlot = withContext<
+  HTMLDivElement,
+  ComboBoxTriggerSlotProps
+>("div", "trigger");
+
+// LeadingElement slot - wrapper for leading element (icon, etc.)
 export const ComboBoxLeadingElementSlot = withContext<
   HTMLDivElement,
-  HTMLChakraProps<"div">
+  ComboBoxLeadingElementSlotProps
 >("div", "leadingElement");
 
-// Value - Input (single) or TagList (multi)
-export const ComboBoxValueSlot = withContext<
+// Content slot - wrapper for tags and input (flex container within grid)
+export const ComboBoxContentSlot = withContext<
   HTMLDivElement,
-  ComboBoxValueSlotProps
->("div", "value");
+  ComboBoxContentSlotProps
+>("div", "content");
 
-// ButtonGroup - Dropdown Indicator and Clear Button
-export const ComboBoxButtonGroupSlot = withContext<
+// TagGroup slot - container for selected tags (multi-select)
+export const ComboBoxTagGroupSlot = withContext<
   HTMLDivElement,
-  ComboBoxButtonGroupSlotProps
->("div", "buttonGroup");
+  ComboBoxTagGroupSlotProps
+>("div", "tagGroup");
 
-// Popover container (multi-select)
-export const ComboBoxPopoverSlot: SlotComponent<
+// Input slot - wrapper for React Aria Input component
+export const ComboBoxInputSlot = withContext<
+  HTMLDivElement,
+  ComboBoxInputSlotProps
+>("div", "input");
+
+// Popover slot - wrapper for popover containing listbox
+export const ComboBoxPopoverSlot = withContext<
   HTMLDivElement,
   ComboBoxPopoverSlotProps
-> = withContext<HTMLDivElement, ComboBoxPopoverSlotProps>("div", "popover");
+>("div", "popover");
 
-// Multi-select input (in popover)
-export const ComboBoxMultiSelectInputSlot = withContext<
-  HTMLInputElement,
-  ComboBoxMultiSelectInputSlotProps
->("input", "multiSelectInput");
-
-// Options - ListBox
-export const ComboBoxOptionsSlot = withContext<
+// ListBox slot - wrapper for React Aria ListBox (used by ComboBox.ListBox component)
+export const ComboBoxListBoxSlot = withContext<
   HTMLDivElement,
-  ComboBoxOptionsSlotProps
->("div", "options");
+  ComboBoxListBoxSlotProps
+>("div", "listBox");
 
-// OptionGroup - ListBoxSection
-export const ComboBoxOptionGroupSlot = withContext<
+// Section slot - section grouping wrapper (wraps React Aria Section)
+export const ComboBoxSectionSlot = withContext<
   HTMLDivElement,
-  ComboBoxOptionGroupSlotProps
->("div", "optionGroup");
+  ComboBoxSectionSlotProps
+>("div", "section");
 
-// Option - ListBoxItem
+// Option slot - individual option wrapper (wraps React Aria ListBoxItem)
 export const ComboBoxOptionSlot = withContext<
   HTMLDivElement,
   ComboBoxOptionSlotProps
 >("div", "option");
 
-// Option indicator (multi) - selected indicator
+// Option indicator slot - checkbox/checkmark indicator for multi-select
 export const ComboBoxOptionIndicatorSlot = withContext<
-  HTMLSpanElement,
+  HTMLDivElement,
   ComboBoxOptionIndicatorSlotProps
->("span", "optionIndicator");
+>("div", "optionIndicator");
 
-// Option content (multi)
+// Option content slot - wrapper for option text content
 export const ComboBoxOptionContentSlot = withContext<
-  HTMLSpanElement,
+  HTMLDivElement,
   ComboBoxOptionContentSlotProps
->("span", "optionContent");
+>("div", "optionContent");
