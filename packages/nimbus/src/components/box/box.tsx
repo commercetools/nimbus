@@ -12,6 +12,8 @@ export type BoxProps = HTMLChakraProps<"div"> & {
  * A basic layout component that serves as a wrapper or container.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/box}
+ *
+ * @supportsStyleProps
  */
 export const Box = (props: BoxProps) => {
   const { ref, ...restProps } = props;

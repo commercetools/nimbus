@@ -1,0 +1,528 @@
+---
+title: RangeCalendar Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { RangeCalendar, type RangeCalendarProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation displays a single-month calendar for date range selection:
+
+```jsx-live-dev
+const App = () => (
+  <RangeCalendar aria-label="Select date range" />
+)
+```
+
+## Working with date values
+
+The RangeCalendar relies on `@internationalized/date`'s library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.
+
+### Date value types
+
+The primary date type for RangeCalendar is `CalendarDate` for date-only scenarios:
+
+```tsx
+import { CalendarDate } from '@internationalized/date';
+
+// Date only (no time)
+const date = new CalendarDate(2024, 1, 15);
+```
+
+### Creating date values
+
+Use helper functions to parse ISO strings or create dates programmatically:
+
+```tsx
+import { parseDate, today, getLocalTimeZone } from '@internationalized/date';
+
+// Parse ISO date string
+const date = parseDate('2024-01-15');
+
+// Get today's date
+const todayDate = today(getLocalTimeZone());
+
+// Create relative dates
+const nextWeek = today(getLocalTimeZone()).add({ weeks: 1 });
+```
+
+### Converting to ISO strings
+
+Use `.toString()` to convert date objects for API/backend consumption:
+
+```tsx
+const date = new CalendarDate(2024, 1, 15);
+date.toString(); // "2024-01-15"
+
+// Convert date ranges for API calls
+const dateRange = {
+  start: new CalendarDate(2024, 1, 15),
+  end: new CalendarDate(2024, 1, 20)
+};
+
+const apiPayload = {
+  startDate: dateRange.start.toString(), // "2024-01-15"
+  endDate: dateRange.end.toString()      // "2024-01-20"
+};
+```
+
+### Date range structure
+
+The component expects and returns date ranges in this structure:
+
+```tsx
+import type { RangeValue } from '@commercetools/nimbus';
+import type { DateValue } from '@internationalized/date';
+
+type DateRange = RangeValue<DateValue>;
+
+// Example:
+const range: DateRange = {
+  start: new CalendarDate(2024, 1, 15),
+  end: new CalendarDate(2024, 1, 20)
+};
+```
+
+> [!TIP]\
+> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Multi-month display
+
+The `visibleDuration` prop allows displaying multiple months simultaneously:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Text fontWeight="600">Two months:</Text>
+    <RangeCalendar
+      aria-label="Select date range"
+      visibleDuration={{ months: 2 }}
+    />
+    <Text fontWeight="600">Three months:</Text>
+    <RangeCalendar
+      aria-label="Select date range"
+      visibleDuration={{ months: 3 }}
+    />
+  </Stack>
+)
+```
+
+### Paging behavior
+
+The `pageBehavior` prop controls how navigation moves between months:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">Single paging (one month at a time):</Text>
+      <RangeCalendar
+        aria-label="Select date range"
+        visibleDuration={{ months: 2 }}
+        pageBehavior="single"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="600" mb="200">Visible paging (all visible months at once):</Text>
+      <RangeCalendar
+        aria-label="Select date range"
+        visibleDuration={{ months: 2 }}
+        pageBehavior="visible"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `pageBehavior="single"`: Navigates one month at a time
+- `pageBehavior="visible"`: Navigates by the number of visible months
+
+### Date constraints
+
+Use `minValue` and `maxValue` to restrict the selectable date range:
+
+```jsx-live-dev
+const App = () => {
+  const todayDate = today(getLocalTimeZone());
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text textStyle="sm" color="neutral.11">
+        Selection limited to dates from 1 week ago to 4 weeks ahead.
+      </Text>
+      <RangeCalendar
+        aria-label="Select date range"
+        minValue={todayDate.subtract({ weeks: 1 })}
+        maxValue={todayDate.add({ weeks: 4 })}
+      />
+    </Stack>
+  );
+}
+```
+
+### Unavailable dates
+
+Use `isDateUnavailable` to mark specific dates as unavailable for selection:
+
+```jsx-live-dev
+const App = () => {
+  // Mark weekends as unavailable
+  const isWeekend = (date) => {
+    const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6;
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text textStyle="sm" color="neutral.11">
+        Weekends are unavailable for selection.
+      </Text>
+      <RangeCalendar
+        aria-label="Select date range"
+        isDateUnavailable={isWeekend}
+      />
+    </Stack>
+  );
+}
+```
+
+### Non-contiguous ranges
+
+Enable selection of ranges that span across unavailable dates with `allowsNonContiguousRanges`:
+
+```jsx-live-dev
+const App = () => {
+  // Mark Mondays as unavailable
+  const isMonday = (date) => {
+    return date.toDate(getLocalTimeZone()).getDay() === 1;
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text textStyle="sm" color="neutral.11">
+        Mondays are unavailable, but ranges can span across them.
+      </Text>
+      <RangeCalendar
+        aria-label="Select date range"
+        allowsNonContiguousRanges={true}
+        isDateUnavailable={isMonday}
+      />
+    </Stack>
+  );
+}
+```
+
+### Custom week start
+
+Use `firstDayOfWeek` to change which day starts the week:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text textStyle="sm" color="neutral.11">
+      Week starts on Monday (common in European locales):
+    </Text>
+    <RangeCalendar
+      aria-label="Select date range"
+      firstDayOfWeek="mon"
+    />
+  </Stack>
+)
+```
+
+### Form states
+
+The component supports disabled and read-only states:
+
+```jsx-live-dev
+const App = () => {
+  const defaultRange = {
+    start: today(getLocalTimeZone()).add({ days: 3 }),
+    end: today(getLocalTimeZone()).add({ days: 8 }),
+  };
+
+  return (
+    <Stack direction="column" gap="600">
+      <Box>
+        <Text fontWeight="600" mb="200">Disabled:</Text>
+        <RangeCalendar
+          aria-label="Disabled calendar"
+          isDisabled
+          defaultValue={defaultRange}
+        />
+      </Box>
+      <Box>
+        <Text fontWeight="600" mb="200">Read-only:</Text>
+        <RangeCalendar
+          aria-label="Read-only calendar"
+          isReadOnly
+          defaultValue={defaultRange}
+        />
+      </Box>
+    </Stack>
+  );
+}
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedRange, setSelectedRange] = useState<RangeCalendarProps["value"]>({
+    start: today(getLocalTimeZone()).add({ days: 3 }),
+    end: today(getLocalTimeZone()).add({ days: 8 }),
+  });
+
+  const formatDate = (date) => {
+    return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <RangeCalendar
+        aria-label="Select date range"
+        defaultValue={{
+          start: today(getLocalTimeZone()).add({ days: 3 }),
+          end: today(getLocalTimeZone()).add({ days: 8 }),
+        }}
+        onChange={setSelectedRange}
+      />
+      <Box p="200" bg="neutral.2" borderRadius="200">
+        <Text fontWeight="600" mb="200">Selected Range:</Text>
+        <Text>
+          {selectedRange
+            ? `${formatDate(selectedRange.start)} to ${formatDate(selectedRange.end)}`
+            : 'No range selected'}
+        </Text>
+      </Box>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected value without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [value, setValue] = useState<RangeCalendarProps["value"]>({
+    start: today(getLocalTimeZone()).add({ days: 3 }),
+    end: today(getLocalTimeZone()).add({ days: 8 }),
+  });
+
+  const formatDate = (date) => {
+    return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <RangeCalendar
+        aria-label="Select date range"
+        value={value}
+        onChange={setValue}
+      />
+      <Box p="200" bg="neutral.2" borderRadius="200">
+        <Text fontWeight="600" mb="200">Selected Range:</Text>
+        <Text>
+          {value
+            ? `${formatDate(value.start)} to ${formatDate(value.end)}`
+            : 'No range selected'}
+        </Text>
+      </Box>
+      <Button
+        variant="outline"
+        onPress={() => setValue(null)}
+        isDisabled={!value}
+      >
+        Clear selection
+      </Button>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the date range with external state
+- Validate or transform date selections
+- Clear or programmatically set the date range
+
+### Internationalization
+
+The calendar automatically adapts to the locale provided by `NimbusI18nProvider`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">German (de-DE):</Text>
+      <NimbusI18nProvider locale="de-DE">
+        <RangeCalendar aria-label="Datumsbereich auswählen" />
+      </NimbusI18nProvider>
+    </Box>
+    <Box>
+      <Text fontWeight="600" mb="200">Spanish (es-MX):</Text>
+      <NimbusI18nProvider locale="es-MX">
+        <RangeCalendar aria-label="Seleccionar rango de fechas" />
+      </NimbusI18nProvider>
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Date value types
+
+All date values **must** use `@internationalized/date` types:
+- `CalendarDate` for date-only scenarios (most common)
+- Other types from `@internationalized/date` as needed
+
+### Accessibility
+
+The RangeCalendar handles most accessibility requirements internally. However, you must always associate an internationalized label with the component using the `aria-label` prop:
+
+```tsx
+<RangeCalendar aria-label={intl.formatMessage(labelMessage)} />
+```
+
+Alternatively, use `aria-labelledby` to reference a visible label:
+
+```tsx
+<label id="calendar-label">
+  {intl.formatMessage(labelMessage)}
+</label>
+<RangeCalendar aria-labelledby="calendar-label" />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-range-calendar";
+
+export const Example = () => (
+  <RangeCalendar id={PERSISTENT_ID} aria-label="Select dates" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate between calendar controls and cells
+- `Arrow keys`: Navigate between days within the calendar grid
+- `Enter` / `Space`: Select a date (first press sets start, second press sets end)
+- `Page Up` / `Page Down`: Navigate to previous/next month
+- `Shift + Page Up` / `Shift + Page Down`: Navigate to previous/next year
+
+## API reference
+
+<PropsTable id="RangeCalendar" />
+
+## Common patterns
+
+### Booking period selection
+
+For booking systems that need to prevent selections before today and limit booking windows:
+
+```jsx-live-dev
+const App = () => {
+  const [bookingRange, setBookingRange] = useState<RangeCalendarProps["value"]>(null);
+  const todayDate = today(getLocalTimeZone());
+
+  // Calculate booking duration in days
+  const getDuration = (range) => {
+    if (!range) return 0;
+    const startMs = range.start.toDate(getLocalTimeZone()).getTime();
+    const endMs = range.end.toDate(getLocalTimeZone()).getTime();
+    return Math.ceil((endMs - startMs) / (1000 * 60 * 60 * 24)) + 1;
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <RangeCalendar
+        aria-label="Select booking dates"
+        visibleDuration={{ months: 2 }}
+        minValue={todayDate}
+        maxValue={todayDate.add({ months: 3 })}
+        value={bookingRange}
+        onChange={setBookingRange}
+      />
+      {bookingRange && (
+        <Box p="300" bg="primary.2" borderRadius="200">
+          <Text fontWeight="600">Booking Summary:</Text>
+          <Text textStyle="sm">Duration: {getDuration(bookingRange)} days</Text>
+        </Box>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Business days only selection
+
+For scenarios where only business days (weekdays) are selectable:
+
+```jsx-live-dev
+const App = () => {
+  const [dateRange, setDateRange] = useState<RangeCalendarProps["value"]>(null);
+
+  const isWeekend = (date) => {
+    const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6;
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text textStyle="sm" color="neutral.11">
+        Only business days (Monday-Friday) can be selected.
+      </Text>
+      <RangeCalendar
+        aria-label="Select business days"
+        isDateUnavailable={isWeekend}
+        value={dateRange}
+        onChange={setDateRange}
+      />
+      {dateRange && (
+        <Text textStyle="sm">
+          Selected: {dateRange.start.toString()} to {dateRange.end.toString()}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using RangeCalendar within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: range-calendar.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)
+- [React Aria RangeCalendar](https://react-spectrum.adobe.com/react-aria/RangeCalendar.html)
+- [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)

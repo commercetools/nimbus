@@ -96,7 +96,7 @@ export type DrawerRootProps = OmitInternalProps<DrawerRootSlotProps> & {
 
   /**
    * Whether to show the backdrop overlay behind the drawer
-   * @default false
+   * @default true
    */
   showBackdrop?: boolean;
 

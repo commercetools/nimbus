@@ -1,0 +1,381 @@
+---
+title: Spacer Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Spacer, type SpacerProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses Spacer to push elements apart in a flex container:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button>Left</Button>
+    <Spacer />
+    <Button>Right</Button>
+  </Stack>
+)
+```
+
+The Spacer component automatically fills available space using `flexGrow="1"`, pushing elements to opposite ends of the container.
+
+## Usage examples
+
+### Horizontal spacing
+
+Use Spacer to separate elements horizontally in a row layout:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" width="full">
+      <Text fontWeight="600">Product Name</Text>
+      <Spacer />
+      <Text color="neutral.11">$49.99</Text>
+    </Stack>
+    
+    <Stack direction="row" width="full">
+      <Button variant="outline" size="xs">Cancel</Button>
+      <Spacer />
+      <Button variant="solid" size="xs">Save</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+### Navigation layout
+
+Create navigation bars with grouped elements:
+
+```jsx-live-dev
+const App = () => (
+  <Stack 
+    direction="row" 
+    width="full" 
+    padding="300" 
+    backgroundColor="neutral.2" 
+    borderRadius="200"
+  >
+    <Button variant="ghost" size="xs">Home</Button>
+    <Button variant="ghost" size="xs">About</Button>
+    <Button variant="ghost" size="xs">Services</Button>
+    <Spacer />
+    <Button variant="ghost" size="xs">Profile</Button>
+    <Button variant="solid" size="xs">Sign In</Button>
+  </Stack>
+)
+```
+
+### Multiple spacers
+
+Use multiple Spacer components to distribute space evenly:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="outline">First</Button>
+    <Spacer />
+    <Button variant="outline">Second</Button>
+    <Spacer />
+    <Button variant="outline">Third</Button>
+  </Stack>
+)
+```
+
+Each Spacer receives an equal share of available space, creating even distribution.
+
+### Vertical layout
+
+Spacer works in vertical layouts too:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" height="6400" width="4800" borderWidth="25" borderColor="neutral.6" borderRadius="200" padding="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="lg" fontWeight="600">Card Title</Text>
+      <Text fontSize="sm" color="neutral.11">
+        This card demonstrates vertical spacing with a Spacer component.
+      </Text>
+    </Stack>
+    
+    <Spacer />
+    
+    <Stack direction="row" gap="200">
+      <Button variant="outline" size="xs">Cancel</Button>
+      <Button variant="solid" size="xs">Confirm</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+### With custom styling
+
+Although typically invisible, Spacer accepts all Box props for custom styling:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" width="full">
+      <Text fontWeight="600">Default (invisible)</Text>
+      <Spacer />
+      <Text>Right side</Text>
+    </Stack>
+    
+    <Stack direction="row" width="full">
+      <Text fontWeight="600">With background</Text>
+      <Spacer backgroundColor="primary.3" borderRadius="200" />
+      <Text>Right side</Text>
+    </Stack>
+    
+    <Stack direction="row" width="full">
+      <Text fontWeight="600">With border</Text>
+      <Spacer borderTop="50 dashed" borderColor="neutral.6" />
+      <Text>Right side</Text>
+    </Stack>
+  </Stack>
+)
+```
+
+### Toolbar layout
+
+Create toolbar or header layouts with grouped actions:
+
+```jsx-live-dev
+const App = () => (
+  <Stack 
+    direction="row" 
+    width="full" 
+    padding="300" 
+    backgroundColor="neutral.2" 
+    borderRadius="200"
+    alignItems="center"
+  >
+    <Text fontWeight="600" fontSize="sm">Document.pdf</Text>
+    <Spacer />
+    <Stack direction="row" gap="200">
+      <Button variant="ghost" size="xs">
+        <Icons.Download />
+      </Button>
+      <Button variant="ghost" size="xs">
+        <Icons.Share />
+      </Button>
+      <Button variant="ghost" size="xs">
+        <Icons.MoreVert />
+      </Button>
+    </Stack>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+The Spacer component **must** be used within a flex container (such as Stack or Box with display="flex"). It uses `flexGrow="1"` to occupy available space, which only works in flex layouts.
+
+**Valid usage:**
+```tsx
+<Stack direction="row">
+  <Button>Left</Button>
+  <Spacer />
+  <Button>Right</Button>
+</Stack>
+```
+
+**Invalid usage (not in flex container):**
+```tsx
+<div>
+  <Button>Left</Button>
+  <Spacer /> {/* Won't work - parent is not a flex container */}
+  <Button>Right</Button>
+</div>
+```
+
+### Accessibility
+
+The Spacer component is a layout utility and has no accessibility requirements. It's purely visual and doesn't contain interactive content or convey information to users.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "navigation-spacer";
+
+export const Navigation = () => (
+  <Stack direction="row">
+    <Button>Home</Button>
+    <Spacer id={PERSISTENT_ID} />
+    <Button>Profile</Button>
+  </Stack>
+);
+```
+
+## API reference
+
+<PropsTable id="Spacer" />
+
+## Common patterns
+
+### Navigation bar with logo
+
+Common pattern for navigation bars with logo on left and actions on right:
+
+```jsx-live-dev
+const App = () => (
+  <Stack 
+    direction="row" 
+    width="full" 
+    padding="400" 
+    backgroundColor="neutral.2" 
+    borderRadius="200"
+    alignItems="center"
+  >
+    <Stack direction="row" gap="200" alignItems="center">
+      <Box 
+        width="512" 
+        height="512" 
+        backgroundColor="primary.9" 
+        borderRadius="200"
+      />
+      <Text fontWeight="600">Brand</Text>
+    </Stack>
+    
+    <Spacer />
+    
+    <Stack direction="row" gap="300">
+      <Button variant="ghost" size="xs">Products</Button>
+      <Button variant="ghost" size="xs">Pricing</Button>
+      <Button variant="ghost" size="xs">About</Button>
+      <Button variant="solid" size="xs">Sign Up</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+### Card with footer actions
+
+Pattern for cards with actions positioned at opposite ends:
+
+```jsx-live-dev
+const App = () => (
+  <Card.Root width="6400">
+    <Card.Content>
+      <Stack direction="column" gap="300">
+        <Stack direction="column" gap="200">
+          <Text fontSize="lg" fontWeight="600">Delete Item?</Text>
+          <Text fontSize="sm" color="neutral.11">
+            This action cannot be undone. The item will be permanently deleted.
+          </Text>
+        </Stack>
+        
+        <Stack direction="row" gap="200">
+          <Button variant="outline" size="xs">Cancel</Button>
+          <Spacer />
+          <Button variant="solid" size="xs" colorPalette="critical">
+            Delete
+          </Button>
+        </Stack>
+      </Stack>
+    </Card.Content>
+  </Card.Root>
+)
+```
+
+### List items with actions
+
+Pattern for list items with metadata and actions separated:
+
+```jsx-live-dev
+const App = () => {
+  const items = [
+    { id: 1, name: 'Annual Report 2024.pdf', size: '2.4 MB', date: 'Dec 10' },
+    { id: 2, name: 'Meeting Notes.docx', size: '156 KB', date: 'Dec 9' },
+    { id: 3, name: 'Budget Planning.xlsx', size: '892 KB', date: 'Dec 8' },
+  ];
+
+  return (
+    <Stack direction="column" gap="200">
+      {items.map((item) => (
+        <Stack 
+          key={item.id}
+          direction="row" 
+          padding="300" 
+          backgroundColor="neutral.2" 
+          borderRadius="200"
+          alignItems="center"
+        >
+          <Stack direction="column" gap="100">
+            <Text fontSize="sm" fontWeight="600">{item.name}</Text>
+            <Text fontSize="xs" color="neutral.11">
+              {item.size} · {item.date}
+            </Text>
+          </Stack>
+          
+          <Spacer />
+          
+          <Stack direction="row" gap="100">
+            <Button variant="ghost" size="2xs">
+              <Icons.Download />
+            </Button>
+            <Button variant="ghost" size="2xs">
+              <Icons.MoreVert />
+            </Button>
+          </Stack>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Form footer actions
+
+Pattern for form layouts with actions at opposite ends:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400" width="full">
+    <FormField.Root>
+      <FormField.Label>Project Name</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Enter project name" />
+      </FormField.Input>
+    </FormField.Root>
+    
+    <FormField.Root>
+      <FormField.Label>Description</FormField.Label>
+      <FormField.Input>
+        <MultilineTextInput placeholder="Enter description" rows={3} />
+      </FormField.Input>
+    </FormField.Root>
+    
+    <Stack direction="row" gap="200">
+      <Button variant="outline" size="xs">Cancel</Button>
+      <Spacer />
+      <Button variant="outline" size="xs">Save as Draft</Button>
+      <Button variant="solid" size="xs">Publish</Button>
+    </Stack>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Spacer within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: spacer.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-spacer--docs)
+- [Chakra UI Box](https://chakra-ui.com/docs/components/box)
+- [CSS Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+- [Stack Component](/components/layout/stack)

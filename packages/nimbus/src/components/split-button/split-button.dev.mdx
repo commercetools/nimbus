@@ -1,0 +1,539 @@
+---
+title: SplitButton Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { SplitButton, Menu, type SplitButtonProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation combines a primary action button with a dropdown menu:
+
+```jsx-live-dev
+const App = () => (
+  <SplitButton
+    onAction={(id) => alert(`Action: ${id}`)}
+    aria-label="More actions"
+  >
+    <Menu.Item id="save">Save</Menu.Item>
+    <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+    <Menu.Item id="save-next">Save and Continue</Menu.Item>
+  </SplitButton>
+)
+```
+
+The component automatically selects the first enabled `Menu.Item` as the primary action. Clicking the primary button executes that action, while the dropdown trigger opens a menu with all available options.
+
+## Usage examples
+
+### With icon
+
+Add an icon to the primary button for visual emphasis:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <SplitButton
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Save options"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="save-copy">Save as Copy</Menu.Item>
+      <Menu.Item id="save-template">Save as Template</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Share options"
+      icon={<Icons.Share />}
+    >
+      <Menu.Item id="share">Share Document</Menu.Item>
+      <Menu.Item id="copy-link">Copy Link</Menu.Item>
+      <Menu.Item id="email">Send via Email</Menu.Item>
+    </SplitButton>
+  </Stack>
+)
+```
+
+### Size options
+
+The component supports three size variants to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <SplitButton
+      size="2xs"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Extra small actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      size="xs"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Small actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      size="md"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Medium actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between visual variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="300" wrap="wrap">
+      <SplitButton
+        variant="solid"
+        colorPalette="primary"
+        onAction={(id) => alert(`Action: ${id}`)}
+        aria-label="Solid variant actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="export">Export</Menu.Item>
+      </SplitButton>
+
+      <SplitButton
+        variant="subtle"
+        colorPalette="neutral"
+        onAction={(id) => alert(`Action: ${id}`)}
+        aria-label="Subtle variant actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="export">Export</Menu.Item>
+      </SplitButton>
+
+      <SplitButton
+        variant="outline"
+        colorPalette="primary"
+        onAction={(id) => alert(`Action: ${id}`)}
+        aria-label="Outline variant actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="export">Export</Menu.Item>
+      </SplitButton>
+
+      <SplitButton
+        variant="ghost"
+        colorPalette="primary"
+        onAction={(id) => alert(`Action: ${id}`)}
+        aria-label="Ghost variant actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="export">Export</Menu.Item>
+      </SplitButton>
+    </Stack>
+  </Stack>
+)
+```
+
+### Color palettes
+
+Use different color palettes to indicate action importance:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <SplitButton
+      variant="solid"
+      colorPalette="primary"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Primary actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      variant="outline"
+      colorPalette="critical"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Critical actions"
+      icon={<Icons.Delete />}
+    >
+      <Menu.Item id="delete">Delete</Menu.Item>
+      <Menu.Item id="archive">Archive</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      variant="subtle"
+      colorPalette="neutral"
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Neutral actions"
+      icon={<Icons.MoreVert />}
+    >
+      <Menu.Item id="view">View Details</Menu.Item>
+      <Menu.Item id="edit">Edit</Menu.Item>
+    </SplitButton>
+  </Stack>
+)
+```
+
+### With sections and separators
+
+Organize menu items into logical groups:
+
+```jsx-live-dev
+const App = () => (
+  <SplitButton
+    onAction={(id) => alert(`Action: ${id}`)}
+    aria-label="Document actions"
+    icon={<Icons.Save />}
+  >
+    <Menu.Section label="File Actions">
+      <Menu.Item id="save">Save Document</Menu.Item>
+      <Menu.Item id="save-as">Save As Copy</Menu.Item>
+      <Menu.Item id="export">Export PDF</Menu.Item>
+    </Menu.Section>
+
+    <Separator />
+
+    <Menu.Section label="Share">
+      <Menu.Item id="share-link">Share Link</Menu.Item>
+      <Menu.Item id="send-email">Send via Email</Menu.Item>
+    </Menu.Section>
+
+    <Separator />
+
+    <Menu.Section label="Manage">
+      <Menu.Item id="archive">Archive</Menu.Item>
+      <Menu.Item id="delete" isCritical>
+        Delete Document
+      </Menu.Item>
+    </Menu.Section>
+  </SplitButton>
+)
+```
+
+### Menu item states
+
+Use `isDisabled` and `isCritical` props on menu items:
+
+```jsx-live-dev
+const App = () => (
+  <SplitButton
+    onAction={(id) => alert(`Action: ${id}`)}
+    aria-label="Task actions"
+    icon={<Icons.Task />}
+  >
+    <Menu.Item id="complete">Complete Task</Menu.Item>
+    <Menu.Item id="edit">Edit Task</Menu.Item>
+    <Menu.Item id="duplicate">Duplicate Task</Menu.Item>
+    <Menu.Item id="share" isDisabled>
+      Share Task (Pro only)
+    </Menu.Item>
+    <Menu.Item id="delete" isCritical>
+      Delete Task
+    </Menu.Item>
+  </SplitButton>
+)
+```
+
+**Automatic primary selection behavior:**
+- When the first `Menu.Item` is disabled, the component automatically selects the next enabled item as the primary action
+- If all items are disabled, the primary button shows the first item but is disabled
+
+### Disabled state
+
+Disable the entire split button:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <SplitButton
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Enabled actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+
+    <SplitButton
+      isDisabled
+      onAction={(id) => alert(`Action: ${id}`)}
+      aria-label="Disabled actions"
+      icon={<Icons.Save />}
+    >
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="export">Export</Menu.Item>
+    </SplitButton>
+  </Stack>
+)
+```
+
+### Controlled menu state
+
+Control the menu's open/closed state programmatically:
+
+```jsx-live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="300">
+        <Button size="xs" onPress={() => setIsOpen(true)}>
+          Open Menu
+        </Button>
+        <Button size="xs" variant="secondary" onPress={() => setIsOpen(false)}>
+          Close Menu
+        </Button>
+      </Stack>
+      <Text fontSize="sm">
+        Menu is {isOpen ? 'open' : 'closed'}
+      </Text>
+      <SplitButton
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onAction={(id) => {
+          alert(`Action: ${id}`);
+          setIsOpen(false);
+        }}
+        aria-label="Controlled menu actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+        <Menu.Item id="save-next">Save and Continue</Menu.Item>
+      </SplitButton>
+    </Stack>
+  );
+}
+```
+
+### Uncontrolled menu state
+
+Use `defaultOpen` for uncontrolled menu behavior:
+
+```jsx-live-dev
+const App = () => {
+  const [lastAction, setLastAction] = useState<string>('None');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm">
+        Last action: {lastAction}
+      </Text>
+      <SplitButton
+        defaultOpen={true}
+        onAction={(id) => setLastAction(id)}
+        aria-label="Uncontrolled menu actions"
+        icon={<Icons.Save />}
+      >
+        <Menu.Item id="save">Save</Menu.Item>
+        <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+        <Menu.Item id="save-next">Save and Continue</Menu.Item>
+      </SplitButton>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Menu.Item requirements
+
+The SplitButton requires `Menu.Item` children with the following structure:
+- Each `Menu.Item` **must** have an `id` prop (used for the `onAction` callback)
+- Items without an `id` prop are ignored during primary action selection
+- The component automatically selects the first enabled `Menu.Item` as the primary action
+- If all items are disabled, the primary button shows the first item but is disabled
+
+### Accessibility
+
+The SplitButton handles most accessibility requirements internally. However, you must provide an `aria-label` for the dropdown trigger button:
+
+```tsx
+<SplitButton
+  aria-label="More save options"
+  onAction={handleAction}
+>
+  <Menu.Item id="save">Save</Menu.Item>
+  <Menu.Item id="export">Export</Menu.Item>
+</SplitButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "document-actions-split-button";
+
+export const DocumentActions = () => (
+  <SplitButton
+    id={PERSISTENT_ID}
+    aria-label="Document actions"
+    onAction={handleAction}
+  >
+    <Menu.Item id="save">Save</Menu.Item>
+    <Menu.Item id="export">Export</Menu.Item>
+  </SplitButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus between the primary button and dropdown trigger
+- `Enter` / `Space` (on primary button): Execute the primary action
+- `Enter` / `Space` (on dropdown trigger): Open/close the menu
+- `Arrow Up` / `Arrow Down`: Navigate menu items when menu is open
+- `Enter` (on menu item): Execute the selected action and close menu
+- `Escape`: Close the menu
+
+## API reference
+
+<PropsTable id="SplitButton" />
+
+## Common patterns
+
+### Document operations
+
+Common pattern for document save operations with multiple options:
+
+```jsx-live-dev
+const App = () => {
+  const [status, setStatus] = useState<string>('No action taken');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleAction = async (id: string) => {
+    setIsSaving(true);
+    setStatus(`Executing: ${id}...`);
+    
+    // Simulate async operation
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setIsSaving(false);
+    setStatus(`Completed: ${id}`);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <SplitButton
+        onAction={handleAction}
+        aria-label="Save options"
+        icon={<Icons.Save />}
+        isDisabled={isSaving}
+      >
+        <Menu.Item id="save">Save Draft</Menu.Item>
+        <Menu.Item id="save-publish">Save and Publish</Menu.Item>
+        <Menu.Item id="save-schedule">Save and Schedule</Menu.Item>
+        <Menu.Item id="save-template">Save as Template</Menu.Item>
+      </SplitButton>
+      <Text fontSize="sm" color="neutral.11">
+        {status}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Conditional actions based on state
+
+Show different actions based on application state:
+
+```jsx-live-dev
+const App = () => {
+  const [isPublished, setIsPublished] = useState(false);
+  const [lastAction, setLastAction] = useState<string>('');
+
+  const handleAction = (id: string) => {
+    if (id === 'publish') {
+      setIsPublished(true);
+      setLastAction('Document published');
+    } else if (id === 'unpublish') {
+      setIsPublished(false);
+      setLastAction('Document unpublished');
+    } else {
+      setLastAction(`Action: ${id}`);
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="sm" fontWeight="semibold">
+        Status: {isPublished ? 'Published' : 'Draft'}
+      </Text>
+      
+      {isPublished ? (
+        <SplitButton
+          onAction={handleAction}
+          aria-label="Published document actions"
+          icon={<Icons.Visibility />}
+          colorPalette="primary"
+        >
+          <Menu.Item id="unpublish">Unpublish</Menu.Item>
+          <Menu.Item id="update">Update Published Version</Menu.Item>
+          <Menu.Item id="analytics">View Analytics</Menu.Item>
+          <Menu.Item id="share">Share Link</Menu.Item>
+        </SplitButton>
+      ) : (
+        <SplitButton
+          onAction={handleAction}
+          aria-label="Draft document actions"
+          icon={<Icons.Save />}
+        >
+          <Menu.Item id="publish">Publish Document</Menu.Item>
+          <Menu.Item id="save-draft">Save Draft</Menu.Item>
+          <Menu.Item id="preview">Preview</Menu.Item>
+          <Menu.Item id="discard">Discard Changes</Menu.Item>
+        </SplitButton>
+      )}
+      
+      {lastAction && (
+        <Text fontSize="sm" color="neutral.11">
+          {lastAction}
+        </Text>
+      )}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SplitButton within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: split-button.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-buttons-splitbutton--docs)
+- [React Aria Menu](https://react-spectrum.adobe.com/react-aria/Menu.html)
+- [ARIA Menu Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubutton/)
+- [Menu Component](/components/navigation/menu)
+- [Button Component](/components/inputs/button)
+- [IconButton Component](/components/inputs/iconbutton)

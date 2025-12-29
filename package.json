@@ -45,7 +45,11 @@
       "react-stately": "catalog:react",
       "@react-aria/interactions": "catalog:react",
       "tmp": "^0.2.5",
-      "brace-expansion": "^2.0.2"
+      "brace-expansion": "^2.0.2",
+      "mdast-util-to-hast": "^13.2.1",
+      "glob@>=10.2.0 <10.5.0": ">=10.5.0",
+      "glob@>=11.0.0 <11.1.0": ">=11.1.0",
+      "js-yaml": "^3.14.2"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
