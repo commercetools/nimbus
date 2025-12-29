@@ -1,9 +1,8 @@
 import { Flex, Text, TimeInput } from "@/components";
 import { useContext, useRef, useEffect } from "react";
-import { DatePickerStateContext } from "react-aria-components";
+import { DatePickerStateContext, useLocale } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";
-import { FormattedMessage } from "react-intl";
-import { messages } from "../date-picker.i18n";
+import { datePickerMessages } from "../date-picker.messages";
 
 /**
  * DatePickerTimeInput - Time input component displayed in DatePicker popover footer
@@ -17,6 +16,7 @@ export const DatePickerTimeInput = ({
   hideTimeZone,
   hourCycle,
 }: DatePickerTimeInputProps) => {
+  const { locale } = useLocale();
   const datePickerState = useContext(DatePickerStateContext);
   const { granularity, dateValue } = datePickerState!;
   const timeInputRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export const DatePickerTimeInput = ({
       gap="200"
     >
       <Text textStyle="xs" fontWeight="500" color="neutral.12">
-        <FormattedMessage {...messages.startTime} />
+        {datePickerMessages.getStringForLocale("Time.startTime", locale)}
       </Text>
       <TimeInput
         slot="timeInput"

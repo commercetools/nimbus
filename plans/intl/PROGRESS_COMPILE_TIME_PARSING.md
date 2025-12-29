@@ -1,6 +1,6 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
-**Status:** Phase 1 Complete + 16 Components Migrated  
+**Status:** Phase 1 Complete + 21 Components Migrated  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -10,10 +10,10 @@
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
 `@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
-16 components successfully migrated: Alert, Avatar, Dialog, Drawer,
+21 components successfully migrated: Alert, Avatar, Dialog, Drawer,
 LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
-PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar, and
-LocalizedField.
+PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
+LocalizedField, Calendar, DatePicker, ComboBox, Pagination, and DateRangePicker.
 
 ## What's Been Completed
 
@@ -38,7 +38,7 @@ LocalizedField.
    - ✅ `.temp/` directory for intermediate build artifacts (already in
      `.gitignore`)
 
-4. **Components Migrated** (16 total)
+4. **Components Migrated** (21 total)
    - ✅ Alert (1 message) - Simple string message
    - ✅ Avatar (1 message with variable) - Validates function handling
    - ✅ Dialog (1 message) - Close trigger
@@ -56,6 +56,13 @@ LocalizedField.
    - ✅ DraggableList (2 messages) - Empty message and remove button label
    - ✅ RangeCalendar (4 messages) - Navigation button labels
    - ✅ LocalizedField (6 messages) - Field labels and toggle button labels
+   - ✅ Calendar (4 messages) - Navigation button labels
+   - ✅ DatePicker (6 messages) - Clear input and time input labels
+   - ✅ ComboBox (7 messages) - Dialog, filter, options, and button labels
+   - ✅ Pagination (8 messages, 1 with variable) - Navigation and page size
+     labels
+   - ✅ DateRangePicker (14 messages) - Clear, calendar toggle, and time input
+     labels
 
    All components have:
    - ✅ Generated `intl/*.ts` files for all 5 locales
@@ -473,7 +480,13 @@ export const alertMessages = new MessageDictionary({
    - ✅ DraggableList (2 messages) - Complete
    - ✅ RangeCalendar (4 messages) - Complete
    - ✅ LocalizedField (6 messages) - Complete
-   - ⏳ Remaining ~10 components (~100 messages)
+   - ✅ Calendar (4 messages) - Complete
+   - ✅ DatePicker (6 messages) - Complete
+   - ✅ ComboBox (7 messages) - Complete
+   - ✅ Pagination (8 messages, 1 with variable) - Complete
+   - ✅ DateRangePicker (14 messages) - Complete
+   - ⏳ Remaining ~5 components (~50 messages): DataTable, RichTextInput,
+     FieldErrors, and others
 
 2. **Provider Updates**
    - ⏳ Remove `IntlProvider` from `NimbusProvider`
@@ -562,10 +575,10 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ 16 components migrated and functional (Alert, Avatar, Dialog, Drawer,
+- ✅ 21 components migrated and functional (Alert, Avatar, Dialog, Drawer,
   LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
   PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
-  LocalizedField)
+  LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker)
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -579,7 +592,7 @@ For each component migration:
 **Immediate:**
 
 1. Rebuild nimbus package to fix Storybook test failures
-2. Verify all 16 migrated components pass tests after rebuild
+2. Verify all 21 migrated components pass tests after rebuild
 
 **Next Components to Migrate:**
 
