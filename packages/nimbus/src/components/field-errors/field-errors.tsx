@@ -1,8 +1,8 @@
-import { FormattedMessage } from "react-intl";
 import { FieldErrorsRoot, FieldErrorsMessage } from "./field-errors.slots";
-import { messages } from "./field-errors.i18n";
+import { fieldErrorsMessages } from "./field-errors.messages";
 import type { FieldErrorsProps } from "./field-errors.types";
 import { FieldErrorTypes } from "./field-errors.types";
+import { useLocale } from "react-aria-components";
 
 const isObject = (obj: unknown): boolean => typeof obj === "object";
 
@@ -55,47 +55,65 @@ const getCustomMessage = (
 /**
  * Get built-in localized message for a given error key
  */
-const getBuiltInMessage = (key: string): React.ReactNode => {
+const getBuiltInMessage = (key: string, locale: string): string | null => {
   switch (key) {
     // Basic validation
     case FieldErrorTypes.MISSING:
-      return <FormattedMessage {...messages.missingRequiredField} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "missingRequiredField",
+        locale
+      );
     case FieldErrorTypes.INVALID:
-      return <FormattedMessage {...messages.invalidValue} />;
+      return fieldErrorsMessages.getStringForLocale("invalidValue", locale);
     case FieldErrorTypes.EMPTY:
-      return <FormattedMessage {...messages.emptyValue} />;
+      return fieldErrorsMessages.getStringForLocale("emptyValue", locale);
 
     // Length validation
     case FieldErrorTypes.MIN_LENGTH:
-      return <FormattedMessage {...messages.valueTooShort} />;
+      return fieldErrorsMessages.getStringForLocale("valueTooShort", locale);
     case FieldErrorTypes.MAX_LENGTH:
-      return <FormattedMessage {...messages.valueTooLong} />;
+      return fieldErrorsMessages.getStringForLocale("valueTooLong", locale);
 
     // Format validation
     case FieldErrorTypes.FORMAT:
-      return <FormattedMessage {...messages.invalidFormat} />;
+      return fieldErrorsMessages.getStringForLocale("invalidFormat", locale);
     case FieldErrorTypes.DUPLICATE:
-      return <FormattedMessage {...messages.duplicateValue} />;
+      return fieldErrorsMessages.getStringForLocale("duplicateValue", locale);
 
     // Numeric validation
     case FieldErrorTypes.NEGATIVE:
-      return <FormattedMessage {...messages.invalidNegativeNumber} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "invalidNegativeNumber",
+        locale
+      );
     case FieldErrorTypes.FRACTIONS:
-      return <FormattedMessage {...messages.invalidFractionalNumber} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "invalidFractionalNumber",
+        locale
+      );
     case FieldErrorTypes.BELOW_MIN:
-      return <FormattedMessage {...messages.valueBelowMinimum} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "valueBelowMinimum",
+        locale
+      );
     case FieldErrorTypes.ABOVE_MAX:
-      return <FormattedMessage {...messages.valueAboveMaximum} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "valueAboveMaximum",
+        locale
+      );
     case FieldErrorTypes.OUT_OF_RANGE:
-      return <FormattedMessage {...messages.valueOutOfRange} />;
+      return fieldErrorsMessages.getStringForLocale("valueOutOfRange", locale);
 
     // Server/async validation
     case FieldErrorTypes.INVALID_FROM_SERVER:
-      return <FormattedMessage {...messages.invalidFromServer} />;
+      return fieldErrorsMessages.getStringForLocale(
+        "invalidFromServer",
+        locale
+      );
     case FieldErrorTypes.NOT_FOUND:
-      return <FormattedMessage {...messages.resourceNotFound} />;
+      return fieldErrorsMessages.getStringForLocale("resourceNotFound", locale);
     case FieldErrorTypes.BLOCKED:
-      return <FormattedMessage {...messages.valueBlocked} />;
+      return fieldErrorsMessages.getStringForLocale("valueBlocked", locale);
 
     default:
       return null;
@@ -125,6 +143,8 @@ export const FieldErrors = ({
   customMessages,
   ...props
 }: FieldErrorsProps) => {
+  const { locale } = useLocale();
+
   // Don't render if not visible or no errors
   if (!isVisible) return null;
   if (!errors || !isObject(errors)) return null;
@@ -167,7 +187,7 @@ export const FieldErrors = ({
         }
 
         // Fall back to built-in localized messages
-        const builtInMessage = getBuiltInMessage(key);
+        const builtInMessage = getBuiltInMessage(key, locale);
         if (builtInMessage) {
           return (
             <FieldErrorsMessage key={key}>{builtInMessage}</FieldErrorsMessage>
