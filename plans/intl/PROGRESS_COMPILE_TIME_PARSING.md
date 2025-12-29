@@ -1,6 +1,6 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
-**Status:** Phase 1 Complete + 21 Components Migrated  
+**Status:** Phase 1 Complete + 23 Components Migrated (All except DataTable)  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -10,10 +10,12 @@
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
 `@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
-21 components successfully migrated: Alert, Avatar, Dialog, Drawer,
+23 components successfully migrated: Alert, Avatar, Dialog, Drawer,
 LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
 PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
-LocalizedField, Calendar, DatePicker, ComboBox, Pagination, and DateRangePicker.
+LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
+FieldErrors, and RichTextInput. **DataTable is intentionally excluded and will
+be migrated separately.**
 
 ## What's Been Completed
 
@@ -38,7 +40,7 @@ LocalizedField, Calendar, DatePicker, ComboBox, Pagination, and DateRangePicker.
    - ✅ `.temp/` directory for intermediate build artifacts (already in
      `.gitignore`)
 
-4. **Components Migrated** (21 total)
+4. **Components Migrated** (23 total)
    - ✅ Alert (1 message) - Simple string message
    - ✅ Avatar (1 message with variable) - Validates function handling
    - ✅ Dialog (1 message) - Close trigger
@@ -63,6 +65,8 @@ LocalizedField, Calendar, DatePicker, ComboBox, Pagination, and DateRangePicker.
      labels
    - ✅ DateRangePicker (14 messages) - Clear, calendar toggle, and time input
      labels
+   - ✅ FieldErrors (16 messages) - Validation error messages
+   - ✅ RichTextInput (25 messages) - Text formatting toolbar and menu labels
 
    All components have:
    - ✅ Generated `intl/*.ts` files for all 5 locales
@@ -352,6 +356,60 @@ export const MoneyInput = (props: MoneyInputProps) => {
 
 ---
 
+### 11. **Static Method Locale Parameter Requirement (FieldErrors)**
+
+**Challenge:** `FieldErrors.getBuiltInMessage()` is exported as a static method
+for backwards compatibility and testing, but it needs locale to retrieve
+messages.
+
+**Solution:** Pass locale as a parameter to the function instead of using
+`useLocale()` hook inside it.
+
+```typescript
+// ❌ Can't use useLocale() here - violates Rules of Hooks
+const getBuiltInMessage = (key: string): string | null => {
+  const { locale } = useLocale(); // ❌ Fails when called outside React context
+  return fieldErrorsMessages.getStringForLocale("missingRequiredField", locale);
+};
+
+// ✅ Correct: Accept locale as parameter
+const getBuiltInMessage = (key: string, locale: string): string | null => {
+  return fieldErrorsMessages.getStringForLocale("missingRequiredField", locale);
+};
+
+// Component usage
+export const FieldErrors = (props: FieldErrorsProps) => {
+  const { locale } = useLocale(); // ✅ Hook called at component level
+  // ...
+  const builtInMessage = getBuiltInMessage(key, locale); // ✅ Pass locale
+};
+
+// Static export for external use
+FieldErrors.getBuiltInMessage = getBuiltInMessage;
+```
+
+**Why locale parameter is required:**
+
+- **Static method export**: `FieldErrors.getBuiltInMessage()` is exported for
+  backwards compatibility and can be called from outside React context
+- **Rules of Hooks**: Hooks like `useLocale()` can only be called at the top
+  level of React components, not in utility functions
+- **External usage**: The function must work when called from tests, utilities,
+  or other non-React contexts
+- **Pure function**: The function remains pure and testable without React
+  dependencies
+
+**Impact:**
+
+- ✅ Function works both inside component (with locale from `useLocale()`) and
+  externally (with provided locale)
+- ✅ Maintains backwards compatibility with UI-Kit API
+- ✅ Function remains testable and pure
+- ⚠️ External callers must provide locale string (documented in function
+  signature)
+
+---
+
 ## Current Architecture (As Implemented)
 
 ### Build Pipeline Flow
@@ -485,8 +543,10 @@ export const alertMessages = new MessageDictionary({
    - ✅ ComboBox (7 messages) - Complete
    - ✅ Pagination (8 messages, 1 with variable) - Complete
    - ✅ DateRangePicker (14 messages) - Complete
-   - ⏳ Remaining ~5 components (~50 messages): DataTable, RichTextInput,
-     FieldErrors, and others
+   - ✅ FieldErrors (16 messages) - Complete
+   - ✅ RichTextInput (25 messages) - Complete
+   - ⏳ Remaining: DataTable (intentionally excluded, will be migrated
+     separately) FieldErrors, and others
 
 2. **Provider Updates**
    - ⏳ Remove `IntlProvider` from `NimbusProvider`
@@ -575,10 +635,11 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ 21 components migrated and functional (Alert, Avatar, Dialog, Drawer,
+- ✅ 23 components migrated and functional (Alert, Avatar, Dialog, Drawer,
   LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
   PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
-  LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker)
+  LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
+  FieldErrors, RichTextInput)
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -592,7 +653,9 @@ For each component migration:
 **Immediate:**
 
 1. Rebuild nimbus package to fix Storybook test failures
-2. Verify all 21 migrated components pass tests after rebuild
+2. Verify all 23 migrated components pass tests after rebuild
+3. **DataTable migration** - Will be handled separately (intentionally excluded
+   from this batch)
 
 **Next Components to Migrate:**
 
