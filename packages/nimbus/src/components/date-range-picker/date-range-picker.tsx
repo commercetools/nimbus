@@ -21,8 +21,8 @@ import { extractStyleProps } from "@/utils";
 import { DateInput, RangeCalendar, IconButton, Text } from "@/components";
 import { DateRangePickerTimeInput } from "./components/date-range-picker.time-input";
 import { DateRangePickerCustomContext } from "./components/date-range-picker.custom-context";
-import { useIntl } from "react-intl";
-import { messages } from "./date-range-picker.i18n";
+import { dateRangePickerMessages } from "./date-range-picker.messages";
+import { useLocale } from "react-aria-components";
 
 /**
  * DateRangePicker
@@ -33,7 +33,7 @@ import { messages } from "./date-range-picker.i18n";
  * @supportsStyleProps
  */
 export const DateRangePicker = (props: DateRangePickerProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
 
   // Forward hideTimeZone and hourCycle to child components (footer time inputs)
   const { granularity = "day", hideTimeZone, hourCycle } = props;
@@ -93,7 +93,10 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="clear"
-                  aria-label={intl.formatMessage(messages.clearSelection)}
+                  aria-label={dateRangePickerMessages.getStringForLocale(
+                    "clearSelection",
+                    locale
+                  )}
                 >
                   <Close />
                 </IconButton>
@@ -101,7 +104,10 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="calendarToggle"
-                  aria-label={intl.formatMessage(messages.openCalendar)}
+                  aria-label={dateRangePickerMessages.getStringForLocale(
+                    "openCalendar",
+                    locale
+                  )}
                 >
                   <CalendarMonth />
                 </IconButton>

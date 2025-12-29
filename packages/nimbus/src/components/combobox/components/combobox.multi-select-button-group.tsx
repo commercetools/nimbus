@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useIntl } from "react-intl";
 import {
   Close as CloseIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
@@ -9,7 +8,8 @@ import { ClearPressResponder } from "@react-aria/interactions";
 import { IconButton, Flex, Box } from "@/components";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
-import { messages } from "../combobox.i18n";
+import { comboBoxMessages } from "../../combo-box/combo-box.messages";
+import { useLocale } from "react-aria-components";
 
 /**
  * Internal button group for multi-select ComboBox (clear and toggle buttons)
@@ -25,7 +25,7 @@ export const ComboBoxButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
   const handleClearSelection = useCallback(() => {
     onSelectionChange?.(new Set());
     onInputChange?.("");
@@ -45,7 +45,10 @@ export const ComboBoxButtonGroup = ({
             size="2xs"
             variant="ghost"
             colorPalette="primary"
-            aria-label={intl.formatMessage(messages.clearSelection)}
+            aria-label={comboBoxMessages.getStringForLocale(
+              "clearSelection",
+              locale
+            )}
             isDisabled={isDisabled || isReadOnly}
             onPress={handleClearSelection}
             my="auto"

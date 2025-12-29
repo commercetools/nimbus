@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useIntl } from "react-intl";
 import { ChevronLeft, ChevronRight } from "@commercetools/nimbus-icons";
 import {
   Flex,
@@ -11,7 +10,8 @@ import {
 } from "@/components";
 import { usePagination } from "./hooks/use-pagination";
 import type { PaginationProps } from "./pagination.types";
-import { messages } from "./pagination.i18n";
+import { paginationMessages } from "./pagination.messages";
+import { useLocale } from "react-aria-components";
 
 /**
  * # Pagination
@@ -22,7 +22,7 @@ import { messages } from "./pagination.i18n";
  * @see {@link https://nimbus-documentation.vercel.app/components/pagination}
  */
 export const Pagination = (props: PaginationProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
   const {
     totalItems,
     currentPage,
@@ -69,7 +69,10 @@ export const Pagination = (props: PaginationProps) => {
             isClearable={false}
             selectedKey={pagination.pageSize.toString()}
             onSelectionChange={handlePageSizeChange}
-            aria-label={intl.formatMessage(messages.itemsPerPage)}
+            aria-label={paginationMessages.getStringForLocale(
+              "itemsPerPage",
+              locale
+            )}
           >
             <Select.Options>
               {pageSizeSelectOptions.map((option) => (
@@ -80,7 +83,7 @@ export const Pagination = (props: PaginationProps) => {
             </Select.Options>
           </Select.Root>
           <Text color="neutral.12">
-            {intl.formatMessage(messages.itemsPerPageText)}
+            {paginationMessages.getStringForLocale("itemsPerPageText", locale)}
           </Text>
         </Flex>
       )}
@@ -90,20 +93,28 @@ export const Pagination = (props: PaginationProps) => {
         align="center"
         gap="200"
         role="navigation"
-        aria-label={ariaLabel ?? intl.formatMessage(messages.pagination)}
+        aria-label={
+          ariaLabel ??
+          paginationMessages.getStringForLocale("pagination", locale)
+        }
       >
         <IconButton
           onClick={pagination.goToPreviousPage}
           isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={intl.formatMessage(messages.goToPreviousPage)}
+          aria-label={paginationMessages.getStringForLocale(
+            "goToPreviousPage",
+            locale
+          )}
         >
           <ChevronLeft />
         </IconButton>
 
         <Flex align="center" gap="200">
-          <Text color="neutral.12">{intl.formatMessage(messages.page)}</Text>
+          <Text color="neutral.12">
+            {paginationMessages.getStringForLocale("page", locale)}
+          </Text>
           {enablePageInput ? (
             <NumberInput
               value={pagination.currentPage}
@@ -115,7 +126,10 @@ export const Pagination = (props: PaginationProps) => {
               step={1}
               isDisabled={false}
               width="9ch"
-              aria-label={intl.formatMessage(messages.currentPage)}
+              aria-label={paginationMessages.getStringForLocale(
+                "currentPage",
+                locale
+              )}
               aria-current="page"
             />
           ) : (
@@ -124,9 +138,15 @@ export const Pagination = (props: PaginationProps) => {
             </Text>
           )}
           <Text color="neutral.12">
-            {intl.formatMessage(messages.ofTotalPages, {
-              totalPages: intl.formatNumber(pagination.totalPages),
-            })}
+            {(() => {
+              const ofTotalPagesMessage = paginationMessages.getStringForLocale(
+                "ofTotalPages",
+                locale
+              ) as string | ((args: Record<string, string | number>) => string);
+              return typeof ofTotalPagesMessage === "function"
+                ? ofTotalPagesMessage({ totalPages: pagination.totalPages })
+                : ofTotalPagesMessage;
+            })()}
           </Text>
         </Flex>
 
@@ -135,7 +155,10 @@ export const Pagination = (props: PaginationProps) => {
           isDisabled={!pagination.hasNextPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={intl.formatMessage(messages.goToNextPage)}
+          aria-label={paginationMessages.getStringForLocale(
+            "goToNextPage",
+            locale
+          )}
         >
           <ChevronRight />
         </IconButton>
