@@ -164,7 +164,9 @@ Use NimbusI18nProvider strategically to support international date and number fo
 > When not to use
 
 - **Single locale apps**: If your app only targets one locale, you may not need NimbusI18nProvider
-- **Text translation**: This component doesn't handle UI text translation (use react-intl or similar for that)
+- **Text translation**: This component provides locale context for React Aria
+  components. Nimbus components use compiled message dictionaries (see
+  [i18n guidelines](../../../../docs/file-type-guidelines/i18n.md) for details)
 - **Non-React Aria components**: This only affects React Aria components, not general HTML or other component libraries
 
 ## Specs

@@ -33,6 +33,10 @@ parsing (`react-intl`) to compile-time message compilation using
   dependency status information
 - ✅ Updated `docs/file-type-guidelines/i18n.md` and
   `docs/component-templates/i18n.template.md` to reflect new system
+- ✅ Updated all remaining documentation files with outdated patterns:
+  - `CLAUDE.md`, `docs/readme.md`, `nimbus-i18n-provider.mdx`
+  - `main-component.md`, `context-files.md`
+  - `single-component.md`, `compound-component.root.md`
 
 **Key Changes:**
 
@@ -867,7 +871,7 @@ export const alertMessages = new MessageDictionary({
      `ThemeDecorator`)
    - ✅ Updated `NimbusProvider.stories.tsx` to use new system
 
-3. **Documentation**
+3. **Documentation** ✅ COMPLETE
    - ✅ `packages/i18n/README.md` - Updated with component usage examples and
      dependency status
    - ✅ `packages/nimbus/README.md` - Updated workflow and dependency
@@ -878,15 +882,21 @@ export const alertMessages = new MessageDictionary({
      (removed old `useIntl()` patterns)
    - ✅ `docs/component-templates/i18n.template.md` - Updated to show new
      component usage patterns
+   - ✅ `docs/file-type-guidelines/main-component.md` - Updated to show new
+     `useLocale()` pattern
+   - ✅ `docs/file-type-guidelines/context-files.md` - Updated to show new
+     message dictionary usage
+   - ✅ `docs/component-templates/single-component.md` - Removed old `useIntl()`
+     import, added new pattern
+   - ✅ `docs/component-templates/compound-component.root.md` - Removed old
+     `useIntl()` import, added new pattern
+   - ✅ `CLAUDE.md` - Updated both mentions from "react-intl integration" to
+     "compile-time message compilation"
+   - ✅ `docs/readme.md` - Updated from "via react-intl" to "via compile-time
+     message compilation"
+   - ✅ `nimbus-i18n-provider.mdx` - Updated to reference i18n guidelines
+     instead of "use react-intl or similar"
    - ✅ Cross-references added between user and developer documentation
-   - ⏳ Update remaining component templates and guidelines (found outdated
-     `useIntl()` patterns in: `main-component.md`, `context-files.md`,
-     `single-component.md`, `compound-component.root.md`)
-   - ⏳ Update CLAUDE.md (mentions "react-intl integration" - should reflect new
-     system)
-   - ⏳ Update `docs/readme.md` (mentions "react-intl" - should reflect new
-     system)
-   - ⏳ Update `nimbus-i18n-provider.mdx` (mentions "use react-intl or similar")
    - ⏳ Create migration guide for consumers
 
 4. **Cleanup**
@@ -992,15 +1002,16 @@ For each component migration:
 2. ✅ Remove `react-intl` from `vite.config.ts` external array (complete)
 3. ✅ Update Storybook decorators (done - removed `WithIntlDecorator`)
 4. ✅ Update core documentation (`i18n.md`, `i18n.template.md`, READMEs)
-5. ⏳ Update remaining component templates and guidelines (found outdated
-   patterns in: `main-component.md`, `context-files.md`, `single-component.md`,
+5. ✅ Update remaining component templates and guidelines (completed:
+   `main-component.md`, `context-files.md`, `single-component.md`,
    `compound-component.root.md`)
-6. ⏳ Update CLAUDE.md and `docs/readme.md` (mention old system)
-7. ⏳ Clean up unused i18n utilities (if any exist)
-8. ⏳ Create migration guide for consumers
-9. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
-   fallbacks, and key validation (implementation pending)
-10. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
+6. ✅ Update CLAUDE.md and `docs/readme.md` (completed - now reflect new system)
+7. ✅ Update `nimbus-i18n-provider.mdx` (completed)
+8. ⏳ Clean up unused i18n utilities (if any exist)
+9. ⏳ Create migration guide for consumers
+10. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
+    fallbacks, and key validation (implementation pending)
+11. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
     codes (`"de-DE"`) but dictionaries use simple codes (`"de"`). May need
     normalization utility.
 
@@ -1015,18 +1026,17 @@ For each component migration:
   (currently uses BCP47 for React Aria formatting, separate from message
   dictionaries)
 
-**Documentation Cleanup (Paused):**
+**Documentation Cleanup** ✅ COMPLETE:
 
-- ⏳ Found outdated `useIntl()` patterns in:
+- ✅ Updated all outdated `useIntl()` patterns in:
   - `docs/file-type-guidelines/main-component.md`
   - `docs/file-type-guidelines/context-files.md`
   - `docs/component-templates/single-component.md`
   - `docs/component-templates/compound-component.root.md`
-- ⏳ Update CLAUDE.md to reflect new i18n system (currently mentions "react-intl
-  integration")
-- ⏳ Update `docs/readme.md` (currently mentions "react-intl")
-- ⏳ Update `nimbus-i18n-provider.mdx` (currently says "use react-intl or
-  similar")
+- ✅ Updated CLAUDE.md to reflect new i18n system (now mentions "compile-time
+  message compilation")
+- ✅ Updated `docs/readme.md` (now mentions "compile-time message compilation")
+- ✅ Updated `nimbus-i18n-provider.mdx` (now references i18n guidelines)
 
 **Remaining Cleanup:**
 
