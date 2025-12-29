@@ -1,5 +1,4 @@
 import { useCallback, useState, useMemo } from "react";
-import { useLocale as useAriaLocale } from "react-aria-components";
 import { useLocale } from "react-aria-components";
 import type { Key } from "react-aria-components";
 import {
