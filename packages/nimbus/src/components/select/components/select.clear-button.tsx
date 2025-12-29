@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
-import { SelectStateContext } from "react-aria-components";
+import { SelectStateContext, useLocale } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
-import { messages } from "../select.i18n";
-import { useIntl } from "react-intl";
+import { selectMessages } from "../select.messages";
 
 /**
  * Select.ClearButton - Internal button component for clearing selected values
@@ -13,7 +12,7 @@ import { useIntl } from "react-intl";
  */
 export const SelectClearButton = () => {
   const state = useContext(SelectStateContext);
-  const intl = useIntl();
+  const { locale } = useLocale();
   if (!state?.selectedKey) {
     return null;
   }
@@ -29,7 +28,7 @@ export const SelectClearButton = () => {
         pointerEvents="all"
         size="2xs"
         variant="ghost"
-        aria-label={intl.formatMessage(messages.clearSelection)}
+        aria-label={selectMessages.getStringForLocale("clearSelection", locale)}
         aria-labelledby=""
         onPress={onPressRequest}
       >

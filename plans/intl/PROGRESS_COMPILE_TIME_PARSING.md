@@ -1,6 +1,6 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
-**Status:** Phase 1 Complete + 6 Components Migrated  
+**Status:** Phase 1 Complete + 11 Components Migrated  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -9,9 +9,10 @@
 
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
-`@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with 6
-components successfully migrated: Alert, Avatar, Dialog, Drawer, LoadingSpinner,
-and NumberInput.
+`@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
+11 components successfully migrated: Alert, Avatar, Dialog, Drawer,
+LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select, and
+PasswordInput.
 
 ## What's Been Completed
 
@@ -36,13 +37,18 @@ and NumberInput.
    - ✅ `.temp/` directory for intermediate build artifacts (already in
      `.gitignore`)
 
-4. **Components Migrated** (6 total)
+4. **Components Migrated** (11 total)
    - ✅ Alert (1 message) - Simple string message
    - ✅ Avatar (1 message with variable) - Validates function handling
    - ✅ Dialog (1 message) - Close trigger
    - ✅ Drawer (1 message) - Close trigger
    - ✅ LoadingSpinner (1 message) - Default loading message
    - ✅ NumberInput (2 messages) - Increment/decrement labels
+   - ✅ TagGroup (1 message) - Remove tag label
+   - ✅ SplitButton (1 message) - No actions available fallback
+   - ✅ SearchInput (1 message) - Clear input label
+   - ✅ Select (1 message) - Clear selection label
+   - ✅ PasswordInput (2 messages) - Show/hide password labels
 
    All components have:
    - ✅ Generated `intl/*.ts` files for all 5 locales
@@ -227,7 +233,7 @@ alertMessages.getStringForLocale("dismiss", locale); // ✅ Correct: key first
 
 **Impact:**
 
-- ✅ All 6 migrated components updated with correct parameter order
+- ✅ All 11 migrated components updated with correct parameter order
 - ✅ Documentation updated to reflect correct usage
 
 ---
@@ -383,7 +389,7 @@ export const alertMessages = new MessageDictionary({
      stale bundle
    - **Fix:** Run `pnpm --filter @commercetools/nimbus build` after component
      changes
-   - **Status:** All 6 components migrated, but tests need rebuild to pass
+   - **Status:** All 11 components migrated, but tests need rebuild to pass
 
 2. **TypeScript Type Workarounds**
    - `@ts-expect-error` needed for components with variable messages
@@ -400,7 +406,12 @@ export const alertMessages = new MessageDictionary({
    - ✅ Drawer (1 message) - Complete
    - ✅ LoadingSpinner (1 message) - Complete (fixed key: `"default"`)
    - ✅ NumberInput (2 messages) - Complete
-   - ⏳ Remaining ~20 components (~130 messages)
+   - ✅ TagGroup (1 message) - Complete
+   - ✅ SplitButton (1 message) - Complete
+   - ✅ SearchInput (1 message) - Complete
+   - ✅ Select (1 message) - Complete
+   - ✅ PasswordInput (2 messages) - Complete
+   - ⏳ Remaining ~15 components (~120 messages)
 
 2. **Provider Updates**
    - ⏳ Remove `IntlProvider` from `NimbusProvider`
@@ -489,8 +500,9 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ 6 components migrated and functional (Alert, Avatar, Dialog, Drawer,
-  LoadingSpinner, NumberInput)
+- ✅ 11 components migrated and functional (Alert, Avatar, Dialog, Drawer,
+  LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
+  PasswordInput)
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -504,7 +516,7 @@ For each component migration:
 **Immediate:**
 
 1. Rebuild nimbus package to fix Storybook test failures
-2. Verify all 6 migrated components pass tests after rebuild
+2. Verify all 11 migrated components pass tests after rebuild
 
 **Next Components to Migrate:**
 

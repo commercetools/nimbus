@@ -708,6 +708,29 @@ export function getNimbusLocale(raLocale: string): string {
 }
 ```
 
+**TODO: Investigate Locale Format Documentation Consistency**
+
+There's a discrepancy between documentation and implementation:
+
+- **Documentation says**: `NimbusProvider` expects BCP47 format (`en-US`,
+  `de-DE`)
+- **Reality**:
+  - Type is `locale?: string` (accepts any string)
+  - React Aria's `I18nProvider` doesn't enforce BCP47
+  - Our message dictionaries use simple codes (`en`, `de`, `es`)
+  - `useLocale()` returns whatever you pass (no normalization)
+
+**Questions to investigate:**
+
+1. Should we standardize on simple codes everywhere?
+2. Should we update `NimbusProvider` docs to reflect that any locale string
+   works?
+3. Do we need locale mapping/fallback logic for BCP47 → simple code conversion?
+4. What happens if consumer passes `"en-US"` but dictionary has `"en"`?
+
+**Current status**: Simple codes work everywhere. Documentation may be
+misleading.
+
 ### Variable Interpolation
 
 Only 2 messages use variables:
