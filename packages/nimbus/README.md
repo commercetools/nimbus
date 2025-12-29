@@ -16,17 +16,44 @@ pnpm run build
 
 ### Workflow
 
-- Create a new `.i18n.ts` file in the component's directory and add the new
-  message(s) to it.
-  - Example: `/components/alert/alert.i18n.ts`
-  - The message should follow the pattern: `Nimbus.{ComponentName}.{messageKey}`
-  - Be specific with the message description, these are used to help translators
-    with context for each message.
-- Use the messages in your component:
-  - Example: `/components/alert/components/alert.dismiss-button.tsx`
-- Run `pnpm extract-intl` prior to merging to update the `core.json` file so
-  Transifex can detect new translation keys.
-- Test in Storybook to ensure the locale is working as expected.
+1. **Create `.i18n.ts` source file** in the component's directory:
+   - Example: `/components/alert/alert.i18n.ts`
+   - Use the [i18n template](../../docs/component-templates/i18n.template.md) as
+     a starting point
+   - Message IDs must follow: `Nimbus.{ComponentName}.{messageKey}`
+   - Be specific with descriptions - they help translators understand context
+   - **Note:** This file is for extraction only - components don't import it at
+     runtime
+
+2. **Use messages in your component**:
+   - Import the compiled message dictionary:
+     `import { componentMessages } from "./component.messages"`
+   - Use `useLocale()` from `react-aria-components` to get locale
+   - Call `componentMessages.getStringForLocale("key", locale)` to retrieve
+     messages
+   - See [i18n guidelines](../../docs/file-type-guidelines/i18n.md) for detailed
+     usage patterns
+
+3. **Extract and compile messages**:
+   - Run `pnpm extract-intl` to extract messages from `.i18n.ts` files
+   - The build pipeline automatically compiles messages to `.messages.ts`
+     dictionaries
+   - Messages are translated via Transifex workflow
+
+4. **Test in Storybook** to ensure locale is working as expected
+
+### Dependencies
+
+**`react-intl` is a dev dependency only** - it is not required at runtime:
+
+- ✅ **In `devDependencies`**: Needed for `.i18n.ts` source files which use
+  `defineMessages` from `react-intl`. The `@formatjs/cli extract` tool expects
+  this format to extract messages.
+- ❌ **Not in `peerDependencies`**: Consumers do not need to install
+  `react-intl`. Components use compiled `.messages.ts` dictionaries at runtime,
+  not the `.i18n.ts` source files.
+- ✅ **Runtime**: Components use `@internationalized/message` and
+  `react-aria-components` for message retrieval, not `react-intl`.
 
 ### Extracting Messages
 

@@ -24,9 +24,15 @@ parsing (`react-intl`) to compile-time message compilation using
   now provides i18n)
 - ✅ Updated `NimbusProvider.stories.tsx` to use `NimbusI18nProvider` instead of
   `IntlProvider`
-- ⏳ Remove `react-intl` from `peerDependencies` (pending - will tackle later)
+- ✅ Removed `react-intl` from `peerDependencies` (consumers no longer need it)
+- ✅ Removed `react-intl` from `vite.config.ts` external array (no longer
+  bundled)
 - ✅ Added locale flow documentation to `NimbusProvider.mdx` and
   `docs/file-type-guidelines/i18n.md`
+- ✅ Updated `packages/nimbus/README.md` and `packages/i18n/README.md` with
+  dependency status information
+- ✅ Updated `docs/file-type-guidelines/i18n.md` and
+  `docs/component-templates/i18n.template.md` to reflect new system
 
 **Key Changes:**
 
@@ -36,6 +42,7 @@ parsing (`react-intl`) to compile-time message compilation using
   `NimbusProvider`
 - No `react-intl` runtime dependencies - only dev dependency for `.i18n.ts`
   extraction
+- Build configuration updated to reflect dependency changes
 
 ## What's Been Completed
 
@@ -146,6 +153,9 @@ import { alertMessages } from "./alert.messages";
 
 const strings = useLocalizedStringFormatter(alertMessages);
 const label = strings.format("dismiss");
+
+// Variable interpolation (original plan)
+strings.format("avatarLabel", { fullName: "John Doe" });
 ```
 
 **Actual Implementation:**
@@ -156,17 +166,26 @@ import { alertMessages } from "./alert.messages";
 
 const { locale } = useLocale();
 const label = alertMessages.getStringForLocale("dismiss", locale);
+
+// Variable interpolation (actual implementation)
+const message = componentMessages.getStringForLocale("avatarLabel", locale)
+  as string | ((args: Record<string, string | number>) => string);
+const label = typeof message === "function"
+  ? message({ fullName: "John Doe" })
+  : message;
 ```
 
 **Reason:** `useLocalizedStringFormatter` hook does not exist in
 `react-aria/i18n`. The direct `getStringForLocale()` approach is simpler and
-more explicit.
+more explicit. Messages with variables compile to functions, requiring type
+checking before calling.
 
 **Impact:**
 
 - ✅ Simpler API (no intermediate hook)
 - ✅ More explicit locale handling
 - ✅ Better alignment with React Aria's patterns
+- ⚠️ Variable messages require type checking (documented pattern)
 
 ---
 
@@ -243,22 +262,36 @@ const renderWithProvider = (
 
 - Dictionaries would use BCP47 format (`"en-US"`, `"de-DE"`)
 - Assumed React Aria would normalize locales to BCP47
+- Planned locale mapping utility (`utils/locale-mapping.ts`) to map BCP47 codes
+  to simplified Nimbus locale keys:
+  ```typescript
+  export const NIMBUS_LOCALE_MAP = {
+    "en-US": "en",
+    "de-DE": "de",
+    "es-ES": "es",
+    // ... etc
+  };
+  export function getNimbusLocale(raLocale: string): string;
+  ```
 
 **Actual Implementation:**
 
 - Dictionaries use simple locale codes (`"en"`, `"de"`, `"es"`)
 - `useLocale()` returns whatever is passed to `I18nProvider` (no normalization)
 - Storybook and tests use simple codes, so dictionaries match
+- **Locale mapping utility NOT implemented** - not needed since we use simple
+  codes throughout
 
 **Reason:** React Aria doesn't force BCP47 normalization - it passes through
 whatever locale string you provide. Using simple codes matches what Storybook
-and tests actually use.
+and tests actually use, eliminating the need for locale mapping.
 
 **Impact:**
 
-- ✅ Simpler - no locale mapping needed
+- ✅ Simpler - no locale mapping utility needed
 - ✅ Consistent across Storybook, tests, and production
 - ✅ Matches existing data format (`en.json`, `de.json`)
+- ✅ No additional utility code to maintain
 
 ---
 
@@ -512,14 +545,23 @@ FieldErrors.getBuiltInMessage = getBuiltInMessage;
 
 - Remove `IntlProvider` from `NimbusProvider`
 - Remove message loading utilities
-- Update NimbusProvider to use React Aria's `I18nProvider` directly
+- Update NimbusProvider to use React Aria's `I18nProvider` directly:
+  ```typescript
+  <I18nProvider locale={locale}>
+    <ChakraProvider>
+      <NimbusColorModeProvider>
+        {children}
+      </NimbusColorModeProvider>
+    </ChakraProvider>
+  </I18nProvider>
+  ```
 
 **Actual Implementation:**
 
 - ✅ Removed `IntlProvider` from `NimbusProvider` (no longer imports or uses
   `react-intl`)
 - ✅ Created `NimbusI18nProvider` wrapper component (proxy for React Aria's
-  `I18nProvider`)
+  `I18nProvider`) instead of using `I18nProvider` directly
 - ✅ `NimbusProvider` now wraps children with `NimbusI18nProvider` instead of
   `IntlProvider`
 - ✅ No message loading utilities needed (messages are bundled with components)
@@ -540,7 +582,42 @@ FieldErrors.getBuiltInMessage = getBuiltInMessage;
 
 ---
 
-### 16. **Number Formatting for Variable Messages (Pagination)**
+### 16. **Breaking Changes: Locale Format NOT Changed to BCP47**
+
+**Original Plan (Breaking Change #2):**
+
+The plan documented a breaking change requiring BCP47 locale format:
+
+```typescript
+// Before: Accepts simplified locale
+<NimbusProvider locale="de">
+
+// After: Requires BCP 47 format
+<NimbusProvider locale="de-DE">
+```
+
+**Actual Implementation:**
+
+- ✅ **No breaking change** - `NimbusProvider` still accepts simple locale codes
+  (`"de"`, `"en"`, `"es"`)
+- ✅ Simple codes used throughout (dictionaries, tests, Storybook)
+- ✅ No BCP47 requirement for consumers
+
+**Reason:** Using simple codes is simpler and matches existing patterns. React
+Aria doesn't require BCP47 format - it accepts any locale string.
+
+**Impact:**
+
+- ✅ **No breaking change** for locale format (consumers can continue using
+  `"de"`)
+- ✅ Simpler migration path for consumers
+- ✅ Consistent with existing codebase patterns
+- ⚠️ Original plan's breaking change documentation was incorrect - this change
+  was not implemented
+
+---
+
+### 17. **Number Formatting for Variable Messages (Pagination)**
 
 **Challenge:** When messages contain variables that were previously formatted
 with `intl.formatNumber()`, we need to format numbers manually before passing
@@ -714,11 +791,14 @@ export const alertMessages = new MessageDictionary({
    - ✅ Components now use `NimbusI18nProvider` → React Aria's `I18nProvider`
    - ✅ Simplified provider chain
 
-3. **Dependency Management** ⏳ PENDING
-   - ⏳ Remove `react-intl` from `peerDependencies` (pending - will tackle
-     later)
-   - ⏳ Full dependency cleanup pending (may need to keep in `devDependencies`
-     for extraction)
+3. **Dependency Management** ✅ COMPLETE
+   - ✅ Removed `react-intl` from `peerDependencies` (consumers no longer need
+     it)
+   - ✅ Removed `react-intl` from `vite.config.ts` external array (no longer
+     bundled as external dependency)
+   - ✅ Kept `react-intl` in `devDependencies` (needed for `.i18n.ts` extraction
+     via `@formatjs/cli extract`)
+   - ✅ Updated README files to document dependency status
 
 ### 🟡 Remaining Issues
 
@@ -740,17 +820,15 @@ export const alertMessages = new MessageDictionary({
    - **Impact:** Low - current approach works, but may need normalization if
      consumers use BCP47 codes
 
-3. **Missing i18n Tests**
-   - **Issue:** No comprehensive test coverage for message dictionary
-     functionality, locale handling, or message key validation
-   - **Impact:** Potential runtime errors if message keys are incorrect or
-     locales are unsupported
-   - **Fix Needed:** Create test suite that:
+3. **i18n Test Suite** ✅
+   - ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
+     fallbacks, and key validation
+   - **Status:** Test suite created, implementation pending
+   - **Coverage Needed:**
      - Validates all message keys exist in dictionaries
      - Tests locale fallback behavior
      - Verifies message functions work correctly with variables
      - Ensures all components handle missing locales gracefully
-   - **Status:** Not yet implemented - needs to be added
 
 ### 🟡 Pending Tasks
 
@@ -783,21 +861,32 @@ export const alertMessages = new MessageDictionary({
 
 2. **Provider Updates** ✅ COMPLETE
    - ✅ Removed `IntlProvider` from `NimbusProvider`
-   - ⏳ Remove `react-intl` from `peerDependencies` (pending - will tackle
-     later)
+   - ✅ Removed `react-intl` from `peerDependencies` (consumers no longer need
+     it)
    - ✅ Updated Storybook decorators (removed `WithIntlDecorator`, updated
      `ThemeDecorator`)
    - ✅ Updated `NimbusProvider.stories.tsx` to use new system
 
 3. **Documentation**
-   - ✅ `packages/i18n/README.md` - Updated with component usage examples
+   - ✅ `packages/i18n/README.md` - Updated with component usage examples and
+     dependency status
+   - ✅ `packages/nimbus/README.md` - Updated workflow and dependency
+     information
    - ✅ Script JSDoc comments - Reviewed and updated
    - ✅ `NimbusProvider.mdx` - Added locale flow diagram and precedence order
-   - ✅ `docs/file-type-guidelines/i18n.md` - Added locale resolution section
-     with technical details
+   - ✅ `docs/file-type-guidelines/i18n.md` - Updated to reflect new system
+     (removed old `useIntl()` patterns)
+   - ✅ `docs/component-templates/i18n.template.md` - Updated to show new
+     component usage patterns
    - ✅ Cross-references added between user and developer documentation
-   - ⏳ Update component guidelines (i18n.md still references old patterns)
-   - ⏳ Update CLAUDE.md (if needed)
+   - ⏳ Update remaining component templates and guidelines (found outdated
+     `useIntl()` patterns in: `main-component.md`, `context-files.md`,
+     `single-component.md`, `compound-component.root.md`)
+   - ⏳ Update CLAUDE.md (mentions "react-intl integration" - should reflect new
+     system)
+   - ⏳ Update `docs/readme.md` (mentions "react-intl" - should reflect new
+     system)
+   - ⏳ Update `nimbus-i18n-provider.mdx` (mentions "use react-intl or similar")
    - ⏳ Create migration guide for consumers
 
 4. **Cleanup**
@@ -898,20 +987,54 @@ For each component migration:
 
 **Next Steps:**
 
-1. ⏳ Remove `react-intl` from `peerDependencies` (pending - will tackle later)
-2. ✅ Update Storybook decorators (done - removed `WithIntlDecorator`)
-3. ⏳ Clean up unused i18n utilities (if any exist)
-4. ⏳ Update component guidelines documentation
-   (`docs/file-type-guidelines/i18n.md` still has old patterns)
-5. ⏳ Create migration guide for consumers
-6. ⏳ **Add i18n tests** - Create comprehensive tests for message dictionary
-   functionality, locale fallbacks, and message key validation across all
-   components
-7. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
-   codes (`"de-DE"`) but dictionaries use simple codes (`"de"`). May need
-   normalization utility.
+1. ✅ Remove `react-intl` from `peerDependencies` (complete - consumers no
+   longer need it)
+2. ✅ Remove `react-intl` from `vite.config.ts` external array (complete)
+3. ✅ Update Storybook decorators (done - removed `WithIntlDecorator`)
+4. ✅ Update core documentation (`i18n.md`, `i18n.template.md`, READMEs)
+5. ⏳ Update remaining component templates and guidelines (found outdated
+   patterns in: `main-component.md`, `context-files.md`, `single-component.md`,
+   `compound-component.root.md`)
+6. ⏳ Update CLAUDE.md and `docs/readme.md` (mention old system)
+7. ⏳ Clean up unused i18n utilities (if any exist)
+8. ⏳ Create migration guide for consumers
+9. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
+   fallbacks, and key validation (implementation pending)
+10. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
+    codes (`"de-DE"`) but dictionaries use simple codes (`"de"`). May need
+    normalization utility.
 
 ---
+
+## Additional Notes & Future Tasks
+
+**Build Configuration:**
+
+- ✅ Removed `react-intl` from `vite.config.ts` external array
+- ⏳ Consider if `optimizeLocales.vite` BCP47 locales need to match simple codes
+  (currently uses BCP47 for React Aria formatting, separate from message
+  dictionaries)
+
+**Documentation Cleanup (Paused):**
+
+- ⏳ Found outdated `useIntl()` patterns in:
+  - `docs/file-type-guidelines/main-component.md`
+  - `docs/file-type-guidelines/context-files.md`
+  - `docs/component-templates/single-component.md`
+  - `docs/component-templates/compound-component.root.md`
+- ⏳ Update CLAUDE.md to reflect new i18n system (currently mentions "react-intl
+  integration")
+- ⏳ Update `docs/readme.md` (currently mentions "react-intl")
+- ⏳ Update `nimbus-i18n-provider.mdx` (currently says "use react-intl or
+  similar")
+
+**Remaining Cleanup:**
+
+- ⏳ Remove `compiled-data/` directory
+- ⏳ Make `@commercetools/nimbus-i18n` package private
+- ⏳ Remove unused i18n utilities (if any exist)
+- ⏳ Bundle size analysis
+- ⏳ Create migration guide for consumers
 
 ## References
 

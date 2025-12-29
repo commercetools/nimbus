@@ -1,8 +1,4 @@
-# Compile-Time Message Parsing Architecture - Original plans, but adjustments being made along the way.
-
-eg LocalizedStringDictionary wasn't exported from @internationalized/message, so
-we switched to MessageDictionary. -- same constructor pattern & works with
-getStringForLocale() for accessing messages.
+# Compile-Time Message Parsing Architecture
 
 **Status:** Draft **Created:** 2025-01-XX **Author:** Engineering Team
 
@@ -400,8 +396,6 @@ scripts/
    - [ ] Verify generated `alert/intl/*.ts` files
    - [ ] Verify generated `alert/alert.messages.ts`
    - [ ] Validate TypeScript types
-   - [ ] **Create i18n test suite** - Test message dictionary functionality,
-         locale fallbacks, and key validation
 
 4. **Update build configuration**
    - [ ] Add new scripts to `packages/i18n/package.json`
@@ -474,8 +468,6 @@ For each component:
 5. [ ] Keep `.i18n.ts` file (needed for extraction)
 6. [ ] Update tests if needed
 7. [ ] Verify in Storybook
-8. [ ] **Add i18n tests** - Test message retrieval, locale handling, and
-       variable interpolation for each migrated component
 
 **Success Criteria:**
 
@@ -483,8 +475,6 @@ For each component:
 - ✅ All tests passing
 - ✅ Storybook stories working
 - ✅ Bundle size analysis shows reduction
-- ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
-  fallbacks, and key validation
 
 ### Phase 3: Provider Updates (Week 4)
 
@@ -549,8 +539,6 @@ For each component:
 - ✅ All 137 messages migrated
 - ✅ All tests passing
 - ✅ All Storybook stories working
-- ⚠️ **i18n test suite complete** - All components have i18n tests covering
-  message retrieval, locale fallbacks, and error handling
 
 ### Phase 5: Cleanup & Optimization (Week 7)
 
@@ -576,8 +564,6 @@ For each component:
    - [ ] Measure component mount time
    - [ ] Test with all locales
    - [ ] Verify memory usage
-   - [ ] **i18n performance tests** - Measure message retrieval performance
-         across all locales and components
 
 4. **Update build process**
    - [ ] Clean up old compilation scripts
@@ -717,86 +703,6 @@ export function getNimbusLocale(raLocale: string): string {
   return NIMBUS_LOCALE_MAP[raLocale as keyof typeof NIMBUS_LOCALE_MAP] || "en";
 }
 ```
-
-**TODO: Investigate Locale Format Documentation Consistency**
-
-There's a discrepancy between documentation and implementation:
-
-- **Documentation says**: `NimbusProvider` expects BCP47 format (`en-US`,
-  `de-DE`)
-- **Reality**:
-  - Type is `locale?: string` (accepts any string)
-  - React Aria's `I18nProvider` doesn't enforce BCP47
-  - Our message dictionaries use simple codes (`en`, `de`, `es`)
-  - `useLocale()` returns whatever you pass (no normalization)
-
-**Questions to investigate:**
-
-1. Should we standardize on simple codes everywhere?
-2. Should we update `NimbusProvider` docs to reflect that any locale string
-   works?
-3. Do we need locale mapping/fallback logic for BCP47 → simple code conversion?
-4. What happens if consumer passes `"en-US"` but dictionary has `"en"`?
-
-**Current status**: Simple codes work everywhere. Documentation may be
-misleading.
-
-### Locale Source Change Impact on Tests
-
-**Issue:** After migration, components use `useLocale()` from
-`react-aria-components` instead of `react-intl`'s `useIntl()`, which changes
-which locale provider controls message localization.
-
-**Before Migration:**
-
-- Components used `react-intl`'s `useIntl()` hook
-- `react-intl` gets locale from `IntlProvider` (from `react-intl`)
-- `NimbusI18nProvider` only affected React Aria components (number/date
-  formatting), not `react-intl` messages
-- Components showed messages based on Storybook's `IntlProvider` or default
-  locale (typically English)
-- Tests searching for English text were correct
-
-**After Migration:**
-
-- Components use `useLocale()` from `react-aria-components`
-- This gets locale from `I18nProvider` (which `NimbusI18nProvider` wraps)
-- Components now use the locale from `NimbusI18nProvider` for messages
-- If a story sets `NimbusI18nProvider locale="de-DE"`, components show German
-  messages
-- Tests must be updated to match the locale set in the story
-
-**Example - MoneyInput Story:**
-
-```typescript
-// Story sets German locale
-export const EULocaleFormattingExample: Story = {
-  render: (args) => (
-    <NimbusI18nProvider locale="de-DE">
-      <MoneyInput {...args} />
-    </NimbusI18nProvider>
-  ),
-  play: async ({ canvasElement }) => {
-    // ❌ Before: Test searched for English (was correct)
-    const badges = canvas.getAllByLabelText(/high precision price/i);
-
-    // ✅ After: Test must search for German (matches story locale)
-    const badges = canvas.getAllByLabelText(/hochpräzisionspreis/i);
-  },
-};
-```
-
-**Impact:**
-
-- ✅ Components now consistently use the same locale source for both formatting
-  and messages
-- ⚠️ Tests in stories with explicit `NimbusI18nProvider` locale must be updated
-  to match that locale
-- ⚠️ Tests that relied on Storybook's default English locale may need updates
-
-**Pattern for Test Updates:** When a story sets
-`NimbusI18nProvider locale="xx-XX"`, update tests to expect messages in that
-locale, not the default English.
 
 ### Variable Interpolation
 
@@ -1102,18 +1008,3 @@ export const alertMessages = new LocalizedStringDictionary({
 **Document Status:** Ready for team review and approval **Next Steps:** Present
 to team, gather feedback, finalize timeline **Target Start Date:** TBD
 **Estimated Completion:** 8 weeks from start
-
--remove compiled-data check vite.config update ALL documentation -remove i18n
-package from publishing & changesets
-
-- update claude and/or copilot instructions re: i18n deprecate i18n package w/
-  notice.
-
-  -bundle size analysis
-
-- docs unit tests
-- update all readmes
-- add visuals
-- do we want to add Ra to react-aria-components hooks as well?
-- \_reset locales in Storybook
-- - handle fallback & splits (de-DE, usw) --link readmes

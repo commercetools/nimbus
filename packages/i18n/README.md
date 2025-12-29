@@ -21,6 +21,11 @@ This is an **internal build tool package** that:
 - **Eliminates runtime parsing overhead** by pre-compiling all messages to
   JavaScript functions
 
+> **Note:** `react-intl` is used only as a dev dependency in the `nimbus`
+> package for `.i18n.ts` source file extraction. It is not a runtime
+> dependency - components use compiled `.messages.ts` dictionaries with
+> `@internationalized/message` at runtime.
+
 ## Architecture
 
 ### Build Pipeline

@@ -53,7 +53,6 @@ const external = [
   // React core
   "react",
   "react-dom",
-  "react-intl",
   "react/jsx-runtime",
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
