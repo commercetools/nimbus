@@ -12,14 +12,18 @@ const channel = addons.getChannel();
  * Theme decorator that synchronizes the Storybook UI theme with the
  * dark-mode toggle and provides locale context from Storybook globals.
  * This ensures that all component stories are rendered within the correct
- * theme context, providing a consistent visual experience across the
+ * theme and i18n context, providing a consistent visual experience across the
  * entire Storybook interface.
  *
  * The decorator listens for theme changes via the Storybook event channel
  * and wraps all stories with the NimbusProvider configured with the current
- * theme and locale. This approach ensures that components always render
- * with the correct theme applied, even when toggled at runtime or persisted
- * across browser sessions.
+ * theme and locale. NimbusProvider provides both theme context (via
+ * ChakraProvider) and i18n context (via NimbusI18nProvider → React Aria's
+ * I18nProvider), which components access via useLocale() from react-aria-components.
+ *
+ * This approach ensures that components always render with the correct theme
+ * and locale applied, even when toggled at runtime or persisted across
+ * browser sessions.
  */
 export const ThemeDecorator = ({
   children,
