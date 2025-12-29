@@ -400,6 +400,8 @@ scripts/
    - [ ] Verify generated `alert/intl/*.ts` files
    - [ ] Verify generated `alert/alert.messages.ts`
    - [ ] Validate TypeScript types
+   - [ ] **Create i18n test suite** - Test message dictionary functionality,
+         locale fallbacks, and key validation
 
 4. **Update build configuration**
    - [ ] Add new scripts to `packages/i18n/package.json`
@@ -472,6 +474,8 @@ For each component:
 5. [ ] Keep `.i18n.ts` file (needed for extraction)
 6. [ ] Update tests if needed
 7. [ ] Verify in Storybook
+8. [ ] **Add i18n tests** - Test message retrieval, locale handling, and
+       variable interpolation for each migrated component
 
 **Success Criteria:**
 
@@ -479,6 +483,8 @@ For each component:
 - ✅ All tests passing
 - ✅ Storybook stories working
 - ✅ Bundle size analysis shows reduction
+- ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
+  fallbacks, and key validation
 
 ### Phase 3: Provider Updates (Week 4)
 
@@ -543,6 +549,8 @@ For each component:
 - ✅ All 137 messages migrated
 - ✅ All tests passing
 - ✅ All Storybook stories working
+- ⚠️ **i18n test suite complete** - All components have i18n tests covering
+  message retrieval, locale fallbacks, and error handling
 
 ### Phase 5: Cleanup & Optimization (Week 7)
 
@@ -568,6 +576,8 @@ For each component:
    - [ ] Measure component mount time
    - [ ] Test with all locales
    - [ ] Verify memory usage
+   - [ ] **i18n performance tests** - Measure message retrieval performance
+         across all locales and components
 
 4. **Update build process**
    - [ ] Clean up old compilation scripts

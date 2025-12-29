@@ -1,6 +1,7 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
-**Status:** Phase 1 Complete + 23 Components Migrated (All except DataTable)  
+**Status:** Phase 1 Complete + 24 Components Migrated (ALL COMPONENTS
+COMPLETE)  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -10,12 +11,11 @@
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
 `@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
-23 components successfully migrated: Alert, Avatar, Dialog, Drawer,
+**all 24 components successfully migrated**: Alert, Avatar, Dialog, Drawer,
 LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
 PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
 LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
-FieldErrors, and RichTextInput. **DataTable is intentionally excluded and will
-be migrated separately.**
+FieldErrors, RichTextInput, and **DataTable**.
 
 ## What's Been Completed
 
@@ -40,7 +40,7 @@ be migrated separately.**
    - ✅ `.temp/` directory for intermediate build artifacts (already in
      `.gitignore`)
 
-4. **Components Migrated** (23 total)
+4. **Components Migrated** (24 total - **ALL COMPLETE**)
    - ✅ Alert (1 message) - Simple string message
    - ✅ Avatar (1 message with variable) - Validates function handling
    - ✅ Dialog (1 message) - Close trigger
@@ -589,19 +589,31 @@ export const alertMessages = new MessageDictionary({
    - Acceptable trade-off, but documented for future reference
 
 3. **Locale Mismatch in Tests (MoneyInput)**
-   - **Issue:** `useLocale()` from `react-aria-components` may return `"de-DE"` when
-     `NimbusI18nProvider` is set to `locale="de-DE"`, but `MessageDictionary` only
-     has keys for simple locale codes (`"de"`, `"en"`). This causes dictionary
-     lookup to fail and fallback to `"en"`.
+   - **Issue:** `useLocale()` from `react-aria-components` may return `"de-DE"`
+     when `NimbusI18nProvider` is set to `locale="de-DE"`, but
+     `MessageDictionary` only has keys for simple locale codes (`"de"`, `"en"`).
+     This causes dictionary lookup to fail and fallback to `"en"`.
    - **Current Workaround:** Tests check for both German and English labels,
      accepting whichever is rendered.
    - **Root Cause:** `useLocale()` returns the exact locale string passed to
      `I18nProvider` (no normalization), but dictionaries use simple codes.
    - **Fix Needed:** Normalize locale in components before dictionary lookup:
-     `const locale = rawLocale?.split('-')[0] || 'en'` (extract language code from
-     `"de-DE"` → `"de"`).
+     `const locale = rawLocale?.split('-')[0] || 'en'` (extract language code
+     from `"de-DE"` → `"de"`).
    - **Status:** Workaround in place for `money-input.stories.tsx`, needs
      component-level fix.
+
+4. **Missing i18n Tests**
+   - **Issue:** No comprehensive test coverage for message dictionary
+     functionality, locale handling, or message key validation
+   - **Impact:** Potential runtime errors if message keys are incorrect or
+     locales are unsupported
+   - **Fix Needed:** Create test suite that:
+     - Validates all message keys exist in dictionaries
+     - Tests locale fallback behavior
+     - Verifies message functions work correctly with variables
+     - Ensures all components handle missing locales gracefully
+   - **Status:** Not yet implemented - needs to be added
 
 ### 🟡 Pending Tasks
 
@@ -629,8 +641,8 @@ export const alertMessages = new MessageDictionary({
    - ✅ DateRangePicker (14 messages) - Complete
    - ✅ FieldErrors (16 messages) - Complete
    - ✅ RichTextInput (25 messages) - Complete
-   - ⏳ Remaining: DataTable (intentionally excluded, will be migrated
-     separately) FieldErrors, and others
+   - ✅ DataTable (39 messages) - Complete (main component + 6 sub-components:
+     Header, Column, Row, Manager, LayoutSettingsPanel, VisibleColumnsPanel)
 
 2. **Provider Updates**
    - ⏳ Remove `IntlProvider` from `NimbusProvider`
@@ -719,11 +731,11 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ 23 components migrated and functional (Alert, Avatar, Dialog, Drawer,
+- ✅ **24 components migrated and functional** (Alert, Avatar, Dialog, Drawer,
   LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
   PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
   LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
-  FieldErrors, RichTextInput)
+  FieldErrors, RichTextInput, **DataTable**)
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -737,16 +749,19 @@ For each component migration:
 **Immediate:**
 
 1. Rebuild nimbus package to fix Storybook test failures
-2. Verify all 23 migrated components pass tests after rebuild
-3. **DataTable migration** - Will be handled separately (intentionally excluded
-   from this batch)
+2. Verify all 24 migrated components pass tests after rebuild
+3. **All component migrations complete!** ✅
 
-**Next Components to Migrate:**
+**Next Steps:**
 
-1. Badge (if it has messages)
-2. Simple components (Button, Icon, etc.)
-3. Components with variables (Pagination)
-4. Complex components (DatePicker, Calendar, ComboBox)
+1. Remove `react-intl` dependency from `NimbusProvider`
+2. Update Storybook decorators to remove `IntlProvider`
+3. Clean up unused i18n utilities
+4. Update component guidelines documentation
+5. Create migration guide for consumers
+6. **Add i18n tests** - Create comprehensive tests for message dictionary
+   functionality, locale fallbacks, and message key validation across all
+   components
 
 **Estimated Timeline:**
 
@@ -766,4 +781,3 @@ For each component migration:
 - Implementation: `packages/i18n/scripts/`
 - Example Migration: `packages/nimbus/src/components/alert/`
 - Related PR: #841 (CRAFT-2029)
-- handle fallback & splits (de-DE, usw)

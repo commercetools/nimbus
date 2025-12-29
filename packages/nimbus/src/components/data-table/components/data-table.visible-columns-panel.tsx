@@ -1,5 +1,6 @@
 import { useCallback, useState, useMemo } from "react";
-import { useIntl } from "react-intl";
+import { useLocale as useAriaLocale } from "react-aria-components";
+import { useLocale } from "react-aria-components";
 import type { Key } from "react-aria-components";
 import {
   Button,
@@ -17,7 +18,7 @@ import {
   Visibility,
 } from "@commercetools/nimbus-icons";
 import type { ColumnManagerListItem } from "../data-table.types";
-import { messages } from "../data-table.i18n";
+import { dataTableMessages } from "../data-table.messages";
 
 // Type for items with onRemoveItem provided by DraggableList.Root
 type TColumnListItemWithRemove = ColumnManagerListItem & {
@@ -43,7 +44,7 @@ export const VisibleColumnsPanel = ({
   handleResetColumns: () => void;
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const { formatMessage } = useIntl();
+  const { locale } = useLocale();
 
   if (!hiddenItems || !visibleItems) {
     return null;
@@ -129,7 +130,7 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <VisibilityOff />
             <Text fontWeight="700" fontSize="sm" w="full">
-              {formatMessage(messages.hiddenColumns)}
+              {dataTableMessages.getStringForLocale("hiddenColumns", locale)}
             </Text>
           </Stack>
           <Stack
@@ -145,8 +146,14 @@ export const VisibleColumnsPanel = ({
               w="full"
               size="sm"
               variant="ghost"
-              placeholder={formatMessage(messages.searchHiddenColumns)}
-              aria-label={formatMessage(messages.searchHiddenColumns)}
+              placeholder={dataTableMessages.getStringForLocale(
+                "searchHiddenColumns",
+                locale
+              )}
+              aria-label={dataTableMessages.getStringForLocale(
+                "searchHiddenColumns",
+                locale
+              )}
               onChange={handleSearch}
               value={searchValue}
               data-testid="search-hidden-columns"
@@ -164,11 +171,17 @@ export const VisibleColumnsPanel = ({
               overflowY="auto"
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
-              aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
+              aria-label={dataTableMessages.getStringForLocale(
+                "hiddenColumnsAriaLabel",
+                locale
+              )}
               data-testid="hidden-columns-list"
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
-                  {formatMessage(messages.noHiddenColumns)}
+                  {dataTableMessages.getStringForLocale(
+                    "noHiddenColumns",
+                    locale
+                  )}
                 </Text>
               }
             >
@@ -191,7 +204,10 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <Visibility />
             <Text fontWeight="700" fontSize="sm">
-              {formatMessage(messages.visibleColumnsList)}
+              {dataTableMessages.getStringForLocale(
+                "visibleColumnsList",
+                locale
+              )}
             </Text>
           </Stack>
           <DraggableList.Root
@@ -201,7 +217,10 @@ export const VisibleColumnsPanel = ({
             overflowY="auto"
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsListUpdate}
-            aria-label={formatMessage(messages.visibleColumnsAria)}
+            aria-label={dataTableMessages.getStringForLocale(
+              "visibleColumnsAria",
+              locale
+            )}
             data-testid="visible-columns-list"
           >
             {(item) => (
@@ -228,10 +247,10 @@ export const VisibleColumnsPanel = ({
           colorPalette="primary"
           size="xs"
           onClick={handleResetColumns}
-          aria-label={formatMessage(messages.reset)}
+          aria-label={dataTableMessages.getStringForLocale("reset", locale)}
         >
           <Refresh />
-          {formatMessage(messages.reset)}
+          {dataTableMessages.getStringForLocale("reset", locale)}
         </Button>
       </Box>
     </Stack>
