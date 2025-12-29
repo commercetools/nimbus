@@ -439,7 +439,7 @@ export function registerDataTableTool(
             "Array of column definitions (subset of data shown in table)"
           ),
         data: z
-          .array(z.record(z.any()))
+          .array(z.record(z.string(), z.any()))
           .describe(
             "Array of data objects (full data - table shows subset based on columns). IMPORTANT: if there are more keys than columns, set showDetails=true"
           ),

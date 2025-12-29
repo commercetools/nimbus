@@ -11,28 +11,28 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.2",
+    "@anthropic-ai/sdk": "catalog:mcp-ui",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
-    "@mcp-ui/client": "^5.17.1",
-    "@modelcontextprotocol/sdk": "^1.24.3",
-    "@remote-dom/core": "catalog:",
-    "@remote-dom/react": "catalog:",
-    "react": "^19.0.0",
-    "react-aria": "catalog:",
-    "react-dom": "^19.0.0"
+    "@mcp-ui/client": "catalog:mcp-ui",
+    "@modelcontextprotocol/sdk": "catalog:mcp-ui",
+    "@remote-dom/core": "catalog:mcp-ui",
+    "@remote-dom/react": "catalog:mcp-ui",
+    "react": "catalog:react",
+    "react-aria": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react-swc": "^4.2.2",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.48.0",
-    "vite": "^7.2.6"
+    "@eslint/js": "catalog:tooling",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react-swc": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:tooling",
+    "eslint-plugin-react-refresh": "catalog:tooling",
+    "globals": "catalog:tooling",
+    "typescript": "catalog:tooling",
+    "typescript-eslint": "catalog:tooling",
+    "vite": "catalog:tooling"
   }
 }

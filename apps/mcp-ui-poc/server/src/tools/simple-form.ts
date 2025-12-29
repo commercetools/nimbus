@@ -204,7 +204,7 @@ export function registerSimpleFormTool(server: McpServer) {
             "Name of MCP tool to call when form is submitted (e.g., 'commerce__createProduct')"
           ),
         actionParams: z
-          .record(z.any())
+          .record(z.string(), z.any())
           .optional()
           .describe(
             "Additional parameters to pass to the MCP tool. Form data will be merged with these params under the 'formData' key."

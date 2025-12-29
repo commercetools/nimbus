@@ -21,12 +21,12 @@ export function registerFormFieldTool(server: McpServer) {
       inputSchema: z.object({
         // Content
         labelChildren: z
-          .array(z.record(z.any()))
+          .array(z.record(z.string(), z.any()))
           .describe(
             "Child elements for the label section (element definition objects)"
           ),
         inputChildren: z
-          .array(z.record(z.any()))
+          .array(z.record(z.string(), z.any()))
           .describe(
             "Child elements for the input section (element definition objects)"
           ),

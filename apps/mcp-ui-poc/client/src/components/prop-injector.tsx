@@ -28,6 +28,18 @@
 import React from "react";
 
 /**
+ * Remote DOM Element Structure
+ * Represents a serialized element from the Remote DOM tree
+ */
+export interface RemoteDomElement {
+  type: number;
+  data?: string;
+  element?: string;
+  properties?: Record<string, unknown>;
+  children?: RemoteDomElement[];
+}
+
+/**
  * Recursively render Remote DOM element tree as React components
  *
  * This is the core of prop injection - it takes injected props from a parent's
@@ -41,9 +53,9 @@ import React from "react";
  * @returns Rendered React element with merged props
  */
 export function renderElement(
-  element: any,
+  element: RemoteDomElement,
   key: string | number,
-  componentMap: Map<string, React.ComponentType<any>>,
+  componentMap: Map<string, React.ComponentType<Record<string, unknown>>>,
   injectedProps: Record<string, unknown> = {}
 ): React.ReactNode {
   if (!element) return null;
@@ -71,8 +83,9 @@ export function renderElement(
     const finalProps = { ...props, ...injectedProps };
 
     // Recursively render children (without prop injection - only direct children get injected props)
-    const children = (element.children || []).map((child: any, index: number) =>
-      renderElement(child, `${key}-child-${index}`, componentMap, {})
+    const children = (element.children || []).map(
+      (child: RemoteDomElement, index: number) =>
+        renderElement(child, `${key}-child-${index}`, componentMap, {})
     );
 
     // Don't pass children to void elements (img, input, etc.)

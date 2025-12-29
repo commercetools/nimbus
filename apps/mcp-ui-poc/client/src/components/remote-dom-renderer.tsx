@@ -61,7 +61,7 @@ export function clearReceivers() {
  * Simple wrapper - just spreads styleProps
  */
 const simple =
-  (Component: React.ComponentType<any>, isVoid = false) =>
+  (Component: React.ComponentType<Record<string, unknown>>, isVoid = false) =>
   (props: Record<string, unknown>) => {
     const { styleProps, children, ...rest } = props;
     const merged = { ...rest, ...(styleProps as Record<string, unknown>) };
@@ -85,7 +85,7 @@ const ButtonWrapper = (props: Record<string, unknown>) => {
   const handlePress = id
     ? () => {
         // Extract form data if this button is inside a form
-        let formData: Record<string, string> = {};
+        const formData: Record<string, string> = {};
 
         const button = buttonRef.current;
         if (button) {
@@ -105,7 +105,9 @@ const ButtonWrapper = (props: Record<string, unknown>) => {
         }
 
         sendClientEvent("buttonClick", uri, { buttonId: id, formData }, false);
-        if (onPress) (onPress as any)();
+        if (typeof onPress === "function") {
+          onPress();
+        }
       }
     : onPress;
 
@@ -113,7 +115,7 @@ const ButtonWrapper = (props: Record<string, unknown>) => {
     <Nimbus.Button
       {...rest}
       {...(styleProps as Record<string, unknown>)}
-      onPress={handlePress as any}
+      onPress={handlePress as () => void}
       ref={buttonRef}
     />
   );
@@ -131,7 +133,13 @@ const DataTableWrapper = (props: Record<string, unknown>) => {
   const parsedRows =
     typeof rows === "string" ? JSON.parse(rows as string) : rows;
 
-  const transformedColumns = parsedColumns?.map((col: any) => ({
+  interface ColumnDef {
+    id: string;
+    accessor: string | ((row: Record<string, unknown>) => unknown);
+    [key: string]: unknown;
+  }
+
+  const transformedColumns = parsedColumns?.map((col: ColumnDef) => ({
     ...col,
     accessor:
       typeof col.accessor === "string"
@@ -142,7 +150,9 @@ const DataTableWrapper = (props: Record<string, unknown>) => {
   const handleRowClick = isRowClickable
     ? (row: DataTableRowItem) => {
         sendClientEvent("dataTableRowClick", uri, { rowId: row.id }, false);
-        if (onRowClick) (onRowClick as any)(row);
+        if (typeof onRowClick === "function") {
+          onRowClick(row);
+        }
       }
     : undefined;
 
@@ -228,7 +238,10 @@ const DrawerCloseTriggerWrapper = (props: Record<string, unknown>) => {
  * Component registry - single source of truth for all Nimbus components
  * Maps tag names to unwrapped React components
  */
-const componentRegistry: Record<string, React.ComponentType<any>> = {
+const componentRegistry: Record<
+  string,
+  React.ComponentType<Record<string, unknown>>
+> = {
   "nimbus-badge": Nimbus.Badge,
   "nimbus-text": Nimbus.Text,
   "nimbus-heading": Nimbus.Heading,
@@ -262,7 +275,9 @@ const componentRegistry: Record<string, React.ComponentType<any>> = {
  * Returns unwrapped components
  */
 const createComponentMapForPropInjection = () =>
-  new Map<string, React.ComponentType<any>>(Object.entries(componentRegistry));
+  new Map<string, React.ComponentType<Record<string, unknown>>>(
+    Object.entries(componentRegistry)
+  );
 
 /**
  * FormField.Root wrapper - reconstructs children for context access
@@ -278,7 +293,12 @@ const FormFieldRootWrapper = (props: Record<string, unknown>) => {
   const reconstructed = childArray.map((child, index) => {
     if (!React.isValidElement(child)) return child;
 
-    const remoteProps = child.props as any;
+    interface RemoteElementProps {
+      element?: unknown;
+      [key: string]: unknown;
+    }
+
+    const remoteProps = child.props as RemoteElementProps;
     const element = remoteProps.element;
 
     if (!element) return child;
@@ -299,7 +319,10 @@ const FormFieldRootWrapper = (props: Record<string, unknown>) => {
 /**
  * Components that need custom wrappers (not the simple wrapper)
  */
-const customWrappers: Record<string, React.ComponentType<any>> = {
+const customWrappers: Record<
+  string,
+  React.ComponentType<Record<string, unknown>>
+> = {
   "nimbus-button": ButtonWrapper,
   "nimbus-data-table": DataTableWrapper,
   "nimbus-money-input": MoneyInputWrapper,

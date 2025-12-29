@@ -22,7 +22,7 @@ export function registerFlexTool(server: McpServer) {
         // Content and children
         content: z.string().optional().describe("Flex content text"),
         children: z
-          .array(z.record(z.any()))
+          .array(z.record(z.string(), z.any()))
           .optional()
           .describe(
             "Child elements to render inside flex (element definition objects)"

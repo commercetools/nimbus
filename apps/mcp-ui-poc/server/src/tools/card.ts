@@ -22,7 +22,7 @@ export function registerCardTool(server: McpServer) {
         // Content and children
         content: z.string().optional().describe("Card content text"),
         children: z
-          .array(z.record(z.any()))
+          .array(z.record(z.string(), z.any()))
           .optional()
           .describe(
             'Child elements to render inside card. Each child must have: 1) "type" property with EXACT tag name from this list: nimbus-heading, nimbus-text, nimbus-badge, nimbus-stack, nimbus-flex, nimbus-button, nimbus-text-input, nimbus-image. 2) Optional "properties" object. 3) Optional "textContent" string. 4) Optional "children" array.'
