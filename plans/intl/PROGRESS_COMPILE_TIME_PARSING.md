@@ -10,12 +10,7 @@ COMPLETE)
 
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
-`@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
-**all 24 components successfully migrated**: Alert, Avatar, Dialog, Drawer,
-LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
-PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
-LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
-FieldErrors, RichTextInput, and **DataTable**.
+`@internationalized/message`.
 
 ## What's Been Completed
 
@@ -41,32 +36,6 @@ FieldErrors, RichTextInput, and **DataTable**.
      `.gitignore`)
 
 4. **Components Migrated** (24 total - **ALL COMPLETE**)
-   - ✅ Alert (1 message) - Simple string message
-   - ✅ Avatar (1 message with variable) - Validates function handling
-   - ✅ Dialog (1 message) - Close trigger
-   - ✅ Drawer (1 message) - Close trigger
-   - ✅ LoadingSpinner (1 message) - Default loading message
-   - ✅ NumberInput (2 messages) - Increment/decrement labels
-   - ✅ TagGroup (1 message) - Remove tag label
-   - ✅ SplitButton (1 message) - No actions available fallback
-   - ✅ SearchInput (1 message) - Clear input label
-   - ✅ Select (1 message) - Clear selection label
-   - ✅ PasswordInput (2 messages) - Show/hide password labels
-   - ✅ ScopedSearchInput (2 messages) - Select and search labels
-   - ✅ MoneyInput (3 messages) - Currency, amount, and high precision labels
-     (requires dual hooks)
-   - ✅ DraggableList (2 messages) - Empty message and remove button label
-   - ✅ RangeCalendar (4 messages) - Navigation button labels
-   - ✅ LocalizedField (6 messages) - Field labels and toggle button labels
-   - ✅ Calendar (4 messages) - Navigation button labels
-   - ✅ DatePicker (6 messages) - Clear input and time input labels
-   - ✅ ComboBox (7 messages) - Dialog, filter, options, and button labels
-   - ✅ Pagination (8 messages, 1 with variable) - Navigation and page size
-     labels
-   - ✅ DateRangePicker (14 messages) - Clear, calendar toggle, and time input
-     labels
-   - ✅ FieldErrors (16 messages) - Validation error messages
-   - ✅ RichTextInput (25 messages) - Text formatting toolbar and menu labels
 
    All components have:
    - ✅ Generated `intl/*.ts` files for all 5 locales
@@ -731,11 +700,7 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ **24 components migrated and functional** (Alert, Avatar, Dialog, Drawer,
-  LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
-  PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
-  LocalizedField, Calendar, DatePicker, ComboBox, Pagination, DateRangePicker,
-  FieldErrors, RichTextInput, **DataTable**)
+- ✅ **24 components migrated and functional**
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -763,21 +728,11 @@ For each component migration:
    functionality, locale fallbacks, and message key validation across all
    components
 
-**Estimated Timeline:**
-
-- Phase 2 (Component Migration): 2-3 weeks
-- Phase 3 (Provider Updates): 1 week
-- Phase 4 (Bulk Migration): 2-3 weeks
-- Phase 5 (Cleanup): 1 week
-- Phase 6 (Documentation): 1 week
-
-**Total Estimated:** 7-9 weeks remaining
-
 ---
 
 ## References
 
 - Original Plan: `plans/intl/COMPILE_TIME_PARSING.md`
 - Implementation: `packages/i18n/scripts/`
-- Example Migration: `packages/nimbus/src/components/alert/`
+- [Example Migration: `packages/nimbus/src/components/alert/`](https://react-aria.adobe.com/useLocale)
 - Related PR: #841 (CRAFT-2029)
