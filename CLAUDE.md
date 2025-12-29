@@ -188,8 +188,8 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Component Library**: React components with WCAG 2.1 AA compliant
   implementation using React Aria patterns
 - **Design System**: Design token-based theming system with Chakra UI v3 recipes
-- **Internationalization**: Centralized i18n package with react-intl integration
-  and Transifex support
+- **Internationalization**: Compile-time message compilation using
+  `@internationalized/message` with Transifex support
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
