@@ -1,5 +1,5 @@
 import { VisuallyHidden } from "react-aria";
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
 import {
   TableHeader as RaTableHeader,
   Collection as RaCollection,
@@ -14,7 +14,7 @@ import type {
 import { DataTableHeaderSlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
-import { messages } from "../data-table.i18n";
+import { dataTableMessages } from "../data-table.messages";
 
 /**
  * DataTable.Header - The table header section that renders column headers with sorting capabilities
@@ -27,7 +27,7 @@ export const DataTableHeader = <
   ref,
   ...props
 }: DataTableHeaderProps<T>) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
   const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
     useDataTableContext();
   // This can also be used to see if drag'n'drop is enabled
@@ -63,11 +63,14 @@ export const DataTableHeader = <
             maxWidth={selectionBehavior === "toggle" ? 24 : 72}
             minWidth={selectionBehavior === "toggle" ? 24 : 72}
             allowsSorting={false}
-            aria-label={intl.formatMessage(messages.expandRows)}
+            aria-label={dataTableMessages.getStringForLocale(
+              "expandRows",
+              locale
+            )}
             isInternalColumn={true}
           >
             <VisuallyHidden>
-              {intl.formatMessage(messages.expandRows)}
+              {dataTableMessages.getStringForLocale("expandRows", locale)}
             </VisuallyHidden>
           </DataTableColumn>
         )}
@@ -105,10 +108,10 @@ export const DataTableHeader = <
           minWidth={72}
           allowsSorting={false}
           isInternalColumn={true}
-          aria-label={intl.formatMessage(messages.pinRows)}
+          aria-label={dataTableMessages.getStringForLocale("pinRows", locale)}
         >
           <VisuallyHidden>
-            {intl.formatMessage(messages.pinRows)}
+            {dataTableMessages.getStringForLocale("pinRows", locale)}
           </VisuallyHidden>
         </DataTableColumn>
       </RaTableHeader>
