@@ -143,8 +143,14 @@ export const Pagination = (props: PaginationProps) => {
                 "ofTotalPages",
                 locale
               ) as string | ((args: Record<string, string | number>) => string);
+
+              // Format the number with locale-specific formatting
+              const formattedTotalPages = new Intl.NumberFormat(locale).format(
+                pagination.totalPages
+              );
+
               return typeof ofTotalPagesMessage === "function"
-                ? ofTotalPagesMessage({ totalPages: pagination.totalPages })
+                ? ofTotalPagesMessage({ totalPages: formattedTotalPages })
                 : ofTotalPagesMessage;
             })()}
           </Text>
