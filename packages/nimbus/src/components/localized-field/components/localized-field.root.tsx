@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
 import {
   Collection as RaCollection,
   Dialog as RaDialog,
@@ -23,7 +23,7 @@ import {
   type CurrencyCode,
 } from "@/components";
 import { Popover } from "../../popover";
-import { messages } from "../localized-field.i18n";
+import { localizedFieldMessages } from "../localized-field.messages";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,
@@ -96,7 +96,7 @@ export const LocalizedField = ({
     displayAllLocalesOrCurrencies || defaultExpanded
   );
 
-  const { formatMessage } = useIntl();
+  const { locale } = useLocale();
 
   // Used to associate more info dialog with fieldset via `aria-controls`
   const localeFieldsContainerId = useId();
@@ -222,7 +222,10 @@ export const LocalizedField = ({
             <RaDialogTrigger>
               <IconButton
                 id={moreDetailsButtonId}
-                aria-label={formatMessage(messages.infoBoxTriggerAriaLabel)}
+                aria-label={localizedFieldMessages.getStringForLocale(
+                  "infoBoxTriggerAriaLabel",
+                  locale
+                )}
                 size="2xs"
                 colorPalette="info"
                 variant="link"
@@ -301,11 +304,23 @@ export const LocalizedField = ({
             />
             {type === "money"
               ? expanded
-                ? formatMessage(messages.hideCurrencies)
-                : formatMessage(messages.showCurrencies)
+                ? localizedFieldMessages.getStringForLocale(
+                    "hideCurrencies",
+                    locale
+                  )
+                : localizedFieldMessages.getStringForLocale(
+                    "showCurrencies",
+                    locale
+                  )
               : expanded
-                ? formatMessage(messages.hideLanguages)
-                : formatMessage(messages.showLanguages)}
+                ? localizedFieldMessages.getStringForLocale(
+                    "hideLanguages",
+                    locale
+                  )
+                : localizedFieldMessages.getStringForLocale(
+                    "showLanguages",
+                    locale
+                  )}
           </Button>
         </LocalizedFieldToggleButtonContainerSlot>
       )}

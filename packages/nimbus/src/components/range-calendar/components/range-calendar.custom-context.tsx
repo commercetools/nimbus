@@ -7,15 +7,13 @@ import {
   TextContext,
   useLocale,
 } from "react-aria-components";
-import { useIntl } from "react-intl";
-import { messages } from "../range-calendar.i18n";
+import { rangeCalendarMessages } from "../range-calendar.messages";
 
 export const RangeCalendarCustomContext = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const intl = useIntl();
   const { locale } = useLocale();
   const buttonContext = useContext(ButtonContext)!;
   const textContext = useContext(TextContext)!;
@@ -28,19 +26,31 @@ export const RangeCalendarCustomContext = ({
   const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
-      "aria-label": intl.formatMessage(messages.nextMonth),
+      "aria-label": rangeCalendarMessages.getStringForLocale(
+        "nextMonth",
+        locale
+      ),
     },
     "previous-month": {
       onPress: () => calendarState.focusPreviousSection(),
-      "aria-label": intl.formatMessage(messages.previousMonth),
+      "aria-label": rangeCalendarMessages.getStringForLocale(
+        "previousMonth",
+        locale
+      ),
     },
     "next-year": {
       onPress: () => calendarState.focusNextSection(true),
-      "aria-label": intl.formatMessage(messages.nextYear),
+      "aria-label": rangeCalendarMessages.getStringForLocale(
+        "nextYear",
+        locale
+      ),
     },
     "previous-year": {
       onPress: () => calendarState.focusPreviousSection(true),
-      "aria-label": intl.formatMessage(messages.previousYear),
+      "aria-label": rangeCalendarMessages.getStringForLocale(
+        "previousYear",
+        locale
+      ),
     },
   };
 

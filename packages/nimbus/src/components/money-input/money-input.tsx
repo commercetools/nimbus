@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useId, useLocale } from "react-aria";
+import { useId, useLocale as useAriaLocale } from "react-aria";
+import { useLocale } from "react-aria-components";
 import { designTokens } from "@commercetools/nimbus-tokens";
-import { useIntl, FormattedMessage } from "react-intl";
 import {
   NumberInput,
   Select,
@@ -34,7 +34,7 @@ import type {
   MoneyInputProps,
   CurrencyCode,
 } from "./money-input.types";
-import { messages } from "./money-input.i18n";
+import { moneyInputMessages } from "./money-input.messages";
 
 /**
  * # MoneyInput
@@ -131,8 +131,8 @@ export const MoneyInput = (props: MoneyInputProps) => {
   const groupId = id ?? defaultGroupId;
 
   // Get locale for formatting
+  const { locale: ariaLocale } = useAriaLocale();
   const { locale } = useLocale();
-  const intl = useIntl();
 
   // Convert string value to number for NumberInput
   const numericValue = value.amount ? parseFloat(value.amount) : undefined;
@@ -141,7 +141,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   const hasNoCurrencies = !currencies || currencies.length === 0;
 
   // High precision detection using raw input value - default to en if locale is not provided
-  const isCurrentlyHighPrecision = isHighPrecision(value, locale || "en");
+  const isCurrentlyHighPrecision = isHighPrecision(value, ariaLocale || "en");
 
   // Create currency-aware format options for NumberInput
   const formatOptions: Intl.NumberFormatOptions = useMemo(() => {
@@ -155,7 +155,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       useGrouping: true, // Keep thousand separators for readability (formatted per locale)
       style: "decimal", // Use decimal to avoid currency symbol conflicts
     };
-  }, [value.currencyCode, locale]);
+  }, [value.currencyCode, ariaLocale]);
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
@@ -296,7 +296,10 @@ export const MoneyInput = (props: MoneyInputProps) => {
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
               placeholder=""
-              aria-label={intl.formatMessage(messages.currencySelectLabel)}
+              aria-label={moneyInputMessages.getStringForLocale(
+                "currencySelectLabel",
+                locale
+              )}
               size={size}
             >
               <Select.Options>
@@ -333,7 +336,10 @@ export const MoneyInput = (props: MoneyInputProps) => {
             autoFocus={autoFocus}
             size={size}
             //base accessible name: "Amount"
-            aria-label={intl.formatMessage(messages.amountInputLabel)}
+            aria-label={moneyInputMessages.getStringForLocale(
+              "amountInputLabel",
+              locale
+            )}
             // accessible name when hasNoCurrencies=true: "<CURRENCY_CODE> Amount"
             aria-labelledby={noCurrenciesLabelId}
             // accessible name when high precision: "High Precision Amount"
@@ -351,13 +357,19 @@ export const MoneyInput = (props: MoneyInputProps) => {
                   as={HighPrecision}
                   id={highPrecisionBadgeId}
                   color={isDisabled ? "neutral.8" : "neutral.11"}
-                  aria-label={intl.formatMessage(messages.highPrecisionPrice)}
+                  aria-label={moneyInputMessages.getStringForLocale(
+                    "highPrecisionPrice",
+                    locale
+                  )}
                   // Position the badge correctly as we don't want layout shift that occurs with trailingElement use in the underlying NumberInput
                   transform={`translateX(-${designTokens.spacing["1200"]})`}
                 />
               </MakeElementFocusable>
               <Tooltip.Content placement="top">
-                <FormattedMessage {...messages.highPrecisionPrice} />
+                {moneyInputMessages.getStringForLocale(
+                  "highPrecisionPrice",
+                  locale
+                )}
               </Tooltip.Content>
             </Tooltip.Root>
           </MoneyInputBadgeSlot>

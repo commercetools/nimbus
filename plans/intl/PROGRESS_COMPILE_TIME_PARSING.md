@@ -1,6 +1,6 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
-**Status:** Phase 1 Complete + 11 Components Migrated  
+**Status:** Phase 1 Complete + 16 Components Migrated  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -10,9 +10,10 @@
 This document tracks the progress of migrating Nimbus from runtime message
 parsing (`react-intl`) to compile-time message compilation using
 `@internationalized/message`. Phase 1 (Infrastructure Setup) is complete, with
-11 components successfully migrated: Alert, Avatar, Dialog, Drawer,
-LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select, and
-PasswordInput.
+16 components successfully migrated: Alert, Avatar, Dialog, Drawer,
+LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
+PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar, and
+LocalizedField.
 
 ## What's Been Completed
 
@@ -37,7 +38,7 @@ PasswordInput.
    - ✅ `.temp/` directory for intermediate build artifacts (already in
      `.gitignore`)
 
-4. **Components Migrated** (11 total)
+4. **Components Migrated** (16 total)
    - ✅ Alert (1 message) - Simple string message
    - ✅ Avatar (1 message with variable) - Validates function handling
    - ✅ Dialog (1 message) - Close trigger
@@ -49,6 +50,12 @@ PasswordInput.
    - ✅ SearchInput (1 message) - Clear input label
    - ✅ Select (1 message) - Clear selection label
    - ✅ PasswordInput (2 messages) - Show/hide password labels
+   - ✅ ScopedSearchInput (2 messages) - Select and search labels
+   - ✅ MoneyInput (3 messages) - Currency, amount, and high precision labels
+     (requires dual hooks)
+   - ✅ DraggableList (2 messages) - Empty message and remove button label
+   - ✅ RangeCalendar (4 messages) - Navigation button labels
+   - ✅ LocalizedField (6 messages) - Field labels and toggle button labels
 
    All components have:
    - ✅ Generated `intl/*.ts` files for all 5 locales
@@ -288,6 +295,56 @@ loadingSpinnerMessages.getStringForLocale("default", locale);
 
 ---
 
+### 10. **Dual Locale Hooks for MoneyInput**
+
+**Challenge:** `MoneyInput` component requires both number formatting (from
+`react-aria`) and message retrieval (from `react-aria-components`), but both
+packages export a `useLocale` hook with different return types.
+
+**Solution:** Import both hooks with aliasing:
+
+```typescript
+import { useLocale as useAriaLocale } from "react-aria"; // For number formatting
+import { useLocale } from "react-aria-components"; // For messages
+
+export const MoneyInput = (props: MoneyInputProps) => {
+  // Get locale for number formatting (react-aria)
+  const { locale: ariaLocale } = useAriaLocale();
+
+  // Get locale for message retrieval (react-aria-components)
+  const { locale } = useLocale();
+
+  // Use ariaLocale for formatting
+  const isCurrentlyHighPrecision = isHighPrecision(value, ariaLocale || "en");
+  const formatOptions: Intl.NumberFormatOptions = useMemo(() => {
+    // ... uses ariaLocale for Intl.NumberFormat
+  }, [value.currencyCode, ariaLocale]);
+
+  // Use locale for messages
+  const currencyLabel = moneyInputMessages.getStringForLocale(
+    "currencySelectLabel",
+    locale
+  );
+  // ...
+};
+```
+
+**Why both are needed:**
+
+- `react-aria`'s `useLocale()` provides locale context for `Intl.NumberFormat`
+  and high precision detection
+- `react-aria-components`' `useLocale()` provides the locale string from
+  `I18nProvider` for message dictionaries
+- MoneyInput needs both: formatting context AND message retrieval
+
+**Impact:**
+
+- ✅ MoneyInput correctly formats numbers and retrieves messages
+- ✅ Pattern documented for future components that may need both hooks
+- ⚠️ Currently the only component requiring both hooks
+
+---
+
 ## Current Architecture (As Implemented)
 
 ### Build Pipeline Flow
@@ -411,7 +468,12 @@ export const alertMessages = new MessageDictionary({
    - ✅ SearchInput (1 message) - Complete
    - ✅ Select (1 message) - Complete
    - ✅ PasswordInput (2 messages) - Complete
-   - ⏳ Remaining ~15 components (~120 messages)
+   - ✅ ScopedSearchInput (2 messages) - Complete
+   - ✅ MoneyInput (3 messages) - Complete (requires dual hooks)
+   - ✅ DraggableList (2 messages) - Complete
+   - ✅ RangeCalendar (4 messages) - Complete
+   - ✅ LocalizedField (6 messages) - Complete
+   - ⏳ Remaining ~10 components (~100 messages)
 
 2. **Provider Updates**
    - ⏳ Remove `IntlProvider` from `NimbusProvider`
@@ -500,9 +562,10 @@ For each component migration:
 ## Success Metrics (Current Status)
 
 - ✅ Build scripts working end-to-end
-- ✅ 11 components migrated and functional (Alert, Avatar, Dialog, Drawer,
+- ✅ 16 components migrated and functional (Alert, Avatar, Dialog, Drawer,
   LoadingSpinner, NumberInput, TagGroup, SplitButton, SearchInput, Select,
-  PasswordInput)
+  PasswordInput, ScopedSearchInput, MoneyInput, DraggableList, RangeCalendar,
+  LocalizedField)
 - ✅ TypeScript types generated correctly
 - ✅ Generated files follow ES module standards
 - ✅ Locale format standardized (simple codes)
@@ -516,7 +579,7 @@ For each component migration:
 **Immediate:**
 
 1. Rebuild nimbus package to fix Storybook test failures
-2. Verify all 11 migrated components pass tests after rebuild
+2. Verify all 16 migrated components pass tests after rebuild
 
 **Next Components to Migrate:**
 
