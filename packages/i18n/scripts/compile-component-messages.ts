@@ -10,7 +10,7 @@
  * This is Step 3 of 4 in the i18n build pipeline:
  *   1. Transform - Transifex → ICU format
  *   2. Split - Group messages by component
- *   3. Compile (this script) - ICU → JavaScript functions
+ *   3. Compile - ICU → JavaScript functions --> You are here
  *   4. Generate - Create MessageDictionary wrappers
  *
  * Input:  .temp/by-component/{Component}/{locale}.json (ICU format)

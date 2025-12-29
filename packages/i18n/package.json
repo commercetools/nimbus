@@ -16,13 +16,10 @@
     "nimbus"
   ],
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": true,
   "sideEffects": false,
   "files": [
-    "data",
-    "compiled-data"
+    "data"
   ],
   "scripts": {
     "build": "pnpm build:compile",

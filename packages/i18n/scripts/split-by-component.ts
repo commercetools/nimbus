@@ -11,7 +11,7 @@
  *
  * This is Step 2 of 4 in the i18n build pipeline:
  *   1. Transform - Transifex → ICU format
- *   2. Split (this script) - Group messages by component
+ *   2. Split - Group messages by component --> You are here
  *   3. Compile - ICU → JavaScript functions
  *   4. Generate - Create MessageDictionary wrappers
  *

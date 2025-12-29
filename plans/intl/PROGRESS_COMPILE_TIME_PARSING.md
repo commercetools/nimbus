@@ -37,6 +37,8 @@ parsing (`react-intl`) to compile-time message compilation using
   - `CLAUDE.md`, `docs/readme.md`, `nimbus-i18n-provider.mdx`
   - `main-component.md`, `context-files.md`
   - `single-component.md`, `compound-component.root.md`
+- ✅ Cleanup: Removed `compiled-data/` directory, made
+  `@commercetools/nimbus-i18n` package private, updated README
 
 **Key Changes:**
 
@@ -837,31 +839,6 @@ export const alertMessages = new MessageDictionary({
 ### 🟡 Pending Tasks
 
 1. **Component Migration**
-   - ✅ Alert (1 message) - Complete
-   - ✅ Avatar (1 message with variable) - Complete
-   - ✅ Dialog (1 message) - Complete
-   - ✅ Drawer (1 message) - Complete
-   - ✅ LoadingSpinner (1 message) - Complete (fixed key: `"default"`)
-   - ✅ NumberInput (2 messages) - Complete
-   - ✅ TagGroup (1 message) - Complete
-   - ✅ SplitButton (1 message) - Complete
-   - ✅ SearchInput (1 message) - Complete
-   - ✅ Select (1 message) - Complete
-   - ✅ PasswordInput (2 messages) - Complete
-   - ✅ ScopedSearchInput (2 messages) - Complete
-   - ✅ MoneyInput (3 messages) - Complete (requires dual hooks)
-   - ✅ DraggableList (2 messages) - Complete
-   - ✅ RangeCalendar (4 messages) - Complete
-   - ✅ LocalizedField (6 messages) - Complete
-   - ✅ Calendar (4 messages) - Complete
-   - ✅ DatePicker (6 messages) - Complete
-   - ✅ ComboBox (7 messages) - Complete
-   - ✅ Pagination (8 messages, 1 with variable) - Complete
-   - ✅ DateRangePicker (14 messages) - Complete
-   - ✅ FieldErrors (16 messages) - Complete
-   - ✅ RichTextInput (25 messages) - Complete
-   - ✅ DataTable (39 messages) - Complete (main component + 6 sub-components:
-     Header, Column, Row, Manager, LayoutSettingsPanel, VisibleColumnsPanel)
 
 2. **Provider Updates** ✅ COMPLETE
    - ✅ Removed `IntlProvider` from `NimbusProvider`
@@ -899,11 +876,14 @@ export const alertMessages = new MessageDictionary({
    - ✅ Cross-references added between user and developer documentation
    - ⏳ Create migration guide for consumers
 
-4. **Cleanup**
-   - ⏳ Remove `compiled-data/` directory
-   - ⏳ Make `@commercetools/nimbus-i18n` package private (add `"private": true`
-     to package.json)
-   - ⏳ Remove unused i18n utilities
+4. **Cleanup** ✅ COMPLETE
+   - ✅ Removed `compiled-data/` directory (no longer needed - build pipeline
+     generates files directly in `packages/nimbus/src/components/`)
+   - ✅ Made `@commercetools/nimbus-i18n` package private (added
+     `"private": true` to package.json, removed `publishConfig`)
+   - ✅ Updated `packages/i18n/README.md` to reflect package is now private
+   - ✅ Removed `compiled-data` from `files` array in package.json
+   - ⏳ Remove unused i18n utilities (if any exist)
 
 ## Migration Pattern (Validated with Alert)
 
@@ -1007,11 +987,13 @@ For each component migration:
    `compound-component.root.md`)
 6. ✅ Update CLAUDE.md and `docs/readme.md` (completed - now reflect new system)
 7. ✅ Update `nimbus-i18n-provider.mdx` (completed)
-8. ⏳ Clean up unused i18n utilities (if any exist)
-9. ⏳ Create migration guide for consumers
-10. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
+8. ✅ Cleanup i18n package (completed - removed `compiled-data/`, made package
+   private, updated README)
+9. ⏳ Remove unused i18n utilities (if any exist)
+10. ⏳ Create migration guide for consumers
+11. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
     fallbacks, and key validation (implementation pending)
-11. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
+12. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
     codes (`"de-DE"`) but dictionaries use simple codes (`"de"`). May need
     normalization utility.
 
@@ -1040,11 +1022,101 @@ For each component migration:
 
 **Remaining Cleanup:**
 
-- ⏳ Remove `compiled-data/` directory
-- ⏳ Make `@commercetools/nimbus-i18n` package private
+- ✅ Removed `compiled-data/` directory (completed)
+- ✅ Made `@commercetools/nimbus-i18n` package private (completed - added
+  `"private": true`, removed `publishConfig`)
+- ✅ Updated `packages/i18n/README.md` to reflect package is now private
+  (completed)
 - ⏳ Remove unused i18n utilities (if any exist)
 - ⏳ Bundle size analysis
 - ⏳ Create migration guide for consumers
+
+https://github.com/commercetools/nimbus/pull/841/commits/d3dfd91b84edaf339017bd5c79cfd1cfed9f875e#diff-606a73f6458049283ac735590173191140a5f9a553b3fc8aa17b70dcad88b6d1
+\*\*\*\*There's a discrepancy between documentation and implementation:
+
+- **Documentation says**: `NimbusProvider` expects BCP47 format (`en-US`,
+  `de-DE`)
+- **Reality**:
+  - Type is `locale?: string` (accepts any string)
+  - React Aria's `I18nProvider` doesn't enforce BCP47
+  - Our message dictionaries use simple codes (`en`, `de`, `es`)
+  - `useLocale()` returns whatever you pass (no normalization) **Questions to
+    investigate:**
+
+1. Should we standardize on simple codes everywhere?
+2. Should we update `NimbusProvider` docs to reflect that any locale string
+   works?
+3. Do we need locale mapping/fallback logic for BCP47 → simple code conversion?
+4. What happens if consumer passes `"en-US"` but dictionary has `"en"`?
+   **Current status**: Simple codes work everywhere. Documentation may be
+   misleading.
+
+### Locale Source Change Impact on Tests
+
+**Issue:** After migration, components use `useLocale()` from
+`react-aria-components` instead of `react-intl`'s `useIntl()`, which changes
+which locale provider controls message localization. **Before Migration:**
+
+- Components used `react-intl`'s `useIntl()` hook
+- `react-intl` gets locale from `IntlProvider` (from `react-intl`)
+- `NimbusI18nProvider` only affected React Aria components (number/date
+  formatting), not `react-intl` messages
+- Components showed messages based on Storybook's `IntlProvider` or default
+  locale (typically English)
+- Tests searching for English text were correct **After Migration:**
+- Components use `useLocale()` from `react-aria-components`
+- This gets locale from `I18nProvider` (which `NimbusI18nProvider` wraps)
+- Components now use the locale from `NimbusI18nProvider` for messages
+- If a story sets `NimbusI18nProvider locale="de-DE"`, components show German
+  messages
+- Tests must be updated to match the locale set in the story **Example -
+  MoneyInput Story:**
+
+```typescript
+// Story sets German locale
+export const EULocaleFormattingExample: Story = {
+  render: (args) => (
+    <NimbusI18nProvider locale="de-DE">
+      <MoneyInput {...args} />
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    // ❌ Before: Test searched for English (was correct)
+    const badges = canvas.getAllByLabelText(/high precision price/i);
+    // ✅ After: Test must search for German (matches story locale)
+    const badges = canvas.getAllByLabelText(/hochpräzisionspreis/i);
+  },
+};
+```
+
+**Impact:**
+
+- ✅ Components now consistently use the same locale source for both formatting
+  and messages
+- ⚠️ Tests in stories with explicit `NimbusI18nProvider` locale must be updated
+  to match that locale
+- ⚠️ Tests that relied on Storybook's default English locale may need updates
+  **Pattern for Test Updates:** When a story sets
+  `NimbusI18nProvider locale="xx-XX"`, update tests to expect messages in that
+  locale, not the default English.
+
+### Variable Interpolation
+
+Only 2 messages use variables: @@ -1102,18 +1008,3 @@ export const alertMessages
+= new LocalizedStringDictionary({ **Document Status:** Ready for team review and
+approval **Next Steps:** Present to team, gather feedback, finalize timeline
+**Target Start Date:** TBD **Estimated Completion:** 8 weeks from start -remove
+compiled-data check vite.config update ALL documentation -remove i18n package
+from publishing & changesets
+
+- update claude and/or copilot instructions re: i18n deprecate i18n package w/
+  notice. -bundle size analysis
+- docs unit tests
+- update all readmes
+- add visuals
+- do we want to add Ra to react-aria-components hooks as well?
+- \_reset locales in Storybook
+- - handle fallback & splits (de-DE, usw) --link readmes\*\*\*\*
 
 ## References
 
