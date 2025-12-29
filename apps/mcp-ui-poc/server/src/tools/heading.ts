@@ -6,6 +6,7 @@ import {
   commonStyleSchema,
   extractStyleProps,
 } from "../utils/common-schemas.js";
+import { validateRequiredText } from "../utils/security.js";
 
 /**
  * Register the createHeading tool with the MCP server
@@ -36,6 +37,9 @@ export function registerHeadingTool(server: McpServer) {
       }),
     },
     async (args) => {
+      // Validate and sanitize text content
+      const sanitizedContent = validateRequiredText(args.content, "content");
+
       // Create heading element directly using Remote DOM custom element
       const heading = document.createElement(
         "nimbus-heading"
@@ -51,8 +55,8 @@ export function registerHeadingTool(server: McpServer) {
         heading.styleProps = styleProps;
       }
 
-      // Set text content
-      heading.textContent = args.content;
+      // Set text content with sanitized value
+      heading.textContent = sanitizedContent;
 
       // Return resource (createRemoteDomResource handles appending to root)
       return {

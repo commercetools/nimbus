@@ -5,8 +5,13 @@ import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js"
 import {
   commonStyleSchema,
   extractStyleProps,
+  childrenSchema,
 } from "../utils/common-schemas.js";
 import { createElementFromDefinition } from "../utils/create-element-from-definition.js";
+import {
+  validateOptionalText,
+  sanitizeTextContent,
+} from "../utils/security.js";
 
 /**
  * Register the createStack tool with the MCP server
@@ -21,12 +26,7 @@ export function registerStackTool(server: McpServer) {
       inputSchema: z.object({
         // Content and children
         content: z.string().optional().describe("Stack content text"),
-        children: z
-          .array(z.record(z.string(), z.any()))
-          .optional()
-          .describe(
-            "Child elements to render inside stack (element definition objects)"
-          ),
+        children: childrenSchema,
 
         // Component-specific props
         direction: z
@@ -94,12 +94,18 @@ export function registerStackTool(server: McpServer) {
 
       // Handle children and content
       if (args.content) {
-        stack.appendChild(document.createTextNode(args.content));
+        const sanitizedContent = validateOptionalText(args.content);
+        if (sanitizedContent) {
+          stack.appendChild(document.createTextNode(sanitizedContent));
+        }
       }
       if (args.children) {
         args.children.forEach((childDef: Record<string, unknown>) => {
           if (typeof childDef === "string") {
-            stack.appendChild(document.createTextNode(childDef));
+            const sanitizedText = sanitizeTextContent(childDef);
+            if (sanitizedText) {
+              stack.appendChild(document.createTextNode(sanitizedText));
+            }
           } else {
             // Recursively create child elements using the definition directly
             const childElement = createElementFromDefinition(childDef);

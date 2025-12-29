@@ -7,6 +7,7 @@ import {
   extractStyleProps,
 } from "../utils/common-schemas.js";
 import { queueAction } from "../utils/action-queue.js";
+import { validateRequiredText } from "../utils/security.js";
 
 // Store button action metadata by button ID
 const buttonActionsByButtonId = new Map<
@@ -135,6 +136,9 @@ export function registerButtonTool(
       }),
     },
     async (args) => {
+      // Validate and sanitize text content
+      const sanitizedLabel = validateRequiredText(args.label, "label");
+
       // Generate unique button ID
       const buttonId = `button-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
@@ -159,8 +163,8 @@ export function registerButtonTool(
         button.styleProps = styleProps;
       }
 
-      // Set text content
-      button.textContent = args.label;
+      // Set text content with sanitized value
+      button.textContent = sanitizedLabel;
 
       // Generate URI for this button
       const uri = `ui://button/${Date.now()}`;
@@ -184,7 +188,7 @@ export function registerButtonTool(
           createRemoteDomResource(button, {
             name: "button",
             title: "Button",
-            description: `Button: ${args.label}`,
+            description: `Button: ${sanitizedLabel}`,
             uri,
           }),
         ],

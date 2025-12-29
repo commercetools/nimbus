@@ -6,6 +6,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import * as toolRegistrations from "./tools/index.js";
+import { registerResources } from "./resources/index.js";
 import { MutationStreamServer } from "./remote-dom/websocket-server.js";
 import {
   setMessageSender,
@@ -151,6 +152,9 @@ const mutationServer = new MutationStreamServer(httpServer);
 export { mutationServer };
 
 function registerTools(server: McpServer) {
+  // Register MCP resources (design tokens, style system docs)
+  registerResources(server);
+
   // Tools that need mutationServer for event handling
   const interactiveTools = ["registerDataTableTool", "registerButtonTool"];
 

@@ -4,22 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "catalog:mcp-ui",
     "@mcp-ui/server": "catalog:mcp-ui",
+    "@modelcontextprotocol/sdk": "catalog:mcp-ui",
     "@remote-dom/core": "catalog:mcp-ui",
     "@remote-dom/polyfill": "catalog:mcp-ui",
-    "express": "catalog:express",
     "cors": "catalog:express",
+    "express": "catalog:express",
+    "validator": "catalog:",
     "ws": "catalog:express",
     "zod": "catalog:utils"
   },
   "devDependencies": {
-    "@types/node": "catalog:utils",
-    "@types/express": "catalog:express",
     "@types/cors": "catalog:express",
+    "@types/express": "catalog:express",
+    "@types/node": "catalog:utils",
+    "@types/validator": "catalog:",
     "@types/ws": "catalog:express",
-    "typescript": "catalog:tooling",
-    "tsx": "catalog:tooling"
+    "tsx": "catalog:tooling",
+    "typescript": "catalog:tooling"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",

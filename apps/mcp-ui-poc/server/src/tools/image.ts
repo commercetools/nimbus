@@ -6,6 +6,7 @@ import {
   commonStyleSchema,
   extractStyleProps,
 } from "../utils/common-schemas.js";
+import { validateImageUrl, validateRequiredText } from "../utils/security.js";
 
 export function registerImageTool(server: McpServer) {
   server.registerTool(
@@ -25,15 +26,19 @@ export function registerImageTool(server: McpServer) {
       }),
     },
     async (args) => {
+      // Validate and sanitize inputs
+      const validatedSrc = validateImageUrl(args.src, "src");
+      const sanitizedAlt = validateRequiredText(args.alt, "alt");
+
       // Extract style props
       const styleProps = extractStyleProps(args);
 
       // Create image element directly using Remote DOM custom element
       const image = document.createElement("nimbus-image") as RemoteDomElement;
 
-      // Set properties
-      image.src = args.src;
-      image.alt = args.alt;
+      // Set properties with validated/sanitized values
+      image.src = validatedSrc;
+      image.alt = sanitizedAlt;
 
       // Set style props
       if (Object.keys(styleProps).length > 0) {

@@ -6,6 +6,7 @@ import {
   commonStyleSchema,
   extractStyleProps,
 } from "../utils/common-schemas.js";
+import { validateRequiredText } from "../utils/security.js";
 
 /**
  * Register the createBadge tool with the MCP server
@@ -40,6 +41,9 @@ export function registerBadgeTool(server: McpServer) {
       }),
     },
     async (args) => {
+      // Validate and sanitize text content
+      const sanitizedLabel = validateRequiredText(args.label, "label");
+
       // Create badge element directly using Remote DOM custom element
       const badge = document.createElement("nimbus-badge") as RemoteDomElement;
 
@@ -54,8 +58,8 @@ export function registerBadgeTool(server: McpServer) {
         badge.styleProps = styleProps;
       }
 
-      // Set text content
-      badge.textContent = args.label;
+      // Set text content with sanitized value
+      badge.textContent = sanitizedLabel;
 
       // Return resource (createRemoteDomResource handles appending to root)
       return {

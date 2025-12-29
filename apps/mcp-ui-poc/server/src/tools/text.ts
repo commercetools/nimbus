@@ -6,6 +6,7 @@ import {
   commonStyleSchema,
   extractStyleProps,
 } from "../utils/common-schemas.js";
+import { validateRequiredText } from "../utils/security.js";
 
 /**
  * Register the createText tool with the MCP server
@@ -32,6 +33,9 @@ export function registerTextTool(server: McpServer) {
       }),
     },
     async (args) => {
+      // Validate and sanitize text content
+      const sanitizedContent = validateRequiredText(args.content, "content");
+
       // Create text element directly using Remote DOM custom element
       const text = document.createElement("nimbus-text") as RemoteDomElement;
 
@@ -44,8 +48,8 @@ export function registerTextTool(server: McpServer) {
         text.styleProps = styleProps;
       }
 
-      // Set text content
-      text.textContent = args.content;
+      // Set text content with sanitized value
+      text.textContent = sanitizedContent;
 
       // Return resource (createRemoteDomResource handles appending to root)
       return {

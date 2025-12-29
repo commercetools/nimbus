@@ -1,4 +1,5 @@
 import type { RemoteDomElement } from "../types/remote-dom.js";
+import { sanitizeTextContent } from "./security.js";
 
 /**
  * Helper to recursively create DOM elements from ElementDefinition
@@ -37,7 +38,10 @@ export function createElementFromDefinition(
   // Handle text content from multiple sources
   const textContent = content || label || def.textContent;
   if (typeof textContent === "string") {
-    element.textContent = textContent;
+    const sanitized = sanitizeTextContent(textContent);
+    if (sanitized) {
+      element.textContent = sanitized;
+    }
   }
 
   // Handle children from either properties.children or top-level children
@@ -45,7 +49,10 @@ export function createElementFromDefinition(
   if (Array.isArray(childrenArray)) {
     childrenArray.forEach((child: unknown) => {
       if (typeof child === "string") {
-        element.appendChild(document.createTextNode(child));
+        const sanitized = sanitizeTextContent(child);
+        if (sanitized) {
+          element.appendChild(document.createTextNode(sanitized));
+        }
       } else if (child && typeof child === "object") {
         element.appendChild(
           createElementFromDefinition(child as Record<string, unknown>)
