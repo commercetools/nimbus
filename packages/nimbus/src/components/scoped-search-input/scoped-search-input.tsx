@@ -1,6 +1,6 @@
 import { useCallback, useId, useRef } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useIntl } from "react-intl";
+import { useLocale } from "react-aria-components";
 import { Select } from "@/components/select/select";
 import { SearchInput } from "@/components/search-input/search-input";
 import { extractStyleProps } from "@/utils";
@@ -17,7 +17,7 @@ import type {
   ScopedSearchInputOptionGroup,
 } from "./scoped-search-input.types";
 import { isEmpty } from "./utils/helpers";
-import { messages } from "./scoped-search-input.i18n";
+import { scopedSearchInputMessages } from "./scoped-search-input.messages";
 
 /**
  * ScopedSearchInput
@@ -53,7 +53,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
     size,
   } = props;
 
-  const intl = useIntl();
+  const { locale } = useLocale();
 
   // Split recipe props
   const recipe = useSlotRecipe({ recipe: scopedSearchInputSlotRecipe });
@@ -123,7 +123,11 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             onSelectionChange={isReadOnly ? undefined : handleOptionChange}
             placeholder={selectPlaceholder}
             aria-label={
-              selectAriaLabel || intl.formatMessage(messages.selectLabel)
+              selectAriaLabel ||
+              scopedSearchInputMessages.getStringForLocale(
+                "selectLabel",
+                locale
+              )
             }
             aria-controls={searchId}
             aria-describedby={ariaDescribedby}
@@ -183,7 +187,11 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             onClear={isClearable ? handleReset : undefined}
             placeholder={searchPlaceholder}
             aria-label={
-              searchAriaLabel || intl.formatMessage(messages.searchLabel)
+              searchAriaLabel ||
+              scopedSearchInputMessages.getStringForLocale(
+                "searchLabel",
+                locale
+              )
             }
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
