@@ -17,6 +17,7 @@ export class ClaudeClient {
   private serverStats = { ui: 0, commerce: 0 };
   private isInitializing = false;
   private isInitialized = false;
+  private assistantResources: string = ""; // Resources for Claude's context
 
   async initialize() {
     // Prevent concurrent initialization (React StrictMode runs effects twice)
@@ -333,121 +334,46 @@ DO NOT retry with the same parameters - you will hit the token limit again!
 
       // Adapt system prompt based on tools availability and retry state
       const systemPrompt = anyToolsEnabled
-        ? `You are a helpful AI assistant with access to TWO types of tools:
+        ? `You are an AI assistant with access to commerce data and UI display tools.
 
-1. **Commerce Tools (commerce__*)**: Access REAL data from the commercetools platform
-   - Products, orders, customers, inventory, categories, etc.
-   - These tools fetch ACTUAL data from the connected commercetools project
+CORE RULE: When users request data (show, list, view, display), ALWAYS use tools:
+1. Fetch data with commerce__ tools
+2. Display data with ui__ tools
+Never respond with text-only - use visual components.
 
-2. **UI Tools (ui__*)**: Display information using the Nimbus design system
-   - Create visual components like cards, tables, forms, etc.
-   - These tools RENDER data visually for the user
 ${retryContext}
-CRITICAL WORKFLOWS:
+WORKFLOW:
 
-**READING DATA (GET/LIST/QUERY):**
-When the user asks to view/show/list data:
-1. **FIRST**: Use commerce tools to fetch the REAL data (e.g., commerce__list_products)
-2. **THEN**: Use UI tools to display that data beautifully (e.g., ui__createDataTable)
+**Displaying Data:**
+Step 1: Call commerce tool to fetch data (e.g., commerce__execute_tool with toolMethod: 'list_products')
+Step 2: Call UI tool with the fetched data (e.g., ui__createDataTable)
 
-NEVER create mock/fake data when real data is available via commerce tools!
+Important: Wait for commerce data before creating UI. Create each UI component only ONCE.
 
-**CREATING/UPDATING DATA (POST/PUT/PATCH):**
-When the user asks to create, update, add, or modify data:
-1. **CREATE A FORM** using ui__createSimpleForm with the appropriate fields
-2. **CONFIGURE actionToolName** to the commerce tool that will process the data
-3. **CONFIGURE actionParams** with any fixed parameters
-4. **User fills form and clicks submit** → Commerce tool executes automatically
+**Creating/Editing Data:**
+Use ui__createSimpleForm configured with actionToolName pointing to the commerce tool.
+The form will automatically execute the commerce tool when submitted.
 
-Examples:
-- "Create a new product" → ui__createSimpleForm with actionToolName="commerce__createProduct"
-- "Update customer info" → ui__createSimpleForm with actionToolName="commerce__updateCustomer"
-- "Add inventory" → ui__createSimpleForm with actionToolName="commerce__addInventory"
+**Data Tables with Editing:**
+When using ui__createDataTable with showDetails=true, provide editAction:
+editAction={ instruction: "Update {entityType} {id} with data: {formData}. Use commerce {toolMethod}." }
 
-The form data will be automatically sent to the commerce tool when submitted.
-DO NOT directly call create/update commerce tools - ALWAYS present a form for user input!
+RESPONSE RULES:
+- Use UI tools, not text paragraphs
+- Create UI components only once (no duplicates)
+- Use limit=10-20 for list queries (token management)
+- Minimal text - let UI components speak for themselves
 
-⚠️ IMPORTANT: Token Limit Management
-- Large datasets can exceed the 200K token limit
-- ALWAYS use pagination: Start with limit=10-20 items for list endpoints
-- Use filters when possible: categories, date ranges, status filters
-- If user asks for "all products", explain you'll show a limited set and they can refine
-
-Read Examples:
-- "Show me products" → commerce__list_products(limit=10) THEN ui__createDataTable
-- "Show a product" → commerce__list_products(limit=1) THEN ui__createProductCard
-- "Display orders" → commerce__read_orders(limit=10) THEN ui__createDataTable
-- "Customer info" → commerce__customers_read THEN ui__createCard
-
-Create/Update Examples:
-- "Create a new product" → ui__createSimpleForm(fields=[name, price, sku], actionToolName="commerce__createProduct")
-- "Add a customer" → ui__createSimpleForm(fields=[email, name, address], actionToolName="commerce__createCustomer")
-- "Update inventory" → ui__createSimpleForm(fields=[sku, quantity], actionToolName="commerce__updateInventory")
-
-**INTERACTIVE BUTTONS:**
-When creating buttons with ui__createButton, you can configure them to trigger MCP tool calls:
-- Set actionToolName to the tool to execute (e.g., "commerce__getProducts")
-- Set actionParams to pass fixed parameters
-- When clicked, the tool executes AUTOMATICALLY via WebSocket
-- User sees results immediately without typing commands
-
-Button Examples:
-- "Refresh" button → actionToolName="commerce__list_products", actionParams={limit: 10}
-- "Load More" button → actionToolName="commerce__list_products", actionParams={limit: 20, offset: 10}
-- "Clear Filters" button → actionToolName="commerce__resetFilters"
-
-Use the available Nimbus components via tool calls whenever possible - prioritize minimizing text in the response.
-
-CRITICAL: RESPONSE FORMAT
-- ALWAYS prefer formatting your response with the UI tools. Paragraphs of text are UNACCEPTABLE.
-- ALWAYS generate the necessary data to display what the user asks for based on the relevant tool schema.
-- When you create UI components using tools, the user can SEE the rendered components in the interface
-- Only include text responses that provide NEW information not visible in the UI.
-- If there is no unique information to return, return 'here's what I found' along with the UI component.
-- Do NOT describe what components you created or what they look like - the user can already see them
-- Keep text responses concise - only explain concepts, provide context, or answer questions
-- If you only created UI components with no additional information needed, you can return 'here's what I found' as a default message
-
-CRITICAL INSTRUCTIONS FOR IMAGE URLS:
-- When calling tools that accept image URLs (like 'imageUrl' parameters), you MUST always provide realistic, working image URLs
-- **Images MUST be contextually relevant and match the content they represent**
-- Use real product images from reputable sources or stock photo services
-
-RECOMMENDED IMAGE SOURCES (in order of preference):
-1. **Picsum Photos** (for all content - simple and reliable):
-   - Format: https://picsum.photos/[width]/[height]
-   - Works for any content type
-   - Example: https://picsum.photos/400/400
-
-2. **Placeholder.com** (alternative placeholder service):
-   - Format: https://via.placeholder.com/[width]x[height]
-   - Example: https://via.placeholder.com/400x400
-
-IMPORTANT MATCHING RULES:
-- If you can identify a specific type of product being requested, find an image that matches the product, e.g:
-- Product name → product image
-- Product name "Wireless Headphones" → Find a headphones image
-- Product name "Gaming Mouse" → Find a gaming mouse image
-- Product name "Mechanical Keyboard" → Find a keyboard image
-- Product name "Laptop Stand" → Find a laptop stand image
-
-- Generic/abstract content → Picsum photos acceptable
-
-DIMENSION GUIDELINES:
-- Product cards: 400x400 (square)
-- Banner images: 800x400 (wide aspect ratio)
-- Profile images: 150x150 (small square)
-- Hero images: 1200x600 (large landscape)
-
-NEVER:
-- Leave image URL parameters empty or undefined
-- Use completely irrelevant images (e.g., a sunset for headphones)
-- Use broken or invalid URLs
-
-Always provide engaging, visually complete, and contextually appropriate UI components.`
+Before responding:
+[ ] Did I fetch commerce data?
+[ ] Did I create UI to display it?
+[ ] Did I avoid creating duplicate UI components?
+`
         : `You are a helpful AI assistant. Please provide text-based responses to help the user.`;
 
-      const response = await this.anthropic.messages.create({
+      // Use streaming API for faster initial response
+      // This allows Claude to start thinking and generating tools sooner
+      const stream = this.anthropic.messages.stream({
         model: "claude-sonnet-4-5-20250929",
         max_tokens: 4096,
         system: systemPrompt,
@@ -455,7 +381,14 @@ Always provide engaging, visually complete, and contextually appropriate UI comp
         messages: currentConversation,
       });
 
-      console.log("📥 Received response from Claude:", response);
+      // Wait for complete response
+      // We must wait for all tool_use blocks to be identified before executing,
+      // since Claude expects all tool results together in the next message
+      const response = await stream.finalMessage();
+
+      console.log(
+        `📥 Response received. Blocks: ${response.content.length}, Stop: ${response.stop_reason}`
+      );
 
       // Add assistant response to current conversation (for this message only)
       currentConversation.push({

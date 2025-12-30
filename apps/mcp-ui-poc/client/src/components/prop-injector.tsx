@@ -67,7 +67,7 @@ export function renderElement(
 
   // Element nodes
   if (element.type === 1) {
-    const Component = componentMap.get(element.element);
+    const Component = componentMap.get(element.element!);
 
     if (!Component) {
       console.warn(`⚠️ No component registered for: ${element.element}`);

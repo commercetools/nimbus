@@ -118,6 +118,12 @@ function registerReceiver(uri: string, receiver: RemoteReceiver) {
   console.log(`📝 Registering receiver for URI: ${uri}`);
   receiversByUri.set(uri, receiver);
 
+  // Notify server that this URI is now active
+  if (globalWs && globalWs.readyState === WebSocket.OPEN) {
+    globalWs.send(JSON.stringify({ type: "uri-active", uri }));
+    console.log(`📍 Notified server: URI active - ${uri}`);
+  }
+
   // Replay any buffered mutations for this URI
   const bufferedMutations = mutationBufferByUri.get(uri);
   if (bufferedMutations && bufferedMutations.length > 0) {
@@ -148,7 +154,41 @@ function registerReceiver(uri: string, receiver: RemoteReceiver) {
 function unregisterReceiver(uri: string) {
   console.log(`📝 Unregistering receiver for URI: ${uri}`);
   receiversByUri.delete(uri);
+
+  // Notify server that this URI is now inactive (but keep it brief to avoid spam)
+  // Don't notify for every React StrictMode unmount - only when truly inactive
+  // The server will clean up stale URIs based on activity
+  // We could add this back if needed:
+  // if (globalWs && globalWs.readyState === WebSocket.OPEN) {
+  //   globalWs.send(JSON.stringify({ type: "uri-inactive", uri }));
+  // }
+
   // Keep buffer in case receiver re-registers (e.g., React StrictMode)
+}
+
+/**
+ * Send action response back to server
+ * Called after executing a queued action to notify server of completion
+ */
+export function sendActionResponse(
+  actionId: string,
+  result?: unknown,
+  error?: unknown
+): void {
+  if (!globalWs || globalWs.readyState !== WebSocket.OPEN) {
+    console.warn("⚠️ WebSocket not connected, cannot send action response");
+    return;
+  }
+
+  const message = {
+    type: "action-response",
+    actionId,
+    result,
+    error,
+  };
+
+  console.log(`📤 Sending action response for: ${actionId}`, { result, error });
+  globalWs.send(JSON.stringify(message));
 }
 
 /**

@@ -62,12 +62,13 @@ export function createSimpleForm(args: SimpleFormArgs) {
   // Generate unique form ID
   const formId = `form-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-  // Create form stack
-  const formStack = document.createElement("nimbus-stack") as RemoteDomElement;
-  formStack.direction = "column";
-  formStack.as = "form";
-  formStack.setAttribute("id", formId); // Set ID as attribute for event handling
-  formStack.styleProps = { gap: "400" };
+  // Create form flex
+  const formContainer = document.createElement(
+    "nimbus-flex"
+  ) as RemoteDomElement;
+  formContainer.as = "form";
+  formContainer.setAttribute("id", formId); // Set ID as attribute for event handling
+  formContainer.styleProps = { gap: "400", flexWrap: "wrap" };
 
   // Build form fields
   fields.forEach((field) => {
@@ -105,7 +106,7 @@ export function createSimpleForm(args: SimpleFormArgs) {
     formFieldInput.appendChild(textInput);
     formFieldRoot.appendChild(formFieldInput);
 
-    formStack.appendChild(formFieldRoot);
+    formContainer.appendChild(formFieldRoot);
   });
 
   // Build submit button (as regular button, not form submit)
@@ -119,10 +120,10 @@ export function createSimpleForm(args: SimpleFormArgs) {
   submitButton.colorPalette = "primary";
   submitButton.type = "button"; // Regular button, not submit
   submitButton.styleProps = { width: "full" };
-  formStack.appendChild(submitButton);
+  formContainer.appendChild(submitButton);
 
   // Append form to card content
-  cardContent.appendChild(formStack);
+  cardContent.appendChild(formContainer);
   cardRoot.appendChild(cardContent);
 
   // Generate URI for this form

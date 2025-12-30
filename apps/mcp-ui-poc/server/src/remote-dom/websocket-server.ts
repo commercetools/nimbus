@@ -77,6 +77,23 @@ interface UiMessageResponseMessage {
   };
 }
 
+interface ActionResponseMessage {
+  type: "action-response";
+  actionId: string;
+  result?: unknown;
+  error?: unknown;
+}
+
+interface UriActiveMessage {
+  type: "uri-active";
+  uri: string;
+}
+
+interface UriInactiveMessage {
+  type: "uri-inactive";
+  uri: string;
+}
+
 type WSMessage =
   | RemoteDomMessage
   | SyncRequestMessage
@@ -84,7 +101,10 @@ type WSMessage =
   | ActionNotificationMessage
   | ToolMessage
   | UiMessageReceivedMessage
-  | UiMessageResponseMessage;
+  | UiMessageResponseMessage
+  | ActionResponseMessage
+  | UriActiveMessage
+  | UriInactiveMessage;
 
 /**
  * Tool handler type (MCP-UI standard)
@@ -103,6 +123,7 @@ export class MutationStreamServer {
   private clients = new Set<WebSocket>();
   private mutationHistory: RemoteDomProtocolMessage[] = [];
   private toolHandlers = new Map<string, ToolHandler>();
+  private activeUris = new Set<string>(); // Track which URIs are currently active
 
   constructor(server: Server) {
     // Create WebSocket server on /ws path
@@ -134,13 +155,18 @@ export class MutationStreamServer {
         this.clients.delete(ws);
       });
 
-      // Send initial connection confirmation with mutation history
-      console.log(
-        `📤 Sending ${this.mutationHistory.length} accumulated mutations to new client`
+      // Send mutation history for active URIs only
+      const activeMutations = this.mutationHistory.filter(
+        (msg) => !msg.uri || this.activeUris.has(msg.uri)
       );
 
-      // Send all accumulated mutations to sync the client
-      this.mutationHistory.forEach((message) => {
+      console.log(
+        `📤 Sending ${activeMutations.length} active mutations (out of ${this.mutationHistory.length} total) to new client`
+      );
+      console.log(`📍 Active URIs: ${Array.from(this.activeUris).join(", ")}`);
+
+      // Send only active mutations to sync the client
+      activeMutations.forEach((message) => {
         this.sendToClient(ws, {
           type: "remote-dom",
           message,
@@ -167,6 +193,22 @@ export class MutationStreamServer {
       // Client requesting full state sync
       console.log("🔄 Client requested state sync");
       // The environment will handle sending the sync response
+    } else if (message.type === "uri-active") {
+      // Client notifying that a URI is now active (component mounted)
+      console.log(`📍 Client marked URI as active: ${message.uri}`);
+      this.markUriActive(message.uri);
+    } else if (message.type === "uri-inactive") {
+      // Client notifying that a URI is now inactive (component unmounted)
+      console.log(`📍 Client marked URI as inactive: ${message.uri}`);
+      this.markUriInactive(message.uri);
+    } else if (message.type === "action-response") {
+      // Handle action completion response from client
+      const { actionId, result, error } = message;
+      console.log(`📬 Action response received: ${actionId}`);
+
+      // Import and call the handler
+      const { handleActionResponse } = await import("../utils/action-queue.js");
+      handleActionResponse(actionId, result, error);
     } else if (message.type === "tool") {
       // Handle tool message (MCP-UI standard)
       const { toolName, params } = message.payload;
@@ -254,9 +296,40 @@ export class MutationStreamServer {
   }
 
   /**
+   * Mark a URI as active (has rendered component)
+   */
+  markUriActive(uri: string) {
+    if (!this.activeUris.has(uri)) {
+      this.activeUris.add(uri);
+      console.log(`✅ Marked URI as active: ${uri}`);
+    }
+  }
+
+  /**
+   * Mark a URI as inactive (component destroyed)
+   */
+  markUriInactive(uri: string) {
+    if (this.activeUris.has(uri)) {
+      this.activeUris.delete(uri);
+      console.log(`❌ Marked URI as inactive: ${uri}`);
+
+      // Clean up mutations for inactive URI
+      this.mutationHistory = this.mutationHistory.filter(
+        (msg) => msg.uri !== uri
+      );
+      console.log(`🧹 Cleaned up mutation history for ${uri}`);
+    }
+  }
+
+  /**
    * Broadcast Remote DOM protocol message to all connected clients
    */
   broadcastRemoteDomMessage(message: RemoteDomProtocolMessage) {
+    // Mark URI as active when mutations are sent
+    if (message.uri) {
+      this.markUriActive(message.uri);
+    }
+
     // Store in history for new connections
     this.mutationHistory.push(message);
 
@@ -267,7 +340,7 @@ export class MutationStreamServer {
     };
 
     console.log(
-      `📡 Broadcasting Remote DOM ${message.type} to ${this.clients.size} clients`
+      `📡 Broadcasting Remote DOM ${message.type} to ${this.clients.size} clients for URI: ${message.uri || "unknown"}`
     );
 
     this.clients.forEach((client) => {

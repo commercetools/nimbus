@@ -268,6 +268,10 @@ const componentRegistry: Record<
   "nimbus-drawer-body": Nimbus.Drawer.Body,
   "nimbus-drawer-footer": Nimbus.Drawer.Footer,
   "nimbus-drawer-close-trigger": DrawerCloseTriggerWrapper,
+  "nimbus-alert-root": Nimbus.Alert.Root,
+  "nimbus-alert-title": Nimbus.Alert.Title,
+  "nimbus-alert-description": Nimbus.Alert.Description,
+  "nimbus-alert-dismiss-button": Nimbus.Alert.DismissButton,
 };
 
 /**
@@ -317,6 +321,56 @@ const FormFieldRootWrapper = (props: Record<string, unknown>) => {
 };
 
 /**
+ * Alert.Root wrapper - spreads styleProps and ensures variant/colorPalette are passed
+ */
+const AlertRootWrapper = (props: Record<string, unknown>) => {
+  const { styleProps, children, variant, colorPalette, ...rest } = props;
+
+  console.log("🔔 Alert props received:", {
+    variant,
+    colorPalette,
+    styleProps,
+    rest,
+  });
+
+  const merged = {
+    ...rest,
+    ...(styleProps as Record<string, unknown>),
+    variant,
+    colorPalette,
+  };
+
+  return (
+    <Nimbus.Alert.Root {...merged}>
+      {children as React.ReactNode}
+    </Nimbus.Alert.Root>
+  );
+};
+
+/**
+ * Alert.DismissButton wrapper - handles dismiss functionality
+ */
+const AlertDismissButtonWrapper = (props: Record<string, unknown>) => {
+  const uri = useUri();
+  const { styleProps, id, ...rest } = props;
+
+  const handlePress = id
+    ? () => {
+        // Send dismiss event to remove the alert
+        sendClientEvent("alertDismiss", uri, { alertId: id }, false);
+      }
+    : undefined;
+
+  return (
+    <Nimbus.Alert.DismissButton
+      {...rest}
+      {...(styleProps as Record<string, unknown>)}
+      onPress={handlePress}
+    />
+  );
+};
+
+/**
  * Components that need custom wrappers (not the simple wrapper)
  */
 const customWrappers: Record<
@@ -329,6 +383,8 @@ const customWrappers: Record<
   "nimbus-form-field-root": FormFieldRootWrapper,
   "nimbus-drawer-root": DrawerRootWrapper,
   "nimbus-drawer-close-trigger": DrawerCloseTriggerWrapper,
+  "nimbus-alert-root": AlertRootWrapper,
+  "nimbus-alert-dismiss-button": AlertDismissButtonWrapper,
 };
 
 /**

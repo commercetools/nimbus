@@ -13,6 +13,7 @@ import {
   setHistoryClearer,
 } from "./remote-dom/environment.js";
 import { setActionBroadcaster } from "./utils/action-queue.js";
+import { initializeToaster, getToasterUri } from "./utils/toaster.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -192,6 +193,12 @@ setActionBroadcaster((action) => {
     params: action.params,
   });
 });
+
+// Initialize global toaster for notifications
+initializeToaster();
+
+// Mark toaster as always active (persists across sessions)
+mutationServer.markUriActive(getToasterUri());
 
 // Start server
 httpServer.listen(PORT, () => {

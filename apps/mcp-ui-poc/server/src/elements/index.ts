@@ -33,3 +33,9 @@ export {
   NimbusDrawerFooter,
   NimbusDrawerCloseTrigger,
 } from "./drawer.js";
+export {
+  NimbusAlertRoot,
+  NimbusAlertTitle,
+  NimbusAlertDescription,
+  NimbusAlertDismissButton,
+} from "./alert.js";

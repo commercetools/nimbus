@@ -22,7 +22,7 @@ export function registerStackTool(server: McpServer) {
     {
       title: "Create Stack",
       description:
-        "Creates a stack layout container UI component using Nimbus design system. Can contain child elements for composition. Can be rendered as an HTML <form> element for native form submission. Supports all Chakra UI style properties.",
+        "Creates a stack layout container UI component using Nimbus design system. Can contain child elements for composition. Can be rendered as an HTML <form> element for native form submission. Supports all Chakra UI style properties.\n\nIMPORTANT: Read the nimbus://component-tags resource for valid child element tag names before creating nested elements.",
       inputSchema: z.object({
         // Content and children
         content: z.string().optional().describe("Stack content text"),

@@ -14,7 +14,10 @@ import { ChatInput } from "./chat-input";
 import { ChatLoadingIndicator } from "./chat-loading-indicator";
 import { UIErrorBoundary } from "./ui-error-boundary";
 import { useMutationStream } from "../hooks/use-mutation-stream";
-import { onActionQueued } from "../hooks/use-remote-connection";
+import {
+  onActionQueued,
+  sendActionResponse,
+} from "../hooks/use-remote-connection";
 import type { Message } from "../types/virtual-dom";
 import {
   RemoteDomRenderer,
@@ -42,53 +45,80 @@ export function ChatInterface() {
     onActionQueued(async (action) => {
       console.log("🎯 Action queued from UI interaction:", action);
 
-      // Add system notification to chat
-      const notificationMessage: Message = {
-        role: "assistant",
-        content: `🎯 Button clicked - executing ${action.toolName}...`,
-      };
-      setMessages((prev) => [...prev, notificationMessage]);
-      setIsLoading(true);
-
+      // Execute silently - no chat messages, just update the component
       try {
-        // Build current message history
-        const messageHistory = messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content || "",
-        }));
+        // Compact message history for action execution too
+        const messageHistory = compactMessageHistory(messages);
 
-        // Execute the tool call directly via Claude
-        const toolInstruction = `Execute the MCP tool ${action.toolName} with these exact parameters: ${JSON.stringify(action.params)}`;
+        // Determine instruction based on action type
+        let toolInstruction: string;
 
+        if (
+          action.toolName === "claude-instruction" &&
+          action.params.instruction
+        ) {
+          // Instruction-based action - send custom instruction directly
+          // The instruction already includes "do not create UI" from server
+          toolInstruction = action.params.instruction as string;
+          console.log("📝 Using custom instruction:", toolInstruction);
+        } else {
+          // Direct tool call - use generic instruction
+          toolInstruction = `Execute the MCP tool ${action.toolName} with these exact parameters: ${JSON.stringify(action.params)}. IMPORTANT: Do NOT generate any UI components, just execute the tool and return the result.`;
+        }
+
+        // Disable UI tools during action execution to prevent duplicate UI creation
+        // Claude should ONLY execute commerce tools, not create new UI components
         const { text, uiResources } = await claudeClient.sendMessage(
           toolInstruction,
           {
-            uiToolsEnabled,
+            uiToolsEnabled: false, // DISABLED - prevents duplicate UI
             commerceToolsEnabled,
             messageHistory,
           }
         );
 
-        // Add response to messages
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: text,
-            uiResources,
-          },
-        ]);
+        // Check if the text response contains an error message
+        // Commerce tools return errors as text like "Error executing tool 'method': message"
+        console.log("🔍 Checking text for errors:", text);
+
+        const isErrorResponse =
+          text &&
+          (text.includes("Error executing tool") ||
+            text.includes("Failed to") ||
+            text.includes("SDKError:") ||
+            text.includes("A duplicate value"));
+
+        console.log("🔍 Is error response?", isErrorResponse);
+
+        if (isErrorResponse) {
+          console.log("⚠️ Detected error in tool response:", text);
+
+          // Extract just the error message (remove SDK noise)
+          let errorMessage = text;
+          const match = text.match(/Failed to [^:]+: ([^-]+)/);
+          if (match) {
+            errorMessage = match[1].trim();
+          }
+
+          // Send as error instead of result
+          sendActionResponse(action.id, undefined, {
+            message: errorMessage,
+          });
+        } else {
+          // Send successful result back to server (triggers callback in action queue)
+          sendActionResponse(action.id, { text, uiResources });
+        }
+
+        // Do NOT add messages to chat - silent execution
       } catch (error) {
         console.error("Error executing action:", error);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: `Error executing action: ${(error as Error).message}`,
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
+
+        // Send error response back to server
+        sendActionResponse(action.id, undefined, {
+          message: (error as Error).message,
+        });
+
+        // Do NOT add error messages to chat - errors are shown in component
       }
     });
   }, [messages, claudeClient, uiToolsEnabled, commerceToolsEnabled]);
@@ -133,6 +163,35 @@ export function ChatInterface() {
     };
   }, [claudeClient]);
 
+  // Compact message history to prevent context bloat
+  function compactMessageHistory(
+    messages: Message[]
+  ): { role: "user" | "assistant"; content: string }[] {
+    // Keep last 5 messages intact, summarize older ones
+    const keepRecent = 5;
+
+    if (messages.length <= keepRecent) {
+      return messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content || "",
+      }));
+    }
+
+    const oldMessages = messages.slice(0, -keepRecent);
+    const recentMessages = messages.slice(-keepRecent);
+
+    // Create summary of old messages
+    const summary = `[Previous conversation summary: User asked about ${oldMessages.filter((m) => m.role === "user").length} topics. Data was displayed using UI components.]`;
+
+    return [
+      { role: "assistant" as const, content: summary },
+      ...recentMessages.map((msg) => ({
+        role: msg.role,
+        content: msg.content || "",
+      })),
+    ];
+  }
+
   async function handleSendMessage(message: string) {
     if (!message.trim() || !isReady) return;
 
@@ -141,24 +200,21 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      // Build message history INCLUDING the new user message
-      // (messages state hasn't updated yet due to async React state)
-      const messageHistory = [
-        ...messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content || "",
-        })),
-        {
-          role: "user" as const,
-          content: message,
-        },
-      ];
+      // Compact history to keep context focused (every 5+ messages)
+      const compactedHistory = compactMessageHistory([
+        ...messages,
+        userMessage,
+      ]);
+
+      console.log(
+        `📜 Message history: ${messages.length + 1} total, ${compactedHistory.length} after compaction`
+      );
 
       // Send message - Claude handles all tool calling automatically
       const { text, uiResources } = await claudeClient.sendMessage(message, {
         uiToolsEnabled,
         commerceToolsEnabled,
-        messageHistory,
+        messageHistory: compactedHistory,
       });
 
       // Add response to messages
@@ -280,6 +336,12 @@ export function ChatInterface() {
           <Text>Initializing...</Text>
         </Box>
       )}
+
+      {/* Global toaster for notifications */}
+      <RemoteDomRenderer
+        content={{ type: "remoteDom", tree: null, framework: "react" }}
+        uri="ui://global-toaster"
+      />
 
       <Stack
         direction="column"

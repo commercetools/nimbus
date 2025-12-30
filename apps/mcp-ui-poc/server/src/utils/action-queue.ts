@@ -18,8 +18,14 @@ export interface PendingAction {
   timestamp: number;
 }
 
+// Callback type for action completion
+type ActionCallback = (result: unknown, error?: unknown) => void;
+
 // Queue of pending actions
 const actionQueue: PendingAction[] = [];
+
+// Callbacks for action completion
+const actionCallbacks = new Map<string, ActionCallback>();
 
 // Callback for broadcasting action notifications
 let actionNotificationBroadcaster: ((action: PendingAction) => void) | null =
@@ -37,7 +43,10 @@ export function setActionBroadcaster(
 /**
  * Add an action to the queue and broadcast notification
  */
-export function queueAction(action: Omit<PendingAction, "id" | "timestamp">) {
+export function queueAction(
+  action: Omit<PendingAction, "id" | "timestamp">,
+  onComplete?: ActionCallback
+) {
   const pendingAction: PendingAction = {
     ...action,
     id: `action-${Date.now()}-${Math.random().toString(36).substring(7)}`,
@@ -46,6 +55,12 @@ export function queueAction(action: Omit<PendingAction, "id" | "timestamp">) {
 
   actionQueue.push(pendingAction);
   console.log(`📥 Queued action: ${action.toolName}`, pendingAction);
+
+  // Store callback if provided
+  if (onComplete) {
+    actionCallbacks.set(pendingAction.id, onComplete);
+    console.log(`📋 Registered callback for action: ${pendingAction.id}`);
+  }
 
   // Broadcast to clients via WebSocket
   if (actionNotificationBroadcaster) {
@@ -79,5 +94,40 @@ export function clearAction(actionId: string) {
 export function clearAllActions() {
   const count = actionQueue.length;
   actionQueue.length = 0;
-  console.log(`✅ Cleared ${count} actions`);
+  actionCallbacks.clear();
+  console.log(`✅ Cleared ${count} actions and callbacks`);
+}
+
+/**
+ * Handle action response from client
+ * Executes the registered callback if one exists
+ */
+export function handleActionResponse(
+  actionId: string,
+  result?: unknown,
+  error?: unknown
+) {
+  console.log(`📬 Received action response for: ${actionId}`);
+
+  const callback = actionCallbacks.get(actionId);
+  if (callback) {
+    console.log(`🎯 Executing callback for action: ${actionId}`);
+    try {
+      callback(result, error);
+      console.log(`✅ Callback executed successfully for: ${actionId}`);
+    } catch (callbackError) {
+      console.error(
+        `❌ Error executing callback for ${actionId}:`,
+        callbackError
+      );
+    }
+
+    // Clean up callback after execution
+    actionCallbacks.delete(actionId);
+  } else {
+    console.log(`ℹ️ No callback registered for action: ${actionId}`);
+  }
+
+  // Clear the action from queue
+  clearAction(actionId);
 }

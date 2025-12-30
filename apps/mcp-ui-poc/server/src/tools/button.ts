@@ -8,6 +8,7 @@ import {
 } from "../utils/common-schemas.js";
 import { queueAction } from "../utils/action-queue.js";
 import { validateRequiredText } from "../utils/security.js";
+import { showToast } from "../utils/toaster.js";
 
 // Store button action metadata by button ID
 const buttonActionsByButtonId = new Map<
@@ -56,12 +57,39 @@ export function handleButtonClick(
     ...(formData && Object.keys(formData).length > 0 ? { formData } : {}),
   };
 
-  const action = queueAction({
-    type: "mcp-tool-call",
-    toolName: actionMeta.toolName,
-    params,
-    uri: actionMeta.uri,
-  });
+  const action = queueAction(
+    {
+      type: "mcp-tool-call",
+      toolName: actionMeta.toolName,
+      params,
+      uri: actionMeta.uri,
+    },
+    (result, error) => {
+      // Callback executed when action completes
+      if (error) {
+        console.error(`❌ Button action failed:`, error);
+
+        const errorMsg =
+          typeof error === "object" && error !== null
+            ? (error as { message?: string }).message || "Unknown error"
+            : String(error);
+
+        showToast({
+          type: "error",
+          title: "Action Failed",
+          message: errorMsg,
+        });
+      } else {
+        console.log(`✅ Button action completed:`, result);
+
+        showToast({
+          type: "success",
+          title: "Success",
+          message: "Action completed successfully",
+        });
+      }
+    }
+  );
 
   console.log(`✅ Action queued: ${action.id}`);
   return action;
