@@ -21,7 +21,7 @@ export const PasswordInput = (props: PasswordInputProps) => {
 
   const toggleVisibility = () => setShowPassword(!showPassword);
 
-  const currentLabel = passwordInputMessages.getStringForLocale(
+  const currentLabel = passwordInputMessages.getStringLocale(
     showPassword ? "hide" : "show",
     locale
   );

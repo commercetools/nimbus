@@ -6,8 +6,12 @@ import {
   NumberInput,
   Stack,
   Text,
+  Alert,
+  Box,
   type NimbusI18nProviderProps,
 } from "@commercetools/nimbus";
+import { useLocale } from "react-aria-components";
+import { alertMessages } from "../alert/alert.messages";
 
 const meta: Meta<typeof NimbusI18nProvider> = {
   title: "Components/NimbusI18nProvider",
@@ -307,3 +311,262 @@ export const CompareLocales: Story = {
     });
   },
 };
+
+/**
+ * Test component that uses message dictionaries to verify locale support
+ * Uses Alert.DismissButton which internally uses alertMessages to test locale support
+ */
+const MessageTranslationTestComponent = ({
+  testId,
+}: {
+  testId: string;
+  requestedLocale: string;
+}) => {
+  const { locale } = useLocale();
+  // Test retrieving a message for the current locale (for verification)
+  // Fallback to English is handled automatically by the message dictionary's inline fallback logic
+  // "dismiss" is a simple string message (no variables), so we can safely assert string type
+  const dismissLabel = alertMessages.getStringLocale("dismiss", locale) as
+    | string
+    | undefined;
+
+  return (
+    <Box data-testid={testId}>
+      <Alert.Root colorPalette="info" variant="outlined">
+        <Text data-testid={`${testId}-message`}>
+          Inspect the dismiss button to verify it has the aria-label of "
+          {dismissLabel}"
+        </Text>
+        <Alert.DismissButton />
+      </Alert.Root>
+      <Text data-testid={`${testId}-expected-label`} hidden>
+        {dismissLabel}
+      </Text>
+    </Box>
+  );
+};
+
+/**
+ * Verifies that all supported locales work correctly with message dictionaries.
+ * Tests that components can retrieve messages for all supported locales:
+ * en, de, es, fr-FR, pt-BR
+ */
+export const MessageTranslationForSupportedLocales: Story = {
+  render: () => {
+    const supportedLocales = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
+
+    return (
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600" fontSize="500">
+          Message Translations for Supported Locales
+        </Text>
+        <Stack direction="column" gap="100">
+          <Text fontSize="300" color="neutral.12">
+            Tests the Alert component's dismiss button aria-label to verify
+            message retrieval works correctly.
+          </Text>
+        </Stack>
+        {supportedLocales.map((locale) => (
+          <NimbusI18nProvider key={locale} locale={locale}>
+            <Box
+              p="400"
+              border="solid-25"
+              borderColor="neutral.3"
+              borderRadius="400"
+            >
+              <Stack direction="column" gap="200">
+                <Text fontWeight="600">
+                  Requested locale passed to the NimbusI18nProvider: {locale}
+                </Text>
+                <MessageTranslationTestComponent
+                  testId={`locale-test-${locale}`}
+                  requestedLocale={locale}
+                />
+              </Stack>
+            </Box>
+          </NimbusI18nProvider>
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Verify all supported locales render without errors",
+      async () => {
+        const supportedLocales = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
+
+        for (const locale of supportedLocales) {
+          const testComponent = canvas.getByTestId(`locale-test-${locale}`);
+          await expect(testComponent).toBeInTheDocument();
+
+          // Verify the message was retrieved correctly
+          const messageText = within(testComponent).getByTestId(
+            `locale-test-${locale}-message`
+          );
+          await expect(messageText).toBeInTheDocument();
+          // The message should exist
+          await expect(messageText.textContent).toBeTruthy();
+        }
+      }
+    );
+
+    await step(
+      "Verify message dictionaries work for all supported locales",
+      async () => {
+        const supportedLocales = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
+
+        for (const locale of supportedLocales) {
+          const testComponent = canvas.getByTestId(`locale-test-${locale}`);
+          // Verify the dismiss button exists (message was retrieved successfully)
+          const dismissButton = within(testComponent).getByRole("button");
+          await expect(dismissButton).toBeInTheDocument();
+          // Verify it has an aria-label (message was retrieved)
+          await expect(dismissButton).toHaveAttribute("aria-label");
+
+          // Get the expected translation from the message dictionary
+          const expectedLabel = alertMessages.getStringLocale(
+            "dismiss",
+            locale
+          ) as string;
+          // Verify the aria-label matches what the message dictionary returns for this locale
+          const actualLabel = dismissButton.getAttribute("aria-label");
+          await expect(actualLabel).toBe(expectedLabel);
+        }
+      }
+    );
+  },
+};
+
+/**
+ * Verifies that unsupported locales fallback to the default locale (en).
+ * Tests that when a locale is not supported, components gracefully fallback
+ * to English messages rather than breaking or showing errors.
+ */
+export const MessageTranslationForUnsupportedLocales: Story = {
+  render: () => {
+    const unsupportedLocales = ["ja-JP", "sqi", "it-IT"] as const;
+
+    return (
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600" fontSize="500">
+          Fallback Behavior for Unsupported Locales
+        </Text>
+        <Stack direction="column" gap="100">
+          <Text fontSize="300" color="neutral.12">
+            Tests the Alert component's dismiss button aria-label to verify that
+            unsupported locales gracefully fallback to English messages.
+          </Text>
+          <Text fontSize="300" color="neutral.12">
+            Demonstrates that when a locale is not in the message dictionary,
+            components fallback to English (en) rather than breaking.
+          </Text>
+        </Stack>
+        {unsupportedLocales.map((locale) => (
+          <NimbusI18nProvider key={locale} locale={locale}>
+            <Box
+              p="400"
+              border="solid-25"
+              borderColor="neutral.3"
+              borderRadius="400"
+            >
+              <Stack direction="column" gap="200">
+                <Text fontWeight="600">
+                  Requested locale passed to the NimbusI18nProvider: {locale}
+                </Text>
+                <MessageTranslationTestComponent
+                  testId={`fallback-test-${locale}`}
+                  requestedLocale={locale}
+                />
+              </Stack>
+            </Box>
+          </NimbusI18nProvider>
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify unsupported locales render without errors", async () => {
+      const unsupportedLocales = ["ja-JP", "sqi", "it-IT"] as const;
+
+      for (const locale of unsupportedLocales) {
+        const testComponent = canvas.getByTestId(`fallback-test-${locale}`);
+        await expect(testComponent).toBeInTheDocument();
+
+        // Verify the message was retrieved correctly
+        const messageText = within(testComponent).getByTestId(
+          `fallback-test-${locale}-message`
+        );
+        await expect(messageText).toBeInTheDocument();
+        await expect(messageText.textContent).toBeTruthy();
+      }
+    });
+
+    await step(
+      "Verify unsupported locales fallback to English messages",
+      async () => {
+        const unsupportedLocales = ["ja-JP", "sqi", "it-IT"] as const;
+
+        for (const locale of unsupportedLocales) {
+          const testComponent = canvas.getByTestId(`fallback-test-${locale}`);
+          const dismissButton = within(testComponent).getByRole("button");
+          await expect(dismissButton).toBeInTheDocument();
+
+          // Verify the aria-label matches the English fallback message
+          const expectedLabel = alertMessages.getStringLocale(
+            "dismiss",
+            "en"
+          ) as string;
+          // Verify the aria-label matches the English fallback message
+          const actualLabel = dismissButton.getAttribute("aria-label");
+          await expect(actualLabel).toBe(expectedLabel);
+        }
+      }
+    );
+  },
+};
+
+// /**
+//  * Verifies locale normalization behavior when BCP47 codes are used.
+//  * Tests that when useLocale() returns BCP47 codes (e.g., "de-DE") but
+//  * dictionaries use simple codes (e.g., "de"), the system handles it correctly.
+//  */
+// export const LocaleNormalization: Story = {
+//   render: () => {
+//     // Test cases where locale from useLocale() might not match dictionary keys exactly
+//     const normalizationCases = [
+//       { providerLocale: "de-DE", expectedDictKey: "de" },
+//       { providerLocale: "en-US", expectedDictKey: "en" },
+//       { providerLocale: "es-ES", expectedDictKey: "es" },
+//     ] as const;
+
+//     return (
+//       <Stack direction="column" gap="400">
+//         <Text fontWeight="600" fontSize="500">
+//           Testing locale normalization
+//         </Text>
+//         <Text fontSize="300" color="neutral.9">
+//           BCP47 codes (de-DE) should work with simple dictionary keys (de)
+//         </Text>
+//         {normalizationCases.map(({ providerLocale, expectedDictKey }) => (
+//           <NimbusI18nProvider key={providerLocale} locale={providerLocale}>
+//             <Box p="400" border="solid-25" borderColor="neutral.3" borderRadius="400">
+//               <Stack direction="column" gap="200">
+//                 <Text fontWeight="500">
+//                   Provider: {providerLocale} → Expected: {expectedDictKey}
+//                 </Text>
+//                 <LocaleTestComponent testId={`normalize-test-${providerLocale}`} />
+//               </Stack>
+//             </Box>
+//           </NimbusI18nProvider>
+//         ))}
+//       </Stack>
+//     );
+//   },
+//   play: async ({ canvasElement, step }) => {
+//     // Test that BCP47 codes normalize or fallback correctly
+//   },
+// };

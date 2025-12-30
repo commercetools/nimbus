@@ -22,7 +22,7 @@ export const DrawerCloseTrigger = (props: DrawerCloseTriggerProps) => {
         size="xs"
         variant="ghost"
         aria-label={
-          ariaLabel || drawerMessages.getStringForLocale("closeTrigger", locale)
+          ariaLabel || drawerMessages.getStringLocale("closeTrigger", locale)
         }
         {...restProps}
       >

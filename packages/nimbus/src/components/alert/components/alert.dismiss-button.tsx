@@ -16,7 +16,7 @@ export const AlertDismissButton = ({ ...props }: AlertDismissButtonProps) => {
   return (
     <AlertDismissButtonSlot>
       <IconButton
-        aria-label={alertMessages.getStringForLocale("dismiss", locale)}
+        aria-label={alertMessages.getStringLocale("dismiss", locale)}
         {...props}
         variant="ghost"
         size="2xs"

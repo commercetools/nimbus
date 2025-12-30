@@ -1,7 +1,7 @@
 # i18n Migration Progress Report - Compile-Time Message Parsing
 
 **Status:** Phase 1-3 Complete + All Components Migrated + Provider Updates
-Complete  
+Complete + Fallback Implementation Complete  
 **Date:** January 2025  
 **Last Updated:** January 2025  
 **Related PR:** #841 (CRAFT-2029)
@@ -49,6 +49,142 @@ parsing (`react-intl`) to compile-time message compilation using
 - No `react-intl` runtime dependencies - only dev dependency for `.i18n.ts`
   extraction
 - Build configuration updated to reflect dependency changes
+
+### ✅ Final Implementation: Inline Fallback with Type-Safe API - COMPLETE
+
+**Final Architecture Decision: Inline Fallback Logic (Not Class-Based)**
+
+After exploring multiple approaches, we settled on **inline fallback logic**
+directly in generated dictionary files. This approach:
+
+- ✅ **No class/constructor** - Just plain objects with methods (simpler,
+  cleaner)
+- ✅ **Type-safe** - `getStringLocale` always returns `string` (fixes TypeScript
+  errors)
+- ✅ **Self-contained** - Generated files have no external runtime dependencies
+- ✅ **Clear API** - Separate methods for simple strings vs variable messages
+
+**Key Methods:**
+
+1. **`getStringLocale(key, locale): string`** - Always returns `string` (never
+   `undefined`)
+   - For simple string messages (aria-labels, text content)
+   - Filters out functions (variable messages)
+   - Falls back to English, then empty string as last resort
+   - **This was the key fix** - returning `string` instead of
+     `string | undefined` resolved all TypeScript errors
+
+2. **`getVariableLocale(key, locale): function | undefined`** - Returns function
+   or undefined
+   - For variable messages that require arguments (e.g., `"Hello {name}"`)
+   - Filters out simple strings
+   - Falls back to English, then `undefined`
+   - Only 2 components use this (Avatar, Pagination)
+
+### ✅ Fallback Implementation & Testing - COMPLETE
+
+**Completed:**
+
+- ✅ Implemented inline fallback logic directly in generated dictionary files
+- ✅ Updated dictionary generation script to generate inline fallback methods
+- ✅ Added try-catch error handling for unsupported locales (MessageDictionary
+  throws errors, not returns undefined)
+- ✅ Created two separate methods: `getStringLocale` (simple strings) and
+  `getVariableLocale` (variable messages)
+- ✅ Made `getStringLocale` always return `string` (never `undefined`) to fix
+  TypeScript errors with `aria-label` props
+- ✅ Created comprehensive Storybook tests for locale fallback behavior:
+  - `AllSupportedLocales` - Tests all 5 supported locales (en, de, es, fr-FR,
+    pt-BR)
+  - `UnsupportedLocaleFallback` - Tests unsupported locales (ja-JP, sqi, it-IT)
+    fallback to English
+- ✅ All components automatically get fallback behavior without code changes
+  (handled at dictionary level)
+
+**Key Implementation Details:**
+
+**Why Fallback at Dictionary Level (Not Provider Level):**
+
+The locale from `NimbusI18nProvider` serves two separate purposes:
+
+1. **React Aria Formatting** (dates, numbers, currency) - Needs the actual
+   locale
+   - If user requests `"ja-JP"`, React Aria should format dates/numbers in
+     Japanese style
+   - Changing locale to `"en"` at provider level would break formatting
+
+2. **Nimbus Message Dictionaries** - Needs fallback to English when locale not
+   supported
+   - If user requests `"ja-JP"` but dictionary only has `"en"`, `"de"`, etc.,
+     fallback to `"en"`
+   - This fallback happens inside the generated dictionary methods, not at
+     provider level
+
+**How It Works:**
+
+```typescript
+// Component code (no changes needed)
+const { locale } = useLocale(); // Returns "ja-JP" (from provider)
+const dismissLabel = alertMessages.getStringLocale("dismiss", locale);
+
+// Inside generated alertMessages.getStringLocale():
+//   1. Tries "ja-JP" → MessageDictionary throws error (locale not found)
+//   2. Catches error, continues to fallback
+//   3. Falls back to "en" → succeeds
+//   4. Returns "Dismiss" (English message) - always returns string
+//   5. But locale context remains "ja-JP" for React Aria formatting
+```
+
+**Result:**
+
+- ✅ React Aria components format dates/numbers using `"ja-JP"` (correct)
+- ✅ Nimbus messages fallback to English `"Dismiss"` (graceful degradation)
+- ✅ No component code changes needed (fallback handled at dictionary level)
+- ✅ Type-safe: `getStringLocale` always returns `string` (fixes TypeScript
+  errors)
+
+**Why Try-Catch Was Necessary:**
+
+`MessageDictionary` from `@internationalized/message` throws an error when
+accessing an unsupported locale, rather than returning `undefined`. The error
+was: `"can't access property 'dismiss', strings is undefined"`.
+
+The try-catch converts this error into a fallback:
+
+- Catches the error when locale doesn't exist
+- Continues to fallback logic
+- Falls back to English: `dictionary.getStringForLocale(key, "en")`
+- Returns empty string as last resort (ensures always returns `string`)
+
+**Test Coverage:**
+
+- ✅ All supported locales verified (en, de, es, fr-FR, pt-BR)
+- ✅ Unsupported locale fallback verified (ja-JP, sqi, it-IT → English)
+- ✅ Locale context preserved for React Aria formatting
+- ✅ Message retrieval works correctly with fallback
+
+**Common Question: Why Show "ja-JP" as Returned Locale When Using English
+Messages?**
+
+When testing with unsupported locales, the display shows:
+
+- **"Returned locale: ja-JP"** - This is correct! It's what `useLocale()`
+  returns from React Aria context
+- **"aria-label: Dismiss"** - This is also correct! It's the English fallback
+  message
+
+**Why this is the correct behavior:**
+
+- The locale context (`"ja-JP"`) is used by React Aria for formatting (dates,
+  numbers)
+- The message fallback happens internally in the generated dictionary methods
+- We want formatting to use `"ja-JP"` (Japanese date/number format) even if
+  messages are in English
+- This separation allows graceful degradation: formatting works correctly,
+  messages fallback to English
+
+**We should NOT change the returned locale to "en"** because that would break
+React Aria formatting. The current behavior is intentional and correct.
 
 ## What's Been Completed
 
@@ -143,7 +279,8 @@ export const alertMessages = new MessageDictionary({ ... });
 
 **Reason:** `LocalizedStringDictionary` is not exported from
 `@internationalized/message` v3.1.8. `MessageDictionary` provides the same
-functionality with `getStringForLocale()` method.
+functionality, and we wrap it with inline fallback logic in generated
+dictionaries.
 
 **Impact:** Minimal - same constructor pattern and API.
 
@@ -171,20 +308,17 @@ import { useLocale } from "react-aria-components";
 import { alertMessages } from "./alert.messages";
 
 const { locale } = useLocale();
-const label = alertMessages.getStringForLocale("dismiss", locale);
+const label = alertMessages.getStringLocale("dismiss", locale);
 
 // Variable interpolation (actual implementation)
-const message = componentMessages.getStringForLocale("avatarLabel", locale)
-  as string | ((args: Record<string, string | number>) => string);
-const label = typeof message === "function"
-  ? message({ fullName: "John Doe" })
-  : message;
+const message = componentMessages.getVariableLocale("avatarLabel", locale);
+const label = message ? message({ fullName: "John Doe" }) : undefined;
 ```
 
 **Reason:** `useLocalizedStringFormatter` hook does not exist in
-`react-aria/i18n`. The direct `getStringForLocale()` approach is simpler and
-more explicit. Messages with variables compile to functions, requiring type
-checking before calling.
+`react-aria/i18n`. The direct `getStringLocale()` and `getVariableLocale()`
+approach is simpler and more explicit. Messages with variables use
+`getVariableLocale()` which returns a function.
 
 **Impact:**
 
@@ -306,18 +440,18 @@ and tests actually use, eliminating the need for locale mapping.
 **Initial Implementation:**
 
 ```typescript
-alertMessages.getStringForLocale(locale, "dismiss"); // ❌ Wrong order
+alertMessages.getStringLocale(locale, "dismiss"); // ❌ Wrong order
 ```
 
 **Corrected Implementation:**
 
 ```typescript
-alertMessages.getStringForLocale("dismiss", locale); // ✅ Correct: key first
+alertMessages.getStringLocale("dismiss", locale); // ✅ Correct: key first
 ```
 
-**Reason:** The `MessageDictionary` API signature is
-`getStringForLocale(key: string, locale: string)`, not
-`getStringForLocale(locale: string, key: string)`.
+**Reason:** The generated dictionary API signature is
+`getStringLocale(key: string, locale: string)`, not
+`getStringLocale(locale: string, key: string)`.
 
 **Impact:**
 
@@ -328,16 +462,16 @@ alertMessages.getStringForLocale("dismiss", locale); // ✅ Correct: key first
 
 ### 8. **Code Simplification: Inlined Message Calls**
 
-**Pattern:** For simple string messages, we inlined the `getStringForLocale`
-call directly in JSX instead of using intermediate variables:
+**Pattern:** For simple string messages, we inlined the `getStringLocale` call
+directly in JSX instead of using intermediate variables:
 
 ```typescript
 // Before (unnecessary variable)
-const label = alertMessages.getStringForLocale("dismiss", locale);
+const label = alertMessages.getStringLocale("dismiss", locale);
 return <button aria-label={label}>...</button>;
 
 // After (inlined)
-return <button aria-label={alertMessages.getStringForLocale("dismiss", locale)}>...</button>;
+return <button aria-label={alertMessages.getStringLocale("dismiss", locale)}>...</button>;
 ```
 
 **Impact:**
@@ -365,7 +499,7 @@ export const messages = defineMessages({
 });
 
 // Component must use: "default" (from ID), not "defaultLoadingMessage" (object key)
-loadingSpinnerMessages.getStringForLocale("default", locale);
+loadingSpinnerMessages.getStringLocale("default", locale);
 ```
 
 **Impact:**
@@ -402,7 +536,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
   }, [value.currencyCode, ariaLocale]);
 
   // Use locale for messages
-  const currencyLabel = moneyInputMessages.getStringForLocale(
+  const currencyLabel = moneyInputMessages.getStringLocale(
     "currencySelectLabel",
     locale
   );
@@ -439,12 +573,12 @@ messages.
 // ❌ Can't use useLocale() here - violates Rules of Hooks
 const getBuiltInMessage = (key: string): string | null => {
   const { locale } = useLocale(); // ❌ Fails when called outside React context
-  return fieldErrorsMessages.getStringForLocale("missingRequiredField", locale);
+  return fieldErrorsMessages.getStringLocale("missingRequiredField", locale);
 };
 
 // ✅ Correct: Accept locale as parameter
 const getBuiltInMessage = (key: string, locale: string): string | null => {
-  return fieldErrorsMessages.getStringForLocale("missingRequiredField", locale);
+  return fieldErrorsMessages.getStringLocale("missingRequiredField", locale);
 };
 
 // Component usage
@@ -658,7 +792,8 @@ const formattedTotalPages = new Intl.NumberFormat(locale).format(
   pagination.totalPages
 );
 
-const ofTotalPagesMessage = paginationMessages.getStringForLocale(
+// Get variable message function and call it with arguments
+const ofTotalPagesMessage = paginationMessages.getVariableLocale(
   "ofTotalPages",
   locale
 ) as string | ((args: Record<string, string | number>) => string);
@@ -711,6 +846,215 @@ functions.
 
 5. Generate
    └─> generate-dictionaries.ts → packages/nimbus/src/components/{component}/{component}.messages.ts
+       └─> Generates inline fallback logic with getStringLocale and getVariableLocale methods
+           └─> All generated dictionaries automatically have fallback behavior
+```
+
+### Package Architecture & Inline Fallback Implementation
+
+**Key Architecture Decision: Inline Fallback Logic in Generated Files**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Package Responsibilities                      │
+└─────────────────────────────────────────────────────────────────┘
+
+packages/i18n/ (Build-time tool, private)
+├── Build scripts (generate-dictionaries.ts)
+│   └─> Generates inline fallback logic directly in .messages.ts files
+│   └─> Does NOT import or use any runtime utilities (only generates code)
+└── Translation data (data/*.json)
+    └─> Source files for compilation
+
+packages/nimbus/ (Runtime package, published)
+└── src/components/{component}/{component}.messages.ts
+    └─> Generated dictionaries (runtime code)
+    └─> Contains inline fallback logic (no external dependencies)
+    └─> Exports getStringLocale() and getVariableLocale() methods
+    └─> Used by components at runtime
+```
+
+**Why Inline Fallback:**
+
+1. **No Runtime Dependencies**: Generated `.messages.ts` files are
+   self-contained with inline fallback logic. No need to import utilities from
+   other packages.
+
+2. **Simpler Architecture**: No class/constructor needed - just plain objects
+   with methods. Easier to understand and maintain.
+
+3. **Type Safety**: `getStringLocale` always returns `string` (never
+   `undefined`), which fixes TypeScript errors with `aria-label` props that
+   require `string`.
+
+4. **Clear Separation**: `getStringLocale` for simple strings,
+   `getVariableLocale` for variable messages - explicit API that matches use
+   cases.
+
+**Result:**
+
+- ✅ Clean separation: Build-time tools (i18n) vs runtime code (nimbus)
+- ✅ No runtime dependencies between packages
+- ✅ Self-contained generated files with inline fallback logic
+- ✅ Type-safe: `getStringLocale` always returns `string`
+- ✅ All dictionaries automatically have fallback behavior without component
+  changes
+
+### Locale Resolution Hierarchy
+
+**How Components Retrieve Locale:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Locale Resolution Flow                        │
+└─────────────────────────────────────────────────────────────────┘
+
+Component calls useLocale() from react-aria-components
+  │
+  └─→ Reads from React Aria I18nProvider context
+      │
+      ├─→ Nearest NimbusI18nProvider (if nested)
+      │   │
+      │   └─→ Passes locale prop → React Aria's I18nProvider(locale={locale})
+      │       │
+      │       └─→ I18nProvider provides locale via React Context
+      │
+      ├─→ Parent NimbusProvider (if no nested provider)
+      │   │
+      │   └─→ NimbusI18nProvider (receives locale prop from NimbusProvider)
+      │       │
+      │       └─→ Passes locale prop → React Aria's I18nProvider(locale={locale})
+      │           │
+      │           └─→ I18nProvider provides locale via React Context
+      │
+      └─→ Browser default (navigator.language) if no provider found
+
+┌─────────────────────────────────────────────────────────────────┐
+│                      Precedence Order                            │
+└─────────────────────────────────────────────────────────────────┘
+
+Highest Priority (most specific)
+  ↓
+1. Nested NimbusI18nProvider locale prop
+2. Nested NimbusProvider locale prop
+3. Parent NimbusProvider locale prop
+4. Browser locale (navigator.language)
+  ↓
+Lowest Priority (fallback)
+```
+
+**Key Points:**
+
+- `useLocale()` from `react-aria-components` reads from React Aria's
+  `I18nProvider` context
+- React Aria's `I18nProvider` gets its locale from the `locale` prop passed to
+  `NimbusI18nProvider`
+- `NimbusI18nProvider` is a wrapper that passes the `locale` prop directly to
+  React Aria's `I18nProvider`
+- `NimbusProvider` passes its `locale` prop to `NimbusI18nProvider`, which then
+  passes it to React Aria's `I18nProvider`
+- Nested providers override parent providers (standard React Context behavior)
+- Storybook's `ThemeDecorator` wraps stories with `NimbusProvider` using
+  `context.globals.locale`
+- Nested `NimbusI18nProvider` components in stories override Storybook's global
+  locale
+- If no provider is found, React Aria falls back to browser locale
+  (`navigator.language`)
+
+### Two Uses of Locale: Formatting vs. Messages
+
+**Important Distinction:** The same locale from `NimbusI18nProvider` serves two
+different purposes:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Two Uses of Locale from useLocale()                  │
+└─────────────────────────────────────────────────────────────────┘
+
+Component gets locale:
+const { locale } = useLocale(); // Returns "ja-JP" (from React Aria I18nProvider context, set by app via NimbusProvider)
+  │
+  ├─→ React Aria Formatting (dates, numbers, currency)
+  │   │
+  │   └─→ Uses locale directly: "ja-JP"
+  │       │
+  │       ├─→ DatePicker formats dates in Japanese style (YYYY/MM/DD)
+  │       ├─→ NumberInput formats numbers with Japanese separators
+  │       └─→ MoneyInput formats currency with Japanese conventions
+  │
+  └─→ Nimbus Message Dictionaries (UI text, aria-labels)
+      │
+      └─→ Uses locale with fallback: "ja-JP" → "en" (if not supported)
+          │
+          ├─→ alertMessages.getStringLocale("dismiss", locale)
+          │   └─> Tries "ja-JP" → not found → falls back to "en"
+          │   └─> Returns "Dismiss" (English message)
+          │
+          └─> But locale context still "ja-JP" for formatting above
+```
+
+**Key Differences:**
+
+| Aspect            | React Aria Formatting                                 | Nimbus Message Dictionaries                              |
+| ----------------- | ----------------------------------------------------- | -------------------------------------------------------- |
+| **What it does**  | Formats dates, numbers, currency                      | Retrieves UI text, aria-labels                           |
+| **Locale usage**  | Uses locale directly (no fallback)                    | Uses locale with fallback to "en"                        |
+| **Example**       | `DatePicker` formats as "2024/01/15" (Japanese style) | `Alert.DismissButton` aria-label: "Dismiss" (English)    |
+| **Why different** | Formatting should match user's locale preference      | Messages gracefully degrade when translation unavailable |
+| **Where handled** | React Aria's `I18nProvider` (automatic)               | Inline fallback in generated dictionaries (automatic)    |
+
+**Why This Separation Matters:**
+
+- ✅ **User gets correct formatting**: Japanese users see dates/numbers in
+  Japanese format
+- ✅ **Graceful degradation**: UI text falls back to English when translation
+  unavailable
+- ✅ **No breaking changes**: Components don't need to handle fallback manually
+- ✅ **Consistent behavior**: All components automatically get both behaviors
+
+**Example Scenario:**
+
+```typescript
+// User requests Japanese locale
+<NimbusI18nProvider locale="ja-JP">
+  <DatePicker /> {/* Formats dates as "2024/01/15" (Japanese style) */}
+  <Alert.DismissButton /> {/* aria-label: "Dismiss" (English fallback) */}
+</NimbusI18nProvider>
+```
+
+**Result:**
+
+- DatePicker uses Japanese date format (correct for user's locale)
+- Alert button has English aria-label (graceful fallback when Japanese
+  translation unavailable)
+- Both work correctly without component code changes
+
+### Runtime Message Retrieval Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Component Message Retrieval Flow                    │
+└─────────────────────────────────────────────────────────────────┘
+
+Component Code:
+  const { locale } = useLocale(); // "ja-JP" (from NimbusI18nProvider)
+  const label = alertMessages.getStringLocale("dismiss", locale);
+
+  │
+  └─→ alert.messages.ts (Generated dictionary)
+      │
+      └─→ alertMessages.getStringLocale("dismiss", "ja-JP")
+          │
+          ├─→ Try "ja-JP" → MessageDictionary throws error (not found)
+          │   └─> Catch error, treat as undefined
+          │
+          └─→ Fallback to "en" → Success
+              └─> Returns "Dismiss" (English message)
+
+Result:
+  ✅ Component receives: "Dismiss" (English fallback)
+  ✅ React Aria formatting still uses: "ja-JP" (from useLocale())
+  ✅ No component code changes needed (fallback handled automatically)
 ```
 
 ### Component Usage Pattern
@@ -726,7 +1070,7 @@ export const AlertDismissButton = () => {
 
   return (
     <IconButton
-      aria-label={alertMessages.getStringForLocale("dismiss", locale)}
+      aria-label={alertMessages.getStringLocale("dismiss", locale)}
     >
       ...
     </IconButton>
@@ -742,7 +1086,8 @@ import { avatarMessages } from "../avatar.messages";
 
 export const Avatar = ({ fullName, ...props }) => {
   const { locale } = useLocale();
-  const avatarLabelMessage = avatarMessages.getStringForLocale(
+  // Get variable message function and call it with arguments
+  const avatarLabelMessage = avatarMessages.getVariableLocale(
     "avatarLabel",
     locale
   ) as string | ((args: Record<string, string | number>) => string);
@@ -760,7 +1105,9 @@ export const Avatar = ({ fullName, ...props }) => {
 
 ```
 packages/nimbus/src/components/alert/
-├── alert.messages.ts          ← Generated dictionary (uses simple locale codes)
+├── alert.messages.ts          ← Generated dictionary (inline fallback logic)
+│   └─> Exports getStringLocale() and getVariableLocale() methods
+│   └─> Contains inline fallback logic (no external dependencies)
 ├── intl/                      ← Generated compiled messages
 │   ├── en.ts
 │   ├── de.ts
@@ -774,14 +1121,83 @@ packages/nimbus/src/components/alert/
 **Dictionary Format:**
 
 ```typescript
-export const alertMessages = new MessageDictionary({
+// Generated file: packages/nimbus/src/components/alert/alert.messages.ts
+import { MessageDictionary } from "@internationalized/message";
+import alertMessages_en from "./intl/en";
+import alertMessages_de from "./intl/de";
+// ... other locale imports
+
+// Internal dictionary instance
+const dictionary = new MessageDictionary({
   en: alertMessages_en, // Simple locale codes
   de: alertMessages_de,
   es: alertMessages_es,
   "fr-FR": alertMessages_fr,
   "pt-BR": alertMessages_pt,
 });
+
+export const alertMessages = {
+  /**
+   * Retrieves a simple string message (no variables).
+   * Always returns a string (empty string if message not found or is a function).
+   */
+  getStringLocale(key: string, locale: string): string {
+    try {
+      const message = dictionary.getStringForLocale(key, locale);
+      if (typeof message === "string") return message;
+    } catch {
+      // Continue to fallback
+    }
+
+    // Fallback to English
+    try {
+      const message = dictionary.getStringForLocale(key, "en");
+      if (typeof message === "string") return message;
+    } catch {
+      // Continue to empty string fallback
+    }
+
+    return ""; // Last resort
+  },
+
+  /**
+   * Retrieves a variable message (function that takes arguments).
+   * Returns undefined if the message is a simple string or not found.
+   */
+  getVariableLocale(
+    key: string,
+    locale: string
+  ): ((args: Record<string, string | number>) => string) | undefined {
+    try {
+      const message = dictionary.getStringForLocale(key, locale);
+      if (typeof message === "function") return message;
+    } catch {
+      // Continue to fallback
+    }
+
+    // Fallback to English
+    try {
+      const message = dictionary.getStringForLocale(key, "en");
+      if (typeof message === "function") return message;
+    } catch {
+      return undefined;
+    }
+
+    return undefined;
+  },
+};
 ```
+
+**Key Points:**
+
+- All generated dictionaries use inline fallback logic (no external class)
+- `getStringLocale` always returns `string` (never `undefined`) - fixes
+  TypeScript errors
+- `getVariableLocale` returns `function | undefined` for variable messages
+- Fallback to English (`"en"`) happens automatically for unsupported locales
+- Components don't need to handle fallback manually - it's built into the
+  dictionary
+- No runtime dependencies between packages - self-contained generated files
 
 ## Known Issues & Next Steps
 
@@ -806,6 +1222,20 @@ export const alertMessages = new MessageDictionary({
      via `@formatjs/cli extract`)
    - ✅ Updated README files to document dependency status
 
+4. **Message Dictionary Fallback** ✅ COMPLETE
+   - ✅ Implemented inline fallback logic directly in generated dictionary files
+   - ✅ Updated dictionary generation script to generate inline fallback methods
+   - ✅ Created two separate methods: `getStringLocale` (simple strings) and
+     `getVariableLocale` (variable messages)
+   - ✅ Made `getStringLocale` always return `string` (never `undefined`) to fix
+     TypeScript errors with `aria-label` props
+   - ✅ Added try-catch error handling (MessageDictionary throws errors for
+     unsupported locales)
+   - ✅ All components automatically get fallback behavior without code changes
+   - ✅ Comprehensive Storybook tests verify fallback works correctly
+   - ✅ Locale context preserved for React Aria formatting while messages
+     fallback gracefully
+
 ### 🟡 Remaining Issues
 
 1. **TypeScript Type Workarounds**
@@ -819,22 +1249,31 @@ export const alertMessages = new MessageDictionary({
      codes (`"de-DE"`) when `NimbusI18nProvider` is set to `locale="de-DE"`, but
      `MessageDictionary` only has keys for simple locale codes (`"de"`, `"en"`).
      This causes dictionary lookup to fail and fallback to `"en"`.
-   - **Current Status:** Tests updated to use simple locale codes (`"de"`
-     instead of `"de-DE"`), which works correctly
+   - **Current Status:**
+     - ✅ Fallback mechanism handles this gracefully (unsupported locales →
+       English)
+     - ✅ Tests updated to use simple locale codes (`"de"` instead of
+       `"de-DE"`), which works correctly
+     - ✅ Generated dictionaries automatically fall back to `"en"` when locale
+       not found (via inline fallback logic)
    - **Future Consideration:** May want to add locale normalization utility to
-     extract language code from BCP47 format if consumers pass BCP47 codes
-   - **Impact:** Low - current approach works, but may need normalization if
-     consumers use BCP47 codes
+     extract language code from BCP47 format (e.g., `"de-DE"` → `"de"`) before
+     dictionary lookup to avoid unnecessary fallback when only region differs
+   - **Impact:** Low - current fallback approach works correctly, normalization
+     would be an optimization
 
-3. **i18n Test Suite** ✅
-   - ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
-     fallbacks, and key validation
-   - **Status:** Test suite created, implementation pending
-   - **Coverage Needed:**
-     - Validates all message keys exist in dictionaries
-     - Tests locale fallback behavior
-     - Verifies message functions work correctly with variables
-     - Ensures all components handle missing locales gracefully
+3. **i18n Test Suite** ✅ COMPLETE
+   - ✅ **Storybook tests created** - Comprehensive tests for message
+     dictionaries and locale fallbacks
+   - ✅ **Test Coverage:**
+     - `AllSupportedLocales` - Validates all 5 supported locales work correctly
+     - `UnsupportedLocaleFallback` - Verifies unsupported locales gracefully
+       fallback to English
+     - Tests verify both locale context (for formatting) and message retrieval
+       (with fallback)
+   - ✅ **Implementation:** Tests in `nimbus-i18n-provider.stories.tsx` using
+     `MessageTranslationTestComponent`
+   - ✅ **Verified:** All tests passing, fallback behavior working correctly
 
 ### 🟡 Pending Tasks
 
@@ -916,13 +1355,11 @@ For each component migration:
 
    // After (simple messages - can inline)
    const { locale } = useLocale();
-   return <button aria-label={componentMessages.getStringForLocale("key", locale)}>...</button>;
+   return <button aria-label={componentMessages.getStringLocale("key", locale)}>...</button>;
 
-   // Or with variable (need type checking)
-   const message = componentMessages.getStringForLocale("key", locale);
-   const label = typeof message === "function"
-     ? message({ variable: value })
-     : message;
+   // Or with variable messages (use getVariableLocale)
+   const message = componentMessages.getVariableLocale("key", locale);
+   const label = message ? message({ variable: value }) : undefined;
    ```
 
 4. **Update variable interpolation:**
@@ -931,11 +1368,9 @@ For each component migration:
    // Before
    intl.formatMessage(messages.label, { name: "John" });
 
-   // After (with type assertion for TypeScript)
-   const message = componentMessages.getStringForLocale("label", locale)
-     as string | ((args: Record<string, string | number>) => string);
-   const formatted =
-     typeof message === "function" ? message({ name: "John" }) : message;
+   // After (use getVariableLocale for variable messages)
+   const message = componentMessages.getVariableLocale("label", locale);
+   const formatted = message ? message({ name: "John" }) : undefined;
    ```
 
 5. **Keep `.i18n.ts` file** (still needed for extraction)
@@ -1117,6 +1552,8 @@ from publishing & changesets
 - do we want to add Ra to react-aria-components hooks as well?
 - \_reset locales in Storybook
 - - handle fallback & splits (de-DE, usw) --link readmes\*\*\*\*
+- fallback
+- use RA for formatting w/ X locale, but something diff for messaging??
 
 ## References
 

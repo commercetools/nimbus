@@ -26,22 +26,19 @@ export const CalendarCustomContext = ({
   const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
-      "aria-label": calendarMessages.getStringForLocale("nextMonth", locale),
+      "aria-label": calendarMessages.getStringLocale("nextMonth", locale),
     },
     "previous-month": {
       onPress: () => calendarState.focusPreviousSection(),
-      "aria-label": calendarMessages.getStringForLocale(
-        "previousMonth",
-        locale
-      ),
+      "aria-label": calendarMessages.getStringLocale("previousMonth", locale),
     },
     "next-year": {
       onPress: () => calendarState.focusNextSection(true),
-      "aria-label": calendarMessages.getStringForLocale("nextYear", locale),
+      "aria-label": calendarMessages.getStringLocale("nextYear", locale),
     },
     "previous-year": {
       onPress: () => calendarState.focusPreviousSection(true),
-      "aria-label": calendarMessages.getStringForLocale("previousYear", locale),
+      "aria-label": calendarMessages.getStringLocale("previousYear", locale),
     },
   };
 

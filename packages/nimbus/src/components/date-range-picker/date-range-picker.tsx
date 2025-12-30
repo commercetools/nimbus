@@ -93,7 +93,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="clear"
-                  aria-label={dateRangePickerMessages.getStringForLocale(
+                  aria-label={dateRangePickerMessages.getStringLocale(
                     "clearSelection",
                     locale
                   )}
@@ -104,7 +104,7 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
                   variant="ghost"
                   size={overlayButtonSize}
                   slot="calendarToggle"
-                  aria-label={dateRangePickerMessages.getStringForLocale(
+                  aria-label={dateRangePickerMessages.getStringLocale(
                     "openCalendar",
                     locale
                   )}

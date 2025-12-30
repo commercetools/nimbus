@@ -59,7 +59,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
             </DraggableListItemContentSlot>
             {onRemoveItem && (
               <IconButton
-                aria-label={draggableListMessages.getStringForLocale(
+                aria-label={draggableListMessages.getStringLocale(
                   "removeButtonLabel",
                   locale
                 )}

@@ -47,7 +47,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   const { locale } = useLocale();
   const renderEmptyState =
     renderEmptyStateFromProps ??
-    draggableListMessages.getStringForLocale("emptyMessage", locale);
+    draggableListMessages.getStringLocale("emptyMessage", locale);
 
   const list = useListData({
     initialItems: items,

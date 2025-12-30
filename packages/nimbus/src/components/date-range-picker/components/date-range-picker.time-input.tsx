@@ -84,7 +84,7 @@ export const DateRangePickerTimeInput = ({
           color="neutral.12"
           minWidth="fit-content"
         >
-          {dateRangePickerMessages.getStringForLocale("startTimeLabel", locale)}
+          {dateRangePickerMessages.getStringLocale("startTimeLabel", locale)}
         </Text>
         <TimeInput
           slot="startTimeInput"
@@ -103,7 +103,7 @@ export const DateRangePickerTimeInput = ({
           color="neutral.12"
           minWidth="fit-content"
         >
-          {dateRangePickerMessages.getStringForLocale("endTimeLabel", locale)}
+          {dateRangePickerMessages.getStringLocale("endTimeLabel", locale)}
         </Text>
         <TimeInput
           slot="endTimeInput"

@@ -15,8 +15,6 @@ import { userEvent, within, expect, fn } from "storybook/test";
 import { CalendarDate } from "@internationalized/date";
 import type { DateValue } from "react-aria";
 import type { NimbusRouterConfig } from "./nimbus-provider.types";
-import { useLocale } from "react-aria-components";
-import { NimbusI18nProvider } from "@commercetools/nimbus";
 
 const meta: Meta<typeof NimbusProvider> = {
   title: "Components/NimbusProvider",

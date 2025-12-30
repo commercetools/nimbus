@@ -35,7 +35,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringForLocale(
+            aria-label={richTextInputMessages.getStringLocale(
               "moreFormattingOptions",
               locale
             )}
@@ -46,7 +46,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           </IconButton>
         </Menu.Trigger>
         <Tooltip.Content placement="top">
-          {richTextInputMessages.getStringForLocale("moreStyles", locale)}
+          {richTextInputMessages.getStringLocale("moreStyles", locale)}
         </Tooltip.Content>
       </Tooltip.Root>
       <Menu.Content>
@@ -54,10 +54,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <FormatStrikethrough />
             <Text textStyle="sm">
-              {richTextInputMessages.getStringForLocale(
-                "strikethrough",
-                locale
-              )}
+              {richTextInputMessages.getStringLocale("strikethrough", locale)}
             </Text>
           </Box>
         </Menu.Item>
@@ -65,7 +62,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Code />
             <Text textStyle="sm">
-              {richTextInputMessages.getStringForLocale("code", locale)}
+              {richTextInputMessages.getStringLocale("code", locale)}
             </Text>
           </Box>
         </Menu.Item>
@@ -73,7 +70,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X²</Text>
             <Text textStyle="sm">
-              {richTextInputMessages.getStringForLocale("superscript", locale)}
+              {richTextInputMessages.getStringLocale("superscript", locale)}
             </Text>
           </Box>
         </Menu.Item>
@@ -81,7 +78,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X₂</Text>
             <Text textStyle="sm">
-              {richTextInputMessages.getStringForLocale("subscript", locale)}
+              {richTextInputMessages.getStringLocale("subscript", locale)}
             </Text>
           </Box>
         </Menu.Item>

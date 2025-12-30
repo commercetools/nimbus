@@ -35,22 +35,19 @@ export const DatePickerCustomContext = ({
   const getDefaultTimeInputAriaLabel = () => {
     switch (granularity) {
       case "hour":
-        return datePickerMessages.getStringForLocale(
-          "Time.enterTimeHour",
-          locale
-        );
+        return datePickerMessages.getStringLocale("Time.enterTimeHour", locale);
       case "minute":
-        return datePickerMessages.getStringForLocale(
+        return datePickerMessages.getStringLocale(
           "Time.enterTimeHourMinute",
           locale
         );
       case "second":
-        return datePickerMessages.getStringForLocale(
+        return datePickerMessages.getStringLocale(
           "Time.enterTimeHourMinuteSecond",
           locale
         );
       default:
-        return datePickerMessages.getStringForLocale("Time.enterTime", locale);
+        return datePickerMessages.getStringLocale("Time.enterTime", locale);
     }
   };
 
@@ -77,7 +74,7 @@ export const DatePickerCustomContext = ({
     /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": datePickerMessages.getStringForLocale("clearInput", locale),
+      "aria-label": datePickerMessages.getStringLocale("clearInput", locale),
       isDisabled: isDatePickerDisabled,
       // Hide the button when there's no value
       style: noInputValue ? { display: "none" } : undefined,

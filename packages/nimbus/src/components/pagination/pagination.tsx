@@ -69,7 +69,7 @@ export const Pagination = (props: PaginationProps) => {
             isClearable={false}
             selectedKey={pagination.pageSize.toString()}
             onSelectionChange={handlePageSizeChange}
-            aria-label={paginationMessages.getStringForLocale(
+            aria-label={paginationMessages.getStringLocale(
               "itemsPerPage",
               locale
             )}
@@ -83,7 +83,7 @@ export const Pagination = (props: PaginationProps) => {
             </Select.Options>
           </Select.Root>
           <Text color="neutral.12">
-            {paginationMessages.getStringForLocale("itemsPerPageText", locale)}
+            {paginationMessages.getStringLocale("itemsPerPageText", locale)}
           </Text>
         </Flex>
       )}
@@ -94,8 +94,7 @@ export const Pagination = (props: PaginationProps) => {
         gap="200"
         role="navigation"
         aria-label={
-          ariaLabel ??
-          paginationMessages.getStringForLocale("pagination", locale)
+          ariaLabel ?? paginationMessages.getStringLocale("pagination", locale)
         }
       >
         <IconButton
@@ -103,7 +102,7 @@ export const Pagination = (props: PaginationProps) => {
           isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={paginationMessages.getStringForLocale(
+          aria-label={paginationMessages.getStringLocale(
             "goToPreviousPage",
             locale
           )}
@@ -113,7 +112,7 @@ export const Pagination = (props: PaginationProps) => {
 
         <Flex align="center" gap="200">
           <Text color="neutral.12">
-            {paginationMessages.getStringForLocale("page", locale)}
+            {paginationMessages.getStringLocale("page", locale)}
           </Text>
           {enablePageInput ? (
             <NumberInput
@@ -126,7 +125,7 @@ export const Pagination = (props: PaginationProps) => {
               step={1}
               isDisabled={false}
               width="9ch"
-              aria-label={paginationMessages.getStringForLocale(
+              aria-label={paginationMessages.getStringLocale(
                 "currentPage",
                 locale
               )}
@@ -139,19 +138,20 @@ export const Pagination = (props: PaginationProps) => {
           )}
           <Text color="neutral.12">
             {(() => {
-              const ofTotalPagesMessage = paginationMessages.getStringForLocale(
+              // Get variable message function and call it with arguments
+              const ofTotalPagesMessage = paginationMessages.getVariableLocale(
                 "ofTotalPages",
                 locale
-              ) as string | ((args: Record<string, string | number>) => string);
+              );
 
               // Format the number with locale-specific formatting
               const formattedTotalPages = new Intl.NumberFormat(locale).format(
                 pagination.totalPages
               );
 
-              return typeof ofTotalPagesMessage === "function"
+              return ofTotalPagesMessage
                 ? ofTotalPagesMessage({ totalPages: formattedTotalPages })
-                : ofTotalPagesMessage;
+                : undefined;
             })()}
           </Text>
         </Flex>
@@ -161,7 +161,7 @@ export const Pagination = (props: PaginationProps) => {
           isDisabled={!pagination.hasNextPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={paginationMessages.getStringForLocale(
+          aria-label={paginationMessages.getStringLocale(
             "goToNextPage",
             locale
           )}
