@@ -77,7 +77,7 @@ export const DatePickerTimeInput = ({
       gap="200"
     >
       <Text textStyle="xs" fontWeight="500" color="neutral.12">
-        {datePickerMessages.getStringForLocale("Time.startTime", locale)}
+        {datePickerMessages.getStringLocale("Time.startTime", locale)}
       </Text>
       <TimeInput
         slot="timeInput"

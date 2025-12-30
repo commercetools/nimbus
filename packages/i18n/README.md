@@ -77,7 +77,7 @@ export const AlertDismissButton = () => {
   const { locale } = useLocale();
 
   return (
-    <button aria-label={alertMessages.getStringForLocale("dismiss", locale)}>
+    <button aria-label={alertMessages.getStringLocale("dismiss", locale)}>
       ...
     </button>
   );
@@ -88,17 +88,20 @@ export const AlertDismissButton = () => {
 
 - **Locale Format**: Dictionaries use simple locale codes (`en`, `de`, `es`,
   `fr-FR`, `pt-BR`) that match what `useLocale()` returns from `I18nProvider`.
-- **API Signature**: `getStringForLocale(key, locale)` - **key first, then
-  locale**
+- **API Signature**:
+  - `getStringLocale(key, locale)` - Returns `string` (always) for simple
+    messages
+  - `getVariableLocale(key, locale)` - Returns `function | undefined` for
+    variable messages
+  - **Key first, then locale** for both methods
 - **Message Keys**: Use the key extracted from the message ID (e.g.,
   `"Nimbus.Alert.dismiss"` → `"dismiss"`), not the object key from the
   `.i18n.ts` file
-- **Variable Messages**: Messages with variables (like `{fullName}`) compile to
-  functions. Check the type before calling:
+- **Variable Messages**: Messages with variables (like `{fullName}`) use
+  `getVariableLocale`:
   ```typescript
-  const message = avatarMessages.getStringForLocale("avatarLabel", locale);
-  const label =
-    typeof message === "function" ? message({ fullName: "John Doe" }) : message;
+  const message = avatarMessages.getVariableLocale("avatarLabel", locale);
+  const label = message ? message({ fullName: "John Doe" }) : undefined;
   ```
 
 ## Supported Locales
@@ -154,7 +157,7 @@ export const messages = defineMessages({
 });
 
 // Component usage
-loadingSpinnerMessages.getStringForLocale("default", locale); // ← Use "default"
+loadingSpinnerMessages.getStringLocale("default", locale); // ← Use "default"
 ```
 
 ## Internal Package

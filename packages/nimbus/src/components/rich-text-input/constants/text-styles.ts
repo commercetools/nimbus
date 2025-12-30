@@ -30,7 +30,7 @@ export type TextStyleDefinition = {
 export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   {
     id: "paragraph",
-    label: richTextInputMessages.getStringForLocale("paragraph", locale),
+    label: richTextInputMessages.getStringLocale("paragraph", locale),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -38,7 +38,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "heading-one",
-    label: richTextInputMessages.getStringForLocale("headingOne", locale),
+    label: richTextInputMessages.getStringLocale("headingOne", locale),
     props: {
       textStyle: "2xl",
       fontWeight: "500",
@@ -46,7 +46,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "heading-two",
-    label: richTextInputMessages.getStringForLocale("headingTwo", locale),
+    label: richTextInputMessages.getStringLocale("headingTwo", locale),
     props: {
       textStyle: "xl",
       fontWeight: "500",
@@ -54,7 +54,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "heading-three",
-    label: richTextInputMessages.getStringForLocale("headingThree", locale),
+    label: richTextInputMessages.getStringLocale("headingThree", locale),
     props: {
       textStyle: "lg",
       fontWeight: "500",
@@ -62,7 +62,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "heading-four",
-    label: richTextInputMessages.getStringForLocale("headingFour", locale),
+    label: richTextInputMessages.getStringLocale("headingFour", locale),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -70,7 +70,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "heading-five",
-    label: richTextInputMessages.getStringForLocale("headingFive", locale),
+    label: richTextInputMessages.getStringLocale("headingFive", locale),
     props: {
       textStyle: "xs",
       fontWeight: "500",
@@ -78,7 +78,7 @@ export const getTextStyles = (locale: string): TextStyleDefinition[] => [
   },
   {
     id: "block-quote",
-    label: richTextInputMessages.getStringForLocale("quote", locale),
+    label: richTextInputMessages.getStringLocale("quote", locale),
     props: {
       textStyle: "md",
       fontWeight: "400",

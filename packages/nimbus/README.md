@@ -29,8 +29,9 @@ pnpm run build
    - Import the compiled message dictionary:
      `import { componentMessages } from "./component.messages"`
    - Use `useLocale()` from `react-aria-components` to get locale
-   - Call `componentMessages.getStringForLocale("key", locale)` to retrieve
-     messages
+   - Call `componentMessages.getStringLocale("key", locale)` for simple strings
+   - Call `componentMessages.getVariableLocale("key", locale)` for variable
+     messages messages
    - See [i18n guidelines](../../docs/file-type-guidelines/i18n.md) for detailed
      usage patterns
 

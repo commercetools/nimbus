@@ -151,7 +151,7 @@ export const SplitButton = (props: SplitButtonProps) => {
 
     return (
       primaryMenuItem || {
-        content: splitButtonMessages.getStringForLocale(
+        content: splitButtonMessages.getStringLocale(
           "noActionsAvailable",
           locale
         ),

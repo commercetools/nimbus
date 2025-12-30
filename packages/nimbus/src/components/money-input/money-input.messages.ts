@@ -16,17 +16,71 @@ import moneyInputMessages_es from "./intl/es";
 import moneyInputMessages_fr from "./intl/fr-FR";
 import moneyInputMessages_pt from "./intl/pt-BR";
 
-/**
- * Localized string dictionary for MoneyInput component
- * Contains pre-compiled messages for all supported locales
- */
-export const moneyInputMessages = new MessageDictionary({
+// Internal dictionary instance
+const dictionary = new MessageDictionary({
   en: moneyInputMessages_en,
   de: moneyInputMessages_de,
   es: moneyInputMessages_es,
   "fr-FR": moneyInputMessages_fr,
   "pt-BR": moneyInputMessages_pt,
 });
+
+/**
+ * Localized string dictionary for MoneyInput component
+ * Contains pre-compiled messages for all supported locales
+ * Automatically falls back to English (en) for unsupported locales
+ */
+export const moneyInputMessages = {
+  /**
+   * Retrieves a simple string message (no variables).
+   * Always returns a string (empty string if message not found or is a function).
+   * Use this for aria-label and other simple string needs.
+   */
+  getStringLocale(key: string, locale: string): string {
+    try {
+      const message = dictionary.getStringForLocale(key, locale);
+      // Filter out functions - only return strings
+      if (typeof message === "string") return message;
+    } catch {
+      // Continue to fallback
+    }
+
+    // Fallback to English
+    try {
+      const message = dictionary.getStringForLocale(key, "en");
+      if (typeof message === "string") return message;
+    } catch {
+      // Continue to empty string fallback
+    }
+
+    // Last resort: return empty string (should never happen in practice)
+    return "";
+  },
+
+  /**
+   * Retrieves a variable message (function that takes arguments).
+   * Returns undefined if the message is a simple string or not found.
+   * Use this for messages that require variables (e.g., "Hello {name}").
+   */
+  getVariableLocale(
+    key: string,
+    locale: string
+  ): ((args: Record<string, string | number>) => string) | undefined {
+    try {
+      const message = dictionary.getStringForLocale(key, locale);
+      // Filter out strings - only return functions
+      return typeof message === "function" ? message : undefined;
+    } catch {
+      // Locale not found, fallback to English
+      try {
+        const message = dictionary.getStringForLocale(key, "en");
+        return typeof message === "function" ? message : undefined;
+      } catch {
+        return undefined;
+      }
+    }
+  },
+};
 
 /**
  * Available message keys for MoneyInput component

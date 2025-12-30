@@ -50,26 +50,26 @@ export const DateRangePickerCustomContext = ({
     const messageKey = type === "start" ? "start" : "end";
     switch (granularity) {
       case "hour":
-        return dateRangePickerMessages.getStringForLocale(
+        return dateRangePickerMessages.getStringLocale(
           `${messageKey}TimeHour` as "startTimeHour" | "endTimeHour",
           locale
         );
       case "minute":
-        return dateRangePickerMessages.getStringForLocale(
+        return dateRangePickerMessages.getStringLocale(
           `${messageKey}TimeHourMinute` as
             | "startTimeHourMinute"
             | "endTimeHourMinute",
           locale
         );
       case "second":
-        return dateRangePickerMessages.getStringForLocale(
+        return dateRangePickerMessages.getStringLocale(
           `${messageKey}TimeHourMinuteSecond` as
             | "startTimeHourMinuteSecond"
             | "endTimeHourMinuteSecond",
           locale
         );
       default:
-        return dateRangePickerMessages.getStringForLocale(
+        return dateRangePickerMessages.getStringLocale(
           `${messageKey}Time` as "startTime" | "endTime",
           locale
         );
@@ -100,7 +100,7 @@ export const DateRangePickerCustomContext = ({
     clear: {
       // Clear both start and end values
       onPress: () => dateRangePickerState?.setValue(null),
-      "aria-label": dateRangePickerMessages.getStringForLocale(
+      "aria-label": dateRangePickerMessages.getStringLocale(
         "clearInput",
         locale
       ),

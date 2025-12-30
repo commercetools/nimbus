@@ -22,7 +22,7 @@ export const DialogCloseTrigger = (props: DialogCloseTriggerProps) => {
         size="xs"
         variant="ghost"
         aria-label={
-          ariaLabel || dialogMessages.getStringForLocale("closeTrigger", locale)
+          ariaLabel || dialogMessages.getStringLocale("closeTrigger", locale)
         }
         {...restProps}
       >

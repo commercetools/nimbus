@@ -45,7 +45,7 @@ export const ComboBoxButtonGroup = ({
             size="2xs"
             variant="ghost"
             colorPalette="primary"
-            aria-label={comboBoxMessages.getStringForLocale(
+            aria-label={comboBoxMessages.getStringLocale(
               "clearSelection",
               locale
             )}
