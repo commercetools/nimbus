@@ -12,13 +12,13 @@ component-name, componentName
 import { useRef } from "react";
 import { useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { useIntl } from "react-intl";
 // Uncomment if using React Aria
 // import { ComponentName as RaComponentName } from 'react-aria-components';
 import { ComponentNameSlot } from "./component-name.slots";
 import type { ComponentNameProps } from "./component-name.types";
 // Uncomment if component needs i18n
-// import { messages } from './component-name.i18n';
+// import { useLocale } from "react-aria-components";
+// import { componentMessages } from "./component-name.messages";
 
 /**
  * ComponentName

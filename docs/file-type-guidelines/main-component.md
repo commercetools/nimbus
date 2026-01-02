@@ -149,7 +149,6 @@ export const Menu = {
   Item: MenuItem,
   // ... other exports
 };
-
 ````
 
 ### Documenting Compound Component Parts
@@ -426,7 +425,6 @@ export const Select = {
   Content: SelectContent,
   Option: SelectOption,
 };
-
 ```
 
 ## React Aria Integration
@@ -527,12 +525,7 @@ import { Button } from "@/components/button/button";
 
 // Other Nimbus components imported from main barrel export are fine
 // because rich-text-toolbar doesn't have its own barrel export (it's internal)
-import {
-  ToggleButtonGroup,
-  IconButton,
-  Text,
-  Separator,
-} from "@/components";
+import { ToggleButtonGroup, IconButton, Text, Separator } from "@/components";
 ```
 
 ### When to Use Direct Imports
@@ -582,8 +575,8 @@ import { Button, Badge, Icon } from "@commercetools/nimbus";
 
 This works because:
 
-1. Consumers import from the **main package entry point**
-   (`dist/index.es.js`), not individual component chunks
+1. Consumers import from the **main package entry point** (`dist/index.es.js`),
+   not individual component chunks
 2. The package build resolves all internal dependencies
 3. Consumers' bundlers handle tree-shaking based on what they import
 
@@ -602,19 +595,19 @@ Components need i18n when they contain:
 ### Import Pattern
 
 ```typescript
-import { useIntl } from "react-intl";
-import { messages } from "./component-name.i18n";
+import { useLocale } from "react-aria-components";
+import { componentMessages } from "./component-name.messages";
 ```
 
 ### Usage in Component
 
 ```typescript
 export const NumberInput = (props: NumberInputProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
 
   // Use for aria-labels
-  const incrementLabel = intl.formatMessage(messages.increment);
-  const decrementLabel = intl.formatMessage(messages.decrement);
+  const incrementLabel = componentMessages.getStringLocale("increment", locale);
+  const decrementLabel = componentMessages.getStringLocale("decrement", locale);
 
   // Pass to React Aria hooks
   const ariaProps = {

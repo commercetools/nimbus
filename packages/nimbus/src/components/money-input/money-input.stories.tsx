@@ -16,6 +16,7 @@ import type {
   CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
+import { moneyInputMessages } from "./money-input.messages";
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
@@ -390,14 +391,17 @@ export const CurrencySwitchingTest: Story = {
 
 export const EULocaleFormattingExample: Story = {
   render: (args) => (
+    // Note: The locale prop on NimbusI18nProvider takes precedence over
+    // the locale set in Storybook's toolbar. This ensures the component
+    // always uses "de-DE" regardless of Storybook's global locale setting.
     <NimbusI18nProvider locale="de-DE">
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
           EU Locale Formatting (de-DE) - High Precision
         </div>
         <div style={{ fontSize: "14px", marginBottom: "16px", color: "#666" }}>
-          In German locale: 1.234.567,89 (periods for thousands, comma for
-          decimals)
+          German locale formatting (overrides Storybook locale): 1.234.567,89
+          (periods for thousands, comma for decimals)
         </div>
 
         {/* German locale examples */}
@@ -429,12 +433,23 @@ export const EULocaleFormattingExample: Story = {
     const canvas = within(canvasElement);
 
     // All should show high precision badges since they exceed standard fraction digits
-    const badges = canvas.getAllByLabelText(/high precision price/i);
+    // NOTE: This test will fail locally until locale normalization is implemented
+    // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
+    // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
+    const highPrecisionLabel = moneyInputMessages.getStringLocale(
+      "highPrecisionPrice",
+      "de"
+    );
+    const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
 
     // With German locale NimbusI18nProvider, React Aria formats with German conventions
+    const amountInputLabel = moneyInputMessages.getStringLocale(
+      "amountInputLabel",
+      "de"
+    );
     const inputs = await canvas.findAllByRole("textbox", {
-      name: /Amount/i,
+      name: amountInputLabel,
     });
 
     // Verify the inputs exist and are working

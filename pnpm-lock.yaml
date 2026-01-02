@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    '@internationalized/string-compiler':
+      specifier: ^3.2.6
+      version: 3.2.6
   react:
     '@chakra-ui/cli':
       specifier: ^3.27.1
@@ -21,6 +25,9 @@ catalogs:
     '@internationalized/date':
       specifier: ^3.10.0
       version: 3.10.0
+    '@internationalized/message':
+      specifier: ^3.1.8
+      version: 3.1.8
     '@react-aria/optimize-locales-plugin':
       specifier: 1.1.5
       version: 1.1.5
@@ -390,9 +397,6 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
-      react-intl:
-        specifier: catalog:react
-        version: 7.1.14(react@19.2.0)(typescript@5.9.3)
       react-live:
         specifier: ^4.1.7
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -495,13 +499,20 @@ importers:
         specifier: catalog:utils
         version: 24.10.1
 
-  packages/i18n: {}
+  packages/i18n:
+    devDependencies:
+      '@internationalized/string-compiler':
+        specifier: 'catalog:'
+        version: 3.2.6
 
   packages/nimbus:
     dependencies:
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.4.0
+      '@internationalized/message':
+        specifier: catalog:react
+        version: 3.1.8
       '@react-aria/interactions':
         specifier: 3.25.6
         version: 3.25.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1522,6 +1533,9 @@ packages:
 
   '@internationalized/number@3.6.5':
     resolution: {integrity: sha512-6hY4Kl4HPBvtfS62asS/R22JzNNy8vi/Ssev7x6EobfCp+9QIB2hKvI2EtbdJ0VSQacxVNtqhE/NmF/NZ0gm6g==}
+
+  '@internationalized/string-compiler@3.2.6':
+    resolution: {integrity: sha512-Wsyzjc9QBs79VOalwEAWBARa+CtCkOC4JsMDKc0UR89ZcXa+BfkN0KK0zGVXXpPtrishUNaDSMEnLV55z3m+PQ==}
 
   '@internationalized/string@3.2.7':
     resolution: {integrity: sha512-D4OHBjrinH+PFZPvfCXvG28n2LSykWcJ7GIioQL+ok0LON15SdfoUssoHzzOUmVZLbRoREsQXVzA6r8JKsbP6A==}
@@ -7589,6 +7603,10 @@ snapshots:
   '@internationalized/number@3.6.5':
     dependencies:
       '@swc/helpers': 0.5.17
+
+  '@internationalized/string-compiler@3.2.6':
+    dependencies:
+      '@formatjs/icu-messageformat-parser': 2.11.4
 
   '@internationalized/string@3.2.7':
     dependencies:
