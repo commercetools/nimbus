@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
-    "build:packages": "pnpm --filter @commercetools/nimbus-i18n build && pnpm -r --filter './packages/*' --filter '!@commercetools/nimbus-i18n' build",
+    "build:packages": "pnpm -r --filter './packages/*' build",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "changeset": "changeset",

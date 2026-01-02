@@ -1600,6 +1600,7 @@ from publishing & changesets
 - normalize and double check fallback situation
 - remove from changelog
 - investigate default more
+- changeset
 
 ## References
 
