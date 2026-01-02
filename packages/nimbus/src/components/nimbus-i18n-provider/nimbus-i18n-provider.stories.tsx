@@ -349,12 +349,23 @@ const MessageTranslationTestComponent = ({
 /**
  * Verifies that all supported locales work correctly with message dictionaries.
  * Tests that components can retrieve messages for all supported locales:
- * en, de, es, fr-FR, pt-BR
+ * - Simple codes: en, de, es, fr-FR, pt-BR
+ * - BCP47 variants: en-US, de-DE, es-ES (normalize to en, de, es)
+ *
+ * Verifies that BCP47 locale codes are properly normalized to match dictionary keys.
  */
 export const MessageTranslationForSupportedLocales: Story = {
   render: () => {
-    const supportedLocales = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
-
+    const supportedLocales = [
+      "en",
+      "en-US", // BCP47 variant (should normalize to "en")
+      "de",
+      "de-DE", // BCP47 variant (should normalize to "de")
+      "es",
+      "es-ES", // BCP47 variant (should normalize to "es")
+      "fr-FR", // Already BCP47, matches dictionary key
+      "pt-BR", // Already BCP47, matches dictionary key
+    ] as const;
     return (
       <Stack direction="column" gap="400">
         <Text fontWeight="600" fontSize="500">
@@ -415,8 +426,15 @@ export const MessageTranslationForSupportedLocales: Story = {
     await step(
       "Verify message dictionaries work for all supported locales",
       async () => {
-        const supportedLocales = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
-
+        const supportedLocales = [
+          "en",
+          "en-US",
+          "de",
+          "de-DE",
+          "es-ES",
+          "fr-FR",
+          "pt-BR",
+        ] as const;
         for (const locale of supportedLocales) {
           const testComponent = canvas.getByTestId(`locale-test-${locale}`);
           // Verify the dismiss button exists (message was retrieved successfully)
@@ -515,58 +533,23 @@ export const MessageTranslationForUnsupportedLocales: Story = {
           const dismissButton = within(testComponent).getByRole("button");
           await expect(dismissButton).toBeInTheDocument();
 
-          // Verify the aria-label matches the English fallback message
-          const expectedLabel = alertMessages.getStringLocale(
+          // Verify normalization: unsupported locale should normalize to "en"
+          // Test that using the unsupported locale directly returns English message
+          const normalizedLabel = alertMessages.getStringLocale(
+            "dismiss",
+            locale
+          ) as string;
+          const expectedEnglishLabel = alertMessages.getStringLocale(
             "dismiss",
             "en"
           ) as string;
-          // Verify the aria-label matches the English fallback message
+          await expect(normalizedLabel).toBe(expectedEnglishLabel);
+
+          // Verify the actual aria-label matches the English fallback message
           const actualLabel = dismissButton.getAttribute("aria-label");
-          await expect(actualLabel).toBe(expectedLabel);
+          await expect(actualLabel).toBe(expectedEnglishLabel);
         }
       }
     );
   },
 };
-
-// /**
-//  * Verifies locale normalization behavior when BCP47 codes are used.
-//  * Tests that when useLocale() returns BCP47 codes (e.g., "de-DE") but
-//  * dictionaries use simple codes (e.g., "de"), the system handles it correctly.
-//  */
-// export const LocaleNormalization: Story = {
-//   render: () => {
-//     // Test cases where locale from useLocale() might not match dictionary keys exactly
-//     const normalizationCases = [
-//       { providerLocale: "de-DE", expectedDictKey: "de" },
-//       { providerLocale: "en-US", expectedDictKey: "en" },
-//       { providerLocale: "es-ES", expectedDictKey: "es" },
-//     ] as const;
-
-//     return (
-//       <Stack direction="column" gap="400">
-//         <Text fontWeight="600" fontSize="500">
-//           Testing locale normalization
-//         </Text>
-//         <Text fontSize="300" color="neutral.9">
-//           BCP47 codes (de-DE) should work with simple dictionary keys (de)
-//         </Text>
-//         {normalizationCases.map(({ providerLocale, expectedDictKey }) => (
-//           <NimbusI18nProvider key={providerLocale} locale={providerLocale}>
-//             <Box p="400" border="solid-25" borderColor="neutral.3" borderRadius="400">
-//               <Stack direction="column" gap="200">
-//                 <Text fontWeight="500">
-//                   Provider: {providerLocale} → Expected: {expectedDictKey}
-//                 </Text>
-//                 <LocaleTestComponent testId={`normalize-test-${providerLocale}`} />
-//               </Stack>
-//             </Box>
-//           </NimbusI18nProvider>
-//         ))}
-//       </Stack>
-//     );
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     // Test that BCP47 codes normalize or fallback correctly
-//   },
-// };

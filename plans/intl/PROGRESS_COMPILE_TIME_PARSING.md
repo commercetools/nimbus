@@ -14,6 +14,22 @@ parsing (`react-intl`) to compile-time message compilation using
 
 ## Recent Updates (January 2025)
 
+### ✅ Locale Normalization & Publishing Updates - COMPLETE
+
+**Completed:**
+
+- ✅ Added `normalizeLocale()` function to generated dictionary files
+  - Handles BCP47 codes (`"en-US"` → `"en"`, `"de-DE"` → `"de"`)
+  - Maps language codes to dictionary keys (`"fr"` → `"fr-FR"`, `"pt"` →
+    `"pt-BR"`)
+  - Falls back to `"en"` for unsupported languages
+- ✅ Simplified fallback logic in `getStringLocale` and `getVariableLocale`
+  methods
+- ✅ Updated tests to verify BCP47 normalization (en-US, de-DE, es-ES)
+- ✅ Removed `@commercetools/nimbus-i18n` from changesets ignore list
+  - Package already marked as `"private": true` in package.json
+  - No longer creates changesets or version bumps for i18n package
+
 ### ✅ Phase 3: Provider Updates - COMPLETE
 
 **Completed:**
@@ -124,15 +140,15 @@ The locale from `NimbusI18nProvider` serves two separate purposes:
 
 ```typescript
 // Component code (no changes needed)
-const { locale } = useLocale(); // Returns "ja-JP" (from provider)
+const { locale } = useLocale(); // Returns "de-DE" or "ja-JP" (from provider)
 const dismissLabel = alertMessages.getStringLocale("dismiss", locale);
 
 // Inside generated alertMessages.getStringLocale():
-//   1. Tries "ja-JP" → MessageDictionary throws error (locale not found)
-//   2. Catches error, continues to fallback
-//   3. Falls back to "en" → succeeds
-//   4. Returns "Dismiss" (English message) - always returns string
-//   5. But locale context remains "ja-JP" for React Aria formatting
+//   1. Normalizes locale: "de-DE" → "de", "en-US" → "en", "ja-JP" → "en" (unsupported)
+//   2. Tries normalized locale → succeeds for supported locales
+//   3. For unsupported locales, normalization already returns "en"
+//   4. Returns localized message (or English fallback) - always returns string
+//   5. Locale context remains original (e.g., "de-DE") for React Aria formatting
 ```
 
 **Result:**
@@ -159,9 +175,10 @@ The try-catch converts this error into a fallback:
 **Test Coverage:**
 
 - ✅ All supported locales verified (en, de, es, fr-FR, pt-BR)
+- ✅ BCP47 normalization verified (en-US → en, de-DE → de, es-ES → es)
 - ✅ Unsupported locale fallback verified (ja-JP, sqi, it-IT → English)
 - ✅ Locale context preserved for React Aria formatting
-- ✅ Message retrieval works correctly with fallback
+- ✅ Message retrieval works correctly with normalization and fallback
 
 **Common Question: Why Show "ja-JP" as Returned Locale When Using English
 Messages?**
@@ -1127,6 +1144,36 @@ import alertMessages_en from "./intl/en";
 import alertMessages_de from "./intl/de";
 // ... other locale imports
 
+/**
+ * Normalizes BCP47 locale codes to match dictionary keys.
+ * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
+ */
+function normalizeLocale(locale: string): string {
+  // Exact match - return as-is
+  if (
+    locale === "en" ||
+    locale === "de" ||
+    locale === "es" ||
+    locale === "fr-FR" ||
+    locale === "pt-BR"
+  ) {
+    return locale;
+  }
+
+  // Extract language code (first part before any separator)
+  const lang = locale.split(/[-_]/)[0].toLowerCase();
+
+  // Map language codes to dictionary keys
+  if (lang === "en") return "en";
+  if (lang === "de") return "de";
+  if (lang === "es") return "es";
+  if (lang === "fr") return "fr-FR";
+  if (lang === "pt") return "pt-BR";
+
+  // Fallback to English for unsupported languages
+  return "en";
+}
+
 // Internal dictionary instance
 const dictionary = new MessageDictionary({
   en: alertMessages_en, // Simple locale codes
@@ -1142,22 +1189,16 @@ export const alertMessages = {
    * Always returns a string (empty string if message not found or is a function).
    */
   getStringLocale(key: string, locale: string): string {
+    const normalizedLocale = normalizeLocale(locale);
+
     try {
-      const message = dictionary.getStringForLocale(key, locale);
+      const message = dictionary.getStringForLocale(key, normalizedLocale);
       if (typeof message === "string") return message;
     } catch {
-      // Continue to fallback
+      // Return empty string if message not found
     }
 
-    // Fallback to English
-    try {
-      const message = dictionary.getStringForLocale(key, "en");
-      if (typeof message === "string") return message;
-    } catch {
-      // Continue to empty string fallback
-    }
-
-    return ""; // Last resort
+    return "";
   },
 
   /**
@@ -1168,33 +1209,28 @@ export const alertMessages = {
     key: string,
     locale: string
   ): ((args: Record<string, string | number>) => string) | undefined {
-    try {
-      const message = dictionary.getStringForLocale(key, locale);
-      if (typeof message === "function") return message;
-    } catch {
-      // Continue to fallback
-    }
+    const normalizedLocale = normalizeLocale(locale);
 
-    // Fallback to English
     try {
-      const message = dictionary.getStringForLocale(key, "en");
-      if (typeof message === "function") return message;
+      const message = dictionary.getStringForLocale(key, normalizedLocale);
+      return typeof message === "function" ? message : undefined;
     } catch {
       return undefined;
     }
-
-    return undefined;
   },
 };
 ```
 
 **Key Points:**
 
-- All generated dictionaries use inline fallback logic (no external class)
+- All generated dictionaries use inline normalization and fallback logic
+- `normalizeLocale()` handles BCP47 codes (`"en-US"` → `"en"`) and unsupported
+  locales (→ `"en"`)
 - `getStringLocale` always returns `string` (never `undefined`) - fixes
   TypeScript errors
 - `getVariableLocale` returns `function | undefined` for variable messages
-- Fallback to English (`"en"`) happens automatically for unsupported locales
+- Simplified fallback logic (normalization handles most cases, try-catch is
+  safety net)
 - Components don't need to handle fallback manually - it's built into the
   dictionary
 - No runtime dependencies between packages - self-contained generated files
@@ -1244,33 +1280,40 @@ export const alertMessages = {
      `as string | ((args: ...) => string)`
    - Acceptable trade-off, but documented for future reference
 
-2. **Locale Normalization (Future Consideration)**
+2. **Locale Normalization** ✅ IMPLEMENTED
    - **Issue:** `useLocale()` from `react-aria-components` may return BCP47
      codes (`"de-DE"`) when `NimbusI18nProvider` is set to `locale="de-DE"`, but
      `MessageDictionary` only has keys for simple locale codes (`"de"`, `"en"`).
-     This causes dictionary lookup to fail and fallback to `"en"`.
-   - **Current Status:**
-     - ✅ Fallback mechanism handles this gracefully (unsupported locales →
-       English)
-     - ✅ Tests updated to use simple locale codes (`"de"` instead of
-       `"de-DE"`), which works correctly
-     - ✅ Generated dictionaries automatically fall back to `"en"` when locale
-       not found (via inline fallback logic)
-   - **Future Consideration:** May want to add locale normalization utility to
-     extract language code from BCP47 format (e.g., `"de-DE"` → `"de"`) before
-     dictionary lookup to avoid unnecessary fallback when only region differs
-   - **Impact:** Low - current fallback approach works correctly, normalization
-     would be an optimization
+     This was causing dictionary lookup to fail and unnecessary fallback to
+     `"en"`.
+   - **Solution:** Added `normalizeLocale()` function in generated dictionary
+     files
+     - Extracts language code from BCP47 format (e.g., `"de-DE"` → `"de"`)
+     - Maps language codes to dictionary keys (`"fr"` → `"fr-FR"`, `"pt"` →
+       `"pt-BR"`)
+     - Falls back to `"en"` for unsupported languages
+   - **Implementation:**
+     - ✅ `normalizeLocale()` function added to all generated `.messages.ts`
+       files
+     - ✅ Normalization happens before `getStringForLocale()` call
+     - ✅ Simplified fallback logic (no longer needs nested try-catch for BCP47
+       variants)
+     - ✅ Tests updated to verify BCP47 normalization (en-US, de-DE, es-ES)
+   - **Impact:** High - BCP47 codes now work correctly without unnecessary
+     fallback
 
 3. **i18n Test Suite** ✅ COMPLETE
    - ✅ **Storybook tests created** - Comprehensive tests for message
      dictionaries and locale fallbacks
    - ✅ **Test Coverage:**
-     - `AllSupportedLocales` - Validates all 5 supported locales work correctly
-     - `UnsupportedLocaleFallback` - Verifies unsupported locales gracefully
-       fallback to English
+     - `MessageTranslationForSupportedLocales` - Validates all supported locales
+       work correctly
+       - Tests simple codes: en, de, es, fr-FR, pt-BR
+       - Tests BCP47 variants: en-US, de-DE, es-ES (verifies normalization)
+     - `MessageTranslationForUnsupportedLocales` - Verifies unsupported locales
+       gracefully fallback to English
      - Tests verify both locale context (for formatting) and message retrieval
-       (with fallback)
+       (with normalization and fallback)
    - ✅ **Implementation:** Tests in `nimbus-i18n-provider.stories.tsx` using
      `MessageTranslationTestComponent`
    - ✅ **Verified:** All tests passing, fallback behavior working correctly
@@ -1428,9 +1471,9 @@ For each component migration:
 10. ⏳ Create migration guide for consumers
 11. ⚠️ **i18n test suite created** - Tests for message dictionaries, locale
     fallbacks, and key validation (implementation pending)
-12. ⏳ Consider locale normalization - Currently `useLocale()` may return BCP47
-    codes (`"de-DE"`) but dictionaries use simple codes (`"de"`). May need
-    normalization utility.
+12. ✅ **Locale normalization implemented** - Added `normalizeLocale()` function
+    to generated dictionary files. Handles BCP47 codes (`"de-DE"` → `"de"`) and
+    unsupported locales (→ `"en"`). Tests verify normalization works correctly.
 
 ---
 
@@ -1554,6 +1597,9 @@ from publishing & changesets
 - - handle fallback & splits (de-DE, usw) --link readmes\*\*\*\*
 - fallback
 - use RA for formatting w/ X locale, but something diff for messaging??
+- normalize and double check fallback situation
+- remove from changelog
+- investigate default more
 
 ## References
 
