@@ -334,8 +334,8 @@ const MessageTranslationTestComponent = ({
     <Box data-testid={testId}>
       <Alert.Root colorPalette="info" variant="outlined">
         <Text data-testid={`${testId}-message`}>
-          Inspect the dismiss button to verify it has the aria-label of "
-          {dismissLabel}"
+          Inspect the dismiss button to verify it has the expected aria-label
+          for this locale.
         </Text>
         <Alert.DismissButton />
       </Alert.Root>
@@ -374,7 +374,8 @@ export const MessageTranslationForSupportedLocales: Story = {
         <Stack direction="column" gap="100">
           <Text fontSize="300" color="neutral.12">
             Tests the Alert component's dismiss button aria-label to verify
-            message retrieval works correctly.
+            message retrieval works correctly for all supported locales and that
+            BCP47 locale codes (en-US, de-DE, es-ES) are properly normalized.
           </Text>
         </Stack>
         {supportedLocales.map((locale) => (
