@@ -9,11 +9,6 @@
  * "Nimbus.{Component}.{key}" and groups messages by component, creating
  * separate files for each component/locale combination.
  *
- * This is Step 2 of 4 in the i18n build pipeline:
- *   1. Transform - Transifex → ICU format
- *   2. Split - Group messages by component --> You are here
- *   3. Compile - ICU → JavaScript functions
- *   4. Generate - Create MessageDictionary wrappers
  *
  * Input:  .temp/icu/*.json (all messages per locale)
  * Output: .temp/by-component/{Component}/{locale}.json (messages grouped by component)
@@ -101,7 +96,7 @@ async function splitByComponent() {
     }
   }
 
-  console.log("✅ Split complete! Output: .temp/by-component/");
+  console.log("✅ Split complete. Output: .temp/by-component/");
 }
 
 splitByComponent().catch(console.error);

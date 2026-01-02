@@ -7,11 +7,6 @@
  * This script extracts the "string" field from each message and flattens
  * the structure to prepare data for compilation.
  *
- * This is Step 1 of 4 in the i18n build pipeline:
- *   1. Transform - Transifex → ICU format --> You are here
- *   2. Split - Group messages by component
- *   3. Compile - ICU → JavaScript functions
- *   4. Generate - Create MessageDictionary wrappers
  *
  * Input:  packages/i18n/data/*.json (Transifex format)
  * Output: .temp/icu/*.json (ICU MessageFormat)
@@ -64,7 +59,7 @@ async function transformToICU() {
     await fs.writeFile(outputPath, JSON.stringify(icuData, null, 2) + "\n");
   }
 
-  console.log("✅ Transformation complete! Output: .temp/icu/");
+  console.log("✅ Transformation complete. Output: .temp/icu/");
 }
 
 transformToICU().catch(console.error);

@@ -29,6 +29,26 @@ type LocalizedStringsWithFunctions = {
   };
 };
 
+/**
+ * Normalizes BCP47 locale codes to match dictionary keys.
+ * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
+ */
+function normalizeLocale(locale: string): string {
+  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
+  if (supportedLocales.has(locale)) return locale;
+
+  const langMap: Record<string, string> = {
+    en: "en",
+    de: "de",
+    es: "es",
+    fr: "fr-FR",
+    pt: "pt-BR",
+  };
+
+  const lang = locale.split(/[-_]/)[0].toLowerCase();
+  return langMap[lang] ?? "en";
+}
+
 // Internal dictionary instance
 const dictionary = new MessageDictionary({
   en: paginationMessages_en,
@@ -50,23 +70,16 @@ export const paginationMessages = {
    * Use this for aria-label and other simple string needs.
    */
   getStringLocale(key: string, locale: string): string {
+    const normalizedLocale = normalizeLocale(locale);
+
     try {
-      const message = dictionary.getStringForLocale(key, locale);
+      const message = dictionary.getStringForLocale(key, normalizedLocale);
       // Filter out functions - only return strings
       if (typeof message === "string") return message;
     } catch {
-      // Continue to fallback
+      // Return empty string if message not found
     }
 
-    // Fallback to English
-    try {
-      const message = dictionary.getStringForLocale(key, "en");
-      if (typeof message === "string") return message;
-    } catch {
-      // Continue to empty string fallback
-    }
-
-    // Last resort: return empty string (should never happen in practice)
     return "";
   },
 
@@ -79,18 +92,14 @@ export const paginationMessages = {
     key: string,
     locale: string
   ): ((args: Record<string, string | number>) => string) | undefined {
+    const normalizedLocale = normalizeLocale(locale);
+
     try {
-      const message = dictionary.getStringForLocale(key, locale);
+      const message = dictionary.getStringForLocale(key, normalizedLocale);
       // Filter out strings - only return functions
       return typeof message === "function" ? message : undefined;
     } catch {
-      // Locale not found, fallback to English
-      try {
-        const message = dictionary.getStringForLocale(key, "en");
-        return typeof message === "function" ? message : undefined;
-      } catch {
-        return undefined;
-      }
+      return undefined;
     }
   },
 };
