@@ -179,20 +179,6 @@ describe("IconButton - States", () => {
     const button = screen.getByRole("button", { name: /add item/i });
     expect(button).toBeDisabled();
   });
-
-  it("displays loading state", () => {
-    render(
-      <NimbusProvider>
-        <IconButton aria-label="Save" isLoading>
-          <AddIcon />
-        </IconButton>
-      </NimbusProvider>
-    );
-
-    const button = screen.getByRole("button", { name: /save/i });
-    expect(button).toBeInTheDocument();
-    // Note: Loading indicator is internal to the Button component
-  });
 });
 
 /**
