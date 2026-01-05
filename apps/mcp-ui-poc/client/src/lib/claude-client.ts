@@ -17,7 +17,8 @@ export class ClaudeClient {
   private serverStats = { ui: 0, commerce: 0 };
   private isInitializing = false;
   private isInitialized = false;
-  private assistantResources: string = ""; // Resources for Claude's context
+  private resourceCache = new Map<string, string>(); // URI → content
+  private toolResources = new Map<string, Set<string>>(); // toolName → Set<URI>
 
   async initialize() {
     // Prevent concurrent initialization (React StrictMode runs effects twice)
@@ -143,12 +144,59 @@ export class ClaudeClient {
       const toolsList = await client.listTools();
       console.log(`🔧 ${serverName} MCP tools:`, toolsList.tools.length);
 
-      // Convert to Anthropic format with server prefix
-      const anthropicTools: Tool[] = toolsList.tools.map((tool) => ({
-        name: `${serverName}__${tool.name}`,
-        description: `[${serverName.toUpperCase()}] ${tool.description || ""}`,
-        input_schema: tool.inputSchema,
-      }));
+      // Convert to Anthropic format with server prefix and extract resource references
+      const anthropicTools: Tool[] = [];
+
+      for (const tool of toolsList.tools) {
+        const toolName = `${serverName}__${tool.name}`;
+        const description = `[${serverName.toUpperCase()}] ${tool.description || ""}`;
+
+        anthropicTools.push({
+          name: toolName,
+          description,
+          input_schema: tool.inputSchema,
+        });
+
+        // Parse description for resource URI references (format: nimbus://something or resource://something)
+        const resourceUris = description.match(/\w+:\/\/[\w-]+/g) || [];
+
+        if (resourceUris.length > 0) {
+          console.log(
+            `📖 Tool ${toolName} references resources:`,
+            resourceUris
+          );
+          this.toolResources.set(toolName, new Set(resourceUris));
+
+          // Fetch and cache each resource
+          for (const uri of resourceUris) {
+            if (!this.resourceCache.has(uri)) {
+              try {
+                console.log(`📥 Fetching resource: ${uri}`);
+                const resourceData = await client.readResource({ uri });
+
+                if (resourceData.contents?.[0]) {
+                  const content = resourceData.contents[0];
+                  const text =
+                    "text" in content
+                      ? content.text
+                      : "blob" in content
+                        ? content.blob
+                        : "";
+
+                  if (text) {
+                    this.resourceCache.set(uri, text);
+                    console.log(
+                      `✅ Cached resource: ${uri} (${text.length} chars)`
+                    );
+                  }
+                }
+              } catch (error) {
+                console.warn(`⚠️ Failed to fetch resource ${uri}:`, error);
+              }
+            }
+          }
+        }
+      }
 
       // Store client and add tools
       this.mcpClients.set(serverName, client);
@@ -177,6 +225,53 @@ export class ClaudeClient {
 
   getServerStats() {
     return { ...this.serverStats };
+  }
+
+  /**
+   * Get relevant resources for currently enabled tools
+   */
+  private getRelevantResources(
+    uiToolsEnabled: boolean,
+    commerceToolsEnabled: boolean
+  ): string {
+    const relevantUris = new Set<string>();
+
+    // Collect resource URIs from enabled tools
+    for (const tool of this.allTools) {
+      const isUiTool = tool.name.startsWith("ui__");
+      const isCommerceTool = tool.name.startsWith("commerce__");
+
+      if (
+        (isUiTool && uiToolsEnabled) ||
+        (isCommerceTool && commerceToolsEnabled)
+      ) {
+        const toolResourceUris = this.toolResources.get(tool.name);
+        if (toolResourceUris) {
+          toolResourceUris.forEach((uri) => relevantUris.add(uri));
+        }
+      }
+    }
+
+    if (relevantUris.size === 0) {
+      return "";
+    }
+
+    // Build resources section
+    let resourcesSection = "\n\n=== MCP RESOURCES ===\n";
+    resourcesSection +=
+      "The following resources provide critical information for using the tools:\n\n";
+
+    for (const uri of relevantUris) {
+      const content = this.resourceCache.get(uri);
+      if (content) {
+        resourcesSection += `--- Resource: ${uri} ---\n`;
+        resourcesSection += content;
+        resourcesSection += "\n\n";
+      }
+    }
+
+    console.log(`📚 Including ${relevantUris.size} resources in context`);
+    return resourcesSection;
   }
 
   async sendMessage(
@@ -333,6 +428,12 @@ DO NOT retry with the same parameters - you will hit the token limit again!
       );
 
       // Adapt system prompt based on tools availability and retry state
+      // Get relevant resources for enabled tools
+      const relevantResources = this.getRelevantResources(
+        uiToolsEnabled,
+        commerceToolsEnabled
+      );
+
       const systemPrompt = anyToolsEnabled
         ? `You are an AI assistant with access to commerce data and UI display tools.
 
@@ -368,7 +469,7 @@ Before responding:
 [ ] Did I fetch commerce data?
 [ ] Did I create UI to display it?
 [ ] Did I avoid creating duplicate UI components?
-`
+${relevantResources}`
         : `You are a helpful AI assistant. Please provide text-based responses to help the user.`;
 
       // Use streaming API for faster initial response
