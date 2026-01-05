@@ -1,0 +1,276 @@
+---
+title: Link Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Link, type LinkProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Link href="#">
+      Go to Dashboard
+    </Link>
+  );
+};
+```
+
+## Usage examples
+
+### Size options
+
+The Link component supports three size variants: `xs`, `sm`, and `md` (default).
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Link href="#" size="xs">
+        Extra small link
+      </Link>
+      <Link href="#" size="sm">
+        Small link
+      </Link>
+      <Link href="#" size="md">
+        Medium link (default)
+      </Link>
+    </Stack>
+  );
+};
+```
+
+### Font color variants
+
+Control the link color with the `fontColor` prop. Use `primary` for the theme's primary color or `inherit` to match the parent text color.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text>
+        This text contains a <Link href="#" fontColor="primary">primary colored link</Link> inline.
+      </Text>
+      <Text>
+        This text contains a <Link href="#" fontColor="inherit">link that inherits</Link> the text color.
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Opening links in new tabs
+
+For external links, use `target="_blank"` with `rel="noopener noreferrer"` for security.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Link
+      href="https://commercetools.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Visit commercetools.com (opens in new tab)
+    </Link>
+  );
+};
+```
+
+### Download links
+
+Use the `download` attribute to prompt file downloads.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Link
+      href="/files/report.pdf"
+      download="monthly-report.pdf"
+    >
+      Download Monthly Report
+    </Link>
+  );
+};
+```
+
+### With icons
+
+Combine links with icons for enhanced visual communication.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Link href="https://docs.example.com" target="_blank" rel="noopener noreferrer">
+        <Icons.OpenInNew />
+        Documentation
+      </Link>
+      <Link href="/files/guide.pdf" download>
+        <Icons.Download />
+        Download Guide
+      </Link>
+      <Link href="mailto:support@example.com">
+        <Icons.Email />
+        Email Support
+      </Link>
+    </Stack>
+  );
+};
+```
+
+### Using asChild pattern
+
+The `asChild` prop allows you to use custom elements while maintaining Link's styling and behavior.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Link asChild href="/profile">
+      <button type="button">
+        View Profile
+      </button>
+    </Link>
+  );
+};
+```
+
+### Email and phone links
+
+Create accessible mailto and tel links.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Link href="mailto:support@example.com">
+        support@example.com
+      </Link>
+      <Link href="tel:+1234567890">
+        +1 (234) 567-890
+      </Link>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Role
+
+The Link component renders as an anchor (`<a>`) element by default with the implicit `link` role, providing proper semantic meaning for assistive technologies.
+
+### Accessibility
+
+Links must have accessible labels that clearly describe their destination or purpose:
+
+- Use descriptive link text that makes sense out of context
+- Avoid generic text like "click here" or "read more"
+- For icon-only links, provide an `aria-label`
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Link href="/articles/new-feature" aria-label="Read article about new feature">
+        <Icons.Article />
+      </Link>
+      <Text>
+        Learn more about our <Link href="/features">product features</Link>.
+      </Text>
+    </Stack>
+  );
+};
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "header-dashboard-link";
+
+export const Example = () => (
+  <Link id={PERSISTENT_ID} href="/dashboard">
+    Dashboard
+  </Link>
+);
+```
+
+### Keyboard navigation
+
+The Link component supports standard keyboard interactions:
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus to/from the link |
+| `Enter` | Activate the link |
+| `Shift + Tab` | Move focus to previous focusable element |
+
+
+## API
+
+<PropsTable id="Link" />
+
+## Common patterns
+
+### External links with security
+
+Always use `rel="noopener noreferrer"` when opening external links in new tabs to prevent security vulnerabilities.
+
+```tsx
+<Link
+  href="https://external-site.com"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  External Link
+</Link>
+```
+
+### Navigation links with state
+
+When using with routing libraries like React Router, use the `asChild` pattern:
+
+```tsx
+import { Link as RouterLink } from 'react-router-dom';
+
+<Link asChild>
+  <RouterLink to="/dashboard">
+    Dashboard
+  </RouterLink>
+</Link>
+```
+
+### Conditional link styling
+
+Combine with Chakra UI style props for custom styling:
+
+```tsx
+<Link
+  href="/profile"
+  fontWeight="bold"
+  textDecoration="none"
+  _hover={{ textDecoration: "underline" }}
+>
+  Profile
+</Link>
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Link within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: link.docs.spec.tsx}}
+
+## Resources
+
+- [Link Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-link--docs)
+- [React Aria Link](https://react-spectrum.adobe.com/react-aria/useLink.html)
+- [WCAG Link Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html)
