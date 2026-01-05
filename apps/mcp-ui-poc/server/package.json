@@ -10,7 +10,7 @@
     "@remote-dom/polyfill": "catalog:mcp-ui",
     "cors": "catalog:express",
     "express": "catalog:express",
-    "validator": "catalog:",
+    "validator": "catalog:utils",
     "ws": "catalog:express",
     "zod": "catalog:utils"
   },
@@ -18,7 +18,7 @@
     "@types/cors": "catalog:express",
     "@types/express": "catalog:express",
     "@types/node": "catalog:utils",
-    "@types/validator": "catalog:",
+    "@types/validator": "catalog:utils",
     "@types/ws": "catalog:express",
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling"

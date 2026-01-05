@@ -5,13 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
-  default:
-    '@types/validator':
-      specifier: ^13.15.10
-      version: 13.15.10
-    validator:
-      specifier: ^13.15.26
-      version: 13.15.26
   express:
     '@types/cors':
       specifier: ^2.8.0
@@ -215,6 +208,9 @@ catalogs:
     '@types/node':
       specifier: ^24.10.1
       version: 24.10.1
+    '@types/validator':
+      specifier: ^13.15.10
+      version: 13.15.10
     dequal:
       specifier: ^2.0.3
       version: 2.0.3
@@ -224,6 +220,9 @@ catalogs:
     lodash:
       specifier: ^4.17.21
       version: 4.17.21
+    validator:
+      specifier: ^13.15.26
+      version: 13.15.26
     zod:
       specifier: ^4.1.12
       version: 4.1.12
@@ -643,7 +642,7 @@ importers:
         specifier: catalog:express
         version: 4.21.2
       validator:
-        specifier: 'catalog:'
+        specifier: catalog:utils
         version: 13.15.26
       ws:
         specifier: catalog:express
@@ -662,7 +661,7 @@ importers:
         specifier: catalog:utils
         version: 24.10.1
       '@types/validator':
-        specifier: 'catalog:'
+        specifier: catalog:utils
         version: 13.15.10
       '@types/ws':
         specifier: catalog:express
