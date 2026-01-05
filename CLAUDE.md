@@ -1,3 +1,22 @@
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `./openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `./openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with
@@ -184,7 +203,7 @@ pnpm changeset:status
 ### Component File Structure
 
 For detailed component file organization and structure patterns, see:
-@docs/component-guidelines.md
+`./docs/component-guidelines.md`
 
 ### Component Development Guidelines
 
@@ -192,13 +211,13 @@ For detailed component file organization and structure patterns, see:
 file structure guidelines, and architectural decisions, see:**
 
 - **Documentation Overview** - Main documentation hub and navigation
-  @docs/readme.md
+  `./docs/readme.md`
 - **Component Guidelines** - Main hub for all component development
-  @docs/component-guidelines.md
+  `./docs/component-guidelines.md`
 - **Architecture Decisions** - Decision matrix for component design
-  @docs/file-type-guidelines/architecture-decisions.md
+  `./docs/file-type-guidelines/architecture-decisions.md`
 - **Component Templates** - Ready-to-use boilerplate code
-  @docs/component-templates/
+  `./docs/component-templates/`
 
 **IMPORTANT: All file reviews MUST follow the File Review Protocol below. Never
 provide feedback without first validating against the appropriate guidelines.**
@@ -208,24 +227,24 @@ provide feedback without first validating against the appropriate guidelines.**
 This project follows strict development standards detailed in the documentation:
 
 - **Styling**: Chakra UI v3 with design token-based recipes
-  @docs/file-type-guidelines/recipes.md
+  `./docs/file-type-guidelines/recipes.md`
 - **Testing**:
   - Storybook interaction tests (browser-based, required for interactive
-    components) @docs/file-type-guidelines/stories.md
+    components) `./docs/file-type-guidelines/stories.md`
   - Unit tests (JSDOM-based, fast isolated tests)
-    @docs/file-type-guidelines/unit-testing.md
+    `./docs/file-type-guidelines/unit-testing.md`
 - **TypeScript**: Strict typing with comprehensive interfaces
-  @docs/file-type-guidelines/types.md
+  `./docs/file-type-guidelines/types.md`
 - **Documentation**: JSDoc comments required for all code
-  @docs/file-type-guidelines/documentation.md
+  `./docs/file-type-guidelines/documentation.md`
 - **Accessibility**: WCAG 2.1 AA compliance using React Aria
-  @docs/file-type-guidelines/architecture-decisions.md
+  `./docs/file-type-guidelines/architecture-decisions.md`
 - **Internationalization**: react-intl integration for translatable UI text
-  @docs/file-type-guidelines/i18n.md
+  `./docs/file-type-guidelines/i18n.md`
 
 ## File Review Protocol
 
-For comprehensive file review procedures, see @docs/file-review-protocol.md
+For comprehensive file review procedures, see `./docs/file-review-protocol.md`
 
 **Quick Reference:**
 
@@ -240,25 +259,25 @@ For comprehensive architectural patterns, component decision matrices, React
 Aria integration strategies, and styling system architecture, see:
 
 - **Multi-layered Architecture & React Aria Integration**:
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Component Structure Patterns**: @docs/component-guidelines.md
-- **Styling System Details**: @docs/file-type-guidelines/recipes.md
+  `./docs/file-type-guidelines/architecture-decisions.md`
+- **Component Structure Patterns**: `./docs/component-guidelines.md`
+- **Styling System Details**: `./docs/file-type-guidelines/recipes.md`
 
 ### Critical Development Rules
 
 For complete development rules, patterns, and requirements, see:
 
-- **Recipe Registration & Styling Rules**: @docs/file-type-guidelines/recipes.md
-- **Testing Requirements**: @docs/file-type-guidelines/stories.md
+- **Recipe Registration & Styling Rules**: `./docs/file-type-guidelines/recipes.md`
+- **Testing Requirements**: `./docs/file-type-guidelines/stories.md`
 - **Compound Component Patterns**:
-  @docs/file-type-guidelines/compound-components.md
-- **Type Safety Guidelines**: @docs/file-type-guidelines/types.md
-- **Internationalization**: @docs/file-type-guidelines/i18n.md
+  `./docs/file-type-guidelines/compound-components.md`
+- **Type Safety Guidelines**: `./docs/file-type-guidelines/types.md`
+- **Internationalization**: `./docs/file-type-guidelines/i18n.md`
 - **Cross-Chunk Imports (CRITICAL)**: When importing components or types across
   different component directories, import directly from implementation files
   (e.g., `button.tsx`, `button.types.ts`) rather than barrel exports
   (`index.ts`) to avoid circular chunk dependencies. See
-  @docs/file-type-guidelines/main-component.md "Cross-Component Imports" for
+  `./docs/file-type-guidelines/main-component.md` "Cross-Component Imports" for
   details.
 
 **IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
@@ -415,4 +434,4 @@ Understanding build order is crucial:
 ### Component Development Workflow
 
 For detailed development workflows, implementation steps, and common pitfalls,
-see: @docs/component-guidelines.md
+see: `./docs/component-guidelines.md`
