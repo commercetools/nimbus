@@ -1,5 +1,5 @@
 /**
- * Transform Transifex format → ICU MessageFormat - Step 1 of 4 in the i18n build pipeline
+ * Transform Transifex format → Simple key-value pairs - Step 1 of 4 in the i18n build pipeline
  *
  * Overview:
  * Transifex stores translations with metadata (developer_comment, string, etc.),
@@ -7,17 +7,24 @@
  * This script extracts the "string" field from each message and flattens
  * the structure to prepare data for compilation.
  *
+ * Note: The output format is compatible with ICU MessageFormat (which accepts
+ * both plain strings and ICU syntax like {variable}). Simple strings remain
+ * plain text; variable strings already contain ICU syntax from the source.
  *
  * Input:  packages/i18n/data/*.json (Transifex format)
- * Output: .temp/icu/*.json (ICU MessageFormat)
+ * Output: .temp/icu/*.json (Simple key-value pairs, ICU-compatible)
  *
  * Format transformation:
  *   Transifex: { "key": { "string": "value", "developer_comment": "..." } }
- *   ICU:       { "key": "value" }
+ *   Output:    { "key": "value" }
  *
  * @example
  * Input:  { "Nimbus.Alert.dismiss": { "string": "Dismiss", "developer_comment": "..." } }
  * Output: { "Nimbus.Alert.dismiss": "Dismiss" }
+ *
+ * @example (with ICU syntax)
+ * Input:  { "Nimbus.Avatar.avatarLabel": { "string": "Avatar image for {fullName}", ... } }
+ * Output: { "Nimbus.Avatar.avatarLabel": "Avatar image for {fullName}" }
  */
 
 import fs from "fs/promises";

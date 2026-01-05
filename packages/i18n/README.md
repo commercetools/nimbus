@@ -32,12 +32,16 @@ This is an **internal build tool package** that:
 
 The package runs a 4-step compilation process:
 
-1. **Transform** (`build:transform`) - Converts Transifex format → ICU
-   MessageFormat
+1. **Transform** (`build:transform`) - Flattens Transifex format to simple
+   key-value pairs (removes metadata, extracts string values). Simple strings
+   remain plain text; variable strings use ICU MessageFormat syntax like
+   `{variable}` or pluralization.
 2. **Split** (`build:split`) - Groups messages by component (parses
    `Nimbus.{Component}.{key}` IDs)
-3. **Compile** (`build:compile-strings`) - Compiles ICU messages to TypeScript
-   files with JavaScript functions using `@internationalized/string-compiler`
+3. **Compile** (`build:compile-strings`) - Compiles messages to TypeScript files
+   with JavaScript functions using `@internationalized/string-compiler`. Simple
+   strings compile to plain strings; variable strings (with ICU syntax) compile
+   to functions.
 4. **Generate Dictionaries** (`build:dictionaries`) - Creates
    `MessageDictionary` wrapper files that import all locale files and export
    typed message dictionaries for each component
@@ -90,19 +94,25 @@ export const AlertDismissButton = () => {
   `fr-FR`, `pt-BR`) that match what `useLocale()` returns from `I18nProvider`.
 - **API Signature**:
   - `getStringLocale(key, locale)` - Returns `string` (always) for simple
-    messages
+    messages. Available on all components.
   - `getVariableLocale(key, locale)` - Returns `function | undefined` for
-    variable messages
+    variable messages. **Only available on components that have messages with
+    variables.**
   - **Key first, then locale** for both methods
 - **Message Keys**: Use the key extracted from the message ID (e.g.,
   `"Nimbus.Alert.dismiss"` → `"dismiss"`), not the object key from the
   `.i18n.ts` file
-- **Variable Messages**: Messages with variables (like `{fullName}`) use
-  `getVariableLocale`:
+- **Variable Messages**: Messages with variables use ICU MessageFormat syntax
+  (like `{fullName}`) and require `getVariableLocale`:
+
   ```typescript
   const message = avatarMessages.getVariableLocale("avatarLabel", locale);
   const label = message ? message({ fullName: "John Doe" }) : undefined;
   ```
+
+  **Note:** Simple strings don't need ICU syntax—they're just plain text. ICU
+  MessageFormat syntax is only needed for variable interpolation or
+  pluralization.
 
 ## Supported Locales
 
@@ -119,11 +129,33 @@ export const AlertDismissButton = () => {
 pnpm build
 
 # Individual steps
-pnpm build:transform        # Transform Transifex → ICU
+pnpm build:transform        # Flatten Transifex format (extract strings)
 pnpm build:split            # Split by component
-pnpm build:compile-strings  # Compile to TypeScript
+pnpm build:compile-strings  # Compile messages to TypeScript
 pnpm build:dictionaries     # Generate dictionaries
 ```
+
+## Message Format
+
+### Simple vs Variable Messages
+
+**Simple strings** (no variables):
+
+- Plain text, no special syntax needed
+- Example: `"Dismiss"` → compiles to: `dismiss: "Dismiss"`
+- Use `getStringLocale()` in components
+
+**Variable strings** (with ICU MessageFormat syntax):
+
+- Use ICU syntax for interpolation: `{variableName}`
+- Example: `"Avatar image for {fullName}"` → compiles to:
+  `avatarLabel: (args) => "Avatar image for ${args.fullName}"`
+- Use `getVariableLocale()` in components (only available when component has
+  variable messages)
+
+**Note:** ICU MessageFormat syntax is only needed for variable interpolation or
+pluralization. Simple strings are just plain text and don't require any special
+syntax.
 
 ## Message Keys Structure
 
@@ -135,13 +167,14 @@ and translation, but components use only the extracted key.
 
 Examples:
 
-- `Nimbus.Alert.dismiss` → Component uses: `"dismiss"`
-- `Nimbus.Avatar.avatarLabel` → Component uses: `"avatarLabel"` (with variable:
-  `{fullName}`)
-- `Nimbus.LoadingSpinner.default` → Component uses: `"default"` (not
-  `"defaultLoadingMessage"` from the object key)
-- `Nimbus.Pagination.ofTotalPages` → Component uses: `"ofTotalPages"` (with
-  variable: `{totalPages}`)
+- `Nimbus.Alert.dismiss` → Component uses: `"dismiss"` (simple string, no ICU
+  syntax)
+- `Nimbus.Avatar.avatarLabel` → Component uses: `"avatarLabel"` (variable string
+  with ICU syntax: `{fullName}`)
+- `Nimbus.LoadingSpinner.default` → Component uses: `"default"` (simple string,
+  not `"defaultLoadingMessage"` from the object key)
+- `Nimbus.Pagination.ofTotalPages` → Component uses: `"ofTotalPages"` (variable
+  string with ICU syntax: `{totalPages}`)
 
 **Note:** The message key in components comes from the `id` field in `.i18n.ts`
 files, not the object key. For example:
@@ -218,6 +251,7 @@ consumers do not need to install or use this package directly.
          │                                 ▼
          │                    ┌──────────────────────────┐
          │                    │  .temp/icu/*.json        │
+         │                    │  (flattened key-value)    │
          │                    └───────────┬──────────────┘
          │                                │
          │                    ┌────────────▼──────────────┐
