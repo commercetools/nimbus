@@ -41,14 +41,10 @@ export const Avatar = (props: AvatarProps) => {
 
   const fullName = `${firstName} ${lastName}`;
 
-  // Get variable message function and call it with arguments
-  const avatarLabelMessage = avatarMessages.getVariableLocale(
+  const avatarLabel = avatarMessages.getVariableLocale(
     "avatarLabel",
     locale
-  );
-  const avatarLabel = avatarLabelMessage
-    ? avatarLabelMessage({ fullName })
-    : undefined;
+  )?.({ fullName });
 
   const sharedProps = {
     "aria-label": avatarLabel,
