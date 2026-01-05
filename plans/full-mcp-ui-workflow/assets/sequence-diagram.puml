@@ -1,0 +1,92 @@
+@startuml
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 300
+hide stereotype
+
+skinparam participant {
+  BackgroundColor<<mcp>> #4A90E2
+  BorderColor<<mcp>> #2E5C8A
+  FontColor<<mcp>> white
+
+  BackgroundColor<<render>> #F5A623
+  BorderColor<<render>> #B8791A
+  FontColor<<render>> white
+
+  BackgroundColor<<theme>> #7ED321
+  BorderColor<<theme>> #5FA319
+  FontColor<<theme>> white
+
+  BackgroundColor<<user>> #E8E8E8
+  BorderColor<<user>> #999999
+
+  BackgroundColor<<llm>> #F0F0F0
+  BorderColor<<llm>> #AAAAAA
+}
+
+skinparam sequence {
+  LifeLineBackgroundColor<<user>> #E8E8E8
+  LifeLineBackgroundColor<<llm>> #D8D8D8
+  LifeLineBackgroundColor<<mcp>> #4A90E2
+  LifeLineBackgroundColor<<render>> #F5A623
+  LifeLineBackgroundColor<<theme>> #7ED321
+}
+
+skinparam note {
+  BackgroundColor #FFFACD66
+  BorderColor #E6E6B8
+  FontColor #666666
+}
+
+participant "👤 User" as User <<user>>
+participant "🤖 LLM Application" as LLM <<llm>>
+participant "🔵 MCP-UI Server" as MCP <<mcp>>
+participant "🟠 Rendering Service" as Render <<render>>
+participant "🟢 Theme Service" as Theme <<theme>>
+
+User -> LLM: 👤 <b>1</b> "Show last weeks sales by product"
+activate LLM
+note right
+  Process request
+  Determine component needs
+end note
+
+LLM -> MCP: 🤖 <b>2</b> Request: Render DataTable component\n{data, columns, orgId, projectId}
+activate MCP
+note right
+  Parse component specification
+  Extract theme context
+end note
+
+MCP -> Theme: 🔵 <b>3</b> GET /theme/{orgId | projectId | uuid}
+activate Theme
+note right
+  Retrieve design tokens
+  Apply customizations
+  Validate WCAG compliance
+end note
+Theme --> MCP: 🟢 <b>4</b> Theme configuration (JSON)\n{colors, spacing, typography, etc}
+deactivate Theme
+
+MCP -> Render: 🔵 <b>5</b> POST /render\n{component, theme, data}
+activate Render
+note right
+  Server-side render component
+  Apply theme tokens
+  Generate HTML + CSS
+end note
+Render --> MCP: 🟠 <b>6</b> Rendered output\n(HTML or Virtual DOM)
+deactivate Render
+
+MCP --> LLM: 🔵 <b>7</b> Component response\n(Themed UI representation)
+deactivate MCP
+
+LLM --> User: 🤖 <b>8</b> Interactive, themed DataTable 📊
+deactivate LLM
+note left
+  Consistent with brand
+  Fully accessible
+  Interactive
+end note
+
+@enduml
