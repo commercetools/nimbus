@@ -157,7 +157,7 @@ function registerTools(server: McpServer) {
   registerResources(server);
 
   // Tools that need mutationServer for event handling
-  const interactiveTools = ["registerDataTableTool", "registerButtonTool"];
+  const interactiveTools = ["registerDataTableTool", "registerButtonTool", "registerSwitchTool"];
 
   // Register all colocated tool definitions
   Object.entries(toolRegistrations).forEach(([name, registerFn]) => {
