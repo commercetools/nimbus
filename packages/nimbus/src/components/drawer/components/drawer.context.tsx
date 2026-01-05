@@ -4,7 +4,13 @@ import type { DrawerRootProps } from "../drawer.types";
 /**
  * Context value containing drawer configuration passed from Root to child components
  */
-export type DrawerContextValue = DrawerRootProps;
+export type DrawerContextValue = DrawerRootProps & {
+  /**
+   * Internal flag indicating whether the drawer has a Drawer.Trigger component.
+   * Used by DrawerContent to determine whether DialogTrigger is managing state.
+   */
+  hasDrawerTrigger?: boolean;
+};
 
 export const DrawerContext = createContext<DrawerContextValue | undefined>(
   undefined

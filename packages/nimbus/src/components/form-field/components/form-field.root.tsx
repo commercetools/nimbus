@@ -108,7 +108,7 @@ export const FormFieldRoot = function FormFieldRoot({
       <FormFieldRootSlot ref={ref} {...props}>
         {context.label && (
           <FormFieldLabelSlot {...context.labelSlotProps}>
-            <label {...labelProps}>
+            <label {...labelProps} data-required={isRequired}>
               {context.label}
               {isRequired && <sup aria-hidden="true">*</sup>}
             </label>

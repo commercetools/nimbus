@@ -2765,8 +2765,8 @@ export const FormikIntegration: Story = {
       [errors]
     );
     return (
-      <Stack direction="column" gap="md" asChild>
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <Stack direction="column" gap="md">
           <h3>Formik Integration Pattern</h3>
           <p>
             This demonstrates how to integrate ComboBox with Formik&apos;s form
@@ -2843,8 +2843,8 @@ export const FormikIntegration: Story = {
               </Box>
             </Box>
           </Box>
-        </form>
-      </Stack>
+        </Stack>
+      </form>
     );
   },
 };

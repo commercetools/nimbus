@@ -1,0 +1,762 @@
+---
+title: DatePicker Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DatePicker, type DatePickerProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode with an accessible label:
+
+```jsx-live-dev
+const App = () => (
+  <DatePicker aria-label="Select a date" />
+)
+```
+
+## Working with date values
+
+The DatePicker component relies on [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/index.html)'s date types for type-safe date handling. This library provides calendar-system-aware date representations that work correctly across different locales and time zones.
+
+### Date types
+
+The library provides several date types, each with different levels of precision:
+
+```tsx
+import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';
+
+// Date only (no time component)
+const date = new CalendarDate(
+  2025, // year
+  6,    // month (1-12)
+  15    // day
+);
+
+// Date and time (no timezone)
+const dateTime = new CalendarDateTime(
+  2025, // year
+  6,    // month (1-12)
+  15,   // day
+  14,   // hour (0-23)
+  30,   // minute (0-59)
+  0     // second (0-59)
+);
+
+// Date, time, and timezone
+const zonedDateTime = new ZonedDateTime(
+  2025,                    // year
+  6,                       // month (1-12)
+  15,                      // day
+  'America/New_York',      // IANA time zone identifier
+  -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)
+  14,                      // hour (0-23)
+  30,                      // minute (0-59)
+  0                        // second (0-59)
+);
+```
+
+### Creating date values
+
+Use the appropriate constructor based on the precision you need:
+
+```tsx
+import { CalendarDate, CalendarDateTime } from '@internationalized/date';
+
+// For date-only pickers
+const birthDate = new CalendarDate(1990, 5, 15);
+
+// For date and time pickers
+const appointmentTime = new CalendarDateTime(2025, 12, 25, 10, 30, 0);
+```
+
+### Converting to strings
+
+Use the `toString()` method to convert date values to ISO 8601 format:
+
+```tsx
+const date = new CalendarDate(2025, 6, 15);
+date.toString(); // "2025-06-15"
+
+const dateTime = new CalendarDateTime(2025, 6, 15, 14, 30, 0);
+dateTime.toString(); // "2025-06-15T14:30:00"
+```
+
+> [!TIP]\
+> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DatePicker size="sm" aria-label="Small date picker" />
+    <DatePicker size="md" aria-label="Medium date picker" />
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <DatePicker variant="solid" aria-label="Solid variant" />
+    <DatePicker variant="ghost" aria-label="Ghost variant" />
+  </Stack>
+)
+```
+
+**Behavioral differences:**
+- `variant="solid"`: Outlined input with background, suitable for forms
+- `variant="ghost"`: Subtle background on hover, suitable for inline editing
+
+### Granularity control
+
+The `granularity` prop controls which date/time segments are displayed and whether the calendar popover automatically closes on selection:
+
+```jsx-live-dev
+import { CalendarDate, CalendarDateTime } from '@internationalized/date';
+
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Day (date only - closes on select)</Text>
+      <DatePicker
+        granularity="day"
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Day granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Hour (date + hour - stays open for time)</Text>
+      <DatePicker
+        granularity="hour"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 0, 0)}
+        aria-label="Hour granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Minute (date + hour + minute - stays open)</Text>
+      <DatePicker
+        granularity="minute"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        aria-label="Minute granularity"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Second (full precision - stays open)</Text>
+      <DatePicker
+        granularity="second"
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 45)}
+        aria-label="Second granularity"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Automatic close behavior:**
+- When `granularity="day"` (date only): Calendar closes automatically after selecting a date
+- When time is included (hour, minute, second): Calendar stays open so users can set both date and time
+
+### Hour cycle
+
+Control the time display format using the `hourCycle` prop when working with time values:
+
+```jsx-live-dev
+import { CalendarDateTime } from '@internationalized/date';
+
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">12-hour format (2:30 PM)</Text>
+      <DatePicker
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        hourCycle={12}
+        granularity="minute"
+        aria-label="12-hour format"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">24-hour format (14:30)</Text>
+      <DatePicker
+        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}
+        hourCycle={24}
+        granularity="minute"
+        aria-label="24-hour format"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Time zone handling
+
+When using `ZonedDateTime` values, control time zone display with the `hideTimeZone` prop:
+
+```jsx-live-dev
+import { ZonedDateTime } from '@internationalized/date';
+
+const App = () => {
+  const zonedDateTime = new ZonedDateTime(
+    2025,                    // year
+    6,                       // month (1-12)
+    15,                      // day
+    'America/New_York',      // IANA time zone identifier
+    -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)
+    14,                      // hour (0-23)
+    30,                      // minute (0-59)
+    0                        // second (0-59)
+  );
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">With time zone displayed</Text>
+        <DatePicker
+          defaultValue={zonedDateTime}
+          hideTimeZone={false}
+          granularity="minute"
+          aria-label="Date with timezone"
+        />
+      </Stack>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="600">Time zone hidden</Text>
+        <DatePicker
+          defaultValue={zonedDateTime}
+          hideTimeZone={true}
+          granularity="minute"
+          aria-label="Date without timezone"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Placeholder values
+
+Set a starting point for keyboard input when the field is empty using `placeholderValue`:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">With placeholder (starts at 2025-06-15)</Text>
+      <DatePicker
+        placeholderValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Date with placeholder"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Without placeholder (starts at today)</Text>
+      <DatePicker aria-label="Date without placeholder" />
+    </Stack>
+  </Stack>
+)
+```
+
+### Close on select behavior
+
+Control whether the calendar closes automatically after date selection using `shouldCloseOnSelect`:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Auto-close enabled (default for day granularity)</Text>
+      <DatePicker
+        granularity="day"
+        shouldCloseOnSelect={true}
+        aria-label="Auto-close picker"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Auto-close disabled (stays open)</Text>
+      <DatePicker
+        granularity="day"
+        shouldCloseOnSelect={false}
+        aria-label="Manual close picker"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+**Note:** When `granularity` includes time (hour, minute, second), `shouldCloseOnSelect` is automatically set to `false` to allow users to set both date and time.
+
+### Min/max validation
+
+Restrict date selection to a specific range using `minValue` and `maxValue`:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => {
+  const [date, setDate] = useState(null);
+  const minDate = new CalendarDate(2025, 6, 1);
+  const maxDate = new CalendarDate(2025, 6, 30);
+  
+  const isInvalid = date && (
+    date.compare(minDate) < 0 || 
+    date.compare(maxDate) > 0
+  );
+
+  return (
+    <FormField.Root isInvalid={!!isInvalid}>
+      <FormField.Label>Select a date in June 2025</FormField.Label>
+      <FormField.Input>
+        <DatePicker
+          value={date}
+          onChange={setDate}
+          minValue={minDate}
+          maxValue={maxDate}
+          aria-label="Date range validation"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Valid range: June 1-30, 2025
+      </FormField.Description>
+      {isInvalid && (
+        <FormField.Error>
+          Date must be between {minDate.toString()} and {maxDate.toString()}
+        </FormField.Error>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### State variations
+
+DatePicker supports disabled, read-only, required, and invalid states:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Default</Text>
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        aria-label="Default state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Disabled</Text>
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isDisabled
+        aria-label="Disabled state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Read-only</Text>
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isReadOnly
+        aria-label="Read-only state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Required</Text>
+      <DatePicker
+        isRequired
+        aria-label="Required state"
+      />
+    </Stack>
+    <Stack direction="column" gap="100">
+      <Text fontSize="sm" fontWeight="600">Invalid</Text>
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isInvalid
+        aria-label="Invalid state"
+      />
+    </Stack>
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
+
+```jsx-live-dev
+import { CalendarDate, type DateValue } from '@internationalized/date';
+
+const App = () => {
+  const [displayValue, setDisplayValue] = useState('No date selected');
+
+  return (
+    <Stack direction="column" gap="400">
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        onChange={(value: DateValue | null) => {
+          setDisplayValue(value ? value.toString() : 'No date selected');
+        }}
+        aria-label="Uncontrolled date picker"
+      />
+      <Text fontSize="sm">Selected: {displayValue}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture the selected date without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+import { CalendarDate, type DateValue } from '@internationalized/date';
+
+const App = () => {
+  const [value, setValue] = useState<DateValue | null>(new CalendarDate(2025, 6, 15));
+
+  return (
+    <Stack direction="column" gap="400">
+      <DatePicker
+        value={value}
+        onChange={setValue}
+        aria-label="Controlled date picker"
+      />
+      <Text fontSize="sm">
+        {value ? `Selected: ${value.toString()}` : 'No selection'}
+      </Text>
+      <Stack direction="row" gap="200">
+        <Button onPress={() => setValue(new CalendarDate(2025, 1, 1))}>
+          Set to Jan 1
+        </Button>
+        <Button onPress={() => setValue(new CalendarDate(2025, 12, 31))}>
+          Set to Dec 31
+        </Button>
+        <Button onPress={() => setValue(null)}>
+          Clear
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the value with external state
+- Validate or transform selections
+- Clear or programmatically set the value
+
+### Popover control
+
+Control the calendar popover's open state programmatically:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DatePicker
+        defaultValue={new CalendarDate(2025, 6, 15)}
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        aria-label="Controlled popover"
+      />
+      <Text fontSize="sm">Popover is {isOpen ? 'open' : 'closed'}</Text>
+      <Stack direction="row" gap="200">
+        <Button onPress={() => setIsOpen(true)}>
+          Open Calendar
+        </Button>
+        <Button onPress={() => setIsOpen(false)}>
+          Close Calendar
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Internationalization
+
+DatePicker automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
+
+```jsx-live-dev
+import { CalendarDate } from '@internationalized/date';
+
+const App = () => {
+  const [locale, setLocale] = useState('en-US');
+  const dateValue = new CalendarDate(2025, 6, 15);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200">
+        <Button
+          variant={locale === 'en-US' ? 'solid' : 'outline'}
+          onPress={() => setLocale('en-US')}
+        >
+          English (US)
+        </Button>
+        <Button
+          variant={locale === 'de-DE' ? 'solid' : 'outline'}
+          onPress={() => setLocale('de-DE')}
+        >
+          German
+        </Button>
+        <Button
+          variant={locale === 'ja-JP' ? 'solid' : 'outline'}
+          onPress={() => setLocale('ja-JP')}
+        >
+          Japanese
+        </Button>
+      </Stack>
+      <NimbusI18nProvider locale={locale}>
+        <DatePicker
+          defaultValue={dateValue}
+          aria-label="Localized date picker"
+        />
+      </NimbusI18nProvider>
+      <Text fontSize="sm">Current locale: {locale}</Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Date value requirements
+
+All date values **must** use `@internationalized/date` types:
+- `CalendarDate` for date-only pickers (year, month, day)
+- `CalendarDateTime` for date and time without timezone
+- `ZonedDateTime` for date, time, and timezone information
+
+### Accessibility
+
+The DatePicker handles most accessibility requirements internally through React Aria's DatePicker. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Wrapping the DatePicker in a FormField (recommended for forms):
+
+```tsx
+<FormField.Root>
+  <FormField.Label>Birth Date</FormField.Label>
+  <FormField.Input>
+    <DatePicker />
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Associating a `<label>` element with the DatePicker using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DatePicker aria-labelledby="label-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<DatePicker aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-date-picker";
+
+export const Example = () => (
+  <DatePicker id={PERSISTENT_ID} aria-label="Enter date" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction for navigating and editing date segments, as well as calendar navigation:
+
+**Date input segments:**
+- `Tab` / `Shift+Tab`: Move between date segments (day, month, year, hour, etc.)
+- `Arrow Up` / `Arrow Down`: Increment or decrement the focused segment
+- `Page Up` / `Page Down`: Increment or decrement the focused segment by larger steps
+- `Home` / `End`: Set segment to minimum or maximum value
+- `0-9`: Type digits to set segment value
+- `Backspace`: Clear the focused segment
+
+**Calendar button:**
+- `Enter` / `Space`: Open the calendar popover
+
+**Calendar navigation:**
+- `Arrow keys`: Navigate between dates
+- `Enter` / `Space`: Select the focused date
+- `Page Up` / `Page Down`: Navigate by month
+- `Shift + Page Up` / `Shift + Page Down`: Navigate by year
+- `Home` / `End`: Navigate to start/end of row
+- `Escape`: Close the calendar popover
+
+## API reference
+
+<PropsTable id="DatePicker" />
+
+## Common patterns
+
+### Appointment scheduler
+
+A pattern for scheduling appointments with date and time selection:
+
+```jsx-live-dev
+import { CalendarDateTime, type DateValue } from '@internationalized/date';
+
+const App = () => {
+  const [appointmentTime, setAppointmentTime] = useState<DateValue | null>(
+    new CalendarDateTime(2025, 12, 15, 10, 0, 0)
+  );
+  
+  const businessHoursStart = 9;
+  const businessHoursEnd = 17;
+  
+  const isInvalidTime = appointmentTime && 
+    'hour' in appointmentTime && (
+      appointmentTime.hour < businessHoursStart || 
+      appointmentTime.hour >= businessHoursEnd
+    );
+
+  return (
+    <FormField.Root isInvalid={isInvalidTime}>
+      <FormField.Label>Appointment Time</FormField.Label>
+      <FormField.Input>
+        <DatePicker
+          value={appointmentTime}
+          onChange={setAppointmentTime}
+          granularity="minute"
+          hourCycle={12}
+          aria-label="Appointment time"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a date and time between 9:00 AM and 5:00 PM
+      </FormField.Description>
+      {isInvalidTime && (
+        <FormField.Error>
+          Please select a time during business hours (9 AM - 5 PM)
+        </FormField.Error>
+      )}
+      {appointmentTime && !isInvalidTime && (
+        <Text fontSize="sm" mt="200">
+          ✅ Appointment scheduled for {appointmentTime.toString()}
+        </Text>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Due date selector
+
+Pattern for setting due dates with past date validation:
+
+```jsx-live-dev
+import { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';
+
+const App = () => {
+  const [dueDate, setDueDate] = useState<DateValue | null>(null);
+  const todayDate = today(getLocalTimeZone());
+  
+  const isInvalid = dueDate && dueDate.compare(todayDate) < 0;
+
+  return (
+    <FormField.Root isInvalid={!!isInvalid}>
+      <FormField.Label>Task Due Date</FormField.Label>
+      <FormField.Input>
+        <DatePicker
+          value={dueDate}
+          onChange={setDueDate}
+          minValue={todayDate}
+          placeholderValue={todayDate}
+          aria-label="Due date"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a future date for task completion
+      </FormField.Description>
+      {isInvalid && (
+        <FormField.Error>
+          Due date cannot be in the past
+        </FormField.Error>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+### Event date selector
+
+Pattern for selecting event dates with a reasonable range:
+
+```jsx-live-dev
+import { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';
+
+const App = () => {
+  const [eventDate, setEventDate] = useState<DateValue | null>(null);
+  const todayDate = today(getLocalTimeZone());
+  const maxDate = todayDate.add({ years: 2 });
+
+  return (
+    <FormField.Root>
+      <FormField.Label>Event Date</FormField.Label>
+      <FormField.Input>
+        <DatePicker
+          value={eventDate}
+          onChange={setEventDate}
+          minValue={todayDate}
+          maxValue={maxDate}
+          placeholderValue={todayDate.add({ months: 1 })}
+          aria-label="Event date"
+        />
+      </FormField.Input>
+      <FormField.Description>
+        Select a date within the next 2 years
+      </FormField.Description>
+      {eventDate && (
+        <Text fontSize="sm" mt="200">
+          Event scheduled for {eventDate.toString()}
+        </Text>
+      )}
+    </FormField.Root>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DatePicker within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: date-picker.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-datepicker--docs)
+- [React Aria DatePicker](https://react-spectrum.adobe.com/react-aria/DatePicker.html)
+- [ARIA Date Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/)
+- [@internationalized/date](https://react-spectrum.adobe.com/internationalized/date/)
+- [DateInput Component](/components/inputs/dateinput)
+- [Calendar Component](/components/inputs/calendar)

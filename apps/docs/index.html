@@ -8,6 +8,22 @@
     <!-- Load the inter font from a cdn TODO: self-host -->
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      /*
+       * Fix: Prevent absolutely positioned elements from affecting document-level
+       * scrollHeight. This resolves the issue where pages with tall content could
+       * be scrolled at the document level, causing the entire app layout to scroll
+       * out of view.
+       *
+       * Applied to body to also contain portal content (tooltips, modals, etc.)
+       * that render outside of #root.
+       *
+       * See: CSS Containment - https://developer.mozilla.org/en-US/docs/Web/CSS/contain
+       */
+      body {
+        contain: paint;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

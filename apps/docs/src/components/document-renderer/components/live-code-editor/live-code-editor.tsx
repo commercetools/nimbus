@@ -9,6 +9,9 @@ import {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
+  parseZonedDateTime,
+  getLocalTimeZone,
+  today,
 } from "@internationalized/date";
 
 const baseHooks = {
@@ -27,6 +30,9 @@ const scope = {
   CalendarDate,
   CalendarDateTime,
   ZonedDateTime,
+  parseZonedDateTime,
+  getLocalTimeZone,
+  today,
 };
 
 const removeImportStatements = (code: string) => {
