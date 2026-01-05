@@ -1,0 +1,382 @@
+---
+title: Pagination Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Pagination, type PaginationProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation requires managing the pagination state:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
+
+  const totalItems = 100;
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text>Total items: {totalItems}</Text>
+      <Pagination
+        totalItems={totalItems}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    </Stack>
+  );
+};
+```
+
+## Usage examples
+
+### Displaying current state
+
+Display the current pagination state to provide context to users:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
+
+  const totalItems = 247;
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200" align="center">
+        <Text fontWeight="semibold">Current state:</Text>
+        <Text>Page {currentPage} of {Math.ceil(totalItems / (pageSize || 10))}</Text>
+        <Text>•</Text>
+        <Text>{pageSize} items per page</Text>
+      </Stack>
+
+      <Pagination
+        totalItems={totalItems}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    </Stack>
+  );
+};
+```
+
+### Page size selector
+
+Enable the page size selector to allow users to change how many items are displayed per page:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(20);
+
+  const totalItems = 1000;
+  const startItem = ((currentPage || 1) - 1) * (pageSize || 20) + 1;
+  const endItem = Math.min((currentPage || 1) * (pageSize || 20), totalItems);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text>
+        Showing items {startItem}-{endItem} of {totalItems}
+      </Text>
+
+      <Pagination
+        totalItems={totalItems}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+        enablePageSizeSelector={true}
+      />
+    </Stack>
+  );
+};
+```
+
+### Direct page input
+
+The page input field allows users to jump directly to a specific page by typing the page number:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text>
+        Try typing a page number directly in the input field
+      </Text>
+
+      <Pagination
+        totalItems={500}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        enablePageInput={true}
+      />
+    </Stack>
+  );
+};
+```
+
+### Configuration options
+
+Customize which controls are displayed by enabling or disabling the page input and page size selector:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
+  const [showInput, setShowInput] = useState(true);
+  const [showSelector, setShowSelector] = useState(true);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="400">
+        <label>
+          <input
+            type="checkbox"
+            checked={showInput}
+            onChange={(e) => setShowInput(e.target.checked)}
+          />
+          {' '}Enable page input
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={showSelector}
+            onChange={(e) => setShowSelector(e.target.checked)}
+          />
+          {' '}Enable page size selector
+        </label>
+      </Stack>
+
+      <Pagination
+        totalItems={200}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+        enablePageInput={showInput}
+        enablePageSizeSelector={showSelector}
+      />
+    </Stack>
+  );
+};
+```
+
+### Custom page size options
+
+Provide custom page size options to match your application's needs:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(25);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text>
+        Custom page sizes: 25, 50, 75, 100
+      </Text>
+
+      <Pagination
+        totalItems={300}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        pageSizeOptions={[25, 50, 75, 100]}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+        enablePageSizeSelector={true}
+      />
+    </Stack>
+  );
+};
+```
+
+### With data rendering
+
+Complete example showing pagination with actual data rendering:
+
+```jsx-live-dev
+const App = () => {
+  const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
+  const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(5);
+
+  // Generate sample data
+  const allItems = Array.from({ length: 50 }, (_, i) => ({
+    id: i + 1,
+    name: `Item ${i + 1}`,
+    category: ['Electronics', 'Clothing', 'Food'][i % 3],
+  }));
+
+  // Calculate which items to display
+  const startIndex = ((currentPage || 1) - 1) * (pageSize || 5);
+  const endIndex = startIndex + (pageSize || 5);
+  const displayedItems = allItems.slice(startIndex, endIndex);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="column" gap="200" padding="400" borderWidth="1px" borderRadius="200">
+        {displayedItems.map((item) => (
+          <Stack key={item.id} direction="row" gap="200" justify="space-between">
+            <Text fontWeight="semibold">{item.name}</Text>
+            <Text color="neutral.11">{item.category}</Text>
+          </Stack>
+        ))}
+      </Stack>
+
+      <Pagination
+        totalItems={allItems.length}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        pageSizeOptions={[5, 10, 25]}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+        enablePageSizeSelector={true}
+      />
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Pagination component follows WCAG 2.1 AA guidelines and provides comprehensive keyboard navigation and screen reader support.
+
+#### Role
+
+- Navigation element uses `role="navigation"` with descriptive `aria-label`
+
+#### Labeling
+
+- Previous/next buttons have clear `aria-label` attributes
+- Page input field has `aria-label` and `aria-current="page"` attributes
+- Page size selector has descriptive `aria-label`
+- All labels are internationalized via react-intl
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between pagination controls |
+| `Enter` / `Space` | Activate focused button (previous/next) |
+| `Arrow Up` / `Arrow Down` | Increment/decrement page number in input field |
+| Type number | Directly enter page number in input field |
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-list-pagination";
+
+export const ProductList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  return (
+    <Pagination
+      id={PERSISTENT_ID}
+      totalItems={500}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
+
+## API reference
+
+### Pagination
+
+<PropsTable id="Pagination" />
+
+## Common patterns
+
+### Resetting to page 1 on filter changes
+
+When filters or search criteria change, reset pagination to the first page:
+
+```tsx
+const ProductList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  return (
+    <>
+      <input
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search..."
+      />
+
+      <Pagination
+        totalItems={filteredItems.length}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
+    </>
+  );
+};
+```
+
+### Persisting pagination state
+
+Store pagination state in URL query parameters for shareable links:
+
+```tsx
+const ProductList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const pageSize = parseInt(searchParams.get('size') || '20', 10);
+
+  const handlePageChange = (page: number) => {
+    setSearchParams({ page: page.toString(), size: pageSize.toString() });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setSearchParams({ page: '1', size: size.toString() });
+  };
+
+  return (
+    <Pagination
+      totalItems={500}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
+      enablePageSizeSelector
+    />
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Pagination within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: pagination.docs.spec.tsx}}
+
+## Resources
+
+- [Pagination Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-pagination--docs)
