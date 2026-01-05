@@ -1,0 +1,307 @@
+---
+title: IconButton Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { IconButton, type IconButtonProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+IconButton displays a button containing only an icon as its child. It requires an `aria-label` for accessibility since there is no visible text:
+
+```jsx-live-dev
+const App = () => (
+  <IconButton aria-label="Open menu">
+    <Icons.Menu />
+  </IconButton>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The `2xs`, `xs`, and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconButton size="2xs" aria-label="Extra small button">
+      <Icons.Add />
+    </IconButton>
+    <IconButton size="xs" aria-label="Small button">
+      <Icons.Add />
+    </IconButton>
+    <IconButton size="md" aria-label="Medium button">
+      <Icons.Add />
+    </IconButton>
+  </Stack>
+)
+```
+
+### Visual variants
+
+Choose between `solid`, `subtle`, `outline`, `ghost`, and `link` variants to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconButton variant="solid" aria-label="Solid button">
+      <Icons.Edit />
+    </IconButton>
+    <IconButton variant="subtle" aria-label="Subtle button">
+      <Icons.Edit />
+    </IconButton>
+    <IconButton variant="outline" aria-label="Outline button">
+      <Icons.Edit />
+    </IconButton>
+    <IconButton variant="ghost" aria-label="Ghost button">
+      <Icons.Edit />
+    </IconButton>
+    <IconButton variant="link" aria-label="Link button">
+      <Icons.Edit />
+    </IconButton>
+  </Stack>
+)
+```
+
+### Color palettes
+
+Use semantic color palettes to convey meaning or match your brand:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconButton colorPalette="primary" aria-label="Primary action">
+      <Icons.Send />
+    </IconButton>
+    <IconButton colorPalette="critical" aria-label="Delete item">
+      <Icons.Delete />
+    </IconButton>
+    <IconButton colorPalette="positive" aria-label="Approve">
+      <Icons.Check />
+    </IconButton>
+    <IconButton colorPalette="warning" aria-label="Warning action">
+      <Icons.Warning />
+    </IconButton>
+  </Stack>
+)
+```
+
+### Disabled state
+
+Disable user interaction when an action is temporarily unavailable:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconButton aria-label="Enabled button">
+      <Icons.Save />
+    </IconButton>
+    <IconButton isDisabled aria-label="Disabled button">
+      <Icons.Save />
+    </IconButton>
+  </Stack>
+)
+```
+
+### Press handling
+
+Handle user interactions with the `onPress` callback:
+
+```jsx-live-dev
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="center">
+      <IconButton
+        aria-label="Increment counter"
+        onPress={() => setCount(count + 1)}
+      >
+        <Icons.Add />
+      </IconButton>
+      <Text fontSize="sm">Clicked {count} times</Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+IconButton requires a **mandatory `aria-label` prop** since icon-only buttons lack visible text for screen readers. This label should:
+- Clearly describe the button's action
+- Be concise but descriptive
+
+**Setting the aria-label:**
+
+```tsx
+<IconButton aria-label="Open menu">
+  <Icons.Menu />
+</IconButton>
+```
+
+For icon buttons with visible tooltips, the `aria-label` is still required for screen reader users who may not trigger the tooltip:
+
+```tsx
+<Tooltip.Root>
+  <IconButton aria-label="Settings">
+    <Icons.Settings />
+  </IconButton>
+  <Tooltip.Content>Settings</Tooltip.Content>
+</Tooltip.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-icon-button";
+
+export const Example = () => (
+  <IconButton id={PERSISTENT_ID} aria-label="Open settings">
+    <Icons.Settings />
+  </IconButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus to/from the button
+- `Enter` / `Space`: Activate the button
+- `Escape`: Remove focus (when focused)
+
+## API reference
+
+<PropsTable id="IconButton" />
+
+## Common patterns
+
+### With Tooltip
+
+Icon buttons should typically include a tooltip to provide additional context for sighted users:
+
+```jsx-live-dev
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="center">
+      <Stack direction="row" gap="300">
+        <Tooltip.Root>
+          <IconButton
+            aria-label="Add item"
+            onPress={() => setCount(count + 1)}
+          >
+            <Icons.Add />
+          </IconButton>
+          <Tooltip.Content>Add item</Tooltip.Content>
+        </Tooltip.Root>
+
+        <Tooltip.Root>
+          <IconButton
+            aria-label="Remove item"
+            onPress={() => setCount(Math.max(0, count - 1))}
+            isDisabled={count === 0}
+          >
+            <Icons.Remove />
+          </IconButton>
+          <Tooltip.Content>Remove item</Tooltip.Content>
+        </Tooltip.Root>
+      </Stack>
+      <Text fontSize="sm">Count: {count}</Text>
+    </Stack>
+  );
+}
+```
+
+### Loading state
+
+Show a loading state during asynchronous operations:
+
+```jsx-live-dev
+const App = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePress = () => {
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 2000);
+  };
+
+  return (
+    <Stack direction="column" gap="400" alignItems="center">
+      <IconButton
+        aria-label="Save changes"
+        onPress={handlePress}
+        isLoading={isLoading}
+      >
+        <Icons.Save />
+      </IconButton>
+      <Text fontSize="sm">
+        {isLoading ? 'Saving...' : 'Click to save'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Icon button group
+
+Group related icon buttons using Stack:
+
+```jsx-live-dev
+const App = () => {
+  const [alignment, setAlignment] = useState('left');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200">
+        <IconButton
+          aria-label="Align left"
+          variant={alignment === 'left' ? 'solid' : 'ghost'}
+          onPress={() => setAlignment('left')}
+        >
+          <Icons.FormatAlignLeft />
+        </IconButton>
+        <IconButton
+          aria-label="Align center"
+          variant={alignment === 'center' ? 'solid' : 'ghost'}
+          onPress={() => setAlignment('center')}
+        >
+          <Icons.FormatAlignCenter />
+        </IconButton>
+        <IconButton
+          aria-label="Align right"
+          variant={alignment === 'right' ? 'solid' : 'ghost'}
+          onPress={() => setAlignment('right')}
+        >
+          <Icons.FormatAlignRight />
+        </IconButton>
+      </Stack>
+      <Text fontSize="sm">Alignment: {alignment}</Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using IconButton within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: icon-button.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-iconbutton--docs)
+- [Button Component](../components/inputs/button)
+- [React Aria Button](https://react-spectrum.adobe.com/react-aria/Button.html)
+- [ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
