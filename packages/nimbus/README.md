@@ -47,13 +47,13 @@ pnpm run build
 
 **`react-intl` is a dev dependency only** - it is not required at runtime:
 
-- ✅ **In `devDependencies`**: Needed for `.i18n.ts` source files which use
+- **In `devDependencies`**: Needed for `.i18n.ts` source files which use
   `defineMessages` from `react-intl`. The `@formatjs/cli extract` tool expects
   this format to extract messages.
-- ❌ **Not in `peerDependencies`**: Consumers do not need to install
-  `react-intl`. Components use compiled `.messages.ts` dictionaries at runtime,
-  not the `.i18n.ts` source files.
-- ✅ **Runtime**: Components use `@internationalized/message` and
+- **Not in `peerDependencies`**: Consumers do not need to install `react-intl`.
+  Components use compiled `.messages.ts` dictionaries at runtime, not the
+  `.i18n.ts` source files.
+- **Runtime**: Components use `@internationalized/message` and
   `react-aria-components` for message retrieval, not `react-intl`.
 
 ### Extracting Messages
@@ -66,18 +66,10 @@ This command performs two operations:
 
 1. **Extracts** translation messages from all `.i18n.ts` files and saves them to
    `packages/i18n/data/core.json`
-2. **Compiles** the extracted messages into optimized AST format in
-   `compiled-data/` for distribution
+2. **Compiles** the extracted messages into component-level message dictionaries
+   in `packages/nimbus/src/components/*/intl/` and `*.messages.ts` files
 
 **Note:** The i18n package also builds automatically during `pnpm build`.
 
 > 📦 Translation data is organized in the
 > [`@commercetools/nimbus-i18n`](../i18n/README.md) package.
-
-## Translation Workflow
-
-- Notifying Tx, TBD
-
-## Distribution
-
-- Describe how i18n will be packaged for appkit to be consumed by mc-apps.
