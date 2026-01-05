@@ -272,12 +272,16 @@ export const ${variableName}Messages = {
     }
     
     return "";
-  },
+  }${
+    hasFunctions
+      ? `,
 
   /**
    * Retrieves a variable message (function that takes arguments).
    * Returns undefined if the message is a simple string or not found.
    * Use this for messages that require variables (e.g., "Hello {name}").
+   * 
+   * Note: This method is only available when the component has messages with variables.
    */
   getVariableLocale(
     key: string,
@@ -292,6 +296,8 @@ export const ${variableName}Messages = {
     } catch {
       return undefined;
     }
+  }`
+      : ""
   },
 };
 

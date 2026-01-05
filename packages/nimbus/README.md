@@ -31,7 +31,7 @@ pnpm run build
    - Use `useLocale()` from `react-aria-components` to get locale
    - Call `componentMessages.getStringLocale("key", locale)` for simple strings
    - Call `componentMessages.getVariableLocale("key", locale)` for variable
-     messages messages
+     messages (only available when component has variable messages)
    - See [i18n guidelines](../../docs/file-type-guidelines/i18n.md) for detailed
      usage patterns
 

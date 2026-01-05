@@ -69,26 +69,6 @@ export const richTextInputMessages = {
 
     return "";
   },
-
-  /**
-   * Retrieves a variable message (function that takes arguments).
-   * Returns undefined if the message is a simple string or not found.
-   * Use this for messages that require variables (e.g., "Hello {name}").
-   */
-  getVariableLocale(
-    key: string,
-    locale: string
-  ): ((args: Record<string, string | number>) => string) | undefined {
-    const normalizedLocale = normalizeLocale(locale);
-
-    try {
-      const message = dictionary.getStringForLocale(key, normalizedLocale);
-      // Filter out strings - only return functions
-      return typeof message === "function" ? message : undefined;
-    } catch {
-      return undefined;
-    }
-  },
 };
 
 /**
