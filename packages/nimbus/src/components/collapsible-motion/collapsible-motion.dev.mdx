@@ -1,0 +1,407 @@
+---
+title: CollapsibleMotion Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { CollapsibleMotion, type CollapsibleMotionRootProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses uncontrolled mode with compound component pattern:
+
+```jsx-live-dev
+const App = () => (
+  <CollapsibleMotion.Root defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button>Toggle Content</Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content>
+      <Box p="400" bg="neutral.2" borderRadius="200">
+        <Text>This content smoothly expands and collapses</Text>
+      </Box>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+)
+```
+
+## Usage examples
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultExpanded`:
+
+```jsx-live-dev
+const App = () => {
+  const [eventLog, setEventLog] = useState<string>('No events yet');
+
+  return (
+    <Stack direction="column" gap="400">
+      <CollapsibleMotion.Root
+        defaultExpanded={false}
+        onExpandedChange={(isExpanded) => {
+          setEventLog(`Content is now ${isExpanded ? 'expanded' : 'collapsed'}`);
+        }}
+      >
+        <CollapsibleMotion.Trigger asChild>
+          <Button>Toggle Content</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="blue.2" borderRadius="200">
+            <Text>Collapsible content area with smooth animations</Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <Text fontSize="sm" color="neutral.11">Event: {eventLog}</Text>
+    </Stack>
+  );
+}
+```
+
+Use uncontrolled mode when you need to capture state changes without managing state yourself.
+
+### Controlled mode
+
+For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+
+```jsx-live-dev
+const App = () => {
+  const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps["isExpanded"]>(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Button onPress={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? 'Collapse' : 'Expand'} (External Control)
+      </Button>
+      <CollapsibleMotion.Root
+        isExpanded={isExpanded}
+        onExpandedChange={setIsExpanded}
+      >
+        <CollapsibleMotion.Trigger asChild>
+          <Button>Toggle (Internal Control)</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="green.2" borderRadius="200">
+            <Text>
+              This content can be controlled both externally (button above)
+              and internally (trigger button). Both stay synchronized.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+      <Text fontSize="sm" color="neutral.11">
+        Current state: {isExpanded ? 'Expanded' : 'Collapsed'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+Use controlled mode when you need to:
+- Synchronize the expanded state with external controls
+- Programmatically expand or collapse the content
+- Coordinate multiple collapsible sections
+
+### Disabled state
+
+Prevent interactions by setting `isDisabled`:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
+      <CollapsibleMotion.Trigger asChild>
+        <Button>Toggle Content (Disabled)</Button>
+      </CollapsibleMotion.Trigger>
+      <CollapsibleMotion.Content>
+        <Box p="400" bg="neutral.3" borderRadius="200">
+          <Text>This content cannot be toggled when disabled</Text>
+        </Box>
+      </CollapsibleMotion.Content>
+    </CollapsibleMotion.Root>
+    <Text fontSize="sm" color="neutral.11">
+      The trigger button is disabled and cannot expand the content
+    </Text>
+  </Stack>
+)
+```
+
+### Custom trigger with asChild
+
+Use the `asChild` prop to render your own custom trigger element:
+
+```jsx-live-dev
+const App = () => (
+  <CollapsibleMotion.Root defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button variant="outline" colorPalette="blue">
+        <Icons.KeyboardArrowDown />
+        Custom Styled Trigger
+      </Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content>
+      <Box p="400" bg="purple.2" borderRadius="200">
+        <Text>Content revealed by custom trigger</Text>
+      </Box>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+)
+```
+
+### Custom animations
+
+Customize the expand/collapse animations using Chakra's animation system:
+
+```jsx-live-dev
+const App = () => (
+  <CollapsibleMotion.Root defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button>Toggle with Custom Animation</Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content
+      animationName={{
+        _open: "slide-from-top, fade-in",
+        _closed: "slide-to-top, fade-out",
+      }}
+      animationDuration="slow"
+    >
+      <Box p="400" bg="orange.2" borderRadius="200">
+        <Text>
+          This content uses custom animation timing and effects.
+          Notice the slower, more deliberate motion.
+        </Text>
+      </Box>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+)
+```
+
+### Dynamic content
+
+The component automatically handles content size changes with ResizeObserver:
+
+```jsx-live-dev
+const App = () => {
+  const [contentSize, setContentSize] = useState<'short' | 'medium' | 'long'>('short');
+
+  const content = {
+    short: 'Short content',
+    medium: 'This is medium length content that demonstrates how the component handles different content sizes.',
+    long: 'This is very long content that shows how CollapsibleMotion automatically re-measures content height when it changes. The component uses ResizeObserver to detect size changes and smoothly animate to the new height, ensuring a polished user experience even with dynamic content.',
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200">
+        <Button
+          onPress={() => setContentSize('short')}
+          variant={contentSize === 'short' ? 'solid' : 'outline'}
+          size="xs"
+        >
+          Short
+        </Button>
+        <Button
+          onPress={() => setContentSize('medium')}
+          variant={contentSize === 'medium' ? 'solid' : 'outline'}
+          size="xs"
+        >
+          Medium
+        </Button>
+        <Button
+          onPress={() => setContentSize('long')}
+          variant={contentSize === 'long' ? 'solid' : 'outline'}
+          size="xs"
+        >
+          Long
+        </Button>
+      </Stack>
+      <CollapsibleMotion.Root defaultExpanded={true}>
+        <CollapsibleMotion.Trigger asChild>
+          <Button>Toggle Dynamic Content</Button>
+        </CollapsibleMotion.Trigger>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="teal.2" borderRadius="200">
+            <Text>{content[contentSize]}</Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+    </Stack>
+  );
+}
+```
+
+### Without trigger
+
+For external-only control, omit the Trigger component:
+
+```jsx-live-dev
+const App = () => {
+  const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps["isExpanded"]>(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Button onPress={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? 'Hide' : 'Show'} Details
+      </Button>
+      <CollapsibleMotion.Root isExpanded={isExpanded}>
+        <CollapsibleMotion.Content>
+          <Box p="400" bg="pink.2" borderRadius="200">
+            <Text>
+              This content is controlled entirely by the external button above.
+              No internal trigger is provided.
+            </Text>
+          </Box>
+        </CollapsibleMotion.Content>
+      </CollapsibleMotion.Root>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The CollapsibleMotion component handles most accessibility requirements internally through React Aria integration. The component automatically provides:
+
+- Proper ARIA attributes (`aria-expanded`, `aria-controls`, `aria-hidden`)
+- Keyboard navigation support
+- Focus management
+- Screen reader announcements
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-collapsible-motion";
+
+export const Example = () => (
+  <CollapsibleMotion.Root id={PERSISTENT_ID} defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button>Toggle</Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content>
+      <Text>Content here</Text>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus to/from the trigger button
+- `Enter` / `Space`: Toggle the expanded/collapsed state when trigger is focused
+- `Escape`: No default behavior (can be customized in your implementation)
+
+## API reference
+
+<PropsTable id="CollapsibleMotion" />
+
+## Common patterns
+
+### FAQ section
+
+Create an expandable FAQ section with multiple collapsible items:
+
+```jsx-live-dev
+const App = () => {
+  const faqs = [
+    {
+      question: 'What is CollapsibleMotion?',
+      answer: 'CollapsibleMotion is a compound component that provides smooth expand/collapse animations with full accessibility support via React Aria.',
+    },
+    {
+      question: 'When should I use controlled mode?',
+      answer: 'Use controlled mode when you need to programmatically control the expanded state, synchronize with external controls, or coordinate multiple collapsible sections.',
+    },
+    {
+      question: 'Can I customize the animations?',
+      answer: 'Yes! You can customize animations using Chakra animation names and durations on the Content component.',
+    },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      {faqs.map((faq, index) => (
+        <CollapsibleMotion.Root key={index} defaultExpanded={false}>
+          <CollapsibleMotion.Trigger asChild>
+            <Button width="full" justifyContent="space-between">
+              {faq.question}
+              <Icons.KeyboardArrowDown />
+            </Button>
+          </CollapsibleMotion.Trigger>
+          <CollapsibleMotion.Content>
+            <Box p="400" bg="neutral.2" borderRadius="200">
+              <Text>{faq.answer}</Text>
+            </Box>
+          </CollapsibleMotion.Content>
+        </CollapsibleMotion.Root>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Accordion-style navigation
+
+Create an accordion by coordinating multiple CollapsibleMotion components:
+
+```jsx-live-dev
+const App = () => {
+  const [expandedSection, setExpandedSection] = useState<string | null>('section1');
+
+  const sections = [
+    { id: 'section1', title: 'Getting Started', content: 'Learn the basics of getting started with our platform.' },
+    { id: 'section2', title: 'Advanced Features', content: 'Explore advanced features and customization options.' },
+    { id: 'section3', title: 'API Reference', content: 'Complete API documentation and examples.' },
+  ];
+
+  return (
+    <Stack direction="column" gap="200">
+      {sections.map((section) => (
+        <CollapsibleMotion.Root
+          key={section.id}
+          isExpanded={expandedSection === section.id}
+          onExpandedChange={(isExpanded) => {
+            setExpandedSection(isExpanded ? section.id : null);
+          }}
+        >
+          <CollapsibleMotion.Trigger asChild>
+            <Button
+              width="full"
+              justifyContent="space-between"
+              variant={expandedSection === section.id ? 'solid' : 'outline'}
+            >
+              {section.title}
+              <Icons.KeyboardArrowDown />
+            </Button>
+          </CollapsibleMotion.Trigger>
+          <CollapsibleMotion.Content>
+            <Box p="400" bg="neutral.2" borderRadius="200">
+              <Text>{section.content}</Text>
+            </Box>
+          </CollapsibleMotion.Content>
+        </CollapsibleMotion.Root>
+      ))}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using CollapsibleMotion within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: collapsible-motion.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-layout-collapsiblemotion--docs)
+- [React Aria useDisclosure](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+- [Chakra UI Presence](https://www.chakra-ui.com/docs/components/presence)
