@@ -14,12 +14,9 @@ import { Tabs, type TabsProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-The Tabs component can be used in two ways:
+The Tabs component supports two approaches depending on your needs.
 
-1. **Compound API** - Manual composition with `Tabs.Root`, `Tabs.List`, `Tabs.Tab`, `Tabs.Panels`, and `Tabs.Panel`
-2. **Dynamic rendering** - Pass a `tabs` array prop to `Tabs.Root`
-
-**Compound API approach:**
+For maximum control over tab structure and content, use the **Compound API** with manual composition:
 
 ```jsx-live-dev
 const App = () => {
@@ -46,7 +43,7 @@ const App = () => {
 };
 ```
 
-**Dynamic rendering approach:**
+For data-driven tabs that render from an array, use the **Dynamic rendering** approach:
 
 ```jsx-live-dev
 const App = () => {
