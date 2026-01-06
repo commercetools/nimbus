@@ -45,15 +45,18 @@ const App = () => (
 
 ### Size options
 
-IconToggleButton supports two size variants. The `md` size is the default.
+IconToggleButton supports three size variants. The `md` size is the default.
 
 ```jsx-live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
-    <IconToggleButton size="xs" aria-label="Bookmark (small)">
+    <IconToggleButton size="2xs" aria-label="Bookmark (2xs)">
       <Icons.Bookmark />
     </IconToggleButton>
-    <IconToggleButton size="md" aria-label="Bookmark (medium)">
+    <IconToggleButton size="xs" aria-label="Bookmark (xs)">
+      <Icons.Bookmark />
+    </IconToggleButton>
+    <IconToggleButton size="md" aria-label="Bookmark (md)">
       <Icons.Bookmark />
     </IconToggleButton>
   </Stack>
@@ -349,7 +352,7 @@ const App = () => {
             onChange={(isStarred) => handleToggle(item.id, isStarred)}
             aria-label={item.starred ? "Remove from favorites" : "Add to favorites"}
             colorPalette="info"
-            size="sm"
+            size="xs"
           >
             <Icons.Star />
           </IconToggleButton>
