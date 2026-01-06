@@ -30,9 +30,7 @@ jobs:
         run: pnpm typecheck:strict
 
       - name: Clean temp before tests
-        run: |
-          echo "Cleaning temp directory before tests..."
-          rm -rf /tmp/* || true
+        run: rm -rf /tmp/* || true
         shell: bash
 
       - name: Run tests
