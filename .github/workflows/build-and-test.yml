@@ -29,6 +29,10 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck:strict
 
+      - name: Clean temp before tests
+        run: rm -rf /tmp/* || true
+        shell: bash
+
       - name: Run tests
         run: pnpm test
         timeout-minutes: 5
