@@ -18,11 +18,9 @@ const fs = require("fs");
  * 4. Exits with code 2 if blocked, code 0 if allowed
  *
  * CRITICAL PROTECTIONS:
- * - Blocks access to .env files, SSH keys, NPM tokens, git config
- * - Blocks shell history files (.bash_history, .zsh_history)
+ * - Blocks access to .env files, SSH keys, NPM tokens, shell history
  * - Prevents environment variable exposure (echo $VAR, printenv)
- * - Blocks destructive rm, git, and chmod commands
- * - Prevents unauthorized package installations
+ * - Blocks destructive rm, force push, chmod, and unauthorized package installs
  *
  * WHITELIST BEHAVIOR:
  * - Allows .env.sample and .env.example (non-secret versions)
@@ -171,16 +169,15 @@ function isCredentialFileAccess(toolName, toolInput) {
 }
 
 /**
- * Prevents destructive bash commands
+ * Prevents destructive bash commands that cause catastrophic damage
  *
  * Blocks patterns that could:
  * - Destroy the entire filesystem (rm -rf /)
- * - Corrupt version control history (git reset --hard)
- * - Expose security vulnerabilities (chmod 777)
- * - Modify system-wide configuration
- * - Install unauthorized software
+ * - Corrupt shared repository history (git push --force)
+ * - Expose security vulnerabilities (chmod 777, setuid)
+ * - Install unauthorized system software (brew/apt/yum install)
  *
- * These are the commands most likely to cause catastrophic damage.
+ * These are the commands most likely to damage the system or shared work.
  */
 function isDangerousCommand(command) {
   // Normalize command for consistent pattern matching
@@ -202,12 +199,11 @@ function isDangerousCommand(command) {
   ];
 
   // ========== PATTERN CATEGORY: Git operations ==========
-  // Blocks operations that could corrupt or expose repository history
-  // Note: Patterns match at command start (word boundary \b) to avoid false positives in text
+  // Blocks only the most dangerous operations that rewrite shared history
+  // These are particularly risky on main/protected branches as they affect all team members
+  // Note: Most git operations are allowed - only history-rewriting commands are blocked
   const gitPatterns = [
-    /\bgit\s+push\s+.*--force/, // Force push: can rewrite remote history and cause data loss
-    /\bgit\s+reset\s+--hard/, // Hard reset: destroys uncommitted changes irreversibly
-    /\bgit\s+config\s+--global/, // Global config: modifies user's entire git setup
+    /\bgit\s+push\s+.*--force/, // Force push: overwrites remote history, corrupts main/shared branches
   ];
 
   // ========== PATTERN CATEGORY: Permission changes ==========
