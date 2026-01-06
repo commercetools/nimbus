@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import alertMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: alertMessages_en,
-  de: alertMessages_de,
-  es: alertMessages_es,
-  "fr-FR": alertMessages_fr,
-  "pt-BR": alertMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(alertMessages_en),
+  de: normalizeMessages(alertMessages_de),
+  es: normalizeMessages(alertMessages_es),
+  "fr-FR": normalizeMessages(alertMessages_fr),
+  "pt-BR": normalizeMessages(alertMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Alert component

@@ -74,7 +74,7 @@ docs/
 4. **Testing** - Interactive components must have play functions
 5. **Documentation** - Every component needs complete MDX documentation
 6. **Internationalization** - Translatable UI text via compile-time message
-   compilation (`@internationalized/message`)
+   compilation (`@internationalized/string` with `LocalizedStringDictionary`)
 
 ## 🛠 Development Workflow
 

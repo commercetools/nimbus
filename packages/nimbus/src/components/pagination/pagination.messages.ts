@@ -8,9 +8,11 @@
  */
 
 import {
-  MessageDictionary,
+  LocalizedStringDictionary,
+  type LocalizedString,
   type LocalizedStrings,
-} from "@internationalized/message";
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import paginationMessages_en from "./intl/en";
@@ -18,16 +20,6 @@ import paginationMessages_de from "./intl/de";
 import paginationMessages_es from "./intl/es";
 import paginationMessages_fr from "./intl/fr-FR";
 import paginationMessages_pt from "./intl/pt-BR";
-
-/**
- * Type that allows both strings and functions for message values.
- * MessageDictionary accepts both at runtime, but LocalizedStrings only allows strings.
- */
-type LocalizedStringsWithFunctions = {
-  [lang: string]: {
-    [key: string]: string | ((args: Record<string, string | number>) => string);
-  };
-};
 
 /**
  * Normalizes BCP47 locale codes to match dictionary keys.
@@ -53,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: paginationMessages_en,
-  de: paginationMessages_de,
-  es: paginationMessages_es,
-  "fr-FR": paginationMessages_fr,
-  "pt-BR": paginationMessages_pt,
-} as LocalizedStringsWithFunctions as LocalizedStrings);
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(paginationMessages_en),
+  de: normalizeMessages(paginationMessages_de),
+  es: normalizeMessages(paginationMessages_es),
+  "fr-FR": normalizeMessages(paginationMessages_fr),
+  "pt-BR": normalizeMessages(paginationMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Pagination component

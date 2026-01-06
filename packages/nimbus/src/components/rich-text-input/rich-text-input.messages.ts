@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import richTextInputMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: richTextInputMessages_en,
-  de: richTextInputMessages_de,
-  es: richTextInputMessages_es,
-  "fr-FR": richTextInputMessages_fr,
-  "pt-BR": richTextInputMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(richTextInputMessages_en),
+  de: normalizeMessages(richTextInputMessages_de),
+  es: normalizeMessages(richTextInputMessages_es),
+  "fr-FR": normalizeMessages(richTextInputMessages_fr),
+  "pt-BR": normalizeMessages(richTextInputMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for RichTextInput component

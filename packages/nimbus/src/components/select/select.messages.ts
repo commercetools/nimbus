@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import selectMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: selectMessages_en,
-  de: selectMessages_de,
-  es: selectMessages_es,
-  "fr-FR": selectMessages_fr,
-  "pt-BR": selectMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(selectMessages_en),
+  de: normalizeMessages(selectMessages_de),
+  es: normalizeMessages(selectMessages_es),
+  "fr-FR": normalizeMessages(selectMessages_fr),
+  "pt-BR": normalizeMessages(selectMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Select component

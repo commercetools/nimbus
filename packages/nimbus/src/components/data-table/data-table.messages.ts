@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import dataTableMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: dataTableMessages_en,
-  de: dataTableMessages_de,
-  es: dataTableMessages_es,
-  "fr-FR": dataTableMessages_fr,
-  "pt-BR": dataTableMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(dataTableMessages_en),
+  de: normalizeMessages(dataTableMessages_de),
+  es: normalizeMessages(dataTableMessages_es),
+  "fr-FR": normalizeMessages(dataTableMessages_fr),
+  "pt-BR": normalizeMessages(dataTableMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for DataTable component

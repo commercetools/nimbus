@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import dateRangePickerMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: dateRangePickerMessages_en,
-  de: dateRangePickerMessages_de,
-  es: dateRangePickerMessages_es,
-  "fr-FR": dateRangePickerMessages_fr,
-  "pt-BR": dateRangePickerMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(dateRangePickerMessages_en),
+  de: normalizeMessages(dateRangePickerMessages_de),
+  es: normalizeMessages(dateRangePickerMessages_es),
+  "fr-FR": normalizeMessages(dateRangePickerMessages_fr),
+  "pt-BR": normalizeMessages(dateRangePickerMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for DateRangePicker component

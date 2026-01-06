@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import drawerMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: drawerMessages_en,
-  de: drawerMessages_de,
-  es: drawerMessages_es,
-  "fr-FR": drawerMessages_fr,
-  "pt-BR": drawerMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(drawerMessages_en),
+  de: normalizeMessages(drawerMessages_de),
+  es: normalizeMessages(drawerMessages_es),
+  "fr-FR": normalizeMessages(drawerMessages_fr),
+  "pt-BR": normalizeMessages(drawerMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Drawer component

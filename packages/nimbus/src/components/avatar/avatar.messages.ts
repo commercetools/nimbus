@@ -8,9 +8,11 @@
  */
 
 import {
-  MessageDictionary,
+  LocalizedStringDictionary,
+  type LocalizedString,
   type LocalizedStrings,
-} from "@internationalized/message";
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import avatarMessages_en from "./intl/en";
@@ -18,16 +20,6 @@ import avatarMessages_de from "./intl/de";
 import avatarMessages_es from "./intl/es";
 import avatarMessages_fr from "./intl/fr-FR";
 import avatarMessages_pt from "./intl/pt-BR";
-
-/**
- * Type that allows both strings and functions for message values.
- * MessageDictionary accepts both at runtime, but LocalizedStrings only allows strings.
- */
-type LocalizedStringsWithFunctions = {
-  [lang: string]: {
-    [key: string]: string | ((args: Record<string, string | number>) => string);
-  };
-};
 
 /**
  * Normalizes BCP47 locale codes to match dictionary keys.
@@ -53,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: avatarMessages_en,
-  de: avatarMessages_de,
-  es: avatarMessages_es,
-  "fr-FR": avatarMessages_fr,
-  "pt-BR": avatarMessages_pt,
-} as LocalizedStringsWithFunctions as LocalizedStrings);
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(avatarMessages_en),
+  de: normalizeMessages(avatarMessages_de),
+  es: normalizeMessages(avatarMessages_es),
+  "fr-FR": normalizeMessages(avatarMessages_fr),
+  "pt-BR": normalizeMessages(avatarMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Avatar component

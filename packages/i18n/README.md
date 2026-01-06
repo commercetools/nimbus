@@ -24,7 +24,7 @@ This is an **internal build tool package** that:
 > **Note:** `react-intl` is used only as a dev dependency in the `nimbus`
 > package for `.i18n.ts` source file extraction. It is not a runtime dependency.
 > Components use compiled `.messages.ts` dictionaries with
-> `@internationalized/message` at runtime.
+> `LocalizedStringDictionary` from `@internationalized/string` at runtime.
 
 ## Architecture
 
@@ -43,8 +43,40 @@ The package runs a 4-step compilation process:
    strings compile to plain strings; variable strings (with ICU syntax) compile
    to functions.
 4. **Generate Dictionaries** (`build:dictionaries`) - Creates
-   `MessageDictionary` wrapper files that import all locale files and export
-   typed message dictionaries for each component
+   `LocalizedStringDictionary` wrapper files that import all locale files and
+   export typed message dictionaries for each component
+
+#### Message Normalization
+
+The dictionary generation uses a shared `normalizeMessages` utility function
+that adapts compiled messages to match the `LocalizedString` signature expected
+by `LocalizedStringDictionary`.
+
+**Why this is needed:**
+
+- `@internationalized/string-compiler` generates functions with signature:
+  ```typescript
+  (args: Record<string, string | number>) => string;
+  ```
+- `LocalizedStringDictionary` expects functions with signature:
+  ```typescript
+  (args: Variables, formatter?: LocalizedStringFormatter) => string;
+  ```
+  where `Variables` can be `undefined`
+
+**What it does:**
+
+- Wraps compiled functions to accept `undefined` args and optional formatter
+  parameter
+- Filters out boolean values from args (compiled functions only accept string |
+  number)
+- Passes strings through unchanged (they're already compatible)
+- Runtime-safe: Original functions don't use the formatter, and we provide empty
+  object fallback for undefined args
+
+The `normalizeMessages` function is located in
+`packages/nimbus/src/utils/normalize-messages.ts` and is imported by all
+generated `*.messages.ts` files.
 
 ### Output
 
@@ -61,11 +93,11 @@ packages/nimbus/src/components/alert/
     └── pt-BR.ts
 ```
 
-These files are consumed directly by Nimbus components using `MessageDictionary`
-from `@internationalized/message`.
+These files are consumed directly by Nimbus components using
+`LocalizedStringDictionary` from `@internationalized/string`.
 
 > 📚 **Reference:**
-> [`@internationalized/message`](https://github.com/adobe/react-spectrum/tree/main/packages/%40internationalized/message)
+> [`@internationalized/string`](https://github.com/adobe/react-spectrum/tree/main/packages/%40internationalized/string)
 > is part of the [React Spectrum](https://github.com/adobe/react-spectrum)
 > project by Adobe.
 

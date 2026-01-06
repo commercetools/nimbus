@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import splitButtonMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: splitButtonMessages_en,
-  de: splitButtonMessages_de,
-  es: splitButtonMessages_es,
-  "fr-FR": splitButtonMessages_fr,
-  "pt-BR": splitButtonMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(splitButtonMessages_en),
+  de: normalizeMessages(splitButtonMessages_de),
+  es: normalizeMessages(splitButtonMessages_es),
+  "fr-FR": normalizeMessages(splitButtonMessages_fr),
+  "pt-BR": normalizeMessages(splitButtonMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for SplitButton component

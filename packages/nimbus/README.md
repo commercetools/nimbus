@@ -53,8 +53,9 @@ pnpm run build
 - **Not in `peerDependencies`**: Consumers do not need to install `react-intl`.
   Components use compiled `.messages.ts` dictionaries at runtime, not the
   `.i18n.ts` source files.
-- **Runtime**: Components use `@internationalized/message` and
-  `react-aria-components` for message retrieval, not `react-intl`.
+- **Runtime**: Components use `LocalizedStringDictionary` from
+  `@internationalized/string` and `react-aria-components` for message retrieval,
+  not `react-intl`.
 
 ### Extracting Messages
 

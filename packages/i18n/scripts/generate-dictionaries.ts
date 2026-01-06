@@ -1,9 +1,9 @@
 /**
- * Generate MessageDictionary files for each component - Step 4 of 4 in the i18n build pipeline
+ * Generate LocalizedStringDictionary files for each component - Step 4 of 4 in the i18n build pipeline
  *
  * Overview:
  * After compiling messages for each locale, we need to create a dictionary
- * file that imports all locale files and wraps them in a MessageDictionary.
+ * file that imports all locale files and wraps them in a LocalizedStringDictionary.
  * This dictionary is what components will import and use at runtime.
  *
  *
@@ -13,16 +13,16 @@
  * Process:
  *   1. Find all components with intl/ directories
  *   2. Read locale files to determine available message keys
- *   3. Generate dictionary file with imports and MessageDictionary
+ *   3. Generate dictionary file with imports and LocalizedStringDictionary
  *   4. Export message key types for TypeScript support
  *
  * @example
  * Generates alert.messages.ts:
- *   import { MessageDictionary, type LocalizedStrings } from "@internationalized/message";
+ *   import { LocalizedStringDictionary } from "@internationalized/string";
  *   import en from "./intl/en";
  *   import de from "./intl/de";
  *   ...
- *   export const alertMessages = new MessageDictionary({
+ *   export const alertMessages = new LocalizedStringDictionary({
  *     "en": en,
  *     "de": de,
  *     "es": es,
@@ -185,11 +185,11 @@ async function generateDictionaries() {
       )
       .join("\n");
 
-    // Generate dictionary entries mapping locale codes to imported messages
+    // Generate dictionary entries mapping locale codes to normalized messages
     const dictionaryEntries = availableLocales
       .map(
         (locale) =>
-          `  "${locale.code}": ${variableName}Messages_${locale.importName},`
+          `  "${locale.code}": normalizeMessages(${variableName}Messages_${locale.importName}),`
       )
       .join("\n");
 
@@ -208,26 +208,12 @@ async function generateDictionaries() {
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary${hasFunctions ? `, type LocalizedStrings` : ``} } from "@internationalized/message";
+import { LocalizedStringDictionary, type LocalizedString, type LocalizedStrings } from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 ${imports}
 
-${
-  hasFunctions
-    ? `/**
- * Type that allows both strings and functions for message values.
- * MessageDictionary accepts both at runtime, but LocalizedStrings only allows strings.
- */
-type LocalizedStringsWithFunctions = {
-  [lang: string]: {
-    [key: string]: string | ((args: Record<string, string | number>) => string);
-  };
-};
-
-`
-    : ""
-}
 /**
  * Normalizes BCP47 locale codes to match dictionary keys.
  * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
@@ -252,9 +238,9 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
 ${dictionaryEntries}
-}${hasFunctions ? ` as LocalizedStringsWithFunctions as LocalizedStrings` : ``});
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for ${componentName} component

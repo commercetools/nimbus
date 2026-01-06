@@ -25,9 +25,9 @@ catalogs:
     '@internationalized/date':
       specifier: ^3.10.0
       version: 3.10.0
-    '@internationalized/message':
-      specifier: ^3.1.8
-      version: 3.1.8
+    '@internationalized/string':
+      specifier: ^3.2.7
+      version: 3.2.7
     '@react-aria/optimize-locales-plugin':
       specifier: 1.1.5
       version: 1.1.5
@@ -510,9 +510,9 @@ importers:
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.4.0
-      '@internationalized/message':
+      '@internationalized/string':
         specifier: catalog:react
-        version: 3.1.8
+        version: 3.2.7
       '@react-aria/interactions':
         specifier: 3.25.6
         version: 3.25.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
