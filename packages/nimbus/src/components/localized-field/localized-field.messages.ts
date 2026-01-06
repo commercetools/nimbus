@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import localizedFieldMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: localizedFieldMessages_en,
-  de: localizedFieldMessages_de,
-  es: localizedFieldMessages_es,
-  "fr-FR": localizedFieldMessages_fr,
-  "pt-BR": localizedFieldMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(localizedFieldMessages_en),
+  de: normalizeMessages(localizedFieldMessages_de),
+  es: normalizeMessages(localizedFieldMessages_es),
+  "fr-FR": normalizeMessages(localizedFieldMessages_fr),
+  "pt-BR": normalizeMessages(localizedFieldMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for LocalizedField component

@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import draggableListMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: draggableListMessages_en,
-  de: draggableListMessages_de,
-  es: draggableListMessages_es,
-  "fr-FR": draggableListMessages_fr,
-  "pt-BR": draggableListMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(draggableListMessages_en),
+  de: normalizeMessages(draggableListMessages_de),
+  es: normalizeMessages(draggableListMessages_es),
+  "fr-FR": normalizeMessages(draggableListMessages_fr),
+  "pt-BR": normalizeMessages(draggableListMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for DraggableList component

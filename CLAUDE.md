@@ -189,7 +189,8 @@ with TypeScript, React Aria Components, and Chakra UI v3.
   implementation using React Aria patterns
 - **Design System**: Design token-based theming system with Chakra UI v3 recipes
 - **Internationalization**: Compile-time message compilation using
-  `@internationalized/message` with Transifex support
+  `@internationalized/string` with `LocalizedStringDictionary` and Transifex
+  support
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 

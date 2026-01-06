@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import dialogMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: dialogMessages_en,
-  de: dialogMessages_de,
-  es: dialogMessages_es,
-  "fr-FR": dialogMessages_fr,
-  "pt-BR": dialogMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(dialogMessages_en),
+  de: normalizeMessages(dialogMessages_de),
+  es: normalizeMessages(dialogMessages_es),
+  "fr-FR": normalizeMessages(dialogMessages_fr),
+  "pt-BR": normalizeMessages(dialogMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for Dialog component

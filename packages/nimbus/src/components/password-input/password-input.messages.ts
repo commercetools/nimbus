@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import passwordInputMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: passwordInputMessages_en,
-  de: passwordInputMessages_de,
-  es: passwordInputMessages_es,
-  "fr-FR": passwordInputMessages_fr,
-  "pt-BR": passwordInputMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(passwordInputMessages_en),
+  de: normalizeMessages(passwordInputMessages_de),
+  es: normalizeMessages(passwordInputMessages_es),
+  "fr-FR": normalizeMessages(passwordInputMessages_fr),
+  "pt-BR": normalizeMessages(passwordInputMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for PasswordInput component

@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import comboBoxMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: comboBoxMessages_en,
-  de: comboBoxMessages_de,
-  es: comboBoxMessages_es,
-  "fr-FR": comboBoxMessages_fr,
-  "pt-BR": comboBoxMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(comboBoxMessages_en),
+  de: normalizeMessages(comboBoxMessages_de),
+  es: normalizeMessages(comboBoxMessages_es),
+  "fr-FR": normalizeMessages(comboBoxMessages_fr),
+  "pt-BR": normalizeMessages(comboBoxMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for ComboBox component

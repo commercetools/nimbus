@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import loadingSpinnerMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: loadingSpinnerMessages_en,
-  de: loadingSpinnerMessages_de,
-  es: loadingSpinnerMessages_es,
-  "fr-FR": loadingSpinnerMessages_fr,
-  "pt-BR": loadingSpinnerMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(loadingSpinnerMessages_en),
+  de: normalizeMessages(loadingSpinnerMessages_de),
+  es: normalizeMessages(loadingSpinnerMessages_es),
+  "fr-FR": normalizeMessages(loadingSpinnerMessages_fr),
+  "pt-BR": normalizeMessages(loadingSpinnerMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for LoadingSpinner component

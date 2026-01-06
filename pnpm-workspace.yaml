@@ -69,7 +69,7 @@ catalogs:
     "@react-aria/interactions": 3.25.6
     "@react-aria/optimize-locales-plugin": 1.1.5
     "@internationalized/date": ^3.10.1
-    "@internationalized/message": ^3.1.8
+    "@internationalized/string": ^3.2.7
     react-intl: ^7.1.13
   utils:
     dequal: ^2.0.3

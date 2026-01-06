@@ -7,7 +7,12 @@
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { MessageDictionary } from "@internationalized/message";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+} from "@internationalized/string";
+import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 import rangeCalendarMessages_en from "./intl/en";
@@ -40,13 +45,13 @@ function normalizeLocale(locale: string): string {
 }
 
 // Internal dictionary instance
-const dictionary = new MessageDictionary({
-  en: rangeCalendarMessages_en,
-  de: rangeCalendarMessages_de,
-  es: rangeCalendarMessages_es,
-  "fr-FR": rangeCalendarMessages_fr,
-  "pt-BR": rangeCalendarMessages_pt,
-});
+const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+  en: normalizeMessages(rangeCalendarMessages_en),
+  de: normalizeMessages(rangeCalendarMessages_de),
+  es: normalizeMessages(rangeCalendarMessages_es),
+  "fr-FR": normalizeMessages(rangeCalendarMessages_fr),
+  "pt-BR": normalizeMessages(rangeCalendarMessages_pt),
+} as LocalizedStrings<string, LocalizedString>);
 
 /**
  * Localized string dictionary for RangeCalendar component
