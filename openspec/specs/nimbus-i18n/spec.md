@@ -10,7 +10,11 @@ The @commercetools/nimbus-i18n package is a pure data package providing centrali
 **Locales:** 5 (en, de, es, fr-FR, pt-BR)
 **Messages:** 137 unique IDs across 24 components
 
-## Translation Data Structure
+## Purpose
+
+This specification defines the cross-cutting concerns for translation data management, message compilation, and internationalization integration. Component-specific translation messages are documented within individual component specifications.
+
+## Requirements
 
 ### Requirement: Dual Format Support
 The system SHALL provide both source and compiled translation formats.
@@ -36,8 +40,6 @@ The system SHALL follow hierarchical naming for message IDs.
 - **AND** SHALL support nested components: `Nimbus.{Component}.{SubComponent}.{messageKey}`
 - **AND** examples SHALL include: `Nimbus.Alert.dismiss`, `Nimbus.DatePicker.Time.enterTimeHour`
 
-## Locale Support
-
 ### Requirement: Multi-Locale Coverage
 The system SHALL provide complete translations for 5 locales.
 
@@ -54,8 +56,6 @@ The system SHALL provide complete translations for 5 locales.
 - **THEN** all 5 locales SHALL have all 137 messages translated
 - **AND** SHALL maintain consistency across locales
 
-## Component Message Distribution
-
 ### Requirement: Component-Specific Messages
 The system SHALL organize messages by component ownership.
 
@@ -68,8 +68,6 @@ The system SHALL organize messages by component ownership.
 - **AND** Pagination SHALL have 8 messages (page navigation)
 - **AND** ComboBox SHALL have 6 messages (selection, filtering)
 - **AND** other components SHALL have 1-6 messages each
-
-## Message Extraction Workflow
 
 ### Requirement: Automated Message Extraction
 The system SHALL extract messages from component source files.
@@ -87,8 +85,6 @@ The system SHALL extract messages from component source files.
 - **AND** SHALL use react-intl's defineMessages
 - **AND** SHALL include id, description, and defaultMessage fields
 
-## Message Compilation
-
 ### Requirement: AST Format Compilation
 The system SHALL compile messages to optimized AST format.
 
@@ -104,8 +100,6 @@ The system SHALL compile messages to optimized AST format.
 - **AND** compiled AST SHALL represent literals (type: 0) and placeholders (type: 1)
 - **AND** example: `"Avatar image for {fullName}"` → `[{type: 0, value: "Avatar image for "}, {type: 1, value: "fullName"}]`
 
-## Transifex Integration
-
 ### Requirement: Professional Translation Management
 The system SHALL support Transifex workflow for translations.
 
@@ -114,8 +108,6 @@ The system SHALL support Transifex workflow for translations.
 - **THEN** data/ files SHALL use Transifex-compatible format
 - **AND** SHALL include developer_comment field for translator context
 - **AND** SHALL support bidirectional sync (extract → Transifex → sync back)
-
-## React Intl Integration
 
 ### Requirement: Component i18n Usage
 The system SHALL integrate with react-intl for message formatting.
@@ -137,8 +129,6 @@ The system SHALL provide IntlProvider configuration.
 - **AND** SHALL set defaultLocale to "en"
 - **AND** SHALL provide messages to all child components
 
-## FieldErrors Component
-
 ### Requirement: Reusable Error Messages
 The system SHALL provide standardized validation error messages.
 
@@ -155,8 +145,6 @@ The system SHALL provide standardized validation error messages.
 - **THEN** SHALL render localized error message: `<FieldErrors errors={{ missing: true }} />`
 - **AND** SHALL support multiple simultaneous errors
 - **AND** SHALL display all applicable error messages
-
-## Package Distribution
 
 ### Requirement: NPM Publication
 The system SHALL publish translation data to NPM registry.
@@ -176,8 +164,6 @@ The system SHALL be consumed by Merchant Center App-Kit.
 - **THEN** App-Kit SHALL load Nimbus translations automatically
 - **AND** SHALL merge with system translations
 - **AND** SHALL provide seamless i18n experience for end users
-
-## File Structure
 
 ### Requirement: Organized Translation Files
 The system SHALL maintain clear file organization.

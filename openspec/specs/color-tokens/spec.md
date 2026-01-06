@@ -9,7 +9,11 @@ The @commercetools/color-tokens package is a build-time generator that combines 
 **Output:** dist/color-tokens.json (6,575 lines, 144KB)
 **Sources:** @radix-ui/colors v3.0.0 + custom brand colors
 
-## Color Generation System
+## Purpose
+
+This specification defines the cross-cutting concerns for color token generation, transformation, and DTCG format output. The package combines Radix UI system colors with commercetools brand colors to feed into @commercetools/nimbus-tokens.
+
+## Requirements
 
 ### Requirement: Radix UI Integration
 The system SHALL import and process Radix UI color palettes.
@@ -30,8 +34,6 @@ The system SHALL provide commercetools brand color palettes.
 - **AND** SHALL provide light and dark mode variants
 - **AND** SHALL provide alpha transparency variants
 - **AND** SHALL follow 12-step scale structure matching Radix patterns
-
-## Palette Structure
 
 ### Requirement: 12-Step Color Scale
 The system SHALL generate 12-step color scales for all palettes.
@@ -58,8 +60,6 @@ The system SHALL generate special reference tokens.
 - **AND** SHALL determine black or white based on 2.9 WCAG threshold
 - **AND** SHALL ensure accessible text contrast on DEFAULT color
 
-## Semantic Palette Mapping
-
 ### Requirement: Semantic Color References
 The system SHALL create semantic color aliases using DTCG reference syntax.
 
@@ -72,8 +72,6 @@ The system SHALL create semantic color aliases using DTCG reference syntax.
 - **AND** warning SHALL reference `{color.system-palettes.amber.*}`
 - **AND** positive SHALL reference `{color.system-palettes.grass.*}`
 
-## Theme Mode Support
-
 ### Requirement: Light and Dark Modes
 The system SHALL generate paired light/dark mode colors.
 
@@ -83,8 +81,6 @@ The system SHALL generate paired light/dark mode colors.
 - **AND** SHALL have dark theme variant
 - **AND** both SHALL follow same 12-step + DEFAULT + contrast structure
 - **AND** values SHALL be optimized for respective backgrounds
-
-## Output Format
 
 ### Requirement: DTCG-Compliant JSON
 The system SHALL generate W3C DTCG standard format.
@@ -106,8 +102,6 @@ The system SHALL organize colors into three tiers.
 - **AND** SHALL provide brand-palettes tier (6 commercetools palettes)
 - **AND** SHALL provide semantic-palettes tier (12 aliased palettes)
 
-## Build Integration
-
 ### Requirement: Manual Copy Workflow
 The system SHALL require manual integration with nimbus-tokens.
 
@@ -127,8 +121,6 @@ The system SHALL generate output consumable by Style Dictionary.
 - **AND** SHALL transform via Style Dictionary to CSS/TS/Chakra formats
 - **AND** SHALL resolve token references to actual values
 
-## Accessibility
-
 ### Requirement: Contrast Calculation
 The system SHALL ensure accessible color combinations.
 
@@ -139,8 +131,6 @@ The system SHALL ensure accessible color combinations.
 - **AND** SHALL use white if ratio > 2.9, else black
 - **AND** SHALL ensure WCAG AA compliance for text on DEFAULT color
 
-## Package Configuration
-
 ### Requirement: Private Package Status
 The system SHALL NOT be published to NPM registry.
 
@@ -149,8 +139,6 @@ The system SHALL NOT be published to NPM registry.
 - **THEN** SHALL mark as private (not published)
 - **AND** SHALL be used only as workspace build tool
 - **AND** output SHALL be consumed by nimbus-tokens, not imported at runtime
-
-## Dependencies
 
 ### Requirement: Color Processing Libraries
 The system SHALL use specialized color manipulation tools.
@@ -161,8 +149,6 @@ The system SHALL use specialized color manipulation tools.
 - **AND** SHALL use chroma-js v3.1.2 for contrast calculations
 - **AND** SHALL use lodash v4.17.21 for utility functions
 
-## Token Count Statistics
-
 ### Requirement: Comprehensive Color Coverage
 The system SHALL generate thousands of color tokens.
 
@@ -172,8 +158,6 @@ The system SHALL generate thousands of color tokens.
 - **AND** SHALL be 144KB in size
 - **AND** SHALL contain ~2,000+ individual color tokens
 - **AND** SHALL support 54 system + 6 brand + 12 semantic palettes
-
-## Brand Color Specifications
 
 ### Requirement: commercetools Brand Identity
 The system SHALL accurately represent brand colors.

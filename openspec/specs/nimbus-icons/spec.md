@@ -9,7 +9,11 @@ The @commercetools/nimbus-icons package provides 2,126 SVG icons as tree-shakeab
 **Total Icons:** 2,126 (Material + Custom)
 **Source:** @material-design-icons/svg v0.14.15 (outlined variant)
 
-## Icon Component Interface
+## Purpose
+
+This specification defines the cross-cutting concerns for icon generation, transformation, and distribution. Icon components are generated from Material Design and custom SVG sources using SVGR.
+
+## Requirements
 
 ### Requirement: SVG Component Generation
 The system SHALL generate React components from SVG sources.
@@ -46,8 +50,6 @@ The system SHALL inject standard attributes via SVGR configuration.
 - **THEN** SHALL set fill="currentColor" to inherit text color
 - **AND** SHALL allow override via props
 
-## Material Icons Collection
-
 ### Requirement: Comprehensive Icon Library
 The system SHALL provide 2,122 Material Design outlined icons.
 
@@ -64,8 +66,6 @@ The system SHALL provide 2,122 Material Design outlined icons.
 - **AND** SHALL include commerce icons (shopping-cart, store, payment, attach-money)
 - **AND** SHALL include date/time icons (calendar-today, schedule, access-time)
 
-## Custom Icons
-
 ### Requirement: Commercetools Brand Icons
 The system SHALL provide custom commercetools-specific icons.
 
@@ -75,8 +75,6 @@ The system SHALL provide custom commercetools-specific icons.
 - **AND** SHALL provide Github icon (GitHub logo)
 - **AND** SHALL provide CommercetoolsCube icon (commercetools brand cube logo)
 - **AND** SHALL provide HighPrecision icon (16x16 viewBox, for MoneyInput component)
-
-## Build System
 
 ### Requirement: SVG-to-React Transformation
 The system SHALL use SVGR CLI to generate icon components.
@@ -99,8 +97,6 @@ The system SHALL compile TypeScript to dual module formats.
 - **AND** SHALL generate TypeScript declarations for both formats
 - **AND** SHALL create barrel export index files
 
-## Package Exports
-
 ### Requirement: Tree-Shakeable Exports
 The system SHALL support tree-shaking for optimal bundle sizes.
 
@@ -115,8 +111,6 @@ The system SHALL support tree-shaking for optimal bundle sizes.
 - **THEN** SHALL re-export all Material icons from ./material-icons
 - **AND** SHALL export custom icons by name
 
-## Documentation Integration
-
 ### Requirement: Searchable Icon Browser
 The system SHALL integrate with documentation site for icon discovery.
 
@@ -127,8 +121,6 @@ The system SHALL integrate with documentation site for icon discovery.
 - **AND** SHALL provide copy-to-clipboard for import statements
 - **AND** SHALL show icon names and preview
 
-## Usage in Nimbus Components
-
 ### Requirement: Component Integration
 The system SHALL be used by @commercetools/nimbus components.
 
@@ -136,8 +128,6 @@ The system SHALL be used by @commercetools/nimbus components.
 - **WHEN** Nimbus components need icons
 - **THEN** SHALL import from @commercetools/nimbus-icons
 - **AND** examples SHALL include: KeyboardArrowDown (SplitButton), Close (Drawer/Dialog), DragIndicator (DraggableList), Save/Edit/Share (examples)
-
-## Performance Characteristics
 
 ### Requirement: Optimized Bundle Size
 The system SHALL optimize for production bundle sizes.
