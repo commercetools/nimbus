@@ -1,0 +1,674 @@
+---
+title: Tabs Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Tabs, type TabsProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Tabs component can be used in two ways:
+
+1. **Compound API** - Manual composition with `Tabs.Root`, `Tabs.List`, `Tabs.Tab`, `Tabs.Panels`, and `Tabs.Panel`
+2. **Dynamic rendering** - Pass a `tabs` array prop to `Tabs.Root`
+
+**Compound API approach:**
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Tabs.Root>
+      <Tabs.List>
+        <Tabs.Tab id="tab1">First Tab</Tabs.Tab>
+        <Tabs.Tab id="tab2">Second Tab</Tabs.Tab>
+        <Tabs.Tab id="tab3">Third Tab</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="tab1">
+          <Text>Content for the first tab.</Text>
+        </Tabs.Panel>
+        <Tabs.Panel id="tab2">
+          <Text>Content for the second tab.</Text>
+        </Tabs.Panel>
+        <Tabs.Panel id="tab3">
+          <Text>Content for the third tab.</Text>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+**Dynamic rendering approach:**
+
+```jsx-live-dev
+const App = () => {
+  const tabs = [
+    {
+      id: 'tab1',
+      tabLabel: 'First Tab',
+      panelContent: <Text>Content for the first tab.</Text>,
+    },
+    {
+      id: 'tab2',
+      tabLabel: 'Second Tab',
+      panelContent: <Text>Content for the second tab.</Text>,
+    },
+    {
+      id: 'tab3',
+      tabLabel: 'Third Tab',
+      panelContent: <Text>Content for the third tab.</Text>,
+    },
+  ];
+
+  return <Tabs.Root tabs={tabs} />;
+};
+```
+
+## Usage examples
+
+### Size variants
+
+The Tabs component supports three size variants: `sm`, `md` (default), and `lg`.
+
+```jsx-live-dev
+const App = () => {
+  const tabs = [
+    { id: '1', tabLabel: 'Overview', panelContent: 'Overview content' },
+    { id: '2', tabLabel: 'Details', panelContent: 'Details content' },
+    { id: '3', tabLabel: 'Settings', panelContent: 'Settings content' },
+  ];
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Small</Text>
+        <Tabs.Root size="sm" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Medium (default)</Text>
+        <Tabs.Root size="md" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Large</Text>
+        <Tabs.Root size="lg" tabs={tabs} />
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Visual variants
+
+The Tabs component offers two visual styles:
+- **line** (default) - Tabs with an underline indicator
+- **pills** - Tabs with a pill-shaped background when active
+
+```jsx-live-dev
+const App = () => {
+  const tabs = [
+    { id: '1', tabLabel: 'Dashboard', panelContent: 'Dashboard view' },
+    { id: '2', tabLabel: 'Analytics', panelContent: 'Analytics view' },
+    { id: '3', tabLabel: 'Reports', panelContent: 'Reports view' },
+  ];
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Line variant (default)</Text>
+        <Tabs.Root variant="line" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Pills variant</Text>
+        <Tabs.Root variant="pills" tabs={tabs} />
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Orientation
+
+Tabs can be displayed horizontally or vertically using the `orientation` prop.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Horizontal (default)</Text>
+        <Tabs.Root orientation="horizontal">
+          <Tabs.List>
+            <Tabs.Tab id="home">Home</Tabs.Tab>
+            <Tabs.Tab id="about">About</Tabs.Tab>
+            <Tabs.Tab id="contact">Contact</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="home">
+              <Text>Welcome to our homepage!</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="about">
+              <Text>Learn more about us.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="contact">
+              <Text>Get in touch with us.</Text>
+            </Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Vertical</Text>
+        <Tabs.Root orientation="vertical">
+          <Tabs.List>
+            <Tabs.Tab id="profile">Profile</Tabs.Tab>
+            <Tabs.Tab id="security">Security</Tabs.Tab>
+            <Tabs.Tab id="notifications">Notifications</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="profile">
+              <Text>Manage your profile settings.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="security">
+              <Text>Configure security options.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="notifications">
+              <Text>Adjust notification preferences.</Text>
+            </Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Placement
+
+The `placement` prop controls where the tab list appears relative to the panels:
+- **horizontal orientation**: `start` (left-aligned) or `end` (right-aligned)
+- **vertical orientation**: `start` (tabs on left) or `end` (tabs on right)
+
+```jsx-live-dev
+const App = () => {
+  const tabs = [
+    { id: '1', tabLabel: 'First', panelContent: 'First panel content' },
+    { id: '2', tabLabel: 'Second', panelContent: 'Second panel content' },
+    { id: '3', tabLabel: 'Third', panelContent: 'Third panel content' },
+  ];
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Horizontal with placement="start"</Text>
+        <Tabs.Root orientation="horizontal" placement="start" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Horizontal with placement="end"</Text>
+        <Tabs.Root orientation="horizontal" placement="end" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Vertical with placement="start" (tabs on left)</Text>
+        <Tabs.Root orientation="vertical" placement="start" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Vertical with placement="end" (tabs on right)</Text>
+        <Tabs.Root orientation="vertical" placement="end" tabs={tabs} />
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Disabled tabs
+
+Individual tabs can be disabled using the `disabledKeys` prop on `Tabs.Root`, or the `isDisabled` prop on individual `Tabs.Tab` components.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Disabled via disabledKeys prop</Text>
+        <Tabs.Root disabledKeys={['tab2']}>
+          <Tabs.List>
+            <Tabs.Tab id="tab1">Active Tab</Tabs.Tab>
+            <Tabs.Tab id="tab2">Disabled Tab</Tabs.Tab>
+            <Tabs.Tab id="tab3">Another Active Tab</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="tab1">
+              <Text>First tab content is accessible.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="tab2">
+              <Text>This content cannot be accessed.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="tab3">
+              <Text>Third tab content is accessible.</Text>
+            </Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Disabled via isDisabled prop</Text>
+        <Tabs.Root>
+          <Tabs.List>
+            <Tabs.Tab id="enabled1">Available</Tabs.Tab>
+            <Tabs.Tab id="disabled1" isDisabled>
+              Unavailable
+            </Tabs.Tab>
+            <Tabs.Tab id="enabled2">Available</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="enabled1">
+              <Text>This tab is enabled.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="disabled1">
+              <Text>This tab is disabled.</Text>
+            </Tabs.Panel>
+            <Tabs.Panel id="enabled2">
+              <Text>This tab is also enabled.</Text>
+            </Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Dynamic tabs with tabs prop
+
+For dynamic content, pass an array of tab configurations to the `tabs` prop. This is useful when tab data comes from an API or changes at runtime.
+
+```jsx-live-dev
+const App = () => {
+  const [tabs, setTabs] = useState([
+    {
+      id: '1',
+      tabLabel: 'Introduction',
+      panelContent: 'Welcome to our product documentation.',
+    },
+    {
+      id: '2',
+      tabLabel: 'Getting Started',
+      panelContent: 'Learn how to get started with our product.',
+    },
+    {
+      id: '3',
+      tabLabel: 'API Reference',
+      panelContent: 'Explore our comprehensive API documentation.',
+    },
+  ]);
+
+  const addTab = () => {
+    const newId = String(tabs.length + 1);
+    setTabs([
+      ...tabs,
+      {
+        id: newId,
+        tabLabel: `Tab ${newId}`,
+        panelContent: `Dynamic content for tab ${newId}`,
+      },
+    ]);
+  };
+
+  const removeLastTab = () => {
+    if (tabs.length > 1) {
+      setTabs(tabs.slice(0, -1));
+    }
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="300">
+        <Button onClick={addTab} size="md">
+          Add Tab
+        </Button>
+        <Button onClick={removeLastTab} size="md" variant="outline">
+          Remove Last Tab
+        </Button>
+      </Stack>
+
+      <Tabs.Root tabs={tabs} />
+    </Stack>
+  );
+};
+```
+
+### Manual composition with compound API
+
+Use the compound API for more control over tab and panel rendering, including custom content and complex layouts.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Tabs.Root variant="pills">
+      <Tabs.List>
+        <Tabs.Tab id="overview">
+          <Icons.Home />
+          Overview
+        </Tabs.Tab>
+        <Tabs.Tab id="analytics">
+          <Icons.BarChart />
+          Analytics
+        </Tabs.Tab>
+        <Tabs.Tab id="settings">
+          <Icons.Settings />
+          Settings
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="overview">
+          <Stack direction="column" gap="300" padding="400">
+            <Heading as="h3" fontSize="500">
+              Dashboard Overview
+            </Heading>
+            <Text>
+              View your key metrics and recent activity at a glance.
+            </Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="analytics">
+          <Stack direction="column" gap="300" padding="400">
+            <Heading as="h3" fontSize="500">
+              Analytics & Reports
+            </Heading>
+            <Text>
+              Dive deep into your data with comprehensive analytics tools.
+            </Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="settings">
+          <Stack direction="column" gap="300" padding="400">
+            <Heading as="h3" fontSize="500">
+              Configuration Settings
+            </Heading>
+            <Text>
+              Customize your experience with advanced settings options.
+            </Text>
+          </Stack>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+### Uncontrolled mode
+
+By default, Tabs operates in uncontrolled mode where it manages its own state. Use `defaultSelectedKey` to set the initially selected tab.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Tabs.Root defaultSelectedKey="tab2">
+      <Tabs.List>
+        <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
+        <Tabs.Tab id="tab2">Tab 2 (Initially Selected)</Tabs.Tab>
+        <Tabs.Tab id="tab3">Tab 3</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="tab1">
+          <Text>First tab content</Text>
+        </Tabs.Panel>
+        <Tabs.Panel id="tab2">
+          <Text>Second tab content - selected by default</Text>
+        </Tabs.Panel>
+        <Tabs.Panel id="tab3">
+          <Text>Third tab content</Text>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+### Controlled mode
+
+For full control over tab selection, use the `selectedKey` and `onSelectionChange` props.
+
+```jsx-live-dev
+const App = () => {
+  const [selectedTab, setSelectedTab] = useState<TabsProps['selectedKey']>('profile');
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text>
+        Currently selected tab: <strong>{String(selectedTab)}</strong>
+      </Text>
+
+      <Tabs.Root
+        selectedKey={selectedTab}
+        onSelectionChange={setSelectedTab}
+      >
+        <Tabs.List>
+          <Tabs.Tab id="profile">Profile</Tabs.Tab>
+          <Tabs.Tab id="account">Account</Tabs.Tab>
+          <Tabs.Tab id="preferences">Preferences</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels>
+          <Tabs.Panel id="profile">
+            <Text>Manage your profile information</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="account">
+            <Text>View and edit account settings</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="preferences">
+            <Text>Customize your preferences</Text>
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+
+      <Stack direction="row" gap="300">
+        <Button
+          size="md"
+          onClick={() => setSelectedTab('profile')}
+          variant={selectedTab === 'profile' ? 'solid' : 'outline'}
+        >
+          Go to Profile
+        </Button>
+        <Button
+          size="md"
+          onClick={() => setSelectedTab('account')}
+          variant={selectedTab === 'account' ? 'solid' : 'outline'}
+        >
+          Go to Account
+        </Button>
+        <Button
+          size="md"
+          onClick={() => setSelectedTab('preferences')}
+          variant={selectedTab === 'preferences' ? 'solid' : 'outline'}
+        >
+          Go to Preferences
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Tabs component follows WCAG 2.1 AA guidelines and implements the WAI-ARIA tabs pattern.
+
+#### Role
+
+- `Tabs.Root` contains the tablist and tabpanels
+- `Tabs.List` has `role="tablist"`
+- `Tabs.Tab` has `role="tab"` with `aria-selected` indicating active state
+- `Tabs.Panel` has `role="tabpanel"` and is associated with its tab via `aria-labelledby`
+
+#### Labeling
+
+- Each tab must have an `id` prop that matches its corresponding panel
+- Tab content should be descriptive and concise
+- Complex tab labels can include icons and text
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus into and out of the tab list |
+| `ArrowRight` / `ArrowDown` | Move focus to the next tab (horizontal/vertical) |
+| `ArrowLeft` / `ArrowUp` | Move focus to the previous tab (horizontal/vertical) |
+| `Home` | Move focus to the first tab |
+| `End` | Move focus to the last tab |
+| `Enter` / `Space` | Activate the focused tab (when `keyboardActivation="manual"`) |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-settings-tabs";
+
+export const SettingsTabs = () => (
+  <Tabs.Root id={PERSISTENT_ID}>
+    <Tabs.List>
+      <Tabs.Tab id="profile">Profile</Tabs.Tab>
+      <Tabs.Tab id="security">Security</Tabs.Tab>
+    </Tabs.List>
+    <Tabs.Panels>
+      <Tabs.Panel id="profile">Profile content</Tabs.Panel>
+      <Tabs.Panel id="security">Security content</Tabs.Panel>
+    </Tabs.Panels>
+  </Tabs.Root>
+);
+```
+
+## API
+
+<PropsTable id="Tabs" />
+
+## Common patterns
+
+### Tab content with icons
+
+Combine icons with text labels for more expressive tabs.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Tabs.Root variant="pills" size="lg">
+      <Tabs.List>
+        <Tabs.Tab id="dashboard">
+          <Icons.Dashboard />
+          Dashboard
+        </Tabs.Tab>
+        <Tabs.Tab id="reports">
+          <Icons.Assessment />
+          Reports
+        </Tabs.Tab>
+        <Tabs.Tab id="settings">
+          <Icons.Settings />
+          Settings
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="dashboard">
+          <Stack direction="column" gap="300" padding="500">
+            <Text>Dashboard content with key metrics and visualizations.</Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="reports">
+          <Stack direction="column" gap="300" padding="500">
+            <Text>Generate and view comprehensive reports.</Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="settings">
+          <Stack direction="column" gap="300" padding="500">
+            <Text>Configure application settings and preferences.</Text>
+          </Stack>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+### Tabs with badges
+
+Display notification counts or status indicators alongside tab labels using badges.
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Tabs.Root>
+      <Tabs.List>
+        <Tabs.Tab id="inbox">
+          <Stack direction="row" gap="200" alignItems="center">
+            <Text>Inbox</Text>
+            <Badge colorPalette="primary" size="xs">12</Badge>
+          </Stack>
+        </Tabs.Tab>
+        <Tabs.Tab id="drafts">
+          <Stack direction="row" gap="200" alignItems="center">
+            <Text>Drafts</Text>
+            <Badge colorPalette="neutral" size="xs">3</Badge>
+          </Stack>
+        </Tabs.Tab>
+        <Tabs.Tab id="sent">
+          <Text>Sent</Text>
+        </Tabs.Tab>
+        <Tabs.Tab id="spam">
+          <Stack direction="row" gap="200" alignItems="center">
+            <Text>Spam</Text>
+            <Badge colorPalette="critical" size="xs">2</Badge>
+          </Stack>
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="inbox">
+          <Stack direction="column" gap="300" padding="400">
+            <Text>You have 12 new messages in your inbox.</Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="drafts">
+          <Stack direction="column" gap="300" padding="400">
+            <Text>You have 3 draft messages.</Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="sent">
+          <Stack direction="column" gap="300" padding="400">
+            <Text>View your sent messages.</Text>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="spam">
+          <Stack direction="column" gap="300" padding="400">
+            <Text>2 messages marked as spam.</Text>
+          </Stack>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Tabs within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: tabs.docs.spec.tsx}}
+
+## Resources
+
+- [Tabs Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-tabs--docs)
+- [React Aria Tabs Documentation](https://react-spectrum.adobe.com/react-aria/Tabs.html)
+- [WAI-ARIA Tabs Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
