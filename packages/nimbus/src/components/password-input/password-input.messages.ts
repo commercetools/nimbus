@@ -19,6 +19,9 @@ import passwordInputMessages_pt from "./intl/pt-BR";
 /**
  * Normalizes BCP47 locale codes to match dictionary keys.
  * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
+ *
+ * This function is intentionally duplicated in each *.messages.ts file to enable optimal tree-shaking.
+ *
  */
 function normalizeLocale(locale: string): string {
   const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
