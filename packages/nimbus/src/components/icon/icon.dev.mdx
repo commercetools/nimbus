@@ -28,11 +28,11 @@ const App = () => (
   <Stack direction="row" gap="400" align="center">
     {/* Using children */}
     <Icon>
-      <CheckCircle />
+      <Icons.CheckCircle />
     </Icon>
     
     {/* Using as prop (shorthand) */}
-    <Icon as={Settings} />
+    <Icon as={Icons.Settings} />
   </Stack>
 )
 ```
@@ -47,27 +47,27 @@ Icon provides six predefined size variants that can be applied using the `size` 
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     <Stack direction="column" gap="100" align="center">
-      <Icon size="2xs" as={Star} />
+      <Icon size="2xs" as={Icons.Star} />
       <Text fontSize="xs">2xs</Text>
     </Stack>
     <Stack direction="column" gap="100" align="center">
-      <Icon size="xs" as={Star} />
+      <Icon size="xs" as={Icons.Star} />
       <Text fontSize="xs">xs</Text>
     </Stack>
     <Stack direction="column" gap="100" align="center">
-      <Icon size="sm" as={Star} />
+      <Icon size="sm" as={Icons.Star} />
       <Text fontSize="xs">sm</Text>
     </Stack>
     <Stack direction="column" gap="100" align="center">
-      <Icon size="md" as={Star} />
+      <Icon size="md" as={Icons.Star} />
       <Text fontSize="xs">md</Text>
     </Stack>
     <Stack direction="column" gap="100" align="center">
-      <Icon size="lg" as={Star} />
+      <Icon size="lg" as={Icons.Star} />
       <Text fontSize="xs">lg</Text>
     </Stack>
     <Stack direction="column" gap="100" align="center">
-      <Icon size="xl" as={Star} />
+      <Icon size="xl" as={Icons.Star} />
       <Text fontSize="xs">xl</Text>
     </Stack>
   </Stack>
@@ -81,9 +81,9 @@ For sizes beyond the predefined variants, use the `boxSize` style prop:
 ```jsx-live-dev
 const App = () => (
   <Stack direction="row" gap="400" align="center">
-    <Icon boxSize="1600" as={Favorite} />
-    <Icon boxSize="2400" as={Favorite} />
-    <Icon boxSize="3200" as={Favorite} />
+    <Icon boxSize="1600" as={Icons.Favorite} />
+    <Icon boxSize="2400" as={Icons.Favorite} />
+    <Icon boxSize="3200" as={Icons.Favorite} />
   </Stack>
 )
 ```
@@ -96,17 +96,17 @@ Icons inherit the current text color by default, but can be customized using the
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="300" align="center">
-      <Icon as={Info} color="primary.11" size="lg" />
-      <Icon as={CheckCircle} color="positive.11" size="lg" />
-      <Icon as={Warning} color="warning.11" size="lg" />
-      <Icon as={Error} color="critical.11" size="lg" />
-      <Icon as={Help} color="info.11" size="lg" />
+      <Icon as={Icons.Info} color="primary.11" size="lg" />
+      <Icon as={Icons.CheckCircle} color="positive.11" size="lg" />
+      <Icon as={Icons.Warning} color="warning.11" size="lg" />
+      <Icon as={Icons.Error} color="critical.11" size="lg" />
+      <Icon as={Icons.Help} color="info.11" size="lg" />
     </Stack>
     
     <Stack direction="row" gap="300" align="center">
-      <Icon as={Favorite} color="deeppink" size="lg" />
-      <Icon as={Star} color="gold" size="lg" />
-      <Icon as={Palette} color="rebeccapurple" size="lg" />
+      <Icon as={Icons.Favorite} color="deeppink" size="lg" />
+      <Icon as={Icons.Star} color="gold" size="lg" />
+      <Icon as={Icons.Palette} color="rebeccapurple" size="lg" />
     </Stack>
   </Stack>
 )
@@ -118,15 +118,15 @@ The `as` prop provides a convenient shorthand for rendering an icon without nest
 
 ```jsx-live-dev
 const App = () => {
-  const [iconType, setIconType] = React.useState<IconProps["as"]>(Home);
+  const [iconType, setIconType] = React.useState<IconProps["as"]>(Icons.Home);
   
   return (
     <Stack direction="column" gap="400">
       <Stack direction="row" gap="200">
-        <Button size="xs" onClick={() => setIconType(Home)}>Home</Button>
-        <Button size="xs" onClick={() => setIconType(Settings)}>Settings</Button>
-        <Button size="xs" onClick={() => setIconType(Notifications)}>Notifications</Button>
-        <Button size="xs" onClick={() => setIconType(AccountCircle)}>Account</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.Home)}>Home</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.Settings)}>Settings</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.Notifications)}>Notifications</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.AccountCircle)}>Account</Button>
       </Stack>
       
       <Stack direction="row" gap="300" align="center">
@@ -174,7 +174,7 @@ Icon supports responsive prop values for different breakpoints:
 const App = () => (
   <Stack direction="column" gap="400">
     <Icon 
-      as={Smartphone}
+      as={Icons.Smartphone}
       size={{ base: "sm", md: "md", lg: "xl" }}
       color="primary.11"
     />
@@ -193,7 +193,7 @@ Icon accepts all Chakra UI SVG props for advanced styling:
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     <Icon 
-      as={FavoriteBorder}
+      as={Icons.FavoriteBorder}
       size="xl"
       color="critical.11"
       opacity="0.7"
@@ -202,13 +202,13 @@ const App = () => (
       cursor="pointer"
     />
     <Icon 
-      as={Star}
+      as={Icons.Star}
       size="xl"
       color="warning.11"
       filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
     />
     <Icon 
-      as={Lightbulb}
+      as={Icons.Lightbulb}
       size="xl"
       color="info.11"
       transform="rotate(15deg)"
@@ -243,11 +243,11 @@ Icon is a visual element that requires proper accessibility considerations:
 
 ```tsx
 {/* Standalone icon - needs label */}
-<IconButton aria-label="Delete item" icon={Delete} />
+<IconButton aria-label="Delete item" icon={Icons.Delete} />
 
 {/* Decorative icon with text - hide from screen readers */}
 <Button>
-  <Icon as={Save} aria-hidden="true" />
+  <Icon as={Icons.Save} aria-hidden="true" />
   Save Document
 </Button>
 ```
@@ -264,7 +264,7 @@ Icons themselves are not interactive. When icons need to be clickable:
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 
 ```tsx
-<Icon id="status-icon-success" as={CheckCircle} />
+<Icon id="status-icon-success" as={Icons.CheckCircle} />
 ```
 
 ## API reference
@@ -275,7 +275,7 @@ Accepts a single icon component from `@commercetools/nimbus-icons` or a custom S
 
 ```tsx
 <Icon>
-  <CheckCircle />
+  <Icons.CheckCircle />
 </Icon>
 ```
 
@@ -284,7 +284,7 @@ Accepts a single icon component from `@commercetools/nimbus-icons` or a custom S
 Shorthand prop that accepts an icon component to be rendered.
 
 ```tsx
-<Icon as={CheckCircle} />
+<Icon as={Icons.CheckCircle} />
 ```
 
 ### `size`
@@ -295,7 +295,7 @@ Predefined size variant for the icon.
 - **Default**: Inherits font-size from parent
 
 ```tsx
-<Icon as={Star} size="md" />
+<Icon as={Icons.Star} size="md" />
 ```
 
 ### `color`
@@ -303,8 +303,8 @@ Predefined size variant for the icon.
 Sets the icon color using Nimbus color tokens or CSS color values.
 
 ```tsx
-<Icon as={Info} color="primary.11" />
-<Icon as={Warning} color="gold" />
+<Icon as={Icons.Info} color="primary.11" />
+<Icon as={Icons.Warning} color="gold" />
 ```
 
 ### `boxSize`
@@ -312,8 +312,8 @@ Sets the icon color using Nimbus color tokens or CSS color values.
 Custom size using Nimbus size tokens or CSS values.
 
 ```tsx
-<Icon as={Settings} boxSize="2000" />
-<Icon as={Home} boxSize="48px" />
+<Icon as={Icons.Settings} boxSize="2000" />
+<Icon as={Icons.Home} boxSize="48px" />
 ```
 
 ### Inherited Props
@@ -328,28 +328,20 @@ Combine icons with buttons for enhanced visual communication:
 
 ```jsx-live-dev
 const App = () => (
-  <Stack direction="column" gap="400">
     <Stack direction="row" gap="200">
       <Button size="xs" variant="solid" colorPalette="primary">
-        <Icon as={Add} />
+        <Icon as={Icons.Add} />
         Create New
       </Button>
       <Button size="xs" variant="outline">
-        <Icon as={Save} />
+        <Icon as={Icons.Save} />
         Save
       </Button>
       <Button size="xs" variant="ghost">
-        <Icon as={Delete} />
+        <Icon as={Icons.Delete} />
         Delete
       </Button>
     </Stack>
-    
-    <Stack direction="row" gap="200">
-      <IconButton icon={Edit} aria-label="Edit" size="xs" />
-      <IconButton icon={Share} aria-label="Share" size="xs" />
-      <IconButton icon={MoreVert} aria-label="More options" size="xs" />
-    </Stack>
-  </Stack>
 )
 ```
 
@@ -361,19 +353,19 @@ Use colored icons to indicate status or state:
 const App = () => (
   <Stack direction="column" gap="300">
     <Stack direction="row" gap="300" align="center">
-      <Icon as={CheckCircle} color="positive.11" size="sm" />
+      <Icon as={Icons.CheckCircle} color="positive.11" size="sm" />
       <Text>Operation completed successfully</Text>
     </Stack>
     <Stack direction="row" gap="300" align="center">
-      <Icon as={Error} color="critical.11" size="sm" />
+      <Icon as={Icons.Error} color="critical.11" size="sm" />
       <Text>An error occurred</Text>
     </Stack>
     <Stack direction="row" gap="300" align="center">
-      <Icon as={Warning} color="warning.11" size="sm" />
+      <Icon as={Icons.Warning} color="warning.11" size="sm" />
       <Text>Warning: Check your input</Text>
     </Stack>
     <Stack direction="row" gap="300" align="center">
-      <Icon as={Info} color="info.11" size="sm" />
+      <Icon as={Icons.Info} color="info.11" size="sm" />
       <Text>Additional information available</Text>
     </Stack>
   </Stack>
@@ -408,10 +400,10 @@ const App = () => {
   
   return (
     <Stack direction="row" gap="200" p="400" bg="neutral.2" borderRadius="200">
-      <NavItem id="home" icon={Home} label="Home" />
-      <NavItem id="search" icon={Search} label="Search" />
-      <NavItem id="notifications" icon={Notifications} label="Alerts" />
-      <NavItem id="settings" icon={Settings} label="Settings" />
+      <NavItem id="home" icon={Icons.Home} label="Home" />
+      <NavItem id="search" icon={Icons.Search} label="Search" />
+      <NavItem id="notifications" icon={Icons.Notifications} label="Alerts" />
+      <NavItem id="settings" icon={Icons.Settings} label="Settings" />
     </Stack>
   );
 }
@@ -424,10 +416,10 @@ Display lists with icon indicators:
 ```jsx-live-dev
 const App = () => {
   const features = [
-    { icon: CheckCircle, text: "Real-time synchronization", color: "positive.11" },
-    { icon: Security, text: "Enterprise-grade security", color: "info.11" },
-    { icon: Speed, text: "Lightning-fast performance", color: "primary.11" },
-    { icon: CloudDone, text: "Cloud-based storage", color: "info.11" },
+    { icon: Icons.CheckCircle, text: "Real-time synchronization", color: "positive.11" },
+    { icon: Icons.Security, text: "Enterprise-grade security", color: "info.11" },
+    { icon: Icons.Speed, text: "Lightning-fast performance", color: "primary.11" },
+    { icon: Icons.CloudDone, text: "Cloud-based storage", color: "info.11" },
   ];
   
   return (
@@ -450,11 +442,11 @@ Use icons to represent different file types or content:
 ```jsx-live-dev
 const App = () => {
   const files = [
-    { name: "Document.pdf", icon: PictureAsPdf, color: "critical.11" },
-    { name: "Spreadsheet.xlsx", icon: TableChart, color: "positive.11" },
-    { name: "Presentation.pptx", icon: Slideshow, color: "warning.11" },
-    { name: "Image.jpg", icon: Image, color: "info.11" },
-    { name: "Archive.zip", icon: FolderZip, color: "neutral.11" },
+    { name: "Document.pdf", icon: Icons.PictureAsPdf, color: "critical.11" },
+    { name: "Spreadsheet.xlsx", icon: Icons.TableChart, color: "positive.11" },
+    { name: "Presentation.pptx", icon: Icons.Slideshow, color: "warning.11" },
+    { name: "Image.jpg", icon: Icons.Image, color: "info.11" },
+    { name: "Archive.zip", icon: Icons.FolderZip, color: "neutral.11" },
   ];
   
   return (
