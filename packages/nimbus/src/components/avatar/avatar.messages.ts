@@ -109,4 +109,4 @@ export const avatarMessages = {
 /**
  * Available message keys for Avatar component
  */
-export type AvatarMessageKey = "avatarLabel" | "args";
+export type AvatarMessageKey = "avatarLabel";

@@ -83,10 +83,14 @@ async function getMessageKeys(localePath: string): Promise<string[] | null> {
 
     const keys: string[] = [];
     // Match quoted keys: "key" or 'key', or unquoted identifiers: key
+    // For unquoted identifiers, ensure they're followed by a value (arrow function, string, or template literal),
+    // not a type annotation (like function parameters: args: Record<...>)
+    // Lookahead ensures the colon is followed by a value, not a type
     const keyMatches = match[1].matchAll(
-      /"([^"]+)":|'([^']+)':|([a-zA-Z_$][a-zA-Z0-9_$]*):/g
+      /"([^"]+)":|'([^']+)':|([a-zA-Z_$][a-zA-Z0-9_$]*):\s*(?=[("'`])/g
     );
     for (const keyMatch of keyMatches) {
+      // keyMatch[1] = quoted double, keyMatch[2] = quoted single, keyMatch[3] = unquoted
       const key = keyMatch[1] || keyMatch[2] || keyMatch[3];
       if (key) keys.push(key);
     }
