@@ -143,22 +143,18 @@ const App = () => {
   return (
     <Stack direction="column" gap="400">
       <Stack direction="row" gap="400">
-        <label>
-          <input
-            type="checkbox"
-            checked={showInput}
-            onChange={(e) => setShowInput(e.target.checked)}
-          />
-          {' '}Enable page input
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={showSelector}
-            onChange={(e) => setShowSelector(e.target.checked)}
-          />
-          {' '}Enable page size selector
-        </label>
+        <Checkbox
+          isSelected={showInput}
+          onChange={setShowInput}
+        >
+          Enable page input
+        </Checkbox>
+        <Checkbox
+          isSelected={showSelector}
+          onChange={setShowSelector}
+        >
+          Enable page size selector
+        </Checkbox>
       </Stack>
 
       <Pagination
@@ -323,7 +319,7 @@ const ProductList = () => {
 
   return (
     <>
-      <input
+      <TextInput
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search..."
