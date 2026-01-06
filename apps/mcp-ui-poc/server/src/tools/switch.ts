@@ -207,7 +207,7 @@ export function registerSwitchTool(
         switchElement.defaultSelected = args.defaultSelected;
 
       // Set component-specific props
-      if (args.size) switchElement.size = args.size;
+      switchElement.size = args.size || "md"; // Default to medium size
       if (args.colorPalette) switchElement.colorPalette = args.colorPalette;
       if (args.isDisabled) switchElement.isDisabled = args.isDisabled;
       if (args.isInvalid) switchElement.isInvalid = args.isInvalid;
