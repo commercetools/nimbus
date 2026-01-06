@@ -43,6 +43,28 @@ Before implementation, you MUST research in parallel:
 
 ## Create Mode
 
+### Recipe Type Decision Flow
+
+Use this diagram to determine which recipe type to create:
+
+```mermaid
+graph TD
+    Start[Analyze Component] --> Q1{How many<br/>visual elements<br/>need styling?}
+
+    Q1 -->|One Element| Standard[Standard Recipe<br/>defineRecipe]
+    Q1 -->|Multiple Elements| Slot[Slot Recipe<br/>defineSlotRecipe]
+
+    Standard --> S1[Examples:<br/>Button, Badge<br/>Tag, Link, Icon]
+    Standard --> S2[File:<br/>component.recipe.ts]
+    Standard --> S3[Single className]
+    Standard --> S4[Variants apply to<br/>one element]
+
+    Slot --> M1[Examples:<br/>Input, Card<br/>Menu, Dialog]
+    Slot --> M2[Files:<br/>component.recipe.ts<br/>component.slots.tsx]
+    Slot --> M3[Multiple slots:<br/>root, trigger, content]
+    Slot --> M4[Variants apply to<br/>coordinated elements]
+```
+
 ### Recipe Type Decision
 
 You MUST determine if the component needs:
