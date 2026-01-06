@@ -25,10 +25,7 @@ const switchActionsBySwitchId = new Map<
 /**
  * Handle switch change events - queue MCP action if configured
  */
-export function handleSwitchChange(
-  switchId: string,
-  isSelected: boolean
-) {
+export function handleSwitchChange(switchId: string, isSelected: boolean) {
   console.log(`🔄 Switch changed: ${switchId}, selected: ${isSelected}`);
 
   const actionMeta = switchActionsBySwitchId.get(switchId);
@@ -117,7 +114,10 @@ export function registerSwitchTool(
         "Creates a toggle switch UI component using Nimbus design system. Can optionally trigger different MCP tool calls when turned on or off by specifying onToolName/offToolName and their params. Supports all Chakra UI style properties.",
       inputSchema: z.object({
         // Content
-        label: z.string().optional().describe("Label text to display next to the switch"),
+        label: z
+          .string()
+          .optional()
+          .describe("Label text to display next to the switch"),
 
         // State
         isSelected: z
@@ -177,10 +177,7 @@ export function registerSwitchTool(
           .string()
           .optional()
           .describe("Form name attribute for the switch"),
-        value: z
-          .string()
-          .optional()
-          .describe("Form value for the switch"),
+        value: z.string().optional().describe("Form value for the switch"),
 
         // All Chakra UI style properties
         ...commonStyleSchema,
@@ -242,13 +239,10 @@ export function registerSwitchTool(
           offParams: args.offParams,
           uri,
         });
-        console.log(
-          `🎯 Switch configured with actions:`,
-          {
-            on: args.onToolName,
-            off: args.offToolName,
-          }
-        );
+        console.log(`🎯 Switch configured with actions:`, {
+          on: args.onToolName,
+          off: args.offToolName,
+        });
       }
 
       // Return resource (createRemoteDomResource handles appending to root)

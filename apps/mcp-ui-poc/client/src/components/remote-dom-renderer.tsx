@@ -198,7 +198,12 @@ const SwitchWrapper = (props: Record<string, unknown>) => {
   const handleChange = id
     ? (isSelected: boolean) => {
         // Send change event to server
-        sendClientEvent("switchChange", uri, { switchId: id, isSelected }, false);
+        sendClientEvent(
+          "switchChange",
+          uri,
+          { switchId: id, isSelected },
+          false
+        );
 
         if (typeof onChange === "function") {
           onChange(isSelected);
