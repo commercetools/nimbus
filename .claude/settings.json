@@ -3,6 +3,10 @@
     "defaultMode": "bypassPermissions"
   },
   "enableAllProjectMcpServers": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash .claude/bin/statusline.sh"
+  },
   "hooks": {
     "PreToolUse": [
       {
