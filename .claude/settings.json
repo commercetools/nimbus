@@ -1,5 +1,20 @@
 {
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "enableAllProjectMcpServers": true,
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/bin/safety-check-hook.js"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|MultiEdit|Write",
