@@ -115,5 +115,4 @@ export type PaginationMessageKey =
   | "goToPreviousPage"
   | "itemsPerPage"
   | "itemsPerPageText"
-  | "ofTotalPages"
-  | "args";
+  | "ofTotalPages";
