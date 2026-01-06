@@ -187,7 +187,7 @@ Once confirmed, create the documentation file:
 
    ```yaml
    ---
-   title: {ComponentName} [Component/Pattern] # Use "Pattern" for fields, "Component" for others
+   title: {ComponentName} Component # Use "Component" for base components, "Pattern" for field patterns (title field is optional)
    tab-title: Implementation
    tab-order: 3
    ---
@@ -218,25 +218,28 @@ Once confirmed, create the documentation file:
    - **Usage examples**: Cover all features identified in Step 2
    - **Component requirements**:
      - Document accessibility requirements (Role, Labeling, Keyboard)
-     - **Mandatory**: Include the standard "Persistent ID" tracking text:
-       > If your use case requires tracking and analytics for this component, it
-       > is good practice to add a **persistent**, **unique** id to the
-       > component:
+     - **Mandatory**: Include the standard "Persistent ID" tracking text as regular paragraph:
+       If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+     - **Mandatory**: Follow the persistent ID example with a `tsx` code block (NOT `jsx-live-dev`) using this pattern:
+       ```tsx
+       const PERSISTENT_ID = "example-component-id";
+
+       export const Example = () => (
+         <ComponentName id={PERSISTENT_ID}>Content</ComponentName>
+       );
+       ```
    - **Testing**:
 
 - Testing examples are auto-generated from `.docs.spec.tsx` files
-  - **Mandatory**: Include this text before the injection token:
-    > These examples demonstrate how to test your implementation when using
-    > [Component] within your application. As the component's internal
-    > functionality is already tested by Nimbus, these patterns help you verify
-    > your integration and application-specific logic.
+  - **Mandatory**: Include this text before the injection token (as regular paragraph, replacing {ComponentName} with actual component name):
+    These examples demonstrate how to test your implementation when using {ComponentName} within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
   - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
   - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
   - **Resources**:
-    - Link to Storybook (use "link-tbd" placeholder)
-    - **Internal component links must start with '/'** (e.g.,
-      `/components/inputs/searchinput`) to ensure absolute paths from root, not
-      relative to current page
+    - Link to Storybook using pattern: `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
+      - For base components: Convert kebab-case to format (e.g., `text-input` → `components-textinput--docs`)
+      - For compound components: Use singular form (e.g., `menu` → `components-menu--docs`)
+    - **Internal component links**: Use relative paths (e.g., `../patterns/fields/textinputfield`) to match current documentation practice
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -346,7 +349,8 @@ After generating the file, run validation checks:
 - [ ] Testing section includes mandatory disclaimer paragraph (as regular text,
       not comment)
 - [ ] Accessibility section includes standard boilerplate
-- [ ] Accessibility includes PERSISTENT_ID tracking pattern
+- [ ] Accessibility includes PERSISTENT_ID tracking pattern using `tsx` code block
+- [ ] Persistent ID example follows pattern: `const PERSISTENT_ID = "..."; export const Example = () => (...)`
 - [ ] Accessibility includes Keyboard navigation subsection
 
 ### Source-Driven Content Check
@@ -382,6 +386,7 @@ After generating the file, run validation checks:
 
 - [ ] All interactive examples use `jsx-live-dev`
 - [ ] All type examples use `tsx`
+- [ ] Persistent ID examples use `tsx` (NOT `jsx-live-dev`)
 - [ ] Examples follow `const App = () => { }` pattern
 - [ ] State declarations use prop type inference pattern
 - [ ] Controlled examples include state display with Text component
@@ -393,12 +398,12 @@ After generating the file, run validation checks:
 
 ### Link Checklist
 
-- [ ] Storybook link uses actual URL pattern (when available)
+- [ ] Storybook link uses actual URL pattern: `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
+- [ ] Storybook URL properly formatted (kebab-case converted, no hyphens in component name part)
 - [ ] Field patterns link to FormField and FieldErrors
 - [ ] Field patterns link to base component
 - [ ] External documentation links added (React Aria, ARIA patterns)
-- [ ] **Internal component links start with '/'** (e.g.,
-      `/components/inputs/searchinput`) to ensure absolute paths from root
+- [ ] **Internal component links use relative paths** (e.g., `../patterns/fields/textinputfield`) to match current documentation practice
 ```
 
 Present this checklist with status for each item.
@@ -440,7 +445,7 @@ Provide a final summary:
 2. Run tests: `pnpm test:unit {component-name}.docs.spec.tsx`
 3. Build docs: `pnpm build:docs`
 4. Test all interactive examples in the docs site
-5. Update the Storybook link once available
+5. Verify Storybook link is correct and accessible
 6. Add any component-specific advanced patterns
 7. Review with the team before publishing
 
@@ -481,7 +486,7 @@ Follow guidelines from `@docs/file-type-guidelines/documentation.md`:
 
 1. **Required frontmatter**: title, tab-title, tab-order
 2. **PropsTable**: Use `<PropsTable id="ComponentName" />`
-3. **Code blocks**: `jsx-live-dev` for interactive, `tsx` for types/tests
+3. **Code blocks**: `jsx-live-dev` for interactive, `tsx` for types/tests/persistent-id-examples
 4. **Accessibility**: Mandatory documentation of keyboard and ARIA support
 
 ### Content Quality
