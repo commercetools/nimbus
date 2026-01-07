@@ -4,10 +4,6 @@ tab-title: Implementation
 tab-order: 3
 ---
 
-# Icon Component
-
-Icon is a wrapper component for displaying SVG icons from the Nimbus icon library. It provides consistent sizing, coloring, and styling for icons throughout your application.
-
 ## Getting started
 
 ### Import
@@ -140,26 +136,26 @@ const App = () => {
 
 ### With custom SVG
 
-Icon can also wrap custom SVG elements or components:
+While Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. Note that for best results, custom SVGs should be structured similarly to the Nimbus icons:
 
 ```jsx-live-dev
 const App = () => {
-  const CustomSvg = () => (
-    <svg viewBox="0 0 24 24" fill="currentColor">
+  const CustomLayersIcon = React.forwardRef((props, ref) => (
+    <svg ref={ref} viewBox="0 0 24 24" fill="currentColor" {...props}>
       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
     </svg>
-  );
+  ));
   
   return (
     <Stack direction="row" gap="400" align="center">
-      <Icon size="sm">
-        <CustomSvg />
+      <Icon size="sm" color="neutral.11">
+        <CustomLayersIcon />
       </Icon>
       <Icon size="md" color="primary.11">
-        <CustomSvg />
+        <CustomLayersIcon />
       </Icon>
       <Icon size="lg" color="positive.11">
-        <CustomSvg />
+        <CustomLayersIcon />
       </Icon>
     </Stack>
   );
@@ -269,56 +265,7 @@ If your use case requires tracking and analytics for this component, it is good 
 
 ## API reference
 
-### `children`
-
-Accepts a single icon component from `@commercetools/nimbus-icons` or a custom SVG element.
-
-```tsx
-<Icon>
-  <Icons.CheckCircle />
-</Icon>
-```
-
-### `as`
-
-Shorthand prop that accepts an icon component to be rendered.
-
-```tsx
-<Icon as={Icons.CheckCircle} />
-```
-
-### `size`
-
-Predefined size variant for the icon.
-
-- **Values**: `"2xs"` | `"xs"` | `"sm"` | `"md"` | `"lg"` | `"xl"`
-- **Default**: Inherits font-size from parent
-
-```tsx
-<Icon as={Icons.Star} size="md" />
-```
-
-### `color`
-
-Sets the icon color using Nimbus color tokens or CSS color values.
-
-```tsx
-<Icon as={Icons.Info} color="primary.11" />
-<Icon as={Icons.Warning} color="gold" />
-```
-
-### `boxSize`
-
-Custom size using Nimbus size tokens or CSS values.
-
-```tsx
-<Icon as={Icons.Settings} boxSize="2000" />
-<Icon as={Icons.Home} boxSize="48px" />
-```
-
-### Inherited Props
-
-Icon extends Chakra UI's SVG element and inherits all [Chakra UI style props](https://www.chakra-ui.com/docs/styled-system/style-props), including opacity, transform, filter, cursor, transitions, and responsive values.
+<PropsTable id="Icon" />
 
 ## Common patterns
 
@@ -479,6 +426,5 @@ These examples demonstrate how to test your implementation when using Icon withi
 ## Resources
 
 - [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-icon--docs)
-- [Nimbus Icons Package](/components/media/icon)
 - [Material Design Icons](https://fonts.google.com/icons)
 - [ARIA Authoring Practices - Icon Usage](https://www.w3.org/WAI/ARIA/apg/)
