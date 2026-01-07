@@ -1,60 +1,99 @@
 ---
 description: Create, update, or validate developer-facing MDX documentation files
-argument-hint: create|update|validate ComponentName [details]
+argument-hint: create|update|validate ComponentName [base|field] [details]
 ---
 
 # Writing Developer Documentation Skill
 
-You are a Nimbus developer documentation specialist. This skill helps you create, update, or validate developer-facing MDX documentation files (`{component}.dev.mdx`) that provide implementation guidance, API references, and code patterns.
+You are a Nimbus developer documentation specialist. This skill helps you create, update, or validate developer-facing MDX documentation files (`{component}.dev.mdx`) and their companion test files (`{component}.docs.spec.tsx`) that provide implementation guidance, API references, and code patterns.
 
 ## Critical Requirements
 
 **Developer documentation is for engineers.** Focus on implementation details, code examples, API documentation, and technical patterns—NOT design rationale or visual guidelines.
 
+**Test files are MANDATORY.** Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test file with JSDoc tags for documentation injection.
+
 ## Mode Detection
 
 Parse the request to determine the operation:
 
-- **create** - Generate new developer documentation file
-- **update** - Enhance existing documentation, add examples, update API docs
-- **validate** - Check documentation compliance with guidelines
+- **create** - Generate new developer documentation file AND test file
+- **update** - Enhance existing documentation, add examples, update API docs, update test files
+- **validate** - Check documentation compliance with guidelines including test files
 
 If no mode is specified, default to **create**.
+
+### Component Type Detection
+
+Parse arguments to extract:
+- Component name (e.g., "DateRangePicker", "TextInputField")
+- Component type: "base" or "field" (defaults to "base" if not specified)
+
+Examples:
+- `create DateRangePicker` → base component
+- `create DateRangePicker base` → base component (explicit)
+- `create TextInputField field` → field pattern
+- `update DateRangePicker` → base component
+- `validate TextInputField field` → field pattern
 
 ## Required Research (All Modes)
 
 Before implementation, you MUST research in parallel:
 
-1. **Read** `@docs/file-type-guidelines/documentation.md` for MDX patterns
-2. **Read** existing developer documentation for consistency:
+1. **Read** `@docs/engineering-docs-template.mdx` for base template structure
+2. **Read** `@docs/engineering-docs-template-guide.md` for detailed usage instructions
+3. **Read** `@docs/file-type-guidelines/documentation.md` for MDX patterns
+4. **Read** `@docs/engineering-docs-validation.md` for validation criteria
+5. **Read** existing developer documentation for consistency:
    ```bash
-   # Find similar developer docs
-   ls packages/nimbus/src/components/*/*.dev.mdx
-
-   # Read representative examples
-   cat packages/nimbus/src/components/button/button.dev.mdx
-   cat packages/nimbus/src/components/menu/menu.dev.mdx
+   # Find similar developer docs based on component type
+   ls packages/nimbus/src/components/*/*.dev.mdx  # base components
+   ls packages/nimbus/src/patterns/fields/*/*.dev.mdx  # field patterns
    ```
-3. **Read** component types file for API reference:
-   ```bash
-   cat packages/nimbus/src/components/{component}/{component}.types.ts
-   ```
-4. **Analyze** component implementation patterns and React Aria usage
+6. **Read** component files to understand implementation:
+   - `{component-name}.tsx` - Main component implementation
+   - `{component-name}.types.ts` - Props and types
+   - `{component-name}.recipe.ts` - Visual variants (if exists)
+   - `{component-name}.slots.tsx` - Slot components (if exists)
+   - `components/` directory - Compound component parts (if exists)
+   - `{component-name}.stories.tsx` - Existing usage examples
+7. **Analyze** component implementation patterns and React Aria usage
 
 ## File Structure
 
-### Location
+### Documentation File Location
 
 Developer documentation files MUST be located at:
+
+**Base components:**
 ```
 packages/nimbus/src/components/{component}/{component}.dev.mdx
+```
+
+**Field patterns:**
+```
+packages/nimbus/src/patterns/fields/{component}/{component}.dev.mdx
+```
+
+### Test File Location (MANDATORY)
+
+Documentation test files MUST be located alongside the component:
+
+**Base components:**
+```
+packages/nimbus/src/components/{component}/{component}.docs.spec.tsx
+```
+
+**Field patterns:**
+```
+packages/nimbus/src/patterns/fields/{component}/{component}.docs.spec.tsx
 ```
 
 ### Required Frontmatter
 
 ```yaml
 ---
-title: Component Name Component # REQUIRED: Display title with "Component" suffix
+title: ComponentName Component # Use "Component" for base, "Pattern" for field
 tab-title: Implementation # REQUIRED: Tab label (always "Implementation")
 tab-order: 3 # REQUIRED: Tab position (always 3 for dev docs)
 ---
@@ -66,7 +105,39 @@ tab-order: 3 # REQUIRED: Tab position (always 3 for dev docs)
 
 Developer documentation MUST follow this structure:
 
-### 1. Getting Started
+### 1. Comparison Section (Field Patterns Only)
+
+```markdown
+## [ComponentName] vs manual composition
+
+Brief comparison showing when to use the field pattern vs manual composition with FormField and FieldErrors.
+
+**Key differences:**
+- Field pattern: Simplified API, automatic error handling
+- Manual composition: More control, custom layouts
+
+```jsx-live-dev
+// Field pattern example
+const App = () => (
+  <ComponentNameField
+    label="Field Label"
+    errors={['Error message']}
+  />
+)
+```
+
+```jsx-live-dev
+// Manual composition example
+const App = () => (
+  <FormField label="Field Label">
+    <ComponentName />
+    <FieldErrors errors={['Error message']} />
+  </FormField>
+)
+```
+```
+
+### 2. Getting Started
 
 ```markdown
 ## Getting started
@@ -90,7 +161,27 @@ const App = () => (
 ```
 ```
 
-### 2. Usage Examples
+### 3. Library-Specific Section (If Applicable)
+
+For components using external libraries (e.g., `@internationalized/date`):
+
+```markdown
+## Working with [LibraryName]
+
+Explanation of external library concepts, types, and patterns.
+
+### Type imports
+
+```tsx
+import { CalendarDate } from '@internationalized/date';
+```
+
+### Common conversions
+
+Show conversion patterns between native types and library types.
+```
+
+### 4. Usage Examples
 
 ```markdown
 ## Usage examples
@@ -126,7 +217,7 @@ const App = () => {
 ```
 ```
 
-### 3. Component Requirements
+### 5. Component Requirements
 
 ```markdown
 ## Component requirements
@@ -158,7 +249,41 @@ The component supports full keyboard interaction:
 - `Escape`: Description of dismissal (if applicable)
 ```
 
-### 4. API Reference
+### 6. Form Integration (Field Patterns Only)
+
+```markdown
+## Form integration
+
+### With Formik
+
+```jsx-live-dev
+const App = () => {
+  const formik = useFormik({
+    initialValues: { fieldName: '' },
+    onSubmit: (values) => console.log(values),
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <ComponentNameField
+        name="fieldName"
+        label="Field Label"
+        value={formik.values.fieldName}
+        onChange={formik.handleChange}
+        errors={formik.errors.fieldName}
+        touched={formik.touched.fieldName}
+      />
+    </form>
+  );
+}
+```
+
+### Error handling
+
+Show FieldErrors integration and touched state patterns.
+```
+
+### 7. API Reference
 
 ```markdown
 ## API reference
@@ -166,7 +291,7 @@ The component supports full keyboard interaction:
 <PropsTable id="ComponentName" />
 ```
 
-### 5. Common Patterns
+### 8. Common Patterns
 
 ```markdown
 ## Common patterns
@@ -197,6 +322,33 @@ const App = () => {
 }
 ```
 ```
+
+### 9. Testing Your Implementation (REQUIRED)
+
+```markdown
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using [Component] within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: {component-name}.docs.spec.tsx}}
+```
+
+**CRITICAL**: The `{{docs-tests:}}` injection token pulls test examples from the `.docs.spec.tsx` file at build time.
+
+### 10. Resources
+
+```markdown
+## Resources
+
+- [Storybook examples](link-tbd)
+- [React Aria Documentation](https://react-spectrum.adobe.com/react-aria/)
+- [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+- [Related Component](/components/category/component) (if applicable)
+- [FormField](/patterns/forms/form-field) (field patterns only)
+- [FieldErrors](/patterns/forms/field-errors) (field patterns only)
+```
+
+**IMPORTANT**: Internal component links MUST start with '/' (e.g., `/components/inputs/searchinput`) to ensure absolute paths from root.
 
 ## Code Examples (jsx-live-dev Blocks)
 
@@ -268,149 +420,315 @@ const App = () => {
 ```
 ```
 
-#### Event Handling
+## Documentation Test File Structure (MANDATORY)
 
-```markdown
-```jsx-live-dev
-const App = () => {
-  const [count, setCount] = useState(0);
+**MANDATORY**: Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test file. The testing section in the MDX uses an injection token that pulls from this file at build time.
 
-  return (
-    <Stack direction="row" gap="400" alignItems="center">
-      <Button onPress={() => setCount(c => c + 1)}>
-        Increment
-      </Button>
-      <Text>Count: {count}</Text>
-    </Stack>
-  );
-}
+### File Structure
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ComponentName, NimbusProvider } from '@commercetools/nimbus';
+
+/**
+ * @docs-section basic-rendering
+ * @docs-title Basic Rendering Tests
+ * @docs-description Verify the component renders with expected elements
+ * @docs-order 1
+ */
+describe('ComponentName - Basic rendering', () => {
+  it('renders component', () => {
+    render(
+      <NimbusProvider>
+        <ComponentName />
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole('...')).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section interactions
+ * @docs-title Interaction Tests
+ * @docs-description Test user interactions with the component
+ * @docs-order 2
+ */
+describe('ComponentName - Interactions', () => {
+  it('handles user interaction', async () => {
+    const user = userEvent.setup();
+    render(
+      <NimbusProvider>
+        <ComponentName />
+      </NimbusProvider>
+    );
+
+    // Test interactions
+  });
+});
 ```
-```
 
-#### Compound Component Pattern
+### JSDoc Tags (REQUIRED)
 
-```markdown
-```jsx-live-dev
-const App = () => (
-  <Menu.Root>
-    <Menu.Trigger>Actions</Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="copy">Copy</Menu.Item>
-      <Menu.Item id="paste">Paste</Menu.Item>
-      <Menu.Item id="delete">Delete</Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-)
-```
-```
+- `@docs-section` - Unique ID for section
+- `@docs-title` - Display title
+- `@docs-description` - Brief description
+- `@docs-order` - Sort order (0 for setup, 1+ for tests)
 
-#### Advanced State Management
+### Test Patterns to Include
 
-```markdown
-```jsx-live-dev
-const App = () => {
-  const [isLoading, setIsLoading] = useState(false);
+Based on component features:
+- Basic rendering (always)
+- Interactions (if interactive)
+- Controlled mode (if supports value/onChange)
+- States (disabled, invalid, readonly, required - if component has these props)
+- Component-specific features
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-  };
+### Critical Rules
 
-  return (
-    <Button
-      isDisabled={isLoading}
-      onPress={handleSubmit}
-    >
-      {isLoading ? 'Loading...' : 'Submit'}
-    </Button>
-  );
-}
-```
+- ✅ Every `render()` must wrap with `<NimbusProvider>`
+- ✅ Import NimbusProvider from `@commercetools/nimbus`
+- ✅ Use `vi.fn()` for mocks (not `jest.fn()`)
+- ✅ Use `userEvent.setup()` for interactions
+- ✅ Base test names on component features, not generic patterns
+
+### Verify Tests
+
+```bash
+pnpm test:unit {component-name}.docs.spec.tsx
 ```
 
 ## Create Mode
 
-### Step 1: Gather Technical Context
+### Step 1: Determine Component Information
 
-You MUST gather:
-- Component's props and types
-- React Aria integration details
-- Event handlers and callbacks
-- Controlled vs uncontrolled behavior
-- Common implementation patterns
-- Accessibility requirements
+1. Parse component name and type from arguments
+2. Locate the component files:
+   - For base components: `packages/nimbus/src/components/{component-name}/`
+   - For field patterns: `packages/nimbus/src/patterns/fields/{component-name}/`
 
-### Step 2: Write Frontmatter
+3. Identify component characteristics by reading files:
+   ```bash
+   # For base components
+   find packages/nimbus/src/components -type d -iname "*{component-name}*"
 
-Create minimal frontmatter for tabbed interface:
-```yaml
----
-title: ComponentName Component
-tab-title: Implementation
-tab-order: 3
----
-```
+   # For field patterns
+   find packages/nimbus/src/patterns/fields -type d -iname "*{component-name}*"
+   ```
 
-### Step 3: Write Getting Started Section
+### Step 2: Analyze Component Features
 
-Include:
-- Import statement with type imports
-- Brief technical description
-- Basic usage example showing simplest implementation
-- Use jsx-live-dev blocks
+**CRITICAL: This step determines what examples to create. Be thorough and source-driven.**
 
-### Step 4: Document Usage Examples
+1. **Read the component's TypeScript props interface** (`{component-name}.types.ts`):
+   - Identify ALL props and their types
+   - Note which features actually exist (size?, variant?, isDisabled?, isInvalid?, isReadOnly?, etc.)
+   - Understand controlled/uncontrolled patterns (value/defaultValue/onChange)
+   - Identify unique props specific to this component
 
-For each major feature or variant:
-- Technical description of what it does
-- Code example with jsx-live-dev
-- Implementation notes or caveats
-- State management when relevant
+2. **Read the component implementation** (`{component-name}.tsx`):
+   - Identify React Aria integration (look for `import ... from 'react-aria-components'`)
+   - Note external library dependencies (e.g., `@internationalized/date`)
+   - Understand keyboard interactions and accessibility patterns
+   - Note compound component structure if applicable
 
-### Step 5: Document Component Requirements
+3. **Read existing Storybook stories** (`{component-name}.stories.tsx`) if available:
+   - See what features are already demonstrated
+   - Understand common use cases
+   - Note edge cases and variations
 
-Include:
-- Accessibility implementation details
-- Required props for a11y
-- Keyboard navigation specifics
-- ID requirements for analytics
-- Focus management behavior
+**Analysis Checklist:**
 
-### Step 6: Add API Reference
+- [ ] Size variants exist? (Look for `size?` prop in types)
+- [ ] Visual variants exist? (Look for `variant?` prop in types)
+- [ ] Dynamic collections? (Look for `items` prop)
+- [ ] Slots/Adornments? (Look for `leadingElement`, `trailingElement`, `icon`)
+- [ ] Component-specific unique props identified
+- [ ] External libraries documented (check imports)
+- [ ] Compound structure analyzed (check for namespace exports)
+- [ ] Controlled/uncontrolled modes supported? (check for value/defaultValue)
+- [ ] State props identified (isDisabled?, isInvalid?, isReadOnly?, isLoading?, etc.)
+- [ ] Form-related props noted (name?, errors?, touched?, etc.)
 
-Use PropsTable component:
+**Key Principle:** Let the component's actual features dictate the documentation. Don't force standard patterns if they don't exist in the component.
+
+### Step 3: Generate Documentation Plan
+
+Based on your analysis, create a documentation plan:
+
 ```markdown
-## API reference
+## Documentation Plan for {ComponentName}
 
-<PropsTable id="ComponentName" />
+### Component Characteristics
+
+- **Type**: [Base Component / Field Pattern]
+- **Complexity**: [Simple / Slot-Based / Compound / Complex]
+- **Size Variants**: [Yes: sm, md, lg / No]
+- **Visual Variants**: [Yes: list variants / No]
+- **External Libraries**: [None / @internationalized/date / other]
+- **Controlled/Uncontrolled**: [Both / Controlled only / Uncontrolled only]
+- **Key Features**: [List 3-5 main features or props]
+
+### Files to Create
+
+- [ ] `{component-name}.dev.mdx` - Engineering documentation
+- [ ] `{component-name}.docs.spec.tsx` - Companion test file (MANDATORY)
+
+### Sections to Include (in .dev.mdx)
+
+Based on component type and features:
+
+- [ ] Frontmatter (required)
+- [ ] Comparison section (field patterns only)
+- [ ] Getting started (required)
+- [ ] Library-specific section (if applicable)
+- [ ] Usage examples (required)
+  - [ ] Size options
+  - [ ] Visual variants
+  - [ ] [Feature 1]
+  - [ ] [Feature 2]
+  - [ ] Uncontrolled mode
+  - [ ] Controlled mode
+- [ ] Component requirements (required)
+- [ ] Form integration (field patterns only)
+- [ ] API reference (required)
+- [ ] Common patterns (recommended)
+- [ ] Testing your implementation (required) - uses `{{docs-tests:}}` injection token
+- [ ] Resources (required)
+
+### Example Generation Strategy
+
+- Import patterns from similar components
+- Create realistic, production-ready examples
+- Show proper state management
+- Include TypeScript types
+- Use Nimbus components (Stack, Text, Button)
+
+### Reference Components
+
+Similar components to reference for patterns:
+
+- [List 1-2 similar components in the codebase]
 ```
 
-**Component ID rules:**
-- Simple components: Use component name (e.g., "Button")
-- Compound components: Use base namespace (e.g., "Menu" not "Menu.Root")
-- Must match TypeScript export name exactly
+Display this plan to the user.
 
-### Step 7: Document Common Patterns
+### Step 4: Generate Documentation Files
 
-Include:
-- Loading states
-- Error handling
-- Form integration
-- Validation patterns
-- Advanced state management
-- Performance optimizations
+Create the documentation file:
+
+1. **Start with the template**: Copy content structure from `@docs/engineering-docs-template.mdx`
+
+2. **Update frontmatter**:
+   ```yaml
+   ---
+   title: {ComponentName} [Component/Pattern] # Use "Pattern" for fields, "Component" for others
+   tab-title: Implementation
+   tab-order: 3
+   ---
+   ```
+
+3. **Remove inapplicable sections**:
+   - Remove comparison section for base components
+   - Remove library-specific sections if not needed
+   - Remove form integration for base components
+
+4. **Replace all placeholders**:
+   - `[ComponentName]` → Actual component name
+   - `[COMPONENT_DESCRIPTION]` → Brief description from types
+   - `[FEATURE_NAME]` → Actual feature names
+   - All code examples with component-specific examples
+
+5. **Generate realistic code examples**:
+   - Use `jsx-live-dev` for interactive examples
+   - Follow the `const App = () => { }` pattern
+   - Include proper TypeScript types
+   - Show realistic state management with useState
+   - Use actual component props and values
+
+6. **Customize each section**:
+   - **Getting started**: Import subsection + Basic usage subsection
+   - **Usage examples**: Cover all features identified in Step 2
+   - **Component requirements**: Document accessibility requirements (Role, Labeling, Keyboard), include "Persistent ID" tracking text
+   - **Testing**: Include mandatory disclaimer paragraph + `{{docs-tests: {component-name}.docs.spec.tsx}}` injection token
+   - **Resources**: Link to Storybook (use "link-tbd" placeholder), internal links must start with '/'
+
+7. **Remove all HTML comments**: Clean up template guidance comments
+
+8. **Determine output path**:
+   - Base components: `packages/nimbus/src/components/{component-name}/{component-name}.dev.mdx`
+   - Field patterns: `packages/nimbus/src/patterns/fields/{component-name}/{component-name}.dev.mdx`
+
+9. **Write the `.dev.mdx` file** using the Write tool
+
+10. **Create the companion `.docs.spec.tsx` test file** with:
+    - Basic rendering tests (always)
+    - Interaction tests (if interactive)
+    - Controlled mode tests (if applicable)
+    - State tests (disabled, invalid, etc. - if applicable)
+    - Component-specific feature tests
+    - All test sections with JSDoc tags (@docs-section, @docs-title, @docs-description, @docs-order)
+
+11. **Write the `.docs.spec.tsx` file** using the Write tool
+
+12. **Verify tests run**:
+    ```bash
+    pnpm test:unit {component-name}.docs.spec.tsx
+    ```
+
+### Step 5: Validation
+
+After generating files, run validation checks (see Validate Mode section for full checklist).
+
+### Step 6: Summary Report
+
+```markdown
+## Documentation Created
+
+**Component**: {ComponentName}
+**Type**: [Base Component / Field Pattern]
+
+**Files Created**:
+- `.dev.mdx`: {full-path-to-dev-mdx}
+- `.docs.spec.tsx`: {full-path-to-docs-spec}
+
+### Sections Included
+- [List all sections included in .dev.mdx]
+
+### Test Sections Created
+- [List all test sections in .docs.spec.tsx with @docs-section IDs]
+
+### Key Features Documented
+- [List 3-5 main features]
+
+### Code Examples
+- Total interactive examples (jsx-live-dev): X
+- Total test sections (in .docs.spec.tsx): Y
+- Total test cases: Z
+
+### Next Steps
+1. Review the generated documentation
+2. Run tests: `pnpm test:unit {component-name}.docs.spec.tsx`
+3. Build docs: `pnpm build:docs`
+4. Test all interactive examples in the docs site
+5. Update the Storybook link once available
+6. Add any component-specific advanced patterns
+```
 
 ## Update Mode
 
 ### Process
 
-1. You MUST read the current documentation file
-2. You MUST identify gaps in implementation guidance
-3. You SHOULD preserve existing code examples
-4. You MUST maintain consistency with other developer docs
-5. You MUST enhance with practical code patterns
+1. You MUST read the current documentation file (`.dev.mdx`)
+2. You MUST read the current test file (`.docs.spec.tsx`)
+3. You MUST identify gaps in implementation guidance
+4. You SHOULD preserve existing code examples
+5. You MUST maintain consistency with other developer docs
+6. You MUST enhance with practical code patterns
+7. If test file doesn't exist, create it (MANDATORY)
+8. If test file exists, identify missing test patterns and add them
 
 ### Common Updates
 
@@ -419,6 +737,8 @@ Include:
 - **Add common patterns** - Frequent implementation needs
 - **Enhance accessibility docs** - Better a11y guidance
 - **Improve code examples** - More realistic implementations
+- **Add test cases** - Missing test patterns in `.docs.spec.tsx`
+- **Update test sections** - Enhance existing test examples
 
 ## Validate Mode
 
@@ -427,18 +747,26 @@ Include:
 You MUST validate against these requirements:
 
 #### File Structure
-- [ ] File location: `packages/nimbus/src/components/{component}/{component}.dev.mdx`
+- [ ] Documentation file location: `packages/nimbus/src/components/{component}/{component}.dev.mdx` (or patterns/fields for field patterns)
+- [ ] Test file location: `packages/nimbus/src/components/{component}/{component}.docs.spec.tsx` (or patterns/fields for field patterns)
+- [ ] Test file exists (MANDATORY)
 - [ ] Frontmatter with title, tab-title, tab-order
 - [ ] tab-title is "Implementation"
 - [ ] tab-order is 3
+- [ ] Title uses "Component" suffix for base, "Pattern" for field
 
 #### Content Structure
+- [ ] Comparison section present (field patterns only)
 - [ ] Getting started section with import
 - [ ] Basic usage example
+- [ ] Library-specific section (if component uses external library)
 - [ ] Usage examples section
-- [ ] Component requirements section
+- [ ] Component requirements section with accessibility
+- [ ] Form integration section (field patterns only)
 - [ ] API reference with PropsTable
 - [ ] Common patterns section (recommended)
+- [ ] Testing your implementation section with injection token
+- [ ] Resources section
 
 #### Code Examples
 - [ ] Uses `jsx-live-dev` blocks (NOT `jsx-live`)
@@ -446,7 +774,34 @@ You MUST validate against these requirements:
 - [ ] Examples show implementation patterns
 - [ ] State management demonstrated where relevant
 - [ ] Event handlers shown
-- [ ] Proper TypeScript types in non-live code
+- [ ] Proper TypeScript types in non-live code (import examples)
+
+#### Test File Validation
+- [ ] `.docs.spec.tsx` file exists
+- [ ] All test sections have JSDoc tags (@docs-section, @docs-title, @docs-description, @docs-order)
+- [ ] Basic rendering tests present
+- [ ] Interaction tests present (if component is interactive)
+- [ ] All renders wrapped with `<NimbusProvider>`
+- [ ] Uses `vi.fn()` for mocks (not `jest.fn()`)
+- [ ] Uses `userEvent.setup()` for interactions
+- [ ] Tests are functional (run `pnpm test:unit {component}.docs.spec.tsx`)
+
+#### Source-Driven Content Check
+- [ ] **Usage examples reflect actual component props** (not generic template examples)
+- [ ] Component props interface was analyzed before writing examples
+- [ ] Only documented features that exist in the component
+- [ ] No forced patterns (e.g., no "disabled state" if component has no `isDisabled` prop)
+- [ ] Component-specific features are highlighted
+
+#### Critical Pattern Compliance
+- [ ] All interactive examples use `jsx-live-dev` (NOT `jsx-live`)
+- [ ] Getting Started includes type import (`import { ComponentName, type ComponentNameProps }`)
+- [ ] Controlled examples use proper type patterns
+- [ ] Testing section includes mandatory disclaimer paragraph (as regular text, not comment)
+- [ ] Testing section has `{{docs-tests: {component-name}.docs.spec.tsx}}` injection token
+- [ ] Accessibility section includes standard boilerplate
+- [ ] Accessibility includes PERSISTENT_ID tracking pattern
+- [ ] Accessibility includes Keyboard navigation subsection
 
 #### Technical Focus
 - [ ] Content is developer-focused (NOT design)
@@ -462,12 +817,20 @@ You MUST validate against these requirements:
 - [ ] Additional prop documentation if needed
 - [ ] Return types documented (for hooks)
 
+#### Link Checklist
+- [ ] Storybook link uses actual URL pattern (when available)
+- [ ] Field patterns link to FormField and FieldErrors
+- [ ] Field patterns link to base component
+- [ ] External documentation links added (React Aria, ARIA patterns)
+- [ ] **Internal component links start with '/'** (e.g., `/components/inputs/searchinput`)
+
 #### Code Quality
 - [ ] Examples are functional and realistic
 - [ ] State management follows best practices
 - [ ] Event handlers use proper patterns
 - [ ] Accessibility requirements clear
 - [ ] Performance considerations mentioned
+- [ ] Tests pass when run
 
 ### Validation Report Format
 
@@ -478,6 +841,7 @@ You MUST validate against these requirements:
 
 ### Files Reviewed
 - Documentation file: `{component}.dev.mdx`
+- Test file: `{component}.docs.spec.tsx`
 - Types file: `{component}.types.ts`
 - Guidelines: `docs/file-type-guidelines/documentation.md`
 
@@ -490,11 +854,18 @@ You MUST validate against these requirements:
 ### ⚠️ Warnings (SHOULD FIX)
 - [Non-critical improvements]
 
+### Test File Status
+- Test file exists: [Yes/No]
+- Test sections present: [List @docs-section IDs]
+- Tests are functional: [Pass/Fail]
+- JSDoc tags complete: [Yes/No/Partial]
+
 ### Technical Quality Assessment
 - Code examples: [Functional | Needs fixes | Non-functional]
 - API documentation: [Complete | Partial | Missing]
 - Implementation patterns: [Comprehensive | Adequate | Insufficient]
 - Accessibility guidance: [Detailed | Basic | Missing]
+- Test coverage: [Complete | Partial | Missing]
 
 ### Recommendations
 - [Specific improvements needed]
@@ -509,8 +880,14 @@ You MUST validate against these requirements:
 - onChange handler signature
 - Validation patterns
 - Error state handling
-- Form integration examples
+- Form integration examples (Formik for field patterns)
 - Ref forwarding (if applicable)
+
+**MUST test:**
+- Basic rendering with label
+- Value changes (controlled mode)
+- Error state display
+- Form submission
 
 ### Interactive Components
 
@@ -521,6 +898,12 @@ You MUST validate against these requirements:
 - State management patterns
 - Disabled state handling
 
+**MUST test:**
+- Basic rendering
+- User interactions (click, press, etc.)
+- Keyboard interactions
+- Disabled state
+
 ### Compound Components
 
 **MUST document:**
@@ -529,6 +912,12 @@ You MUST validate against these requirements:
 - Props for each sub-component
 - Composition patterns
 - Common configurations
+
+**MUST test:**
+- Basic compound structure rendering
+- Sub-component interactions
+- Context propagation
+- Invalid compositions (negative tests)
 
 ### Overlay Components
 
@@ -540,24 +929,97 @@ You MUST validate against these requirements:
 - Dismissal patterns
 - Positioning options
 
+**MUST test:**
+- Opening and closing
+- Focus management
+- Dismissal (ESC, outside click)
+- Portal rendering (use `waitFor` with document queries)
+
+## Special Cases
+
+### Compound Components
+
+For compound components (e.g., Menu.Root, Menu.Item):
+- Show the compound structure in examples
+- Document each part's purpose
+- Show composition patterns
+- Include proper TypeScript types for all parts
+- Test each sub-component independently and together
+
+### Field Pattern Components
+
+For field patterns (e.g., TextInputField):
+- Include comparison section at the top
+- Show form integration with Formik
+- Document error handling with FieldErrors
+- Show touched state handling
+- Link to base component and FormField
+- Test error display and form integration
+
+### Components with External Libraries
+
+For components using external libraries (e.g., @internationalized/date):
+- Add dedicated "Working with [Library]" section explaining library concepts
+- Show type imports and usage
+- Demonstrate conversion patterns
+- Link to library documentation
+- Test library-specific value handling
+
+### Dynamic Collections
+
+For components supporting `items` prop (e.g., Select, ListBox):
+- Document `items` vs static children
+- Provide examples of dynamic data mapping
+- Explain the render prop pattern: `<Component items={items}>{(item) => ...}</Component>`
+- Test both static and dynamic rendering
+
+## Reference Examples by Component Type
+
+When generating documentation, reference these patterns based on component type:
+
+### Simple Components (Button, Badge, TextInput)
+**Best Reference**: `packages/nimbus/src/components/text-input/text-input.dev.mdx`
+- Minimal library dependencies
+- Standard usage examples
+- Clear accessibility guidance
+- Focus: Visual variants, states (if applicable), controlled/uncontrolled modes
+
+### Compound Components (Select, Menu)
+**Best Reference**: `packages/nimbus/src/components/select/select.dev.mdx`
+- Multiple sub-components
+- Option groups and dynamic rendering
+- Portal content testing
+- Focus: Compound structure, composition patterns, keyboard navigation
+
+### Components with External Libraries (DatePicker, DateRangePicker)
+**Best Reference**: `packages/nimbus/src/components/date-range-picker/date-range-picker.dev.mdx`
+- "Working with [library]" section
+- Library-specific types and conversions
+- External library documentation links
+- Focus: Library integration, type conversions, special value handling
+
+### Field Patterns (TextInputField, DateRangePickerField)
+**Best Reference**: `packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.dev.mdx` or `packages/nimbus/src/patterns/fields/text-input-field/text-input-field.dev.mdx`
+- Comparison section (field vs manual composition)
+- Error handling with FieldErrors
+- Form integration with Formik
+- Links to base component and FormField
+- Focus: Form patterns, error handling, validation
+
+**IMPORTANT**: These are references for structure and patterns, NOT content. Always generate examples based on the specific component's actual features and props.
+
 ## Error Recovery
 
 If validation fails:
 
-1. You MUST check frontmatter fields (tab-title, tab-order)
+1. You MUST check frontmatter fields (tab-title, tab-order, title suffix)
 2. You MUST verify jsx-live-dev blocks (not jsx-live)
 3. You MUST ensure PropsTable ID is correct
 4. You MUST confirm import examples use correct package
-5. You SHOULD review code examples for functionality
-
-## Reference Examples
-
-You SHOULD reference these documentation files:
-
-- **Simple**: `packages/nimbus/src/components/button/button.dev.mdx`
-- **Form**: `packages/nimbus/src/components/text-input/text-input.dev.mdx`
-- **Compound**: `packages/nimbus/src/components/menu/menu.dev.mdx`
-- **Overlay**: `packages/nimbus/src/components/dialog/dialog.dev.mdx`
+5. You MUST check test file exists and has JSDoc tags
+6. You MUST verify injection token is present in Testing section
+7. You SHOULD review code examples for functionality
+8. You SHOULD run tests to verify they pass
 
 ## RFC 2119 Key Words
 
