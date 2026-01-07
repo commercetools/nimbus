@@ -138,25 +138,58 @@ else
 fi
 free_bricks=$((total_bricks - used_bricks))
 
-# Build brick line with Model prefix and single colour (cyan for used, dim white for free)
-brick_line="\033[1;36m[$model]\033[0m ["
+# Determine model badge colors based on model type
+model_upper=$(echo "$model" | tr '[:lower:]' '[:upper:]')
+if echo "$model" | grep -qi "haiku"; then
+    # Haiku: Green background, white text
+    model_badge="\033[48;2;0;170;0m\033[97m $model_upper \033[0m"
+elif echo "$model" | grep -qi "sonnet"; then
+    # Sonnet: Yellow background, black text
+    model_badge="\033[48;2;255;170;0m\033[30m $model_upper \033[0m"
+elif echo "$model" | grep -qi "opus"; then
+    # Opus: Red background, white text
+    model_badge="\033[48;2;204;0;0m\033[97m $model_upper \033[0m"
+else
+    # Default: Cyan text in brackets
+    model_badge="\033[1;36m[$model_upper]\033[0m"
+fi
 
-# Used bricks (cyan)
+# Build brick line with Model badge and single colour (cyan for used, dim white for free)
+brick_line="${model_badge} | "
+
+# Used bricks with gradient coloring based on position
+# 0-70% = green, 70-80% = yellow, 80-100% = red
+green_threshold=$(( (total_bricks * 70) / 100 ))  # ~22 bricks
+yellow_threshold=$(( (total_bricks * 80) / 100 )) # ~26 bricks
+
 for ((i=0; i<used_bricks; i++)); do
-    brick_line+="\033[0;36m■\033[0m"
+    if [[ $i -lt $green_threshold ]]; then
+        brick_line+="\033[0;32m█\033[0m"  # Green
+    elif [[ $i -lt $yellow_threshold ]]; then
+        brick_line+="\033[0;33m█\033[0m"  # Yellow
+    else
+        brick_line+="\033[0;31m█\033[0m"  # Red
+    fi
 done
 
-# Free bricks (dim/gray hollow squares)
+# Free bricks (dim light shade blocks)
 for ((i=0; i<free_bricks; i++)); do
-    brick_line+="\033[2;37m□\033[0m"
+    brick_line+="\033[2;37m░\033[0m"
 done
 
-brick_line+="]"
+brick_line+=" | \033[1m${usage_pct}%\033[0m (${used_k}k/${total_k}k)"
 
-brick_line+=" \033[1m${usage_pct}%\033[0m (${used_k}k/${total_k}k)"
-
-# Add free space
-brick_line+=" | \033[1;32m${free_k}k free\033[0m"
+# Add free space with color based on remaining percentage
+# >30% free = Green, 20-30% free = Yellow, <20% free = Red
+free_pct=$((100 - usage_pct))
+if [[ $free_pct -gt 30 ]]; then
+    free_color="\033[1;32m"  # Green - safe
+elif [[ $free_pct -gt 20 ]]; then
+    free_color="\033[1;33m"  # Yellow - caution
+else
+    free_color="\033[1;31m"  # Red - critical
+fi
+brick_line+=" | ${free_color}${free_k}k free\033[0m"
 
 # Add duration (HHh MMm format)
 brick_line+=" | ${duration_hours}h ${duration_min}m"
