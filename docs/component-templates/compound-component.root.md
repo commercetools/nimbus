@@ -20,8 +20,8 @@ import type { ComponentNameRootProps } from "../component-name.types";
 // Uncomment if using context
 // import { ComponentNameProvider } from '../component-name-context';
 // Uncomment if component needs i18n
-// import { useLocale } from "react-aria-components";
-// import { componentMessages } from "../component-name.messages";
+// import { useLocalizedStringFormatter } from "@/hooks";
+// import { componentMessagesStrings } from "../component-name.messages";
 
 /**
  * Root component that provides configuration and context

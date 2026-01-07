@@ -1,10 +1,11 @@
 /**
- * Generate LocalizedStringDictionary files for each component - Step 4 of 4 in the i18n build pipeline
+ * Generate message dictionary files for each component - Step 4 of 4 in the i18n build pipeline
  *
  * Overview:
  * After compiling messages for each locale, we need to create a dictionary
- * file that imports all locale files and wraps them in a LocalizedStringDictionary.
- * This dictionary is what components will import and use at runtime.
+ * file that imports all locale files and exports a LocalizedStrings object.
+ * This dictionary is what components will import and use with the
+ * useLocalizedStringFormatter hook at runtime.
  *
  *
  * Input:  packages/nimbus/src/components/{component}/intl/*.ts (compiled locale files)
@@ -13,22 +14,23 @@
  * Process:
  *   1. Find all components with intl/ directories
  *   2. Read locale files to determine available message keys
- *   3. Generate dictionary file with imports and LocalizedStringDictionary
+ *   3. Generate dictionary file with imports and LocalizedStrings export
  *   4. Export message key types for TypeScript support
  *
  * @example
  * Generates alert.messages.ts:
- *   import { LocalizedStringDictionary } from "@internationalized/string";
- *   import en from "./intl/en";
- *   import de from "./intl/de";
+ *   import { type LocalizedString, type LocalizedStrings } from "@internationalized/string";
+ *   import { normalizeMessages } from "../../utils/normalize-messages";
+ *   import alertMessages_en from "./intl/en";
+ *   import alertMessages_de from "./intl/de";
  *   ...
- *   export const alertMessages = new LocalizedStringDictionary({
- *     "en": en,
- *     "de": de,
- *     "es": es,
- *     "fr-FR": fr,
- *     "pt-BR": pt
- *   });
+ *   export const alertMessagesStrings: LocalizedStrings<string, LocalizedString> = {
+ *     en: normalizeMessages(alertMessages_en),
+ *     de: normalizeMessages(alertMessages_de),
+ *     es: normalizeMessages(alertMessages_es),
+ *     "fr-FR": normalizeMessages(alertMessages_fr),
+ *     "pt-BR": normalizeMessages(alertMessages_pt),
+ *   } as LocalizedStrings<string, LocalizedString>;
  *   export type AlertMessageKey = "dismiss";
  */
 
@@ -189,84 +191,16 @@ async function generateDictionaries() {
  * @see https://react-spectrum.adobe.com/react-aria/internationalization.html
  */
 
-import { LocalizedStringDictionary, type LocalizedString, type LocalizedStrings } from "@internationalized/string";
+import { type LocalizedString, type LocalizedStrings } from "@internationalized/string";
 import { normalizeMessages } from "../../utils/normalize-messages";
 
 // Pre-compiled message functions
 ${imports}
 
-/**
- * Normalizes BCP47 locale codes to match dictionary keys.
- * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
- * 
- * This function is intentionally duplicated in each *.messages.ts file to enable optimal tree-shaking.
- * 
- */
-function normalizeLocale(locale: string): string {
-  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
-  if (supportedLocales.has(locale)) return locale;
-  
-  const langMap: Record<string, string> = {
-    en: "en",
-    de: "de",
-    es: "es",
-    fr: "fr-FR",
-    pt: "pt-BR",
-  };
-  
-  const lang = locale.split(/[-_]/)[0].toLowerCase();
-  return langMap[lang] ?? "en";
-}
-
-// Internal dictionary instance
-const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+// Raw LocalizedStrings object for use with useLocalizedStringFormatter hook
+export const ${variableName}MessagesStrings: LocalizedStrings<string, LocalizedString> = {
 ${dictionaryEntries}
-} as LocalizedStrings<string, LocalizedString>);
-
-/**
- * Localized string dictionary for ${componentName} component
- * Contains pre-compiled messages for all supported locales
- * Automatically falls back to English (en) for unsupported locales
- */
-export const ${variableName}Messages = {
-  /**
-   * Retrieves a localized message string.
-   * 
-   * Unified handling for both message types:
-   * - Simple messages (no variables): getVariableLocale(key, locale)
-   * - Variable messages: getVariableLocale(key, locale, { variableName: value })
-   * 
-   * For simple messages, args are optional and ignored.
-   * For variable messages, args are required and interpolated.
-   * 
-   * Returns empty string if message not found.
-   */
-  getVariableLocale(
-    key: string,
-    locale: string,
-    args?: Record<string, string | number>
-  ): string {
-    const normalizedLocale = normalizeLocale(locale);
-    
-    try {
-      const message = dictionary.getStringForLocale(key, normalizedLocale);
-      
-      // If message is a function (has variables), call it with args
-      if (typeof message === "function") {
-        return message(args ?? {});
-      }
-      
-      // If message is a string (simple message), return it directly
-      if (typeof message === "string") {
-        return message;
-      }
-    } catch {
-      // Message not found, return empty string
-    }
-    
-    return "";
-  },
-};
+} as LocalizedStrings<string, LocalizedString>;
 
 /**
  * Available message keys for ${componentName} component

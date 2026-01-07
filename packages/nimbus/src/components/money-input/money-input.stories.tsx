@@ -16,7 +16,32 @@ import type {
   CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
-import { moneyInputMessages } from "./money-input.messages";
+import { LocalizedStringDictionary } from "@internationalized/string";
+import { moneyInputMessagesStrings } from "./money-input.messages";
+
+// Helper to get messages for testing (normalizes locale like the hook does)
+function getMessage(key: string, locale: string): string {
+  const dictionary = new LocalizedStringDictionary(moneyInputMessagesStrings);
+  const normalizedLocale = normalizeLocaleForTesting(locale);
+  const message = dictionary.getStringForLocale(key, normalizedLocale);
+  return typeof message === "string" ? message : (message?.({}) ?? "");
+}
+
+function normalizeLocaleForTesting(locale: string): string {
+  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
+  if (supportedLocales.has(locale)) return locale;
+
+  const langMap: Record<string, string> = {
+    en: "en",
+    de: "de",
+    es: "es",
+    fr: "fr-FR",
+    pt: "pt-BR",
+  };
+
+  const lang = locale.split(/[-_]/)[0].toLowerCase();
+  return langMap[lang] ?? "en";
+}
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
@@ -436,18 +461,12 @@ export const EULocaleFormattingExample: Story = {
     // NOTE: This test will fail locally until locale normalization is implemented
     // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
     // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
-    const highPrecisionLabel = moneyInputMessages.getVariableLocale(
-      "highPrecisionPrice",
-      "de"
-    );
+    const highPrecisionLabel = getMessage("highPrecisionPrice", "de");
     const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
 
     // With German locale NimbusI18nProvider, React Aria formats with German conventions
-    const amountInputLabel = moneyInputMessages.getVariableLocale(
-      "amountInputLabel",
-      "de"
-    );
+    const amountInputLabel = getMessage("amountInputLabel", "de");
     const inputs = await canvas.findAllByRole("textbox", {
       name: amountInputLabel,
     });

@@ -7,7 +7,8 @@ import {
   TextContext,
   useLocale,
 } from "react-aria-components";
-import { calendarMessages } from "../calendar.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { calendarMessagesStrings } from "../calendar.messages";
 
 export const CalendarCustomContext = ({
   children,
@@ -15,6 +16,7 @@ export const CalendarCustomContext = ({
   children: React.ReactNode;
 }) => {
   const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(calendarMessagesStrings);
   const buttonContext = useContext(ButtonContext)!;
   const textContext = useContext(TextContext)!;
   const calendarState = useContext(CalendarStateContext)!;
@@ -26,19 +28,19 @@ export const CalendarCustomContext = ({
   const buttonSlots = {
     "next-month": {
       onPress: () => calendarState.focusNextSection(),
-      "aria-label": calendarMessages.getVariableLocale("nextMonth", locale),
+      "aria-label": msg.format("nextMonth"),
     },
     "previous-month": {
       onPress: () => calendarState.focusPreviousSection(),
-      "aria-label": calendarMessages.getVariableLocale("previousMonth", locale),
+      "aria-label": msg.format("previousMonth"),
     },
     "next-year": {
       onPress: () => calendarState.focusNextSection(true),
-      "aria-label": calendarMessages.getVariableLocale("nextYear", locale),
+      "aria-label": msg.format("nextYear"),
     },
     "previous-year": {
       onPress: () => calendarState.focusPreviousSection(true),
-      "aria-label": calendarMessages.getVariableLocale("previousYear", locale),
+      "aria-label": msg.format("previousYear"),
     },
   };
 

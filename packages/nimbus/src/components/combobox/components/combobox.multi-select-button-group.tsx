@@ -6,10 +6,10 @@ import {
 } from "@commercetools/nimbus-icons";
 import { ClearPressResponder } from "@react-aria/interactions";
 import { IconButton, Flex, Box } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
-import { comboBoxMessages } from "../../combo-box/combo-box.messages";
-import { useLocale } from "react-aria-components";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 /**
  * Internal button group for multi-select ComboBox (clear and toggle buttons)
@@ -25,7 +25,7 @@ export const ComboBoxButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
   const handleClearSelection = useCallback(() => {
     onSelectionChange?.(new Set());
     onInputChange?.("");
@@ -45,10 +45,7 @@ export const ComboBoxButtonGroup = ({
             size="2xs"
             variant="ghost"
             colorPalette="primary"
-            aria-label={comboBoxMessages.getVariableLocale(
-              "clearSelection",
-              locale
-            )}
+            aria-label={msg.format("clearSelection")}
             isDisabled={isDisabled || isReadOnly}
             onPress={handleClearSelection}
             my="auto"

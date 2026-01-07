@@ -17,8 +17,8 @@ import { mergeRefs } from "@chakra-ui/react";
 import { ComponentNameSlot } from "./component-name.slots";
 import type { ComponentNameProps } from "./component-name.types";
 // Uncomment if component needs i18n
-// import { useLocale } from "react-aria-components";
-// import { componentMessages } from "./component-name.messages";
+// import { useLocalizedStringFormatter } from "@/hooks";
+// import { componentMessagesStrings } from "./component-name.messages";
 
 /**
  * ComponentName
@@ -48,8 +48,8 @@ export const ComponentName = (props: ComponentNameProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   // Uncomment if using i18n
-  // const intl = useIntl();
-  // const ariaLabel = intl.formatMessage(messages.defaultLabel);
+  // const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  // const ariaLabel = msg.format("defaultLabel");
 
   // Component logic here
 

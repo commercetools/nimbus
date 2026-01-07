@@ -2,8 +2,8 @@ import { AlertDismissButton as AlertDismissButtonSlot } from "../alert.slots";
 import type { AlertDismissButtonProps } from "../alert.types";
 import { Clear } from "@commercetools/nimbus-icons";
 import { IconButton } from "../../icon-button";
-import { useLocale } from "react-aria-components";
-import { alertMessages } from "../alert.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { alertMessagesStrings } from "../alert.messages";
 
 /**
  * Alert.DismissButton - Button to dismiss or close the alert
@@ -11,12 +11,12 @@ import { alertMessages } from "../alert.messages";
  * @supportsStyleProps
  */
 export const AlertDismissButton = ({ ...props }: AlertDismissButtonProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(alertMessagesStrings);
 
   return (
     <AlertDismissButtonSlot>
       <IconButton
-        aria-label={alertMessages.getVariableLocale("dismiss", locale)}
+        aria-label={msg.format("dismiss")}
         {...props}
         variant="ghost"
         size="2xs"

@@ -1,10 +1,11 @@
 import { useMemo, useCallback } from "react";
-import { type Key, type Selection, useLocale } from "react-aria-components";
+import { type Key, type Selection } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
 import { TagGroup } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import type { ComboBoxMultiSelectValueProps } from "../combobox.types";
 import { ComboBoxValueSlot } from "../combobox.slots";
-import { comboBoxMessages } from "../../combo-box/combo-box.messages";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 // Type guard to check if an item has children array (sectioned data)
 function hasChildrenArray<T extends object>(
@@ -60,7 +61,7 @@ export const MultiSelectTagGroup =
     containerRef,
     ref,
   }: ComboBoxMultiSelectValueProps<T>) => {
-    const { locale } = useLocale();
+    const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
     const selectedItems = useMemo(() => {
       if (!items) return [];
 
@@ -135,10 +136,7 @@ export const MultiSelectTagGroup =
           <TagGroup.Root
             size={size}
             onRemove={handleRemoveSelectedItem}
-            aria-label={comboBoxMessages.getVariableLocale(
-              "selectedValues",
-              locale
-            )}
+            aria-label={msg.format("selectedValues")}
             selectionMode="none"
             disabledKeys={isDisabled || isReadOnly ? selectedKeys : undefined}
             data-disabled={isDisabled}

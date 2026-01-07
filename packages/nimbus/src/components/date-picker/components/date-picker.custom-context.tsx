@@ -7,8 +7,8 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
-import { datePickerMessages } from "../date-picker.messages";
-import { useLocale } from "react-aria-components";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { datePickerMessagesStrings } from "../date-picker.messages";
 
 /**
  * DatePickerCustomContext - Custom context provider for DatePicker
@@ -21,7 +21,7 @@ export const DatePickerCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(datePickerMessagesStrings);
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
@@ -35,22 +35,13 @@ export const DatePickerCustomContext = ({
   const getDefaultTimeInputAriaLabel = () => {
     switch (granularity) {
       case "hour":
-        return datePickerMessages.getVariableLocale(
-          "Time.enterTimeHour",
-          locale
-        );
+        return msg.format("Time.enterTimeHour");
       case "minute":
-        return datePickerMessages.getVariableLocale(
-          "Time.enterTimeHourMinute",
-          locale
-        );
+        return msg.format("Time.enterTimeHourMinute");
       case "second":
-        return datePickerMessages.getVariableLocale(
-          "Time.enterTimeHourMinuteSecond",
-          locale
-        );
+        return msg.format("Time.enterTimeHourMinuteSecond");
       default:
-        return datePickerMessages.getVariableLocale("Time.enterTime", locale);
+        return msg.format("Time.enterTime");
     }
   };
 
@@ -77,7 +68,7 @@ export const DatePickerCustomContext = ({
     /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": datePickerMessages.getVariableLocale("clearInput", locale),
+      "aria-label": msg.format("clearInput"),
       isDisabled: isDatePickerDisabled,
       // Hide the button when there's no value
       style: noInputValue ? { display: "none" } : undefined,

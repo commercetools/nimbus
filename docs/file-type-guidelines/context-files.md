@@ -130,8 +130,8 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
-import { useLocale } from "react-aria-components";
-import { datePickerMessages } from "../date-picker.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { datePickerMessagesStrings } from "../date-picker.messages";
 
 /**
  * Custom context wrapper for React Aria DatePicker
@@ -142,7 +142,7 @@ export const DatePickerCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(datePickerMessagesStrings);
 
   // Access existing React Aria contexts
   const buttonContext = useSlottedContext(ButtonContext) || {};
@@ -166,7 +166,7 @@ export const DatePickerCustomContext = ({
     },
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": datePickerMessages.getVariableLocale("clearInput", locale),
+      "aria-label": msg.format("clearInput"),
       isDisabled: isDatePickerDisabled,
       style: noInputValue ? { display: "none" } : undefined,
       "aria-hidden": noInputValue ? true : undefined,
@@ -182,7 +182,7 @@ export const DatePickerCustomContext = ({
         }
       },
       granularity: granularity === "day" ? undefined : granularity,
-      "aria-label": datePickerMessages.getVariableLocale("enterTime", locale),
+      "aria-label": msg.format("enterTime"),
     },
   };
 

@@ -18,7 +18,6 @@ import {
   type Selection,
   type Key,
   useFilter,
-  useLocale,
 } from "react-aria-components";
 import { MultiSelectTagGroup } from "./combobox.multi-select-tag-group";
 import { ComboBoxOptions } from "./combobox.options";
@@ -29,7 +28,8 @@ import {
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
 import { ComboBoxLeadingElement } from "./combobox.leading-element";
-import { comboBoxMessages } from "../../combo-box/combo-box.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -72,7 +72,7 @@ export const MultiSelectRoot = <T extends object>({
   leadingElement,
   ...props
 }: ComboBoxMultiSelect<T>) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
   // Internal state for popover, enables opening on first focus
   const [isOpen, setOpen] = useState(false);
   const preventNextFocusOpen = useRef(false);
@@ -303,12 +303,7 @@ export const MultiSelectRoot = <T extends object>({
       </RaPressable>
       <ComboBoxPopoverSlot asChild>
         <RaPopover triggerRef={triggerRef} placement="bottom start">
-          <RaDialog
-            aria-label={comboBoxMessages.getVariableLocale(
-              "comboboxDialog",
-              locale
-            )}
-          >
+          <RaDialog aria-label={msg.format("comboboxDialog")}>
             <RaAutocomplete
               filter={defaultFilter ?? contains}
               inputValue={inputValue}
@@ -320,10 +315,7 @@ export const MultiSelectRoot = <T extends object>({
                   isDisabled={isDisabled}
                   isReadOnly={isReadOnly}
                   isRequired={isRequired}
-                  aria-label={comboBoxMessages.getVariableLocale(
-                    "filterOptions",
-                    locale
-                  )}
+                  aria-label={msg.format("filterOptions")}
                 >
                   <RaInput
                     onKeyDownCapture={handleInputKeyDown}
@@ -339,10 +331,7 @@ export const MultiSelectRoot = <T extends object>({
                 shouldFocusWrap={true}
                 disabledKeys={isDisabled ? "all" : disabledKeys}
                 escapeKeyBehavior="none"
-                aria-label={comboBoxMessages.getVariableLocale(
-                  "options",
-                  locale
-                )}
+                aria-label={msg.format("options")}
                 renderEmptyState={renderEmptyState}
               >
                 {children}

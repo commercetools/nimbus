@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
-import { useLocale } from "react-aria-components";
 import { IconButton, Drawer, Tabs, Tooltip, Box } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
 import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
@@ -9,7 +9,7 @@ import {
   useCustomSettingsContext,
 } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
-import { dataTableMessages } from "../data-table.messages";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Manager - Manager component for the data table
@@ -19,7 +19,7 @@ import { dataTableMessages } from "../data-table.messages";
 export const DataTableManager = () => {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   const {
     columns,
@@ -162,13 +162,13 @@ export const DataTableManager = () => {
     <>
       <Tooltip.Root>
         <Tooltip.Content placement="top">
-          {dataTableMessages.getVariableLocale("settings", locale)}
+          {msg.format("settings")}
         </Tooltip.Content>
         <IconButton
           variant="ghost"
           colorPalette="primary"
           size="xs"
-          aria-label={dataTableMessages.getVariableLocale("settings", locale)}
+          aria-label={msg.format("settings")}
           onClick={() => setIsOpen(true)}
         >
           <Settings />
@@ -182,9 +182,7 @@ export const DataTableManager = () => {
       >
         <Drawer.Content width="2xl" data-testid="data-table-manager-drawer">
           <Drawer.Header>
-            <Drawer.Title>
-              {dataTableMessages.getVariableLocale("settings", locale)}
-            </Drawer.Title>
+            <Drawer.Title>{msg.format("settings")}</Drawer.Title>
             <Drawer.CloseTrigger />
           </Drawer.Header>
 
@@ -196,10 +194,7 @@ export const DataTableManager = () => {
                   tabLabel: (
                     <>
                       <ViewWeek />
-                      {dataTableMessages.getVariableLocale(
-                        "visibleColumns",
-                        locale
-                      )}
+                      {msg.format("visibleColumns")}
                     </>
                   ),
                   panelContent: (
@@ -216,10 +211,7 @@ export const DataTableManager = () => {
                   tabLabel: (
                     <>
                       <ViewDay />
-                      {dataTableMessages.getVariableLocale(
-                        "layoutSettings",
-                        locale
-                      )}
+                      {msg.format("layoutSettings")}
                     </>
                   ),
                   panelContent: (

@@ -1,5 +1,4 @@
 import { useEffect, useCallback, useRef } from "react";
-import { useLocale } from "react-aria-components";
 import {
   GridList,
   isTextDropItem,
@@ -10,7 +9,8 @@ import { useListData } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { dequal } from "dequal";
 import { extractStyleProps } from "@/utils";
-import { draggableListMessages } from "../draggable-list.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { draggableListMessagesStrings } from "../draggable-list.messages";
 import {
   DraggableListRootSlot,
   DraggableListEmptySlot,
@@ -44,10 +44,9 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   renderEmptyState: renderEmptyStateFromProps,
   ...restProps
 }: DraggableListRootProps<T>) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(draggableListMessagesStrings);
   const renderEmptyState =
-    renderEmptyStateFromProps ??
-    draggableListMessages.getVariableLocale("emptyMessage", locale);
+    renderEmptyStateFromProps ?? msg.format("emptyMessage");
 
   const list = useListData({
     initialItems: items,

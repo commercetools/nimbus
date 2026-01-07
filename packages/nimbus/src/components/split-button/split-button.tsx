@@ -1,17 +1,17 @@
 import React from "react";
-import { useLocale } from "react-aria-components";
 import { Button } from "@/components/button/button";
 import { IconButton } from "@/components/icon-button/icon-button";
 import { Menu } from "@/components/menu/menu";
 import { Icon } from "@/components/icon/icon";
 import type { SplitButtonProps } from "./split-button.types";
+import { useLocalizedStringFormatter } from "@/hooks";
 import {
   SplitButtonRootSlot,
   SplitButtonButtonGroupSlot,
   SplitButtonPrimaryButtonSlot,
   SplitButtonTriggerSlot,
 } from "./split-button.slots";
-import { splitButtonMessages } from "./split-button.messages";
+import { splitButtonMessagesStrings } from "./split-button.messages";
 import { KeyboardArrowDown } from "@commercetools/nimbus-icons";
 
 // Re-export types
@@ -29,7 +29,7 @@ export type * from "./split-button.types";
  * Use with Menu.Item, Menu.Section, and Separator components for content.
  */
 export const SplitButton = (props: SplitButtonProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(splitButtonMessagesStrings);
   const {
     size = "md",
     variant = "solid",
@@ -151,10 +151,7 @@ export const SplitButton = (props: SplitButtonProps) => {
 
     return (
       primaryMenuItem || {
-        content: splitButtonMessages.getVariableLocale(
-          "noActionsAvailable",
-          locale
-        ),
+        content: msg.format("noActionsAvailable"),
         isDisabled: true,
         actionId: null,
       }

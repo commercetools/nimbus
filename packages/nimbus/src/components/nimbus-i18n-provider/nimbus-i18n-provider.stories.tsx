@@ -11,7 +11,32 @@ import {
   type NimbusI18nProviderProps,
 } from "@commercetools/nimbus";
 import { useLocale } from "react-aria-components";
-import { alertMessages } from "../alert/alert.messages";
+import { LocalizedStringDictionary } from "@internationalized/string";
+import { alertMessagesStrings } from "../alert/alert.messages";
+
+// Helper to get messages for testing (normalizes locale like the hook does)
+function getAlertMessage(key: string, locale: string): string {
+  const dictionary = new LocalizedStringDictionary(alertMessagesStrings);
+  const normalizedLocale = normalizeLocaleForTesting(locale);
+  const message = dictionary.getStringForLocale(key, normalizedLocale);
+  return typeof message === "string" ? message : (message?.({}) ?? "");
+}
+
+function normalizeLocaleForTesting(locale: string): string {
+  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
+  if (supportedLocales.has(locale)) return locale;
+
+  const langMap: Record<string, string> = {
+    en: "en",
+    de: "de",
+    es: "es",
+    fr: "fr-FR",
+    pt: "pt-BR",
+  };
+
+  const lang = locale.split(/[-_]/)[0].toLowerCase();
+  return langMap[lang] ?? "en";
+}
 
 const meta: Meta<typeof NimbusI18nProvider> = {
   title: "Components/NimbusI18nProvider",
@@ -326,7 +351,7 @@ const MessageTranslationTestComponent = ({
   // Test retrieving a message for the current locale (for verification)
   // Fallback to English is handled automatically by the message dictionary's inline fallback logic
   // "dismiss" is a simple string message (no variables), so we can safely assert string type
-  const dismissLabel = alertMessages.getVariableLocale("dismiss", locale);
+  const dismissLabel = getAlertMessage("dismiss", locale);
 
   return (
     <Box data-testid={testId}>
@@ -443,10 +468,7 @@ export const MessageTranslationForSupportedLocales: Story = {
           await expect(dismissButton).toHaveAttribute("aria-label");
 
           // Get the expected translation from the message dictionary
-          const expectedLabel = alertMessages.getVariableLocale(
-            "dismiss",
-            locale
-          ) as string;
+          const expectedLabel = getAlertMessage("dismiss", locale);
           // Verify the aria-label matches what the message dictionary returns for this locale
           const actualLabel = dismissButton.getAttribute("aria-label");
           await expect(actualLabel).toBe(expectedLabel);
@@ -534,14 +556,8 @@ export const MessageTranslationForUnsupportedLocales: Story = {
 
           // Verify normalization: unsupported locale should normalize to "en"
           // Test that using the unsupported locale directly returns English message
-          const normalizedLabel = alertMessages.getVariableLocale(
-            "dismiss",
-            locale
-          );
-          const expectedEnglishLabel = alertMessages.getVariableLocale(
-            "dismiss",
-            "en"
-          ) as string;
+          const normalizedLabel = getAlertMessage("dismiss", locale);
+          const expectedEnglishLabel = getAlertMessage("dismiss", "en");
           await expect(normalizedLabel).toBe(expectedEnglishLabel);
 
           // Verify the actual aria-label matches the English fallback message

@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useId, useLocale as useAriaLocale } from "react-aria";
-import { useLocale } from "react-aria-components";
 import { designTokens } from "@commercetools/nimbus-tokens";
 import {
   NumberInput,
@@ -12,6 +11,7 @@ import {
 } from "@/components";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import currenciesData from "./utils/currencies";
 import {
   MoneyInputRootSlot,
@@ -34,7 +34,7 @@ import type {
   MoneyInputProps,
   CurrencyCode,
 } from "./money-input.types";
-import { moneyInputMessages } from "./money-input.messages";
+import { moneyInputMessagesStrings } from "./money-input.messages";
 
 /**
  * # MoneyInput
@@ -132,7 +132,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
 
   // Get locale for formatting
   const { locale: ariaLocale } = useAriaLocale();
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(moneyInputMessagesStrings);
 
   // Convert string value to number for NumberInput
   const numericValue = value.amount ? parseFloat(value.amount) : undefined;
@@ -296,10 +296,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
               placeholder=""
-              aria-label={moneyInputMessages.getVariableLocale(
-                "currencySelectLabel",
-                locale
-              )}
+              aria-label={msg.format("currencySelectLabel")}
               size={size}
             >
               <Select.Options>
@@ -336,10 +333,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
             autoFocus={autoFocus}
             size={size}
             //base accessible name: "Amount"
-            aria-label={moneyInputMessages.getVariableLocale(
-              "amountInputLabel",
-              locale
-            )}
+            aria-label={msg.format("amountInputLabel")}
             // accessible name when hasNoCurrencies=true: "<CURRENCY_CODE> Amount"
             aria-labelledby={noCurrenciesLabelId}
             // accessible name when high precision: "High Precision Amount"
@@ -357,19 +351,13 @@ export const MoneyInput = (props: MoneyInputProps) => {
                   as={HighPrecision}
                   id={highPrecisionBadgeId}
                   color={isDisabled ? "neutral.8" : "neutral.11"}
-                  aria-label={moneyInputMessages.getVariableLocale(
-                    "highPrecisionPrice",
-                    locale
-                  )}
+                  aria-label={msg.format("highPrecisionPrice")}
                   // Position the badge correctly as we don't want layout shift that occurs with trailingElement use in the underlying NumberInput
                   transform={`translateX(-${designTokens.spacing["1200"]})`}
                 />
               </MakeElementFocusable>
               <Tooltip.Content placement="top">
-                {moneyInputMessages.getVariableLocale(
-                  "highPrecisionPrice",
-                  locale
-                )}
+                {msg.format("highPrecisionPrice")}
               </Tooltip.Content>
             </Tooltip.Root>
           </MoneyInputBadgeSlot>

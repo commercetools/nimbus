@@ -5,10 +5,11 @@ import {
   Loop as SpinnerIcon,
 } from "@commercetools/nimbus-icons";
 import { IconButton, Flex, Box } from "@/components";
-import { ComboBoxStateContext, useLocale } from "react-aria-components";
+import { ComboBoxStateContext } from "react-aria-components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
-import { comboBoxMessages } from "../../combo-box/combo-box.messages";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 /**
  * Internal button group for single-select ComboBox (clear and toggle buttons)
@@ -20,7 +21,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
   const state = useContext(ComboBoxStateContext);
   return (
     <ComboBoxButtonGroupSlot>
@@ -31,10 +32,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
           size="2xs"
           variant="ghost"
           colorPalette="primary"
-          aria-label={comboBoxMessages.getVariableLocale(
-            "clearSelection",
-            locale
-          )}
+          aria-label={msg.format("clearSelection")}
           isDisabled={isDisabled || isReadOnly}
           _expanded={{ bg: "transparent" }}
           onPress={() => state?.setSelectedKey(null)}
@@ -60,10 +58,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
         <IconButton
           size="2xs"
           variant="ghost"
-          aria-label={comboBoxMessages.getVariableLocale(
-            "toggleCombobox",
-            locale
-          )}
+          aria-label={msg.format("toggleCombobox")}
           colorPalette="neutral"
           my="auto"
           isDisabled={isDisabled || isReadOnly}
