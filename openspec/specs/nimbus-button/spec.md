@@ -1,15 +1,15 @@
 # Specification: Button Component
 
-## Overview
+## Purpose
 
-The Button component provides an accessible, styled button following the nimbus-core standards. It supports multiple variants, sizes, states, and follows WCAG 2.1 AA accessibility guidelines.
+The Button component provides an accessible, styled button element that follows nimbus-core standards. It supports multiple visual variants, sizes, colors, and interactive states while maintaining WCAG 2.1 AA accessibility compliance.
 
 **Component:** `Button`
 **Package:** `@commercetools/nimbus`
 **Type:** Single-slot component
 **React Aria:** Uses `Button` from react-aria-components
 
-## Visual Variants
+## Requirements
 
 ### Requirement: Button Variants
 The component SHALL support multiple visual variants.
@@ -38,8 +38,6 @@ The component SHALL support multiple visual variants.
 - **AND** SHALL behave like a button (not anchor)
 - **AND** SHALL support all button interactions
 
-## Size Options
-
 ### Requirement: Button Sizes
 The component SHALL support three size options.
 
@@ -58,8 +56,6 @@ The component SHALL support three size options.
 - **THEN** SHALL render with generous padding and larger font
 - **AND** SHALL be suitable for primary actions and hero sections
 
-## Color Palette
-
 ### Requirement: Semantic Colors
 The component SHALL support semantic color palettes.
 
@@ -69,8 +65,6 @@ The component SHALL support semantic color palettes.
 - **AND** SHALL apply appropriate semantic colors from design tokens
 - **AND** SHALL maintain WCAG AA contrast ratios
 - **AND** SHALL support light and dark modes
-
-## States
 
 ### Requirement: Loading State
 The component SHALL support loading state with spinner.
@@ -92,8 +86,6 @@ The component SHALL support disabled state.
 - **AND** SHALL set aria-disabled="true"
 - **AND** SHALL show not-allowed cursor
 
-## Interaction
-
 ### Requirement: Click Handling
 The component SHALL handle click interactions.
 
@@ -111,8 +103,6 @@ The component SHALL support keyboard interactions per nimbus-core standards.
 - **THEN** SHALL trigger onClick handler
 - **AND** SHALL provide visual feedback (active state)
 - **AND** SHALL follow React Aria keyboard patterns
-
-## Icon Support
 
 ### Requirement: Icon Integration
 The component SHALL support icons from @commercetools/nimbus-icons.
@@ -133,8 +123,6 @@ The component SHALL support icons from @commercetools/nimbus-icons.
 - **AND** SHALL require aria-label for accessibility
 - **AND** SHOULD use IconButton component instead for better semantics
 
-## Polymorphism
-
 ### Requirement: Polymorphic Rendering
 The component SHALL support rendering as different HTML elements.
 
@@ -144,8 +132,6 @@ The component SHALL support rendering as different HTML elements.
 - **AND** SHALL maintain button styling
 - **AND** SHALL forward appropriate HTML attributes
 - **AND** SHALL preserve button interactions
-
-## Form Integration
 
 ### Requirement: Form Button Types
 The component SHALL support form-related button types.
@@ -164,8 +150,6 @@ The component SHALL support form-related button types.
 - **THEN** SHALL NOT submit form
 - **AND** SHALL only trigger onClick handler
 
-## Accessibility
-
 ### Requirement: ARIA Attributes
 The component SHALL provide appropriate ARIA attributes per nimbus-core standards.
 
@@ -180,8 +164,6 @@ The component SHALL provide appropriate ARIA attributes per nimbus-core standard
 - **THEN** SHALL announce to screen readers via aria-busy
 - **WHEN** disabled
 - **THEN** SHALL set aria-disabled="true"
-
-## Styling
 
 ### Requirement: Recipe-Based Styling
 The component SHALL use Chakra UI recipe per nimbus-core standards.

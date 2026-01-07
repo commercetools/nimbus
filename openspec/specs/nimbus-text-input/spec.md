@@ -1,15 +1,15 @@
 # Specification: TextInput Component
 
-## Overview
+## Purpose
 
-The TextInput component provides an accessible single-line text input field with comprehensive validation, formatting, and state management capabilities.
+The TextInput component provides an accessible single-line text input field with comprehensive validation, formatting, and state management capabilities. It enables users to enter and edit text data with support for multiple input types, validation modes, and accessible labeling.
 
 **Component:** `TextInput`
 **Package:** `@commercetools/nimbus`
 **Type:** Multi-slot component
 **React Aria:** Uses `TextField` from react-aria-components
 
-## Text Input Modes
+## Requirements
 
 ### Requirement: Input Type Support
 The component SHALL support multiple HTML input types.
@@ -20,8 +20,6 @@ The component SHALL support multiple HTML input types.
 - **AND** SHALL apply appropriate browser validation
 - **AND** SHALL show relevant mobile keyboards
 - **AND** SHALL provide type-specific autocomplete suggestions
-
-## Value Management
 
 ### Requirement: Controlled and Uncontrolled Modes
 The component SHALL support both controlled and uncontrolled state management per nimbus-core standards.
@@ -37,8 +35,6 @@ The component SHALL support both controlled and uncontrolled state management pe
 - **THEN** SHALL initialize with defaultValue
 - **AND** SHALL manage state internally
 - **AND** optional onChange SHALL receive updates
-
-## Validation
 
 ### Requirement: Built-in Validation
 The component SHALL provide validation capabilities.
@@ -68,8 +64,6 @@ The component SHALL provide validation capabilities.
 - **AND** SHALL display returned error message
 - **AND** SHALL mark field as invalid if validation fails
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -93,8 +87,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL set aria-invalid="true"
 - **AND** SHALL associate error with aria-describedby
 
-## Formatting and Masking
-
 ### Requirement: Input Formatting
 The component SHALL support value formatting.
 
@@ -110,8 +102,6 @@ The component SHALL support value formatting.
 - **AND** SHALL hide placeholder on focus or input
 - **AND** SHALL use aria-placeholder
 
-## Clear Functionality
-
 ### Requirement: Clear Button
 The component SHALL optionally provide clear functionality.
 
@@ -121,8 +111,6 @@ The component SHALL optionally provide clear functionality.
 - **AND** clicking button SHALL clear input value
 - **AND** SHALL focus input after clearing
 - **AND** SHALL call onChange with empty string
-
-## Addon Elements
 
 ### Requirement: Input Addons
 The component SHALL support prefix and suffix elements.
@@ -139,8 +127,6 @@ The component SHALL support prefix and suffix elements.
 - **AND** SHALL apply appropriate spacing
 - **AND** SHALL not overlap with clear button
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -149,8 +135,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust height, padding, and font size
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Label
 The component SHALL provide accessible labeling per nimbus-core standards.
@@ -185,8 +169,6 @@ The component SHALL display validation errors accessibly.
 - **AND** SHALL announce error to screen readers
 - **AND** SHALL apply error styling
 
-## Keyboard Interaction
-
 ### Requirement: Keyboard Support
 The component SHALL support keyboard interactions per nimbus-core standards.
 
@@ -202,8 +184,6 @@ The component SHALL support keyboard interactions per nimbus-core standards.
 - **WHEN** Escape is pressed and field has value
 - **THEN** SHALL clear input
 - **AND** SHALL maintain focus
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
@@ -221,8 +201,6 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **AND** SHALL support standard autocomplete values
 - **AND** SHALL integrate with password managers
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -231,8 +209,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply textInput slot recipe from theme/slot-recipes/text-input.ts
 - **AND** SHALL style: root, label, input, leftElement, rightElement, clearButton, helperText, errorText slots
 - **AND** SHALL support size variants
-
-## Internationalization
 
 ### Requirement: Localized Aria Labels
 The component SHALL support i18n for screen reader text per nimbus-core standards.

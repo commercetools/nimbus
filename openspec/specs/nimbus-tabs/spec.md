@@ -1,15 +1,15 @@
 # Specification: Tabs Component
 
-## Overview
+## Purpose
 
-The Tabs component provides an accessible tabbed interface for organizing content into separate panels, following ARIA tabs pattern.
+The Tabs component provides an accessible tabbed interface for organizing content into separate panels, following ARIA tabs pattern. It is a compound component namespace with multi-slot recipe styling that supports horizontal and vertical layouts, keyboard navigation, and multiple visual variants per nimbus-core standards.
 
 **Component:** `Tabs` (compound namespace)
 **Package:** `@commercetools/nimbus`
 **Type:** Compound component (multi-slot recipe)
 **React Aria:** Uses `Tabs`, `TabList`, `Tab`, `TabPanel` from react-aria-components
 
-## Compound Component Architecture
+## Requirements
 
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
@@ -21,8 +21,6 @@ The component SHALL export as compound component namespace.
 - **AND** SHALL provide Tabs.Tab for individual tab buttons
 - **AND** SHALL provide Tabs.Panel for tab content panels
 - **AND** Root SHALL be first property in namespace
-
-## Tab Selection
 
 ### Requirement: Single Panel Display
 The component SHALL show one panel at a time.
@@ -44,8 +42,6 @@ The component SHALL show one panel at a time.
 - **THEN** SHALL select first enabled tab by default
 - **AND** SHALL display its associated panel
 
-## Tab Activation
-
 ### Requirement: Activation Behavior
 The component SHALL control when tabs activate.
 
@@ -59,8 +55,6 @@ The component SHALL control when tabs activate.
 - **THEN** arrow keys SHALL only move focus
 - **AND** Space or Enter SHALL activate focused tab
 - **AND** SHALL provide better control for expensive panels
-
-## Keyboard Navigation
 
 ### Requirement: Tab List Navigation
 The component SHALL support keyboard navigation per nimbus-core standards.
@@ -85,8 +79,6 @@ The component SHALL support keyboard navigation per nimbus-core standards.
 - **WHEN** Shift+Tab is pressed
 - **THEN** SHALL move focus to previous focusable element
 
-## Tab List Orientation
-
 ### Requirement: Layout Direction
 The component SHALL support horizontal and vertical tab lists.
 
@@ -102,8 +94,6 @@ The component SHALL support horizontal and vertical tab lists.
 - **AND** SHALL use ArrowUp/Down for navigation
 - **AND** panels SHALL appear to right of tab list
 - **AND** SHALL support RTL layout
-
-## Tab States
 
 ### Requirement: Tab State Management
 The component SHALL support tab state variations.
@@ -128,8 +118,6 @@ The component SHALL support tab state variations.
 - **AND** SHALL not be selectable
 - **AND** SHALL set aria-disabled="true"
 
-## Panel Content
-
 ### Requirement: Panel Management
 The component SHALL manage panel visibility.
 
@@ -151,8 +139,6 @@ The component SHALL manage panel visibility.
 - **AND** Tab SHALL use aria-controls to reference panel
 - **AND** Panel SHALL use aria-labelledby to reference tab
 
-## Tab Variants
-
 ### Requirement: Visual Variants
 The component SHALL support multiple visual styles.
 
@@ -166,8 +152,6 @@ The component SHALL support multiple visual styles.
 - **THEN** SHALL show tabs as enclosed buttons
 - **AND** selected tab SHALL appear connected to panel
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -176,8 +160,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust tab height, padding, and font size
 - **AND** md SHALL be default size
-
-## Dynamic Tabs
 
 ### Requirement: Tab Collection Management
 The component SHALL support dynamic tab collections.
@@ -192,8 +174,6 @@ The component SHALL support dynamic tab collections.
 - **AND** SHALL use render props for tab content
 - **AND** SHALL support collection-based rendering
 
-## Lazy Loading
-
 ### Requirement: Performance Optimization
 The component SHALL support lazy panel rendering.
 
@@ -202,8 +182,6 @@ The component SHALL support lazy panel rendering.
 - **THEN** SHALL delay rendering until tab is selected
 - **AND** destroyInactiveTabPanel SHALL control unmounting
 - **AND** SHALL improve initial load performance
-
-## Accessibility
 
 ### Requirement: ARIA Tabs Pattern
 The component SHALL implement ARIA tabs pattern per nimbus-core standards.
@@ -233,8 +211,6 @@ The component SHALL implement ARIA tabs pattern per nimbus-core standards.
 - **AND** SHALL maintain logical focus order
 - **AND** SHALL provide visible focus indicators
 
-## Overflow Behavior
-
 ### Requirement: Tab Overflow
 The component SHALL handle overflow when tabs exceed container width.
 
@@ -243,8 +219,6 @@ The component SHALL handle overflow when tabs exceed container width.
 - **THEN** SHALL enable horizontal scrolling
 - **AND** SHALL show scroll indicators (shadows or buttons)
 - **AND** SHALL allow keyboard navigation through scrolled tabs
-
-## Styling
 
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
@@ -256,8 +230,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL support size and variant options
 - **AND** SHALL support orientation styles
 
-## Panel Transition
-
 ### Requirement: Panel Animations
 The component SHALL optionally animate panel transitions.
 
@@ -266,8 +238,6 @@ The component SHALL optionally animate panel transitions.
 - **THEN** previous panel SHALL fade out
 - **AND** new panel SHALL fade in
 - **AND** SHALL use duration from design tokens
-
-## Form Integration
 
 ### Requirement: Tab State Persistence
 The component SHALL optionally persist selected tab.

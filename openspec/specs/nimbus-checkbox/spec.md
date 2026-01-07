@@ -1,6 +1,6 @@
 # Specification: Checkbox Component
 
-## Overview
+## Purpose
 
 The Checkbox component provides an accessible checkbox control for binary or indeterminate selection states following ARIA checkbox pattern.
 
@@ -9,7 +9,7 @@ The Checkbox component provides an accessible checkbox control for binary or ind
 **Type:** Multi-slot component
 **React Aria:** Uses `Checkbox` from react-aria-components
 
-## Selection States
+## Requirements
 
 ### Requirement: Checkbox States
 The component SHALL support three selection states.
@@ -33,8 +33,6 @@ The component SHALL support three selection states.
 - **AND** SHALL set aria-checked="mixed"
 - **AND** SHALL be used for partial selection states (e.g., parent checkbox with some children selected)
 
-## Value Management
-
 ### Requirement: Controlled and Uncontrolled Modes
 The component SHALL support both state management modes per nimbus-core standards.
 
@@ -49,8 +47,6 @@ The component SHALL support both state management modes per nimbus-core standard
 - **THEN** SHALL initialize with default state
 - **AND** SHALL manage state internally
 - **AND** optional onChange SHALL receive updates
-
-## User Interaction
 
 ### Requirement: Toggle Interaction
 The component SHALL respond to user interactions.
@@ -68,8 +64,6 @@ The component SHALL respond to user interactions.
 - **WHEN** user presses Enter in form context
 - **THEN** MAY trigger form submission
 
-## Label Association
-
 ### Requirement: Accessible Labeling
 The component SHALL provide accessible label association per nimbus-core standards.
 
@@ -83,8 +77,6 @@ The component SHALL provide accessible label association per nimbus-core standar
 - **WHEN** aria-label is provided without children
 - **THEN** SHALL use aria-label for screen readers
 - **AND** SHALL not render visible label
-
-## Validation
 
 ### Requirement: Checkbox Validation
 The component SHALL support validation states.
@@ -102,8 +94,6 @@ The component SHALL support validation states.
 - **AND** SHALL set aria-invalid="true"
 - **AND** SHALL associate error message via aria-describedby
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -120,8 +110,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL set aria-readonly="true"
 - **AND** SHALL allow focus but prevent toggle
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -130,8 +118,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust checkbox dimensions and label font size
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Checkbox Pattern
 The component SHALL implement ARIA checkbox pattern per nimbus-core standards.
@@ -157,8 +143,6 @@ The component SHALL manage focus appropriately per nimbus-core standards.
 - **WHEN** user clicks checkbox
 - **THEN** focus SHALL remain on checkbox
 
-## Form Integration
-
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
 
@@ -174,8 +158,6 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL submit array of selected values
 - **AND** SHALL support independent selection
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -185,8 +167,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL style: root, control, icon, label, helperText, errorText slots
 - **AND** SHALL support size variants
 - **AND** SHALL support checked, unchecked, indeterminate, disabled, invalid states
-
-## Color Palette
 
 ### Requirement: Semantic Colors
 The component SHALL support semantic color palettes per nimbus-core standards.

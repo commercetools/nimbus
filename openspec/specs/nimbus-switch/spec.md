@@ -1,5 +1,9 @@
 # Specification: Switch Component
 
+## Purpose
+
+Provide an accessible, keyboard-navigable toggle switch component for binary on/off states that follows the ARIA switch pattern and integrates seamlessly with HTML forms.
+
 ## Overview
 
 The Switch component provides an accessible toggle switch control for binary on/off states, following ARIA switch pattern.
@@ -9,7 +13,7 @@ The Switch component provides an accessible toggle switch control for binary on/
 **Type:** Multi-slot component
 **React Aria:** Uses `Switch` from react-aria-components
 
-## Toggle States
+## Requirements
 
 ### Requirement: Switch States
 The component SHALL support binary toggle states.
@@ -26,8 +30,6 @@ The component SHALL support binary toggle states.
 - **AND** SHALL apply inactive styling
 - **AND** SHALL set aria-checked="false"
 
-## Value Management
-
 ### Requirement: Controlled and Uncontrolled Modes
 The component SHALL support both state management modes per nimbus-core standards.
 
@@ -43,8 +45,6 @@ The component SHALL support both state management modes per nimbus-core standard
 - **AND** SHALL manage state internally
 - **AND** optional onChange SHALL receive updates
 
-## User Interaction
-
 ### Requirement: Toggle Interaction
 The component SHALL respond to user interactions.
 
@@ -59,8 +59,6 @@ The component SHALL respond to user interactions.
 - **THEN** SHALL toggle state
 - **AND** SHALL call onChange handler
 - **AND** SHALL provide visual feedback
-
-## Label Association
 
 ### Requirement: Accessible Labeling
 The component SHALL provide accessible label association per nimbus-core standards.
@@ -82,8 +80,6 @@ The component SHALL provide accessible label association per nimbus-core standar
 - **AND** right SHALL be default
 - **AND** SHALL render label before or after switch control
 
-## Validation
-
 ### Requirement: Switch Validation
 The component SHALL support validation states.
 
@@ -98,8 +94,6 @@ The component SHALL support validation states.
 - **THEN** SHALL apply error styling
 - **AND** SHALL set aria-invalid="true"
 - **AND** SHALL associate error message via aria-describedby
-
-## Input States
 
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
@@ -117,8 +111,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL set aria-readonly="true"
 - **AND** SHALL allow focus but prevent toggle
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -127,8 +119,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust switch track and thumb dimensions
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Switch Pattern
 The component SHALL implement ARIA switch pattern per nimbus-core standards.
@@ -155,8 +145,6 @@ The component SHALL manage focus appropriately per nimbus-core standards.
 - **WHEN** user clicks switch
 - **THEN** focus SHALL remain on switch
 
-## Animation
-
 ### Requirement: Thumb Animation
 The component SHALL provide smooth visual transitions.
 
@@ -165,8 +153,6 @@ The component SHALL provide smooth visual transitions.
 - **THEN** thumb SHALL smoothly slide between positions
 - **AND** SHALL use easing curve for natural motion
 - **AND** animation duration SHALL be from design tokens
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
@@ -178,8 +164,6 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **AND** value prop SHALL specify submitted value when "on"
 - **AND** "off" state SHALL omit from form data or use falsy value
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -189,8 +173,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL style: root, track, thumb, label, helperText, errorText slots
 - **AND** SHALL support size variants
 - **AND** SHALL support on, off, disabled, invalid states
-
-## Color Palette
 
 ### Requirement: Semantic Colors
 The component SHALL support semantic color palettes per nimbus-core standards.

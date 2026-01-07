@@ -1,8 +1,8 @@
 # Specification: ComboBox Component
 
-## Overview
+## Purpose
 
-The ComboBox component provides an accessible autocomplete/typeahead selection control that combines text input with dropdown list, following ARIA combobox pattern.
+The ComboBox component provides an accessible autocomplete/typeahead selection control that combines text input with dropdown list, following ARIA combobox pattern. It enables users to search, filter, and select from a collection of options with comprehensive keyboard navigation, validation support, and full accessibility compliance.
 
 **Component:** `ComboBox`
 **Package:** `@commercetools/nimbus`
@@ -10,7 +10,7 @@ The ComboBox component provides an accessible autocomplete/typeahead selection c
 **React Aria:** Uses `ComboBox` from react-aria-components
 **i18n:** 6 messages (toggleOptions, clearInputValue, suggestionsAvailable, etc.)
 
-## Value Selection
+## Requirements
 
 ### Requirement: Single Selection with Input
 The component SHALL combine text input with selection capability.
@@ -31,8 +31,6 @@ The component SHALL combine text input with selection capability.
 - **THEN** SHALL control input text independently from selection
 - **AND** SHALL call onInputChange on every keystroke
 - **AND** SHALL support free-form text entry
-
-## Filtering and Search
 
 ### Requirement: Option Filtering
 The component SHALL filter options based on user input.
@@ -55,8 +53,6 @@ The component SHALL filter options based on user input.
 - **AND** SHALL use i18n message from combobox.i18n.ts
 - **AND** SHALL keep dropdown open
 
-## Dropdown Behavior
-
 ### Requirement: Dropdown Opening
 The component SHALL control dropdown visibility intelligently.
 
@@ -77,8 +73,6 @@ The component SHALL control dropdown visibility intelligently.
 - **THEN** SHALL toggle dropdown open/closed
 - **AND** button SHALL show chevron icon
 - **AND** SHALL use i18n aria-label "Toggle options"
-
-## Keyboard Navigation
 
 ### Requirement: Keyboard Interaction
 The component SHALL support comprehensive keyboard navigation per nimbus-core standards.
@@ -111,8 +105,6 @@ The component SHALL support comprehensive keyboard navigation per nimbus-core st
 - **AND** SHALL move focus to next element
 - **AND** SHALL commit current highlighted option
 
-## Clear Functionality
-
 ### Requirement: Clear Button
 The component SHALL provide input clearing capability.
 
@@ -124,8 +116,6 @@ The component SHALL provide input clearing capability.
 - **AND** SHALL call onInputChange with empty string
 - **AND** SHALL call onSelectionChange with null
 - **AND** clear button SHALL use i18n aria-label "Clear input value"
-
-## Options Management
 
 ### Requirement: Option Collection
 The component SHALL manage collection of options.
@@ -145,8 +135,6 @@ The component SHALL manage collection of options.
 - **WHEN** ComboBox.Section components are used
 - **THEN** SHALL render grouped options with headers
 - **AND** SHALL maintain filtering within groups
-
-## Validation
 
 ### Requirement: Input Validation
 The component SHALL validate selection and input state.
@@ -170,8 +158,6 @@ The component SHALL validate selection and input state.
 - **WHEN** allowsCustomValue={false} (default)
 - **THEN** SHALL require selection from options
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -189,8 +175,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL prevent dropdown opening
 - **AND** SHALL set aria-readonly="true"
 
-## Loading State
-
 ### Requirement: Async Data Loading
 The component SHALL support async option loading.
 
@@ -201,8 +185,6 @@ The component SHALL support async option loading.
 - **AND** SHALL use i18n message "Loading suggestions"
 - **AND** SHALL disable option selection while loading
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -211,8 +193,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust input height, padding, font size, and button sizes
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Combobox Pattern
 The component SHALL implement ARIA combobox pattern per nimbus-core standards.
@@ -244,8 +224,6 @@ The component SHALL use i18n for screen reader text per nimbus-core standards.
 - **THEN** SHALL use i18n messages from combobox.i18n.ts
 - **AND** SHALL translate: toggleOptions, clearInputValue, suggestionsAvailable, noResults, loadingSuggestions, filterOptions
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -254,8 +232,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply combobox slot recipe from theme/slot-recipes/combobox.ts
 - **AND** SHALL style: root, label, inputWrapper, input, toggleButton, clearButton, dropdown, option, section, noResults, loadingState, helperText, errorText slots
 - **AND** SHALL support size variants
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.

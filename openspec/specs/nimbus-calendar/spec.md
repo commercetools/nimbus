@@ -10,7 +10,11 @@ The Calendar component provides an accessible calendar grid for date selection, 
 **React Aria:** Uses `Calendar` from react-aria-components
 **i18n:** Shares messages with DatePicker component
 
-## Date Display
+## Purpose
+
+The Calendar component enables users to navigate through dates and select specific dates in an accessible, keyboard-friendly manner. It provides a grid-based month view with support for date constraints, multi-month display, internationalization, and comprehensive ARIA labeling for screen reader users.
+
+## Requirements
 
 ### Requirement: Month View
 The component SHALL display calendar dates in month grid.
@@ -26,8 +30,6 @@ The component SHALL display calendar dates in month grid.
 - **WHEN** value prop is provided
 - **THEN** SHALL display month containing selected date
 - **AND** SHALL highlight selected date
-
-## Date Selection
 
 ### Requirement: Single Date Selection
 The component SHALL support selecting individual dates.
@@ -48,8 +50,6 @@ The component SHALL support selecting individual dates.
 - **THEN** SHALL select that date
 - **AND** SHALL call onChange with CalendarDate object
 - **AND** SHALL apply selected styling
-
-## Month Navigation
 
 ### Requirement: Month/Year Navigation
 The component SHALL provide navigation controls.
@@ -77,8 +77,6 @@ The component SHALL provide navigation controls.
 - **WHEN** user presses Shift+PageDown
 - **THEN** SHALL navigate to next year
 
-## Keyboard Navigation
-
 ### Requirement: Grid Navigation
 The component SHALL support 2D keyboard navigation per nimbus-core standards.
 
@@ -104,8 +102,6 @@ The component SHALL support 2D keyboard navigation per nimbus-core standards.
 - **THEN** SHALL select that date
 - **AND** SHALL call onChange handler
 
-## Date Constraints
-
 ### Requirement: Date Range Validation
 The component SHALL enforce date constraints.
 
@@ -129,8 +125,6 @@ The component SHALL enforce date constraints.
 - **AND** SHALL apply unavailable styling
 - **AND** SHALL skip during keyboard navigation
 
-## Week Display
-
 ### Requirement: Week Configuration
 The component SHALL support week display options.
 
@@ -145,8 +139,6 @@ The component SHALL support week display options.
 - **THEN** SHALL start week on locale-appropriate day
 - **AND** SHALL adjust column headers accordingly
 
-## Multiple Months
-
 ### Requirement: Multi-Month Display
 The component SHALL optionally display multiple consecutive months.
 
@@ -155,8 +147,6 @@ The component SHALL optionally display multiple consecutive months.
 - **THEN** SHALL display specified number of months
 - **AND** SHALL arrange months horizontally or vertically
 - **AND** navigation SHALL move by one month at a time
-
-## Highlighting
 
 ### Requirement: Date Highlighting
 The component SHALL support highlighting special dates.
@@ -170,8 +160,6 @@ The component SHALL support highlighting special dates.
 - **WHEN** date receives keyboard focus
 - **THEN** SHALL show focus indicator
 - **AND** SHALL meet 3:1 contrast ratio
-
-## Locale Support
 
 ### Requirement: Internationalization
 The component SHALL format dates per locale per nimbus-core standards.
@@ -187,8 +175,6 @@ The component SHALL format dates per locale per nimbus-core standards.
 - **THEN** SHALL support alternative calendar systems via React Aria
 - **AND** SHALL display appropriate month lengths
 - **AND** SHALL handle locale-specific holidays
-
-## Accessibility
 
 ### Requirement: ARIA Grid Pattern
 The component SHALL implement ARIA grid pattern per nimbus-core standards.
@@ -212,8 +198,6 @@ The component SHALL implement ARIA grid pattern per nimbus-core standards.
 - **AND** next button SHALL have accessible label
 - **AND** month/year header SHALL be readable
 
-## States
-
 ### Requirement: Interactive States
 The component SHALL support multiple calendar states per nimbus-core standards.
 
@@ -229,8 +213,6 @@ The component SHALL support multiple calendar states per nimbus-core standards.
 - **AND** SHALL allow navigation
 - **AND** SHALL allow focus but prevent changes
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -239,8 +221,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply calendar slot recipe from theme/slot-recipes/calendar.ts
 - **AND** SHALL style: root, header, heading, prevButton, nextButton, grid, weekdayHeader, cell, today, selected, unavailable, outside slots
 - **AND** SHALL support responsive sizing
-
-## Form Integration
 
 ### Requirement: Value Format
 The component SHALL provide appropriate value formats.

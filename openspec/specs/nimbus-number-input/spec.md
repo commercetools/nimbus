@@ -1,15 +1,15 @@
 # Specification: NumberInput Component
 
-## Overview
+## Purpose
 
-The NumberInput component provides an accessible numeric input field with increment/decrement controls, formatting, and comprehensive validation.
+The NumberInput component provides an accessible numeric input field with increment/decrement controls, formatting, and comprehensive validation. It supports controlled and uncontrolled modes, locale-aware formatting, validation with min/max bounds, keyboard stepping (arrow keys, page keys, home/end), mouse wheel scrolling, multiple size variants, and full WCAG 2.1 AA accessibility compliance with ARIA attributes and stepper button labels.
 
 **Component:** `NumberInput`
 **Package:** `@commercetools/nimbus`
 **Type:** Multi-slot component
 **React Aria:** Uses `NumberField` from react-aria-components
 
-## Value Management
+## Requirements
 
 ### Requirement: Numeric Value Handling
 The component SHALL manage numeric values with proper parsing and formatting.
@@ -30,8 +30,6 @@ The component SHALL manage numeric values with proper parsing and formatting.
 - **WHEN** defaultValue prop is provided without value
 - **THEN** SHALL initialize with defaultValue
 - **AND** SHALL manage state internally
-
-## Numeric Constraints
 
 ### Requirement: Value Bounds
 The component SHALL enforce minimum and maximum value constraints.
@@ -56,8 +54,6 @@ The component SHALL enforce minimum and maximum value constraints.
 - **AND** SHALL default to step=1
 - **AND** SHALL support decimal steps (e.g., 0.1, 0.01)
 - **AND** SHALL validate value is multiple of step + min
-
-## Stepper Controls
 
 ### Requirement: Increment and Decrement Buttons
 The component SHALL provide stepper buttons for value adjustment.
@@ -84,8 +80,6 @@ The component SHALL provide stepper buttons for value adjustment.
 - **WHEN** field is disabled or readOnly
 - **THEN** both buttons SHALL be disabled
 
-## Keyboard Interaction
-
 ### Requirement: Keyboard Stepping
 The component SHALL support keyboard shortcuts for value adjustment per nimbus-core standards.
 
@@ -108,8 +102,6 @@ The component SHALL support keyboard shortcuts for value adjustment per nimbus-c
 - **THEN** SHALL set value to minimum (if defined)
 - **WHEN** user presses End
 - **THEN** SHALL set value to maximum (if defined)
-
-## Number Formatting
 
 ### Requirement: Locale-Aware Formatting
 The component SHALL format numbers according to locale settings.
@@ -134,8 +126,6 @@ The component SHALL format numbers according to locale settings.
 - **THEN** SHALL format with currency symbol
 - **AND** formatOptions.currency SHALL specify currency code
 
-## Validation
-
 ### Requirement: Numeric Validation
 The component SHALL validate numeric input.
 
@@ -158,8 +148,6 @@ The component SHALL validate numeric input.
 - **AND** SHALL mark field as invalid
 - **AND** SHALL set aria-invalid="true"
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -177,8 +165,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL prevent value changes
 - **AND** SHALL set aria-readonly="true"
 
-## Wheel Scroll Support
-
 ### Requirement: Mouse Wheel Interaction
 The component SHALL optionally support mouse wheel scrolling.
 
@@ -189,8 +175,6 @@ The component SHALL optionally support mouse wheel scrolling.
 - **AND** SHALL decrement on wheel down
 - **AND** SHALL respect step value
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -199,8 +183,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust height, padding, font size, and button sizes
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Attributes
 The component SHALL provide comprehensive ARIA attributes per nimbus-core standards.
@@ -223,7 +205,7 @@ The component SHALL provide comprehensive ARIA attributes per nimbus-core standa
 - **THEN** SHALL associate error message with aria-describedby
 - **AND** SHALL announce error to screen readers
 
-### Requirement: Stepper Button Labels
+### Requirement: Internationalized Stepper Button Labels
 The component SHALL provide accessible stepper button labels.
 
 #### Scenario: Internationalized labels
@@ -231,8 +213,6 @@ The component SHALL provide accessible stepper button labels.
 - **THEN** increment button SHALL have i18n aria-label "Increment"
 - **AND** decrement button SHALL have i18n aria-label "Decrement"
 - **AND** SHALL translate across supported locales
-
-## Styling
 
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
@@ -242,8 +222,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply numberInput slot recipe from theme/slot-recipes/number-input.ts
 - **AND** SHALL style: root, label, inputWrapper, input, stepperGroup, incrementButton, decrementButton, helperText, errorText slots
 - **AND** SHALL support size variants
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.

@@ -1,15 +1,15 @@
 # Specification: RadioInput Component
 
-## Overview
+## Purpose
 
-The RadioInput component provides an accessible radio button group for mutually exclusive selection, following ARIA radio group pattern.
+The RadioInput component provides an accessible radio button group for mutually exclusive selection, following ARIA radio group pattern. It enables users to select exactly one option from a set of related options using a compound component architecture (RadioInput.Root and RadioInput.Option) with full support for keyboard navigation, form integration, and theme-based styling.
 
 **Component:** `RadioInput` (compound namespace)
 **Package:** `@commercetools/nimbus`
 **Type:** Compound component (multi-slot recipe)
 **React Aria:** Uses `RadioGroup` and `Radio` from react-aria-components
 
-## Compound Component Architecture
+## Requirements
 
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
@@ -19,8 +19,6 @@ The component SHALL export as compound component namespace.
 - **THEN** SHALL provide RadioInput.Root as group wrapper
 - **AND** SHALL provide RadioInput.Option for individual radios
 - **AND** Root SHALL be first property in namespace
-
-## Value Selection
 
 ### Requirement: Single Selection from Group
 The component SHALL enforce mutually exclusive selection.
@@ -42,8 +40,6 @@ The component SHALL enforce mutually exclusive selection.
 - **THEN** SHALL deselect previously selected option
 - **AND** only one option SHALL be selected at a time
 
-## Radio Options
-
 ### Requirement: Option Collection
 The component SHALL manage collection of radio options.
 
@@ -59,8 +55,6 @@ The component SHALL manage collection of radio options.
 - **AND** SHALL pass value to onChange handler
 - **AND** values SHALL be unique within group
 
-## User Interaction
-
 ### Requirement: Selection Interaction
 The component SHALL respond to user interactions.
 
@@ -74,8 +68,6 @@ The component SHALL respond to user interactions.
 - **WHEN** option is focused and user presses Space
 - **THEN** SHALL select that option
 - **AND** SHALL call onChange handler
-
-## Keyboard Navigation
 
 ### Requirement: Radio Group Navigation
 The component SHALL support keyboard navigation per nimbus-core standards.
@@ -100,8 +92,6 @@ The component SHALL support keyboard navigation per nimbus-core standards.
 - **OR** first option (if no selection)
 - **AND** only one option SHALL be in tab order at a time
 
-## Layout Orientation
-
 ### Requirement: Layout Direction
 The component SHALL support horizontal and vertical layouts.
 
@@ -114,8 +104,6 @@ The component SHALL support horizontal and vertical layouts.
 - **WHEN** orientation="horizontal" is set
 - **THEN** SHALL arrange options horizontally
 - **AND** SHALL use ArrowLeft/Right for navigation
-
-## Option States
 
 ### Requirement: Option State Management
 The component SHALL support option state variations.
@@ -131,8 +119,6 @@ The component SHALL support option state variations.
 - **WHEN** Root has disabled={true}
 - **THEN** SHALL disable all options
 - **AND** SHALL prevent all interactions
-
-## Validation
 
 ### Requirement: Group Validation
 The component SHALL validate selection state.
@@ -151,8 +137,6 @@ The component SHALL validate selection state.
 - **AND** SHALL set aria-invalid="true" on group
 - **AND** SHALL associate error via aria-describedby
 
-## Label and Description
-
 ### Requirement: Group Labeling
 The component SHALL provide accessible group labeling per nimbus-core standards.
 
@@ -167,8 +151,6 @@ The component SHALL provide accessible group labeling per nimbus-core standards.
 - **THEN** SHALL render helper text for group
 - **AND** SHALL associate with group via aria-describedby
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -177,8 +159,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust radio button size and label font size
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Radio Group Pattern
 The component SHALL implement ARIA radio group pattern per nimbus-core standards.
@@ -201,8 +181,6 @@ The component SHALL implement ARIA radio group pattern per nimbus-core standards
 - **THEN** SHALL announce new selection to screen readers
 - **AND** SHALL provide clear selection state
 
-## Form Integration
-
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
 
@@ -217,8 +195,6 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL validate required state
 - **AND** SHALL prevent submission if invalid
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -228,8 +204,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL style: root, groupLabel, option, control, indicator, label, description, helperText, errorText slots
 - **AND** SHALL support size variants
 - **AND** SHALL support selected, unselected, disabled, invalid states
-
-## Color Palette
 
 ### Requirement: Semantic Colors
 The component SHALL support semantic color palettes per nimbus-core standards.

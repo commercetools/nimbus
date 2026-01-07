@@ -1,6 +1,6 @@
 # Specification: DataTable Component
 
-## Overview
+## Purpose
 
 The DataTable component provides an advanced, accessible data grid with sorting, filtering, column management, virtualization, and keyboard navigation. It follows ARIA grid pattern with extensive customization options.
 
@@ -10,7 +10,7 @@ The DataTable component provides an advanced, accessible data grid with sorting,
 **React Aria:** Uses `Table` components from react-aria-components
 **i18n:** 31 messages (highest in package)
 
-## Core Data Display
+## Requirements
 
 ### Requirement: Data Binding
 The component SHALL render tabular data from array of objects.
@@ -30,8 +30,6 @@ The component SHALL support column definitions.
 - **AND** SHALL extract cell value via column.accessor
 - **AND** SHALL support custom cell rendering via column.Cell
 - **AND** SHALL support column.Header for custom header content
-
-## Sorting
 
 ### Requirement: Column Sorting
 The component SHALL support single and multi-column sorting.
@@ -53,8 +51,6 @@ The component SHALL support single and multi-column sorting.
 - **THEN** SHALL toggle sort direction
 - **AND** SHALL announce sort change to screen readers
 
-## Filtering
-
 ### Requirement: Column Filtering
 The component SHALL support per-column filtering.
 
@@ -69,8 +65,6 @@ The component SHALL support per-column filtering.
 - **THEN** SHALL debounce filter application
 - **AND** SHALL show filtered row count
 - **AND** SHALL call onFilterChange callback
-
-## Column Management
 
 ### Requirement: Column Visibility
 The component SHALL allow showing/hiding columns.
@@ -99,8 +93,6 @@ The component SHALL support column width adjustment.
 - **AND** SHALL not allow width below minimum
 - **AND** SHALL call onColumnResize callback
 
-## Selection
-
 ### Requirement: Row Selection
 The component SHALL support single and multi-row selection.
 
@@ -124,8 +116,6 @@ The component SHALL support single and multi-row selection.
 - **AND** SHALL support controlled selection (selectedKeys prop)
 - **AND** SHALL support uncontrolled selection (defaultSelectedKeys)
 
-## Pagination
-
 ### Requirement: Paginated Display
 The component SHALL support pagination for large datasets.
 
@@ -142,8 +132,6 @@ The component SHALL support pagination for large datasets.
 - **AND** SHALL support controlled pagination (page, pageSize props)
 - **AND** SHALL reset to page 1 when filtering changes
 
-## Virtualization
-
 ### Requirement: Performance Optimization
 The component SHALL virtualize rows for large datasets.
 
@@ -154,8 +142,6 @@ The component SHALL virtualize rows for large datasets.
 - **AND** SHALL maintain scroll position during updates
 - **AND** SHALL support variable row heights
 
-## Density Control
-
 ### Requirement: Display Density
 The component SHALL support multiple density levels.
 
@@ -165,8 +151,6 @@ The component SHALL support multiple density levels.
 - **AND** SHALL adjust row height and padding
 - **AND** SHALL provide density menu control
 - **AND** SHALL persist density preference
-
-## Keyboard Navigation
 
 ### Requirement: Grid Navigation
 The component SHALL support 2D keyboard navigation per ARIA grid pattern.
@@ -195,8 +179,6 @@ The component SHALL support 2D keyboard navigation per ARIA grid pattern.
 - **AND** Ctrl+Home SHALL focus first cell in table
 - **AND** Ctrl+End SHALL focus last cell in table
 
-## Empty State
-
 ### Requirement: No Data Display
 The component SHALL handle empty data gracefully.
 
@@ -207,8 +189,6 @@ The component SHALL handle empty data gracefully.
 - **AND** SHALL still show column headers
 - **AND** SHALL maintain table structure
 
-## Loading State
-
 ### Requirement: Loading Indication
 The component SHALL show loading state during data fetch.
 
@@ -218,8 +198,6 @@ The component SHALL show loading state during data fetch.
 - **AND** SHALL disable interactions
 - **AND** SHALL maintain table dimensions
 
-## Expandable Rows
-
 ### Requirement: Row Expansion
 The component SHALL support expandable row details.
 
@@ -228,8 +206,6 @@ The component SHALL support expandable row details.
 - **THEN** SHALL show expand/collapse icon
 - **AND** clicking icon SHALL toggle expansion
 - **AND** SHALL render expanded content in spanning row
-
-## Accessibility
 
 ### Requirement: ARIA Grid Pattern
 The component SHALL implement ARIA grid pattern per nimbus-core standards.
@@ -247,8 +223,6 @@ The component SHALL implement ARIA grid pattern per nimbus-core standards.
 - **AND** SHALL use aria-live regions
 - **AND** SHALL provide column sort indicators via aria-sort
 
-## Internationalization
-
 ### Requirement: Localized Messages
 The component SHALL use i18n for all user-facing text per nimbus-core standards.
 
@@ -258,8 +232,6 @@ The component SHALL use i18n for all user-facing text per nimbus-core standards.
 - **AND** SHALL translate: column menu labels, density options, filter placeholders, empty state, pagination text, selection indicators
 - **AND** 31 messages SHALL cover all UI text
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use extensive multi-slot recipe per nimbus-core standards.
 
@@ -268,8 +240,6 @@ The component SHALL use extensive multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply dataTable slot recipe from theme/slot-recipes/data-table.ts
 - **AND** SHALL style slots: root, table, thead, tbody, tr, th, td, cell, headerCell, sortIcon, filterInput, checkbox, expandIcon, emptyState, loadingOverlay
 - **AND** SHALL support density variants in recipe
-
-## Performance
 
 ### Requirement: Optimized Rendering
 The component SHALL optimize for large datasets.

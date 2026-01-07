@@ -1,15 +1,10 @@
 # Specification: Menu Component
 
-## Overview
+## Purpose
 
-The Menu component provides an accessible dropdown menu following ARIA menu pattern. It uses compound component architecture with Menu.Root, Menu.Trigger, Menu.Content, and Menu.Item.
+The Menu component provides an accessible dropdown menu following ARIA menu pattern. It uses compound component architecture with Menu.Root, Menu.Trigger, Menu.Content, and Menu.Item. This component implements WCAG 2.1 AA compliant menu interactions with support for nested submenus, keyboard navigation, and customizable styling through Chakra UI recipes.
 
-**Component:** `Menu` (namespace export)
-**Package:** `@commercetools/nimbus`
-**Type:** Compound component (multi-slot recipe)
-**React Aria:** Uses `Menu` components from react-aria-components
-
-## Compound Component Architecture
+## Requirements
 
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
@@ -22,8 +17,6 @@ The component SHALL export as compound component namespace.
 - **AND** SHALL provide Menu.Item for individual menu items
 - **AND** SHALL provide Menu.Separator for visual dividers
 - **AND** Root SHALL be first property in namespace
-
-## Menu Trigger
 
 ### Requirement: Trigger Button
 Menu.Trigger SHALL activate menu display.
@@ -41,8 +34,6 @@ Menu.Trigger SHALL activate menu display.
 - **AND** ArrowDown SHALL focus first item
 - **AND** ArrowUp SHALL focus last item
 
-## Menu Content
-
 ### Requirement: Overlay Positioning
 Menu.Content SHALL intelligently position relative to trigger.
 
@@ -57,8 +48,6 @@ Menu.Content SHALL intelligently position relative to trigger.
 - **THEN** SHALL enable scrolling within menu
 - **AND** SHALL maintain focus visibility
 - **AND** SHALL support keyboard navigation through scrolled items
-
-## Menu Items
 
 ### Requirement: Selectable Items
 Menu.Item SHALL support selection and actions.
@@ -101,8 +90,6 @@ Menu.Item SHALL support disabled and selected states.
 - **AND** SHALL set aria-checked="true"
 - **AND** SHALL provide visual distinction
 
-## Menu Closure
-
 ### Requirement: Close Behavior
 Menu SHALL close in appropriate situations.
 
@@ -121,8 +108,6 @@ Menu SHALL close in appropriate situations.
 - **THEN** SHALL close menu by default
 - **AND** closeOnSelect prop SHALL control this behavior
 
-## Focus Management
-
 ### Requirement: Focus Trap
 Menu SHALL manage focus appropriately per nimbus-core standards.
 
@@ -136,8 +121,6 @@ Menu SHALL manage focus appropriately per nimbus-core standards.
 - **WHEN** menu closes
 - **THEN** SHALL return focus to trigger element
 - **AND** focus SHALL be visible and announced
-
-## Submenus
 
 ### Requirement: Nested Menus
 Menu SHALL support nested submenu structures.
@@ -155,8 +138,6 @@ Menu SHALL support nested submenu structures.
 - **AND** SHALL flip to left if insufficient space
 - **AND** SHALL maintain consistent styling
 
-## Separators
-
 ### Requirement: Visual Grouping
 Menu.Separator SHALL provide visual grouping of items.
 
@@ -165,8 +146,6 @@ Menu.Separator SHALL provide visual grouping of items.
 - **THEN** SHALL display horizontal line between items
 - **AND** SHALL not be focusable
 - **AND** SHALL use semantic hr element or aria-separator role
-
-## Accessibility
 
 ### Requirement: ARIA Menu Pattern
 The component SHALL implement ARIA menu pattern per nimbus-core standards.
@@ -184,8 +163,6 @@ The component SHALL implement ARIA menu pattern per nimbus-core standards.
 - **AND** SHALL manage focus with roving tabindex
 - **AND** SHALL announce state changes to screen readers
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -194,8 +171,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply menu slot recipe from theme/slot-recipes/menu.ts
 - **AND** SHALL style: trigger, content, item, separator slots
 - **AND** SHALL support design tokens for spacing, colors, shadows
-
-## Icon and Shortcuts
 
 ### Requirement: Item Decoration
 Menu.Item SHALL support icons and keyboard shortcuts.
