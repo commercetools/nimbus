@@ -1,14 +1,18 @@
 <!-- OPENSPEC:START -->
+
 # OpenSpec Instructions
 
 These instructions are for AI assistants working in this project.
 
 Always open `./openspec/AGENTS.md` when the request:
+
 - Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Introduces new capabilities, breaking changes, architecture shifts, or big
+  performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `./openspec/AGENTS.md` to learn:
+
 - How to create and apply change proposals
 - Spec format and conventions
 - Project structure and guidelines
@@ -17,10 +21,12 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
 
-# CLAUDE.md
+## OpenSpec Proposal Guidance
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+For non-fix changes (new features, breaking changes, architecture shifts),
+suggest creating an OpenSpec proposal via `/openspec:proposal` before
+implementing. Proceed directly only for bug fixes, typos, config changes, and
+tests for existing behavior.
 
 ## Project Overview
 
@@ -203,8 +209,10 @@ pnpm changeset:status
 ### Component Development
 
 For comprehensive component development guidance, see:
+
 - Component Guidelines: `./docs/component-guidelines.md`
-- Architecture Decisions: `./docs/file-type-guidelines/architecture-decisions.md`
+- Architecture Decisions:
+  `./docs/file-type-guidelines/architecture-decisions.md`
 - File Review Protocol: `./docs/file-review-protocol.md`
 
 ## MCP Server Tools
