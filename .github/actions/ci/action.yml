@@ -26,5 +26,7 @@ runs:
       shell: bash
 
     - name: Building packages
-      run: pnpm build
+      # Skip docs build - saves disk space and build time
+      # Vercel handles docs deployment and builds them separately
+      run: pnpm build:tokens && pnpm build:packages
       shell: bash
