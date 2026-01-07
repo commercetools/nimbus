@@ -222,7 +222,7 @@ export const LocalizedField = ({
             <RaDialogTrigger>
               <IconButton
                 id={moreDetailsButtonId}
-                aria-label={localizedFieldMessages.getStringLocale(
+                aria-label={localizedFieldMessages.getVariableLocale(
                   "infoBoxTriggerAriaLabel",
                   locale
                 )}
@@ -304,20 +304,20 @@ export const LocalizedField = ({
             />
             {type === "money"
               ? expanded
-                ? localizedFieldMessages.getStringLocale(
+                ? localizedFieldMessages.getVariableLocale(
                     "hideCurrencies",
                     locale
                   )
-                : localizedFieldMessages.getStringLocale(
+                : localizedFieldMessages.getVariableLocale(
                     "showCurrencies",
                     locale
                   )
               : expanded
-                ? localizedFieldMessages.getStringLocale(
+                ? localizedFieldMessages.getVariableLocale(
                     "hideLanguages",
                     locale
                   )
-                : localizedFieldMessages.getStringLocale(
+                : localizedFieldMessages.getVariableLocale(
                     "showLanguages",
                     locale
                   )}

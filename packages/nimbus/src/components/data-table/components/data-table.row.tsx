@@ -360,7 +360,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label={dataTableMessages.getStringLocale(
+                  aria-label={dataTableMessages.getVariableLocale(
                     "selectRow",
                     locale
                   )}

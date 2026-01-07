@@ -326,9 +326,7 @@ const MessageTranslationTestComponent = ({
   // Test retrieving a message for the current locale (for verification)
   // Fallback to English is handled automatically by the message dictionary's inline fallback logic
   // "dismiss" is a simple string message (no variables), so we can safely assert string type
-  const dismissLabel = alertMessages.getStringLocale("dismiss", locale) as
-    | string
-    | undefined;
+  const dismissLabel = alertMessages.getVariableLocale("dismiss", locale);
 
   return (
     <Box data-testid={testId}>
@@ -445,7 +443,7 @@ export const MessageTranslationForSupportedLocales: Story = {
           await expect(dismissButton).toHaveAttribute("aria-label");
 
           // Get the expected translation from the message dictionary
-          const expectedLabel = alertMessages.getStringLocale(
+          const expectedLabel = alertMessages.getVariableLocale(
             "dismiss",
             locale
           ) as string;
@@ -536,11 +534,11 @@ export const MessageTranslationForUnsupportedLocales: Story = {
 
           // Verify normalization: unsupported locale should normalize to "en"
           // Test that using the unsupported locale directly returns English message
-          const normalizedLabel = alertMessages.getStringLocale(
+          const normalizedLabel = alertMessages.getVariableLocale(
             "dismiss",
             locale
-          ) as string;
-          const expectedEnglishLabel = alertMessages.getStringLocale(
+          );
+          const expectedEnglishLabel = alertMessages.getVariableLocale(
             "dismiss",
             "en"
           ) as string;

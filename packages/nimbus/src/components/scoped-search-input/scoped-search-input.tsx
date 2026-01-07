@@ -124,7 +124,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             placeholder={selectPlaceholder}
             aria-label={
               selectAriaLabel ||
-              scopedSearchInputMessages.getStringLocale("selectLabel", locale)
+              scopedSearchInputMessages.getVariableLocale("selectLabel", locale)
             }
             aria-controls={searchId}
             aria-describedby={ariaDescribedby}
@@ -185,7 +185,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             placeholder={searchPlaceholder}
             aria-label={
               searchAriaLabel ||
-              scopedSearchInputMessages.getStringLocale("searchLabel", locale)
+              scopedSearchInputMessages.getVariableLocale("searchLabel", locale)
             }
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}

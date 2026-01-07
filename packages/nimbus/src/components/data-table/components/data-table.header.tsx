@@ -63,11 +63,14 @@ export const DataTableHeader = <
             maxWidth={selectionBehavior === "toggle" ? 24 : 72}
             minWidth={selectionBehavior === "toggle" ? 24 : 72}
             allowsSorting={false}
-            aria-label={dataTableMessages.getStringLocale("expandRows", locale)}
+            aria-label={dataTableMessages.getVariableLocale(
+              "expandRows",
+              locale
+            )}
             isInternalColumn={true}
           >
             <VisuallyHidden>
-              {dataTableMessages.getStringLocale("expandRows", locale)}
+              {dataTableMessages.getVariableLocale("expandRows", locale)}
             </VisuallyHidden>
           </DataTableColumn>
         )}
@@ -105,10 +108,10 @@ export const DataTableHeader = <
           minWidth={72}
           allowsSorting={false}
           isInternalColumn={true}
-          aria-label={dataTableMessages.getStringLocale("pinRows", locale)}
+          aria-label={dataTableMessages.getVariableLocale("pinRows", locale)}
         >
           <VisuallyHidden>
-            {dataTableMessages.getStringLocale("pinRows", locale)}
+            {dataTableMessages.getVariableLocale("pinRows", locale)}
           </VisuallyHidden>
         </DataTableColumn>
       </RaTableHeader>

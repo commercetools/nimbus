@@ -25,7 +25,7 @@ export const RequiredValueErrorMessage = () => {
   const { locale } = useLocale();
   return (
     <FormField.Error>
-      {localizedFieldMessages.getStringLocale("missingRequiredField", locale)}
+      {localizedFieldMessages.getVariableLocale("missingRequiredField", locale)}
     </FormField.Error>
   );
 };

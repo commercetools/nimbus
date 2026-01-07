@@ -296,7 +296,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
               isDisabled={isCurrencyInputDisabled || isDisabled || isReadOnly}
               isClearable={false}
               placeholder=""
-              aria-label={moneyInputMessages.getStringLocale(
+              aria-label={moneyInputMessages.getVariableLocale(
                 "currencySelectLabel",
                 locale
               )}
@@ -336,7 +336,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
             autoFocus={autoFocus}
             size={size}
             //base accessible name: "Amount"
-            aria-label={moneyInputMessages.getStringLocale(
+            aria-label={moneyInputMessages.getVariableLocale(
               "amountInputLabel",
               locale
             )}
@@ -357,7 +357,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
                   as={HighPrecision}
                   id={highPrecisionBadgeId}
                   color={isDisabled ? "neutral.8" : "neutral.11"}
-                  aria-label={moneyInputMessages.getStringLocale(
+                  aria-label={moneyInputMessages.getVariableLocale(
                     "highPrecisionPrice",
                     locale
                   )}
@@ -366,7 +366,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
                 />
               </MakeElementFocusable>
               <Tooltip.Content placement="top">
-                {moneyInputMessages.getStringLocale(
+                {moneyInputMessages.getVariableLocale(
                   "highPrecisionPrice",
                   locale
                 )}

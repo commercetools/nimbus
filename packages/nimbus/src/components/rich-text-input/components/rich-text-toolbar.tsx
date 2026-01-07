@@ -59,7 +59,7 @@ export const RichTextToolbar = ({
   return (
     <Toolbar
       orientation="horizontal"
-      aria-label={richTextInputMessages.getStringLocale(
+      aria-label={richTextInputMessages.getVariableLocale(
         "textFormatting",
         locale
       )}
@@ -82,7 +82,7 @@ export const RichTextToolbar = ({
               _hover={{ bg: "primary.2" }}
               isDisabled={isDisabled}
               onMouseDown={(event) => event.preventDefault()}
-              aria-label={richTextInputMessages.getStringLocale(
+              aria-label={richTextInputMessages.getVariableLocale(
                 "textStyleMenu",
                 locale
               )}
@@ -97,7 +97,7 @@ export const RichTextToolbar = ({
               </Box>
             </Menu.Trigger>
             <Tooltip.Content placement="top">
-              {richTextInputMessages.getStringLocale("textStyle", locale)}
+              {richTextInputMessages.getVariableLocale("textStyle", locale)}
             </Tooltip.Content>
           </Tooltip.Root>
           <Menu.Content>
@@ -129,18 +129,18 @@ export const RichTextToolbar = ({
             id="bold"
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale("bold", locale)}
+            aria-label={richTextInputMessages.getVariableLocale("bold", locale)}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "bold"))}
           >
             <FormatBold />
             <VisuallyHidden>
-              {richTextInputMessages.getStringLocale("bold", locale)}
+              {richTextInputMessages.getVariableLocale("bold", locale)}
             </VisuallyHidden>
           </IconToggleButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("bold", locale)}
+            {richTextInputMessages.getVariableLocale("bold", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
@@ -148,18 +148,21 @@ export const RichTextToolbar = ({
             id="italic"
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale("italic", locale)}
+            aria-label={richTextInputMessages.getVariableLocale(
+              "italic",
+              locale
+            )}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
             onPress={withPreservedSelection(() => toggleMark(editor, "italic"))}
           >
             <FormatItalic />
             <VisuallyHidden>
-              {richTextInputMessages.getStringLocale("italic", locale)}
+              {richTextInputMessages.getVariableLocale("italic", locale)}
             </VisuallyHidden>
           </IconToggleButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("italic", locale)}
+            {richTextInputMessages.getVariableLocale("italic", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
@@ -167,7 +170,7 @@ export const RichTextToolbar = ({
             id="underline"
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale(
+            aria-label={richTextInputMessages.getVariableLocale(
               "underline",
               locale
             )}
@@ -179,11 +182,11 @@ export const RichTextToolbar = ({
           >
             <FormatUnderlined />
             <VisuallyHidden>
-              {richTextInputMessages.getStringLocale("underline", locale)}
+              {richTextInputMessages.getVariableLocale("underline", locale)}
             </VisuallyHidden>
           </IconToggleButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("underline", locale)}
+            {richTextInputMessages.getVariableLocale("underline", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
       </ToggleButtonGroup.Root>
@@ -198,7 +201,7 @@ export const RichTextToolbar = ({
         selectionMode="single"
         selectedKeys={selectedListKeys}
         onSelectionChange={handleListToggle}
-        aria-label={richTextInputMessages.getStringLocale(
+        aria-label={richTextInputMessages.getVariableLocale(
           "listFormatting",
           locale
         )}
@@ -209,7 +212,7 @@ export const RichTextToolbar = ({
             id="bulleted-list"
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale(
+            aria-label={richTextInputMessages.getVariableLocale(
               "bulletedList",
               locale
             )}
@@ -219,7 +222,7 @@ export const RichTextToolbar = ({
             <FormatListBulleted />
           </IconToggleButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("bulletedList", locale)}
+            {richTextInputMessages.getVariableLocale("bulletedList", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
@@ -227,7 +230,7 @@ export const RichTextToolbar = ({
             id="numbered-list"
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale(
+            aria-label={richTextInputMessages.getVariableLocale(
               "numberedList",
               locale
             )}
@@ -237,7 +240,7 @@ export const RichTextToolbar = ({
             <FormatListNumbered />
           </IconToggleButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("numberedList", locale)}
+            {richTextInputMessages.getVariableLocale("numberedList", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
       </ToggleButtonGroup.Root>
@@ -250,36 +253,36 @@ export const RichTextToolbar = ({
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale("undo", locale)}
+            aria-label={richTextInputMessages.getVariableLocale("undo", locale)}
             isDisabled={!hasUndos || isDisabled}
             onPress={withPreservedSelection(() => editor.undo())}
             onMouseDown={(event) => event.preventDefault()}
           >
             <Undo />
             <VisuallyHidden>
-              {richTextInputMessages.getStringLocale("undo", locale)}
+              {richTextInputMessages.getVariableLocale("undo", locale)}
             </VisuallyHidden>
           </IconButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("undo", locale)}
+            {richTextInputMessages.getVariableLocale("undo", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
         <Tooltip.Root delay={0} closeDelay={0}>
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getStringLocale("redo", locale)}
+            aria-label={richTextInputMessages.getVariableLocale("redo", locale)}
             isDisabled={!hasRedos || isDisabled}
             onPress={withPreservedSelection(() => editor.redo())}
             onMouseDown={(event) => event.preventDefault()}
           >
             <Redo />
             <VisuallyHidden>
-              {richTextInputMessages.getStringLocale("redo", locale)}
+              {richTextInputMessages.getVariableLocale("redo", locale)}
             </VisuallyHidden>
           </IconButton>
           <Tooltip.Content placement="top">
-            {richTextInputMessages.getStringLocale("redo", locale)}
+            {richTextInputMessages.getVariableLocale("redo", locale)}
           </Tooltip.Content>
         </Tooltip.Root>
       </Group>

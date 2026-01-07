@@ -39,16 +39,16 @@ const DataTableBase = function DataTable({
   return (
     <DataTableRoot ref={ref} {...props}>
       <DataTableTable
-        aria-label={dataTableMessages.getStringLocale("dataTable", locale)}
+        aria-label={dataTableMessages.getVariableLocale("dataTable", locale)}
       >
         <DataTableHeader
-          aria-label={dataTableMessages.getStringLocale(
+          aria-label={dataTableMessages.getVariableLocale(
             "dataTableHeader",
             locale
           )}
         />
         <DataTableBody
-          aria-label={dataTableMessages.getStringLocale(
+          aria-label={dataTableMessages.getVariableLocale(
             "dataTableBody",
             locale
           )}

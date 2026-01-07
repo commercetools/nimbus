@@ -49,11 +49,11 @@ export const NumberInput = (props: NumberInputProps) => {
   const enhancedFunctionalProps = {
     ...functionalProps,
     locale: locale,
-    incrementAriaLabel: numberInputMessages.getStringLocale(
+    incrementAriaLabel: numberInputMessages.getVariableLocale(
       "increment",
       locale
     ),
-    decrementAriaLabel: numberInputMessages.getStringLocale(
+    decrementAriaLabel: numberInputMessages.getVariableLocale(
       "decrement",
       locale
     ),

@@ -162,13 +162,13 @@ export const DataTableManager = () => {
     <>
       <Tooltip.Root>
         <Tooltip.Content placement="top">
-          {dataTableMessages.getStringLocale("settings", locale)}
+          {dataTableMessages.getVariableLocale("settings", locale)}
         </Tooltip.Content>
         <IconButton
           variant="ghost"
           colorPalette="primary"
           size="xs"
-          aria-label={dataTableMessages.getStringLocale("settings", locale)}
+          aria-label={dataTableMessages.getVariableLocale("settings", locale)}
           onClick={() => setIsOpen(true)}
         >
           <Settings />
@@ -183,7 +183,7 @@ export const DataTableManager = () => {
         <Drawer.Content width="2xl" data-testid="data-table-manager-drawer">
           <Drawer.Header>
             <Drawer.Title>
-              {dataTableMessages.getStringLocale("settings", locale)}
+              {dataTableMessages.getVariableLocale("settings", locale)}
             </Drawer.Title>
             <Drawer.CloseTrigger />
           </Drawer.Header>
@@ -196,7 +196,7 @@ export const DataTableManager = () => {
                   tabLabel: (
                     <>
                       <ViewWeek />
-                      {dataTableMessages.getStringLocale(
+                      {dataTableMessages.getVariableLocale(
                         "visibleColumns",
                         locale
                       )}
@@ -216,7 +216,7 @@ export const DataTableManager = () => {
                   tabLabel: (
                     <>
                       <ViewDay />
-                      {dataTableMessages.getStringLocale(
+                      {dataTableMessages.getVariableLocale(
                         "layoutSettings",
                         locale
                       )}

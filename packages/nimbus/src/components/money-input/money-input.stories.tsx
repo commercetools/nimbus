@@ -436,7 +436,7 @@ export const EULocaleFormattingExample: Story = {
     // NOTE: This test will fail locally until locale normalization is implemented
     // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
     // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
-    const highPrecisionLabel = moneyInputMessages.getStringLocale(
+    const highPrecisionLabel = moneyInputMessages.getVariableLocale(
       "highPrecisionPrice",
       "de"
     );
@@ -444,7 +444,7 @@ export const EULocaleFormattingExample: Story = {
     expect(badges).toHaveLength(3);
 
     // With German locale NimbusI18nProvider, React Aria formats with German conventions
-    const amountInputLabel = moneyInputMessages.getStringLocale(
+    const amountInputLabel = moneyInputMessages.getVariableLocale(
       "amountInputLabel",
       "de"
     );

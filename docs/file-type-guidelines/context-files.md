@@ -166,7 +166,7 @@ export const DatePickerCustomContext = ({
     },
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": datePickerMessages.getStringLocale("clearInput", locale),
+      "aria-label": datePickerMessages.getVariableLocale("clearInput", locale),
       isDisabled: isDatePickerDisabled,
       style: noInputValue ? { display: "none" } : undefined,
       "aria-hidden": noInputValue ? true : undefined,
@@ -182,7 +182,7 @@ export const DatePickerCustomContext = ({
         }
       },
       granularity: granularity === "day" ? undefined : granularity,
-      "aria-label": datePickerMessages.getStringLocale("enterTime", locale),
+      "aria-label": datePickerMessages.getVariableLocale("enterTime", locale),
     },
   };
 

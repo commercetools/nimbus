@@ -945,8 +945,8 @@ export const NumberInput = (props: NumberInputProps) => {
   const { locale } = useLocale();
 
   // Use for aria-labels
-  const incrementLabel = componentMessages.getStringLocale("increment", locale);
-  const decrementLabel = componentMessages.getStringLocale("decrement", locale);
+  const incrementLabel = componentMessages.getVariableLocale("increment", locale);
+  const decrementLabel = componentMessages.getVariableLocale("decrement", locale);
 
   // Pass to React Aria hooks
   const ariaProps = {

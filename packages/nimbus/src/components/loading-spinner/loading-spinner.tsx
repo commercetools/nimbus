@@ -18,7 +18,7 @@ const pointerPath =
  */
 export const LoadingSpinner = (props: LoadingSpinnerProps) => {
   const { locale } = useLocale();
-  const defaultLabel = loadingSpinnerMessages.getStringLocale(
+  const defaultLabel = loadingSpinnerMessages.getVariableLocale(
     "default",
     locale
   );
