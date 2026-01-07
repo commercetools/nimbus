@@ -1,15 +1,15 @@
 # Specification: Accordion Component
 
-## Overview
+## Purpose
 
-The Accordion component provides an accessible expandable/collapsible content sections following ARIA accordion pattern.
+The Accordion component provides an accessible expandable/collapsible content sections following ARIA accordion pattern. It enables users to organize and navigate through sectioned content in a compact, accessible manner with support for single and multiple expansion modes, keyboard navigation, and full WCAG 2.1 AA compliance.
 
 **Component:** `Accordion` (compound namespace)
 **Package:** `@commercetools/nimbus`
 **Type:** Compound component (multi-slot recipe)
 **React Aria:** Uses `Disclosure` and `DisclosureGroup` from react-aria-components
 
-## Compound Component Architecture
+## Requirements
 
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
@@ -21,8 +21,6 @@ The component SHALL export as compound component namespace.
 - **AND** SHALL provide Accordion.Trigger for expand/collapse button
 - **AND** SHALL provide Accordion.Panel for collapsible content
 - **AND** Root SHALL be first property in namespace
-
-## Expansion Modes
 
 ### Requirement: Expansion Behavior
 The component SHALL support single and multiple expansion modes.
@@ -45,8 +43,6 @@ The component SHALL support single and multiple expansion modes.
 - **WHEN** allowToggle={false} (default, single mode)
 - **THEN** one item SHALL always remain expanded
 
-## State Management
-
 ### Requirement: Controlled and Uncontrolled Modes
 The component SHALL support both state management modes per nimbus-core standards.
 
@@ -62,8 +58,6 @@ The component SHALL support both state management modes per nimbus-core standard
 - **AND** SHALL manage state internally
 - **AND** optional onExpandedChange SHALL receive updates
 
-## Trigger Interaction
-
 ### Requirement: Trigger Button
 The component SHALL provide button to toggle panel visibility.
 
@@ -78,8 +72,6 @@ The component SHALL provide button to toggle panel visibility.
 - **WHEN** trigger is focused and user presses Enter or Space
 - **THEN** SHALL toggle associated panel
 - **AND** SHALL provide visual feedback
-
-## Keyboard Navigation
 
 ### Requirement: Accordion Navigation
 The component SHALL support keyboard navigation per nimbus-core standards.
@@ -103,8 +95,6 @@ The component SHALL support keyboard navigation per nimbus-core standards.
 - **OR** next trigger if panel is collapsed
 - **OR** outside accordion if at last element
 
-## Panel Content
-
 ### Requirement: Content Display
 The component SHALL manage panel visibility and content.
 
@@ -127,8 +117,6 @@ The component SHALL manage panel visibility and content.
 - **THEN** trigger SHALL use aria-controls to reference panel
 - **AND** panel SHALL use aria-labelledby to reference trigger
 
-## Trigger Icon
-
 ### Requirement: Expansion Indicator
 The component SHALL provide visual expansion indicator.
 
@@ -143,8 +131,6 @@ The component SHALL provide visual expansion indicator.
 - **THEN** SHALL use custom icon instead of default
 - **AND** SHALL apply same rotation/transition behavior
 
-## Disabled Items
-
 ### Requirement: Item State Management
 The component SHALL support disabled items.
 
@@ -155,8 +141,6 @@ The component SHALL support disabled items.
 - **AND** SHALL skip during keyboard navigation
 - **AND** SHALL set aria-disabled="true"
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -165,8 +149,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust trigger height, padding, and font size
 - **AND** md SHALL be default size
-
-## Styling Variants
 
 ### Requirement: Visual Variants
 The component SHALL support multiple visual styles.
@@ -180,8 +162,6 @@ The component SHALL support multiple visual styles.
 - **WHEN** variant="ghost" is set
 - **THEN** SHALL render without borders
 - **AND** SHALL use subtle hover states
-
-## Accessibility
 
 ### Requirement: ARIA Disclosure Pattern
 The component SHALL implement ARIA accordion pattern per nimbus-core standards.
@@ -204,8 +184,6 @@ The component SHALL implement ARIA accordion pattern per nimbus-core standards.
 - **AND** SHALL maintain logical focus order
 - **AND** SHALL support roving tabindex for triggers
 
-## Panel Animation
-
 ### Requirement: Smooth Transitions
 The component SHALL animate panel expansion/collapse.
 
@@ -220,8 +198,6 @@ The component SHALL animate panel expansion/collapse.
 - **THEN** SHALL animate height from full to 0
 - **AND** SHALL use same timing as expansion
 
-## Nested Accordions
-
 ### Requirement: Nesting Support
 The component SHALL support nested accordion structures.
 
@@ -230,8 +206,6 @@ The component SHALL support nested accordion structures.
 - **THEN** SHALL render nested accordion independently
 - **AND** SHALL maintain separate state management
 - **AND** SHALL apply appropriate indentation
-
-## Styling
 
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
@@ -243,8 +217,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL support size and variant options
 - **AND** SHALL support expanded/collapsed states
 
-## Performance
-
 ### Requirement: Optimized Rendering
 The component SHALL optimize for performance.
 
@@ -253,8 +225,6 @@ The component SHALL optimize for performance.
 - **THEN** SHALL delay rendering until first expansion
 - **AND** SHALL cache rendered content
 - **AND** MAY unmount on collapse if configured
-
-## Initial Expansion
 
 ### Requirement: Default State
 The component SHALL support initial expansion state.

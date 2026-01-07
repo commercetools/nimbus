@@ -1,14 +1,13 @@
 # Specification: @commercetools/nimbus - Core Package Standards
 
-## Overview
-
-This specification defines the cross-cutting requirements and standards that ALL components in the @commercetools/nimbus package MUST adhere to. Individual component capabilities are documented in separate component-specific specs.
-
 **Package:** `@commercetools/nimbus`
 **Version:** 2.1.0
-**Purpose:** Design system standards and contracts for all Nimbus components
 
-## Accessibility Standards
+## Purpose
+
+Establish cross-cutting requirements and standards that ALL components in the @commercetools/nimbus package MUST adhere to, ensuring consistency, accessibility, type safety, and maintainability across the entire design system. Individual component capabilities are documented in separate component-specific specs.
+
+## Requirements
 
 ### Requirement: WCAG 2.1 AA Compliance
 All components SHALL meet WCAG 2.1 AA accessibility standards.
@@ -52,8 +51,6 @@ All interactive components SHALL use React Aria Components for accessibility pri
 - **AND** SHALL wrap with Chakra's withContext for styling
 - **AND** SHALL follow multi-layered architecture: RAC → Chakra → Nimbus
 
-## TypeScript Standards
-
 ### Requirement: Strict Type Safety
 All components SHALL use strict TypeScript with comprehensive type definitions.
 
@@ -85,8 +82,6 @@ All components SHALL provide comprehensive JSDoc documentation.
 - **AND** SHALL include usage examples where helpful
 - **AND** SHALL link to online docs with @see tag
 
-## Styling Standards
-
 ### Requirement: Chakra UI v3 Integration
 All components SHALL use Chakra UI v3 for styling with design tokens.
 
@@ -116,8 +111,6 @@ All components SHALL support responsive design patterns.
 - **AND** SHALL support responsive objects: `{ base, sm, md, lg, xl, 2xl }`
 - **AND** SHALL use breakpoints from design tokens
 
-## Testing Standards
-
 ### Requirement: Storybook Testing
 All components SHALL have Storybook stories with interaction tests.
 
@@ -143,8 +136,6 @@ Utilities and hooks SHALL have unit tests.
 - **AND** SHALL be fast and isolated
 - **AND** component behavior SHALL be tested in Storybook, NOT unit tests
 
-## Internationalization Standards
-
 ### Requirement: react-intl Integration
 Components with user-facing text SHALL support internationalization.
 
@@ -165,8 +156,6 @@ Components with user-facing text SHALL support internationalization.
 - **THEN** SHALL run `pnpm extract-intl` to update @commercetools/nimbus-i18n
 - **AND** messages SHALL be compiled to AST format for runtime
 - **AND** SHALL support 5 locales (en, de, es, fr-FR, pt-BR)
-
-## Build and Distribution Standards
 
 ### Requirement: Optimized Build Output
 The package SHALL produce tree-shakeable bundles.
@@ -195,8 +184,6 @@ The package SHALL declare appropriate peer dependencies.
 - **AND** SHALL require react-intl 7.x for components with i18n
 - **AND** SHALL require slate 0.75.x for RichTextInput component
 
-## Component API Standards
-
 ### Requirement: Consistent Prop Patterns
 All components SHALL follow consistent API patterns.
 
@@ -222,8 +209,6 @@ Multi-part components SHALL use namespace compound pattern.
 - **AND** Root component SHALL be first property
 - **AND** SHALL organize parts in components/ subdirectory
 
-## Documentation Standards
-
 ### Requirement: MDX Documentation
 All components SHALL have MDX documentation files.
 
@@ -233,8 +218,6 @@ All components SHALL have MDX documentation files.
 - **AND** MAY have {component}.dev.mdx for engineering documentation
 - **AND** SHALL include frontmatter with menu, title, description
 - **AND** SHALL include usage examples with live code blocks
-
-## File Organization Standards
 
 ### Requirement: Consistent File Structure
 All components SHALL follow standardized file organization.
@@ -254,8 +237,6 @@ Components SHALL follow safe import patterns.
 - **THEN** SHALL import from implementation file: `from '@/components/icon/icon'`
 - **AND** SHALL NOT import from barrel export (index.ts) to avoid circular chunk dependencies
 - **AND** SHALL import utilities from barrel exports: `from '@/utils'`
-
-## Theme Integration
 
 ### Requirement: NimbusProvider Configuration
 Applications SHALL use NimbusProvider for theme and i18n setup.

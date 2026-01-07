@@ -1,15 +1,15 @@
 # Specification: Select Component
 
-## Overview
+## Purpose
 
-The Select component provides an accessible dropdown selection control following ARIA listbox pattern with keyboard navigation, search, and validation.
+The Select component provides an accessible dropdown selection control following ARIA listbox pattern with keyboard navigation, search, and validation. It enables users to choose a single value from a list of options with comprehensive keyboard support, field validation, and visual state indicators.
 
 **Component:** `Select`
 **Package:** `@commercetools/nimbus`
 **Type:** Multi-slot component
 **React Aria:** Uses `Select` from react-aria-components
 
-## Value Selection
+## Requirements
 
 ### Requirement: Single Selection
 The component SHALL support single-value selection.
@@ -25,8 +25,6 @@ The component SHALL support single-value selection.
 - **THEN** SHALL initialize with default selection
 - **AND** SHALL manage state internally
 - **AND** optional onSelectionChange SHALL receive updates
-
-## Options Management
 
 ### Requirement: Option Collection
 The component SHALL manage collection of selectable options.
@@ -49,8 +47,6 @@ The component SHALL manage collection of selectable options.
 - **AND** SHALL maintain semantic grouping
 - **AND** SHALL support section titles
 
-## Option States
-
 ### Requirement: Option State Management
 The component SHALL support option state variations.
 
@@ -66,8 +62,6 @@ The component SHALL support option state variations.
 - **THEN** SHALL show checkmark indicator
 - **AND** SHALL apply selected styling
 - **AND** SHALL set aria-selected="true"
-
-## Trigger Button
 
 ### Requirement: Trigger Control
 The component SHALL provide button to open dropdown.
@@ -86,8 +80,6 @@ The component SHALL provide button to open dropdown.
 - **THEN** SHALL open dropdown
 - **AND** SHALL focus first option or selected option
 
-## Dropdown Positioning
-
 ### Requirement: Overlay Positioning
 The component SHALL intelligently position dropdown relative to trigger.
 
@@ -102,8 +94,6 @@ The component SHALL intelligently position dropdown relative to trigger.
 - **THEN** SHALL enable scrolling within dropdown
 - **AND** SHALL maintain focus visibility
 - **AND** SHALL support keyboard navigation through scrolled options
-
-## Keyboard Navigation
 
 ### Requirement: Keyboard Interaction
 The component SHALL support comprehensive keyboard navigation per nimbus-core standards.
@@ -138,8 +128,6 @@ The component SHALL support comprehensive keyboard navigation per nimbus-core st
 - **THEN** SHALL close dropdown
 - **AND** SHALL move focus to next tabbable element
 
-## Dropdown Closure
-
 ### Requirement: Close Behavior
 The component SHALL close dropdown in appropriate situations.
 
@@ -152,8 +140,6 @@ The component SHALL close dropdown in appropriate situations.
 - **WHEN** user clicks outside dropdown
 - **THEN** SHALL close dropdown
 - **AND** SHALL maintain current selection
-
-## Validation
 
 ### Requirement: Selection Validation
 The component SHALL validate selection state.
@@ -172,8 +158,6 @@ The component SHALL validate selection state.
 - **AND** SHALL set aria-invalid="true"
 - **AND** SHALL associate error with aria-describedby
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -189,8 +173,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL prevent opening dropdown
 - **AND** SHALL set aria-readonly="true"
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -199,8 +181,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust trigger height, padding, and font size
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Listbox Pattern
 The component SHALL implement ARIA listbox pattern per nimbus-core standards.
@@ -230,8 +210,6 @@ The component SHALL use i18n for screen reader text per nimbus-core standards.
 - **THEN** placeholder SHALL use i18n message
 - **AND** SHALL translate across supported locales
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -241,8 +219,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL style: root, label, trigger, valueText, icon, dropdown, option, section, helperText, errorText slots
 - **AND** SHALL support size variants
 
-## Loading State
-
 ### Requirement: Async Loading
 The component SHALL support loading states for async options.
 
@@ -251,8 +227,6 @@ The component SHALL support loading states for async options.
 - **THEN** SHALL show loading spinner in dropdown
 - **AND** SHALL disable option selection
 - **AND** SHALL maintain dropdown open state
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.

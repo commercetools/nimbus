@@ -1,6 +1,6 @@
 # Specification: Nimbus Documentation App
 
-## Overview
+## Purpose
 
 The Nimbus documentation app is a Vite-powered React SPA that provides comprehensive documentation for the Nimbus design system. It features auto-generated API documentation, interactive code examples, full-text search, and multi-view documentation with hot module replacement.
 
@@ -11,7 +11,7 @@ The Nimbus documentation app is a Vite-powered React SPA that provides comprehen
 **App Location:** `/apps/docs`
 **Build Package:** `/packages/nimbus-docs-build`
 
-## Documentation Features
+## Requirements
 
 ### Requirement: Auto-Generated API Documentation
 The system SHALL extract and display TypeScript component APIs.

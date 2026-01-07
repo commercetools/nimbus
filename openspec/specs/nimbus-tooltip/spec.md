@@ -9,7 +9,11 @@ The Tooltip component provides accessible contextual help text that appears on h
 **Type:** Multi-slot component
 **React Aria:** Uses `Tooltip` and `TooltipTrigger` from react-aria-components
 
-## Trigger Behavior
+## Purpose
+
+Tooltip serves as a supplementary contextual help component that displays brief, non-interactive information on hover or keyboard focus. It provides accessible tooltips following WCAG 2.1 AA standards and ARIA tooltip patterns, enabling developers to enhance user interfaces with contextual hints without cluttering the primary interface. Tooltips integrate with React Aria Components for semantic behavior and use Chakra UI recipes for consistent styling across the application.
+
+## Requirements
 
 ### Requirement: Hover Interaction
 The component SHALL display tooltip on hover.
@@ -28,8 +32,6 @@ The component SHALL display tooltip on hover.
 - **WHEN** closeDelay prop is set
 - **THEN** SHALL wait specified milliseconds before hiding
 
-## Focus Behavior
-
 ### Requirement: Focus Interaction
 The component SHALL display tooltip on focus.
 
@@ -45,8 +47,6 @@ The component SHALL display tooltip on focus.
 - **THEN** SHALL not show tooltip (no focus-visible)
 - **WHEN** trigger receives focus via keyboard
 - **THEN** SHALL show tooltip (focus-visible)
-
-## Tooltip Positioning
 
 ### Requirement: Intelligent Positioning
 The component SHALL position tooltip relative to trigger.
@@ -69,8 +69,6 @@ The component SHALL position tooltip relative to trigger.
 - **AND** SHALL position arrow at edge of tooltip
 - **AND** arrow SHALL adjust with tooltip position
 
-## Tooltip Content
-
 ### Requirement: Content Display
 The component SHALL render various content types.
 
@@ -85,8 +83,6 @@ The component SHALL render various content types.
 - **THEN** SHALL render rich content
 - **AND** MAY include icons, formatting, or multiple lines
 - **AND** SHALL maintain accessibility
-
-## Accessibility
 
 ### Requirement: ARIA Tooltip Pattern
 The component SHALL implement ARIA tooltip pattern per nimbus-core standards.
@@ -109,8 +105,6 @@ The component SHALL implement ARIA tooltip pattern per nimbus-core standards.
 - **AND** content SHALL NOT be interactive (no buttons, links)
 - **AND** SHALL only provide descriptive text
 
-## Disabled State
-
 ### Requirement: Conditional Display
 The component SHALL respect disabled state.
 
@@ -121,8 +115,6 @@ The component SHALL respect disabled state.
 - **WHEN** isDisabled prop is true
 - **THEN** tooltip SHALL not show at all
 
-## Tooltip Groups
-
 ### Requirement: Multiple Tooltips
 The component SHALL handle multiple tooltips gracefully.
 
@@ -131,8 +123,6 @@ The component SHALL handle multiple tooltips gracefully.
 - **THEN** SHALL hide previous tooltip before showing next
 - **AND** SHALL not show multiple tooltips simultaneously
 - **AND** SHALL cancel pending show/hide timers
-
-## Size and Styling
 
 ### Requirement: Visual Variants
 The component SHALL support styling options.
@@ -149,8 +139,6 @@ The component SHALL support styling options.
 - **AND** neutral/dark SHALL be default
 - **AND** SHALL maintain contrast with background
 
-## Animation
-
 ### Requirement: Smooth Transitions
 The component SHALL animate appearance/dismissal.
 
@@ -163,8 +151,6 @@ The component SHALL animate appearance/dismissal.
 - **WHEN** tooltip disappears
 - **THEN** SHALL fade out before removing from DOM
 - **AND** SHALL use same duration as fade in
-
-## Touch Interaction
 
 ### Requirement: Mobile Support
 The component SHALL adapt for touch devices.
@@ -180,8 +166,6 @@ The component SHALL adapt for touch devices.
 - **THEN** developer SHOULD use alternative UI for mobile
 - **AND** tooltip SHALL be supplementary only
 
-## Controlled Mode
-
 ### Requirement: Programmatic Control
 The component SHALL support controlled visibility.
 
@@ -190,8 +174,6 @@ The component SHALL support controlled visibility.
 - **THEN** SHALL show/hide based on isOpen
 - **AND** SHALL call onOpenChange on interaction
 - **AND** SHALL not manage state internally
-
-## Offset and Positioning
 
 ### Requirement: Position Customization
 The component SHALL support position adjustment.
@@ -206,8 +188,6 @@ The component SHALL support position adjustment.
 - **THEN** SHALL adjust position along cross axis
 - **AND** SHALL allow fine-tuned placement
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -216,8 +196,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply tooltip slot recipe from theme/slot-recipes/tooltip.ts
 - **AND** SHALL style: content, arrow slots
 - **AND** SHALL support color variants
-
-## Performance
 
 ### Requirement: Optimized Rendering
 The component SHALL optimize performance.
@@ -232,8 +210,6 @@ The component SHALL optimize performance.
 - **WHEN** tooltip is hidden
 - **THEN** SHALL not mount tooltip content
 - **AND** SHALL only mount when about to show
-
-## Best Practices Guidance
 
 ### Requirement: Usage Guidelines
 The component documentation SHALL provide usage guidance.

@@ -1,8 +1,8 @@
 # Specification: Dialog Component
 
-## Overview
+## Purpose
 
-The Dialog component provides an accessible modal dialog overlay following ARIA dialog pattern with focus management and keyboard interaction.
+The Dialog component provides an accessible modal dialog overlay following ARIA dialog pattern with focus management and keyboard interaction. It supports compound component architecture with multiple parts (Root, Trigger, Content, Header, Body, Footer, CloseButton) for flexible composition.
 
 **Component:** `Dialog` (compound namespace)
 **Package:** `@commercetools/nimbus`
@@ -10,7 +10,7 @@ The Dialog component provides an accessible modal dialog overlay following ARIA 
 **React Aria:** Uses `Dialog` and `Modal` from react-aria-components
 **i18n:** 1 message (closeDialog)
 
-## Compound Component Architecture
+## Requirements
 
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
@@ -25,8 +25,6 @@ The component SHALL export as compound component namespace.
 - **AND** SHALL provide Dialog.Footer for actions
 - **AND** SHALL provide Dialog.CloseButton for dismiss button
 - **AND** Root SHALL be first property in namespace
-
-## Dialog Opening
 
 ### Requirement: Trigger Control
 The component SHALL provide trigger for opening dialog.
@@ -43,8 +41,6 @@ The component SHALL provide trigger for opening dialog.
 - **THEN** SHALL open dialog
 - **AND** SHALL call onOpenChange when opened
 - **AND** SHALL support controlled mode
-
-## Focus Management
 
 ### Requirement: Focus Trap
 The component SHALL manage focus appropriately per nimbus-core standards.
@@ -67,8 +63,6 @@ The component SHALL manage focus appropriately per nimbus-core standards.
 - **THEN** SHALL return focus to trigger element
 - **OR** element that had focus before opening
 - **AND** focus SHALL be visible
-
-## Dialog Closure
 
 ### Requirement: Close Behavior
 The component SHALL provide multiple ways to close dialog.
@@ -95,8 +89,6 @@ The component SHALL provide multiple ways to close dialog.
 - **THEN** SHALL call onOpenChange(false) on close attempt
 - **AND** SHALL not close until isOpen changes
 
-## Overlay and Backdrop
-
 ### Requirement: Modal Backdrop
 The component SHALL provide backdrop overlay.
 
@@ -112,8 +104,6 @@ The component SHALL provide backdrop overlay.
 - **THEN** backdrop SHALL fade in/out
 - **AND** SHALL use easing from design tokens
 
-## Dialog Positioning
-
 ### Requirement: Placement
 The component SHALL position dialog appropriately.
 
@@ -127,8 +117,6 @@ The component SHALL position dialog appropriately.
 - **THEN** SHALL adapt to available space
 - **AND** MAY use full-screen on very small screens
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -137,8 +125,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg, xl, full
 - **AND** SHALL adjust dialog width
 - **AND** md SHALL be default size
-
-## Scrolling Behavior
 
 ### Requirement: Content Scrolling
 The component SHALL handle overflow content.
@@ -154,8 +140,6 @@ The component SHALL handle overflow content.
 - **THEN** SHALL prevent scrolling of background page
 - **AND** SHALL restore scroll on close
 
-## Dialog Header
-
 ### Requirement: Title Section
 The component SHALL provide accessible title.
 
@@ -170,8 +154,6 @@ The component SHALL provide accessible title.
 - **THEN** SHALL position in top-right corner
 - **AND** SHALL be easily clickable/tappable
 
-## Dialog Body
-
 ### Requirement: Content Area
 The component SHALL provide main content container.
 
@@ -180,8 +162,6 @@ The component SHALL provide main content container.
 - **THEN** SHALL contain main dialog content
 - **AND** SHALL support any content type
 - **AND** SHALL handle scrolling if needed
-
-## Dialog Footer
 
 ### Requirement: Actions Section
 The component SHALL provide action button area.
@@ -196,8 +176,6 @@ The component SHALL provide action button area.
 - **WHEN** multiple buttons are present
 - **THEN** SHALL space buttons appropriately
 - **AND** SHALL support responsive stacking on small screens
-
-## Accessibility
 
 ### Requirement: ARIA Dialog Pattern
 The component SHALL implement ARIA dialog pattern per nimbus-core standards.
@@ -215,15 +193,13 @@ The component SHALL implement ARIA dialog pattern per nimbus-core standards.
 - **AND** SHALL indicate modal state
 - **AND** SHALL provide context about content
 
-### Requirement: Internationalized Labels
+### Requirement: Internationalization
 The component SHALL use i18n for screen reader text per nimbus-core standards.
 
 #### Scenario: Close button label
 - **WHEN** Dialog.CloseButton renders
 - **THEN** SHALL use i18n aria-label from dialog.i18n.ts
 - **AND** message "Close dialog" SHALL translate across locales
-
-## Animation
 
 ### Requirement: Enter/Exit Animations
 The component SHALL provide smooth transitions.
@@ -240,8 +216,6 @@ The component SHALL provide smooth transitions.
 - **AND** backdrop SHALL fade out
 - **AND** SHALL remove from DOM after animation
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -250,8 +224,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply dialog slot recipe from theme/slot-recipes/dialog.ts
 - **AND** SHALL style: backdrop, content, header, title, closeButton, body, footer, actions slots
 - **AND** SHALL support size variants
-
-## Nested Dialogs
 
 ### Requirement: Dialog Stacking
 The component SHALL support nested dialogs.
@@ -262,8 +234,6 @@ The component SHALL support nested dialogs.
 - **AND** Escape SHALL close top-most dialog first
 - **AND** focus trap SHALL apply to top dialog
 - **AND** backdrop SHALL dim previous dialog
-
-## Alert Dialog Variant
 
 ### Requirement: Alert Mode
 The component SHALL support alert dialog variant.

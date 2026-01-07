@@ -1,16 +1,10 @@
 # Specification: DatePicker Component
 
-## Overview
+## Purpose
 
-The DatePicker component provides an accessible date selection control combining text input with calendar popup, following ARIA date picker pattern.
+The DatePicker component provides an accessible date selection control combining text input with calendar popup. It enables users to select dates through direct text input with locale-aware formatting, keyboard navigation with auto-advancing segments, and an optional calendar popup for visual selection. The component supports date constraints, time selection in DateTime mode, timezone handling, and follows WCAG 2.1 AA accessibility standards with React Aria patterns.
 
-**Component:** `DatePicker`
-**Package:** `@commercetools/nimbus`
-**Type:** Multi-slot component
-**React Aria:** Uses `DatePicker` from react-aria-components
-**i18n:** 6 messages (enterTimeHour, enterTimeMinute, enterTimeSecond, enterTimeDayPeriod, openCalendar, clearInput)
-
-## Date Value Management
+## Requirements
 
 ### Requirement: Date Value Handling
 The component SHALL manage date values using CalendarDate objects.
@@ -26,8 +20,6 @@ The component SHALL manage date values using CalendarDate objects.
 - **THEN** SHALL initialize with default date
 - **AND** SHALL manage state internally
 - **AND** optional onChange SHALL receive updates
-
-## Input Field
 
 ### Requirement: Date Input
 The component SHALL provide text input for date entry.
@@ -52,8 +44,6 @@ The component SHALL provide text input for date entry.
 - **AND** SHALL use locale-specific segment order (e.g., DD/MM/YYYY vs MM/DD/YYYY)
 - **AND** SHALL use locale-specific separators
 
-## Calendar Popup
-
 ### Requirement: Calendar Display
 The component SHALL provide calendar popup for visual date selection.
 
@@ -77,8 +67,6 @@ The component SHALL provide calendar popup for visual date selection.
 - **AND** SHALL support keyboard navigation (arrow keys)
 - **AND** SHALL support today button to jump to current date
 
-## Time Input (DateTime mode)
-
 ### Requirement: Time Selection
 The component SHALL optionally support time input.
 
@@ -95,8 +83,6 @@ The component SHALL optionally support time input.
 - **AND** minute field SHALL use i18n aria-label "Enter time minute"
 - **AND** second field SHALL use i18n aria-label "Enter time second"
 - **AND** period field SHALL use i18n aria-label "Enter time day period"
-
-## Date Constraints
 
 ### Requirement: Date Range Validation
 The component SHALL enforce date constraints.
@@ -118,8 +104,6 @@ The component SHALL enforce date constraints.
 - **THEN** SHALL disable dates that return true
 - **AND** SHALL skip unavailable dates during keyboard navigation
 
-## Clear Functionality
-
 ### Requirement: Clear Button
 The component SHALL provide date clearing capability.
 
@@ -130,8 +114,6 @@ The component SHALL provide date clearing capability.
 - **AND** SHALL call onChange with null
 - **AND** SHALL focus input after clearing
 - **AND** clear button SHALL use i18n aria-label "Clear input"
-
-## Validation
 
 ### Requirement: Date Validation
 The component SHALL validate date input.
@@ -153,8 +135,6 @@ The component SHALL validate date input.
 - **THEN** SHALL show validation error
 - **AND** SHALL prevent calendar selection
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -171,8 +151,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **AND** SHALL prevent editing and calendar opening
 - **AND** SHALL set aria-readonly="true"
 
-## Size Variants
-
 ### Requirement: Size Options
 The component SHALL support multiple size variants per nimbus-core standards.
 
@@ -181,8 +159,6 @@ The component SHALL support multiple size variants per nimbus-core standards.
 - **THEN** SHALL support: sm, md, lg
 - **AND** SHALL adjust input height, padding, font size, and button sizes
 - **AND** md SHALL be default size
-
-## Accessibility
 
 ### Requirement: ARIA Date Picker Pattern
 The component SHALL implement ARIA date picker pattern per nimbus-core standards.
@@ -212,8 +188,6 @@ The component SHALL use i18n for screen reader text per nimbus-core standards.
 - **THEN** SHALL use i18n messages from date-picker.i18n.ts
 - **AND** SHALL translate: enterTimeHour, enterTimeMinute, enterTimeSecond, enterTimeDayPeriod, openCalendar, clearInput
 
-## Styling
-
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
 
@@ -223,8 +197,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** SHALL style: root, label, inputGroup, segment, separator, calendarButton, clearButton, calendar, helperText, errorText slots
 - **AND** SHALL support size variants
 
-## Timezone Support
-
 ### Requirement: Timezone Handling
 The component SHALL support timezone-aware dates.
 
@@ -233,8 +205,6 @@ The component SHALL support timezone-aware dates.
 - **THEN** SHALL handle timezone conversion
 - **AND** SHALL display date in specified timezone
 - **AND** SHALL use React Aria's timezone utilities
-
-## Form Integration
 
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
