@@ -113,7 +113,7 @@ export const AlertDismissButton = () => {
   const { locale } = useLocale();
 
   return (
-    <button aria-label={alertMessages.getStringLocale("dismiss", locale)}>
+    <button aria-label={alertMessages.getVariableLocale("dismiss", locale)}>
       ...
     </button>
   );
@@ -125,21 +125,23 @@ export const AlertDismissButton = () => {
 - **Locale Format**: Dictionaries use simple locale codes (`en`, `de`, `es`,
   `fr-FR`, `pt-BR`) that match what `useLocale()` returns from `I18nProvider`.
 - **API Signature**:
-  - `getStringLocale(key, locale)` - Returns `string` (always) for simple
-    messages. Available on all components.
-  - `getVariableLocale(key, locale)` - Returns `function | undefined` for
-    variable messages. **Only available on components that have messages with
-    variables.**
-  - **Key first, then locale** for both methods
+  - `getVariableLocale(key, locale)` - Returns `string` directly for simple
+    messages (no variables needed). Available on all components.
+  - `getVariableLocale(key, locale, { variableName: value })` - Returns `string`
+    with variables interpolated for variable messages.
+  - **Single method**: All components use `getVariableLocale` for both simple
+    and variable messages - no need for separate methods
+  - **Key first, then locale, then optional args** for variable messages
 - **Message Keys**: Use the key extracted from the message ID (e.g.,
   `"Nimbus.Alert.dismiss"` → `"dismiss"`), not the object key from the
   `.i18n.ts` file
 - **Variable Messages**: Messages with variables use ICU MessageFormat syntax
-  (like `{fullName}`) and require `getVariableLocale`:
+  (like `{fullName}`) and require `getVariableLocale` with arguments:
 
   ```typescript
-  const message = avatarMessages.getVariableLocale("avatarLabel", locale);
-  const label = message ? message({ fullName: "John Doe" }) : undefined;
+  const label = avatarMessages.getVariableLocale("avatarLabel", locale, {
+    fullName: "John Doe",
+  });
   ```
 
   **Note:** Simple strings don't need ICU syntax—they're just plain text. ICU
@@ -175,15 +177,14 @@ pnpm build:dictionaries     # Generate dictionaries
 
 - Plain text, no special syntax needed
 - Example: `"Dismiss"` → compiles to: `dismiss: "Dismiss"`
-- Use `getStringLocale()` in components
+- Use `getVariableLocale(key, locale)` in components (no args needed)
 
 **Variable strings** (with ICU MessageFormat syntax):
 
 - Use ICU syntax for interpolation: `{variableName}`
 - Example: `"Avatar image for {fullName}"` → compiles to:
   `avatarLabel: (args) => "Avatar image for ${args.fullName}"`
-- Use `getVariableLocale()` in components (only available when component has
-  variable messages)
+- Use `getVariableLocale(key, locale, { variableName: value })` in components
 
 **Note:** ICU MessageFormat syntax is only needed for variable interpolation or
 pluralization. Simple strings are just plain text and don't require any special
@@ -222,7 +223,7 @@ export const messages = defineMessages({
 });
 
 // Component usage
-loadingSpinnerMessages.getStringLocale("default", locale); // ← Use "default"
+loadingSpinnerMessages.getVariableLocale("default", locale); // ← Use "default"
 ```
 
 ## Internal Package

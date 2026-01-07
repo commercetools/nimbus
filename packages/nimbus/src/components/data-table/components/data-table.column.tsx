@@ -78,7 +78,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
               )}
               {isColumnResizable && (
                 <ColumnResizer
-                  aria-label={dataTableMessages.getStringLocale(
+                  aria-label={dataTableMessages.getVariableLocale(
                     "resizeColumn",
                     locale
                   )}

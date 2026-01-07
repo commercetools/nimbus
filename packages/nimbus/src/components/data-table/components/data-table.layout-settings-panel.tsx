@@ -55,7 +55,7 @@ export const LayoutSettingsPanel = ({
       {/* Text visibility section */}
       <SimpleGrid.Item colSpan={1}>
         <Text fontWeight="500">
-          {dataTableMessages.getStringLocale("textVisibility", locale)}
+          {dataTableMessages.getVariableLocale("textVisibility", locale)}
         </Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
@@ -64,7 +64,7 @@ export const LayoutSettingsPanel = ({
             w="full"
             selectedKeys={textVisibility ? ["preview"] : ["full"]}
             onSelectionChange={handleTextVisibilityChange}
-            aria-label={dataTableMessages.getStringLocale(
+            aria-label={dataTableMessages.getVariableLocale(
               "textVisibilityAriaLabel",
               locale
             )}
@@ -72,18 +72,21 @@ export const LayoutSettingsPanel = ({
             <IconToggleButton
               id="full"
               size="xs"
-              aria-label={dataTableMessages.getStringLocale("fullText", locale)}
+              aria-label={dataTableMessages.getVariableLocale(
+                "fullText",
+                locale
+              )}
               variant="ghost"
               px="300"
               flex="1"
             >
               <WrapText />
-              {dataTableMessages.getStringLocale("fullText", locale)}
+              {dataTableMessages.getVariableLocale("fullText", locale)}
             </IconToggleButton>
             <IconToggleButton
               id="preview"
               size="xs"
-              aria-label={dataTableMessages.getStringLocale(
+              aria-label={dataTableMessages.getVariableLocale(
                 "textPreviews",
                 locale
               )}
@@ -92,7 +95,7 @@ export const LayoutSettingsPanel = ({
               flex="1"
             >
               <ShortText />
-              {dataTableMessages.getStringLocale("textPreviews", locale)}
+              {dataTableMessages.getVariableLocale("textPreviews", locale)}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>
@@ -100,7 +103,7 @@ export const LayoutSettingsPanel = ({
       {/* Row density section */}
       <SimpleGrid.Item colSpan={1}>
         <Text fontWeight="500">
-          {dataTableMessages.getStringLocale("rowDensity", locale)}
+          {dataTableMessages.getVariableLocale("rowDensity", locale)}
         </Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
@@ -110,7 +113,7 @@ export const LayoutSettingsPanel = ({
             colorPalette="primary"
             selectedKeys={[rowDensity]}
             onSelectionChange={handleRowDensityChange}
-            aria-label={dataTableMessages.getStringLocale(
+            aria-label={dataTableMessages.getVariableLocale(
               "rowDensityAriaLabel",
               locale
             )}
@@ -119,7 +122,7 @@ export const LayoutSettingsPanel = ({
               id="comfortable"
               size="xs"
               variant="ghost"
-              aria-label={dataTableMessages.getStringLocale(
+              aria-label={dataTableMessages.getVariableLocale(
                 "comfortable",
                 locale
               )}
@@ -127,18 +130,21 @@ export const LayoutSettingsPanel = ({
               flex="1"
             >
               <DensitySmall />
-              {dataTableMessages.getStringLocale("comfortable", locale)}
+              {dataTableMessages.getVariableLocale("comfortable", locale)}
             </IconToggleButton>
             <IconToggleButton
               id="compact"
               size="xs"
               variant="ghost"
-              aria-label={dataTableMessages.getStringLocale("compact", locale)}
+              aria-label={dataTableMessages.getVariableLocale(
+                "compact",
+                locale
+              )}
               px="300"
               flex="1"
             >
               <FormatAlignJustify />
-              {dataTableMessages.getStringLocale("compact", locale)}
+              {dataTableMessages.getVariableLocale("compact", locale)}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>

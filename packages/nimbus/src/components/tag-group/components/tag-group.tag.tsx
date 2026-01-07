@@ -31,7 +31,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
                 colorPalette={isSelected ? undefined : "neutral"}
-                aria-label={tagGroupMessages.getStringLocale(
+                aria-label={tagGroupMessages.getVariableLocale(
                   "removeTag",
                   locale
                 )}

@@ -31,7 +31,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
           size="2xs"
           variant="ghost"
           colorPalette="primary"
-          aria-label={comboBoxMessages.getStringLocale(
+          aria-label={comboBoxMessages.getVariableLocale(
             "clearSelection",
             locale
           )}
@@ -60,7 +60,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
         <IconButton
           size="2xs"
           variant="ghost"
-          aria-label={comboBoxMessages.getStringLocale(
+          aria-label={comboBoxMessages.getVariableLocale(
             "toggleCombobox",
             locale
           )}

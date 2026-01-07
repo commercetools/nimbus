@@ -135,7 +135,7 @@ export const MultiSelectTagGroup =
           <TagGroup.Root
             size={size}
             onRemove={handleRemoveSelectedItem}
-            aria-label={comboBoxMessages.getStringLocale(
+            aria-label={comboBoxMessages.getVariableLocale(
               "selectedValues",
               locale
             )}

@@ -60,7 +60,7 @@ export const SearchInput = (props: SearchInputProps) => {
             size="2xs"
             variant="ghost"
             colorPalette="primary"
-            aria-label={searchInputMessages.getStringLocale(
+            aria-label={searchInputMessages.getVariableLocale(
               "clearInput",
               locale
             )}

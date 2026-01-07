@@ -304,7 +304,7 @@ export const MultiSelectRoot = <T extends object>({
       <ComboBoxPopoverSlot asChild>
         <RaPopover triggerRef={triggerRef} placement="bottom start">
           <RaDialog
-            aria-label={comboBoxMessages.getStringLocale(
+            aria-label={comboBoxMessages.getVariableLocale(
               "comboboxDialog",
               locale
             )}
@@ -320,7 +320,7 @@ export const MultiSelectRoot = <T extends object>({
                   isDisabled={isDisabled}
                   isReadOnly={isReadOnly}
                   isRequired={isRequired}
-                  aria-label={comboBoxMessages.getStringLocale(
+                  aria-label={comboBoxMessages.getVariableLocale(
                     "filterOptions",
                     locale
                   )}
@@ -339,7 +339,10 @@ export const MultiSelectRoot = <T extends object>({
                 shouldFocusWrap={true}
                 disabledKeys={isDisabled ? "all" : disabledKeys}
                 escapeKeyBehavior="none"
-                aria-label={comboBoxMessages.getStringLocale("options", locale)}
+                aria-label={comboBoxMessages.getVariableLocale(
+                  "options",
+                  locale
+                )}
                 renderEmptyState={renderEmptyState}
               >
                 {children}

@@ -129,7 +129,7 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <VisibilityOff />
             <Text fontWeight="700" fontSize="sm" w="full">
-              {dataTableMessages.getStringLocale("hiddenColumns", locale)}
+              {dataTableMessages.getVariableLocale("hiddenColumns", locale)}
             </Text>
           </Stack>
           <Stack
@@ -145,11 +145,11 @@ export const VisibleColumnsPanel = ({
               w="full"
               size="sm"
               variant="ghost"
-              placeholder={dataTableMessages.getStringLocale(
+              placeholder={dataTableMessages.getVariableLocale(
                 "searchHiddenColumns",
                 locale
               )}
-              aria-label={dataTableMessages.getStringLocale(
+              aria-label={dataTableMessages.getVariableLocale(
                 "searchHiddenColumns",
                 locale
               )}
@@ -170,14 +170,17 @@ export const VisibleColumnsPanel = ({
               overflowY="auto"
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
-              aria-label={dataTableMessages.getStringLocale(
+              aria-label={dataTableMessages.getVariableLocale(
                 "hiddenColumnsAriaLabel",
                 locale
               )}
               data-testid="hidden-columns-list"
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
-                  {dataTableMessages.getStringLocale("noHiddenColumns", locale)}
+                  {dataTableMessages.getVariableLocale(
+                    "noHiddenColumns",
+                    locale
+                  )}
                 </Text>
               }
             >
@@ -200,7 +203,10 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <Visibility />
             <Text fontWeight="700" fontSize="sm">
-              {dataTableMessages.getStringLocale("visibleColumnsList", locale)}
+              {dataTableMessages.getVariableLocale(
+                "visibleColumnsList",
+                locale
+              )}
             </Text>
           </Stack>
           <DraggableList.Root
@@ -210,7 +216,7 @@ export const VisibleColumnsPanel = ({
             overflowY="auto"
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsListUpdate}
-            aria-label={dataTableMessages.getStringLocale(
+            aria-label={dataTableMessages.getVariableLocale(
               "visibleColumnsAria",
               locale
             )}
@@ -240,10 +246,10 @@ export const VisibleColumnsPanel = ({
           colorPalette="primary"
           size="xs"
           onClick={handleResetColumns}
-          aria-label={dataTableMessages.getStringLocale("reset", locale)}
+          aria-label={dataTableMessages.getVariableLocale("reset", locale)}
         >
           <Refresh />
-          {dataTableMessages.getStringLocale("reset", locale)}
+          {dataTableMessages.getVariableLocale("reset", locale)}
         </Button>
       </Box>
     </Stack>

@@ -59,52 +59,52 @@ const getBuiltInMessage = (key: string, locale: string): string | null => {
   switch (key) {
     // Basic validation
     case FieldErrorTypes.MISSING:
-      return fieldErrorsMessages.getStringLocale(
+      return fieldErrorsMessages.getVariableLocale(
         "missingRequiredField",
         locale
       );
     case FieldErrorTypes.INVALID:
-      return fieldErrorsMessages.getStringLocale("invalidValue", locale);
+      return fieldErrorsMessages.getVariableLocale("invalidValue", locale);
     case FieldErrorTypes.EMPTY:
-      return fieldErrorsMessages.getStringLocale("emptyValue", locale);
+      return fieldErrorsMessages.getVariableLocale("emptyValue", locale);
 
     // Length validation
     case FieldErrorTypes.MIN_LENGTH:
-      return fieldErrorsMessages.getStringLocale("valueTooShort", locale);
+      return fieldErrorsMessages.getVariableLocale("valueTooShort", locale);
     case FieldErrorTypes.MAX_LENGTH:
-      return fieldErrorsMessages.getStringLocale("valueTooLong", locale);
+      return fieldErrorsMessages.getVariableLocale("valueTooLong", locale);
 
     // Format validation
     case FieldErrorTypes.FORMAT:
-      return fieldErrorsMessages.getStringLocale("invalidFormat", locale);
+      return fieldErrorsMessages.getVariableLocale("invalidFormat", locale);
     case FieldErrorTypes.DUPLICATE:
-      return fieldErrorsMessages.getStringLocale("duplicateValue", locale);
+      return fieldErrorsMessages.getVariableLocale("duplicateValue", locale);
 
     // Numeric validation
     case FieldErrorTypes.NEGATIVE:
-      return fieldErrorsMessages.getStringLocale(
+      return fieldErrorsMessages.getVariableLocale(
         "invalidNegativeNumber",
         locale
       );
     case FieldErrorTypes.FRACTIONS:
-      return fieldErrorsMessages.getStringLocale(
+      return fieldErrorsMessages.getVariableLocale(
         "invalidFractionalNumber",
         locale
       );
     case FieldErrorTypes.BELOW_MIN:
-      return fieldErrorsMessages.getStringLocale("valueBelowMinimum", locale);
+      return fieldErrorsMessages.getVariableLocale("valueBelowMinimum", locale);
     case FieldErrorTypes.ABOVE_MAX:
-      return fieldErrorsMessages.getStringLocale("valueAboveMaximum", locale);
+      return fieldErrorsMessages.getVariableLocale("valueAboveMaximum", locale);
     case FieldErrorTypes.OUT_OF_RANGE:
-      return fieldErrorsMessages.getStringLocale("valueOutOfRange", locale);
+      return fieldErrorsMessages.getVariableLocale("valueOutOfRange", locale);
 
     // Server/async validation
     case FieldErrorTypes.INVALID_FROM_SERVER:
-      return fieldErrorsMessages.getStringLocale("invalidFromServer", locale);
+      return fieldErrorsMessages.getVariableLocale("invalidFromServer", locale);
     case FieldErrorTypes.NOT_FOUND:
-      return fieldErrorsMessages.getStringLocale("resourceNotFound", locale);
+      return fieldErrorsMessages.getVariableLocale("resourceNotFound", locale);
     case FieldErrorTypes.BLOCKED:
-      return fieldErrorsMessages.getStringLocale("valueBlocked", locale);
+      return fieldErrorsMessages.getVariableLocale("valueBlocked", locale);
 
     default:
       return null;

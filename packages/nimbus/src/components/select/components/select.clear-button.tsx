@@ -28,7 +28,7 @@ export const SelectClearButton = () => {
         pointerEvents="all"
         size="2xs"
         variant="ghost"
-        aria-label={selectMessages.getStringLocale("clearSelection", locale)}
+        aria-label={selectMessages.getVariableLocale("clearSelection", locale)}
         aria-labelledby=""
         onPress={onPressRequest}
       >

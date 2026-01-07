@@ -60,19 +60,38 @@ const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
  */
 export const dateRangePickerMessages = {
   /**
-   * Retrieves a simple string message (no variables).
-   * Always returns a string (empty string if message not found or is a function).
-   * Use this for aria-label and other simple string needs.
+   * Retrieves a localized message string.
+   *
+   * Handles both simple and variable messages:
+   * - Simple messages (no variables): getVariableLocale(key, locale)
+   * - Variable messages: getVariableLocale(key, locale, { variableName: value })
+   *
+   * For simple messages, args are optional and ignored.
+   * For variable messages, args are required and interpolated.
+   *
+   * Returns empty string if message not found.
    */
-  getStringLocale(key: string, locale: string): string {
+  getVariableLocale(
+    key: string,
+    locale: string,
+    args?: Record<string, string | number>
+  ): string {
     const normalizedLocale = normalizeLocale(locale);
 
     try {
       const message = dictionary.getStringForLocale(key, normalizedLocale);
-      // Filter out functions - only return strings
-      if (typeof message === "string") return message;
+
+      // If message is a function (has variables), call it with args
+      if (typeof message === "function") {
+        return message(args ?? {});
+      }
+
+      // If message is a string (simple message), return it directly
+      if (typeof message === "string") {
+        return message;
+      }
     } catch {
-      // Return empty string if message not found
+      // Message not found, return empty string
     }
 
     return "";

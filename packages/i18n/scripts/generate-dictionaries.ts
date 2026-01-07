@@ -100,21 +100,6 @@ async function getMessageKeys(localePath: string): Promise<string[] | null> {
   }
 }
 
-/**
- * Check if a compiled locale file contains any message functions (messages with variables)
- * Messages with variables compile to functions: (args: Record<string, string | number>) => "..."
- * Plain messages compile to strings: "message"
- */
-async function hasMessageFunctions(localePath: string): Promise<boolean> {
-  try {
-    const content = await fs.readFile(localePath, "utf-8");
-    // Pattern matches function syntax: "key": (args: ...) => or "key": () =>
-    return /\(args[\s\S]*?\)\s*=>|\(\)\s*=>/.test(content);
-  } catch {
-    return false;
-  }
-}
-
 async function generateDictionaries() {
   const nimbusComponentsDir = path.join(
     __dirname,
@@ -166,10 +151,6 @@ async function generateDictionaries() {
       `${availableLocales[0].code}.ts`
     );
     const messageKeys = await getMessageKeys(firstLocalePath);
-
-    // Check if component has messages with variables (compile to functions)
-    // Only need to check one locale since all should have the same structure
-    const hasFunctions = await hasMessageFunctions(firstLocalePath);
 
     // Generate component names for file and variable naming
     const componentName = dirToComponentName(componentDir);
@@ -249,48 +230,41 @@ ${dictionaryEntries}
  */
 export const ${variableName}Messages = {
   /**
-   * Retrieves a simple string message (no variables).
-   * Always returns a string (empty string if message not found or is a function).
-   * Use this for aria-label and other simple string needs.
-   */
-  getStringLocale(key: string, locale: string): string {
-    const normalizedLocale = normalizeLocale(locale);
-    
-    try {
-      const message = dictionary.getStringForLocale(key, normalizedLocale);
-      // Filter out functions - only return strings
-      if (typeof message === "string") return message;
-    } catch {
-      // Return empty string if message not found
-    }
-    
-    return "";
-  }${
-    hasFunctions
-      ? `,
-
-  /**
-   * Retrieves a variable message (function that takes arguments).
-   * Returns undefined if the message is a simple string or not found.
-   * Use this for messages that require variables (e.g., "Hello {name}").
+   * Retrieves a localized message string.
    * 
-   * Note: This method is only available when the component has messages with variables.
+   * Handles both simple and variable messages:
+   * - Simple messages (no variables): getVariableLocale(key, locale)
+   * - Variable messages: getVariableLocale(key, locale, { variableName: value })
+   * 
+   * For simple messages, args are optional and ignored.
+   * For variable messages, args are required and interpolated.
+   * 
+   * Returns empty string if message not found.
    */
   getVariableLocale(
     key: string,
-    locale: string
-  ): ((args: Record<string, string | number>) => string) | undefined {
+    locale: string,
+    args?: Record<string, string | number>
+  ): string {
     const normalizedLocale = normalizeLocale(locale);
     
     try {
       const message = dictionary.getStringForLocale(key, normalizedLocale);
-      // Filter out strings - only return functions
-      return typeof message === "function" ? message : undefined;
+      
+      // If message is a function (has variables), call it with args
+      if (typeof message === "function") {
+        return message(args ?? {});
+      }
+      
+      // If message is a string (simple message), return it directly
+      if (typeof message === "string") {
+        return message;
+      }
     } catch {
-      return undefined;
+      // Message not found, return empty string
     }
-  }`
-      : ""
+    
+    return "";
   },
 };
 
