@@ -62,7 +62,7 @@ export const localizedFieldMessages = {
   /**
    * Retrieves a localized message string.
    *
-   * Handles both simple and variable messages:
+   * Unified handling for both message types:
    * - Simple messages (no variables): getVariableLocale(key, locale)
    * - Variable messages: getVariableLocale(key, locale, { variableName: value })
    *
