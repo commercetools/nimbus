@@ -282,3 +282,10 @@ Understanding build order is crucial:
 2. **Packages** (`packages/*`) - Depend on tokens
 3. **Documentation** (`apps/docs`) - Depends on packages
 4. **i18n compilation** - Translation data for runtime
+
+### OpenSpec Change Tracking
+
+After completing file edits:
+- You **MUST** evaluate whether the changes affect existing OpenSpec specs or justify creating new OpenSpec specs
+- If changes impact specifications, you **MUST** suggest updating or creating specs to the user
+- Refer to `./openspec/AGENTS.md` for guidance on spec creation and updates
