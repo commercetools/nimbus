@@ -1,0 +1,138 @@
+---
+title: Heading Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Heading, type HeadingProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation renders a heading with the default xl size:
+
+```jsx-live-dev
+const App = () => (
+  <Heading>Welcome to Nimbus</Heading>
+)
+```
+
+## Usage examples
+
+### Size options
+
+The Heading component provides 11 size variants (xs through 7xl) to establish clear typographic hierarchy:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Heading size="xs">Extra Small Heading (xs)</Heading>
+    <Heading size="sm">Small Heading (sm)</Heading>
+    <Heading size="md">Medium Heading (md)</Heading>
+    <Heading size="lg">Large Heading (lg)</Heading>
+    <Heading size="xl">Extra Large Heading (xl - default)</Heading>
+    <Heading size="2xl">2XL Heading</Heading>
+    <Heading size="3xl">3XL Heading</Heading>
+    <Heading size="4xl">4XL Heading</Heading>
+    <Heading size="5xl">5XL Heading</Heading>
+    <Heading size="6xl">6XL Heading</Heading>
+    <Heading size="7xl">7XL Heading</Heading>
+  </Stack>
+)
+```
+
+### Semantic HTML levels
+
+Use the `as` prop to render the appropriate semantic HTML heading element (h1-h6):
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Heading as="h1" size="4xl">Page Title (h1)</Heading>
+    <Heading as="h2" size="2xl">Section Heading (h2)</Heading>
+    <Heading as="h3" size="xl">Subsection Heading (h3)</Heading>
+    <Heading as="h4" size="lg">Card Title (h4)</Heading>
+    <Heading as="h5" size="md">Minor Heading (h5)</Heading>
+    <Heading as="h6" size="sm">Smallest Heading (h6)</Heading>
+  </Stack>
+)
+```
+
+**Best practice:** Match visual hierarchy (size) with semantic hierarchy (h1-h6) for optimal accessibility. Use h1 for main page titles, h2 for major sections, and so on.
+
+### Custom styling
+
+The Heading component supports Chakra UI style props for additional customization:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Heading size="2xl" color="primary.11">
+      Primary Color Heading
+    </Heading>
+    <Heading size="xl" marginTop="600" marginBottom="400">
+      Heading with Custom Margins
+    </Heading>
+    <Heading size="lg" fontWeight="400">
+      Lighter Weight Heading
+    </Heading>
+    <Heading size="md" textAlign="center">
+      Center-Aligned Heading
+    </Heading>
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The Heading component provides semantic HTML heading elements for proper document structure. Screen readers use heading levels to navigate content and understand page hierarchy.
+
+**Heading level best practices:**
+- Use heading levels sequentially (don't skip levels)
+- Typically one h1 per page (the main title)
+- Use h2-h6 to create logical content hierarchy
+- Visual size (size prop) can differ from semantic level (as prop)
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-heading-id";
+
+export const Example = () => (
+  <Heading id={PERSISTENT_ID}>Analytics-Tracked Heading</Heading>
+);
+```
+
+#### Keyboard navigation
+
+As a non-interactive display component, Heading does not require keyboard interaction. However, screen reader users can navigate between headings using keyboard shortcuts (typically H key) to quickly scan page structure.
+
+## API reference
+
+<PropsTable id="Heading" />
+
+The Heading component extends Chakra UI's Heading component and accepts all style props including:
+
+- Typography: `size`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`
+- Color: `color`, `colorPalette`
+- Layout: `display`, `width`, `maxWidth`
+- Spacing: `margin`, `padding`, `gap`
+- Text formatting: `textAlign`, `textTransform`, `textDecoration`
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Heading within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: heading.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-heading--docs)
+- [Text Component](../components/typography/text) - Related typography component
