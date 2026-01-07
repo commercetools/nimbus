@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Claude Code Custom Status Line
-# v3.4.1 - Fixed cost tracking with session_id and proper bc arithmetic
+# v3.5.0 - Conditional session cost display (only shown when history cleared)
 # Shows: Model | Repo:Branch [commit] message | GitHub | git status | lines changed
-#        Context bricks | percentage | duration | cost (conversation + session)
+#        Context bricks | percentage | duration | cost
 #
 # Uses new current_usage field (Claude Code 2.0.70+) for accurate context tracking.
-# Cost shows: $X.XX (session: $Y.YY) where X.XX resets with /clear, Y.YY is cumulative.
+# Cost shows: $X.XX when history not cleared, $X.XX ($Y.YY) when history cleared (/clear used).
 # See: https://code.claude.com/docs/en/statusline#context-window-usage
 
 # Read JSON from stdin
@@ -161,7 +161,7 @@ brick_line+=" | \033[1;32m${free_k}k free\033[0m"
 # Add duration (HHh MMm format)
 brick_line+=" | ${duration_hours}h ${duration_min}m"
 
-# Add cost with both conversation and session totals
+# Add cost with session total only if history was cleared (conversation_cost != session_cost)
 if command -v bc &> /dev/null; then
     # Check if session cost is non-zero
     if (( $(echo "$total_cost_usd > 0" | bc -l 2>/dev/null || echo "0") )); then
@@ -173,12 +173,22 @@ if command -v bc &> /dev/null; then
         [[ "$conversation_cost" =~ ^\. ]] && conversation_cost="0${conversation_cost}"
         [[ "$session_cost" =~ ^\. ]] && session_cost="0${session_cost}"
 
-        brick_line+=" | \033[0;33m💰 \$${conversation_cost} (session: \$${session_cost})\033[0m"
+        # Only show session cost in parentheses if history was cleared (costs differ)
+        if [[ "$conversation_cost" != "$session_cost" ]]; then
+            brick_line+=" | \033[0;33m💰 \$${conversation_cost} (\$${session_cost})\033[0m"
+        else
+            brick_line+=" | \033[0;33m💰 \$${conversation_cost}\033[0m"
+        fi
     fi
 else
     # Fallback without bc: simple string comparison
     if [[ "$total_cost_usd" != "0" && "$total_cost_usd" != "0.0" && "$total_cost_usd" != "0.00" && -n "$total_cost_usd" ]]; then
-        brick_line+=" | \033[0;33m💰 \$${cost_usd} (session: \$${total_cost_usd})\033[0m"
+        # Only show session cost if different from conversation cost
+        if [[ "$cost_usd" != "$total_cost_usd" ]]; then
+            brick_line+=" | \033[0;33m💰 \$${cost_usd} (\$${total_cost_usd})\033[0m"
+        else
+            brick_line+=" | \033[0;33m💰 \$${cost_usd}\033[0m"
+        fi
     fi
 fi
 
