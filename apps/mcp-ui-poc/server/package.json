@@ -1,0 +1,33 @@
+{
+  "name": "@commercetools/nimbus-mcp-ui-poc-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@mcp-ui/server": "catalog:mcp-ui",
+    "@modelcontextprotocol/sdk": "catalog:mcp-ui",
+    "@remote-dom/core": "catalog:mcp-ui",
+    "@remote-dom/polyfill": "catalog:mcp-ui",
+    "cors": "catalog:express",
+    "express": "catalog:express",
+    "validator": "catalog:utils",
+    "ws": "catalog:express",
+    "zod": "catalog:utils"
+  },
+  "devDependencies": {
+    "@types/cors": "catalog:express",
+    "@types/express": "catalog:express",
+    "@types/node": "catalog:utils",
+    "@types/validator": "catalog:utils",
+    "@types/ws": "catalog:express",
+    "tsx": "catalog:tooling",
+    "typescript": "catalog:tooling"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  }
+}

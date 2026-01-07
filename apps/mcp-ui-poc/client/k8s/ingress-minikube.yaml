@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mcp-ui-poc-ingress
+  labels:
+    app: mcp-ui-poc
+  annotations:
+    # Strip /api prefix when forwarding to server
+    # Server expects /elements and /mcp, not /api/elements and /api/mcp
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mcp-ui-poc.local
+      http:
+        paths:
+          # Route /api/* to the backend server
+          # Strips /api prefix, so /api/elements becomes /elements
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mcp-ui-poc-server
+                port:
+                  number: 3001
+
+          # Route all other traffic to the frontend client
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mcp-ui-poc-client
+                port:
+                  number: 80

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-ui-poc-client-loadbalancer
+  labels:
+    app: mcp-ui-poc-client
+    component: frontend
+
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-client

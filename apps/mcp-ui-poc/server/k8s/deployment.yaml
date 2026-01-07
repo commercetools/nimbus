@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-ui-poc-server
+  labels:
+    app: mcp-ui-poc-server
+    component: backend
+spec:
+  replicas: 1  # Temporary: Single replica until session storage is implemented
+  selector:
+    matchLabels:
+      app: mcp-ui-poc-server
+  template:
+    metadata:
+      labels:
+        app: mcp-ui-poc-server
+        component: backend
+    spec:
+      containers:
+        - name: server
+          image: us-east1-docker.pkg.dev/ctp-playground/byron-wall/mcp-ui-poc-server:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3001
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3001"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-ui-poc-server
+  labels:
+    app: mcp-ui-poc-server
+    component: backend
+  annotations:
+    # Link to BackendConfig for IAP
+    cloud.google.com/backend-config: '{"default": "mcp-ui-poc-server-backend-config"}'
+    # Expose service on specific port for load balancer health checks
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 3 hours - MCP sessions can be long-lived
+  ports:
+    - port: 3001
+      targetPort: 3001
+      protocol: TCP
+      name: http
+  selector:
+    app: mcp-ui-poc-server
