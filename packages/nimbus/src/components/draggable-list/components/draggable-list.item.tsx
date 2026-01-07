@@ -1,9 +1,9 @@
-import { useLocale } from "react-aria-components";
 import { GridListItem } from "react-aria-components";
 import { Close, DragIndicator } from "@commercetools/nimbus-icons";
 import { Checkbox, IconButton } from "@/components";
 import { extractStyleProps } from "@/utils";
-import { draggableListMessages } from "../draggable-list.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { draggableListMessagesStrings } from "../draggable-list.messages";
 import {
   DraggableListItemSlot,
   DraggableListItemContentSlot,
@@ -28,7 +28,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
   textValue: textValueFromProps,
   ...restProps
 }: DraggableListItemProps<T>) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(draggableListMessagesStrings);
   const defaultTextValue = typeof children === "string" ? children : undefined;
   const [styleProps, functionalProps] = extractStyleProps(restProps);
   return (
@@ -59,10 +59,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
             </DraggableListItemContentSlot>
             {onRemoveItem && (
               <IconButton
-                aria-label={draggableListMessages.getVariableLocale(
-                  "removeButtonLabel",
-                  locale
-                )}
+                aria-label={msg.format("removeButtonLabel")}
                 size="2xs"
                 variant="ghost"
                 onPress={id ? () => onRemoveItem(id) : undefined}

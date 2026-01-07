@@ -8,7 +8,6 @@
  */
 
 import {
-  LocalizedStringDictionary,
   type LocalizedString,
   type LocalizedStrings,
 } from "@internationalized/string";
@@ -21,82 +20,17 @@ import fieldErrorsMessages_es from "./intl/es";
 import fieldErrorsMessages_fr from "./intl/fr-FR";
 import fieldErrorsMessages_pt from "./intl/pt-BR";
 
-/**
- * Normalizes BCP47 locale codes to match dictionary keys.
- * Extracts language code and maps to supported locales: "en", "de", "es", "fr-FR", "pt-BR"
- *
- * This function is intentionally duplicated in each *.messages.ts file to enable optimal tree-shaking.
- *
- */
-function normalizeLocale(locale: string): string {
-  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
-  if (supportedLocales.has(locale)) return locale;
-
-  const langMap: Record<string, string> = {
-    en: "en",
-    de: "de",
-    es: "es",
-    fr: "fr-FR",
-    pt: "pt-BR",
-  };
-
-  const lang = locale.split(/[-_]/)[0].toLowerCase();
-  return langMap[lang] ?? "en";
-}
-
-// Internal dictionary instance
-const dictionary = new LocalizedStringDictionary<string, LocalizedString>({
+// Raw LocalizedStrings object for use with useLocalizedStringFormatter hook
+export const fieldErrorsMessagesStrings: LocalizedStrings<
+  string,
+  LocalizedString
+> = {
   en: normalizeMessages(fieldErrorsMessages_en),
   de: normalizeMessages(fieldErrorsMessages_de),
   es: normalizeMessages(fieldErrorsMessages_es),
   "fr-FR": normalizeMessages(fieldErrorsMessages_fr),
   "pt-BR": normalizeMessages(fieldErrorsMessages_pt),
-} as LocalizedStrings<string, LocalizedString>);
-
-/**
- * Localized string dictionary for FieldErrors component
- * Contains pre-compiled messages for all supported locales
- * Automatically falls back to English (en) for unsupported locales
- */
-export const fieldErrorsMessages = {
-  /**
-   * Retrieves a localized message string.
-   *
-   * Unified handling for both message types:
-   * - Simple messages (no variables): getVariableLocale(key, locale)
-   * - Variable messages: getVariableLocale(key, locale, { variableName: value })
-   *
-   * For simple messages, args are optional and ignored.
-   * For variable messages, args are required and interpolated.
-   *
-   * Returns empty string if message not found.
-   */
-  getVariableLocale(
-    key: string,
-    locale: string,
-    args?: Record<string, string | number>
-  ): string {
-    const normalizedLocale = normalizeLocale(locale);
-
-    try {
-      const message = dictionary.getStringForLocale(key, normalizedLocale);
-
-      // If message is a function (has variables), call it with args
-      if (typeof message === "function") {
-        return message(args ?? {});
-      }
-
-      // If message is a string (simple message), return it directly
-      if (typeof message === "string") {
-        return message;
-      }
-    } catch {
-      // Message not found, return empty string
-    }
-
-    return "";
-  },
-};
+} as LocalizedStrings<string, LocalizedString>;
 
 /**
  * Available message keys for FieldErrors component

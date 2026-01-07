@@ -42,9 +42,9 @@ The package runs a 4-step compilation process:
    with JavaScript functions using `@internationalized/string-compiler`. Simple
    strings compile to plain strings; variable strings (with ICU syntax) compile
    to functions.
-4. **Generate Dictionaries** (`build:dictionaries`) - Creates
-   `LocalizedStringDictionary` wrapper files that import all locale files and
-   export typed message dictionaries for each component
+4. **Generate Dictionaries** (`build:dictionaries`) - Creates message dictionary
+   files that import all locale files and export `LocalizedStrings` objects
+   (`*MessagesStrings`) for use with the `useLocalizedStringFormatter` hook
 
 #### Message Normalization
 
@@ -93,7 +93,8 @@ packages/nimbus/src/components/alert/
     └── pt-BR.ts
 ```
 
-These files are consumed directly by Nimbus components using
+These files are consumed directly by Nimbus components using the
+`useLocalizedStringFormatter` hook, which internally uses
 `LocalizedStringDictionary` from `@internationalized/string`.
 
 > 📚 **Reference:**
@@ -103,17 +104,18 @@ These files are consumed directly by Nimbus components using
 
 ### Component Usage
 
-Components import and use the generated message dictionaries:
+Components import and use the generated message dictionaries via the
+`useLocalizedStringFormatter` hook:
 
 ```typescript
-import { useLocale } from "react-aria-components";
-import { alertMessages } from "./alert.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { alertMessagesStrings } from "./alert.messages";
 
 export const AlertDismissButton = () => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(alertMessagesStrings);
 
   return (
-    <button aria-label={alertMessages.getVariableLocale("dismiss", locale)}>
+    <button aria-label={msg.format("dismiss")}>
       ...
     </button>
   );
@@ -122,24 +124,26 @@ export const AlertDismissButton = () => {
 
 **Important Notes:**
 
-- **Locale Format**: Dictionaries use simple locale codes (`en`, `de`, `es`,
-  `fr-FR`, `pt-BR`) that match what `useLocale()` returns from `I18nProvider`.
+- **Hook Pattern**: Components use `useLocalizedStringFormatter` hook which
+  automatically handles locale from React Aria context (no need to call
+  `useLocale()` separately)
 - **API Signature**:
-  - `getVariableLocale(key, locale)` - Returns `string` directly for simple
-    messages (no variables needed). Available on all components.
-  - `getVariableLocale(key, locale, { variableName: value })` - Returns `string`
-    with variables interpolated for variable messages.
-  - **Single method**: All components use `getVariableLocale` for both simple
-    and variable messages - no need for separate methods
-  - **Key first, then locale, then optional args** for variable messages
+  - `msg.format(key)` - Returns `string` directly for simple messages (no
+    variables needed)
+  - `msg.format(key, { variableName: value })` - Returns `string` with variables
+    interpolated for variable messages
+  - **Single method**: All components use `msg.format()` for both simple and
+    variable messages
+  - **Key first, then optional args** for variable messages
 - **Message Keys**: Use the key extracted from the message ID (e.g.,
   `"Nimbus.Alert.dismiss"` → `"dismiss"`), not the object key from the
   `.i18n.ts` file
 - **Variable Messages**: Messages with variables use ICU MessageFormat syntax
-  (like `{fullName}`) and require `getVariableLocale` with arguments:
+  (like `{fullName}`) and require `msg.format()` with arguments:
 
   ```typescript
-  const label = avatarMessages.getVariableLocale("avatarLabel", locale, {
+  const msg = useLocalizedStringFormatter(avatarMessagesStrings);
+  const label = msg.format("avatarLabel", {
     fullName: "John Doe",
   });
   ```
@@ -147,6 +151,10 @@ export const AlertDismissButton = () => {
   **Note:** Simple strings don't need ICU syntax—they're just plain text. ICU
   MessageFormat syntax is only needed for variable interpolation or
   pluralization.
+
+- **Locale Handling**: The hook automatically normalizes locale codes (e.g.,
+  `"en-US"` → `"en"`, `"de-DE"` → `"de"`) and falls back to English for
+  unsupported locales
 
 ## Supported Locales
 
@@ -156,18 +164,53 @@ export const AlertDismissButton = () => {
 - **French (fr-FR)**
 - **Portuguese (pt-BR)**
 
+## Development Workflow
+
+### Adding New Messages
+
+1. Create `.i18n.ts` file in component directory (see
+   [Nimbus README](../nimbus/README.md#internationalization-i18n-development))
+2. Run `pnpm extract-intl` from project root (extracts + compiles in one step)
+   - Or run `pnpm --filter @commercetools/nimbus-i18n build` from i18n package
+3. Messages are automatically compiled to `*.messages.ts` dictionaries
+4. Import and use in component with `useLocalizedStringFormatter` hook
+
+### Updating Existing Messages
+
+- Edit `.i18n.ts` file with new text or message IDs
+- Run `pnpm extract-intl` to re-extract and compile
+- Changes reflect immediately in components (no restart needed)
+
+### Build Integration
+
+The i18n build runs automatically during:
+
+- `pnpm build` (full monorepo build)
+- `pnpm extract-intl` (extraction + compilation)
+
+**When to rebuild manually:**
+
+- After adding new `.i18n.ts` files
+- After modifying message IDs or default messages
+- After downloading new translations from Transifex
+- If `*.messages.ts` files are missing or outdated
+
 ## Build Commands
 
 ```bash
 # Full build (runs all 4 steps)
 pnpm build
 
-# Individual steps
+# Individual steps (for debugging or manual execution)
 pnpm build:transform        # Flatten Transifex format (extract strings)
 pnpm build:split            # Split by component
 pnpm build:compile-strings  # Compile messages to TypeScript
 pnpm build:dictionaries     # Generate dictionaries
 ```
+
+**Note:** For normal development, use `pnpm extract-intl` from the project root,
+which handles both extraction and compilation. Individual build steps are
+primarily for debugging the pipeline.
 
 ## Message Format
 
@@ -177,14 +220,14 @@ pnpm build:dictionaries     # Generate dictionaries
 
 - Plain text, no special syntax needed
 - Example: `"Dismiss"` → compiles to: `dismiss: "Dismiss"`
-- Use `getVariableLocale(key, locale)` in components (no args needed)
+- Use `msg.format(key)` in components (no args needed)
 
 **Variable strings** (with ICU MessageFormat syntax):
 
 - Use ICU syntax for interpolation: `{variableName}`
 - Example: `"Avatar image for {fullName}"` → compiles to:
   `avatarLabel: (args) => "Avatar image for ${args.fullName}"`
-- Use `getVariableLocale(key, locale, { variableName: value })` in components
+- Use `msg.format(key, { variableName: value })` in components
 
 **Note:** ICU MessageFormat syntax is only needed for variable interpolation or
 pluralization. Simple strings are just plain text and don't require any special
@@ -223,7 +266,8 @@ export const messages = defineMessages({
 });
 
 // Component usage
-loadingSpinnerMessages.getVariableLocale("default", locale); // ← Use "default"
+const msg = useLocalizedStringFormatter(loadingSpinnerMessagesStrings);
+msg.format("default"); // ← Use "default"
 ```
 
 ## Internal Package

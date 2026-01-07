@@ -6,9 +6,9 @@ import {
   type FieldErrorsData,
   MoneyInput,
 } from "@/components";
-import { localizedFieldMessages } from "../localized-field.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import type { LocalizedString } from "../localized-field.types";
-import { useLocale } from "react-aria-components";
 
 type LanguagesSplitByDefaultLocale = {
   related: string[];
@@ -22,11 +22,9 @@ type CustomFormikErrors<Values> = {
 };
 
 export const RequiredValueErrorMessage = () => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(localizedFieldMessagesStrings);
   return (
-    <FormField.Error>
-      {localizedFieldMessages.getVariableLocale("missingRequiredField", locale)}
-    </FormField.Error>
+    <FormField.Error>{msg.format("missingRequiredField")}</FormField.Error>
   );
 };
 

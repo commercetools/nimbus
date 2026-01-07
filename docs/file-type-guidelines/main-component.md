@@ -934,19 +934,19 @@ Components need i18n when they contain:
 ### Import Pattern
 
 ```typescript
-import { useLocale } from "react-aria-components";
-import { componentMessages } from "./component-name.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { componentMessagesStrings } from "./component-name.messages";
 ```
 
 ### Usage in Component
 
 ```typescript
 export const NumberInput = (props: NumberInputProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(numberInputMessagesStrings);
 
   // Use for aria-labels
-  const incrementLabel = componentMessages.getVariableLocale("increment", locale);
-  const decrementLabel = componentMessages.getVariableLocale("decrement", locale);
+  const incrementLabel = msg.format("increment");
+  const decrementLabel = msg.format("decrement");
 
   // Pass to React Aria hooks
   const ariaProps = {

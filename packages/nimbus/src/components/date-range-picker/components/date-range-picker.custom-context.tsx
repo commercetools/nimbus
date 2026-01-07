@@ -5,17 +5,17 @@ import {
   DateRangePickerStateContext,
   TimeFieldContext,
   useSlottedContext,
-  useLocale,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
-import { dateRangePickerMessages } from "../date-range-picker.messages";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dateRangePickerMessagesStrings } from "../date-range-picker.messages";
 
 export const DateRangePickerCustomContext = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(dateRangePickerMessagesStrings);
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const dateRangePickerState = useContext(DateRangePickerStateContext);
 
@@ -50,29 +50,23 @@ export const DateRangePickerCustomContext = ({
     const messageKey = type === "start" ? "start" : "end";
     switch (granularity) {
       case "hour":
-        return dateRangePickerMessages.getVariableLocale(
-          `${messageKey}TimeHour` as "startTimeHour" | "endTimeHour",
-          locale
+        return msg.format(
+          `${messageKey}TimeHour` as "startTimeHour" | "endTimeHour"
         );
       case "minute":
-        return dateRangePickerMessages.getVariableLocale(
+        return msg.format(
           `${messageKey}TimeHourMinute` as
             | "startTimeHourMinute"
-            | "endTimeHourMinute",
-          locale
+            | "endTimeHourMinute"
         );
       case "second":
-        return dateRangePickerMessages.getVariableLocale(
+        return msg.format(
           `${messageKey}TimeHourMinuteSecond` as
             | "startTimeHourMinuteSecond"
-            | "endTimeHourMinuteSecond",
-          locale
+            | "endTimeHourMinuteSecond"
         );
       default:
-        return dateRangePickerMessages.getVariableLocale(
-          `${messageKey}Time` as "startTime" | "endTime",
-          locale
-        );
+        return msg.format(`${messageKey}Time` as "startTime" | "endTime");
     }
   };
 
@@ -100,10 +94,7 @@ export const DateRangePickerCustomContext = ({
     clear: {
       // Clear both start and end values
       onPress: () => dateRangePickerState?.setValue(null),
-      "aria-label": dateRangePickerMessages.getVariableLocale(
-        "clearInput",
-        locale
-      ),
+      "aria-label": msg.format("clearInput"),
       isDisabled: isDateRangePickerDisabled,
       // Hide the button when there's no value
       style: incompleteValue ? { display: "none" } : undefined,

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useLocale } from "react-aria-components";
 import { Image } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";
-import { avatarMessages } from "./avatar.messages";
+import { avatarMessagesStrings } from "./avatar.messages";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -34,14 +34,14 @@ function getInitials(firstName: string, lastName: string) {
  * ```
  */
 export const Avatar = (props: AvatarProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(avatarMessagesStrings);
   const { ref, firstName, lastName, src, alt, ...rest } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const fullName = `${firstName} ${lastName}`;
 
-  const avatarLabel = avatarMessages.getVariableLocale("avatarLabel", locale, {
+  const avatarLabel = msg.format("avatarLabel", {
     fullName,
   });
 

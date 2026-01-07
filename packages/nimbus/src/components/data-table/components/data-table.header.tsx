@@ -1,5 +1,4 @@
 import { VisuallyHidden } from "react-aria";
-import { useLocale } from "react-aria-components";
 import {
   TableHeader as RaTableHeader,
   Collection as RaCollection,
@@ -7,6 +6,7 @@ import {
 } from "react-aria-components";
 import { Box, Checkbox } from "@/components";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import type {
   DataTableHeaderProps,
   DataTableColumnItem,
@@ -14,7 +14,7 @@ import type {
 import { DataTableHeaderSlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
-import { dataTableMessages } from "../data-table.messages";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Header - The table header section that renders column headers with sorting capabilities
@@ -27,7 +27,7 @@ export const DataTableHeader = <
   ref,
   ...props
 }: DataTableHeaderProps<T>) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
     useDataTableContext();
   // This can also be used to see if drag'n'drop is enabled
@@ -63,15 +63,10 @@ export const DataTableHeader = <
             maxWidth={selectionBehavior === "toggle" ? 24 : 72}
             minWidth={selectionBehavior === "toggle" ? 24 : 72}
             allowsSorting={false}
-            aria-label={dataTableMessages.getVariableLocale(
-              "expandRows",
-              locale
-            )}
+            aria-label={msg.format("expandRows")}
             isInternalColumn={true}
           >
-            <VisuallyHidden>
-              {dataTableMessages.getVariableLocale("expandRows", locale)}
-            </VisuallyHidden>
+            <VisuallyHidden>{msg.format("expandRows")}</VisuallyHidden>
           </DataTableColumn>
         )}
         <RaCollection items={activeColumns}>
@@ -108,11 +103,9 @@ export const DataTableHeader = <
           minWidth={72}
           allowsSorting={false}
           isInternalColumn={true}
-          aria-label={dataTableMessages.getVariableLocale("pinRows", locale)}
+          aria-label={msg.format("pinRows")}
         >
-          <VisuallyHidden>
-            {dataTableMessages.getVariableLocale("pinRows", locale)}
-          </VisuallyHidden>
+          <VisuallyHidden>{msg.format("pinRows")}</VisuallyHidden>
         </DataTableColumn>
       </RaTableHeader>
     </DataTableHeaderSlot>

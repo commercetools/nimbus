@@ -1,8 +1,8 @@
 import { ColumnResizer, Column as RaColumn } from "react-aria-components";
-import { useLocale } from "react-aria-components";
 import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Flex, Separator } from "@/components";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { useDataTableContext } from "./data-table.context";
 import {
   DataTableColumnSlot,
@@ -10,7 +10,7 @@ import {
   DataTableColumnResizer,
 } from "../data-table.slots";
 import type { DataTableColumnComponent } from "../data-table.types";
-import { dataTableMessages } from "../data-table.messages";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Column - Individual column header component that handles sorting interactions
@@ -27,7 +27,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
   maxWidth,
   ...otherProps
 }) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { sortDescriptor, isResizable } = useDataTableContext();
   const isActive = sortDescriptor?.column === column?.id;
   const isColumnResizable =
@@ -77,12 +77,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
                 </DataTableHeaderSortIcon>
               )}
               {isColumnResizable && (
-                <ColumnResizer
-                  aria-label={dataTableMessages.getVariableLocale(
-                    "resizeColumn",
-                    locale
-                  )}
-                >
+                <ColumnResizer aria-label={msg.format("resizeColumn")}>
                   {({ isResizing, isFocused, isHovered }) => (
                     <DataTableColumnResizer
                       data-resizing={isResizing}

@@ -1,4 +1,3 @@
-import { useLocale } from "react-aria-components";
 import {
   ToggleButtonGroup,
   Text,
@@ -6,6 +5,7 @@ import {
   Toolbar,
   IconToggleButton,
 } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { UPDATE_ACTIONS } from "../constants";
 import {
   WrapText,
@@ -13,7 +13,7 @@ import {
   DensitySmall,
   FormatAlignJustify,
 } from "@commercetools/nimbus-icons";
-import { dataTableMessages } from "../data-table.messages";
+import { dataTableMessagesStrings } from "../data-table.messages";
 import { useDataTableContext } from "./data-table.context";
 import type { DataTableProps } from "../data-table.types";
 
@@ -22,7 +22,7 @@ export const LayoutSettingsPanel = ({
 }: {
   onSettingsChange?: DataTableProps["onSettingsChange"];
 }) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const context = useDataTableContext();
 
   // Connected to DataTable context state
@@ -54,9 +54,7 @@ export const LayoutSettingsPanel = ({
     >
       {/* Text visibility section */}
       <SimpleGrid.Item colSpan={1}>
-        <Text fontWeight="500">
-          {dataTableMessages.getVariableLocale("textVisibility", locale)}
-        </Text>
+        <Text fontWeight="500">{msg.format("textVisibility")}</Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
         <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
@@ -64,47 +62,36 @@ export const LayoutSettingsPanel = ({
             w="full"
             selectedKeys={textVisibility ? ["preview"] : ["full"]}
             onSelectionChange={handleTextVisibilityChange}
-            aria-label={dataTableMessages.getVariableLocale(
-              "textVisibilityAriaLabel",
-              locale
-            )}
+            aria-label={msg.format("textVisibilityAriaLabel")}
           >
             <IconToggleButton
               id="full"
               size="xs"
-              aria-label={dataTableMessages.getVariableLocale(
-                "fullText",
-                locale
-              )}
+              aria-label={msg.format("fullText")}
               variant="ghost"
               px="300"
               flex="1"
             >
               <WrapText />
-              {dataTableMessages.getVariableLocale("fullText", locale)}
+              {msg.format("fullText")}
             </IconToggleButton>
             <IconToggleButton
               id="preview"
               size="xs"
-              aria-label={dataTableMessages.getVariableLocale(
-                "textPreviews",
-                locale
-              )}
+              aria-label={msg.format("textPreviews")}
               variant="ghost"
               px="300"
               flex="1"
             >
               <ShortText />
-              {dataTableMessages.getVariableLocale("textPreviews", locale)}
+              {msg.format("textPreviews")}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>
       </SimpleGrid.Item>
       {/* Row density section */}
       <SimpleGrid.Item colSpan={1}>
-        <Text fontWeight="500">
-          {dataTableMessages.getVariableLocale("rowDensity", locale)}
-        </Text>
+        <Text fontWeight="500">{msg.format("rowDensity")}</Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
         <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
@@ -113,38 +100,29 @@ export const LayoutSettingsPanel = ({
             colorPalette="primary"
             selectedKeys={[rowDensity]}
             onSelectionChange={handleRowDensityChange}
-            aria-label={dataTableMessages.getVariableLocale(
-              "rowDensityAriaLabel",
-              locale
-            )}
+            aria-label={msg.format("rowDensityAriaLabel")}
           >
             <IconToggleButton
               id="comfortable"
               size="xs"
               variant="ghost"
-              aria-label={dataTableMessages.getVariableLocale(
-                "comfortable",
-                locale
-              )}
+              aria-label={msg.format("comfortable")}
               px="300"
               flex="1"
             >
               <DensitySmall />
-              {dataTableMessages.getVariableLocale("comfortable", locale)}
+              {msg.format("comfortable")}
             </IconToggleButton>
             <IconToggleButton
               id="compact"
               size="xs"
               variant="ghost"
-              aria-label={dataTableMessages.getVariableLocale(
-                "compact",
-                locale
-              )}
+              aria-label={msg.format("compact")}
               px="300"
               flex="1"
             >
               <FormatAlignJustify />
-              {dataTableMessages.getVariableLocale("compact", locale)}
+              {msg.format("compact")}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>

@@ -7,15 +7,15 @@ import {
 } from "@commercetools/nimbus-icons";
 import { usePreservedSelection } from "../hooks/use-preserved-selection";
 import { useFormattingState } from "../hooks/use-formatting-state";
-import { richTextInputMessages } from "../rich-text-input.messages";
-import { useLocale } from "react-aria-components";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { richTextInputMessagesStrings } from "../rich-text-input.messages";
 
 export type FormattingMenuProps = {
   isDisabled?: boolean;
 };
 
 export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
-  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(richTextInputMessagesStrings);
   const editor = useSlate();
   const withPreservedSelection = usePreservedSelection(editor);
 
@@ -35,10 +35,7 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           <IconButton
             size="xs"
             variant="ghost"
-            aria-label={richTextInputMessages.getVariableLocale(
-              "moreFormattingOptions",
-              locale
-            )}
+            aria-label={msg.format("moreFormattingOptions")}
             isDisabled={isDisabled}
             onMouseDown={(event) => event.preventDefault()}
           >
@@ -46,40 +43,32 @@ export const FormattingMenu = ({ isDisabled = false }: FormattingMenuProps) => {
           </IconButton>
         </Menu.Trigger>
         <Tooltip.Content placement="top">
-          {richTextInputMessages.getVariableLocale("moreStyles", locale)}
+          {msg.format("moreStyles")}
         </Tooltip.Content>
       </Tooltip.Root>
       <Menu.Content>
         <Menu.Item id="strikethrough">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <FormatStrikethrough />
-            <Text textStyle="sm">
-              {richTextInputMessages.getVariableLocale("strikethrough", locale)}
-            </Text>
+            <Text textStyle="sm">{msg.format("strikethrough")}</Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="code">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Code />
-            <Text textStyle="sm">
-              {richTextInputMessages.getVariableLocale("code", locale)}
-            </Text>
+            <Text textStyle="sm">{msg.format("code")}</Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="superscript">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X²</Text>
-            <Text textStyle="sm">
-              {richTextInputMessages.getVariableLocale("superscript", locale)}
-            </Text>
+            <Text textStyle="sm">{msg.format("superscript")}</Text>
           </Box>
         </Menu.Item>
         <Menu.Item id="subscript">
           <Box slot="label" display="flex" alignItems="center" gap="200">
             <Text>X₂</Text>
-            <Text textStyle="sm">
-              {richTextInputMessages.getVariableLocale("subscript", locale)}
-            </Text>
+            <Text textStyle="sm">{msg.format("subscript")}</Text>
           </Box>
         </Menu.Item>
       </Menu.Content>
