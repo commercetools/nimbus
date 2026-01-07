@@ -35,9 +35,11 @@ const fs = require("fs");
  */
 async function main() {
   try {
-    // Parse the tool execution request from stdin
+    // Parse the tool execution request from stdin (file descriptor 0)
     // Format: { tool_name: string, tool_input: object }
-    const inputData = JSON.parse(fs.readFileSync(0, "utf-8"));
+    // Note: This reads from stdin, NOT from a file path - no path traversal risk
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const inputData = JSON.parse(fs.readFileSync(process.stdin.fd, "utf-8"));
     const toolName = inputData.tool_name;
     const toolInput = inputData.tool_input || {};
 
