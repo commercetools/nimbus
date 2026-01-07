@@ -16,6 +16,7 @@
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "changeset": "changeset",
+    "openspec": "openspec",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",
     "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts' && pnpm --filter @commercetools/nimbus-i18n build",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
+    "@fission-ai/openspec": "^0.16.0",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.8",
     "@commercetools/nimbus": "workspace:^",
