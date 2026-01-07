@@ -27,7 +27,6 @@ export function configureButtonAction(
   uri: string
 ) {
   buttonActionsByButtonId.set(buttonId, { toolName, params, uri });
-  console.log(`🎯 Button action configured: ${buttonId} -> ${toolName}`);
 }
 
 /**
@@ -38,18 +37,10 @@ export function handleButtonClick(
   buttonId: string,
   formData?: Record<string, string>
 ) {
-  console.log(`🖱️ Button clicked: ${buttonId}`);
-  if (formData && Object.keys(formData).length > 0) {
-    console.log(`📝 Form data received from client:`, formData);
-  }
-
   const actionMeta = buttonActionsByButtonId.get(buttonId);
   if (!actionMeta) {
-    console.log(`ℹ️ No action configured for button: ${buttonId}`);
     return null;
   }
-
-  console.log(`🎯 Queueing MCP tool call: ${actionMeta.toolName}`);
 
   // Merge form data with configured action params
   const params = {
@@ -80,8 +71,6 @@ export function handleButtonClick(
           message: errorMsg,
         });
       } else {
-        console.log(`✅ Button action completed:`, result);
-
         showToast({
           type: "success",
           title: "Success",
@@ -91,7 +80,6 @@ export function handleButtonClick(
     }
   );
 
-  console.log(`✅ Action queued: ${action.id}`);
   return action;
 }
 
@@ -204,10 +192,6 @@ export function registerButtonTool(
           params: args.actionParams || {},
           uri,
         });
-        console.log(
-          `🎯 Button configured with action: ${args.actionToolName}`,
-          args.actionParams
-        );
       }
 
       // Return resource (createRemoteDomResource handles appending to root)

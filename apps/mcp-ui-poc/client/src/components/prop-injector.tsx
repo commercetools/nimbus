@@ -27,6 +27,9 @@
 
 import React from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyComponent = React.ComponentType<any>;
+
 /**
  * Remote DOM Element Structure
  * Represents a serialized element from the Remote DOM tree
@@ -55,7 +58,7 @@ export interface RemoteDomElement {
 export function renderElement(
   element: RemoteDomElement,
   key: string | number,
-  componentMap: Map<string, React.ComponentType<Record<string, unknown>>>,
+  componentMap: Map<string, AnyComponent>,
   injectedProps: Record<string, unknown> = {}
 ): React.ReactNode {
   if (!element) return null;

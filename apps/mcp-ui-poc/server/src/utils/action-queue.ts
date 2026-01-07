@@ -54,12 +54,10 @@ export function queueAction(
   };
 
   actionQueue.push(pendingAction);
-  console.log(`📥 Queued action: ${action.toolName}`, pendingAction);
 
   // Store callback if provided
   if (onComplete) {
     actionCallbacks.set(pendingAction.id, onComplete);
-    console.log(`📋 Registered callback for action: ${pendingAction.id}`);
   }
 
   // Broadcast to clients via WebSocket
@@ -84,7 +82,6 @@ export function clearAction(actionId: string) {
   const index = actionQueue.findIndex((a) => a.id === actionId);
   if (index !== -1) {
     actionQueue.splice(index, 1);
-    console.log(`✅ Cleared action: ${actionId}`);
   }
 }
 
@@ -92,10 +89,8 @@ export function clearAction(actionId: string) {
  * Clear all actions
  */
 export function clearAllActions() {
-  const count = actionQueue.length;
   actionQueue.length = 0;
   actionCallbacks.clear();
-  console.log(`✅ Cleared ${count} actions and callbacks`);
 }
 
 /**
@@ -107,27 +102,18 @@ export function handleActionResponse(
   result?: unknown,
   error?: unknown
 ) {
-  console.log(`📬 Received action response for: ${actionId}`);
-
   const callback = actionCallbacks.get(actionId);
   if (callback) {
-    console.log(`🎯 Executing callback for action: ${actionId}`);
     try {
       callback(result, error);
-      console.log(`✅ Callback executed successfully for: ${actionId}`);
     } catch (callbackError) {
       console.error(
         `❌ Error executing callback for ${actionId}:`,
         callbackError
       );
     }
-
-    // Clean up callback after execution
     actionCallbacks.delete(actionId);
-  } else {
-    console.log(`ℹ️ No callback registered for action: ${actionId}`);
   }
 
-  // Clear the action from queue
   clearAction(actionId);
 }

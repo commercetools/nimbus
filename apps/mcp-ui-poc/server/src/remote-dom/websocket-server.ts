@@ -133,7 +133,6 @@ export class MutationStreamServer {
     });
 
     this.wss.on("connection", (ws: WebSocket) => {
-      console.log("🔌 WebSocket client connected");
       this.clients.add(ws);
 
       ws.on("message", (data: Buffer) => {
@@ -146,7 +145,6 @@ export class MutationStreamServer {
       });
 
       ws.on("close", () => {
-        console.log("🔌 WebSocket client disconnected");
         this.clients.delete(ws);
       });
 
@@ -159,11 +157,6 @@ export class MutationStreamServer {
       const activeMutations = this.mutationHistory.filter(
         (msg) => !msg.uri || this.activeUris.has(msg.uri)
       );
-
-      console.log(
-        `📤 Sending ${activeMutations.length} active mutations (out of ${this.mutationHistory.length} total) to new client`
-      );
-      console.log(`📍 Active URIs: ${Array.from(this.activeUris).join(", ")}`);
 
       // Send only active mutations to sync the client
       activeMutations.forEach((message) => {
@@ -181,8 +174,6 @@ export class MutationStreamServer {
         timestamp: Date.now(),
       });
     });
-
-    console.log("✅ WebSocket server initialized on /ws");
   }
 
   /**
@@ -190,42 +181,27 @@ export class MutationStreamServer {
    */
   private async handleClientMessage(ws: WebSocket, message: WSMessage) {
     if (message.type === "sync") {
-      // Client requesting full state sync
-      console.log("🔄 Client requested state sync");
-      // The environment will handle sending the sync response
+      // Client requesting full state sync - environment handles response
     } else if (message.type === "uri-active") {
-      // Client notifying that a URI is now active (component mounted)
-      console.log(`📍 Client marked URI as active: ${message.uri}`);
       this.markUriActive(message.uri);
     } else if (message.type === "uri-inactive") {
-      // Client notifying that a URI is now inactive (component unmounted)
-      console.log(`📍 Client marked URI as inactive: ${message.uri}`);
       this.markUriInactive(message.uri);
     } else if (message.type === "action-response") {
-      // Handle action completion response from client
       const { actionId, result, error } = message;
-      console.log(`📬 Action response received: ${actionId}`);
 
       // Import and call the handler
       const { handleActionResponse } = await import("../utils/action-queue.js");
       handleActionResponse(actionId, result, error);
     } else if (message.type === "tool") {
-      // Handle tool message (MCP-UI standard)
       const { toolName, params } = message.payload;
       const { messageId } = message;
 
-      console.log(`📥 Tool message received: ${toolName}`, {
-        messageId,
-        params,
-      });
-
-      // Stage 1: Send acknowledgment if messageId provided
+      // Send acknowledgment if messageId provided
       if (messageId) {
         this.sendToClient(ws, {
           type: "ui-message-received",
           messageId,
         });
-        console.log(`✅ Acknowledgment sent for messageId: ${messageId}`);
       }
 
       // Execute tool handler
@@ -234,14 +210,13 @@ export class MutationStreamServer {
         try {
           const response = await handler(toolName, params);
 
-          // Stage 2: Send response if messageId provided
+          // Send response if messageId provided
           if (messageId) {
             this.sendToClient(ws, {
               type: "ui-message-response",
               messageId,
               payload: { response },
             });
-            console.log(`✅ Response sent for messageId: ${messageId}`);
           }
         } catch (error) {
           console.error(`❌ Error handling tool ${toolName}:`, error);
@@ -284,7 +259,6 @@ export class MutationStreamServer {
    * Register a handler for a specific tool (MCP-UI standard)
    */
   registerToolHandler(toolName: string, handler: ToolHandler) {
-    console.log(`📝 Registering tool handler for: ${toolName}`);
     this.toolHandlers.set(toolName, handler);
   }
 
@@ -299,10 +273,7 @@ export class MutationStreamServer {
    * Mark a URI as active (has rendered component)
    */
   markUriActive(uri: string) {
-    if (!this.activeUris.has(uri)) {
-      this.activeUris.add(uri);
-      console.log(`✅ Marked URI as active: ${uri}`);
-    }
+    this.activeUris.add(uri);
   }
 
   /**
@@ -311,13 +282,10 @@ export class MutationStreamServer {
   markUriInactive(uri: string) {
     if (this.activeUris.has(uri)) {
       this.activeUris.delete(uri);
-      console.log(`❌ Marked URI as inactive: ${uri}`);
-
       // Clean up mutations for inactive URI
       this.mutationHistory = this.mutationHistory.filter(
         (msg) => msg.uri !== uri
       );
-      console.log(`🧹 Cleaned up mutation history for ${uri}`);
     }
   }
 
@@ -338,10 +306,6 @@ export class MutationStreamServer {
       message,
       timestamp: Date.now(),
     };
-
-    console.log(
-      `📡 Broadcasting Remote DOM ${message.type} to ${this.clients.size} clients for URI: ${message.uri || "unknown"}`
-    );
 
     this.clients.forEach((client) => {
       if (client.readyState === 1) {
@@ -394,10 +358,6 @@ export class MutationStreamServer {
       action,
       timestamp: Date.now(),
     };
-
-    console.log(
-      `📡 Broadcasting action notification to ${this.clients.size} clients`
-    );
 
     this.clients.forEach((client) => {
       if (client.readyState === 1) {

@@ -280,6 +280,7 @@ export class ClaudeClient {
       uiToolsEnabled?: boolean;
       commerceToolsEnabled?: boolean;
       messageHistory?: { role: "user" | "assistant"; content: string }[];
+      onUIResource?: (resource: UIResource) => void; // Stream UI as it's created
     } = {}
   ) {
     if (!this.anthropic) {
@@ -290,6 +291,7 @@ export class ClaudeClient {
       uiToolsEnabled = true,
       commerceToolsEnabled = true,
       messageHistory = [],
+      onUIResource,
     } = options;
 
     console.log("📤 Sending message to Claude:", message);
@@ -308,7 +310,8 @@ export class ClaudeClient {
           uiToolsEnabled,
           commerceToolsEnabled,
           messageHistory,
-          retryCount
+          retryCount,
+          onUIResource
         );
       } catch (error) {
         // Extract error message from various error formats
@@ -353,7 +356,8 @@ export class ClaudeClient {
     uiToolsEnabled: boolean,
     commerceToolsEnabled: boolean,
     messageHistory: { role: "user" | "assistant"; content: string }[],
-    retryAttempt: number
+    retryAttempt: number,
+    onUIResource?: (resource: UIResource) => void
   ) {
     const uiResources: UIResource[] = [];
     let textResponse = "";
@@ -441,179 +445,227 @@ CORE RULE: When users request data (show, list, view, display), ALWAYS use tools
 1. Fetch data with commerce__ tools
 2. Display data with ui__ tools
 Never respond with text-only - use visual components.
-
 ${retryContext}
-WORKFLOW:
+
+=== WORKFLOW ===
 
 **Displaying Data:**
-Step 1: Call commerce tool to fetch data (e.g., commerce__execute_tool with toolMethod: 'list_products')
-Step 2: Call UI tool with the fetched data (e.g., ui__createDataTable)
+Step 1: Fetch data with commerce__ tools
+Step 2: Create UI with nested children in ONE tool call
 
-Important: Wait for commerce data before creating UI. Create each UI component only ONCE.
+**PERFORMANCE CRITICAL - USE NESTED CHILDREN:**
+UI tools accept a "children" array to compose entire layouts in ONE tool call.
+
+WRONG (slow - 5 separate API round-trips):
+  ui__createStack → ui__createHeading → ui__createDataTable
+
+RIGHT (fast - 1 API round-trip):
+  ui__createStack({
+    direction: "column",
+    children: [
+      { type: "nimbus-heading", properties: { size: "xl" }, textContent: "Orders" },
+      { type: "nimbus-data-table", properties: { columns: [...], rows: [...], ariaLabel: "..." } }
+    ]
+  })
 
 **Creating/Editing Data:**
 Use ui__createSimpleForm configured with actionToolName pointing to the commerce tool.
-The form will automatically execute the commerce tool when submitted.
 
 **Data Tables with Editing:**
 When using ui__createDataTable with showDetails=true, provide editAction:
 editAction={ instruction: "Update {entityType} {id} with data: {formData}. Use commerce {toolMethod}." }
 
 RESPONSE RULES:
-- Use UI tools, not text paragraphs
-- Create UI components only once (no duplicates)
+- Use UI tools, **NEVER** text paragraphs
+- Create UI with nested children in ONE tool call
 - Use limit=10-20 for list queries (token management)
-- Minimal text - let UI components speak for themselves
+- Minimal text - let UI components speak for themselves. **WHEN UI TOOLS ARE USED, LIMIT YOUR RESPONSE TO 'Here's what I found'**
 
 Before responding:
-[ ] Did I fetch commerce data?
-[ ] Did I create UI to display it?
-[ ] Did I avoid creating duplicate UI components?
+[ ] Did I create UI with nested children in a SINGLE tool call?
+[ ] Did I avoid calling multiple tools sequentially?
 ${relevantResources}`
         : `You are a helpful AI assistant. Please provide text-based responses to help the user.`;
 
-      // Use streaming API for faster initial response
-      // This allows Claude to start thinking and generating tools sooner
+      // Use streaming API and execute tools AS they complete (not after full response)
       const stream = this.anthropic.messages.stream({
         model: "claude-sonnet-4-5-20250929",
-        max_tokens: 4096,
+        max_tokens: 8192,
         system: systemPrompt,
         tools: anyToolsEnabled ? filteredTools : undefined,
         messages: currentConversation,
       });
 
-      // Wait for complete response
-      // We must wait for all tool_use blocks to be identified before executing,
-      // since Claude expects all tool results together in the next message
-      const response = await stream.finalMessage();
+      // Track tool_use blocks as they stream in
+      const toolBlocks = new Map<
+        number,
+        { id: string; name: string; inputJson: string }
+      >();
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const contentBlocks: Anthropic.ContentBlock[] = [];
+      let stopReason: string | null = null;
 
-      console.log(
-        `📥 Response received. Blocks: ${response.content.length}, Stop: ${response.stop_reason}`
-      );
+      // Helper to execute a tool and handle results
+      const executeToolBlock = async (block: {
+        id: string;
+        name: string;
+        inputJson: string;
+      }) => {
+        const toolInput = JSON.parse(block.inputJson || "{}");
+        console.log(`🔧 Calling tool: ${block.name}`, toolInput);
 
-      // Add assistant response to current conversation (for this message only)
-      currentConversation.push({
-        role: "assistant",
-        content: response.content,
-      });
+        try {
+          // Standard MCP tool handling
+          const [serverName, ...toolNameParts] = block.name.split("__");
+          const actualToolName = toolNameParts.join("__");
 
-      // Check if Claude wants to use tools
-      const toolUseBlocks = response.content.filter(
-        (block) => block.type === "tool_use"
-      );
+          const isToolEnabled =
+            (serverName === "ui" && uiToolsEnabled) ||
+            (serverName === "commerce" && commerceToolsEnabled);
 
-      if (toolUseBlocks.length > 0) {
-        console.log("🔧 Claude is using tools:", toolUseBlocks);
+          if (!isToolEnabled) {
+            throw new Error(
+              `Tool from ${serverName} server is currently disabled.`
+            );
+          }
 
-        // Execute all tool calls
-        const toolResults: Anthropic.MessageParam = {
-          role: "user",
-          content: [],
-        };
+          const client = this.mcpClients.get(serverName);
+          if (!client) {
+            throw new Error(`Unknown MCP server: ${serverName}`);
+          }
 
-        for (const toolUse of toolUseBlocks) {
-          if (toolUse.type === "tool_use") {
-            console.log(`🔧 Calling MCP tool: ${toolUse.name}`, toolUse.input);
+          console.log(`🔧 Routing to ${serverName} server: ${actualToolName}`);
 
-            try {
-              // Parse server name from tool name (format: "serverName__toolName")
-              const [serverName, ...toolNameParts] = toolUse.name.split("__");
-              const actualToolName = toolNameParts.join("__");
+          const result = await client.callTool({
+            name: actualToolName,
+            arguments: toolInput,
+          });
 
-              // Check if this server's tools are enabled
-              const isToolEnabled =
-                (serverName === "ui" && uiToolsEnabled) ||
-                (serverName === "commerce" && commerceToolsEnabled);
+          console.log(`✅ Tool result for ${block.name}:`, result);
 
-              if (!isToolEnabled) {
-                throw new Error(
-                  `Tool from ${serverName} server is currently disabled. Enable it using the switch in the UI.`
-                );
-              }
-
-              const client = this.mcpClients.get(serverName);
-              if (!client) {
-                throw new Error(`Unknown MCP server: ${serverName}`);
-              }
-
-              console.log(
-                `🔧 Routing to ${serverName} server: ${actualToolName}`
-              );
-
-              // Call the MCP tool on the correct server
-              const result = await client.callTool({
-                name: actualToolName,
-                arguments: (toolUse.input || {}) as Record<string, unknown>,
-              });
-
-              console.log(`✅ Tool result for ${toolUse.name}:`, result);
-
-              // Check for UIResources in the result
-              // MCP-UI server returns UIResources directly in content array
-              if (Array.isArray(result.content)) {
-                for (const content of result.content) {
-                  // Check if content is a resource block with nested resource
-                  if (
-                    content.type === "resource" &&
-                    content.resource?.uri?.startsWith("ui://")
-                  ) {
-                    console.log(
-                      "📦 Found UIResource (nested):",
-                      content.resource.uri
-                    );
-                    uiResources.push({
-                      type: "resource",
-                      resource: content.resource,
-                    } as UIResource);
-                  }
-                  // Check if content is a UIResource object directly (needs wrapping)
-                  else if (
-                    typeof content === "object" &&
-                    "uri" in content &&
-                    "text" in content &&
-                    content.uri?.startsWith("ui://")
-                  ) {
-                    console.log("📦 Found UIResource (direct):", content.uri);
-                    uiResources.push({
-                      type: "resource",
-                      resource: content,
-                    } as UIResource);
-                  }
+          // Check for UIResources and stream them immediately
+          if (Array.isArray(result.content)) {
+            for (const content of result.content) {
+              if (
+                content.type === "resource" &&
+                content.resource?.uri?.startsWith("ui://")
+              ) {
+                console.log("📦 Streaming UIResource:", content.resource.uri);
+                const resource = {
+                  type: "resource",
+                  resource: content.resource,
+                } as UIResource;
+                uiResources.push(resource);
+                // Stream to UI immediately!
+                if (onUIResource) {
+                  onUIResource(resource);
+                }
+              } else if (
+                typeof content === "object" &&
+                "uri" in content &&
+                "text" in content &&
+                content.uri?.startsWith("ui://")
+              ) {
+                console.log("📦 Streaming UIResource (direct):", content.uri);
+                const resource = {
+                  type: "resource",
+                  resource: content,
+                } as UIResource;
+                uiResources.push(resource);
+                if (onUIResource) {
+                  onUIResource(resource);
                 }
               }
-
-              // Add tool result to response
-              (toolResults.content as Anthropic.ToolResultBlockParam[]).push({
-                type: "tool_result",
-                tool_use_id: toolUse.id,
-                content: JSON.stringify(result.content),
-              });
-            } catch (error) {
-              console.error(`❌ Error calling tool ${toolUse.name}:`, error);
-              (toolResults.content as Anthropic.ToolResultBlockParam[]).push({
-                type: "tool_result",
-                tool_use_id: toolUse.id,
-                content: `Error: ${(error as Error).message}`,
-                is_error: true,
-              });
             }
           }
+
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: block.id,
+            content: JSON.stringify(result.content),
+          });
+        } catch (error) {
+          console.error(`❌ Error calling tool ${block.name}:`, error);
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: block.id,
+            content: `Error: ${(error as Error).message}`,
+            is_error: true,
+          });
         }
+      };
 
-        // Add tool results to current conversation
-        currentConversation.push(toolResults);
+      // Process stream events - execute UI tools immediately as they complete
+      const toolExecutionPromises: Promise<void>[] = [];
 
-        // Continue the loop to get Claude's next response
+      for await (const event of stream) {
+        if (event.type === "content_block_start") {
+          const block = event.content_block;
+          if (block.type === "tool_use") {
+            toolBlocks.set(event.index, {
+              id: block.id,
+              name: block.name,
+              inputJson: "",
+            });
+          }
+        } else if (event.type === "content_block_delta") {
+          const delta = event.delta;
+          if (delta.type === "input_json_delta") {
+            const block = toolBlocks.get(event.index);
+            if (block) {
+              block.inputJson += delta.partial_json;
+            }
+          }
+        } else if (event.type === "content_block_stop") {
+          const block = toolBlocks.get(event.index);
+          if (block) {
+            // Execute tool IMMEDIATELY when its block completes (don't wait for full response)
+            const isUiTool = block.name.startsWith("ui__");
+            if (isUiTool) {
+              // UI tools: execute immediately for instant rendering
+              console.log(`⚡ Executing UI tool immediately: ${block.name}`);
+              toolExecutionPromises.push(executeToolBlock(block));
+            } else {
+              // Non-UI tools: also execute immediately (commerce data needed for UI)
+              console.log(`⚡ Executing tool immediately: ${block.name}`);
+              toolExecutionPromises.push(executeToolBlock(block));
+            }
+          }
+        } else if (event.type === "message_delta") {
+          stopReason = event.delta.stop_reason;
+        }
+      }
+
+      // Wait for all tool executions to complete
+      await Promise.all(toolExecutionPromises);
+
+      // Build content blocks for conversation history
+      const finalMessage = await stream.finalMessage();
+      contentBlocks.push(...finalMessage.content);
+
+      console.log(
+        `📥 Response complete. Blocks: ${contentBlocks.length}, Stop: ${stopReason}`
+      );
+
+      // Add assistant response to conversation
+      currentConversation.push({
+        role: "assistant",
+        content: contentBlocks,
+      });
+
+      // Continue if there were tool calls
+      if (toolResults.length > 0) {
+        currentConversation.push({
+          role: "user",
+          content: toolResults,
+        });
         continueLoop = true;
       } else {
-        // No more tool use - extract final text response
-        const textBlock = response.content.find(
-          (block) => block.type === "text"
-        );
+        // No tool use - extract final text response
+        const textBlock = contentBlocks.find((block) => block.type === "text");
         if (textBlock && textBlock.type === "text") {
           textResponse = textBlock.text;
         }
-
         continueLoop = false;
       }
     }

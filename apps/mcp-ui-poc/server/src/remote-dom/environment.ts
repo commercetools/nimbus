@@ -193,8 +193,6 @@ export class RemoteEnvironment {
       this.batchTimeoutId = null;
     }
 
-    console.log(`📦 Flushing ${this.mutationBatch.length} batched mutations`);
-
     // Send all mutations in a single message
     this.sendMessage({
       type: "mutate",
@@ -392,7 +390,6 @@ export function getRemoteEnvironment(uri?: string): RemoteEnvironment {
 
   let environment = environmentsByUri.get(uri);
   if (!environment) {
-    console.log(`🆕 Creating new RemoteEnvironment for URI: ${uri}`);
     environment = new RemoteEnvironment(uri);
 
     // Configure with global handlers if available
@@ -404,8 +401,6 @@ export function getRemoteEnvironment(uri?: string): RemoteEnvironment {
     }
 
     environmentsByUri.set(uri, environment);
-  } else {
-    console.log(`♻️ Reusing existing RemoteEnvironment for URI: ${uri}`);
   }
 
   return environment;

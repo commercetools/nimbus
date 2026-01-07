@@ -30,11 +30,6 @@ export function initializeToaster() {
 
   root.appendChild(container);
   env.flush();
-
-  console.log("✅ Toaster initialized at URI:", TOASTER_URI);
-  console.log(
-    "📍 Global toaster is always active and will persist across sessions"
-  );
 }
 
 /**
@@ -120,14 +115,11 @@ export function showToast(options: {
   container.appendChild(alertRoot);
   env.flush();
 
-  console.log(`✅ Toast shown: ${type} - ${message}`);
-
   // Auto-remove after duration
   setTimeout(() => {
     if (alertRoot.parentNode) {
       alertRoot.parentNode.removeChild(alertRoot);
       env.flush();
-      console.log(`🗑️ Toast removed: ${toastId}`);
     }
   }, duration);
 }

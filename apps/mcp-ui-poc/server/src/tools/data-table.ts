@@ -40,30 +40,18 @@ const editInstructionByUri = new Map<string, string>();
  * Handle drawer close events - set isOpen to false
  */
 export function handleDrawerClose(uri: string) {
-  console.log(`🚪 Closing drawer for URI: ${uri}`);
-
   const env = getRemoteEnvironment(uri);
   const root = env.getRoot() as Element;
   const flexContainer = root.firstChild as Element | null;
 
-  if (!flexContainer) {
-    console.error("❌ Flex container not found");
-    return;
-  }
+  if (!flexContainer) return;
 
   const drawer = flexContainer.querySelector(
     "#details-drawer"
   ) as RemoteDomElement | null;
-  if (!drawer) {
-    console.error("❌ Drawer not found");
-    return;
-  }
+  if (!drawer) return;
 
-  // Close the drawer
   drawer.isOpen = false;
-  console.log("✅ Drawer closed");
-
-  // Flush mutations immediately
   env.flush();
 }
 
@@ -71,19 +59,11 @@ export function handleDrawerClose(uri: string) {
  * Handle toggle edit mode button click
  */
 export function handleToggleEditMode(uri: string) {
-  console.log(`🔄 Toggling edit mode for URI: ${uri}`);
-
   const editState = editModeByUri.get(uri);
-  if (!editState) {
-    console.error(`❌ No edit state found for URI: ${uri}`);
-    return;
-  }
+  if (!editState) return;
 
-  // Toggle edit mode
   editState.isEditMode = !editState.isEditMode;
-  console.log(`✅ Edit mode is now: ${editState.isEditMode}`);
 
-  // Re-render drawer content with current row
   if (editState.currentRowId) {
     const allData = rowDataByUri.get(uri);
     const rowData = allData?.find((row) => row.id === editState.currentRowId);
@@ -101,37 +81,22 @@ export function handleSaveChanges(
   uri: string,
   formData: Record<string, string>
 ): boolean {
-  console.log(`💾 Saving changes for URI: ${uri}`, formData);
-
   const editState = editModeByUri.get(uri);
-  if (!editState || !editState.currentRowId) {
-    console.error(`❌ No edit state or current row for URI: ${uri}`);
-    return false;
-  }
+  if (!editState || !editState.currentRowId) return false;
 
   const allData = rowDataByUri.get(uri);
-  if (!allData) {
-    console.error(`❌ No row data found for URI: ${uri}`);
-    return false;
-  }
+  if (!allData) return false;
 
-  // Find the row to update
   const rowIndex = allData.findIndex(
     (row) => row.id === editState.currentRowId
   );
-  if (rowIndex === -1) {
-    console.error(`❌ Row not found: ${editState.currentRowId}`);
-    return false;
-  }
+  if (rowIndex === -1) return false;
 
   const currentRow = allData[rowIndex];
 
-  // Check if we have an edit instruction configured
   const instructionTemplate = editInstructionByUri.get(uri);
 
   if (!instructionTemplate) {
-    console.error(`❌ No edit instruction configured for URI: ${uri}`);
-    // Show error toast
     showToast({
       type: "error",
       title: "Cannot Save",
@@ -147,9 +112,6 @@ export function handleSaveChanges(
       .replace("{formData}", JSON.stringify(formData, null, 2)) +
     "\n\nCRITICAL: Execute ONLY the commerce tool specified above. Do NOT call any ui__ tools. Do NOT create data tables, cards, or any other UI components. Just execute the commerce tool and report success or failure.";
 
-  console.log(`🎯 Queueing update with instruction:`, instruction);
-
-  // Queue with custom instruction instead of direct tool call
   queueAction(
     {
       type: "mcp-tool-call",
@@ -162,10 +124,7 @@ export function handleSaveChanges(
       uri,
     },
     (result, error) => {
-      // Callback executed when Claude completes the tool call
       if (error) {
-        console.error(`❌ Error updating row:`, error);
-
         // Revert to view mode with ORIGINAL data
         const allData = rowDataByUri.get(uri);
         if (!allData) return;
@@ -193,11 +152,6 @@ export function handleSaveChanges(
 
         return;
       }
-
-      console.log(
-        `✅ Commerce tool completed, updating table with result:`,
-        result
-      );
 
       // Update local data - merge formData since we know save succeeded
       // We can't reliably extract updated entity from Claude's text response,
@@ -230,8 +184,6 @@ export function handleSaveChanges(
     }
   );
 
-  // Show loading state (optimistic UI - could add spinner here)
-  console.log(`⏳ Waiting for commerce tool response...`);
   return true;
 }
 
@@ -239,39 +191,20 @@ export function handleSaveChanges(
  * Handle row click events - dynamically populate details with ALL row data
  */
 export function handleDataTableRowClick(uri: string, rowId: string) {
-  console.log(`🔍 Looking for row data. URI: ${uri}, rowId: ${rowId}`);
-  console.log(`🔍 Available URIs in storage:`, Array.from(rowDataByUri.keys()));
-
   const allData = rowDataByUri.get(uri);
-  if (!allData) {
-    console.error(`❌ No row data found for URI: ${uri}`);
-    console.error(`📦 Stored URIs:`, Array.from(rowDataByUri.keys()));
-    return;
-  }
-
-  console.log(`✅ Found ${allData.length} rows in storage`);
+  if (!allData) return;
 
   const rowData = allData.find((row) => row.id === rowId);
-  if (!rowData) {
-    console.error(`❌ Row not found: ${rowId}`);
-    console.error(
-      `📋 Available row IDs:`,
-      allData.map((r) => r.id)
-    );
-    return;
-  }
+  if (!rowData) return;
 
-  // Initialize edit state for this URI if not exists
   if (!editModeByUri.has(uri)) {
     editModeByUri.set(uri, { isEditMode: false, currentRowId: null });
   }
 
-  // Update current row ID
   const editState = editModeByUri.get(uri)!;
   editState.currentRowId = String(rowData.id);
-  editState.isEditMode = false; // Always start in view mode
+  editState.isEditMode = false;
 
-  console.log(`🔄 Showing details for row:`, rowData);
   updateDetailsDrawer(uri, rowData);
 }
 
@@ -283,37 +216,15 @@ function updateDataTable(uri: string, updatedData: Record<string, unknown>[]) {
   const root = env.getRoot() as Element;
   const flexContainer = root.firstChild as Element | null;
 
-  if (!flexContainer) {
-    console.error("❌ Flex container not found");
-    return;
-  }
+  if (!flexContainer) return;
 
   const dataTable = flexContainer.querySelector(
     "nimbus-data-table"
   ) as RemoteDomElement | null;
 
-  if (!dataTable) {
-    console.error("❌ Data table not found");
-    return;
-  }
+  if (!dataTable) return;
 
-  // Log current state before update
-  console.log("🔍 DataTable before update:", {
-    hasColumns: !!dataTable.columns,
-    hasRows: !!dataTable.rows,
-    columnsType: typeof dataTable.columns,
-    rowsType: typeof dataTable.rows,
-  });
-
-  // Update the rows property (columns should remain unchanged)
   dataTable.rows = JSON.stringify(updatedData);
-
-  console.log("✅ Data table rows updated. New row count:", updatedData.length);
-  console.log("🔍 DataTable after update:", {
-    hasColumns: !!dataTable.columns,
-    hasRows: !!dataTable.rows,
-  });
-
   env.flush();
 }
 
@@ -329,19 +240,13 @@ function renderDrawerContent(
   const root = env.getRoot() as Element;
   const flexContainer = root.firstChild as Element | null;
 
-  if (!flexContainer) {
-    console.error("❌ Flex container not found");
-    return;
-  }
+  if (!flexContainer) return;
 
   const detailsContent = flexContainer.querySelector(
     "#details-content"
   ) as Element | null;
 
-  if (!detailsContent) {
-    console.error("❌ Details content not found");
-    return;
-  }
+  if (!detailsContent) return;
 
   // Update toggle button text based on mode
   const toggleButton = flexContainer.querySelector(
@@ -499,9 +404,6 @@ function renderDrawerContent(
     detailsContent.appendChild(stack);
   }
 
-  console.log(
-    `✅ Drawer content rendered in ${isEditMode ? "edit" : "view"} mode`
-  );
   env.flush();
 }
 
@@ -512,38 +414,18 @@ function updateDetailsDrawer(uri: string, rowData: Record<string, unknown>) {
   const env = getRemoteEnvironment(uri);
   const root = env.getRoot() as Element;
 
-  console.log("🔍 Environment root children:", root.childNodes.length);
-
-  // Our rootElement (nimbus-flex) is the first child of the environment root
   const flexContainer = root.firstChild as Element | null;
-  if (!flexContainer) {
-    console.error("❌ Flex container not found in root");
-    return;
-  }
+  if (!flexContainer) return;
 
-  console.log("🔍 Flex container found:", flexContainer.tagName);
-  console.log("🔍 Flex container children:", flexContainer.childNodes.length);
-
-  // Query for drawer within the flex container
   const drawer = flexContainer.querySelector(
     "#details-drawer"
   ) as RemoteDomElement | null;
 
-  console.log("🔍 Drawer found?", !!drawer);
+  if (!drawer) return;
 
-  if (!drawer) {
-    console.error("❌ Drawer not found in flex container");
-    return;
-  }
-
-  // Open the drawer (triggers Remote DOM mutation)
   drawer.isOpen = true;
-  console.log("✅ Drawer opened");
-
-  // Flush mutations immediately to ensure drawer opens without delay
   env.flush();
 
-  // Render content in view mode (not edit mode by default)
   renderDrawerContent(uri, rowData, false);
 }
 
@@ -556,8 +438,6 @@ export function createDataTable(args: DataTableArgs) {
     showDetails = false,
     editAction,
   } = args;
-
-  console.log(`🔧 Creating data table with showDetails=${showDetails}`);
 
   // Transform column definitions to DataTable format
   const dataTableColumns = columns.map((col) => ({
@@ -572,17 +452,11 @@ export function createDataTable(args: DataTableArgs) {
     ...row,
   }));
 
-  // Create root container if showDetails is enabled
   const rootElement = showDetails
     ? (document.createElement("nimbus-flex") as RemoteDomElement)
     : null;
 
-  console.log(
-    `🔧 Root element created? ${!!rootElement} (showDetails=${showDetails})`
-  );
-
   if (rootElement) {
-    console.log("✅ Configuring root container");
     rootElement.direction = "column";
     rootElement.styleProps = { gap: "600", width: "100%" };
 
@@ -613,9 +487,7 @@ export function createDataTable(args: DataTableArgs) {
 
   const dataTableElement = createElementFromDefinition(dataTableDef);
 
-  // If showDetails, add drawer for details view
   if (showDetails && rootElement) {
-    console.log("✅ Adding drawer for details view (showDetails=true)");
     rootElement.appendChild(dataTableElement);
 
     // Create drawer (controlled mode for programmatic control)
@@ -711,14 +583,10 @@ export function createDataTable(args: DataTableArgs) {
     // Generate URI first so we can store row data
     const uri = `ui://data-table/${Date.now()}`;
 
-    // Store full row data BEFORE creating resource
     rowDataByUri.set(uri, dataTableRows);
-    console.log(`📦 Stored ${dataTableRows.length} rows for URI: ${uri}`);
 
-    // Store edit instruction if provided
     if (editAction?.instruction) {
       editInstructionByUri.set(uri, editAction.instruction);
-      console.log(`🔧 Configured edit instruction for URI: ${uri}`);
     }
 
     // Create resource with pre-generated URI
@@ -807,8 +675,6 @@ export function registerDataTableTool(
       const uri = params.uri as string;
       const formData = params.formData as Record<string, string> | undefined;
 
-      console.log(`🖱️ DataTable button clicked: ${buttonId} for URI: ${uri}`);
-
       // Handle edit toggle button
       if (buttonId === "edit-toggle") {
         handleToggleEditMode(uri);
@@ -826,10 +692,6 @@ export function registerDataTableTool(
         return null;
       }
 
-      // Fall back to standard button handler for other buttons
-      console.log(
-        `ℹ️ Button ${buttonId} not handled by data table, forwarding to button handler`
-      );
       return handleButtonClick(buttonId, formData);
     });
   }

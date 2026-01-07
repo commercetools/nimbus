@@ -137,10 +137,6 @@ export function createSimpleForm(args: SimpleFormArgs) {
       actionParams || {},
       uri
     );
-    console.log(
-      `🎯 Form submit button configured with action: ${actionToolName}`,
-      actionParams
-    );
   }
 
   return createRemoteDomResource(cardRoot, {

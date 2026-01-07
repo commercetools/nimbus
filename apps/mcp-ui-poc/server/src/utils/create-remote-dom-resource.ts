@@ -6,7 +6,11 @@ import { createUIResource } from "@mcp-ui/server";
 import { getRemoteEnvironment } from "../remote-dom/index.js";
 
 /**
- * Create a UIResource with Remote DOM serialization and incremental updates
+ * Create a UIResource with Remote DOM - mutations sent via WebSocket
+ *
+ * The client receives mutations via WebSocket (immediate) and creates
+ * receivers eagerly. The UIResource payload is minimal - just contains
+ * the URI for routing.
  */
 export function createRemoteDomResource(
   element: Element | null,
@@ -21,59 +25,32 @@ export function createRemoteDomResource(
     uri?: string;
   }
 ) {
-  // Use provided URI or generate unique URI with timestamp
   const uri = options.uri || `ui://${options.name}/${Date.now()}`;
 
-  // Get or create environment for this specific URI
-  // Each URI gets its own isolated environment
+  // Get or create environment for this URI
   const env = getRemoteEnvironment(uri);
 
-  // IMPORTANT: Don't clear for new environments!
-  // New URIs create fresh environments that are already empty.
-  // Clearing would call historyClearer() which clears the GLOBAL
-  // WebSocket mutation history, removing mutations from OTHER URIs.
-  // Only clear if explicitly appending to an existing environment.
-  if (options.append) {
-    // Append mode - keep existing content
-  } else {
-    // New environment - already empty, no clear needed
-  }
-
-  // Append the element to root (triggers Remote DOM mutations)
+  // Append element to root (triggers Remote DOM mutations sent via WebSocket)
   if (element) {
     (env.getRoot() as Element).appendChild(element as unknown as Node);
   }
 
-  // Flush all batched mutations immediately to ensure they're sent
-  // This prevents waiting for the batch timeout and sends everything at once
+  // Flush mutations immediately - client receives via WebSocket
   env.flush();
 
-  // Get the serialized tree for MCP initial snapshot
-  const serializedTree = env.getSerializedTree();
-
-  // Note: We keep mutation history so clients can build the RemoteReceiver tree
-  // The snapshot is only used as a fallback for immediate rendering
-
-  // Wrap serialized tree in content object
-  // Live mutations will be sent via WebSocket using Remote DOM protocol
-  const contentPayload = {
-    type: "remoteDom",
-    tree: serializedTree,
-    framework: "react",
-  };
-
+  // Minimal payload - client uses WebSocket mutations, not serialized tree
+  // URI is included so client can route to correct receiver
   return createUIResource({
     uri: uri as `ui://${string}`,
     content: {
       type: "remoteDom",
-      script: JSON.stringify(contentPayload),
+      script: JSON.stringify({ uri, type: "remoteDom", framework: "react" }),
       framework: "react",
     },
     encoding: "text",
     metadata: {
       title: options.title,
       description: options.description,
-      created: new Date().toISOString(),
       protocol: "remote-dom",
     },
   });

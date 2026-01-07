@@ -11,17 +11,27 @@
 import React from "react";
 import {
   RemoteRootRenderer,
-  RemoteReceiver,
   createRemoteComponentRenderer,
 } from "@remote-dom/react/host";
 import { UNSAFE_PortalProvider } from "react-aria";
 import * as Nimbus from "@commercetools/nimbus";
-import type { MoneyInputValue, DataTableRowItem } from "@commercetools/nimbus";
+import type {
+  MoneyInputValue,
+  DataTableRowItem,
+  AlertProps,
+} from "@commercetools/nimbus";
 import {
   useRemoteConnection,
   sendClientEvent,
 } from "../hooks/use-remote-connection";
-import { renderElement } from "./prop-injector";
+import {
+  getOrCreateReceiver,
+  clearAllReceivers,
+} from "../hooks/receiver-registry";
+import { renderElement, type RemoteDomElement } from "./prop-injector";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyComponent = React.ComponentType<any>;
 
 export interface RemoteDomContent {
   type: "remoteDom";
@@ -41,27 +51,85 @@ function useUri() {
   return React.useContext(UriContext);
 }
 
-// Receiver management
-const receiversByUri = new Map<string, RemoteReceiver>();
-
-function getReceiverForUri(uri: string): RemoteReceiver {
-  let receiver = receiversByUri.get(uri);
-  if (!receiver) {
-    receiver = new RemoteReceiver();
-    receiversByUri.set(uri, receiver);
-  }
-  return receiver;
+// Use shared receiver registry - enables eager creation before component mount
+function getReceiverForUri(uri: string) {
+  return getOrCreateReceiver(uri);
 }
 
 export function clearReceivers() {
-  receiversByUri.clear();
+  clearAllReceivers();
+}
+
+/**
+ * Remote DOM tree node structure (from MCP tool result)
+ */
+interface TreeNode {
+  id: number;
+  type?: string;
+  properties?: Record<string, unknown>;
+  children?: TreeNode[];
+  text?: string;
+}
+
+/**
+ * Remote DOM mutation record types
+ */
+interface InsertChildMutation {
+  type: 0; // INSERT_CHILD
+  parent: number;
+  child: {
+    id: number;
+    type?: string;
+    properties?: Record<string, unknown>;
+    text?: string;
+  };
+  index: number;
+}
+
+type MutationRecord = InsertChildMutation;
+
+/**
+ * Convert a serialized tree to mount mutations
+ * Walks the tree and creates INSERT_CHILD mutations for each node
+ */
+function createMountMutations(tree: TreeNode): MutationRecord[] {
+  const mutations: MutationRecord[] = [];
+
+  function walkTree(node: TreeNode, parentId: number, index: number) {
+    // Create mutation for this node (skip root which has id 0)
+    if (node.id !== 0) {
+      mutations.push({
+        type: 0, // INSERT_CHILD
+        parent: parentId,
+        child: {
+          id: node.id,
+          type: node.type,
+          properties: node.properties,
+          text: node.text,
+        },
+        index,
+      });
+    }
+
+    // Process children
+    if (node.children) {
+      node.children.forEach((child, childIndex) => {
+        walkTree(child, node.id, childIndex);
+      });
+    }
+  }
+
+  // Start walking from root (id 0)
+  walkTree(tree, -1, 0);
+
+  return mutations;
 }
 
 /**
  * Simple wrapper - just spreads styleProps
  */
 const simple =
-  (Component: React.ComponentType<Record<string, unknown>>, isVoid = false) =>
+  (Component: AnyComponent, isVoid = false) =>
   (props: Record<string, unknown>) => {
     const { styleProps, children, ...rest } = props;
     const merged = { ...rest, ...(styleProps as Record<string, unknown>) };
@@ -100,7 +168,6 @@ const ButtonWrapper = (props: Record<string, unknown>) => {
                 formData[input.name] = input.value;
               }
             });
-            console.log("📝 Extracted form data:", formData);
           }
         }
 
@@ -238,10 +305,7 @@ const DrawerCloseTriggerWrapper = (props: Record<string, unknown>) => {
  * Component registry - single source of truth for all Nimbus components
  * Maps tag names to unwrapped React components
  */
-const componentRegistry: Record<
-  string,
-  React.ComponentType<Record<string, unknown>>
-> = {
+const componentRegistry: Record<string, AnyComponent> = {
   "nimbus-badge": Nimbus.Badge,
   "nimbus-text": Nimbus.Text,
   "nimbus-heading": Nimbus.Heading,
@@ -279,9 +343,7 @@ const componentRegistry: Record<
  * Returns unwrapped components
  */
 const createComponentMapForPropInjection = () =>
-  new Map<string, React.ComponentType<Record<string, unknown>>>(
-    Object.entries(componentRegistry)
-  );
+  new Map<string, AnyComponent>(Object.entries(componentRegistry));
 
 /**
  * FormField.Root wrapper - reconstructs children for context access
@@ -298,7 +360,7 @@ const FormFieldRootWrapper = (props: Record<string, unknown>) => {
     if (!React.isValidElement(child)) return child;
 
     interface RemoteElementProps {
-      element?: unknown;
+      element?: RemoteDomElement;
       [key: string]: unknown;
     }
 
@@ -326,18 +388,11 @@ const FormFieldRootWrapper = (props: Record<string, unknown>) => {
 const AlertRootWrapper = (props: Record<string, unknown>) => {
   const { styleProps, children, variant, colorPalette, ...rest } = props;
 
-  console.log("🔔 Alert props received:", {
-    variant,
-    colorPalette,
-    styleProps,
-    rest,
-  });
-
   const merged = {
     ...rest,
     ...(styleProps as Record<string, unknown>),
-    variant,
-    colorPalette,
+    variant: variant as AlertProps["variant"],
+    colorPalette: colorPalette as AlertProps["colorPalette"],
   };
 
   return (
@@ -373,10 +428,7 @@ const AlertDismissButtonWrapper = (props: Record<string, unknown>) => {
 /**
  * Components that need custom wrappers (not the simple wrapper)
  */
-const customWrappers: Record<
-  string,
-  React.ComponentType<Record<string, unknown>>
-> = {
+const customWrappers: Record<string, AnyComponent> = {
   "nimbus-button": ButtonWrapper,
   "nimbus-data-table": DataTableWrapper,
   "nimbus-money-input": MoneyInputWrapper,
@@ -399,18 +451,25 @@ const voidElements = new Set(["nimbus-image"]);
 function createComponentMap() {
   const map = new Map();
 
+  // Cast helper to work around React types version mismatch between
+  // @remote-dom/react and our local React types
+  const wrapComponent = (comp: AnyComponent) =>
+    createRemoteComponentRenderer(
+      comp as Parameters<typeof createRemoteComponentRenderer>[0]
+    );
+
   Object.entries(componentRegistry).forEach(([tag, Component]) => {
     let wrappedComponent;
 
     if (customWrappers[tag]) {
       // Use custom wrapper
-      wrappedComponent = createRemoteComponentRenderer(customWrappers[tag]);
+      wrappedComponent = wrapComponent(customWrappers[tag]);
     } else if (voidElements.has(tag)) {
       // Void element (no children)
-      wrappedComponent = createRemoteComponentRenderer(simple(Component, true));
+      wrappedComponent = wrapComponent(simple(Component, true));
     } else {
       // Simple wrapper (spread styleProps)
-      wrappedComponent = createRemoteComponentRenderer(simple(Component));
+      wrappedComponent = wrapComponent(simple(Component));
     }
 
     map.set(tag, wrappedComponent);
@@ -419,13 +478,39 @@ function createComponentMap() {
   return map;
 }
 
-export function RemoteDomRenderer({ uri }: RemoteDomRendererProps) {
+export function RemoteDomRenderer({ content, uri }: RemoteDomRendererProps) {
   const receiver = getReceiverForUri(uri);
   const portalContainerRef = React.useRef<HTMLDivElement>(null);
+  const initializedRef = React.useRef(false);
+
+  // Hydrate receiver from content prop on mount (if not already initialized)
+  // This ensures UI persists even if WebSocket doesn't replay mutations
+  React.useEffect(() => {
+    if (!initializedRef.current && content?.tree) {
+      console.log("🔄 Hydrating receiver from content prop:", uri);
+      try {
+        // The tree from MCP is the serialized Remote DOM tree
+        // We need to apply it as initial mutations
+        const tree = content.tree as TreeNode;
+        if (tree && tree.children) {
+          // Apply initial tree by creating mount mutations
+          const mutations = createMountMutations(tree);
+          if (mutations.length > 0) {
+            // Cast to satisfy Remote DOM types (format is compatible at runtime)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            receiver.connection.mutate(mutations as any);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to hydrate receiver:", error);
+      }
+      initializedRef.current = true;
+    }
+  }, [content, uri, receiver]);
 
   useRemoteConnection(
     receiver,
-    import.meta.env.VITE_UI_SERVER_URL || "http://localhost:3001",
+    import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001",
     uri
   );
 

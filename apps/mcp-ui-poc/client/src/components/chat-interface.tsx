@@ -18,7 +18,7 @@ import {
   onActionQueued,
   sendActionResponse,
 } from "../hooks/use-remote-connection";
-import type { Message } from "../types/virtual-dom";
+import type { Message, UIResource } from "../types/virtual-dom";
 import {
   RemoteDomRenderer,
   type RemoteDomContent,
@@ -34,10 +34,11 @@ export function ChatInterface() {
   const [commerceToolsEnabled, setCommerceToolsEnabled] = useState(true);
   const [serverStats, setServerStats] = useState({ ui: 0, commerce: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const currentStreamingMessageIndexRef = useRef<number>(null);
 
   // WebSocket connection for real-time mutations
   const mutationStream = useMutationStream(
-    import.meta.env.VITE_UI_SERVER_URL || "http://localhost:3001"
+    import.meta.env.VITE_MCP_SERVER_URL || "http://localhost:3001"
   );
 
   // Register callback for action notifications from UI interactions
@@ -196,8 +197,20 @@ export function ChatInterface() {
     if (!message.trim() || !isReady) return;
 
     const userMessage: Message = { role: "user", content: message };
-    setMessages((prev) => [...prev, userMessage]);
+
+    // Add user message AND a streaming assistant message placeholder
+    const streamingMessage: Message = {
+      role: "assistant",
+      content: "",
+      uiResources: [],
+    };
+
+    setMessages((prev) => [...prev, userMessage, streamingMessage]);
     setIsLoading(true);
+
+    // Track the streaming message index for updates
+    const streamingMessageIndex = messages.length + 1; // +1 for user message we just added
+    currentStreamingMessageIndexRef.current = streamingMessageIndex;
 
     try {
       // Compact history to keep context focused (every 5+ messages)
@@ -210,31 +223,69 @@ export function ChatInterface() {
         `📜 Message history: ${messages.length + 1} total, ${compactedHistory.length} after compaction`
       );
 
-      // Send message - Claude handles all tool calling automatically
-      const { text, uiResources } = await claudeClient.sendMessage(message, {
+      // Stream UI resources as they're created
+      const handleUIResource = (resource: UIResource) => {
+        console.log("⚡ Streaming UI resource to chat:", resource.resource.uri);
+        console.log("⚡ Target index:", streamingMessageIndex);
+        setMessages((prev) => {
+          const newMessages = prev.map((msg, idx) =>
+            idx === streamingMessageIndex && msg.role === "assistant"
+              ? {
+                  ...msg,
+                  uiResources: [...(msg.uiResources || []), resource],
+                }
+              : msg
+          );
+          console.log(
+            "⚡ After adding resource, message has",
+            newMessages[streamingMessageIndex]?.uiResources?.length,
+            "resources"
+          );
+          return newMessages;
+        });
+      };
+
+      // Send message with streaming callback
+      const { text } = await claudeClient.sendMessage(message, {
         uiToolsEnabled,
         commerceToolsEnabled,
         messageHistory: compactedHistory,
+        onUIResource: handleUIResource,
       });
 
-      // Add response to messages
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: text,
-          uiResources,
-        },
-      ]);
+      // Update final message with text only (UI resources already streamed)
+      console.log(
+        "📝 Final update - setting text content, preserving UI resources"
+      );
+      setMessages((prev) => {
+        const targetMsg = prev[streamingMessageIndex];
+        console.log(
+          "📝 Before final update, message has",
+          targetMsg?.uiResources?.length,
+          "resources"
+        );
+        const newMessages = prev.map((msg, idx) =>
+          idx === streamingMessageIndex && msg.role === "assistant"
+            ? { ...msg, content: text }
+            : msg
+        );
+        console.log(
+          "📝 After final update, message has",
+          newMessages[streamingMessageIndex]?.uiResources?.length,
+          "resources"
+        );
+        return newMessages;
+      });
     } catch (error) {
       console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: `Error: ${(error as Error).message}`,
-        },
-      ]);
+      // Use immutable update pattern to ensure React detects the change
+      setMessages((prev) =>
+        prev.map((msg, idx) =>
+          idx === streamingMessageIndex && msg.role === "assistant"
+            ? { ...msg, content: `Error: ${(error as Error).message}` }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -356,13 +407,18 @@ export function ChatInterface() {
             padding="400"
             backgroundColor={msg.role === "user" ? "primary.2" : "neutral.2"}
             borderRadius="200"
-            maxW={msg.role === "user" ? "max-content" : "100%"}
-            width={msg.role === "assistant" ? "100%" : undefined}
+            maxW="max-content"
+            // width={msg.role === "assistant" ? "100%" : undefined}
             alignSelf={msg.role === "user" ? "flex-end" : undefined}
           >
-            <Text fontWeight="bold" marginBottom="200">
-              {msg.role === "user" ? "You" : "Assistant"}
-            </Text>
+            <Flex gap="200" alignItems="center">
+              <Text fontWeight="bold">
+                {msg.role === "user" ? "You" : "Assistant"}
+              </Text>
+              {idx === currentStreamingMessageIndexRef.current &&
+                msg.role !== "user" &&
+                isLoading && <ChatLoadingIndicator />}
+            </Flex>
 
             {msg.content && <Text>{msg.content}</Text>}
 
@@ -422,9 +478,6 @@ export function ChatInterface() {
             })}
           </Box>
         ))}
-
-        {/* Loading indicator */}
-        {isLoading && <ChatLoadingIndicator />}
 
         {/* Scroll anchor */}
         <div ref={messagesEndRef} />
