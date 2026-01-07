@@ -1,0 +1,583 @@
+---
+title: SimpleGrid Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { SimpleGrid, type SimpleGridProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+SimpleGrid creates a grid layout with equal-sized children. Use it for quick, responsive layouts without complex grid configuration:
+
+```jsx-live-dev
+const App = () => (
+  <SimpleGrid gap="400">
+    <Box p="600" bg="primary.7" borderRadius="200">
+      <Text fontWeight="600">Item 1</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200">
+      <Text fontWeight="600">Item 2</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200">
+      <Text fontWeight="600">Item 3</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200">
+      <Text fontWeight="600">Item 4</Text>
+    </Box>
+  </SimpleGrid>
+)
+```
+
+## Usage examples
+
+### Fixed columns
+
+Use the `columns` prop to define a fixed number of columns:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Two columns</Text>
+      <SimpleGrid columns={2} gap="400">
+        <Box p="600" bg="info.7" borderRadius="200">
+          <Text>Item 1</Text>
+        </Box>
+        <Box p="600" bg="info.7" borderRadius="200">
+          <Text>Item 2</Text>
+        </Box>
+        <Box p="600" bg="info.7" borderRadius="200">
+          <Text>Item 3</Text>
+        </Box>
+        <Box p="600" bg="info.7" borderRadius="200">
+          <Text>Item 4</Text>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Three columns</Text>
+      <SimpleGrid columns={3} gap="400">
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 1</Text>
+        </Box>
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 2</Text>
+        </Box>
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 3</Text>
+        </Box>
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 4</Text>
+        </Box>
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 5</Text>
+        </Box>
+        <Box p="600" bg="positive.7" borderRadius="200">
+          <Text>Item 6</Text>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+  </Stack>
+)
+```
+
+### Auto-responsive layout
+
+Use `minChildWidth` to create auto-responsive grids that adjust column count based on available space:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SimpleGrid minChildWidth="200px" gap="400">
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 1</Text>
+        <Text fontSize="sm">Resize the window to see columns adjust</Text>
+      </Box>
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 2</Text>
+        <Text fontSize="sm">Columns wrap automatically</Text>
+      </Box>
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 3</Text>
+        <Text fontSize="sm">Based on minChildWidth</Text>
+      </Box>
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 4</Text>
+        <Text fontSize="sm">No media queries needed</Text>
+      </Box>
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 5</Text>
+        <Text fontSize="sm">Responsive by default</Text>
+      </Box>
+      <Box p="600" bg="warning.7" borderRadius="200">
+        <Text fontWeight="600">Card 6</Text>
+        <Text fontSize="sm">Equal-sized children</Text>
+      </Box>
+    </SimpleGrid>
+    <Text fontSize="sm" color="neutral.11">
+      Try resizing the browser window to see the grid adapt
+    </Text>
+  </Stack>
+)
+```
+
+### Responsive columns
+
+Define different column counts for different breakpoints:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SimpleGrid 
+      columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+      gap="400"
+    >
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 1</Text>
+        <Text fontSize="sm">$29.99</Text>
+      </Box>
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 2</Text>
+        <Text fontSize="sm">$39.99</Text>
+      </Box>
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 3</Text>
+        <Text fontSize="sm">$49.99</Text>
+      </Box>
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 4</Text>
+        <Text fontSize="sm">$59.99</Text>
+      </Box>
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 5</Text>
+        <Text fontSize="sm">$69.99</Text>
+      </Box>
+      <Box p="600" bg="primary.7" borderRadius="200">
+        <Text fontWeight="600">Product 6</Text>
+        <Text fontSize="sm">$79.99</Text>
+      </Box>
+    </SimpleGrid>
+    <Text fontSize="sm" color="neutral.11">
+      1 column on mobile → 2 on small → 3 on medium → 4 on large screens
+    </Text>
+  </Stack>
+)
+```
+
+### Column spanning
+
+Use `SimpleGrid.Item` with `colSpan` to make items span multiple columns:
+
+```jsx-live-dev
+const App = () => (
+  <SimpleGrid 
+    columns={{ base: 2, md: 4 }}
+    gap="400"
+  >
+    <SimpleGrid.Item colSpan={{ base: 2, md: 3 }}>
+      <Box p="600" bg="info.7" borderRadius="200">
+        <Text fontWeight="600">Featured Item</Text>
+        <Text fontSize="sm">Spans 2 columns on mobile, 3 on desktop</Text>
+      </Box>
+    </SimpleGrid.Item>
+    <SimpleGrid.Item colSpan={{ base: 2, md: 1 }}>
+      <Box p="600" bg="positive.7" borderRadius="200">
+        <Text fontWeight="600">Sidebar</Text>
+        <Text fontSize="sm">Full width on mobile</Text>
+      </Box>
+    </SimpleGrid.Item>
+    <SimpleGrid.Item colSpan={1}>
+      <Box p="600" bg="neutral.7" borderRadius="200">
+        <Text>Item 1</Text>
+      </Box>
+    </SimpleGrid.Item>
+    <SimpleGrid.Item colSpan={1}>
+      <Box p="600" bg="neutral.7" borderRadius="200">
+        <Text>Item 2</Text>
+      </Box>
+    </SimpleGrid.Item>
+    <SimpleGrid.Item colSpan={1}>
+      <Box p="600" bg="neutral.7" borderRadius="200">
+        <Text>Item 3</Text>
+      </Box>
+    </SimpleGrid.Item>
+    <SimpleGrid.Item colSpan={1}>
+      <Box p="600" bg="neutral.7" borderRadius="200">
+        <Text>Item 4</Text>
+      </Box>
+    </SimpleGrid.Item>
+  </SimpleGrid>
+)
+```
+
+### Custom gap spacing
+
+Control row and column gaps independently:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Equal gap on all sides</Text>
+      <SimpleGrid columns={3} gap="400">
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 1</Text>
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 2</Text>
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 3</Text>
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 4</Text>
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 5</Text>
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text fontSize="sm">Item 6</Text>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600">Different row and column gaps</Text>
+      <SimpleGrid columns={3} columnGap="200" rowGap="600">
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 1</Text>
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 2</Text>
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 3</Text>
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 4</Text>
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 5</Text>
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          <Text fontSize="sm">Item 6</Text>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+  </Stack>
+)
+```
+
+### Responsive gap values
+
+Gap spacing can also be responsive:
+
+```jsx-live-dev
+const App = () => (
+  <SimpleGrid 
+    columns={{ base: 2, md: 3 }}
+    gap={{ base: "200", md: "400", lg: "600" }}
+  >
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 1</Text>
+      <Text fontSize="sm">Gap increases on larger screens</Text>
+    </Box>
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 2</Text>
+    </Box>
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 3</Text>
+    </Box>
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 4</Text>
+    </Box>
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 5</Text>
+    </Box>
+    <Box p="600" bg="positive.7" borderRadius="200">
+      <Text fontWeight="600">Item 6</Text>
+    </Box>
+  </SimpleGrid>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+SimpleGrid should be used when you need:
+- Quick, responsive grid layouts with minimal configuration
+- Equal-sized grid items (product cards, image galleries, data cards)
+- Auto-responsive layouts that adapt to container width
+- Simple column-based layouts without complex positioning
+
+**When to use SimpleGrid vs Grid:**
+
+Use **SimpleGrid** when:
+- All items should be equal size
+- You need auto-responsive behavior with `minChildWidth`
+- Layout is based on a simple column count
+- You want minimal configuration
+
+Use **Grid** when:
+- Items need different sizes (row/column spanning)
+- You need grid template areas for complex layouts
+- Precise control over grid structure is required
+- Creating dashboard layouts or complex page structures
+
+### Accessibility
+
+SimpleGrid is a layout component that doesn't add semantic meaning by itself. Ensure accessible markup:
+
+#### Semantic Structure
+
+- Wrap related content in appropriate semantic elements (`<article>`, `<section>`, `<nav>`)
+- Use proper heading hierarchy within grid items
+- Ensure grid items have meaningful content structure
+
+```tsx
+<SimpleGrid columns={3} gap="400" as="section" aria-labelledby="products-heading">
+  <h2 id="products-heading" className="sr-only">Available Products</h2>
+  {products.map(product => (
+    <article key={product.id}>
+      <h3>{product.name}</h3>
+      <p>{product.description}</p>
+    </article>
+  ))}
+</SimpleGrid>
+```
+
+#### Keyboard Navigation
+
+- Grid layout doesn't affect keyboard navigation
+- Ensure interactive elements within grid items are keyboard accessible
+- Maintain logical tab order
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-grid";
+
+export const ProductGrid = () => (
+  <SimpleGrid id={PERSISTENT_ID} columns={3} gap="400">
+    <Box>Product 1</Box>
+    <Box>Product 2</Box>
+    <Box>Product 3</Box>
+  </SimpleGrid>
+);
+```
+
+## API reference
+
+<PropsTable id="SimpleGrid" />
+
+## Common patterns
+
+### Product grid
+
+Display products in a responsive grid layout:
+
+```jsx-live-dev
+const App = () => {
+  const products = [
+    { id: 1, name: "Wireless Mouse", price: "$29.99", stock: "In Stock" },
+    { id: 2, name: "Mechanical Keyboard", price: "$89.99", stock: "In Stock" },
+    { id: 3, name: "USB-C Hub", price: "$49.99", stock: "Low Stock" },
+    { id: 4, name: "Monitor Stand", price: "$39.99", stock: "In Stock" },
+    { id: 5, name: "Laptop Sleeve", price: "$24.99", stock: "In Stock" },
+    { id: 6, name: "Cable Organizer", price: "$14.99", stock: "In Stock" },
+  ];
+
+  return (
+    <SimpleGrid 
+      columns={{ base: 1, sm: 2, md: 3 }}
+      gap="400"
+    >
+      {products.map((product) => (
+        <Box 
+          key={product.id}
+          p="600"
+          bg="neutral.2"
+          borderRadius="200"
+          borderWidth="1px"
+          borderColor="neutral.6"
+          _hover={{ borderColor: "primary.7", bg: "neutral.3" }}
+          transition="all 0.2s"
+        >
+          <Stack direction="column" gap="300">
+            <Text fontWeight="600" fontSize="lg">{product.name}</Text>
+            <Stack direction="row" justify="space-between" align="center">
+              <Text fontWeight="600" color="primary.11">{product.price}</Text>
+              <Text fontSize="sm" color={product.stock === "In Stock" ? "positive.11" : "warning.11"}>
+                {product.stock}
+              </Text>
+            </Stack>
+            <Button size="sm" variant="outline">Add to Cart</Button>
+          </Stack>
+        </Box>
+      ))}
+    </SimpleGrid>
+  );
+}
+```
+
+### Image gallery
+
+Create responsive image galleries:
+
+```jsx-live-dev
+const App = () => {
+  const images = [
+    { id: 1, alt: "Landscape 1", color: "primary.7" },
+    { id: 2, alt: "Landscape 2", color: "info.7" },
+    { id: 3, alt: "Landscape 3", color: "positive.7" },
+    { id: 4, alt: "Landscape 4", color: "warning.7" },
+    { id: 5, alt: "Landscape 5", color: "critical.7" },
+    { id: 6, alt: "Landscape 6", color: "neutral.7" },
+  ];
+
+  return (
+    <SimpleGrid minChildWidth="150px" gap="300">
+      {images.map((image) => (
+        <Box
+          key={image.id}
+          aspectRatio="4/3"
+          bg={image.color}
+          borderRadius="200"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          cursor="pointer"
+          transition="transform 0.2s"
+          _hover={{ transform: "scale(1.05)" }}
+        >
+          <Text color="white" fontWeight="600">{image.alt}</Text>
+        </Box>
+      ))}
+    </SimpleGrid>
+  );
+}
+```
+
+### Dashboard widgets
+
+Layout dashboard cards in a responsive grid:
+
+```jsx-live-dev
+const App = () => {
+  const stats = [
+    { label: "Total Sales", value: "$12,345", change: "+12.5%", trend: "up" },
+    { label: "Orders", value: "1,234", change: "+8.2%", trend: "up" },
+    { label: "Customers", value: "5,678", change: "-2.4%", trend: "down" },
+    { label: "Revenue", value: "$45,678", change: "+15.3%", trend: "up" },
+  ];
+
+  return (
+    <SimpleGrid 
+      columns={{ base: 1, sm: 2, lg: 4 }}
+      gap="400"
+    >
+      {stats.map((stat, index) => (
+        <Box
+          key={index}
+          p="600"
+          bg="neutral.2"
+          borderRadius="200"
+          borderWidth="1px"
+          borderColor="neutral.6"
+        >
+          <Stack direction="column" gap="200">
+            <Text fontSize="sm" color="neutral.11">{stat.label}</Text>
+            <Text fontSize="2xl" fontWeight="700">{stat.value}</Text>
+            <Text 
+              fontSize="sm" 
+              fontWeight="600"
+              color={stat.trend === "up" ? "positive.11" : "critical.11"}
+            >
+              {stat.change}
+            </Text>
+          </Stack>
+        </Box>
+      ))}
+    </SimpleGrid>
+  );
+}
+```
+
+### Feature cards
+
+Display feature highlights in a grid:
+
+```jsx-live-dev
+const App = () => {
+  const features = [
+    { 
+      icon: Icons.Speed, 
+      title: "Fast Performance", 
+      description: "Lightning-fast load times and smooth interactions"
+    },
+    { 
+      icon: Icons.Security, 
+      title: "Secure by Default", 
+      description: "Enterprise-grade security for your data"
+    },
+    { 
+      icon: Icons.CloudDone, 
+      title: "Cloud Storage", 
+      description: "Unlimited cloud storage for all your files"
+    },
+    { 
+      icon: Icons.Devices, 
+      title: "Cross-Platform", 
+      description: "Works seamlessly across all your devices"
+    },
+    { 
+      icon: Icons.Support, 
+      title: "24/7 Support", 
+      description: "Round-the-clock customer support"
+    },
+    { 
+      icon: Icons.Analytics, 
+      title: "Analytics", 
+      description: "Detailed insights and reporting tools"
+    },
+  ];
+
+  return (
+    <SimpleGrid 
+      columns={{ base: 1, md: 2, lg: 3 }}
+      gap="600"
+    >
+      {features.map((feature, index) => (
+        <Stack key={index} direction="column" gap="300" align="center" textAlign="center">
+          <Icon as={feature.icon} size="xl" color="primary.11" />
+          <Text fontWeight="600" fontSize="lg">{feature.title}</Text>
+          <Text fontSize="sm" color="neutral.11">{feature.description}</Text>
+        </Stack>
+      ))}
+    </SimpleGrid>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SimpleGrid within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: simple-grid.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-simplegrid--docs)
+- [Chakra UI SimpleGrid Documentation](https://www.chakra-ui.com/docs/components/simple-grid)
+- [CSS Grid Layout Guide](https://css-tricks.com/snippets/css/complete-guide-grid/)
