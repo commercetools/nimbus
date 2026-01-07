@@ -3,39 +3,6 @@
 MANDATORY: When asked to review ANY file in this codebase, you MUST follow this
 protocol:
 
-## Step 0: Check if RAG Should Be Used (FIRST)
-
-**Before ANY file operations**, determine if this is a discovery question that should use RAG:
-
-### Use RAG for Discovery Questions
-
-If the user's question matches ANY of these patterns, use local-nimbus-rag MCP (if available) BEFORE file operations:
-
-- "Which/what contexts/hooks/patterns are used in X?"
-- "Find examples/patterns of X"
-- "Show me files/components that X"
-- "How does Nimbus handle X?"
-- "What's the pattern for X?"
-- "Where is X defined/used?"
-
-### Skip to File Operations
-
-Only proceed directly to Step 1 if:
-
-- Specific file path given (e.g., "Review `/path/to/file.tsx`")
-- RAG system is not available
-- Already have file identified from RAG results
-- Making edits to known files
-
-### RAG-First Workflow
-
-When RAG should be used:
-
-1. **Query RAG** with the discovery question
-2. **Review RAG results** to identify relevant files
-3. **Read specific files** identified by RAG
-4. **Then proceed** with Steps 1-4 below for file review
-
 ## Step 1: Identify File Type
 
 Determine the file type by extension and location:

@@ -142,6 +142,47 @@ const FormFieldRootWrapper = (props) => {
 @mcp-ui/core          # Connection, types, event protocol (no React, no components)
 @mcp-ui/react         # React renderer, provider, hooks (component-agnostic)
 @mcp-ui/nimbus        # Pre-wired Nimbus registry (batteries-included for Option A)
+@mcp-ui/langchain     # LangChain/LangGraph integration adapter (optional)
+```
+
+### Package Dependency Graph
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Consumer App                              │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+        ▼                     ▼                     ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│ @mcp-ui/nimbus│    │@mcp-ui/lang-  │    │  (Custom)     │
+│               │    │  chain        │    │               │
+│ - Registry    │    │               │    │ - onAction    │
+│ - Wrappers    │    │ - Helpers     │    │   handler     │
+│ - Provider    │    │ - Stream hook │    │               │
+└───────┬───────┘    └───────┬───────┘    └───────┬───────┘
+        │                    │                    │
+        └─────────┬──────────┴────────────────────┘
+                  │
+                  ▼
+        ┌───────────────────┐
+        │   @mcp-ui/react   │
+        │                   │
+        │ - McpUiProvider   │
+        │ - RemoteRenderer  │
+        │ - useActionDispatch│
+        │ - Wrapper factory │
+        └─────────┬─────────┘
+                  │
+                  ▼
+        ┌───────────────────┐
+        │   @mcp-ui/core    │
+        │                   │
+        │ - Types           │
+        │ - Connection      │
+        │ - Protocol        │
+        └───────────────────┘
 ```
 
 ### Option A Consumer Usage
@@ -302,6 +343,483 @@ export function NimbusMcpProvider(props: McpUiProviderProps) {
 
 ---
 
+## Event Handling Architecture
+
+The library uses a **dual-path event system** that separates:
+1. **Agent Actions** - User interactions that need LLM/orchestrator processing (button clicks, form submissions)
+2. **Internal DOM Sync** - Automatic state synchronization that doesn't require LLM involvement (drawer close, accordion expand)
+
+### Action Types
+
+Actions are typed per-component to ensure type safety and enable proper payload handling:
+
+```typescript
+// @mcp-ui/core - Base action interface
+export interface BaseAction {
+  type: string;
+  componentId: string;
+  uri: string;
+  timestamp: number;
+}
+
+// @mcp-ui/nimbus - Typed actions for each component
+export interface ButtonAction extends BaseAction {
+  type: 'button.click';
+  payload: {
+    buttonId: string;
+    formData?: Record<string, string>;
+  };
+}
+
+export interface RowSelectAction extends BaseAction {
+  type: 'dataTable.rowSelect';
+  payload: {
+    rowId: string;
+    rowData: Record<string, unknown>;
+  };
+}
+
+export interface FormSubmitAction extends BaseAction {
+  type: 'form.submit';
+  payload: {
+    formId: string;
+    formData: Record<string, string>;
+  };
+}
+
+export interface AlertDismissAction extends BaseAction {
+  type: 'alert.dismiss';
+  payload: {
+    alertId: string;
+  };
+}
+
+// Union type for all Nimbus actions
+export type NimbusAction =
+  | ButtonAction
+  | RowSelectAction
+  | FormSubmitAction
+  | AlertDismissAction;
+```
+
+### Updated ComponentConfig Interface
+
+The `ComponentConfig` interface defines actions declaratively, enabling the generic wrapper factory to create event handlers automatically:
+
+```typescript
+// @mcp-ui/react
+interface ComponentConfig<TAction extends BaseAction = BaseAction> {
+  /** The React component to render */
+  component: React.ComponentType;
+
+  /** Whether this is a void element (no children) */
+  isVoid?: boolean;
+
+  /** Declarative action definitions */
+  actions?: Array<{
+    /** Action type for discrimination (e.g., 'button.click') */
+    actionType: TAction['type'];
+    /** React prop name that triggers this action (e.g., 'onPress') */
+    triggerProp: string;
+    /** Extract typed payload from event and props */
+    extractPayload: (event: unknown, props: Record<string, unknown>) => TAction['payload'];
+    /** Whether this action requires orchestrator response */
+    requiresResponse?: boolean;
+  }>;
+
+  /** Internal events that sync DOM state (don't go to orchestrator) */
+  internalEvents?: Array<{
+    propName: string;
+    eventName: string;
+  }>;
+
+  /** Prop injection config for compound components */
+  propInjection?: {
+    enabled: boolean;
+    injectableChildren?: string[];
+  };
+}
+```
+
+### Nimbus Registry with Typed Actions
+
+```typescript
+// @mcp-ui/nimbus/registry.ts
+import * as Nimbus from '@commercetools/nimbus';
+import type { ComponentConfig, NimbusAction } from '@mcp-ui/react';
+
+export const nimbusRegistry: Record<string, ComponentConfig<NimbusAction>> = {
+  'nimbus-button': {
+    component: Nimbus.Button,
+    actions: [{
+      actionType: 'button.click',
+      triggerProp: 'onPress',
+      extractPayload: (_, props) => ({
+        buttonId: props.id as string,
+        formData: extractFormDataFromButton(props),
+      }),
+    }],
+  },
+
+  'nimbus-data-table': {
+    component: Nimbus.DataTable,
+    actions: [{
+      actionType: 'dataTable.rowSelect',
+      triggerProp: 'onRowClick',
+      extractPayload: (event) => ({
+        rowId: (event as { id: string }).id,
+        rowData: event as Record<string, unknown>,
+      }),
+    }],
+  },
+
+  'nimbus-drawer-root': {
+    component: Nimbus.Drawer.Root,
+    // Drawer close is internal (just sync state), not an agent action
+    internalEvents: [{
+      propName: 'onOpenChange',
+      eventName: 'drawerClose',
+    }],
+  },
+
+  'nimbus-alert-dismiss-button': {
+    component: Nimbus.Alert.DismissButton,
+    actions: [{
+      actionType: 'alert.dismiss',
+      triggerProp: 'onPress',
+      extractPayload: (_, props) => ({
+        alertId: props.id as string,
+      }),
+    }],
+  },
+
+  // Simple components (no actions needed)
+  'nimbus-badge': { component: Nimbus.Badge },
+  'nimbus-text': { component: Nimbus.Text },
+  'nimbus-stack': { component: Nimbus.Stack },
+  'nimbus-flex': { component: Nimbus.Flex },
+  'nimbus-image': { component: Nimbus.Image, isVoid: true },
+  // ... etc
+};
+```
+
+### Generic Wrapper Factory
+
+The wrapper factory creates components with action handling based on the registry config:
+
+```typescript
+// @mcp-ui/react/wrapper-factory.ts
+export function createWrapper<T extends BaseAction>(
+  config: ComponentConfig<T>
+): React.ComponentType {
+  const { component: Component, actions, internalEvents } = config;
+
+  return function WrappedComponent(props: Record<string, unknown>) {
+    const uri = useUri();
+    const dispatchAction = useActionDispatch();
+    const syncDom = useDomSync();
+
+    // Build enhanced props with action handlers
+    const enhancedProps = { ...props };
+
+    // Wire up agent actions (go to orchestrator)
+    actions?.forEach(({ actionType, triggerProp, extractPayload }) => {
+      const originalHandler = props[triggerProp];
+      enhancedProps[triggerProp] = (event: unknown) => {
+        const action: T = {
+          type: actionType,
+          componentId: props.id as string,
+          uri,
+          timestamp: Date.now(),
+          payload: extractPayload(event, props),
+        } as T;
+
+        dispatchAction(action);
+
+        // Call original handler if provided
+        if (typeof originalHandler === 'function') {
+          originalHandler(event);
+        }
+      };
+    });
+
+    // Wire up internal events (DOM sync only)
+    internalEvents?.forEach(({ propName, eventName }) => {
+      const originalHandler = props[propName];
+      enhancedProps[propName] = (event: unknown) => {
+        syncDom(eventName, uri, event);
+        if (typeof originalHandler === 'function') {
+          originalHandler(event);
+        }
+      };
+    });
+
+    return <Component {...enhancedProps} />;
+  };
+}
+```
+
+### Provider with Single onAction Handler
+
+The provider exposes a single `onAction` callback for the consuming application to handle:
+
+```typescript
+// @mcp-ui/react/provider.tsx
+interface McpUiProviderProps {
+  serverUrl: string;
+  children: React.ReactNode;
+
+  /** Handle user actions that need orchestrator processing */
+  onAction?: (action: BaseAction) => void | Promise<void>;
+
+  /** Connection lifecycle callbacks */
+  onConnectionChange?: (connected: boolean) => void;
+  onError?: (error: Error) => void;
+}
+
+const ActionContext = createContext<{
+  dispatch: (action: BaseAction) => void;
+}>({ dispatch: () => {} });
+
+const DomSyncContext = createContext<{
+  sync: (eventName: string, uri: string, data: unknown) => void;
+}>({ sync: () => {} });
+
+export function McpUiProvider({
+  serverUrl,
+  children,
+  onAction,
+  onConnectionChange,
+  onError,
+}: McpUiProviderProps) {
+  const { sendEvent, connected } = useWebSocketConnection(serverUrl);
+
+  // Agent actions go to onAction callback (for LLM/orchestrator)
+  const dispatch = useCallback((action: BaseAction) => {
+    onAction?.(action);
+  }, [onAction]);
+
+  // Internal events go directly to WebSocket (DOM sync)
+  const sync = useCallback((eventName: string, uri: string, data: unknown) => {
+    sendEvent(eventName, uri, data);
+  }, [sendEvent]);
+
+  return (
+    <ActionContext.Provider value={{ dispatch }}>
+      <DomSyncContext.Provider value={{ sync }}>
+        {children}
+      </DomSyncContext.Provider>
+    </ActionContext.Provider>
+  );
+}
+
+export const useActionDispatch = () => useContext(ActionContext).dispatch;
+export const useDomSync = () => useContext(DomSyncContext).sync;
+```
+
+---
+
+## LangChain Adapter (`@mcp-ui/langchain`)
+
+The LangChain adapter provides integration with LangChain/LangGraph applications, bridging the MCP-UI event system with LangChain's streaming patterns.
+
+### Package Purpose
+
+- Provide hooks for processing LangChain stream chunks
+- Offer a pre-configured action handler that submits actions back to LangGraph
+- Enable hybrid rendering (LangChain orchestration + MCP-UI components)
+
+### Core Adapter
+
+```typescript
+// @mcp-ui/langchain/adapter.ts
+import type { BaseAction } from '@mcp-ui/core';
+
+export interface LangChainAdapterConfig {
+  /** LangGraph thread ID */
+  threadId: string;
+  /** LangGraph API endpoint */
+  apiUrl: string;
+  /** Assistant ID for the graph */
+  assistantId: string;
+}
+
+export function createLangChainActionHandler(config: LangChainAdapterConfig) {
+  return async (action: BaseAction) => {
+    // Submit action as a new message to LangGraph
+    const response = await fetch(`${config.apiUrl}/threads/${config.threadId}/runs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        assistant_id: config.assistantId,
+        input: {
+          messages: [{
+            type: 'human',
+            content: JSON.stringify({
+              type: 'ui_action',
+              action,
+            }),
+          }],
+        },
+        stream_mode: 'messages',
+      }),
+    });
+
+    // Return stream for processing
+    return response.body;
+  };
+}
+```
+
+### Stream Processing Hook
+
+```typescript
+// @mcp-ui/langchain/hooks.ts
+import { useStream } from '@langchain/langgraph-sdk/react';
+import type { Message } from '@langchain/langgraph-sdk';
+
+interface UseLangChainMcpUiOptions {
+  apiUrl: string;
+  assistantId: string;
+  threadId?: string;
+}
+
+export function useLangChainMcpUi(options: UseLangChainMcpUiOptions) {
+  const thread = useStream<{ messages: Message[] }>({
+    apiUrl: options.apiUrl,
+    assistantId: options.assistantId,
+    threadId: options.threadId,
+  });
+
+  // Extract MCP-UI resources from stream
+  const uiResources = useMemo(() => {
+    const resources: Array<{ uri: string; content: unknown }> = [];
+
+    for (const message of thread.messages) {
+      // Look for tool results with UI resources
+      if (message.type === 'tool' && message.content) {
+        const content = JSON.parse(message.content);
+        if (content.type === 'remoteDom') {
+          resources.push({
+            uri: content.uri,
+            content,
+          });
+        }
+      }
+    }
+
+    return resources;
+  }, [thread.messages]);
+
+  // Create action handler bound to this thread
+  const handleAction = useCallback(async (action: BaseAction) => {
+    await thread.submit({
+      messages: [{
+        type: 'human',
+        content: JSON.stringify({ type: 'ui_action', action }),
+      }],
+    });
+  }, [thread]);
+
+  return {
+    ...thread,
+    uiResources,
+    handleAction,
+  };
+}
+```
+
+### Consumer Usage with LangChain
+
+```tsx
+// Consumer app with LangChain integration
+import { McpUiProvider, RemoteRenderer } from '@mcp-ui/nimbus';
+import { useLangChainMcpUi } from '@mcp-ui/langchain';
+
+function ChatWithUI() {
+  const {
+    messages,
+    uiResources,
+    handleAction,
+    submit,
+    isLoading,
+  } = useLangChainMcpUi({
+    apiUrl: 'http://localhost:8000',
+    assistantId: 'commerce-assistant',
+  });
+
+  return (
+    <div className="chat-container">
+      {/* Chat messages */}
+      <div className="messages">
+        {messages.map((msg, i) => (
+          <ChatMessage key={i} message={msg} />
+        ))}
+      </div>
+
+      {/* MCP-UI rendered components */}
+      <McpUiProvider
+        serverUrl="http://localhost:3001"
+        onAction={handleAction}
+      >
+        {uiResources.map((resource) => (
+          <RemoteRenderer
+            key={resource.uri}
+            uri={resource.uri}
+            initialContent={resource.content}
+          />
+        ))}
+      </McpUiProvider>
+
+      {/* Chat input */}
+      <ChatInput onSubmit={submit} disabled={isLoading} />
+    </div>
+  );
+}
+```
+
+### Standalone Usage (No LangChain)
+
+```tsx
+// Consumer app without LangChain - custom orchestrator
+import { McpUiProvider, RemoteRenderer } from '@mcp-ui/nimbus';
+import type { NimbusAction } from '@mcp-ui/nimbus';
+
+function MyApp() {
+  const handleAction = useCallback((action: NimbusAction) => {
+    // Custom handling based on action type
+    switch (action.type) {
+      case 'button.click':
+        console.log('Button clicked:', action.payload.buttonId);
+        // Send to your own backend/orchestrator
+        myOrchestrator.handleButtonClick(action.payload);
+        break;
+
+      case 'dataTable.rowSelect':
+        console.log('Row selected:', action.payload.rowId);
+        myOrchestrator.handleRowSelect(action.payload);
+        break;
+
+      case 'form.submit':
+        console.log('Form submitted:', action.payload.formData);
+        myOrchestrator.handleFormSubmit(action.payload);
+        break;
+    }
+  }, []);
+
+  return (
+    <McpUiProvider
+      serverUrl="http://localhost:3001"
+      onAction={handleAction}
+    >
+      <RemoteRenderer uri="/my-ui" />
+    </McpUiProvider>
+  );
+}
+```
+
+---
+
 ## Files to Extract from POC
 
 ### To `@mcp-ui/core`
@@ -310,7 +828,7 @@ export function NimbusMcpProvider(props: McpUiProviderProps) {
 |-------------|-------|
 | `use-remote-connection.ts` | Extract connection logic, remove React dependencies |
 | `use-mutation-stream.ts` | WebSocket handling, message parsing |
-| Types | `ClientEventMessage`, `ActionQueuedMessage`, etc. |
+| Types | `ClientEventMessage`, `ActionQueuedMessage`, `BaseAction`, etc. |
 
 ### To `@mcp-ui/react`
 
@@ -318,16 +836,26 @@ export function NimbusMcpProvider(props: McpUiProviderProps) {
 |-------------|-------|
 | `remote-dom-renderer.tsx` | Keep generic renderer, extract component registry |
 | `prop-injector.tsx` | Keep as-is |
-| Provider component | New file |
+| Provider component | New file with `ActionContext` and `DomSyncContext` |
 | `useUri` hook | Context for URI access |
+| `wrapper-factory.ts` | New file - generic wrapper creation from `ComponentConfig` |
 
 ### To `@mcp-ui/nimbus`
 
 | Source | Notes |
 |--------|-------|
-| Component wrappers | `ButtonWrapper`, `DataTableWrapper`, `FormFieldRootWrapper`, etc. |
-| Registry definition | Map of element names to `ComponentConfig` |
+| Component wrappers | Migrate to registry-based `ComponentConfig` with typed actions |
+| Registry definition | Map of element names to `ComponentConfig<NimbusAction>` |
+| Action types | `ButtonAction`, `RowSelectAction`, `FormSubmitAction`, etc. |
 | `NimbusMcpProvider` | Auto-registering provider wrapper |
+
+### To `@mcp-ui/langchain` (New Package)
+
+| Source | Notes |
+|--------|-------|
+| `adapter.ts` | `createLangChainActionHandler` for submitting actions to LangGraph |
+| `hooks.ts` | `useLangChainMcpUi` for stream processing and UI resource extraction |
+| Types | LangChain-specific types and interfaces |
 
 ---
 
@@ -339,6 +867,8 @@ export function NimbusMcpProvider(props: McpUiProviderProps) {
 | Option B (custom + Nimbus) | `@mcp-ui/react` + `@mcp-ui/nimbus` | No |
 | Option B (custom only) | `@mcp-ui/react` | No |
 | Extend Nimbus registry | Import `nimbusRegistry`, add entries | No |
+| With LangChain | `@mcp-ui/nimbus` + `@mcp-ui/langchain` | No |
+| Custom orchestrator | `@mcp-ui/nimbus` + custom `onAction` handler | No |
 
 ---
 
