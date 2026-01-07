@@ -1,10 +1,9 @@
 # Nimbus Component Library
 
-This file provides guidance for developing React components in the Nimbus design system.
-
 ## Package Overview
 
 The `@commercetools/nimbus` package is the core component library providing:
+
 - WCAG 2.1 AA compliant React components
 - React Aria Components integration for accessibility
 - Chakra UI v3 styling system with design tokens
@@ -77,7 +76,8 @@ file structure guidelines, and architectural decisions, see:**
 
 - **Documentation Overview**: `./docs/readme.md`
 - **Component Guidelines**: `./docs/component-guidelines.md`
-- **Architecture Decisions**: `./docs/file-type-guidelines/architecture-decisions.md`
+- **Architecture Decisions**:
+  `./docs/file-type-guidelines/architecture-decisions.md`
 - **Component Templates**: `./docs/component-templates/`
 
 **IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
@@ -128,7 +128,8 @@ Aria integration strategies, and styling system architecture, see:
 
 For complete development rules, patterns, and requirements, see:
 
-- **Recipe Registration & Styling Rules**: `./docs/file-type-guidelines/recipes.md`
+- **Recipe Registration & Styling Rules**:
+  `./docs/file-type-guidelines/recipes.md`
 - **Testing Requirements**: `./docs/file-type-guidelines/stories.md`
 - **Compound Component Patterns**:
   `./docs/file-type-guidelines/compound-components.md`
@@ -215,6 +216,7 @@ The system detects test mode via environment variables:
 - **`VITEST=true`**: Manual override for forcing test mode
 
 **Manual Override Example:**
+
 ```bash
 # Force test mode (use built bundle) even in development
 VITEST=true pnpm start:storybook
@@ -226,8 +228,11 @@ pnpm start:storybook
 #### Developer Visibility
 
 Storybook logs which mode is active on startup:
-- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
-- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` -
+  Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or
+  production mode
 
 This helps confirm whether your changes require a build before testing.
 
@@ -269,6 +274,7 @@ packages/nimbus/
 ### Dependencies
 
 This package depends on:
+
 - `@commercetools/nimbus-tokens` - Design tokens (must build first)
 - `@commercetools/nimbus-icons` - Icon components
 - `@commercetools/nimbus-i18n` - Translation messages
@@ -290,18 +296,20 @@ All components using Chakra UI styling must register their recipes:
 
 ```typescript
 // src/theme/recipes/index.ts
-import { buttonRecipe } from '../components/button/button.recipe'
+import { buttonRecipe } from "../components/button/button.recipe";
 
 export const recipes = {
   button: buttonRecipe,
   // Add new component recipes here
-}
+};
 ```
 
 ## Detailed Documentation
 
 For comprehensive guidelines, see:
+
 - Component Guidelines: `./docs/component-guidelines.md` (from repo root)
-- Architecture Decisions: `./docs/file-type-guidelines/architecture-decisions.md`
+- Architecture Decisions:
+  `./docs/file-type-guidelines/architecture-decisions.md`
 - All File Type Guidelines: `./docs/file-type-guidelines/`
 - Component Templates: `./docs/component-templates/`
