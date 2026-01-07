@@ -129,8 +129,8 @@ used_k=$(( used_tokens / 1000 ))
 total_k=$(( total_tokens / 1000 ))
 free_k=$(( free_tokens / 1000 ))
 
-# Generate brick visualization (40 bricks total)
-total_bricks=40
+# Generate brick visualization (30 bricks total)
+total_bricks=32
 if [[ $total_tokens -gt 0 ]]; then
     used_bricks=$(( (used_tokens * total_bricks) / total_tokens ))
 else
