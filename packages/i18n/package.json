@@ -23,8 +23,7 @@
   ],
   "scripts": {
     "build": "pnpm build:compile",
-    "build:compile": "pnpm build:transform && pnpm build:split && pnpm build:compile-strings && pnpm build:dictionaries",
-    "build:transform": "tsx scripts/transform-to-icu.ts",
+    "build:compile": "pnpm build:split && pnpm build:compile-strings && pnpm build:dictionaries",
     "build:split": "tsx scripts/split-by-component.ts",
     "build:compile-strings": "tsx scripts/compile-component-messages.ts",
     "build:dictionaries": "tsx scripts/generate-dictionaries.ts",

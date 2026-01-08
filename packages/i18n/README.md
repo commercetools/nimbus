@@ -28,21 +28,27 @@ This is an **internal build tool package** that:
 
 ## Architecture
 
+### Locale Configuration
+
+**Single Source of Truth:** All supported locales are defined in
+`packages/i18n/scripts/locales.ts` and shared between the build scripts and the
+Vite config (`optimize-locales-plugin`).
+
 ### Build Pipeline
 
-The package runs a 4-step compilation process:
+The package runs a 3-step compilation process:
 
-1. **Transform** (`build:transform`) - Flattens Transifex format to simple
-   key-value pairs (removes metadata, extracts string values). Simple strings
+1. **Transform & Split** (`build:split`) - Transforms Transifex format to simple
+   key-value pairs (removes metadata, extracts string values) and groups
+   messages by component (parses `Nimbus.{Component}.{key}` IDs). Both
+   operations happen in memory, eliminating intermediate files. Simple strings
    remain plain text; variable strings use ICU MessageFormat syntax like
    `{variable}` or pluralization.
-2. **Split** (`build:split`) - Groups messages by component (parses
-   `Nimbus.{Component}.{key}` IDs)
-3. **Compile** (`build:compile-strings`) - Compiles messages to TypeScript files
+2. **Compile** (`build:compile-strings`) - Compiles messages to TypeScript files
    with JavaScript functions using `@internationalized/string-compiler`. Simple
    strings compile to plain strings; variable strings (with ICU syntax) compile
    to functions.
-4. **Generate Dictionaries** (`build:dictionaries`) - Creates message dictionary
+3. **Generate Dictionaries** (`build:dictionaries`) - Creates message dictionary
    files that import all locale files and export `LocalizedStrings` objects
    (`*MessagesStrings`) for use with the `useLocalizedStringFormatter` hook
 
@@ -198,12 +204,11 @@ The i18n build runs automatically during:
 ## Build Commands
 
 ```bash
-# Full build (runs all 4 steps)
+# Full build (runs all 3 steps)
 pnpm build
 
 # Individual steps (for debugging or manual execution)
-pnpm build:transform        # Flatten Transifex format (extract strings)
-pnpm build:split            # Split by component
+pnpm build:split            # Transform Transifex format & split by component
 pnpm build:compile-strings  # Compile messages to TypeScript
 pnpm build:dictionaries     # Generate dictionaries
 ```
@@ -324,21 +329,14 @@ consumers do not need to install or use this package directly.
          │         BUILD PIPELINE
          │ ═══════════════════════════════════════
          │
-         ├─ build:transform ──────────────┐
-         │                                 ▼
-         │                    ┌──────────────────────────┐
-         │                    │  .temp/icu/*.json        │
-         │                    │  (flattened key-value)    │
-         │                    └───────────┬──────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────┐
-         │                    │  build:split             │
-         │                    └───────────┬──────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────────────────┐
-         │                    │  .temp/by-component/                  │
-         │                    │  {Component}/{locale}.json            │
-         │                    └───────────┬──────────────────────────┘
+         ├─ build:split ────────────────────────┐
+         │  (Transform & Split in memory)       │
+         │                                      ▼
+         │                    ┌──────────────────────────────────────────┐
+         │                    │  .temp/by-component/                     │
+         │                    │  {Component}/{locale}.json               │
+         │                    │  (messages grouped by component)        │
+         │                    └───────────┬──────────────────────────────┘
          │                                │
          │                    ┌────────────▼──────────────────────────┐
          │                    │  build:compile-strings                │

@@ -1,5 +1,5 @@
 /**
- * Generate message dictionary files for each component - Step 4 of 4 in the i18n build pipeline
+ * Generate message dictionary files for each component - Step 3 of 3 in the i18n build pipeline
  *
  * Overview:
  * After compiling messages for each locale, we need to create a dictionary
@@ -37,14 +37,9 @@
 import fs from "fs/promises";
 import path from "path";
 import { format, resolveConfig } from "prettier";
+import { SUPPORTED_LOCALES } from "./locales";
 
-const LOCALES = [
-  { code: "en", bcp47: "en-US", importName: "en" },
-  { code: "de", bcp47: "de-DE", importName: "de" },
-  { code: "es", bcp47: "es-ES", importName: "es" },
-  { code: "fr-FR", bcp47: "fr-FR", importName: "fr" },
-  { code: "pt-BR", bcp47: "pt-BR", importName: "pt" },
-] as const;
+const LOCALES = SUPPORTED_LOCALES;
 
 /**
  * Convert component directory name to PascalCase
@@ -207,6 +202,7 @@ ${dictionaryEntries}
  */
 export type ${componentName}MessageKey = ${messageKeyType};
 `;
+
     // Format the entire file content with Prettier
     // Resolve Prettier config from project root
     const prettierConfig = await resolveConfig(process.cwd());
