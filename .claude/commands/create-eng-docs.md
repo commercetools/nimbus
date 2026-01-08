@@ -22,10 +22,13 @@ Parse the arguments to extract:
 
 Create complete engineering documentation for the specified component:
 
-1. **`.dev.mdx` file** - Engineering documentation using the standard template at `@docs/engineering-docs-template.mdx`
-2. **`.docs.spec.tsx` file** - Companion test file with executable test examples (MANDATORY)
+1. **`.dev.mdx` file** - Engineering documentation using the standard template
+   at `@docs/engineering-docs-template.mdx`
+2. **`.docs.spec.tsx` file** - Companion test file with executable test examples
+   (MANDATORY)
 
-Follow the guidance in `@docs/engineering-docs-template-guide.md` and `@docs/engineering-docs-validation.md`.
+Follow the guidance in `@docs/engineering-docs-template-guide.md` and
+`@docs/engineering-docs-validation.md`.
 
 ## **Execution Flow**
 
@@ -146,7 +149,8 @@ Based on component type and features:
 - [ ] Form integration (field patterns only)
 - [ ] API reference (required)
 - [ ] Common patterns (recommended)
-- [ ] Testing your implementation (required) - uses `{{docs-tests:}}` injection token
+- [ ] Testing your implementation (required) - uses `{{docs-tests:}}` injection
+      token
 - [ ] Resources (required)
 
 ### Example Generation Strategy
@@ -218,9 +222,13 @@ Once confirmed, create the documentation file:
    - **Usage examples**: Cover all features identified in Step 2
    - **Component requirements**:
      - Document accessibility requirements (Role, Labeling, Keyboard)
-     - **Mandatory**: Include the standard "Persistent ID" tracking text as regular paragraph:
-       If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-     - **Mandatory**: Follow the persistent ID example with a `tsx` code block (NOT `jsx-live-dev`) using this pattern:
+     - **Mandatory**: Include the standard "Persistent ID" tracking text as
+       regular paragraph: If your use case requires tracking and analytics for
+       this component, it is good practice to add a **persistent**, **unique**
+       id to the component:
+     - **Mandatory**: Follow the persistent ID example with a `tsx` code block
+       (NOT `jsx-live-dev`) using this pattern:
+
        ```tsx
        const PERSISTENT_ID = "example-component-id";
 
@@ -228,18 +236,28 @@ Once confirmed, create the documentation file:
          <ComponentName id={PERSISTENT_ID}>Content</ComponentName>
        );
        ```
+
    - **Testing**:
 
 - Testing examples are auto-generated from `.docs.spec.tsx` files
-  - **Mandatory**: Include this text before the injection token (as regular paragraph, replacing {ComponentName} with actual component name):
-    These examples demonstrate how to test your implementation when using {ComponentName} within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+  - **Mandatory**: Include this text before the injection token (as regular
+    paragraph, replacing {ComponentName} with actual component name): These
+    examples demonstrate how to test your implementation when using
+    {ComponentName} within your application. As the component's internal
+    functionality is already tested by Nimbus, these patterns help you verify
+    your integration and application-specific logic.
   - Add injection token: `{{docs-tests: {component-name}.docs.spec.tsx}}`
   - Create companion `.docs.spec.tsx` file with test sections (see Step 6.1)
   - **Resources**:
-    - Link to Storybook using pattern: `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
-      - For base components: Convert kebab-case to format (e.g., `text-input` → `components-textinput--docs`)
-      - For compound components: Use singular form (e.g., `menu` → `components-menu--docs`)
-    - **Internal component links**: Use relative paths (e.g., `../patterns/fields/textinputfield`) to match current documentation practice
+    - Link to Storybook using pattern:
+      `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
+      - For base components: Convert kebab-case to format (e.g., `text-input` →
+        `components-textinput--docs`)
+      - For compound components: Use singular form (e.g., `menu` →
+        `components-menu--docs`)
+    - **Internal component links**: Use relative paths (e.g.,
+      `../patterns/fields/textinputfield`) to match current documentation
+      practice
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -251,15 +269,19 @@ Once confirmed, create the documentation file:
 
 9. **Write the `.dev.mdx` file** using the Write tool
 
-10. **Create the companion `.docs.spec.tsx` test file** (see Step 6.1 for details)
+10. **Create the companion `.docs.spec.tsx` test file** (see Step 6.1 for
+    details)
 
 11. **Write the `.docs.spec.tsx` file** using the Write tool
 
 ### **Step 6.1: Documentation Test File Structure**
 
-**MANDATORY**: Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test file. The testing section in the MDX uses an injection token that pulls from this file at build time.
+**MANDATORY**: Every `.dev.mdx` file MUST have a companion `.docs.spec.tsx` test
+file. The testing section in the MDX uses an injection token that pulls from
+this file at build time.
 
-1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as component
+1. **Create test file**: `{component-name}.docs.spec.tsx` in same directory as
+   component
 
 2. **File structure**:
 
@@ -308,12 +330,20 @@ Once confirmed, create the documentation file:
    ```
 
 3. **JSDoc tags required**:
-   - `@docs-section` - Unique ID for section
-   - `@docs-title` - Display title
+   - `@docs-section` - Unique ID for section (kebab-case)
+   - `@docs-title` - Display title (MUST be distinct from main .dev.mdx section
+     headers to avoid confusion in docs site navigation)
    - `@docs-description` - Brief description
    - `@docs-order` - Sort order (0 for setup, 1+ for tests)
 
-4. **Test patterns to include** (based on component features):
+4. **Test title naming convention**:
+   - Always append "Tests" to differentiate from main documentation headers
+   - Examples: "Basic Rendering Tests", "Size Variant Tests", "Color
+     Customization Tests"
+   - This prevents confusion when both appear in the docs site's active section
+     highlighting
+
+5. **Test patterns to include** (based on component features):
    - Basic rendering (always)
    - Interactions (if interactive)
    - Controlled mode (if supports value/onChange)
@@ -321,14 +351,18 @@ Once confirmed, create the documentation file:
      props)
    - Component-specific features
 
-5. **Critical rules**:
+6. **Critical rules**:
    - ✅ Every `render()` must wrap with `<NimbusProvider>`
    - ✅ Import NimbusProvider from `@commercetools/nimbus`
    - ✅ Use `vi.fn()` for mocks (not `jest.fn()`)
    - ✅ Use `userEvent.setup()` for interactions
    - ✅ Base test names on component features, not generic patterns
+   - ✅ **IMPORTANT**: All `@docs-title` values MUST end with "Tests" (e.g.,
+     "Size Variant Tests", "Color Customization Tests") to distinguish them from
+     main documentation section headers and prevent docs site navigation
+     confusion
 
-6. **Verify tests**:
+7. **Verify tests**:
    ```bash
    pnpm test:unit {component-name}.docs.spec.tsx
    ```
@@ -349,8 +383,10 @@ After generating the file, run validation checks:
 - [ ] Testing section includes mandatory disclaimer paragraph (as regular text,
       not comment)
 - [ ] Accessibility section includes standard boilerplate
-- [ ] Accessibility includes PERSISTENT_ID tracking pattern using `tsx` code block
-- [ ] Persistent ID example follows pattern: `const PERSISTENT_ID = "..."; export const Example = () => (...)`
+- [ ] Accessibility includes PERSISTENT_ID tracking pattern using `tsx` code
+      block
+- [ ] Persistent ID example follows pattern:
+      `const PERSISTENT_ID = "..."; export const Example = () => (...)`
 - [ ] Accessibility includes Keyboard navigation subsection
 
 ### Source-Driven Content Check
@@ -398,12 +434,16 @@ After generating the file, run validation checks:
 
 ### Link Checklist
 
-- [ ] Storybook link uses actual URL pattern: `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
-- [ ] Storybook URL properly formatted (kebab-case converted, no hyphens in component name part)
+- [ ] Storybook link uses actual URL pattern:
+      `https://nimbus-storybook.vercel.app/?path=/docs/components-{component-name}--docs`
+- [ ] Storybook URL properly formatted (kebab-case converted, no hyphens in
+      component name part)
 - [ ] Field patterns link to FormField and FieldErrors
 - [ ] Field patterns link to base component
 - [ ] External documentation links added (React Aria, ARIA patterns)
-- [ ] **Internal component links use relative paths** (e.g., `../patterns/fields/textinputfield`) to match current documentation practice
+- [ ] **Internal component links use relative paths** (e.g.,
+      `../patterns/fields/textinputfield`) to match current documentation
+      practice
 ```
 
 Present this checklist with status for each item.
