@@ -1,0 +1,350 @@
+---
+title: Flex Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Flex, type FlexProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Flex component applies `display: flex` to create flexible layouts. By default, items are arranged horizontally in a single row:
+
+```jsx-live-dev
+const App = () => (
+  <Flex gap="400">
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 1
+    </Box>
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 2
+    </Box>
+    <Box p="400" bg="primary.7" borderRadius="200">
+      Item 3
+    </Box>
+  </Flex>
+)
+```
+
+## Usage examples
+
+### Direction control
+
+Use the `direction` prop to arrange items horizontally or vertically:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">Row (horizontal):</Text>
+      <Flex direction="row" gap="400" bg="neutral.3" p="400" borderRadius="200">
+        <Box p="400" bg="primary.7" borderRadius="200">
+          Item 1
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          Item 2
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          Item 3
+        </Box>
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">Column (vertical):</Text>
+      <Flex direction="column" gap="400" bg="neutral.3" p="400" borderRadius="200">
+        <Box p="400" bg="info.7" borderRadius="200">
+          Item 1
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          Item 2
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200">
+          Item 3
+        </Box>
+      </Flex>
+    </Box>
+  </Stack>
+)
+```
+
+### Alignment control
+
+Use `alignItems` and `justifyContent` to control how items are positioned:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">Align items to center:</Text>
+      <Flex direction="row" gap="400" alignItems="center" bg="neutral.3" p="400" borderRadius="200" height="1600">
+        <Box p="200" bg="primary.7" borderRadius="200">Short</Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          <Text>Taller</Text>
+          <Text>Content</Text>
+        </Box>
+        <Box p="200" bg="primary.7" borderRadius="200">Short</Box>
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">Justify content with space-between:</Text>
+      <Flex direction="row" gap="400" justifyContent="space-between" bg="neutral.3" p="400" borderRadius="200">
+        <Box p="400" bg="info.7" borderRadius="200">Start</Box>
+        <Box p="400" bg="info.7" borderRadius="200">Middle</Box>
+        <Box p="400" bg="info.7" borderRadius="200">End</Box>
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">Center both axes:</Text>
+      <Flex direction="row" alignItems="center" justifyContent="center" bg="neutral.3" p="600" borderRadius="200" height="2000">
+        <Box p="400" bg="positive.7" borderRadius="200">
+          Centered
+        </Box>
+      </Flex>
+    </Box>
+  </Stack>
+)
+```
+
+### Item flexibility
+
+Control how items grow and shrink using flex properties:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box>
+      <Text fontWeight="600" mb="200">Items with different flex values:</Text>
+      <Flex direction="row" gap="400" bg="neutral.3" p="400" borderRadius="200">
+        <Box p="400" bg="primary.7" borderRadius="200" flex="1">
+          Flex: 1
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200">
+          Fixed width
+        </Box>
+        <Box p="400" bg="primary.7" borderRadius="200" flex="2">
+          Flex: 2
+        </Box>
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">No grow (minWidth constraint):</Text>
+      <Flex direction="row" gap="400" bg="neutral.3" p="400" borderRadius="200">
+        <Box p="400" bg="info.7" borderRadius="200" minWidth="1200">
+          Fixed min width
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200" minWidth="1200">
+          Fixed min width
+        </Box>
+        <Box p="400" bg="info.7" borderRadius="200" minWidth="1200">
+          Fixed min width
+        </Box>
+      </Flex>
+    </Box>
+  </Stack>
+)
+```
+
+### Wrapping behavior
+
+Control how items wrap when they exceed available space:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">Wrap enabled:</Text>
+      <Flex wrap="wrap" gap="400" bg="neutral.3" p="400" borderRadius="200">
+        {Array.from({ length: 6 }, (_, i) => (
+          <Box key={i} p="400" bg="primary.7" borderRadius="200" minWidth="2000">
+            Item {i + 1}
+          </Box>
+        ))}
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">No wrap (overflow):</Text>
+      <Flex wrap="nowrap" gap="400" bg="neutral.3" p="400" borderRadius="200" overflow="auto">
+        {Array.from({ length: 6 }, (_, i) => (
+          <Box key={i} p="400" bg="info.7" borderRadius="200" minWidth="2000">
+            Item {i + 1}
+          </Box>
+        ))}
+      </Flex>
+    </Box>
+  </Stack>
+)
+```
+
+### Responsive layouts
+
+Use responsive prop values to change layout based on viewport size:
+
+```jsx-live-dev
+const App = () => (
+  <Flex
+    direction={{ base: "column", md: "row" }}
+    gap={{ base: "300", md: "600" }}
+    alignItems={{ base: "stretch", md: "center" }}
+  >
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 1</Text>
+      <Text fontSize="sm">Stacks vertically on mobile, horizontally on desktop</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 2</Text>
+      <Text fontSize="sm">Resize the window to see the layout change</Text>
+    </Box>
+    <Box p="600" bg="primary.7" borderRadius="200" flex="1">
+      <Text fontWeight="600" mb="200">Card 3</Text>
+      <Text fontSize="sm">Gap also adjusts responsively</Text>
+    </Box>
+  </Flex>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+Flex should be used when you need to:
+- Arrange items in one direction (row or column) with flexible sizing
+- Create dynamic layouts where items grow or shrink based on available space
+- Build responsive navigation bars, button groups, or form layouts
+- Align items with precise control over spacing and distribution
+
+For two-dimensional grid layouts, consider using the `Grid` component. For simple vertical or horizontal stacking with consistent spacing, consider using `Stack` for a more semantic API.
+
+### Accessibility
+
+Flex is a layout component and does not have inherent accessibility requirements. However:
+
+- Ensure child elements have appropriate accessibility attributes
+- Use semantic HTML elements within Flex when appropriate
+- Consider reading order when using `row-reverse` or `column-reverse` directions
+- Test keyboard navigation flows through flex-arranged elements
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-flex";
+
+export const Example = () => (
+  <Flex id={PERSISTENT_ID} direction="row" gap="400">
+    {/* children */}
+  </Flex>
+);
+```
+
+#### Keyboard navigation
+
+Flex is a non-interactive layout component and does not support keyboard navigation by default. Keyboard navigation is determined by the interactive child elements contained within the Flex.
+
+## API reference
+
+The component supports all [Style Props](/home/style-props) with `display="flex"` applied by default.
+
+## Common patterns
+
+### Centered content
+
+Create a container that centers content both horizontally and vertically:
+
+```jsx-live-dev
+const App = () => (
+  <Flex
+    direction="column"
+    alignItems="center"
+    justifyContent="center"
+    height="3000"
+    gap="400"
+    bg="neutral.2"
+    borderRadius="200"
+  >
+    <Box p="600" bg="primary.7" borderRadius="200" textAlign="center">
+      <Text fontWeight="600" fontSize="lg" mb="200">Centered Content</Text>
+      <Text fontSize="sm">This content is centered on both axes</Text>
+    </Box>
+  </Flex>
+)
+```
+
+### Space-between layout
+
+Distribute items with space between them:
+
+```jsx-live-dev
+const App = () => (
+  <Flex
+    direction="row"
+    justifyContent="space-between"
+    alignItems="center"
+    gap="400"
+    p="400"
+    bg="neutral.2"
+    borderRadius="200"
+  >
+    <Text fontWeight="600">Logo</Text>
+    <Flex direction="row" gap="200">
+      <Button size="xs" variant="ghost">Home</Button>
+      <Button size="xs" variant="ghost">About</Button>
+      <Button size="xs" variant="outline">Sign In</Button>
+    </Flex>
+  </Flex>
+)
+```
+
+### Flexible vs fixed items
+
+Mix flexible and fixed-width items:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Box>
+      <Text fontWeight="600" mb="200">Sidebar layout:</Text>
+      <Flex direction="row" gap="400" bg="neutral.3" p="400" borderRadius="200" height="2000">
+        <Box p="400" bg="info.7" borderRadius="200" width="2000" flexShrink="0">
+          Sidebar
+        </Box>
+        <Flex direction="column" gap="300" flex="1" bg="primary.7" p="400" borderRadius="200">
+          <Text fontWeight="600">Main Content</Text>
+          <Text fontSize="sm">This content grows to fill available space</Text>
+        </Flex>
+      </Flex>
+    </Box>
+
+    <Box>
+      <Text fontWeight="600" mb="200">Header with flexible content:</Text>
+      <Flex direction="row" gap="400" alignItems="center" bg="neutral.3" p="300" borderRadius="200">
+        <Box width="600" height="600" bg="neutral.6" borderRadius="100" flexShrink="0">
+          Logo
+        </Box>
+        <Flex direction="column" gap="100" flex="1">
+          <Text fontWeight="600" fontSize="sm">Flexible section</Text>
+          <Text fontSize="xs" color="neutral.11">Grows with available space</Text>
+        </Flex>
+        <Button size="xs" flexShrink="0">Action</Button>
+      </Flex>
+    </Box>
+  </Stack>
+)
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-flex--docs)
+- [Chakra UI Flex Documentation](https://www.chakra-ui.com/docs/components/flex)
+- [Box Component](/components/layout/box)
+- [Stack Component](/components/layout/stack)
+- [CSS Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
