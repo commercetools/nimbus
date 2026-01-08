@@ -24,7 +24,7 @@ const App = () => (
     </CollapsibleMotion.Trigger>
     <CollapsibleMotion.Content>
       <Box p="400" bg="neutral.2" borderRadius="200">
-        <Text>This content smoothly expands and collapses</Text>
+        <Text>This content expands and collapses</Text>
       </Box>
     </CollapsibleMotion.Content>
   </CollapsibleMotion.Root>
@@ -54,7 +54,7 @@ const App = () => {
         </CollapsibleMotion.Trigger>
         <CollapsibleMotion.Content>
           <Box p="400" bg="blue.2" borderRadius="200">
-            <Text>Collapsible content area with smooth animations</Text>
+            <Text>Collapsible content area</Text>
           </Box>
         </CollapsibleMotion.Content>
       </CollapsibleMotion.Root>
@@ -193,7 +193,7 @@ const App = () => {
   const content = {
     short: 'Short content',
     medium: 'This is medium length content that demonstrates how the component handles different content sizes.',
-    long: 'This is very long content that shows how CollapsibleMotion automatically re-measures content height when it changes. The component uses ResizeObserver to detect size changes and smoothly animate to the new height, ensuring a polished user experience even with dynamic content.',
+    long: 'This is very long content that shows how CollapsibleMotion automatically re-measures content height when it changes. The component uses ResizeObserver to detect size changes and animate to the new height, ensuring a polished user experience even with dynamic content.',
   };
 
   return (
@@ -314,7 +314,7 @@ const App = () => {
   const faqs = [
     {
       question: 'What is CollapsibleMotion?',
-      answer: 'CollapsibleMotion is a compound component that provides smooth expand/collapse animations with full accessibility support via React Aria.',
+      answer: 'CollapsibleMotion is a compound component that provides expand/collapse animations with full accessibility support via React Aria.',
     },
     {
       question: 'When should I use controlled mode?',
