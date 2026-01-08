@@ -90,7 +90,13 @@ async function compileComponentMessages() {
       }
 
       // Read ICU messages from split component files
-      const messages = JSON.parse(await fs.readFile(inputPath, "utf-8"));
+      let messages: Record<string, string>;
+      try {
+        messages = JSON.parse(await fs.readFile(inputPath, "utf-8"));
+      } catch (error) {
+        console.error(`❗️Failed to parse ${inputPath}:`, error);
+        throw error;
+      }
 
       // Compile ICU messages to JavaScript functions using string-compiler
       const compiledCode = compileStrings(messages);
