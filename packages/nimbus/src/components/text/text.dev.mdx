@@ -1,0 +1,172 @@
+---
+title: Text Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Text, type TextProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation renders a paragraph element with default styling:
+
+```jsx-live-dev
+const App = () => {
+  return <Text>This is basic text content.</Text>;
+};
+```
+
+## Usage examples
+
+### Typography scale
+
+The `textStyle` prop applies predefined typography styles from the design system. These styles include font-size, line-height, and letter-spacing optimized for readability:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text textStyle="md">Paragraph md - Primary body text, long descriptions</Text>
+      <Text textStyle="sm">Paragraph sm - Secondary text, metadata, table content</Text>
+      <Text textStyle="xs">Paragraph xs - Tertiary content, small notes, timestamps</Text>
+      <Text textStyle="caption">CAPTION - Specialized metadata with letter spacing</Text>
+    </Stack>
+  );
+};
+```
+
+### Semantic color tones
+
+Use semantic color tokens to convey meaning and maintain consistent contrast ratios. All colored text uses step 11 of the color scale for accessibility:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text color="fg">Default - Standard body text</Text>
+      <Text color="fg.subtle">Secondary - Helper text and metadata</Text>
+      <Text color="primary.11">Primary - Links and branded messages</Text>
+      <Text color="info.11">Info - System messages and non-critical feedback</Text>
+      <Text color="positive.11">Positive - Success states and confirmations</Text>
+      <Text color="warning.11">Warning - Cautions and items requiring review</Text>
+      <Text color="critical.11">Critical - Errors and destructive actions</Text>
+    </Stack>
+  );
+};
+```
+
+### Polymorphic rendering
+
+Use the `as` prop to render Text as different HTML elements while maintaining the same styling API. This is essential for semantic HTML and accessibility:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text as="p">Renders as paragraph (default)</Text>
+      <Text as="span">Renders as inline span</Text>
+      <Text as="div">Renders as div block</Text>
+      <Text as="label" htmlFor="example-input">
+        Renders as form label
+      </Text>
+      <Text as="strong" fontWeight="700">
+        Renders as strong (bold)
+      </Text>
+      <Text as="em" fontStyle="italic">
+        Renders as emphasis (italic)
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Custom styling
+
+Text supports all Chakra UI style props, allowing you to customize typography beyond the predefined styles:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontSize="450" fontWeight="600" lineHeight="1.4">
+        Custom font size and weight
+      </Text>
+      <Text letterSpacing="2px" textTransform="uppercase">
+        Custom letter spacing
+      </Text>
+      <Text textDecoration="underline" textDecorationStyle="dashed">
+        Custom text decoration
+      </Text>
+      <Text
+        maxWidth="300px"
+        overflow="hidden"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+      >
+        This text will truncate with an ellipsis when it exceeds the maximum width
+      </Text>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Text component provides semantic HTML text rendering. Use appropriate elements via the `as` prop to maintain document structure.
+
+**Semantic HTML best practices:**
+- Use `<p>` (default) for paragraphs
+- Use `<span>` for inline text
+- Use `<label>` for form field labels with `htmlFor` attribute
+- Use `<strong>` or `<em>` for emphasis
+- Avoid using `<div>` for text unless necessary for layout
+
+**Contrast requirements:**
+When using colored text, always use step 11 of the color scale (e.g., `primary.11`, `critical.11`) to ensure WCAG AA contrast ratios (4.5:1 minimum) against light backgrounds.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-description-text";
+
+export const ProductDescription = () => (
+  <Text id={PERSISTENT_ID} textStyle="md">
+    Product details and specifications
+  </Text>
+);
+```
+
+#### Keyboard navigation
+
+As a non-interactive display component, Text does not require keyboard interaction.
+
+## API reference
+
+<PropsTable id="Text" />
+
+The Text component extends Chakra UI's Text component and accepts all style props including:
+
+- Typography: `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, `textStyle`
+- Color: `color`, `colorPalette`
+- Layout: `display`, `width`, `maxWidth`, `overflow`
+- Spacing: `margin`, `padding`, `gap`
+- Text formatting: `textAlign`, `textTransform`, `textDecoration`, `whiteSpace`, `textOverflow`
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Text within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: text.docs.spec.tsx}}
+
+## Resources
+
+- [Chakra UI Text Documentation](https://www.chakra-ui.com/docs/components/text)
+- [Heading Component](../components/typography/heading) - Related typography component
