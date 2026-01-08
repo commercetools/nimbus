@@ -264,45 +264,6 @@ const App = () => {
 }
 ```
 
-### Striped rows
-
-Enable alternating row backgrounds with the `striped` prop for improved readability:
-
-```jsx-live-dev
-const App = () => {
-  const inventory = [
-    { sku: 'SKU-001', product: 'Laptop', quantity: 45, location: 'Warehouse A' },
-    { sku: 'SKU-002', product: 'Monitor', quantity: 120, location: 'Warehouse B' },
-    { sku: 'SKU-003', product: 'Keyboard', quantity: 200, location: 'Warehouse A' },
-    { sku: 'SKU-004', product: 'Mouse', quantity: 350, location: 'Warehouse C' },
-    { sku: 'SKU-005', product: 'Headset', quantity: 80, location: 'Warehouse B' },
-  ];
-
-  return (
-    <Table.Root striped>
-      <Table.Header>
-        <Table.Row>
-          <Table.ColumnHeader>SKU</Table.ColumnHeader>
-          <Table.ColumnHeader>Product</Table.ColumnHeader>
-          <Table.ColumnHeader textAlign="end">Quantity</Table.ColumnHeader>
-          <Table.ColumnHeader>Location</Table.ColumnHeader>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {inventory.map((item) => (
-          <Table.Row key={item.sku}>
-            <Table.Cell>{item.sku}</Table.Cell>
-            <Table.Cell>{item.product}</Table.Cell>
-            <Table.Cell textAlign="end">{item.quantity}</Table.Cell>
-            <Table.Cell>{item.location}</Table.Cell>
-          </Table.Row>
-        ))}
-      </Table.Body>
-    </Table.Root>
-  );
-}
-```
-
 ### Column borders
 
 Show vertical borders between columns with the `showColumnBorder` prop:
