@@ -18,18 +18,18 @@ SimpleGrid creates a grid layout with equal-sized children. Use it for quick, re
 
 ```jsx-live-dev
 const App = () => (
-  <SimpleGrid gap="400">
-    <Box p="600" bg="primary.7" borderRadius="200">
-      <Text fontWeight="600">Item 1</Text>
+  <SimpleGrid columns={2} gap="400">
+    <Box p="600" bg="info.7" borderRadius="200">
+      <Text>Item 1</Text>
     </Box>
-    <Box p="600" bg="primary.7" borderRadius="200">
-      <Text fontWeight="600">Item 2</Text>
+    <Box p="600" bg="info.7" borderRadius="200">
+      <Text>Item 2</Text>
     </Box>
-    <Box p="600" bg="primary.7" borderRadius="200">
-      <Text fontWeight="600">Item 3</Text>
+    <Box p="600" bg="info.7" borderRadius="200">
+      <Text>Item 3</Text>
     </Box>
-    <Box p="600" bg="primary.7" borderRadius="200">
-      <Text fontWeight="600">Item 4</Text>
+    <Box p="600" bg="info.7" borderRadius="200">
+      <Text>Item 4</Text>
     </Box>
   </SimpleGrid>
 )
