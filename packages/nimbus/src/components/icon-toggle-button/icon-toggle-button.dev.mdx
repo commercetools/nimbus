@@ -314,54 +314,7 @@ const App = () => {
 }
 ```
 
-### List item actions
 
-Toggle buttons in list items for quick actions:
-
-```jsx-live-dev
-const App = () => {
-  const [items, setItems] = useState([
-    { id: 1, title: "Design System Documentation", starred: false },
-    { id: 2, title: "Component Implementation Guide", starred: true },
-    { id: 3, title: "Accessibility Best Practices", starred: false },
-  ]);
-
-  const handleToggle = (id, isStarred) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, starred: isStarred } : item
-      )
-    );
-  };
-
-  return (
-    <Stack direction="column" gap="200">
-      {items.map((item) => (
-        <Box
-          key={item.id}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          padding="300"
-          borderRadius="200"
-          bg="neutral.2"
-        >
-          <Text>{item.title}</Text>
-          <IconToggleButton
-            isSelected={item.starred}
-            onChange={(isStarred) => handleToggle(item.id, isStarred)}
-            aria-label={item.starred ? "Remove from favorites" : "Add to favorites"}
-            colorPalette="info"
-            size="xs"
-          >
-            <Icons.Star />
-          </IconToggleButton>
-        </Box>
-      ))}
-    </Stack>
-  );
-}
-```
 
 ### Async state updates
 
