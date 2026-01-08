@@ -13,7 +13,8 @@ import { Icon, type IconProps } from "@commercetools/nimbus";
 import { CheckCircle, Settings, Delete } from "@commercetools/nimbus-icons";
 ```
 
-> **Note**: Icons are imported separately from `@commercetools/nimbus-icons`, which provides a comprehensive set of Material Design icons and custom Nimbus icons.
+> [!NOTE]  
+> Icons are imported separately from `@commercetools/nimbus-icons`, which provides a comprehensive set of Material Design icons and custom Nimbus icons.
 
 ### Basic usage
 
@@ -136,13 +137,21 @@ const App = () => {
 
 ### With custom SVG
 
-While Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. Note that for best results, custom SVGs should be structured similarly to the Nimbus icons:
+While Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. The key is to use `forwardRef` and spread props to ensure proper color inheritance and sizing:
 
 ```jsx-live-dev
 const App = () => {
   const CustomLayersIcon = React.forwardRef((props, ref) => (
-    <svg ref={ref} viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+    <svg 
+      ref={ref}
+      viewBox="0 0 31 36" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z" fill="currentColor"/>
+      <path d="M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z" fill="currentColor"/>
+      <path d="M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z" fill="currentColor"/>
     </svg>
   ));
   
