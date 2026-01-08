@@ -73,9 +73,28 @@ async function transformAndSplitByComponent() {
     const inputPath = path.join(dataDir, `${locale}.json`);
 
     // Step 1: Read and transform Transifex format to ICU format (in memory)
-    const transifexData = JSON.parse(
-      await fs.readFile(inputPath, "utf-8")
-    ) as Record<string, TransifexMessage>;
+    let transifexData: Record<string, TransifexMessage>;
+    try {
+      transifexData = JSON.parse(
+        await fs.readFile(inputPath, "utf-8")
+      ) as Record<string, TransifexMessage>;
+    } catch (error) {
+      console.error(`❗️Failed to parse ${inputPath}:`, error);
+      throw error;
+    }
+
+    // Validate structure
+    for (const [key, value] of Object.entries(transifexData)) {
+      if (
+        !value ||
+        typeof value !== "object" ||
+        typeof value.string !== "string"
+      ) {
+        console.warn(
+          `⚠️  Invalid message structure for key "${key}" in ${inputPath}`
+        );
+      }
+    }
 
     // Transform to ICU format: extract "string" field from each message
     // This removes metadata and creates simple key-value pairs
