@@ -1,0 +1,439 @@
+---
+title: Icon Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Icon, type IconProps } from "@commercetools/nimbus";
+import { CheckCircle, Settings, Delete } from "@commercetools/nimbus-icons";
+```
+
+> [!NOTE]  
+> Icons are imported separately from `@commercetools/nimbus-icons`, which provides a comprehensive set of Material Design icons and custom Nimbus icons.
+
+### Basic usage
+
+Icons can be used in two ways: by passing the icon component as a child, or using the `as` prop as shorthand:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" align="center">
+    {/* Using children */}
+    <Icon>
+      <Icons.CheckCircle />
+    </Icon>
+    
+    {/* Using as prop (shorthand) */}
+    <Icon as={Icons.Settings} />
+  </Stack>
+)
+```
+
+## Usage examples
+
+### Size variants
+
+Icon provides six predefined size variants that can be applied using the `size` prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" align="center">
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="2xs" as={Icons.Star} />
+      <Text fontSize="xs">2xs</Text>
+    </Stack>
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="xs" as={Icons.Star} />
+      <Text fontSize="xs">xs</Text>
+    </Stack>
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="sm" as={Icons.Star} />
+      <Text fontSize="xs">sm</Text>
+    </Stack>
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="md" as={Icons.Star} />
+      <Text fontSize="xs">md</Text>
+    </Stack>
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="lg" as={Icons.Star} />
+      <Text fontSize="xs">lg</Text>
+    </Stack>
+    <Stack direction="column" gap="100" align="center">
+      <Icon size="xl" as={Icons.Star} />
+      <Text fontSize="xs">xl</Text>
+    </Stack>
+  </Stack>
+)
+```
+
+### Custom size
+
+For sizes beyond the predefined variants, use the `boxSize` style prop:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" align="center">
+    <Icon boxSize="1600" as={Icons.Favorite} />
+    <Icon boxSize="2400" as={Icons.Favorite} />
+    <Icon boxSize="3200" as={Icons.Favorite} />
+  </Stack>
+)
+```
+
+### Color customization
+
+Icons inherit the current text color by default, but can be customized using the `color` prop with Nimbus color tokens or any valid CSS color:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.Info} color="primary.11" size="lg" />
+      <Icon as={Icons.CheckCircle} color="positive.11" size="lg" />
+      <Icon as={Icons.Warning} color="warning.11" size="lg" />
+      <Icon as={Icons.Error} color="critical.11" size="lg" />
+      <Icon as={Icons.Help} color="info.11" size="lg" />
+    </Stack>
+    
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.Favorite} color="deeppink" size="lg" />
+      <Icon as={Icons.Star} color="gold" size="lg" />
+      <Icon as={Icons.Palette} color="rebeccapurple" size="lg" />
+    </Stack>
+  </Stack>
+)
+```
+
+### Using the `as` prop
+
+The `as` prop provides a convenient shorthand for rendering an icon without nesting:
+
+```jsx-live-dev
+const App = () => {
+  const [iconType, setIconType] = React.useState<IconProps["as"]>(Icons.Home);
+  
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="200">
+        <Button size="xs" onClick={() => setIconType(Icons.Home)}>Home</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.Settings)}>Settings</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.Notifications)}>Notifications</Button>
+        <Button size="xs" onClick={() => setIconType(Icons.AccountCircle)}>Account</Button>
+      </Stack>
+      
+      <Stack direction="row" gap="300" align="center">
+        <Icon as={iconType} size="xl" color="primary.11" />
+        <Text>Selected icon changes dynamically</Text>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### With custom SVG
+
+While Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. The key is to use `forwardRef` and spread props to ensure proper color inheritance and sizing:
+
+```jsx-live-dev
+const App = () => {
+  const CustomLayersIcon = React.forwardRef((props, ref) => (
+    <svg 
+      ref={ref}
+      viewBox="0 0 31 36" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z" fill="currentColor"/>
+      <path d="M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z" fill="currentColor"/>
+      <path d="M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z" fill="currentColor"/>
+    </svg>
+  ));
+  
+  return (
+    <Stack direction="row" gap="400" align="center">
+      <Icon size="sm" color="neutral.11">
+        <CustomLayersIcon />
+      </Icon>
+      <Icon size="md" color="primary.11">
+        <CustomLayersIcon />
+      </Icon>
+      <Icon size="lg" color="positive.11">
+        <CustomLayersIcon />
+      </Icon>
+    </Stack>
+  );
+}
+```
+
+### Responsive sizing
+
+Icon supports responsive prop values for different breakpoints:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Icon 
+      as={Icons.Smartphone}
+      size={{ base: "sm", md: "md", lg: "xl" }}
+      color="primary.11"
+    />
+    <Text fontSize="sm" color="neutral.11">
+      Icon size changes from sm → md → xl as viewport increases
+    </Text>
+  </Stack>
+)
+```
+
+### Styling with Chakra props
+
+Icon accepts all Chakra UI SVG props for advanced styling:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" align="center">
+    <Icon 
+      as={Icons.FavoriteBorder}
+      size="xl"
+      color="critical.11"
+      opacity="0.7"
+      _hover={{ opacity: 1, transform: "scale(1.1)" }}
+      transition="all 0.2s"
+      cursor="pointer"
+    />
+    <Icon 
+      as={Icons.Star}
+      size="xl"
+      color="warning.11"
+      filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+    />
+    <Icon 
+      as={Icons.Lightbulb}
+      size="xl"
+      color="info.11"
+      transform="rotate(15deg)"
+    />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+Icon should be used when you need to:
+- Display visual symbols from the Nimbus icon library
+- Add icons to buttons, menus, lists, or other UI elements
+- Create status indicators or visual cues
+- Maintain consistent icon sizing and styling
+
+Icons from `@commercetools/nimbus-icons` include:
+- **Material Design icons**: Comprehensive set of standard UI icons
+- **Custom Nimbus icons**: Brand-specific and specialized icons (Figma, Github, CommercetoolsCube, etc.)
+
+### Accessibility
+
+Icon is a visual element that requires proper accessibility considerations:
+
+#### ARIA Attributes
+
+- Use `aria-label` for standalone icons that convey meaning
+- Use `aria-hidden="true"` for decorative icons next to text labels
+- Ensure sufficient color contrast (avoid relying solely on color)
+
+```tsx
+{/* Standalone icon - needs label */}
+<IconButton aria-label="Delete item" icon={Icons.Delete} />
+
+{/* Decorative icon with text - hide from screen readers */}
+<Button>
+  <Icon as={Icons.Save} aria-hidden="true" />
+  Save Document
+</Button>
+```
+
+#### Keyboard Navigation
+
+Icons themselves are not interactive. When icons need to be clickable:
+- Wrap them in Button or IconButton components
+- Ensure the parent element is keyboard accessible
+- Provide appropriate focus indicators
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Icon id="status-icon-success" as={Icons.CheckCircle} />
+```
+
+## API reference
+
+<PropsTable id="Icon" />
+
+## Common patterns
+
+### Icons in buttons
+
+Combine icons with buttons for enhanced visual communication:
+
+```jsx-live-dev
+const App = () => (
+    <Stack direction="row" gap="200">
+      <Button size="xs" variant="solid" colorPalette="primary">
+        <Icon as={Icons.Add} />
+        Create New
+      </Button>
+      <Button size="xs" variant="outline">
+        <Icon as={Icons.Save} />
+        Save
+      </Button>
+      <Button size="xs" variant="ghost">
+        <Icon as={Icons.Delete} />
+        Delete
+      </Button>
+    </Stack>
+)
+```
+
+### Status indicators
+
+Use colored icons to indicate status or state:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="300">
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.CheckCircle} color="positive.11" size="sm" />
+      <Text>Operation completed successfully</Text>
+    </Stack>
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.Error} color="critical.11" size="sm" />
+      <Text>An error occurred</Text>
+    </Stack>
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.Warning} color="warning.11" size="sm" />
+      <Text>Warning: Check your input</Text>
+    </Stack>
+    <Stack direction="row" gap="300" align="center">
+      <Icon as={Icons.Info} color="info.11" size="sm" />
+      <Text>Additional information available</Text>
+    </Stack>
+  </Stack>
+)
+```
+
+### Navigation icons
+
+Create icon-based navigation elements:
+
+```jsx-live-dev
+const App = () => {
+  const [selected, setSelected] = React.useState("home");
+  
+  const NavItem = ({ id, icon, label }) => (
+    <Stack 
+      direction="column" 
+      gap="100" 
+      align="center"
+      p="300"
+      borderRadius="200"
+      bg={selected === id ? "primary.3" : "transparent"}
+      color={selected === id ? "primary.11" : "neutral.11"}
+      cursor="pointer"
+      onClick={() => setSelected(id)}
+      _hover={{ bg: selected === id ? "primary.3" : "neutral.3" }}
+    >
+      <Icon as={icon} size="md" />
+      <Text fontSize="xs">{label}</Text>
+    </Stack>
+  );
+  
+  return (
+    <Stack direction="row" gap="200" p="400" bg="neutral.2" borderRadius="200">
+      <NavItem id="home" icon={Icons.Home} label="Home" />
+      <NavItem id="search" icon={Icons.Search} label="Search" />
+      <NavItem id="notifications" icon={Icons.Notifications} label="Alerts" />
+      <NavItem id="settings" icon={Icons.Settings} label="Settings" />
+    </Stack>
+  );
+}
+```
+
+### Icon lists
+
+Display lists with icon indicators:
+
+```jsx-live-dev
+const App = () => {
+  const features = [
+    { icon: Icons.CheckCircle, text: "Real-time synchronization", color: "positive.11" },
+    { icon: Icons.Security, text: "Enterprise-grade security", color: "info.11" },
+    { icon: Icons.Speed, text: "Lightning-fast performance", color: "primary.11" },
+    { icon: Icons.CloudDone, text: "Cloud-based storage", color: "info.11" },
+  ];
+  
+  return (
+    <Stack direction="column" gap="300">
+      {features.map((feature, index) => (
+        <Stack key={index} direction="row" gap="300" align="center">
+          <Icon as={feature.icon} color={feature.color} size="sm" />
+          <Text>{feature.text}</Text>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### File type indicators
+
+Use icons to represent different file types or content:
+
+```jsx-live-dev
+const App = () => {
+  const files = [
+    { name: "Document.pdf", icon: Icons.PictureAsPdf, color: "critical.11" },
+    { name: "Spreadsheet.xlsx", icon: Icons.TableChart, color: "positive.11" },
+    { name: "Presentation.pptx", icon: Icons.Slideshow, color: "warning.11" },
+    { name: "Image.jpg", icon: Icons.Image, color: "info.11" },
+    { name: "Archive.zip", icon: Icons.FolderZip, color: "neutral.11" },
+  ];
+  
+  return (
+    <Stack direction="column" gap="200">
+      {files.map((file, index) => (
+        <Stack 
+          key={index} 
+          direction="row" 
+          gap="300" 
+          align="center"
+          p="300"
+          borderRadius="200"
+          _hover={{ bg: "neutral.3" }}
+        >
+          <Icon as={file.icon} color={file.color} size="md" />
+          <Text>{file.name}</Text>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Icon within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: icon.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook-commercetools.vercel.app/?path=/docs/components-icon--docs)
+- [Material Design Icons](https://fonts.google.com/icons)
+- [ARIA Authoring Practices - Icon Usage](https://www.w3.org/WAI/ARIA/apg/)
