@@ -18,7 +18,7 @@ export interface ColumnDef {
 export interface DataTableArgs {
   title?: string;
   columns: ColumnDef[];
-  data: Record<string, unknown>[];
+  rows: Record<string, unknown>[];
   ariaLabel: string;
   showDetails?: boolean;
   editAction?: { instruction: string };
@@ -429,176 +429,209 @@ function updateDetailsDrawer(uri: string, rowData: Record<string, unknown>) {
   renderDrawerContent(uri, rowData, false);
 }
 
-export function createDataTable(args: DataTableArgs) {
+/**
+ * Internal interface for creating data table elements
+ * Used by both createDataTable tool and createElementFromDefinition
+ */
+export interface CreateDataTableElementArgs {
+  title?: string;
+  columns: Array<{
+    key?: string;
+    label?: string;
+    id?: string;
+    header?: string;
+  }>;
+  rows: Record<string, unknown>[];
+  ariaLabel: string;
+  showDetails?: boolean;
+  editAction?: { instruction: string };
+  /** Pre-generated URI for storing row data (used when created as nested element) */
+  uri?: string;
+}
+
+/**
+ * Creates the data table element structure (without resource wrapper)
+ * Can be used standalone or as part of createDataTable tool
+ */
+export function createDataTableElement(args: CreateDataTableElementArgs): {
+  element: RemoteDomElement;
+  uri: string;
+  dataTableRows: Record<string, unknown>[];
+} {
   const {
     title,
     columns,
-    data,
+    rows,
     ariaLabel,
     showDetails = false,
     editAction,
+    uri: providedUri,
   } = args;
 
   // Transform column definitions to DataTable format
+  // Handle both {key, label} and {id, header} formats
   const dataTableColumns = columns.map((col) => ({
-    id: col.key,
-    header: col.label,
-    accessor: `(row) => row['${col.key}']`,
+    id: col.key || col.id || "",
+    header: col.label || col.header || col.key || col.id || "",
+    accessor: `(row) => row['${col.key || col.id}']`,
   }));
 
-  // Transform data rows to include id field and preserve ALL original data
-  const dataTableRows = data.map((row, idx) => ({
+  // Transform rows to include id field and preserve ALL original data
+  const dataTableRows = rows.map((row, idx) => ({
     id: row.id ? String(row.id) : `row-${idx}`,
     ...row,
   }));
 
-  const rootElement = showDetails
-    ? (document.createElement("nimbus-flex") as RemoteDomElement)
-    : null;
+  // Generate URI for storing row data
+  const uri = providedUri || `ui://data-table/${Date.now()}`;
 
-  if (rootElement) {
-    rootElement.direction = "column";
-    rootElement.styleProps = { gap: "600", width: "100%" };
+  // Create the simple data table element first
+  const dataTableElement = document.createElement(
+    "nimbus-data-table"
+  ) as RemoteDomElement;
+  dataTableElement.columns = JSON.stringify(dataTableColumns);
+  dataTableElement.rows = JSON.stringify(dataTableRows);
+  dataTableElement.allowsSorting = true;
+  dataTableElement.isRowClickable = showDetails;
+  dataTableElement.density = "default";
+  dataTableElement.width = "100%";
+  dataTableElement["aria-label"] = ariaLabel;
 
-    // Add title if provided
-    if (title) {
-      const heading = document.createElement(
-        "nimbus-heading"
-      ) as RemoteDomElement;
-      heading.size = "xl";
-      heading.textContent = title;
-      rootElement.appendChild(heading);
-    }
+  if (!showDetails) {
+    // No details mode - just return the data table element
+    return { element: dataTableElement, uri, dataTableRows };
   }
 
-  // Create DataTable element
-  const dataTableDef = {
-    type: "nimbus-data-table",
-    properties: {
-      columns: JSON.stringify(dataTableColumns),
-      rows: JSON.stringify(dataTableRows),
-      allowsSorting: true,
-      isRowClickable: showDetails, // Make clickable only if details enabled
-      density: "default",
-      width: "100%",
-      "aria-label": ariaLabel,
-    },
+  // Details mode - create flex container with table and drawer
+  const rootElement = document.createElement("nimbus-flex") as RemoteDomElement;
+  rootElement.direction = "column";
+  rootElement.styleProps = { gap: "600", width: "100%" };
+
+  // Add title if provided
+  if (title) {
+    const heading = document.createElement(
+      "nimbus-heading"
+    ) as RemoteDomElement;
+    heading.size = "xl";
+    heading.textContent = title;
+    rootElement.appendChild(heading);
+  }
+
+  rootElement.appendChild(dataTableElement);
+
+  // Create drawer infrastructure
+  const drawerRoot = document.createElement(
+    "nimbus-drawer-root"
+  ) as RemoteDomElement;
+  drawerRoot.setAttribute("id", "details-drawer");
+  drawerRoot.isOpen = false;
+  drawerRoot.isDismissable = true;
+
+  // Hidden trigger
+  const drawerTrigger = document.createElement(
+    "nimbus-drawer-trigger"
+  ) as RemoteDomElement;
+  drawerTrigger.styleProps = { display: "none" };
+  const triggerText = document.createElement("nimbus-text") as RemoteDomElement;
+  triggerText.textContent = "Open Details";
+  drawerTrigger.appendChild(triggerText);
+  drawerRoot.appendChild(drawerTrigger);
+
+  // Drawer content
+  const drawerContent = document.createElement(
+    "nimbus-drawer-content"
+  ) as RemoteDomElement;
+  drawerContent.size = "md";
+  drawerContent.placement = "end";
+
+  // Drawer header
+  const drawerHeader = document.createElement(
+    "nimbus-drawer-header"
+  ) as RemoteDomElement;
+  drawerHeader.styleProps = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginRight: "800",
   };
 
-  const dataTableElement = createElementFromDefinition(dataTableDef);
+  const drawerTitle = document.createElement(
+    "nimbus-drawer-title"
+  ) as RemoteDomElement;
+  drawerTitle.textContent = "Details";
+  drawerHeader.appendChild(drawerTitle);
 
-  if (showDetails && rootElement) {
-    rootElement.appendChild(dataTableElement);
+  // Header actions
+  const headerActions = document.createElement(
+    "nimbus-flex"
+  ) as RemoteDomElement;
+  headerActions.direction = "row";
+  headerActions.styleProps = { gap: "200", alignItems: "center" };
 
-    // Create drawer (controlled mode for programmatic control)
-    const drawerRoot = document.createElement(
-      "nimbus-drawer-root"
-    ) as RemoteDomElement;
-    drawerRoot.setAttribute("id", "details-drawer");
-    drawerRoot.isOpen = false; // Start closed
-    drawerRoot.isDismissable = true; // Allow closing via backdrop/Escape
+  const editToggle = document.createElement(
+    "nimbus-button"
+  ) as RemoteDomElement;
+  editToggle.setAttribute("id", "edit-toggle");
+  editToggle.variant = "ghost";
+  editToggle.size = "sm";
+  editToggle.appendChild(document.createTextNode("Edit"));
+  headerActions.appendChild(editToggle);
 
-    // Add hidden trigger (required for DialogTrigger to activate isOpen prop)
-    const drawerTrigger = document.createElement(
-      "nimbus-drawer-trigger"
-    ) as RemoteDomElement;
-    drawerTrigger.styleProps = {
-      display: "none", // Hidden - we control via isOpen, not user clicks
-    };
-    const triggerText = document.createElement(
-      "nimbus-text"
-    ) as RemoteDomElement;
-    triggerText.textContent = "Open Details"; // Screen reader text
-    drawerTrigger.appendChild(triggerText);
-    drawerRoot.appendChild(drawerTrigger);
+  const drawerClose = document.createElement(
+    "nimbus-drawer-close-trigger"
+  ) as RemoteDomElement;
+  drawerClose.setAttribute("aria-label", "Close drawer");
+  headerActions.appendChild(drawerClose);
 
-    // Drawer content
-    const drawerContent = document.createElement(
-      "nimbus-drawer-content"
-    ) as RemoteDomElement;
-    drawerContent.size = "md";
-    drawerContent.placement = "end"; // Slide from right
+  drawerHeader.appendChild(headerActions);
+  drawerContent.appendChild(drawerHeader);
 
-    // Drawer header with title, edit button, and close button
-    const drawerHeader = document.createElement(
-      "nimbus-drawer-header"
-    ) as RemoteDomElement;
-    drawerHeader.styleProps = {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginRight: "800",
-    };
+  // Drawer body
+  const drawerBody = document.createElement(
+    "nimbus-drawer-body"
+  ) as RemoteDomElement;
+  drawerBody.setAttribute("id", "details-content");
 
-    const drawerTitle = document.createElement(
-      "nimbus-drawer-title"
-    ) as RemoteDomElement;
-    drawerTitle.textContent = "Details";
-    drawerHeader.appendChild(drawerTitle);
+  const placeholder = document.createElement("nimbus-text") as RemoteDomElement;
+  placeholder.textContent = "Click a row to view details";
+  placeholder.styleProps = { color: "neutral.11" };
+  drawerBody.appendChild(placeholder);
 
-    // Create flex container for edit button and close button
-    const headerActions = document.createElement(
-      "nimbus-flex"
-    ) as RemoteDomElement;
-    headerActions.direction = "row";
-    headerActions.styleProps = { gap: "200", alignItems: "center" };
+  drawerContent.appendChild(drawerBody);
+  drawerRoot.appendChild(drawerContent);
+  rootElement.appendChild(drawerRoot);
 
-    // Add edit/view toggle button
-    const editToggle = document.createElement(
-      "nimbus-button"
-    ) as RemoteDomElement;
-    editToggle.setAttribute("id", "edit-toggle");
-    editToggle.variant = "ghost";
-    editToggle.size = "sm";
-    const editToggleText = document.createTextNode("Edit");
-    editToggle.appendChild(editToggleText);
-    headerActions.appendChild(editToggle);
+  // Store row data for details view
+  rowDataByUri.set(uri, dataTableRows);
 
-    const drawerClose = document.createElement(
-      "nimbus-drawer-close-trigger"
-    ) as RemoteDomElement;
-    drawerClose.setAttribute("aria-label", "Close drawer");
-    headerActions.appendChild(drawerClose);
+  if (editAction?.instruction) {
+    editInstructionByUri.set(uri, editAction.instruction);
+  }
 
-    drawerHeader.appendChild(headerActions);
-    drawerContent.appendChild(drawerHeader);
+  return { element: rootElement, uri, dataTableRows };
+}
 
-    // Drawer body (where details content will be rendered)
-    const drawerBody = document.createElement(
-      "nimbus-drawer-body"
-    ) as RemoteDomElement;
-    drawerBody.setAttribute("id", "details-content");
+export function createDataTable(args: DataTableArgs) {
+  const { title, showDetails = false } = args;
 
-    const placeholder = document.createElement(
-      "nimbus-text"
-    ) as RemoteDomElement;
-    placeholder.textContent = "Click a row to view details";
-    placeholder.styleProps = { color: "neutral.11" };
-    drawerBody.appendChild(placeholder);
+  // Use the helper to create the data table element structure
+  const { element, uri } = createDataTableElement({
+    ...args,
+    columns: args.columns.map((col) => ({ key: col.key, label: col.label })),
+  });
 
-    drawerContent.appendChild(drawerBody);
-    drawerRoot.appendChild(drawerContent);
-    rootElement.appendChild(drawerRoot);
-
-    // Generate URI first so we can store row data
-    const uri = `ui://data-table/${Date.now()}`;
-
-    rowDataByUri.set(uri, dataTableRows);
-
-    if (editAction?.instruction) {
-      editInstructionByUri.set(uri, editAction.instruction);
-    }
-
-    // Create resource with pre-generated URI
-    return createRemoteDomResource(rootElement, {
+  if (showDetails) {
+    // showDetails mode - element already includes drawer infrastructure
+    // Row data and edit instructions are already stored by createDataTableElement
+    return createRemoteDomResource(element, {
       name: "data-table",
       title: title || "Data Table",
       description: title,
-      uri, // Pass in the URI we generated
+      uri, // Pass in the URI from the helper
     });
   }
 
-  // No details mode - legacy behavior
+  // No details mode - wrap in card if title provided
   if (title) {
     const cardRoot = document.createElement(
       "nimbus-card-root"
@@ -623,7 +656,7 @@ export function createDataTable(args: DataTableArgs) {
     const cardContent = document.createElement(
       "nimbus-card-content"
     ) as RemoteDomElement;
-    cardContent.appendChild(dataTableElement);
+    cardContent.appendChild(element);
     cardRoot.appendChild(cardContent);
 
     const { resource } = createRemoteDomResource(cardRoot, {
@@ -635,7 +668,8 @@ export function createDataTable(args: DataTableArgs) {
     return resource;
   }
 
-  const { resource } = createRemoteDomResource(dataTableElement, {
+  // Simple data table without title
+  const { resource } = createRemoteDomResource(element, {
     name: "data-table",
     title: "Data Table",
     description: "Data table component",
@@ -707,17 +741,17 @@ export function registerDataTableTool(
         columns: z
           .array(
             z.object({
-              key: z.string().describe("Column key (matches data object keys)"),
+              key: z.string().describe("Column key (matches row object keys)"),
               label: z.string().describe("Column header label"),
             })
           )
           .describe(
-            "Array of column definitions (subset of data shown in table)"
+            "Array of column definitions (subset of rows shown in table)"
           ),
-        data: z
+        rows: z
           .array(z.record(z.string(), z.any()))
           .describe(
-            "Array of data objects (full data - table shows subset based on columns). IMPORTANT: if there are more keys than columns, set showDetails=true"
+            "Array of row objects (full data - table shows subset based on columns). IMPORTANT: if there are more keys than columns, set showDetails=true"
           ),
         ariaLabel: z
           .string()

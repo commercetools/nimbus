@@ -1,5 +1,6 @@
 import type { RemoteDomElement } from "../types/remote-dom.js";
 import { sanitizeTextContent } from "./security.js";
+import { createDataTableElement } from "../tools/data-table.js";
 
 /**
  * Helper to recursively create DOM elements from ElementDefinition
@@ -17,10 +18,64 @@ export function createElementFromDefinition(
     );
   }
 
-  const element = document.createElement(def.type) as RemoteDomElement;
-
   // Extract properties (may contain content, label, children, and component props)
   const properties = (def.properties || {}) as Record<string, unknown>;
+
+  // Special handling for nimbus-data-table with showDetails
+  // This enables the full details view infrastructure when created as nested children
+  if (def.type === "nimbus-data-table") {
+    const {
+      columns,
+      rows,
+      ariaLabel,
+      showDetails,
+      editAction,
+      title,
+      ...restProps
+    } = properties;
+
+    // Parse columns and rows if they're JSON strings
+    const parsedColumns =
+      typeof columns === "string" ? JSON.parse(columns as string) : columns;
+    const parsedRows =
+      typeof rows === "string" ? JSON.parse(rows as string) : rows;
+
+    // If showDetails is enabled, use the full data table infrastructure
+    if (
+      showDetails &&
+      Array.isArray(parsedColumns) &&
+      Array.isArray(parsedRows)
+    ) {
+      const { element } = createDataTableElement({
+        title: title as string | undefined,
+        columns: parsedColumns,
+        rows: parsedRows,
+        ariaLabel: (ariaLabel as string) || "Data table",
+        showDetails: true,
+        editAction: editAction as { instruction: string } | undefined,
+      });
+
+      // Apply any remaining props to the root element
+      Object.entries(restProps).forEach(([key, value]) => {
+        element[key] = value;
+      });
+
+      return element;
+    }
+
+    // No showDetails - create simple data table element
+    const element = document.createElement(def.type) as RemoteDomElement;
+
+    // Set all properties including columns/rows
+    Object.entries(properties).forEach(([key, value]) => {
+      element[key] = value;
+    });
+
+    return element;
+  }
+
+  // Standard element creation for all other types
+  const element = document.createElement(def.type) as RemoteDomElement;
 
   // Extract special properties that need special handling
   const {

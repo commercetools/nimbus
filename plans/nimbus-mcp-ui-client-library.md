@@ -1,816 +1,98 @@
 # Nimbus MCP-UI Client Library
 
-## Overview
+## Goal
 
-This document outlines the design for a client-side library that enables consuming applications to render Nimbus components from an MCP-UI server with minimal configuration.
+Enable consuming applications to render Nimbus components from an MCP-UI server with minimal configuration.
 
-**Goal:** Start with a batteries-included Option A (pre-wired Nimbus components) while architecting to avoid breaking changes when implementing Option B (custom component support) in the future.
-
----
-
-## Current POC Architecture
-
-The MCP-UI POC in `apps/mcp-ui-poc/` demonstrates the full pattern:
-
-### Data Flow
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1. AI invokes tool (e.g., createButton)                                     │
-│ 2. Server creates Remote DOM element with properties                        │
-│ 3. Remote DOM environment detects mutations, serializes them                │
-│ 4. WebSocket broadcasts mutations to connected clients                      │
-│ 5. Client receives mutations, updates RemoteReceiver state                  │
-│ 6. React components re-render with new props                                │
-│ 7. User interacts (click, input, etc.)                                      │
-│ 8. Client sends event back to server via WebSocket                          │
-│ 9. Server processes event, may trigger new tool calls                       │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Key Technologies
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Protocol | `@modelcontextprotocol/sdk` | MCP protocol implementation |
-| Serialization | `@remote-dom/core` | Server-side DOM mutation tracking |
-| Rendering | `@remote-dom/react` | Client-side React integration |
-| Components | `@commercetools/nimbus` | Design system components |
-| Transport | WebSocket | Real-time mutation streaming |
+**Option A (now):** Batteries-included with pre-wired Nimbus components.
+**Option B (future):** Custom component support - architecture should allow this without breaking changes.
 
 ---
 
-## Current Client Implementation Patterns
+## Key Concept: Server Owns the DOM
 
-### Component Registry
+**The MCP-UI server is the source of truth for all UI state.**
 
-Located in `remote-dom-renderer.tsx`, the registry maps HTML custom element names to React components:
-
-```typescript
-const componentRegistry: Record<string, React.ComponentType> = {
-  "nimbus-badge": Nimbus.Badge,
-  "nimbus-text": Nimbus.Text,
-  "nimbus-button": ButtonWrapper,      // Custom wrapper for events
-  "nimbus-data-table": DataTableWrapper, // Custom wrapper for events
-  "nimbus-form-field-root": FormFieldRootWrapper, // Prop injection
-  // ... etc
-};
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        SERVER                                │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
+│  │ Remote DOM  │◄───│ Orchestrator│◄───│  MCP Tools  │      │
+│  │ (source of  │    │ (LLM/Agent) │    │             │      │
+│  │   truth)    │    └─────────────┘    └─────────────┘      │
+│  └──────┬──────┘                                             │
+└─────────┼───────────────────────────────────────────────────┘
+          │ WebSocket (mutations down, events up)
+          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        CLIENT                                │
+│  ┌─────────────┐    ┌─────────────┐                         │
+│  │   Renderer  │───►│   Nimbus    │───► User sees UI        │
+│  │             │    │ Components  │                         │
+│  └─────────────┘    └──────┬──────┘                         │
+│                            │ User clicks/types               │
+│                            ▼                                 │
+│                     Events sent back                         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Two-Level Wrapper System
+**The client never "handles" events in the sense of updating UI state.** It only:
 
-1. **Simple wrapper** - Spreads `styleProps` onto component
-2. **Custom wrapper** - Handles events, data transformation, or prop injection
+1. Renders what the server tells it to render
+2. Sends user interactions back to the server
+3. Re-renders when the server sends new DOM mutations
 
-```typescript
-// Simple wrapper pattern
-const simple = (Component, isVoid = false) => (props) => {
-  const { styleProps, children, ...rest } = props;
-  const merged = { ...rest, ...styleProps };
-  return isVoid ? <Component {...merged} /> : <Component {...merged}>{children}</Component>;
-};
+---
 
-// Custom wrapper pattern (Button example)
-const ButtonWrapper = (props) => {
-  const uri = useUri();
-  const { styleProps, id, onPress, ...rest } = props;
+## Event Routing (Two Types)
 
-  const handlePress = id
-    ? () => {
-        const formData = extractFormData(buttonRef.current);
-        sendClientEvent("buttonClick", uri, { buttonId: id, formData }, false);
-        onPress?.();
-      }
-    : onPress;
+Events are categorized by whether they need orchestrator (LLM) attention:
 
-  return <Nimbus.Button {...rest} {...styleProps} onPress={handlePress} ref={buttonRef} />;
-};
-```
+### 1. Orchestrator Events → `onAction` callback
 
-### Event System
+User decisions that need LLM processing:
 
-Events are sent via WebSocket using a generic message format:
+- Button clicks (LLM decides what happens next)
+- Form submissions (LLM processes the data)
+- Row selections (LLM acts on selection)
 
-```typescript
-interface ClientEventMessage {
-  type: 'tool';
-  payload: {
-    toolName: string;  // e.g., "buttonClick", "dataTableRowClick"
-    params: {
-      uri: string;
-      // event-specific data
-      buttonId?: string;
-      formData?: Record<string, string>;
-      rowId?: string;
-    };
-  };
-  messageId?: string;  // For request-response pattern
-}
-```
+### 2. Sync Events → Direct to server
 
-### Prop Injection System
+State changes that just need DOM sync, no LLM decision:
 
-For compound components that use React context (like FormField), children must be reconstructed inside the parent's context:
+- Drawer open/close
+- Accordion expand/collapse
+- Input value changes (before submit)
 
-```typescript
-const FormFieldRootWrapper = (props) => {
-  const { styleProps, children, ...rest } = props;
-  const componentMap = createComponentMapForPropInjection();
+**The library routes automatically based on component config.** Consumers only handle orchestrator events.
 
-  // Reconstruct children through renderElement() so they can
-  // receive props injected via React.cloneElement from FormField.Root
-  const reconstructed = React.Children.map(children, (child, index) => {
-    const element = child.props.element;
-    return element ? renderElement(element, index, componentMap, {}) : child;
-  });
-
-  return (
-    <Nimbus.FormField.Root {...rest} {...styleProps}>
-      {reconstructed}
-    </Nimbus.FormField.Root>
-  );
-};
+```tsx
+<McpUiProvider
+  serverUrl="http://localhost:3001"
+  onAction={(action) => {
+    // Only receives events that need orchestrator attention
+    // Sync events are handled automatically
+    await langGraph.submitAction(action);
+  }}
+>
+  <RemoteRenderer uri="/my-ui" />
+</McpUiProvider>
 ```
 
 ---
 
-## Library Design
+## Simplified Approach: Single Package
 
-### Package Structure
-
-```
-@mcp-ui/core          # Connection, types, event protocol (no React, no components)
-@mcp-ui/react         # React renderer, provider, hooks (component-agnostic)
-@mcp-ui/nimbus        # Pre-wired Nimbus registry (batteries-included for Option A)
-@mcp-ui/langchain     # LangChain/LangGraph integration adapter (optional)
-```
-
-### Package Dependency Graph
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Consumer App                              │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│ @mcp-ui/nimbus│    │@mcp-ui/lang-  │    │  (Custom)     │
-│               │    │  chain        │    │               │
-│ - Registry    │    │               │    │ - onAction    │
-│ - Wrappers    │    │ - Helpers     │    │   handler     │
-│ - Provider    │    │ - Stream hook │    │               │
-└───────┬───────┘    └───────┬───────┘    └───────┬───────┘
-        │                    │                    │
-        └─────────┬──────────┴────────────────────┘
-                  │
-                  ▼
-        ┌───────────────────┐
-        │   @mcp-ui/react   │
-        │                   │
-        │ - McpUiProvider   │
-        │ - RemoteRenderer  │
-        │ - useActionDispatch│
-        │ - Wrapper factory │
-        └─────────┬─────────┘
-                  │
-                  ▼
-        ┌───────────────────┐
-        │   @mcp-ui/core    │
-        │                   │
-        │ - Types           │
-        │ - Connection      │
-        │ - Protocol        │
-        └───────────────────┘
-```
-
-### Option A Consumer Usage
+Start with **one package**: `@mcp-ui/nimbus`
 
 ```tsx
 import { McpUiProvider, RemoteRenderer } from '@mcp-ui/nimbus';
 
 function App() {
-  return (
-    <McpUiProvider serverUrl="http://localhost:3001">
-      <RemoteRenderer uri="/my-ui" />
-    </McpUiProvider>
-  );
-}
-```
-
-### Future Option B Consumer Usage
-
-```tsx
-import { McpUiProvider, RemoteRenderer, registerComponent } from '@mcp-ui/react';
-import { nimbusRegistry } from '@mcp-ui/nimbus';
-
-// Use Nimbus components
-Object.entries(nimbusRegistry).forEach(([name, config]) => {
-  registerComponent(name, config);
-});
-
-// Add custom components (requires matching server-side element/tool definitions)
-registerComponent('my-custom-widget', {
-  component: MyCustomWidget,
-  events: [{ eventName: 'widgetAction', propName: 'onAction' }],
-});
-
-function App() {
-  return (
-    <McpUiProvider serverUrl="http://localhost:3001">
-      <RemoteRenderer uri="/my-ui" />
-    </McpUiProvider>
-  );
-}
-```
-
----
-
-## Key Decisions for Forward Compatibility
-
-### 1. Internal Registry from Day One
-
-Use a registry internally even if not exposed in Option A:
-
-```typescript
-// @mcp-ui/react (internal)
-const componentRegistry = new Map<string, ComponentConfig>();
-
-export function registerComponent(name: string, config: ComponentConfig): void {
-  componentRegistry.set(name, config);
-}
-```
-
-When Option B is needed, simply export `registerComponent`.
-
-### 2. Generic Event System in Core
-
-Event names come from component config, not hardcoded:
-
-```typescript
-// @mcp-ui/core
-export function sendClientEvent(
-  eventName: string,              // Generic - passed from component config
-  uri: string,
-  params: Record<string, unknown>,
-  waitForResponse?: boolean
-): void | Promise<unknown> { ... }
-```
-
-### 3. Scalable Component Config Interface
-
-Design the full interface now, even if not all features are exposed:
-
-```typescript
-interface ComponentConfig {
-  /** The React component to render */
-  component: React.ComponentType;
-
-  /** Whether this is a void element (no children) */
-  isVoid?: boolean;
-
-  /** Declarative event handlers */
-  events?: Array<{
-    eventName: string;
-    propName: string;
-    extractPayload?: (event: unknown, props: unknown) => Record<string, unknown>;
-    waitForResponse?: boolean;
-  }>;
-
-  /** Custom wrapper for complex cases */
-  wrapper?: React.ComponentType;
-
-  /** Prop injection config for compound components */
-  propInjection?: {
-    enabled: boolean;
-    injectableChildren?: string[];
-  };
-}
-```
-
-### 4. Extensible Provider Props
-
-Start minimal, add optional props later:
-
-```typescript
-interface McpUiProviderProps {
-  serverUrl: string;
-  children: React.ReactNode;
-  // Future additions (non-breaking):
-  sessionId?: string;
-  onConnectionChange?: (connected: boolean) => void;
-  onError?: (error: Error) => void;
-  components?: Record<string, ComponentConfig>;  // Option B
-}
-```
-
-### 5. Nimbus Package as Thin Wrapper
-
-`@mcp-ui/nimbus` should be minimal - just wiring:
-
-```typescript
-// @mcp-ui/nimbus/index.ts
-
-// Re-export core functionality
-export { RemoteRenderer, useUri } from '@mcp-ui/react';
-
-// Pre-configured provider
-export { NimbusMcpProvider as McpUiProvider } from './provider';
-
-// Export registry for Option B users who want to extend
-export { nimbusRegistry } from './registry';
-```
-
-```typescript
-// @mcp-ui/nimbus/provider.tsx
-import { McpUiProvider as BaseProvider, registerComponent } from '@mcp-ui/react';
-import { nimbusRegistry } from './registry';
-
-let initialized = false;
-
-export function NimbusMcpProvider(props: McpUiProviderProps) {
-  if (!initialized) {
-    Object.entries(nimbusRegistry).forEach(([name, config]) => {
-      registerComponent(name, config);
-    });
-    initialized = true;
-  }
-
-  return <BaseProvider {...props} />;
-}
-```
-
----
-
-## Event Handling Architecture
-
-The library uses a **dual-path event system** that separates:
-1. **Agent Actions** - User interactions that need LLM/orchestrator processing (button clicks, form submissions)
-2. **Internal DOM Sync** - Automatic state synchronization that doesn't require LLM involvement (drawer close, accordion expand)
-
-### Action Types
-
-Actions are typed per-component to ensure type safety and enable proper payload handling:
-
-```typescript
-// @mcp-ui/core - Base action interface
-export interface BaseAction {
-  type: string;
-  componentId: string;
-  uri: string;
-  timestamp: number;
-}
-
-// @mcp-ui/nimbus - Typed actions for each component
-export interface ButtonAction extends BaseAction {
-  type: 'button.click';
-  payload: {
-    buttonId: string;
-    formData?: Record<string, string>;
-  };
-}
-
-export interface RowSelectAction extends BaseAction {
-  type: 'dataTable.rowSelect';
-  payload: {
-    rowId: string;
-    rowData: Record<string, unknown>;
-  };
-}
-
-export interface FormSubmitAction extends BaseAction {
-  type: 'form.submit';
-  payload: {
-    formId: string;
-    formData: Record<string, string>;
-  };
-}
-
-export interface AlertDismissAction extends BaseAction {
-  type: 'alert.dismiss';
-  payload: {
-    alertId: string;
-  };
-}
-
-// Union type for all Nimbus actions
-export type NimbusAction =
-  | ButtonAction
-  | RowSelectAction
-  | FormSubmitAction
-  | AlertDismissAction;
-```
-
-### Updated ComponentConfig Interface
-
-The `ComponentConfig` interface defines actions declaratively, enabling the generic wrapper factory to create event handlers automatically:
-
-```typescript
-// @mcp-ui/react
-interface ComponentConfig<TAction extends BaseAction = BaseAction> {
-  /** The React component to render */
-  component: React.ComponentType;
-
-  /** Whether this is a void element (no children) */
-  isVoid?: boolean;
-
-  /** Declarative action definitions */
-  actions?: Array<{
-    /** Action type for discrimination (e.g., 'button.click') */
-    actionType: TAction['type'];
-    /** React prop name that triggers this action (e.g., 'onPress') */
-    triggerProp: string;
-    /** Extract typed payload from event and props */
-    extractPayload: (event: unknown, props: Record<string, unknown>) => TAction['payload'];
-    /** Whether this action requires orchestrator response */
-    requiresResponse?: boolean;
-  }>;
-
-  /** Internal events that sync DOM state (don't go to orchestrator) */
-  internalEvents?: Array<{
-    propName: string;
-    eventName: string;
-  }>;
-
-  /** Prop injection config for compound components */
-  propInjection?: {
-    enabled: boolean;
-    injectableChildren?: string[];
-  };
-}
-```
-
-### Nimbus Registry with Typed Actions
-
-```typescript
-// @mcp-ui/nimbus/registry.ts
-import * as Nimbus from '@commercetools/nimbus';
-import type { ComponentConfig, NimbusAction } from '@mcp-ui/react';
-
-export const nimbusRegistry: Record<string, ComponentConfig<NimbusAction>> = {
-  'nimbus-button': {
-    component: Nimbus.Button,
-    actions: [{
-      actionType: 'button.click',
-      triggerProp: 'onPress',
-      extractPayload: (_, props) => ({
-        buttonId: props.id as string,
-        formData: extractFormDataFromButton(props),
-      }),
-    }],
-  },
-
-  'nimbus-data-table': {
-    component: Nimbus.DataTable,
-    actions: [{
-      actionType: 'dataTable.rowSelect',
-      triggerProp: 'onRowClick',
-      extractPayload: (event) => ({
-        rowId: (event as { id: string }).id,
-        rowData: event as Record<string, unknown>,
-      }),
-    }],
-  },
-
-  'nimbus-drawer-root': {
-    component: Nimbus.Drawer.Root,
-    // Drawer close is internal (just sync state), not an agent action
-    internalEvents: [{
-      propName: 'onOpenChange',
-      eventName: 'drawerClose',
-    }],
-  },
-
-  'nimbus-alert-dismiss-button': {
-    component: Nimbus.Alert.DismissButton,
-    actions: [{
-      actionType: 'alert.dismiss',
-      triggerProp: 'onPress',
-      extractPayload: (_, props) => ({
-        alertId: props.id as string,
-      }),
-    }],
-  },
-
-  // Simple components (no actions needed)
-  'nimbus-badge': { component: Nimbus.Badge },
-  'nimbus-text': { component: Nimbus.Text },
-  'nimbus-stack': { component: Nimbus.Stack },
-  'nimbus-flex': { component: Nimbus.Flex },
-  'nimbus-image': { component: Nimbus.Image, isVoid: true },
-  // ... etc
-};
-```
-
-### Generic Wrapper Factory
-
-The wrapper factory creates components with action handling based on the registry config:
-
-```typescript
-// @mcp-ui/react/wrapper-factory.ts
-export function createWrapper<T extends BaseAction>(
-  config: ComponentConfig<T>
-): React.ComponentType {
-  const { component: Component, actions, internalEvents } = config;
-
-  return function WrappedComponent(props: Record<string, unknown>) {
-    const uri = useUri();
-    const dispatchAction = useActionDispatch();
-    const syncDom = useDomSync();
-
-    // Build enhanced props with action handlers
-    const enhancedProps = { ...props };
-
-    // Wire up agent actions (go to orchestrator)
-    actions?.forEach(({ actionType, triggerProp, extractPayload }) => {
-      const originalHandler = props[triggerProp];
-      enhancedProps[triggerProp] = (event: unknown) => {
-        const action: T = {
-          type: actionType,
-          componentId: props.id as string,
-          uri,
-          timestamp: Date.now(),
-          payload: extractPayload(event, props),
-        } as T;
-
-        dispatchAction(action);
-
-        // Call original handler if provided
-        if (typeof originalHandler === 'function') {
-          originalHandler(event);
-        }
-      };
-    });
-
-    // Wire up internal events (DOM sync only)
-    internalEvents?.forEach(({ propName, eventName }) => {
-      const originalHandler = props[propName];
-      enhancedProps[propName] = (event: unknown) => {
-        syncDom(eventName, uri, event);
-        if (typeof originalHandler === 'function') {
-          originalHandler(event);
-        }
-      };
-    });
-
-    return <Component {...enhancedProps} />;
-  };
-}
-```
-
-### Provider with Single onAction Handler
-
-The provider exposes a single `onAction` callback for the consuming application to handle:
-
-```typescript
-// @mcp-ui/react/provider.tsx
-interface McpUiProviderProps {
-  serverUrl: string;
-  children: React.ReactNode;
-
-  /** Handle user actions that need orchestrator processing */
-  onAction?: (action: BaseAction) => void | Promise<void>;
-
-  /** Connection lifecycle callbacks */
-  onConnectionChange?: (connected: boolean) => void;
-  onError?: (error: Error) => void;
-}
-
-const ActionContext = createContext<{
-  dispatch: (action: BaseAction) => void;
-}>({ dispatch: () => {} });
-
-const DomSyncContext = createContext<{
-  sync: (eventName: string, uri: string, data: unknown) => void;
-}>({ sync: () => {} });
-
-export function McpUiProvider({
-  serverUrl,
-  children,
-  onAction,
-  onConnectionChange,
-  onError,
-}: McpUiProviderProps) {
-  const { sendEvent, connected } = useWebSocketConnection(serverUrl);
-
-  // Agent actions go to onAction callback (for LLM/orchestrator)
-  const dispatch = useCallback((action: BaseAction) => {
-    onAction?.(action);
-  }, [onAction]);
-
-  // Internal events go directly to WebSocket (DOM sync)
-  const sync = useCallback((eventName: string, uri: string, data: unknown) => {
-    sendEvent(eventName, uri, data);
-  }, [sendEvent]);
-
-  return (
-    <ActionContext.Provider value={{ dispatch }}>
-      <DomSyncContext.Provider value={{ sync }}>
-        {children}
-      </DomSyncContext.Provider>
-    </ActionContext.Provider>
-  );
-}
-
-export const useActionDispatch = () => useContext(ActionContext).dispatch;
-export const useDomSync = () => useContext(DomSyncContext).sync;
-```
-
----
-
-## LangChain Adapter (`@mcp-ui/langchain`)
-
-The LangChain adapter provides integration with LangChain/LangGraph applications, bridging the MCP-UI event system with LangChain's streaming patterns.
-
-### Package Purpose
-
-- Provide hooks for processing LangChain stream chunks
-- Offer a pre-configured action handler that submits actions back to LangGraph
-- Enable hybrid rendering (LangChain orchestration + MCP-UI components)
-
-### Core Adapter
-
-```typescript
-// @mcp-ui/langchain/adapter.ts
-import type { BaseAction } from '@mcp-ui/core';
-
-export interface LangChainAdapterConfig {
-  /** LangGraph thread ID */
-  threadId: string;
-  /** LangGraph API endpoint */
-  apiUrl: string;
-  /** Assistant ID for the graph */
-  assistantId: string;
-}
-
-export function createLangChainActionHandler(config: LangChainAdapterConfig) {
-  return async (action: BaseAction) => {
-    // Submit action as a new message to LangGraph
-    const response = await fetch(`${config.apiUrl}/threads/${config.threadId}/runs`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assistant_id: config.assistantId,
-        input: {
-          messages: [{
-            type: 'human',
-            content: JSON.stringify({
-              type: 'ui_action',
-              action,
-            }),
-          }],
-        },
-        stream_mode: 'messages',
-      }),
-    });
-
-    // Return stream for processing
-    return response.body;
-  };
-}
-```
-
-### Stream Processing Hook
-
-```typescript
-// @mcp-ui/langchain/hooks.ts
-import { useStream } from '@langchain/langgraph-sdk/react';
-import type { Message } from '@langchain/langgraph-sdk';
-
-interface UseLangChainMcpUiOptions {
-  apiUrl: string;
-  assistantId: string;
-  threadId?: string;
-}
-
-export function useLangChainMcpUi(options: UseLangChainMcpUiOptions) {
-  const thread = useStream<{ messages: Message[] }>({
-    apiUrl: options.apiUrl,
-    assistantId: options.assistantId,
-    threadId: options.threadId,
-  });
-
-  // Extract MCP-UI resources from stream
-  const uiResources = useMemo(() => {
-    const resources: Array<{ uri: string; content: unknown }> = [];
-
-    for (const message of thread.messages) {
-      // Look for tool results with UI resources
-      if (message.type === 'tool' && message.content) {
-        const content = JSON.parse(message.content);
-        if (content.type === 'remoteDom') {
-          resources.push({
-            uri: content.uri,
-            content,
-          });
-        }
-      }
-    }
-
-    return resources;
-  }, [thread.messages]);
-
-  // Create action handler bound to this thread
-  const handleAction = useCallback(async (action: BaseAction) => {
-    await thread.submit({
-      messages: [{
-        type: 'human',
-        content: JSON.stringify({ type: 'ui_action', action }),
-      }],
-    });
-  }, [thread]);
-
-  return {
-    ...thread,
-    uiResources,
-    handleAction,
-  };
-}
-```
-
-### Consumer Usage with LangChain
-
-```tsx
-// Consumer app with LangChain integration
-import { McpUiProvider, RemoteRenderer } from '@mcp-ui/nimbus';
-import { useLangChainMcpUi } from '@mcp-ui/langchain';
-
-function ChatWithUI() {
-  const {
-    messages,
-    uiResources,
-    handleAction,
-    submit,
-    isLoading,
-  } = useLangChainMcpUi({
-    apiUrl: 'http://localhost:8000',
-    assistantId: 'commerce-assistant',
-  });
-
-  return (
-    <div className="chat-container">
-      {/* Chat messages */}
-      <div className="messages">
-        {messages.map((msg, i) => (
-          <ChatMessage key={i} message={msg} />
-        ))}
-      </div>
-
-      {/* MCP-UI rendered components */}
-      <McpUiProvider
-        serverUrl="http://localhost:3001"
-        onAction={handleAction}
-      >
-        {uiResources.map((resource) => (
-          <RemoteRenderer
-            key={resource.uri}
-            uri={resource.uri}
-            initialContent={resource.content}
-          />
-        ))}
-      </McpUiProvider>
-
-      {/* Chat input */}
-      <ChatInput onSubmit={submit} disabled={isLoading} />
-    </div>
-  );
-}
-```
-
-### Standalone Usage (No LangChain)
-
-```tsx
-// Consumer app without LangChain - custom orchestrator
-import { McpUiProvider, RemoteRenderer } from '@mcp-ui/nimbus';
-import type { NimbusAction } from '@mcp-ui/nimbus';
-
-function MyApp() {
-  const handleAction = useCallback((action: NimbusAction) => {
-    // Custom handling based on action type
-    switch (action.type) {
-      case 'button.click':
-        console.log('Button clicked:', action.payload.buttonId);
-        // Send to your own backend/orchestrator
-        myOrchestrator.handleButtonClick(action.payload);
-        break;
-
-      case 'dataTable.rowSelect':
-        console.log('Row selected:', action.payload.rowId);
-        myOrchestrator.handleRowSelect(action.payload);
-        break;
-
-      case 'form.submit':
-        console.log('Form submitted:', action.payload.formData);
-        myOrchestrator.handleFormSubmit(action.payload);
-        break;
-    }
-  }, []);
-
   return (
     <McpUiProvider
       serverUrl="http://localhost:3001"
-      onAction={handleAction}
+      onAction={(action) => myOrchestrator.handle(action)}
     >
       <RemoteRenderer uri="/my-ui" />
     </McpUiProvider>
@@ -818,110 +100,589 @@ function MyApp() {
 }
 ```
 
----
+**Why single package?**
 
-## Files to Extract from POC
-
-### To `@mcp-ui/core`
-
-| Source File | Notes |
-|-------------|-------|
-| `use-remote-connection.ts` | Extract connection logic, remove React dependencies |
-| `use-mutation-stream.ts` | WebSocket handling, message parsing |
-| Types | `ClientEventMessage`, `ActionQueuedMessage`, `BaseAction`, etc. |
-
-### To `@mcp-ui/react`
-
-| Source File | Notes |
-|-------------|-------|
-| `remote-dom-renderer.tsx` | Keep generic renderer, extract component registry |
-| `prop-injector.tsx` | Keep as-is |
-| Provider component | New file with `ActionContext` and `DomSyncContext` |
-| `useUri` hook | Context for URI access |
-| `wrapper-factory.ts` | New file - generic wrapper creation from `ComponentConfig` |
-
-### To `@mcp-ui/nimbus`
-
-| Source | Notes |
-|--------|-------|
-| Component wrappers | Migrate to registry-based `ComponentConfig` with typed actions |
-| Registry definition | Map of element names to `ComponentConfig<NimbusAction>` |
-| Action types | `ButtonAction`, `RowSelectAction`, `FormSubmitAction`, etc. |
-| `NimbusMcpProvider` | Auto-registering provider wrapper |
-
-### To `@mcp-ui/langchain` (New Package)
-
-| Source | Notes |
-|--------|-------|
-| `adapter.ts` | `createLangChainActionHandler` for submitting actions to LangGraph |
-| `hooks.ts` | `useLangChainMcpUi` for stream processing and UI resource extraction |
-| Types | LangChain-specific types and interfaces |
+- Simpler for consumers (one install, one import)
+- Internal structure can be refactored without breaking changes
+- Split into multiple packages later only if there's actual demand
 
 ---
 
-## Migration Path
+## Provider API
 
-| Scenario | Import From | Breaking Change? |
-|----------|-------------|------------------|
-| Option A today | `@mcp-ui/nimbus` | - |
-| Option B (custom + Nimbus) | `@mcp-ui/react` + `@mcp-ui/nimbus` | No |
-| Option B (custom only) | `@mcp-ui/react` | No |
-| Extend Nimbus registry | Import `nimbusRegistry`, add entries | No |
-| With LangChain | `@mcp-ui/nimbus` + `@mcp-ui/langchain` | No |
-| Custom orchestrator | `@mcp-ui/nimbus` + custom `onAction` handler | No |
+```typescript
+interface McpUiProviderProps {
+  /** WebSocket URL for MCP-UI server */
+  serverUrl: string;
+
+  children: React.ReactNode;
+
+  /**
+   * Handle orchestrator events (button clicks, form submits, etc.)
+   * Sync events (drawer close, accordion toggle) go directly to server.
+   */
+  onAction?: (action: Action) => void | Promise<void>;
+
+  /** Optional: Called when connection state changes */
+  onConnectionChange?: (connected: boolean) => void;
+}
+
+interface Action {
+  type: string;        // e.g., 'button.press', 'form.submit'
+  elementId: string;   // From component's `id` prop
+  uri: string;         // Which RemoteRenderer
+  payload: unknown;    // Event-specific data
+  timestamp: number;
+}
+```
 
 ---
 
-## Important Constraint
+## RemoteRenderer API
 
-**Custom components require server-side definitions.** A client-side component registration is useless without:
+```typescript
+interface RemoteRendererProps {
+  /** Server-generated URI for this component tree */
+  uri: string;
 
-1. Server-side element definition (custom HTML element)
-2. Server-side tool definition (MCP tool that creates the element)
+  /** Initial content from MCP resource response (optional - can hydrate from server) */
+  initialContent?: RemoteDomContent;
 
-The library cannot provide custom component support in isolation - it requires either:
-- A plugin system for the MCP-UI server
-- Consumers running their own MCP-UI server
+  /** Content to show while loading */
+  fallback?: React.ReactNode;
 
-This is why Option A focuses solely on pre-wired Nimbus components where both sides are already defined.
+  /** Called when an error occurs */
+  onError?: (error: Error) => void;
+}
+
+interface RemoteDomContent {
+  type: 'remoteDom';
+  tree: RemoteDomNode | null;
+  framework: 'react';
+}
+```
+
+**Usage pattern:**
+
+```tsx
+// URI and content come from server/orchestrator response
+const resource = orchestratorResponse.uiResources[0];
+
+<RemoteRenderer
+  uri={resource.uri}
+  initialContent={JSON.parse(resource.text)}
+  fallback={<Spinner />}
+/>
+```
+
+**How it works:**
+
+1. Server creates component → returns resource with `uri` + initial content
+2. Orchestrator passes resource to client
+3. Client renders `RemoteRenderer` with uri and initialContent
+4. Renderer subscribes to WebSocket updates for that URI
+5. Future mutations stream in, component re-renders
 
 ---
 
-## Component Support Matrix (Option A)
+## Connection Handling
 
-### Simple Components (styleProps spreading only)
+### Connection States
 
-- `nimbus-badge` → `Badge`
-- `nimbus-text` → `Text`
-- `nimbus-heading` → `Heading`
-- `nimbus-stack` → `Stack`
-- `nimbus-flex` → `Flex`
-- `nimbus-image` → `Image` (void element)
+```typescript
+type ConnectionState = 'connecting' | 'connected' | 'disconnected' | 'error';
+```
 
-### Interactive Components (event handling)
+Provider exposes connection state via context:
 
-- `nimbus-button` → `ButtonWrapper` (buttonClick event, form data extraction)
-- `nimbus-data-table` → `DataTableWrapper` (rowClick event, data parsing)
-- `nimbus-drawer-root` → `DrawerRootWrapper` (drawerClose event)
-- `nimbus-alert-dismiss-button` → `AlertDismissButtonWrapper` (dismiss event)
+```tsx
+function MyComponent() {
+  const { connectionState, error } = useMcpUi();
 
-### Compound Components
+  if (connectionState === 'connecting') return <Spinner />;
+  if (connectionState === 'error') return <Text>Error: {error?.message}</Text>;
 
-- Card: `nimbus-card-root`, `nimbus-card-header`, `nimbus-card-body`, `nimbus-card-footer`
-- Alert: `nimbus-alert-root`, `nimbus-alert-title`, `nimbus-alert-description`, `nimbus-alert-dismiss-button`
-- Drawer: `nimbus-drawer-root`, `nimbus-drawer-content`, `nimbus-drawer-header`, etc.
-- FormField: `nimbus-form-field-root` (prop injection), `nimbus-form-field-label`, `nimbus-form-field-input`, etc.
+  return <RemoteRenderer uri={resource.uri} initialContent={resource.content} />;
+}
+```
 
-### Data Transformation Components
+### Reconnection
 
-- `nimbus-money-input` → `MoneyInputWrapper` (value object construction)
-- `nimbus-data-table` → `DataTableWrapper` (JSON parsing for columns/rows)
+- Auto-reconnect on disconnect with exponential backoff
+- Consumer can disable via `autoReconnect={false}`
+- `onConnectionChange` callback fires on state changes
+
+### Multiple RemoteRenderers
+
+Multiple renderers share a single WebSocket connection. Each subscribes to its own URI:
+
+```tsx
+<McpUiProvider serverUrl="ws://localhost:3001">
+  {/* Each renderer subscribes to updates for its URI */}
+  {uiResources.map(resource => (
+    <RemoteRenderer
+      key={resource.uri}
+      uri={resource.uri}
+      initialContent={resource.content}
+    />
+  ))}
+</McpUiProvider>
+```
+
+---
+
+## Error Handling
+
+### Error Types
+
+```typescript
+type McpUiError =
+  | { type: 'connection'; message: string }
+  | { type: 'unknown_element'; elementName: string }
+  | { type: 'render'; componentName: string; error: Error };
+```
+
+### Unknown Element Handling
+
+When server sends an element not in registry:
+
+1. Log warning to console
+2. Render nothing (or placeholder in dev mode)
+3. Call `onError` if provided
+
+### Component Render Errors
+
+Wrap components in error boundary. On error:
+
+1. Render error fallback
+2. Call `onError` callback
+3. Other components continue rendering
+
+---
+
+## Component Registry
+
+```typescript
+interface ComponentConfig {
+  component: React.ComponentType;
+  isVoid?: boolean;
+  events?: EventConfig[];
+}
+
+interface EventConfig {
+  /** React prop name (e.g., 'onPress', 'onOpenChange') */
+  prop: string;
+  /** If true, goes to onAction. If false, syncs directly to server. */
+  requiresOrchestrator: boolean;
+}
+
+const registry: Record<string, ComponentConfig> = {
+  // Orchestrator events - need LLM decision
+  'nimbus-button': {
+    component: Button,
+    events: [{ prop: 'onPress', requiresOrchestrator: true }],
+  },
+  'nimbus-data-table': {
+    component: DataTable,
+    events: [{ prop: 'onRowClick', requiresOrchestrator: true }],
+  },
+
+  // Sync events - just update server DOM
+  'nimbus-drawer-root': {
+    component: Drawer.Root,
+    events: [{ prop: 'onOpenChange', requiresOrchestrator: false }],
+  },
+  'nimbus-accordion-root': {
+    component: Accordion.Root,
+    events: [{ prop: 'onExpandedChange', requiresOrchestrator: false }],
+  },
+
+  // No events
+  'nimbus-text': { component: Text },
+  'nimbus-badge': { component: Badge },
+};
+```
+
+---
+
+## Wrapper Factory
+
+```typescript
+function createWrapper(config: ComponentConfig) {
+  return function Wrapped(props) {
+    const { dispatchAction, syncToServer, uri } = useMcpUi();
+
+    const enhanced = { ...props };
+
+    config.events?.forEach(({ prop, requiresOrchestrator }) => {
+      const original = props[prop];
+      enhanced[prop] = (event) => {
+        const action = {
+          type: `${config.component.displayName}.${prop}`,
+          elementId: props.id,
+          uri,
+          payload: event,
+          timestamp: Date.now(),
+        };
+
+        if (requiresOrchestrator) {
+          dispatchAction(action);  // → onAction callback
+        } else {
+          syncToServer(action);    // → WebSocket directly
+        }
+
+        original?.(event);
+      };
+    });
+
+    return <config.component {...enhanced} />;
+  };
+}
+```
+
+---
+
+## What We Keep from POC
+
+| POC File                   | Keep                    | Notes                           |
+| -------------------------- | ----------------------- | ------------------------------- |
+| `remote-dom-renderer.tsx`  | Core rendering logic    | Simplify registry handling      |
+| `use-remote-connection.ts` | WebSocket connection    | As-is                           |
+| `use-mutation-stream.ts`   | Mutation processing     | As-is                           |
+| Component wrappers         | Convert to registry     | Remove individual wrapper files |
+| `prop-injector.tsx`        | For compound components | As-is                           |
+
+---
+
+## Orchestration Patterns
+
+The library supports multiple orchestration patterns. Choose based on your architecture.
+
+### Pattern 1: Server-Side Orchestrator (Simplest)
+
+MCP-UI server handles events directly. No external orchestrator needed.
+
+```text
+┌─────────────────┐                ┌─────────────────┐
+│   MCP-UI        │   WebSocket    │     Client      │
+│   Server        │◄──────────────►│     (React)     │
+└─────────────────┘                └─────────────────┘
+        │
+        │ Server's event handlers
+        │ update Remote DOM directly
+        └─────────────────────────
+```
+
+```tsx
+// No onAction needed - events go to server, server handles them
+<McpUiProvider serverUrl="ws://localhost:3001">
+  <RemoteRenderer uri="/ui" />
+</McpUiProvider>
+```
+
+### Pattern 2: External Orchestrator (LangGraph, custom backend, etc.)
+
+Orchestrator connects to MCP-UI server as MCP client. Client routes actions to orchestrator.
+
+```text
+┌─────────────────┐                ┌─────────────────┐                ┌─────────────────┐
+│  Orchestrator   │  MCP Protocol  │   MCP-UI        │   WebSocket    │     Client      │
+│  (LangGraph,    │◄──────────────►│   Server        │◄──────────────►│     (React)     │
+│   custom, etc.) │                └─────────────────┘                └─────────────────┘
+└─────────────────┘                        │
+        │                                  │
+        │ calls MCP tools to               │ maintains Remote DOM
+        │ update UI                        │ streams mutations
+        └──────────────────────────────────┘
+```
+
+```tsx
+<McpUiProvider
+  serverUrl="ws://localhost:3001"
+  onAction={(action) => myOrchestrator.handle(action)}
+>
+  <RemoteRenderer uri="/ui" />
+</McpUiProvider>
+```
+
+**Action flow:**
+
+1. User clicks button → client `onAction` fires
+2. Client sends action to orchestrator (your code)
+3. Orchestrator processes, calls MCP tools on MCP-UI server
+4. MCP-UI server updates Remote DOM
+5. Mutations stream to client via WebSocket
+6. Client re-renders
+
+### Pattern 3: LangGraph
+
+LangGraph connects as MCP client. All component data flows through MCP-UI server (not LangGraph stream).
+
+```text
+┌─────────────────┐
+│    LangGraph    │──Stream──► Chat messages only
+│                 │
+└────────┬────────┘
+         │ MCP tool calls (create/update components)
+         ▼
+┌─────────────────┐                ┌─────────────────┐
+│   MCP-UI        │───WebSocket───►│     Client      │
+│   Server        │  (mutations)   │                 │
+└─────────────────┘                └─────────────────┘
+```
+
+**Data flow:**
+- LangGraph stream → chat messages (consumer handles separately)
+- MCP tools → component updates → WebSocket → client
+
+```tsx
+// Client setup - same as Pattern 2
+<McpUiProvider
+  serverUrl="ws://localhost:3001"
+  onAction={(action) => sendToLangGraph(action)}
+>
+  <RemoteRenderer uri="/ui" />
+</McpUiProvider>
+```
+
+**No special LangGraph integration needed.** Consumer uses LangGraph's `useStream` for chat, our library for components. They're independent.
+
+**Future:** If direct streaming to components becomes needed, can add Option B (LangGraph stream → components) without breaking changes.
+
+---
+
+## Server-Side Patterns
+
+**Note:** This section documents server behavior for context. The client library doesn't implement this.
+
+### URI-Based Element Identity
+
+Elements are identified by URI. The MCP-UI server creates the URI on initial creation.
+
+```typescript
+// Initial create - server generates URI, returns it
+const result = await createDataTable({ rows: [] });
+// result.uri = "/ui/elements/abc123"
+
+// Update - caller must provide the URI from initial create
+await createDataTable({ uri: "/ui/elements/abc123", rows: [{ name: "Alice" }] });
+```
+
+**Key points:**
+
+- Server generates URI on first create (caller doesn't specify)
+- Subsequent updates require the URI from the initial response
+- Same tool for create and update (idempotent)
+- Orchestrator must track URIs to update components later
+
+**Implication for orchestrators:**
+LangGraph/agents need to store returned URIs (e.g., in conversation state or tool context) to reference components for updates.
+
+---
+
+## Prop Injection (Compound Components)
+
+Some Nimbus components use `React.cloneElement()` to inject props into children (e.g., FormField.Input injects `id`, `aria-describedby`, error state into its child input).
+
+**The Problem:**
+When the server renders `FormField.Input` with a child `TextInput`, the injected props must flow through Remote DOM serialization to reach the actual child component.
+
+**The Solution:**
+Components that use cloneElement need special handling:
+
+```typescript
+// FormField.Root reconstructs children inside its context
+const FormFieldRootWrapper = (props) => {
+  const { children, ...rest } = props;
+
+  // Children must be re-rendered inside FormField.Root's context
+  // so FormField.Input/Label/etc. can register with the context
+  const reconstructed = children.map((child, index) => {
+    const element = child.props.element; // Remote DOM element data
+    return renderElement(element, index, componentMap);
+  });
+
+  return (
+    <FormField.Root {...rest}>
+      {reconstructed}
+    </FormField.Root>
+  );
+};
+```
+
+**Components requiring this pattern:**
+- `FormField.Root` - Children need context access for registration
+
+---
+
+## styleProps Handling
+
+Nimbus components accept Chakra UI style props. These are serialized separately by Remote DOM.
+
+```typescript
+// Server sends props like:
+{
+  styleProps: { margin: "400", padding: "200" },
+  variant: "solid",
+  children: "Click me"
+}
+
+// Wrapper spreads styleProps onto component
+const simple = (Component) => (props) => {
+  const { styleProps, children, ...rest } = props;
+  const merged = { ...rest, ...styleProps };
+
+  return <Component {...merged}>{children}</Component>;
+};
+```
+
+This is handled automatically in the wrapper factory.
+
+---
+
+## Form Data Extraction
+
+When a button inside a form is clicked, extract form data and include in action:
+
+```typescript
+const ButtonWrapper = (props) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handlePress = () => {
+    const formData: Record<string, string> = {};
+
+    const form = buttonRef.current?.closest('form');
+    if (form) {
+      const inputs = form.querySelectorAll<HTMLInputElement>('input[name]');
+      inputs.forEach((input) => {
+        if (input.name) {
+          formData[input.name] = input.value;
+        }
+      });
+    }
+
+    dispatchAction({
+      type: 'button.press',
+      elementId: props.id,
+      payload: { formData },
+    });
+  };
+
+  return <Button ref={buttonRef} onPress={handlePress} {...props} />;
+};
+```
+
+**Form data is automatically included in button click actions.** The orchestrator receives the complete form state.
+
+---
+
+## Data Transformation
+
+Some props need transformation from serialized format:
+
+### JSON String Parsing
+
+DataTable columns/rows are serialized as JSON strings:
+
+```typescript
+const DataTableWrapper = (props) => {
+  const { columns, rows, ...rest } = props;
+
+  // Parse JSON strings if needed
+  const parsedColumns = typeof columns === 'string'
+    ? JSON.parse(columns)
+    : columns;
+  const parsedRows = typeof rows === 'string'
+    ? JSON.parse(rows)
+    : rows;
+
+  // Transform accessor strings to functions
+  const transformedColumns = parsedColumns.map((col) => ({
+    ...col,
+    accessor: typeof col.accessor === 'string'
+      ? (row) => row[col.id]
+      : col.accessor,
+  }));
+
+  return <DataTable columns={transformedColumns} rows={parsedRows} {...rest} />;
+};
+```
+
+### Compound Value Construction
+
+MoneyInput value needs reconstruction:
+
+```typescript
+const MoneyInputWrapper = (props) => {
+  const { currencyCode, amount, currencies, ...rest } = props;
+
+  const parsedCurrencies = typeof currencies === 'string'
+    ? JSON.parse(currencies)
+    : currencies;
+
+  const value = {
+    currencyCode: currencyCode || 'USD',
+    amount: amount || '',
+  };
+
+  return <MoneyInput value={value} currencies={parsedCurrencies} {...rest} />;
+};
+```
+
+**These transformations are internal to the library.** Consumers don't need to handle them.
+
+---
+
+## Exported Types
+
+Types consumers can import:
+
+```typescript
+// Main exports
+export { McpUiProvider, RemoteRenderer, useMcpUi } from './core';
+
+// Types
+export type {
+  McpUiProviderProps,
+  RemoteRendererProps,
+  RemoteDomContent,
+  Action,
+  McpUiError,
+  ConnectionState,
+} from './types';
+
+// Hook return type for useMcpUi
+export interface McpUiContextValue {
+  connectionState: ConnectionState;
+  error: McpUiError | null;
+  dispatchAction: (action: Action) => void;
+  syncToServer: (action: Action) => void;
+}
+```
+
+---
+
+## Implementation Order
+
+1. **Extract core from POC** - Provider, Renderer, connection hooks
+2. **Build registry** - Convert wrappers to config with `requiresOrchestrator`
+3. **Test with existing POC server** - Ensure feature parity
+4. **Package and publish** - Single `@mcp-ui/nimbus` package
+5. **Document LangChain pattern** - Examples, not code
+
+---
+
+## What We're NOT Doing
+
+- ❌ Multiple packages (premature split)
+- ❌ Typed action discriminated unions (over-engineering)
+- ❌ LangChain adapter package (just docs)
+- ❌ Consumer-side event routing logic (library handles it)
 
 ---
 
 ## Open Questions
 
-1. **Versioning strategy** - How to handle Nimbus version compatibility?
-2. **Server package** - Should `@mcp-ui/server` be part of this effort or separate?
-3. **Testing** - How to test the library in isolation from a running server?
-4. **Documentation** - Storybook integration for demonstrating components?
+1. **Versioning** - How to handle Nimbus version compatibility?
+2. **Server package** - Separate effort or include here?
+3. **Testing** - How to test without running server?

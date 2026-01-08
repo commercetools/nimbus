@@ -201,18 +201,32 @@ const DataTableWrapper = (props: Record<string, unknown>) => {
     typeof rows === "string" ? JSON.parse(rows as string) : rows;
 
   interface ColumnDef {
-    id: string;
-    accessor: string | ((row: Record<string, unknown>) => unknown);
+    id?: string;
+    key?: string;
+    header?: string;
+    label?: string;
+    accessor?: string | ((row: Record<string, unknown>) => unknown);
     [key: string]: unknown;
   }
 
-  const transformedColumns = parsedColumns?.map((col: ColumnDef) => ({
-    ...col,
-    accessor:
-      typeof col.accessor === "string"
-        ? (row: Record<string, unknown>) => row[col.id]
-        : col.accessor,
-  }));
+  // Normalize columns - handle both {id, header} and {key, label} formats
+  const transformedColumns = parsedColumns?.map((col: ColumnDef) => {
+    // Get the column key - prefer 'id' but fall back to 'key'
+    const colKey = col.id || col.key || "";
+    // Get the header - prefer 'header' but fall back to 'label'
+    const colHeader = col.header || col.label || colKey;
+
+    return {
+      ...col,
+      id: colKey,
+      header: colHeader,
+      // Always ensure accessor is a function - create one from the column key
+      accessor:
+        typeof col.accessor === "function"
+          ? col.accessor
+          : (row: Record<string, unknown>) => row[colKey],
+    };
+  });
 
   const handleRowClick = isRowClickable
     ? (row: DataTableRowItem) => {

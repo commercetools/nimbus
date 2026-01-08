@@ -39,6 +39,19 @@ export function registerComponentTagsResource(server: McpServer) {
               ],
               layoutContainers: ["nimbus-stack", "nimbus-flex"],
               inputs: ["nimbus-text-input", "nimbus-button"],
+              dataDisplay: {
+                description: "Data display components",
+                tags: ["nimbus-data-table"],
+                dataTableProps: {
+                  columns:
+                    "JSON string array of column definitions with id, header, accessor",
+                  rows: "JSON string array of row data objects",
+                  ariaLabel: "Required accessibility label",
+                  allowsSorting: "Boolean to enable column sorting",
+                  isRowClickable: "Boolean to enable row click events",
+                  density: "'default' | 'compact' | 'comfortable'",
+                },
+              },
               cardComponents: {
                 description: "Card is a compound component with multiple parts",
                 parts: [
@@ -81,6 +94,7 @@ export function registerComponentTagsResource(server: McpServer) {
                 "nimbus-flex",
                 "nimbus-text-input",
                 "nimbus-button",
+                "nimbus-data-table",
                 "nimbus-card-root",
                 "nimbus-card-header",
                 "nimbus-card-content",
@@ -104,6 +118,8 @@ export function registerComponentTagsResource(server: McpServer) {
                 card: "Use 'nimbus-card-root' instead",
                 button: "Use 'nimbus-button' instead",
                 input: "Use 'nimbus-text-input' instead",
+                "data-table": "Use 'nimbus-data-table' instead",
+                table: "Use 'nimbus-data-table' instead",
               },
             },
             null,
