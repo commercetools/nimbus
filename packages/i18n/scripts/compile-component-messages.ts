@@ -1,5 +1,5 @@
 /**
- * Compile component messages to JavaScript - Step 3 of 4 in the i18n build pipeline
+ * Compile component messages to JavaScript - Step 2 of 3 in the i18n build pipeline
  *
  * Overview:
  * Takes the split component messages (ICU format) and compiles them into
@@ -32,8 +32,9 @@ import { compileStrings } from "@internationalized/string-compiler";
 import fs from "fs/promises";
 import path from "path";
 import { format } from "prettier";
+import { LOCALE_CODES } from "./locales";
 
-const LOCALES = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
+const LOCALES = LOCALE_CODES;
 
 /**
  * Convert component name to directory name (PascalCase → kebab-case)

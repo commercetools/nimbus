@@ -1,34 +1,37 @@
 /**
- * Split ICU messages by component - Step 2 of 4 in the i18n build pipeline
+ * Transform and split messages by component - Step 1 of 3 in the i18n build pipeline
  *
  * Overview:
- * All translation messages are stored together in locale files (e.g., en.json),
- * but we need to compile them per component so each component can bundle its
- * own messages.
- * This script parses message keys following the pattern
- * "Nimbus.{Component}.{key}" and groups messages by component, creating
- * separate files for each component/locale combination.
+ * This script combines two operations:
+ * 1. Transforms Transifex format to simple key-value pairs (extracts "string" field)
+ * 2. Groups messages by component (parses "Nimbus.{Component}.{key}" IDs)
  *
+ * Transifex stores translations with metadata (developer_comment, string, etc.),
+ * but @internationalized/string-compiler needs simple key-value pairs. This script
+ * extracts the "string" field and immediately groups messages by component in memory.
  *
- * Input:  .temp/icu/*.json (all messages per locale)
+ * Input:  packages/i18n/data/*.json (Transifex format)
  * Output: .temp/by-component/{Component}/{locale}.json (messages grouped by component)
+ *
+ * Format transformation:
+ *   Transifex: { "key": { "string": "value", "developer_comment": "..." } }
+ *   ICU (in-memory): { "key": "value" }
+ *   Component split: {Component}/{locale}.json with component-scoped keys
  *
  * Key parsing:
  *   Pattern: "Nimbus.{Component}.{key}"
  *   Example: "Nimbus.Alert.dismiss" → Component: "Alert", Key: "dismiss"
  *
  * @example
- * Input (.temp/icu/en.json):
+ * Input (data/en.json):
  *   {
- *     "Nimbus.Alert.dismiss": "Dismiss",
- *     "Nimbus.Avatar.avatarLabel": "Avatar image for {fullName}",
- *     "Nimbus.Alert.title": "Alert"
+ *     "Nimbus.Alert.dismiss": { "string": "Dismiss", "developer_comment": "..." },
+ *     "Nimbus.Avatar.avatarLabel": { "string": "Avatar image for {fullName}", ... }
  *   }
  *
  * Output (.temp/by-component/Alert/en.json):
  *   {
- *     "dismiss": "Dismiss",
- *     "title": "Alert"
+ *     "dismiss": "Dismiss"
  *   }
  *
  * Output (.temp/by-component/Avatar/en.json):
@@ -39,8 +42,18 @@
 
 import fs from "fs/promises";
 import path from "path";
+import { LOCALE_CODES } from "./locales";
 
-const LOCALES = ["en", "de", "es", "fr-FR", "pt-BR"] as const;
+const LOCALES = LOCALE_CODES;
+
+/**
+ * Transifex message structure from the translation files
+ * The "string" field contains the actual translation value
+ */
+type TransifexMessage = {
+  string: string;
+  developer_comment?: string;
+};
 
 /**
  * Component messages grouped by component name
@@ -50,20 +63,28 @@ interface ComponentMessages {
   [component: string]: Record<string, string>;
 }
 
-async function splitByComponent() {
-  const icuDir = path.join(__dirname, "../.temp/icu");
+async function transformAndSplitByComponent() {
+  const dataDir = path.join(__dirname, "../data");
   const outputDir = path.join(__dirname, "../.temp/by-component");
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Track all unique components found across all locales
-  const components: Set<string> = new Set();
-
-  // Process each locale file from the ICU transformation step
+  // Process each locale file
   for (const locale of LOCALES) {
-    const icuPath = path.join(icuDir, `${locale}.json`);
-    const icuData = JSON.parse(await fs.readFile(icuPath, "utf-8"));
+    const inputPath = path.join(dataDir, `${locale}.json`);
 
-    // Group messages by component name
+    // Step 1: Read and transform Transifex format to ICU format (in memory)
+    const transifexData = JSON.parse(
+      await fs.readFile(inputPath, "utf-8")
+    ) as Record<string, TransifexMessage>;
+
+    // Transform to ICU format: extract "string" field from each message
+    // This removes metadata and creates simple key-value pairs
+    const icuData: Record<string, string> = {};
+    for (const [key, value] of Object.entries(transifexData)) {
+      icuData[key] = value.string;
+    }
+
+    // Step 2: Group messages by component name (in memory)
     const componentGroups: ComponentMessages = {};
 
     for (const [fullKey, value] of Object.entries(icuData)) {
@@ -75,7 +96,6 @@ async function splitByComponent() {
       }
 
       const [, component, messageKey] = match;
-      components.add(component);
 
       // Initialize component group if it doesn't exist
       if (!componentGroups[component]) {
@@ -83,7 +103,7 @@ async function splitByComponent() {
       }
 
       // Store message with component-scoped key (removes "Nimbus.Component." prefix)
-      componentGroups[component][messageKey] = value as string;
+      componentGroups[component][messageKey] = value;
     }
 
     // Write component-specific files (ready for next step: compile-component-messages)
@@ -96,7 +116,7 @@ async function splitByComponent() {
     }
   }
 
-  console.log("✅ Split complete. Output: .temp/by-component/");
+  console.log("✅ Transform and split complete. Output: .temp/by-component/");
 }
 
-splitByComponent().catch(console.error);
+transformAndSplitByComponent().catch(console.error);
