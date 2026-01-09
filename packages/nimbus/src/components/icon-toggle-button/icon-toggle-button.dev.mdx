@@ -1,0 +1,364 @@
+---
+title: IconToggleButton Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { IconToggleButton, type IconToggleButtonProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The IconToggleButton component is a specialized toggle button designed for icon-only interactions. It extends the ToggleButton component with required accessibility labeling for icon content.
+
+```jsx-live-dev
+const App = () => (
+  <IconToggleButton aria-label="Like" onChange={(isSelected) => console.log(isSelected)}>
+    <Icons.ThumbUp />
+  </IconToggleButton>
+)
+```
+
+## Usage examples
+
+### Visual variants
+
+IconToggleButton supports two visual variants. The `outline` variant is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconToggleButton variant="outline" aria-label="Star (outline)">
+      <Icons.Star />
+    </IconToggleButton>
+    <IconToggleButton variant="ghost" aria-label="Star (ghost)">
+      <Icons.Star />
+    </IconToggleButton>
+  </Stack>
+)
+```
+
+### Size options
+
+IconToggleButton supports three size variants. The `md` size is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconToggleButton size="2xs" aria-label="Bookmark (2xs)">
+      <Icons.Bookmark />
+    </IconToggleButton>
+    <IconToggleButton size="xs" aria-label="Bookmark (xs)">
+      <Icons.Bookmark />
+    </IconToggleButton>
+    <IconToggleButton size="md" aria-label="Bookmark (md)">
+      <Icons.Bookmark />
+    </IconToggleButton>
+  </Stack>
+)
+```
+
+### Color palette options
+
+Use color palettes to convey meaning and state. The `primary` color palette is the default.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" wrap="wrap">
+    <IconToggleButton colorPalette="primary" aria-label="Like (primary)">
+      <Icons.ThumbUp />
+    </IconToggleButton>
+    <IconToggleButton colorPalette="critical" aria-label="Like (critical)">
+      <Icons.ThumbUp />
+    </IconToggleButton>
+    <IconToggleButton colorPalette="info" aria-label="Like (info)">
+      <Icons.Star />
+    </IconToggleButton>
+    <IconToggleButton colorPalette="positive" aria-label="Like (positive)">
+      <Icons.ThumbUp />
+    </IconToggleButton>
+  </Stack>
+)
+```
+
+### Controlled state
+
+Use `isSelected` and `onChange` to control the toggle state explicitly. This pattern is useful when you need to synchronize state with other parts of your application.
+
+```jsx-live-dev
+const App = () => {
+  const [isLiked, setIsLiked] = useState(false);
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <IconToggleButton
+        isSelected={isLiked}
+        onChange={setIsLiked}
+        aria-label="Like"
+        colorPalette="critical"
+      >
+        <Icons.ThumbUp />
+      </IconToggleButton>
+      <Text>Status: {isLiked ? 'Liked' : 'Not liked'}</Text>
+    </Stack>
+  );
+}
+```
+
+### Uncontrolled state
+
+Use `defaultSelected` for uncontrolled mode when you don't need to track the state externally.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconToggleButton
+      defaultSelected={true}
+      onChange={(isSelected) => console.log('Changed to:', isSelected)}
+      aria-label="Star"
+      colorPalette="info"
+    >
+      <Icons.Star />
+    </IconToggleButton>
+    <Text fontSize="sm">Check console for state changes</Text>
+  </Stack>
+)
+```
+
+### Disabled state
+
+Use the `isDisabled` prop to prevent interaction. This removes the button from the tab order and prevents state changes.
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <IconToggleButton isDisabled aria-label="Like (disabled)">
+      <Icons.ThumbUp />
+    </IconToggleButton>
+    <IconToggleButton isDisabled isSelected aria-label="Like (disabled selected)">
+      <Icons.ThumbUp />
+    </IconToggleButton>
+  </Stack>
+)
+```
+
+### Multiple toggle buttons
+
+A common pattern for managing multiple independent toggle states:
+
+```jsx-live-dev
+const App = () => {
+  const [liked, setLiked] = useState(false);
+  const [starred, setStarred] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  return (
+    <Stack direction="row" gap="200" alignItems="center">
+      <IconToggleButton
+        isSelected={liked}
+        onChange={setLiked}
+        aria-label="Like"
+        colorPalette="critical"
+      >
+        <Icons.ThumbUp />
+      </IconToggleButton>
+      <IconToggleButton
+        isSelected={starred}
+        onChange={setStarred}
+        aria-label="Star"
+        colorPalette="info"
+      >
+        <Icons.Star />
+      </IconToggleButton>
+      <IconToggleButton
+        isSelected={bookmarked}
+        onChange={setBookmarked}
+        aria-label="Bookmark"
+      >
+        <Icons.Bookmark />
+      </IconToggleButton>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The IconToggleButton component requires explicit accessibility labeling since it contains only an icon without visible text.
+
+- **Labeling (REQUIRED)**: Always provide an `aria-label` that describes the button's action. The label should be descriptive enough to convey the button's purpose without visual context.
+- **Role**: Automatically assigned `role="button"` with `aria-pressed` to indicate toggle state.
+- **State announcements**: Screen readers announce the pressed/unpressed state when toggled.
+
+```tsx
+// Good - Clear, action-oriented label
+<IconToggleButton aria-label="Like this post">
+  <Icons.ThumbUp />
+</IconToggleButton>
+
+// Good - Context-specific label
+<IconToggleButton aria-label="Add to favorites">
+  <Icons.Star />
+</IconToggleButton>
+
+// Bad - Too generic
+<IconToggleButton aria-label="Icon">
+  <Icons.ThumbUp />
+</IconToggleButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "post-like-toggle";
+
+export const Example = () => (
+  <IconToggleButton id={PERSISTENT_ID} aria-label="Like">
+    <Icons.ThumbUp />
+  </IconToggleButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Focuses the button
+- `Enter` or `Space`: Toggles the button state (triggers `onChange`)
+
+## API reference
+
+<PropsTable id="IconToggleButton" />
+
+## Common patterns
+
+### Like/favorite buttons
+
+A common use case for toggle buttons in social features:
+
+```jsx-live-dev
+const App = () => {
+  const [likeCount, setLikeCount] = useState(42);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLikeToggle = (selected) => {
+    setIsLiked(selected);
+    setLikeCount((count) => selected ? count + 1 : count - 1);
+  };
+
+  return (
+    <Stack direction="row" gap="300" alignItems="center">
+      <IconToggleButton
+        isSelected={isLiked}
+        onChange={handleLikeToggle}
+        aria-label={isLiked ? "Unlike" : "Like"}
+        colorPalette="critical"
+      >
+        <Icons.ThumbUp />
+      </IconToggleButton>
+      <Text fontSize="sm">{likeCount} likes</Text>
+    </Stack>
+  );
+}
+```
+
+### Toolbar actions
+
+Toggle buttons work well in toolbars for formatting and view options:
+
+```jsx-live-dev
+const App = () => {
+  const [bold, setBold] = useState(false);
+  const [italic, setItalic] = useState(false);
+  const [underline, setUnderline] = useState(false);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Stack direction="row" gap="100" alignItems="center">
+        <IconToggleButton
+          isSelected={bold}
+          onChange={setBold}
+          aria-label="Toggle bold"
+          variant="ghost"
+        >
+          <Icons.FormatBold />
+        </IconToggleButton>
+        <IconToggleButton
+          isSelected={italic}
+          onChange={setItalic}
+          aria-label="Toggle italic"
+          variant="ghost"
+        >
+          <Icons.FormatItalic />
+        </IconToggleButton>
+        <IconToggleButton
+          isSelected={underline}
+          onChange={setUnderline}
+          aria-label="Toggle underline"
+          variant="ghost"
+        >
+          <Icons.FormatUnderlined />
+        </IconToggleButton>
+      </Stack>
+      <Text fontSize="sm">
+        Active: {[bold && 'Bold', italic && 'Italic', underline && 'Underline'].filter(Boolean).join(', ') || 'None'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+
+
+### Async state updates
+
+Handle asynchronous operations when toggling state:
+
+```jsx-live-dev
+const App = () => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleToggle = async (selected) => {
+    setIsLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSubscribed(selected);
+    setIsLoading(false);
+  };
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <IconToggleButton
+        isSelected={isSubscribed}
+        onChange={handleToggle}
+        isDisabled={isLoading}
+        aria-label={isSubscribed ? "Unsubscribe" : "Subscribe"}
+        colorPalette="info"
+      >
+        <Icons.Notifications />
+      </IconToggleButton>
+      <Text fontSize="sm">
+        {isLoading ? 'Processing...' : isSubscribed ? 'Subscribed' : 'Not subscribed'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using IconToggleButton in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: icon-toggle-button.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-icontogglebutton--docs)
+- [React Aria ToggleButton](https://react-aria.adobe.com/ToggleButton)
