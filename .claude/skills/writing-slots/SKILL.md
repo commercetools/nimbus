@@ -1,15 +1,20 @@
 ---
-description: Create, update, or validate Chakra UI slot components for styling integration
+description:
+  Create, update, or validate Chakra UI slot components for styling integration
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Slots Skill
 
-You are a Nimbus slot component specialist. This skill helps you create, update, or validate slot component files (`{component}.slots.tsx`) that bridge React Aria components with the Nimbus Chakra UI v3 styling system.
+You are a Nimbus slot component specialist. This skill helps you create, update,
+or validate slot component files (`{component}.slots.tsx`) that bridge React
+Aria components with the Nimbus Chakra UI v3 styling system.
 
 ## Critical Requirements
 
-**Slot components inject recipe styling into React components.** They MUST export both components AND types, use explicit return type annotations with `SlotComponent` utility, and integrate properly with recipes.
+**Slot components inject recipe styling into React components.** They MUST
+export both components AND types, use explicit return type annotations with
+`SlotComponent` utility, and integrate properly with recipes.
 
 ## Mode Detection
 
@@ -26,28 +31,27 @@ If no mode is specified, default to **create**.
 Before implementation, you MUST research in parallel:
 
 1. **Read** slot component guidelines:
+
    ```bash
    cat docs/file-type-guidelines/slots.md
    ```
 
-2. **Analyze** similar slot implementations:
-   ```bash
-   # Find similar slot files
-   ls packages/nimbus/src/components/*/*.slots.tsx
+2. **Read** naming conventions:
 
-   # Read reference implementations
-   cat packages/nimbus/src/components/button/button.slots.tsx  # Simple
-   cat packages/nimbus/src/components/menu/menu.slots.tsx      # Multi-slot
+   ```bash
+   cat docs/naming-conventions.md
    ```
 
-3. **Review** recipe file to understand styling:
+3. **Analyze** recipe slot definitions:
+
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.recipe.ts
    ```
 
-4. **Determine** slot type:
-   - Standard recipe → Single slot with `withContext`
-   - Slot recipe → Multiple slots with `withProvider` + `withContext`
+4. **Review** similar slot implementations:
+   ```bash
+   ls packages/nimbus/src/components/*/*.slots.tsx
+   ```
 
 ## Slot Type Decision Flow
 
@@ -75,11 +79,13 @@ graph TD
 ### Standard Recipe (Single Slot)
 
 **When:**
+
 - Component has single visual element
 - Uses `defineRecipe` in recipe file
 - Simple styling needs
 
 **Pattern:**
+
 ```typescript
 const { withContext } = createRecipeContext({ recipe });
 export const ComponentRoot = withContext("element", "root");
@@ -90,11 +96,13 @@ export const ComponentRoot = withContext("element", "root");
 ### Slot Recipe (Multiple Slots)
 
 **When:**
+
 - Component has multiple coordinated visual elements
 - Uses `defineSlotRecipe` in recipe file
 - Complex multi-element styling
 
 **Pattern:**
+
 ```typescript
 const { withProvider, withContext } = createSlotRecipeContext({ recipe });
 export const ComponentRootSlot = withProvider("element", "root");
@@ -120,17 +128,20 @@ export const ButtonRoot = withContext("button", "root");
 
 // ❌ INCORRECT - Missing explicit return type annotation
 export type ButtonRootProps = HTMLChakraProps<"button">;
-export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
+export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
+  "button",
+  "root"
+);
 ```
 
 ### Type Name MUST Equal Component Name + "Props"
 
-| Component Name | Type Name | ✅/❌ |
-|----------------|-----------|------|
-| `ButtonRoot` | `ButtonRootProps` | ✅ |
-| `MenuTriggerSlot` | `MenuTriggerSlotProps` | ✅ |
-| `ButtonRoot` | `ButtonProps` | ❌ |
-| `MenuTriggerSlot` | `MenuTrigger` | ❌ |
+| Component Name    | Type Name              | ✅/❌ |
+| ----------------- | ---------------------- | ----- |
+| `ButtonRoot`      | `ButtonRootProps`      | ✅    |
+| `MenuTriggerSlot` | `MenuTriggerSlotProps` | ✅    |
+| `ButtonRoot`      | `ButtonProps`          | ❌    |
+| `MenuTriggerSlot` | `MenuTrigger`          | ❌    |
 
 ## SlotComponent Utility Type (CRITICAL)
 
@@ -139,16 +150,21 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>("butto
 ```typescript
 import type { SlotComponent } from "../utils/slot-types";
 
-export const ComponentSlot: SlotComponent<TElement, TProps> =
-  withContext<TElement, TProps>("element", "slot");
+export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
+  TElement,
+  TProps
+>("element", "slot");
 ```
 
 ### Why This Is Required
 
-- TypeScript infers return types from `withProvider`/`withContext` that reference Chakra's internal generated types
-- These inferred types create non-portable references to `node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen`
+- TypeScript infers return types from `withProvider`/`withContext` that
+  reference Chakra's internal generated types
+- These inferred types create non-portable references to
+  `node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen`
 - During declaration file (`.d.ts`) generation, this causes TS2742 errors
-- Explicit return type annotations using `SlotComponent` create stable, portable types
+- Explicit return type annotations using `SlotComponent` create stable, portable
+  types
 
 ### Type Definition
 
@@ -234,11 +250,13 @@ export const MenuItemSlot: SlotComponent<HTMLDivElement, MenuItemSlotProps> =
 ### withProvider vs withContext
 
 **`withProvider`:**
+
 - Used for ROOT slot only
 - Provides recipe context to children
 - First slot in multi-slot components
 
 **`withContext`:**
+
 - Used for ALL child slots
 - Consumes recipe context from provider
 - Also used for single-slot components
@@ -332,13 +350,13 @@ export type ComponentSlotProps = HTMLChakraProps<"div">;
 
 ### Element Type Mapping
 
-| HTML Element | Type Parameter | Element Type |
-|--------------|----------------|--------------|
-| `<button>` | `"button"` | `HTMLButtonElement` |
-| `<div>` | `"div"` | `HTMLDivElement` |
-| `<input>` | `"input"` | `HTMLInputElement` |
-| `<span>` | `"span"` | `HTMLSpanElement` |
-| `<a>` | `"a"` | `HTMLAnchorElement` |
+| HTML Element | Type Parameter | Element Type        |
+| ------------ | -------------- | ------------------- |
+| `<button>`   | `"button"`     | `HTMLButtonElement` |
+| `<div>`      | `"div"`        | `HTMLDivElement`    |
+| `<input>`    | `"input"`      | `HTMLInputElement`  |
+| `<span>`     | `"span"`       | `HTMLSpanElement`   |
+| `<a>`        | `"a"`          | `HTMLAnchorElement` |
 
 ### Type Examples
 
@@ -365,57 +383,13 @@ export const TextInputInputSlot: SlotComponent<
 
 ## Naming Conventions (CRITICAL)
 
-### Single-Slot Components
+You MUST follow naming conventions from `docs/naming-conventions.md`, including:
 
-| Pattern | Example |
-|---------|---------|
-| Component | `{ComponentName}Root` |
-| Type | `{ComponentName}RootProps` |
+- **Single-slot:** `{Component}Root`, `{Component}RootProps`
+- **Multi-slot:** `{Component}{Part}Slot`, `{Component}{Part}SlotProps`
+- **Slot names** must match recipe slot definitions exactly
 
-```typescript
-export type ButtonRootProps = HTMLChakraProps<"button">;
-export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> = ...
-```
-
-### Multi-Slot Components
-
-| Pattern | Example |
-|---------|---------|
-| Root Component | `{ComponentName}RootSlot` |
-| Root Type | `{ComponentName}RootSlotProps` |
-| Part Component | `{ComponentName}{Part}Slot` |
-| Part Type | `{ComponentName}{Part}SlotProps` |
-
-```typescript
-// Root
-export type MenuRootSlotProps = HTMLChakraProps<"div">;
-export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> = ...
-
-// Parts
-export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
-export const MenuTriggerSlot: SlotComponent<HTMLButtonElement, MenuTriggerSlotProps> = ...
-
-export type MenuItemSlotProps = HTMLChakraProps<"div">;
-export const MenuItemSlot: SlotComponent<HTMLDivElement, MenuItemSlotProps> = ...
-```
-
-## Slot Name Mapping
-
-Slot names MUST match recipe slot definitions:
-
-```typescript
-// In recipe file
-export const menuSlotRecipe = defineSlotRecipe({
-  slots: ['root', 'trigger', 'content', 'item'],
-  // ...
-});
-
-// In slots file - second parameter MUST match slot name
-export const MenuRootSlot = withProvider("div", "root");       // ✅ matches "root"
-export const MenuTriggerSlot = withContext("button", "trigger"); // ✅ matches "trigger"
-export const MenuContentSlot = withContext("div", "content");    // ✅ matches "content"
-export const MenuItemSlot = withContext("div", "item");          // ✅ matches "item"
-```
+See `docs/file-type-guidelines/slots.md` for complete slot patterns.
 
 ## Create Mode
 
@@ -438,16 +412,17 @@ export const componentSlotRecipe = defineSlotRecipe({
 
 ```typescript
 import {
-  createRecipeContext,  // or createSlotRecipeContext
+  createRecipeContext, // or createSlotRecipeContext
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { componentRecipe } from "./component.recipe";  // Import recipe
-import type { SlotComponent } from "../utils/slot-types";  // MUST import
+import { componentRecipe } from "./component.recipe"; // Import recipe
+import type { SlotComponent } from "../utils/slot-types"; // MUST import
 ```
 
 ### Step 3: Create Context
 
 **For standard recipe:**
+
 ```typescript
 const { withContext } = createRecipeContext({
   recipe: componentRecipe,
@@ -455,6 +430,7 @@ const { withContext } = createRecipeContext({
 ```
 
 **For slot recipe:**
+
 ```typescript
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: componentSlotRecipe,
@@ -464,6 +440,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 ### Step 4: Create Slot Components
 
 **For standard recipe (single slot):**
+
 ```typescript
 export type ComponentRootProps = HTMLChakraProps<"element">;
 export const ComponentRoot: SlotComponent<HTMLElementType, ComponentRootProps> =
@@ -471,6 +448,7 @@ export const ComponentRoot: SlotComponent<HTMLElementType, ComponentRootProps> =
 ```
 
 **For slot recipe (multiple slots):**
+
 ```typescript
 // Root (provider)
 export type ComponentRootSlotProps = HTMLChakraProps<"div">;
@@ -491,7 +469,8 @@ export const ComponentPartSlot: SlotComponent<
 
 - Element type MUST match HTML element (`"button"`, `"div"`, etc.)
 - Slot name MUST match recipe slots array
-- TypeScript generic MUST match HTML element type (`HTMLButtonElement`, `HTMLDivElement`, etc.)
+- TypeScript generic MUST match HTML element type (`HTMLButtonElement`,
+  `HTMLDivElement`, etc.)
 
 ## Update Mode
 
@@ -518,35 +497,42 @@ export const ComponentPartSlot: SlotComponent<
 You MUST validate against these requirements:
 
 #### File Structure
+
 - [ ] Slots file exists with `.tsx` extension
 - [ ] `SlotComponent` utility type imported from `../utils/slot-types`
 - [ ] Recipe imported from recipe file
 - [ ] Context created with appropriate function
 
 #### Exports (CRITICAL)
-- [ ] **All slot components have explicit return type annotations** using `SlotComponent<TElement, TProps>`
+
+- [ ] **All slot components have explicit return type annotations** using
+      `SlotComponent<TElement, TProps>`
 - [ ] **Types exported** alongside components
 - [ ] **Type name = Component name + "Props"**
 - [ ] Types use `HTMLChakraProps` or appropriate interface
 
 #### Naming Conventions
+
 - [ ] Single-slot: `{Component}Root` + `{Component}RootProps`
 - [ ] Multi-slot root: `{Component}RootSlot` + `{Component}RootSlotProps`
 - [ ] Multi-slot parts: `{Component}{Part}Slot` + `{Component}{Part}SlotProps`
 
 #### Context Usage
+
 - [ ] Root slot uses `withProvider` (for multi-slot)
 - [ ] Child slots use `withContext` (for multi-slot)
 - [ ] Single-slot uses `withContext`
 - [ ] Context parameters correct (element type, slot name)
 
 #### Type Safety
+
 - [ ] Element types match HTML elements
 - [ ] TypeScript generics match element types
 - [ ] Slot names match recipe slot definitions
 - [ ] Props interfaces appropriate for element type
 
 #### Integration
+
 - [ ] Recipe imported correctly
 - [ ] Slot names match recipe slots array
 - [ ] Types compatible with component usage
@@ -560,32 +546,41 @@ You MUST validate against these requirements:
 ### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
 
 ### Slot Type: [Standard Recipe | Slot Recipe]
+
 ### Slot Count: [1 | Multiple]
 
 ### Files Reviewed
+
 - Slots file: `{component}.slots.tsx`
 - Recipe file: `{component}.recipe.ts`
 - Types file: `{component}.types.ts`
 
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
+
 - [Violation with guideline reference and line number]
 
 ### ⚠️ Warnings (SHOULD FIX)
+
 - [Non-critical improvements]
 
 ### Slot Components Found
+
 - [List slot components with their types and annotations]
 
 ### Missing Return Type Annotations
+
 - [List components without SlotComponent annotation]
 
 ### Missing Type Exports
+
 - [List components without corresponding type exports]
 
 ### Recommendations
+
 - [Specific improvements needed]
 ```
 

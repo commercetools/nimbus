@@ -12,6 +12,13 @@ create, update, or validate developer-facing MDX documentation files
 (`{component}.docs.spec.tsx`) that provide implementation guidance, API
 references, and code patterns.
 
+**Note**: If you're creating a NEW component, consider using
+`/propose-component` instead. This skill is for:
+
+- Creating standalone developer documentation
+- Updating existing documentation
+- Being invoked by higher-level commands or agents
+
 ## Critical Requirements
 
 **Developer documentation is for engineers.** Focus on implementation details,
@@ -65,25 +72,43 @@ Examples:
 
 Before implementation, you MUST research in parallel:
 
-1. **Read** `@docs/engineering-docs-template.mdx` for base template structure
-2. **Read** `@docs/engineering-docs-template-guide.md` for detailed usage
-   instructions
-3. **Read** `@docs/file-type-guidelines/documentation.md` for MDX patterns
-4. **Read** `@docs/engineering-docs-validation.md` for validation criteria
-5. **Read** existing developer documentation for consistency:
+1. **Read** documentation guidelines:
+
    ```bash
-   # Find similar developer docs based on component type
-   ls packages/nimbus/src/components/*/*.dev.mdx  # base components
-   ls packages/nimbus/src/patterns/fields/*/*.dev.mdx  # field patterns
+   cat docs/file-type-guidelines/documentation.md
    ```
-6. **Read** component files to understand implementation:
+
+2. **Read** JSDoc standards for test sections:
+
+   ```bash
+   cat docs/jsdoc-standards.md
+   ```
+
+   Pay special attention to @docs-section, @docs-title, @docs-description,
+   @docs-order tags
+
+3. **Review** component implementation files for API understanding:
    - `{component-name}.tsx` - Main component implementation
    - `{component-name}.types.ts` - Props and types
    - `{component-name}.recipe.ts` - Visual variants (if exists)
    - `{component-name}.slots.tsx` - Slot components (if exists)
    - `components/` directory - Compound component parts (if exists)
    - `{component-name}.stories.tsx` - Existing usage examples
-7. **Analyze** component implementation patterns and React Aria usage
+
+4. **Check** similar documentation:
+
+   ```bash
+   ls packages/nimbus/src/components/*/*.dev.mdx
+   ls packages/nimbus/src/components/*/*.docs.spec.tsx
+   ```
+
+   (for base components, or `ls packages/nimbus/src/patterns/fields/*/*` for
+   field patterns)
+
+5. **Also read** for comprehensive reference:
+   - `@docs/engineering-docs-template.mdx` for base template structure
+   - `@docs/engineering-docs-template-guide.md` for detailed usage instructions
+   - `@docs/engineering-docs-validation.md` for validation criteria
 
 ## File Structure
 

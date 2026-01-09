@@ -24,6 +24,147 @@ variations, test interactions, and ensure accessibility compliance.
 - Always prefer finding elements via their accessible attributes instead of
   using `data-testid`
 
+## Story Type Requirements by Component Category
+
+Different component types require different sets of stories based on their
+characteristics and complexity. Use this matrix to determine which stories your
+component needs.
+
+### Simple Components (Button, Badge, Icon, Tag, Link)
+
+**Required Stories:**
+
+- **Base** - Basic usage with default props
+- **Sizes** - All size variants displayed in single story
+- **Variants** - All visual variants displayed in single story
+- **Disabled** - Disabled state (for interactive components)
+- **SmokeTest** - Comprehensive matrix testing all combinations
+
+**Optional Stories:**
+
+- Component-specific features (WithIcon, WithRef, etc.)
+
+**Example Coverage:**
+
+```typescript
+export const Base: Story = {
+  /* minimal example */
+};
+export const Sizes: Story = {
+  /* sm, md, lg in one story */
+};
+export const Variants: Story = {
+  /* all variants in one story */
+};
+export const Disabled: Story = {
+  /* disabled state */
+};
+export const SmokeTest: Story = {
+  /* comprehensive matrix */
+};
+```
+
+### Form Components (TextInput, Select, Checkbox, RadioGroup, Switch)
+
+**Required Stories:**
+
+- **Base** - Basic usage with type testing
+- **Sizes** - All size variants
+- **Variants** - All visual variants
+- **Required** - Required state with `aria-required` attribute
+- **Disabled** - Disabled state (test: cannot focus, cannot type)
+- **Invalid** - Invalid state (test: can still interact, shows error styling)
+- **Controlled** - Controlled component with external state display
+- **SmokeTest** - Comprehensive matrix of all combinations
+
+**Optional Stories:**
+
+- Validation scenarios
+- Async loading states
+- Complex form integration
+
+**Key Testing Focus:**
+
+- Form components MUST test that disabled state prevents all interaction
+- Invalid state should NOT prevent interaction (users can fix errors)
+- Controlled stories should demonstrate state synchronization
+
+### Interactive Components (Menu, Dialog, Pagination, Tabs, Accordion)
+
+**Required Stories:**
+
+- **Base/Default** - Basic usage with full interaction testing in play function
+- **Variants/Configurations** - Different visual or behavioral configurations
+- **Controlled** - Controlled state management
+- **KeyboardNavigation** - Comprehensive keyboard interaction testing (Arrow
+  keys, Enter, Space, Escape, Tab)
+
+**Optional Stories:**
+
+- Complex scenarios (nested menus, dynamic content)
+- Edge cases (empty states, overflow)
+- Performance testing (large lists)
+
+**Key Testing Focus:**
+
+- Interactive components MUST have play functions testing user interactions
+- Keyboard navigation is critical for accessibility
+- State management (open/close, selection) must be tested
+
+### Overlay/Portal Components (Dialog, Popover, Tooltip, Dropdown Menu)
+
+**Required Stories:**
+
+- All of the Interactive Component stories PLUS:
+- **Placement** - Different positioning options (if applicable)
+- **Dismissal** - Various dismissal scenarios (click outside, Escape key, close
+  button)
+- **Portal Testing** - Special patterns for testing portal-rendered content
+
+**Key Testing Focus:**
+
+- Portal components require accessing elements through `document.body` or parent
+  element
+- Test focus management (focus trap, return focus)
+- Test dismissal behavior comprehensively
+- Test positioning and overflow handling
+
+**Example Portal Pattern:**
+
+```typescript
+export const Base: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button");
+    await userEvent.click(trigger);
+
+    // Access portal content through parent element
+    const body = within(canvasElement.ownerDocument.body);
+    const dialog = await waitFor(() => body.getByRole("dialog"));
+    expect(dialog).toBeInTheDocument();
+  },
+};
+```
+
+## Story Type Decision Flowchart
+
+```mermaid
+graph TD
+    Start[Analyze Component] --> Q1{Is it a<br/>form component?}
+
+    Q1 -->|Yes| FormStories[Form Component Stories:<br/>Base, Sizes, Variants,<br/>Required, Disabled, Invalid,<br/>Controlled, SmokeTest]
+
+    Q1 -->|No| Q2{Does it render<br/>in a portal?}
+
+    Q2 -->|Yes| PortalStories[Portal Component Stories:<br/>Base with interaction,<br/>Placement, Dismissal,<br/>Keyboard, Controlled]
+
+    Q2 -->|No| Q3{Is it<br/>interactive?}
+
+    Q3 -->|Yes| InteractiveStories[Interactive Component Stories:<br/>Base with interaction,<br/>Variants, Controlled,<br/>KeyboardNavigation]
+
+    Q3 -->|No| SimpleStories[Simple Component Stories:<br/>Base, Sizes, Variants,<br/>Disabled if applicable,<br/>SmokeTest]
+```
+
 ## File Structure
 
 ### Basic Story Setup

@@ -1,15 +1,28 @@
 ---
-description: Create, update, or validate internationalization message definitions for components
+description:
+  Create, update, or validate internationalization message definitions for
+  components
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing i18n Skill
 
-You are a Nimbus internationalization specialist. This skill helps you create, update, or validate i18n files (`{component}.i18n.ts`) that define translatable message definitions for accessible, user-facing text using react-intl.
+You are a Nimbus internationalization specialist. This skill helps you create,
+update, or validate i18n files (`{component}.i18n.ts`) that define translatable
+message definitions for accessible, user-facing text using react-intl.
+
+**Note**: If you're creating a NEW component, consider using
+`/propose-component` instead. This skill is for:
+
+- Updating existing i18n files
+- Adding translations when you know exactly what's needed
+- Being invoked by higher-level commands or agents
 
 ## Critical Requirements
 
-**i18n files ensure accessible, translatable UI text.** Every component with user-facing text or accessibility labels MUST have properly structured message definitions following react-intl patterns and Transifex integration.
+**i18n files ensure accessible, translatable UI text.** Every component with
+user-facing text or accessibility labels MUST have properly structured message
+definitions following react-intl patterns and Transifex integration.
 
 ## Mode Detection
 
@@ -26,32 +39,29 @@ If no mode is specified, default to **create**.
 Before implementation, you MUST research in parallel:
 
 1. **Read** i18n guidelines:
+
    ```bash
    cat docs/file-type-guidelines/i18n.md
    ```
 
-2. **Analyze** similar component i18n files:
-   ```bash
-   # Find similar i18n files
-   ls packages/nimbus/src/components/*/*.i18n.ts
+2. **Read** naming conventions for message IDs:
 
-   # Read reference implementations
-   cat packages/nimbus/src/components/number-input/number-input.i18n.ts
-   cat packages/nimbus/src/components/alert/alert.i18n.ts
+   ```bash
+   cat docs/naming-conventions.md
    ```
 
-3. **Review** component implementation for user-facing text:
+   Message ID pattern: Nimbus.{ComponentName}.{messageKey}
+
+3. **Review** component implementation to identify translatable text:
+
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.tsx
    ```
 
-4. **Identify** translatable content:
-   - Accessibility labels (aria-label, aria-description)
-   - Default placeholder text
-   - Button labels
-   - Helper text
-   - Error messages
-   - Tooltips
+4. **Check** similar i18n files:
+   ```bash
+   ls packages/nimbus/src/components/*/*.i18n.ts
+   ```
 
 ## When i18n Is Needed (Decision Flow)
 
@@ -77,17 +87,20 @@ graph TD
 ### Components That NEED i18n:
 
 **Has default accessibility labels:**
+
 - Components setting default aria-label
 - Components with aria-description
 - Interactive elements with screen reader text
 
 **Has default user-facing text:**
+
 - Default placeholder text
 - Button labels (increment, decrement, close, etc.)
 - Helper text or instructions
 - Tooltips or user-facing messages
 
 **Examples:**
+
 - NumberInput (increment/decrement labels)
 - Alert (dismiss button label)
 - DatePicker (input placeholders, button labels)
@@ -96,11 +109,13 @@ graph TD
 ### Components That DON'T Need i18n:
 
 **Pure layout/styling:**
+
 - Box, Stack, Grid, Flex
 - Card (unless sets default aria-label)
 - Divider, Separator
 
 **Consumer provides all text:**
+
 - Badge (no default aria-label)
 - Button (consumer provides label)
 - Text, Heading (consumer provides content)
@@ -133,7 +148,8 @@ import { defineMessages } from "react-intl";
 export const messages = defineMessages({
   messageKey: {
     id: "Nimbus.ComponentName.messageKey",
-    description: "Context for translators explaining where and how this is used",
+    description:
+      "Context for translators explaining where and how this is used",
     defaultMessage: "English fallback text",
   },
   // Additional messages...
@@ -169,7 +185,8 @@ Example: `Nimbus.DatePicker.Time.enterTimeHour`
 
 - **ComponentName**: PascalCase (Alert, NumberInput, DatePicker)
 - **SubComponent**: PascalCase if nested (Time, Calendar)
-- **messageKey**: camelCase describing the message (dismiss, increment, clearInput)
+- **messageKey**: camelCase describing the message (dismiss, increment,
+  clearInput)
 
 ## Message Properties (REQUIRED)
 
@@ -180,7 +197,7 @@ Each message MUST include all three properties:
 Unique identifier following naming convention:
 
 ```typescript
-id: "Nimbus.ComponentName.messageKey"
+id: "Nimbus.ComponentName.messageKey";
 ```
 
 ### 2. description (Required)
@@ -188,17 +205,19 @@ id: "Nimbus.ComponentName.messageKey"
 Developer-facing context for translators:
 
 ```typescript
-description: "aria-label for dismiss button in alert"
-description: "Placeholder text for date input field"
-description: "Button label to increment numeric value"
+description: "aria-label for dismiss button in alert";
+description: "Placeholder text for date input field";
+description: "Button label to increment numeric value";
 ```
 
 **Good descriptions:**
+
 - Explain WHERE the text appears
 - Explain HOW it's used (aria-label, button text, placeholder)
 - Provide context about the interaction
 
 **Bad descriptions:**
+
 - Too vague: "A label"
 - Missing context: "Dismiss"
 - No usage info: "Text"
@@ -208,12 +227,13 @@ description: "Button label to increment numeric value"
 English fallback text:
 
 ```typescript
-defaultMessage: "Dismiss"
-defaultMessage: "Select date"
-defaultMessage: "Increment value"
+defaultMessage: "Dismiss";
+defaultMessage: "Select date";
+defaultMessage: "Increment value";
 ```
 
 **Requirements:**
+
 - Proper grammar and punctuation
 - Concise and clear
 - User-friendly language
@@ -296,7 +316,8 @@ export const messages = defineMessages({
   itemsSelected: {
     id: "Nimbus.Select.itemsSelected",
     description: "Announces number of selected items to screen readers",
-    defaultMessage: "{count, plural, one {# item selected} other {# items selected}}",
+    defaultMessage:
+      "{count, plural, one {# item selected} other {# items selected}}",
   },
   pageIndicator: {
     id: "Nimbus.Pagination.pageIndicator",
@@ -318,6 +339,7 @@ import { messages } from "./{component}.i18n";
 ### Usage in Components
 
 **Simple usage:**
+
 ```typescript
 export const Component = (props: ComponentProps) => {
   const intl = useIntl();
@@ -331,6 +353,7 @@ export const Component = (props: ComponentProps) => {
 ```
 
 **With dynamic values:**
+
 ```typescript
 export const Component = (props: ComponentProps) => {
   const intl = useIntl();
@@ -344,6 +367,7 @@ export const Component = (props: ComponentProps) => {
 ```
 
 **With conditional messages:**
+
 ```typescript
 export const PasswordInput = (props: PasswordInputProps) => {
   const intl = useIntl();
@@ -414,6 +438,7 @@ export const messages = defineMessages({
 ```
 
 **Usage in different parts:**
+
 ```typescript
 // alert.dismiss-button.tsx
 import { messages } from "../alert.i18n";
@@ -456,6 +481,7 @@ Current Nimbus support:
 Determine if component needs i18n:
 
 1. **Check for default aria-labels**
+
    ```typescript
    // ✅ Needs i18n
    <button aria-label="Dismiss">...</button>
@@ -465,6 +491,7 @@ Determine if component needs i18n:
    ```
 
 2. **Check for default placeholders**
+
    ```typescript
    // ✅ Needs i18n
    <input placeholder="Select date" />
@@ -474,6 +501,7 @@ Determine if component needs i18n:
    ```
 
 3. **Check for interactive controls**
+
    ```typescript
    // ✅ Needs i18n (increment/decrement buttons)
    <NumberInput />
@@ -485,6 +513,7 @@ Determine if component needs i18n:
 ### Step 2: Identify All Translatable Text
 
 List all user-facing text:
+
 - Accessibility labels
 - Button text
 - Placeholder text
@@ -546,11 +575,13 @@ const intl = useIntl();
 You MUST validate against these requirements:
 
 #### File Structure
+
 - [ ] i18n file exists with `.ts` extension
 - [ ] Named export: `export const messages = defineMessages({...})`
 - [ ] Correct location: `{component}/{component}.i18n.ts`
 
 #### Message IDs
+
 - [ ] All IDs follow pattern: `Nimbus.{Component}.{key}`
 - [ ] ComponentName is PascalCase
 - [ ] messageKey is camelCase
@@ -558,6 +589,7 @@ You MUST validate against these requirements:
 - [ ] IDs match component name exactly
 
 #### Message Properties
+
 - [ ] All messages have `id`, `description`, `defaultMessage`
 - [ ] Descriptions explain context for translators
 - [ ] Default messages use proper grammar
@@ -565,6 +597,7 @@ You MUST validate against these requirements:
 - [ ] No technical jargon in default messages
 
 #### Component Assessment
+
 - [ ] Component assessed for i18n need
 - [ ] Has default labels/aria-labels (if yes, needs i18n)
 - [ ] Component imports messages correctly
@@ -572,6 +605,7 @@ You MUST validate against these requirements:
 - [ ] No hardcoded strings in component
 
 #### Integration
+
 - [ ] Component imports `useIntl` from react-intl
 - [ ] Component imports messages with named import
 - [ ] Messages used with `intl.formatMessage()`
@@ -587,28 +621,36 @@ You MUST validate against these requirements:
 ### i18n Assessment: [Required | Not Required]
 
 ### Files Reviewed
+
 - i18n file: `{component}.i18n.ts`
 - Component: `{component}.tsx`
 
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
+
 - [Violation with guideline reference and line number]
 
 ### ⚠️ Warnings (SHOULD FIX)
+
 - [Non-critical improvements]
 
 ### Messages Found
+
 - [List message IDs with their purpose]
 
 ### Missing i18n
+
 - [List hardcoded strings that should be internationalized]
 
 ### Description Quality
+
 - [Assess description clarity and completeness]
 
 ### Recommendations
+
 - [Specific improvements needed]
 ```
 
@@ -636,6 +678,7 @@ You MUST validate against these requirements:
 ### Common Patterns
 
 **Conditional messages:**
+
 ```typescript
 const message = isVisible
   ? messages.hide
@@ -645,16 +688,18 @@ return <button aria-label={intl.formatMessage(message)} />;
 ```
 
 **Pluralization:**
+
 ```typescript
-defaultMessage: "{count, plural, one {# item} other {# items}}"
+defaultMessage: "{count, plural, one {# item} other {# items}}";
 ```
 
 **With variables:**
+
 ```typescript
-defaultMessage: "Page {current} of {total}"
+defaultMessage: "Page {current} of {total}";
 
 // Usage
-intl.formatMessage(messages.pageInfo, { current: 1, total: 10 })
+intl.formatMessage(messages.pageInfo, { current: 1, total: 10 });
 ```
 
 ## Error Recovery
@@ -672,7 +717,8 @@ If validation fails:
 You SHOULD reference these i18n files:
 
 - **Simple**: `packages/nimbus/src/components/alert/alert.i18n.ts`
-- **Complex**: `packages/nimbus/src/components/number-input/number-input.i18n.ts`
+- **Complex**:
+  `packages/nimbus/src/components/number-input/number-input.i18n.ts`
 - **Compound**: `packages/nimbus/src/components/date-picker/date-picker.i18n.ts`
 
 ## RFC 2119 Key Words

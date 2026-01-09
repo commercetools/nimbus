@@ -12,6 +12,13 @@ guidelines, and usage recommendations for non-technical audiences.
 **CRITICAL**: Focus on design decisions, visual patterns, and usage
 guidelines—NOT implementation details.
 
+**Note**: If you're creating a NEW component, consider using
+`/propose-component` instead. This skill is for:
+
+- Creating standalone designer documentation
+- Updating existing designer documentation
+- Being invoked by higher-level commands or agents
+
 ## Mode Detection
 
 - **create** - Generate new designer documentation file
@@ -25,15 +32,25 @@ docs get created rather than accidentally updating an existing file.
 
 Before implementation, you SHOULD research these areas in parallel:
 
-1. You MUST read `@docs/file-type-guidelines/documentation.md` for MDX patterns
-   (ensures consistency with other docs)
-2. You MUST read existing component docs for consistency:
-   `packages/nimbus/src/components/*/{component}.mdx` (shows what's already
-   documented)
-3. You SHOULD check for Figma design resources (improves completeness if
-   available)
-4. You MUST analyze the component's design purpose and visual patterns (ensures
-   content is design-focused, not implementation)
+1. **Read** documentation guidelines:
+
+   ```bash
+   cat docs/file-type-guidelines/documentation.md
+   ```
+
+2. **Review** component implementation for design decisions
+
+3. **Check** design system documentation:
+   ```bash
+   ls packages/nimbus/src/components/*/*.mdx
+   ```
+
+Additionally:
+
+- You MUST analyze the component's design purpose and visual patterns (ensures
+  content is design-focused, not implementation)
+- You SHOULD check for Figma design resources (improves completeness if
+  available)
 
 ## File Structure
 

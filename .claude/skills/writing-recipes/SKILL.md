@@ -1,15 +1,18 @@
 ---
-description: Create, update, or validate Chakra UI recipes with Nimbus design tokens
+description:
+  Create, update, or validate Chakra UI recipes with Nimbus design tokens
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Recipes Skill
 
-You are a Nimbus recipe specialist. This skill helps you create, update, or validate Chakra UI v3 recipes using Nimbus design tokens.
+You are a Nimbus recipe specialist. This skill helps you create, update, or
+validate Chakra UI v3 recipes using Nimbus design tokens.
 
 ## Critical Requirement
 
-**Nimbus uses Chakra UI v3 mechanics with Nimbus design tokens.** You MUST NOT use default Chakra tokens.
+**Nimbus uses Chakra UI v3 mechanics with Nimbus design tokens.** You MUST NOT
+use default Chakra tokens.
 
 ## Mode Detection
 
@@ -25,45 +28,39 @@ If no mode is specified, default to **create**.
 
 Before implementation, you MUST research in parallel:
 
-1. **Read** `@docs/file-type-guidelines/recipes.md` for Nimbus patterns
-2. **Query** Chakra UI v3 docs via context7 for recipe mechanics:
+1. **Read** recipe guidelines and decision flow:
+
+   ```bash
+   cat docs/file-type-guidelines/recipes.md
+   ```
+
+2. **Read** naming conventions:
+
+   ```bash
+   cat docs/naming-conventions.md
+   ```
+
+3. **Analyze** similar recipes:
+
+   ```bash
+   ls packages/nimbus/src/components/*/*.recipe.ts
+   cat packages/nimbus/src/components/button/button.recipe.ts  # Standard
+   cat packages/nimbus/src/components/menu/menu.recipe.ts      # Slot
+   ```
+
+4. **Query** Chakra UI v3 docs via context7 for recipe mechanics:
+
    ```
    Library: @chakra-ui/react
    Query: "defineRecipe defineSlotRecipe patterns"
    ```
-3. **Analyze** existing recipes for consistency:
-   ```bash
-   ls packages/nimbus/src/components/*/recipes/*.recipe.ts
-   cat packages/nimbus/src/components/button/recipes/button.recipe.ts
-   ```
-4. **Review** available Nimbus tokens:
+
+5. **Review** available Nimbus tokens:
    ```bash
    cat packages/tokens/src/index.ts
    ```
 
 ## Create Mode
-
-### Recipe Type Decision Flow
-
-Use this diagram to determine which recipe type to create:
-
-```mermaid
-graph TD
-    Start[Analyze Component] --> Q1{How many<br/>visual elements<br/>need styling?}
-
-    Q1 -->|One Element| Standard[Standard Recipe<br/>defineRecipe]
-    Q1 -->|Multiple Elements| Slot[Slot Recipe<br/>defineSlotRecipe]
-
-    Standard --> S1[Examples:<br/>Button, Badge<br/>Tag, Link, Icon]
-    Standard --> S2[File:<br/>component.recipe.ts]
-    Standard --> S3[Single className]
-    Standard --> S4[Variants apply to<br/>one element]
-
-    Slot --> M1[Examples:<br/>Input, Card<br/>Menu, Dialog]
-    Slot --> M2[Files:<br/>component.recipe.ts<br/>component.slots.tsx]
-    Slot --> M3[Multiple slots:<br/>root, trigger, content]
-    Slot --> M4[Variants apply to<br/>coordinated elements]
-```
 
 ### Recipe Type Decision
 
@@ -202,6 +199,7 @@ export const use{ComponentName}Styles = withContext
 You MUST register the recipe in `packages/nimbus/src/theme/recipes.ts`:
 
 **For standard recipes:**
+
 ```typescript
 export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
 
@@ -212,6 +210,7 @@ recipes: {
 ```
 
 **For slot recipes:**
+
 ```typescript
 export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
 
@@ -232,6 +231,7 @@ pnpm --filter @commercetools/nimbus build
 ```
 
 You MUST verify generated types exist:
+
 ```bash
 ls packages/nimbus/styled-system/recipes/{component-name}.*
 ```
@@ -256,6 +256,7 @@ ls packages/nimbus/styled-system/recipes/{component-name}.*
 ### Post-Update
 
 You MUST verify the changes:
+
 ```bash
 pnpm --filter @commercetools/nimbus typecheck
 pnpm --filter @commercetools/nimbus build
@@ -268,33 +269,40 @@ pnpm --filter @commercetools/nimbus build
 You MUST validate against these requirements:
 
 #### File Structure
-- [ ] Recipe file location MUST be: `packages/nimbus/src/components/{component}/recipes/{component}.recipe.ts`
+
+- [ ] Recipe file location MUST be:
+      `packages/nimbus/src/components/{component}/recipes/{component}.recipe.ts`
 - [ ] Import MUST be from `@chakra-ui/react`
 - [ ] Export name MUST follow pattern: `{componentName}Recipe`
 
 #### Recipe Definition
+
 - [ ] MUST use `defineRecipe()` or `defineSlotRecipe()`
 - [ ] MUST have `className` property (kebab-case)
 - [ ] MUST have `description` property
 - [ ] MUST have JSDoc comment with link
 
 #### Token Usage (CRITICAL)
+
 - [ ] MUST use Nimbus tokens, NOT Chakra defaults
 - [ ] MUST NOT have hardcoded values: `blue.500`, `#fff`, `16px`
 - [ ] MUST use token references: `colors.*`, `spacing.*`, `radii.*`
 
 #### Variants
+
 - [ ] MUST have `defaultVariants` defined
 - [ ] Variant names SHOULD follow conventions (lowercase)
 - [ ] Size variant SHOULD include: `sm`, `md`, `lg`
 - [ ] Default size MUST be `md`
 
 #### Registration (CRITICAL)
+
 - [ ] Recipe MUST be exported from `packages/nimbus/src/theme/recipes.ts`
 - [ ] Recipe MUST be in theme's `recipes` or `slotRecipes` object
 - [ ] Generated types MUST exist in `styled-system/recipes/`
 
 #### Type Integration
+
 - [ ] `RecipeVariantProps` type MUST be defined
 - [ ] Component props MUST extend recipe props
 
@@ -306,122 +314,41 @@ You MUST validate against these requirements:
 ### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
 
 ### Files Reviewed
+
 - Recipe file
 - Types file
 - Slots file (if applicable)
 - Theme registration
 
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
+
 - [Violation with guideline reference]
 
 ### ⚠️ Warnings (SHOULD FIX)
+
 - [Non-critical improvements]
 
 ### Registration
+
 - Recipe Type: [Standard | Slot]
 - Registered: [YES | NO]
 - Types Generated: [YES | NO]
 ```
 
-## Token Requirements
+## Critical Requirements
 
-### Prohibited Patterns
+You MUST follow design token requirements from
+`docs/file-type-guidelines/recipes.md`. This includes:
 
-You MUST NOT use:
-```typescript
-// ❌ Chakra default tokens
-color: 'blue.500'
-bg: 'white'
-padding: '16px'
-borderRadius: '4px'
-```
+- Using Nimbus tokens (NOT Chakra defaults like blue.500 or white)
+- Proper token categories (colors.primary.base, spacing.4, etc.)
+- NO hardcoded values
 
-### Required Patterns
-
-You MUST use Nimbus tokens:
-```typescript
-// ✅ Nimbus tokens
-color: 'colors.primary.base'
-bg: 'colors.surface.default'
-padding: 'spacing.4'
-borderRadius: 'radii.md'
-```
-
-### Token Categories
-
-You SHOULD use these token patterns:
-
-- **Colors**: `colors.{category}.{variant}`
-- **Spacing**: `spacing.{size}` or `space.{size}`
-- **Radii**: `radii.{size}`
-- **Typography**: `fontSizes.{size}`, `fontWeights.{weight}`, `lineHeights.{size}`
-- **Shadows**: `shadows.{level}`
-- **Transitions**: `durations.{speed}`, `easings.{curve}`
-
-## Common Variant Patterns
-
-### Size Variants
-
-You SHOULD follow this pattern:
-```typescript
-size: {
-  sm: {
-    height: 'spacing.8',
-    fontSize: 'fontSizes.sm',
-    px: 'spacing.3',
-  },
-  md: {
-    height: 'spacing.10',
-    fontSize: 'fontSizes.md',
-    px: 'spacing.4',
-  },
-  lg: {
-    height: 'spacing.12',
-    fontSize: 'fontSizes.lg',
-    px: 'spacing.6',
-  },
-}
-```
-
-### Appearance Variants
-
-You SHOULD implement interactive states:
-```typescript
-appearance: {
-  primary: {
-    bg: 'colors.primary.base',
-    color: 'colors.primary.contrast',
-    _hover: {
-      bg: 'colors.primary.hover',
-    },
-    _active: {
-      bg: 'colors.primary.active',
-    },
-    _disabled: {
-      opacity: 0.4,
-      cursor: 'not-allowed',
-    },
-  },
-}
-```
-
-### Compound Variants
-
-You MAY use compound variants for combinations:
-```typescript
-compoundVariants: [
-  {
-    size: 'sm',
-    appearance: 'primary',
-    css: {
-      // Specific combination styles
-    },
-  },
-]
-```
+See `docs/naming-conventions.md` for recipe naming patterns.
 
 ## Error Recovery
 
@@ -436,6 +363,7 @@ If verification fails:
 ## Reference Examples
 
 You SHOULD reference these recipes:
+
 - **Standard**: `packages/nimbus/src/components/button/recipes/button.recipe.ts`
 - **Slot**: `packages/nimbus/src/components/input/recipes/input.recipe.ts`
 - **Complex**: `packages/nimbus/src/components/badge/recipes/badge.recipe.ts`
