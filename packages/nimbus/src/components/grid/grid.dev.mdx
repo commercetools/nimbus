@@ -1,0 +1,524 @@
+---
+tab-title: Implementation
+tab-order: 3
+---
+
+# Grid
+
+The Grid component provides a powerful two-dimensional layout system for arranging content in rows and columns. It's a re-export of Chakra UI's Grid component, offering fine-grained control over layout, spanning, and custom grid behaviors.
+
+## Getting started
+
+### Import
+
+```tsx
+import { Grid, type GridProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => (
+  <Grid gap="100">
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 1
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 2
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 3
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+## Usage examples
+
+### Column-based layout
+
+Use the `templateColumns` prop to define the number and size of columns in your grid.
+
+```jsx-live-dev
+const App = () => (
+  <Grid gap="100" templateColumns="repeat(3, 1fr)">
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 1
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 2
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 3
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 4
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Row and column spanning
+
+Grid items can span multiple rows or columns using the `rowSpan` and `colSpan` props on `Grid.Item`.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    h="200px"
+    templateRows="repeat(2, 1fr)"
+    templateColumns="repeat(5, 1fr)"
+    gap="100"
+  >
+    <Grid.Item rowSpan={2} colSpan={1}>
+      <Box p="400" bg="primary.7" h="full">
+        Sidebar
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="neutral.7" h="full">
+        Top Left
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="neutral.7" h="full">
+        Top Right
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={4}>
+      <Box p="400" bg="neutral.7" h="full">
+        Bottom Section
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Template areas
+
+Use named grid areas to create semantic layouts. This approach is particularly useful for common page layouts.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    h="400px"
+    templateAreas={`
+      "header header"
+      "nav main"
+      "footer footer"
+    `}
+    templateColumns="200px 1fr"
+    gap="400"
+  >
+    <Grid.Item gridArea="header">
+      <Box p="400" bg="primary.7" h="full">
+        Header
+      </Box>
+    </Grid.Item>
+    <Grid.Item gridArea="nav">
+      <Box p="400" bg="neutral.7" h="full">
+        Navigation
+      </Box>
+    </Grid.Item>
+    <Grid.Item gridArea="main">
+      <Box p="400" bg="neutral.7" h="full">
+        Main Content
+      </Box>
+    </Grid.Item>
+    <Grid.Item gridArea="footer">
+      <Box p="400" bg="neutral.7" h="full">
+        Footer
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Responsive grids
+
+Grid properties can be responsive using Chakra UI's responsive syntax with breakpoint objects.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    gap="100"
+    templateColumns={{
+      base: "1fr",
+      sm: "repeat(2, 1fr)",
+      md: "repeat(3, 1fr)",
+      lg: "repeat(4, 1fr)",
+    }}
+  >
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 1
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 2
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 3
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7">
+        Item 4
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Gap variations
+
+Control spacing between grid items using the `gap` prop, or use `columnGap` and `rowGap` for independent control.
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text mb="100" fontWeight="semibold">
+        Uniform gap
+      </Text>
+      <Grid gap="200" templateColumns="repeat(3, 1fr)">
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 1
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 2
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 3
+          </Box>
+        </Grid.Item>
+      </Grid>
+    </Box>
+
+    <Box>
+      <Text mb="100" fontWeight="semibold">
+        Different row and column gaps
+      </Text>
+      <Grid rowGap="400" columnGap="100" templateColumns="repeat(3, 1fr)">
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 1
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 2
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 3
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 4
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 5
+          </Box>
+        </Grid.Item>
+        <Grid.Item>
+          <Box p="400" bg="neutral.7">
+            Item 6
+          </Box>
+        </Grid.Item>
+      </Grid>
+    </Box>
+  </Stack>
+);
+```
+
+## Component requirements
+
+### Usage context
+
+**Grid vs SimpleGrid**: Use Grid when you need fine-grained control over layout with template areas, custom spanning, or complex grid configurations. Use SimpleGrid for simpler, uniform grid layouts where items have equal size.
+
+**Grid.Item wrapper**: Always wrap child elements in `Grid.Item` components to ensure proper grid behavior and enable spanning props.
+
+### Accessibility
+
+**Role**: Grid renders as a `<div>` with `display: grid`. It has no implicit ARIA role.
+
+**Labeling**: For grids that represent data tables or require context, use `aria-label` or `aria-labelledby`:
+
+```tsx
+<Grid aria-label="Product catalog">
+  {/* Grid items */}
+</Grid>
+```
+
+**Keyboard navigation**: Grid itself doesn't provide keyboard navigation. If your grid contains interactive elements, ensure they maintain logical tab order.
+
+### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-grid";
+
+export const ProductGrid = () => (
+  <Grid id={PERSISTENT_ID} templateColumns="repeat(3, 1fr)" gap="400">
+    <Grid.Item>
+      <ProductCard />
+    </Grid.Item>
+    {/* More items */}
+  </Grid>
+);
+```
+
+## API reference
+
+<PropsTable id="Grid" />
+
+## Common patterns
+
+### Dashboard layout
+
+A responsive dashboard layout with varying widget sizes.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    templateColumns="repeat(12, 1fr)"
+    templateRows="repeat(3, 100px)"
+    gap="400"
+  >
+    <Grid.Item colSpan={{ base: 12, md: 8 }} rowSpan={2}>
+      <Box p="400" bg="primary.7" h="full" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Main Chart
+        </Text>
+        <Text color="neutral.3">Primary analytics visualization</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={{ base: 12, md: 4 }} rowSpan={2}>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Statistics
+        </Text>
+        <Text color="neutral.3">Key metrics summary</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={{ base: 12, md: 4 }}>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Recent Activity</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={{ base: 12, md: 4 }}>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Notifications</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={{ base: 12, md: 4 }}>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Quick Actions</Text>
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Card gallery with featured item
+
+A gallery layout where one item is featured more prominently.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    templateColumns="repeat(4, 1fr)"
+    templateRows="repeat(2, 150px)"
+    gap="400"
+  >
+    <Grid.Item colSpan={2} rowSpan={2}>
+      <Box
+        p="400"
+        bg="primary.7"
+        h="full"
+        borderRadius="md"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text fontWeight="bold" fontSize="xl" mb="200">
+          Featured Product
+        </Text>
+        <Text color="neutral.3">Premium collection highlight</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Product 2</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Product 3</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" h="full" borderRadius="md">
+        <Text fontWeight="bold">Product 4</Text>
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Sidebar layout with sticky navigation
+
+A page layout with a sticky sidebar using template areas.
+
+```jsx-live-dev
+const App = () => (
+  <Grid
+    minH="400px"
+    templateAreas={`
+      "sidebar content"
+    `}
+    templateColumns="250px 1fr"
+    gap="400"
+  >
+    <Grid.Item gridArea="sidebar">
+      <Box p="400" bg="neutral.7" borderRadius="md" position="sticky" top="0">
+        <Text fontWeight="bold" mb="300">
+          Navigation
+        </Text>
+        <Stack gap="200">
+          <Text>Dashboard</Text>
+          <Text>Products</Text>
+          <Text>Orders</Text>
+          <Text>Customers</Text>
+          <Text>Settings</Text>
+        </Stack>
+      </Box>
+    </Grid.Item>
+    <Grid.Item gridArea="content">
+      <Box p="400" bg="neutral.7" borderRadius="md" minH="400px">
+        <Text fontWeight="bold" mb="300">
+          Main Content
+        </Text>
+        <Text color="neutral.3">
+          Your page content goes here. The sidebar will remain visible as users
+          scroll.
+        </Text>
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+### Form sections grid
+
+Organize form fields in a structured grid layout.
+
+```jsx-live-dev
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="primary.7" borderRadius="md">
+        <Text fontWeight="bold">Account Information</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          First Name
+        </Text>
+        <Text fontSize="sm" color="neutral.3">
+          Input field placeholder
+        </Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Last Name
+        </Text>
+        <Text fontSize="sm" color="neutral.3">
+          Input field placeholder
+        </Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Email Address
+        </Text>
+        <Text fontSize="sm" color="neutral.3">
+          Input field placeholder
+        </Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item colSpan={2}>
+      <Box p="400" bg="primary.7" borderRadius="md">
+        <Text fontWeight="bold">Contact Preferences</Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Phone
+        </Text>
+        <Text fontSize="sm" color="neutral.3">
+          Input field placeholder
+        </Text>
+      </Box>
+    </Grid.Item>
+    <Grid.Item>
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold" mb="200">
+          Preferred Contact Method
+        </Text>
+        <Text fontSize="sm" color="neutral.3">
+          Select placeholder
+        </Text>
+      </Box>
+    </Grid.Item>
+  </Grid>
+);
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Grid within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: grid.docs.spec.tsx}}
+
+## Resources
+
+- [Grid component in Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-grid--docs)
+- [Chakra UI Grid documentation](https://www.chakra-ui.com/docs/components/grid)
+- [CSS Grid Layout on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
+- [SimpleGrid component](/components/layout/simplegrid) - For simpler, uniform grid layouts
