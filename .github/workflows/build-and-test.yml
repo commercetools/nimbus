@@ -23,6 +23,9 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
+      - name: Validate OpenSpec proposals
+        run: pnpm openspec validate --all --strict
+
       - name: Lint
         run: pnpm lint
 
