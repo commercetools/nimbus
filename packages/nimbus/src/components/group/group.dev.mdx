@@ -1,0 +1,402 @@
+---
+title: Group Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Group, type GroupProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Group aria-label="Action buttons">
+      <Button>Save</Button>
+      <Button>Cancel</Button>
+      <Button>Delete</Button>
+    </Group>
+  );
+};
+```
+
+## Usage examples
+
+### Grouping with spacing
+
+Use Chakra UI style props like `gap` to control spacing between grouped elements:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Group aria-label="Compact button group" gap="100">
+        <Button size="xs">Edit</Button>
+        <Button size="xs">Copy</Button>
+        <Button size="xs">Delete</Button>
+      </Group>
+
+      <Group aria-label="Default button group" gap="300">
+        <Button>Edit</Button>
+        <Button>Copy</Button>
+        <Button>Delete</Button>
+      </Group>
+
+      <Group aria-label="Extra small button group" gap="200">
+        <Button size="2xs">Edit</Button>
+        <Button size="2xs">Copy</Button>
+        <Button size="2xs">Delete</Button>
+      </Group>
+    </Stack>
+  );
+};
+```
+
+### With accessibility labels
+
+Always provide descriptive `aria-label` values to help screen reader users understand the purpose of the group:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Group aria-label="Text formatting controls" gap="200">
+        <IconButton aria-label="Bold">
+          <Icons.FormatBold />
+        </IconButton>
+        <IconButton aria-label="Italic">
+          <Icons.FormatItalic />
+        </IconButton>
+        <IconButton aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </IconButton>
+      </Group>
+
+      <Group aria-label="Document actions" gap="300">
+        <Button startIcon={<Icons.Save />}>Save</Button>
+        <Button startIcon={<Icons.Print />}>Print</Button>
+        <Button startIcon={<Icons.Share />}>Share</Button>
+      </Group>
+    </Stack>
+  );
+};
+```
+
+### With hover handlers
+
+Group provides hover event handlers for tracking user interactions:
+
+```jsx-live-dev
+const App = () => {
+  const [isHovering, setIsHovering] = useState(false);
+  const [hoverCount, setHoverCount] = useState(0);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Group
+        aria-label="Interactive button group"
+        gap="300"
+        onHoverStart={() => {
+          setIsHovering(true);
+          setHoverCount((prev) => prev + 1);
+        }}
+        onHoverEnd={() => setIsHovering(false)}
+        padding="400"
+        borderRadius="200"
+        backgroundColor={isHovering ? 'primary.2' : 'transparent'}
+        transition="background-color 0.2s"
+      >
+        <Button>Action 1</Button>
+        <Button>Action 2</Button>
+        <Button>Action 3</Button>
+      </Group>
+
+      <Stack direction="column" gap="100">
+        <Text fontSize="350">
+          Status: {isHovering ? 'Hovering' : 'Not hovering'}
+        </Text>
+        <Text fontSize="350" color="fg.muted">
+          Hover count: {hoverCount}
+        </Text>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Flexible layout with style props
+
+Group supports all Chakra UI style props for flexible layout customization:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Group
+        aria-label="Centered button group"
+        gap="300"
+        justifyContent="center"
+        width="100%"
+        padding="400"
+        borderRadius="200"
+        backgroundColor="neutral.2"
+      >
+        <Button>Left</Button>
+        <Button>Center</Button>
+        <Button>Right</Button>
+      </Group>
+
+      <Group
+        aria-label="Space-between button group"
+        gap="300"
+        justifyContent="space-between"
+        width="100%"
+        padding="400"
+        borderRadius="200"
+        backgroundColor="primary.2"
+      >
+        <Button>Start</Button>
+        <Button>End</Button>
+      </Group>
+
+      <Group
+        aria-label="Vertical button group"
+        gap="200"
+        flexDirection="column"
+        alignItems="stretch"
+        padding="400"
+        borderRadius="200"
+        backgroundColor="positive.2"
+      >
+        <Button>First</Button>
+        <Button>Second</Button>
+        <Button>Third</Button>
+      </Group>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Group component follows WCAG 2.1 AA guidelines and implements proper semantic grouping:
+
+#### Role
+
+- Automatically applies `role="group"` to identify related elements
+- Groups should have a descriptive `aria-label` or `aria-labelledby` to provide context
+
+#### Labeling
+
+Always provide an accessible name for groups:
+
+```tsx
+// Using aria-label
+<Group aria-label="Text formatting controls">
+  {/* controls */}
+</Group>
+
+// Using aria-labelledby
+<>
+  <Heading id="toolbar-heading">Editing Tools</Heading>
+  <Group aria-labelledby="toolbar-heading">
+    {/* tools */}
+  </Group>
+</>
+```
+
+#### Keyboard Navigation
+
+Group is a semantic container that does not interfere with keyboard navigation. Each child element maintains its own keyboard interaction patterns.
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "primary-action-group";
+
+export const ActionToolbar = () => (
+  <Group id={PERSISTENT_ID} aria-label="Primary actions">
+    <Button>Save</Button>
+    <Button>Cancel</Button>
+  </Group>
+);
+```
+
+## API reference
+
+<PropsTable id="Group" />
+
+## Common patterns
+
+### Button groups
+
+Group related actions together for better visual hierarchy:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Primary Actions</Text>
+        <Group aria-label="Primary actions" gap="300">
+          <Button variant="solid">Save</Button>
+          <Button variant="outline">Save Draft</Button>
+          <Button variant="ghost">Cancel</Button>
+        </Group>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Destructive Actions</Text>
+        <Group aria-label="Destructive actions" gap="300">
+          <Button colorPalette="critical">Delete</Button>
+          <Button variant="outline" colorPalette="critical">
+            Archive
+          </Button>
+        </Group>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Icon Button Group</Text>
+        <Group aria-label="Text alignment controls" gap="100">
+          <IconButton aria-label="Align left">
+            <Icons.FormatAlignLeft />
+          </IconButton>
+          <IconButton aria-label="Align center">
+            <Icons.FormatAlignCenter />
+          </IconButton>
+          <IconButton aria-label="Align right">
+            <Icons.FormatAlignRight />
+          </IconButton>
+          <IconButton aria-label="Align justify">
+            <Icons.FormatAlignJustify />
+          </IconButton>
+        </Group>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Form field grouping
+
+Use Group to organize related form controls:
+
+```jsx-live-dev
+const App = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  return (
+    <Stack direction="column" gap="400" maxWidth="600px">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Name</Text>
+        <Group aria-label="Name fields" gap="300">
+          <TextInput
+            placeholder="First name"
+            value={firstName}
+            onChange={setFirstName}
+            flex="1"
+          />
+          <TextInput
+            placeholder="Last name"
+            value={lastName}
+            onChange={setLastName}
+            flex="1"
+          />
+        </Group>
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">Date Range</Text>
+        <Group aria-label="Date range fields" gap="300">
+          <TextInput placeholder="Start date" flex="1" />
+          <Text alignSelf="center">to</Text>
+          <TextInput placeholder="End date" flex="1" />
+        </Group>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Toolbar layouts
+
+Create accessible toolbars with grouped controls:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Group
+        aria-label="Document editing toolbar"
+        gap="300"
+        padding="300"
+        borderRadius="200"
+        backgroundColor="neutral.2"
+      >
+        <Group aria-label="Clipboard operations" gap="100">
+          <IconButton aria-label="Cut" size="xs">
+            <Icons.ContentCut />
+          </IconButton>
+          <IconButton aria-label="Copy" size="xs">
+            <Icons.ContentCopy />
+          </IconButton>
+          <IconButton aria-label="Paste" size="xs">
+            <Icons.ContentPaste />
+          </IconButton>
+        </Group>
+
+        <Separator orientation="vertical" height="24px" />
+
+        <Group aria-label="Text formatting" gap="100">
+          <IconButton aria-label="Bold" size="xs">
+            <Icons.FormatBold />
+          </IconButton>
+          <IconButton aria-label="Italic" size="xs">
+            <Icons.FormatItalic />
+          </IconButton>
+          <IconButton aria-label="Underline" size="xs">
+            <Icons.FormatUnderlined />
+          </IconButton>
+        </Group>
+
+        <Separator orientation="vertical" height="24px" />
+
+        <Group aria-label="Text alignment" gap="100">
+          <IconButton aria-label="Align left" size="xs">
+            <Icons.FormatAlignLeft />
+          </IconButton>
+          <IconButton aria-label="Align center" size="xs">
+            <Icons.FormatAlignCenter />
+          </IconButton>
+          <IconButton aria-label="Align right" size="xs">
+            <Icons.FormatAlignRight />
+          </IconButton>
+        </Group>
+      </Group>
+    </Stack>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Group within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: group.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook Documentation](https://nimbus-storybook.vercel.app/?path=/docs/components-group--docs)
+- [React Aria Group Documentation](https://react-spectrum.adobe.com/react-aria/Group.html)
+- [WCAG 2.1 Grouping Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)
