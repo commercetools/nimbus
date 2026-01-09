@@ -1,15 +1,21 @@
 ---
-description: Create, update, or validate Storybook stories with comprehensive play functions
+description:
+  Create, update, or validate Storybook stories with comprehensive play
+  functions
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Stories Skill
 
-You are a Nimbus story specialist. This skill helps you create, update, or validate Storybook stories (`*.stories.tsx`) with comprehensive play functions for testing component behavior.
+You are a Nimbus story specialist. This skill helps you create, update, or
+validate Storybook stories (`*.stories.tsx`) with comprehensive play functions
+for testing component behavior.
 
 ## Critical Requirements
 
-**Stories are BOTH documentation AND tests.** Every interactive component MUST have play functions that test user interactions, state changes, and accessibility.
+**Stories are BOTH documentation AND tests.** Every interactive component MUST
+have play functions that test user interactions, state changes, and
+accessibility.
 
 ## Mode Detection
 
@@ -25,65 +31,32 @@ If no mode is specified, default to **create**.
 
 Before implementation, you MUST research in parallel:
 
-1. **Read** `@docs/file-type-guidelines/stories.md` for Nimbus story patterns
-2. **Read** existing stories for consistency:
+1. **Read** story guidelines and type matrix:
+
    ```bash
-   # Find similar component stories
-   ls packages/nimbus/src/components/*/
-*.stories.tsx
-
-   # Read representative examples
-   cat packages/nimbus/src/components/button/button.stories.tsx
-   cat packages/nimbus/src/components/menu/menu.stories.tsx
+   cat docs/file-type-guidelines/stories.md
    ```
-3. **Analyze** component complexity to determine required story types
-4. **Check** if component renders portal content (Dialog, Menu, Popover, Select, etc.)
 
-## Story Type Decision Matrix
+2. **Analyze** component characteristics to determine story type
 
-You MUST determine which story types are needed based on component characteristics:
+3. **Review** similar story implementations:
+   ```bash
+   ls packages/nimbus/src/components/*/*.stories.tsx
+   ```
 
-### Simple Components (Button, Badge, Icon)
-**Required Stories:**
-- Base - basic usage
-- Sizes - all size variants in single story
-- Variants - all visual variants in single story
-- Disabled - disabled state
-- SmokeTest - comprehensive matrix
+## Story Requirements by Component Type
 
-**Optional Stories:**
-- WithIcons, WithRef, etc. (component-specific features)
+You MUST determine which story types are needed based on component category. See
+docs/file-type-guidelines/stories.md for the complete story type matrix and
+decision flowchart.
 
-### Form Components (TextInput, Select, Checkbox)
-**Required Stories:**
-- Base - basic usage with type testing
-- Sizes - all size variants
-- Variants - all visual variants
-- Required - required state with aria-required
-- Disabled - disabled state (cannot focus, cannot type)
-- Invalid - invalid state (can still interact)
-- Controlled - controlled state with external state display
-- SmokeTest - comprehensive matrix
+Quick reference:
 
-**Optional Stories:**
-- Validation, AsyncLoading, etc.
-
-### Interactive Components (Menu, Dialog, Pagination)
-**Required Stories:**
-- Base/Default - basic usage with full interaction test
-- Variants/Configurations - different configurations
-- Controlled - controlled state management
-- KeyboardNavigation - comprehensive keyboard testing
-
-**Optional Stories:**
-- Complex scenarios, nested behavior, edge cases
-
-### Overlay/Portal Components (Dialog, Menu, Popover)
-**Required Stories:**
-- All of the above PLUS:
-- Placement variations
-- Dismissal scenarios
-- Portal-specific testing patterns (see Portal Content section)
+- **Simple components**: Base, Sizes, Variants, Disabled, SmokeTest
+- **Form components**: Add Required, Invalid, Controlled stories
+- **Interactive components**: Add KeyboardNavigation, Controlled stories
+- **Portal components**: Add Placement, Dismissal stories with special portal
+  testing patterns
 
 ## File Structure
 
@@ -133,6 +106,7 @@ Stories MUST be exported in this order:
 ### Step 1: Component Analysis
 
 You MUST analyze:
+
 - Component props and variants
 - Interactive behavior (click, type, keyboard nav)
 - State management (controlled vs uncontrolled)
@@ -341,7 +315,7 @@ play: async ({ canvasElement, args, step }) => {
   await step("Next test", async () => {
     // Test implementation
   });
-}
+};
 ```
 
 ### Query Strategy
@@ -457,9 +431,12 @@ await step("Test focus management", async () => {
 
   // Focus restoration after dialog close
   await userEvent.keyboard("{Escape}");
-  await waitFor(() => {
-    expect(firstButton).toHaveFocus();
-  }, { timeout: 1000 });
+  await waitFor(
+    () => {
+      expect(firstButton).toHaveFocus();
+    },
+    { timeout: 1000 }
+  );
 });
 ```
 
@@ -486,6 +463,7 @@ await step("Verify state changes", async () => {
 ### Form Inputs (TextInput, Select, Checkbox)
 
 **MUST test:**
+
 - Initial render and attributes
 - Focus with Tab
 - Type/input value
@@ -498,6 +476,7 @@ await step("Verify state changes", async () => {
 ### Buttons (Button, IconButton, ToggleButton)
 
 **MUST test:**
+
 - Click interaction
 - Focus with Tab
 - Keyboard activation (Enter, Space)
@@ -507,6 +486,7 @@ await step("Verify state changes", async () => {
 ### Overlays (Dialog, Menu, Popover)
 
 **MUST test:**
+
 - Open via trigger
 - Portal content appears (use parent element)
 - Keyboard navigation inside overlay
@@ -517,6 +497,7 @@ await step("Verify state changes", async () => {
 ### Navigation (Pagination, Tabs)
 
 **MUST test:**
+
 - Navigation between items
 - Keyboard navigation (Arrow keys, Home, End)
 - Current item indication
@@ -526,6 +507,7 @@ await step("Verify state changes", async () => {
 ### Selection (RadioGroup, CheckboxGroup, Select)
 
 **MUST test:**
+
 - Single selection (radio) - only one selected
 - Multiple selection (checkbox) - multiple selected
 - Selection change callbacks
@@ -552,6 +534,7 @@ await step("Verify state changes", async () => {
 ### Post-Update
 
 You MUST verify the changes:
+
 ```bash
 pnpm --filter @commercetools/nimbus build
 pnpm test packages/nimbus/src/components/{component}/{component}.stories.tsx
@@ -564,13 +547,16 @@ pnpm test packages/nimbus/src/components/{component}/{component}.stories.tsx
 You MUST validate against these requirements:
 
 #### File Structure
-- [ ] Story file location: `packages/nimbus/src/components/{component}/{component}.stories.tsx`
+
+- [ ] Story file location:
+      `packages/nimbus/src/components/{component}/{component}.stories.tsx`
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta
 - [ ] Story type from `StoryObj<typeof meta>`
 
 #### Required Stories
+
 - [ ] Base/Default story exists (MUST be first)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
@@ -579,17 +565,19 @@ You MUST validate against these requirements:
 - [ ] SmokeTest story (MUST be last)
 
 #### Play Functions (CRITICAL)
+
 - [ ] ALL interactive components have play functions
 - [ ] Uses `step()` for test organization
 - [ ] Uses `within()` for scoped queries
 - [ ] Uses `waitFor()` for async operations
 - [ ] Tests keyboard navigation (Tab, Enter, Space, Arrows)
-- [ ] Tests accessibility attributes (aria-*, data-*)
+- [ ] Tests accessibility attributes (aria-_, data-_)
 - [ ] Tests state changes and synchronization
 - [ ] Tests disabled states (cannot focus, cannot interact)
 - [ ] Tests edge cases and boundaries
 
 #### Query Strategy
+
 - [ ] Prefers `getByRole()` for interactive elements
 - [ ] Uses `getByLabelText()` for form inputs
 - [ ] Uses `getByTestId()` sparingly
@@ -597,6 +585,7 @@ You MUST validate against these requirements:
 - [ ] No hardcoded selectors without good reason
 
 #### Test Coverage
+
 - [ ] Initial render verified
 - [ ] Focus management tested
 - [ ] Click/press interactions tested
@@ -606,6 +595,7 @@ You MUST validate against these requirements:
 - [ ] Accessibility requirements verified
 
 #### Story Organization
+
 - [ ] Stories in prescribed order
 - [ ] Clear, descriptive story names
 - [ ] Consistent args usage
@@ -619,25 +609,31 @@ You MUST validate against these requirements:
 ### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
 
 ### Files Reviewed
+
 - Story file: `{component}.stories.tsx`
 - Guidelines: `docs/file-type-guidelines/stories.md`
 
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
+
 - [Violation with guideline reference and line number]
 
 ### ⚠️ Warnings (SHOULD FIX)
+
 - [Non-critical improvements]
 
 ### Test Coverage
+
 - Required Stories: [X/Y present]
 - Play Functions: [X/Y stories have tests]
 - Interaction Testing: [Complete | Partial | Missing]
 - Accessibility Testing: [Complete | Partial | Missing]
 
 ### Recommendations
+
 - [Specific improvements needed]
 ```
 
@@ -652,6 +648,7 @@ If tests fail:
 5. You SHOULD add debugging steps (`console.log`, `screen.debug()`)
 
 Common issues:
+
 - Missing `waitFor()` for async operations
 - Wrong query selectors
 - Portal content not accessible (need parent element)

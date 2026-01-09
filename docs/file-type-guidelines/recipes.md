@@ -23,6 +23,45 @@ consistent, theme-aware styling across components.
 
 ## Recipe Types
 
+### Recipe Type Decision Flow
+
+Use this diagram to determine which recipe type your component needs:
+
+```mermaid
+graph TD
+    Start[Analyze Component] --> Q1{How many<br/>visual elements<br/>need styling?}
+
+    Q1 -->|One Element| Standard[Standard Recipe<br/>defineRecipe]
+    Q1 -->|Multiple Elements| Slot[Slot Recipe<br/>defineSlotRecipe]
+
+    Standard --> S1[Examples:<br/>Button, Badge<br/>Tag, Link, Icon]
+    Standard --> S2[File:<br/>component.recipe.ts]
+    Standard --> S3[Single className]
+    Standard --> S4[Variants apply to<br/>one element]
+
+    Slot --> M1[Examples:<br/>Input, Card<br/>Menu, Dialog]
+    Slot --> M2[Files:<br/>component.recipe.ts<br/>component.slots.tsx]
+    Slot --> M3[Multiple slots:<br/>root, trigger, content]
+    Slot --> M4[Variants apply to<br/>coordinated elements]
+```
+
+**Decision Criteria:**
+
+- **Standard Recipe** (`defineRecipe`) - Choose when:
+  - Component has a single styled element
+  - Examples: Button, Badge, Tag, Link, Icon
+  - Creates: `{component}.recipe.ts` only
+  - Single className applied
+  - All variants affect the same element
+
+- **Slot Recipe** (`defineSlotRecipe`) - Choose when:
+  - Component has multiple styled parts that need coordination
+  - Examples: Input (root, field, addon), Card (root, header, body), Menu (root,
+    trigger, content, item), Dialog (root, backdrop, content, header, footer)
+  - Creates: `{component}.recipe.ts` + `{component}.slots.tsx`
+  - Multiple slots defined: `['root', 'trigger', 'content']`
+  - Variants can affect different parts independently
+
 ### Standard Recipe (Single Element)
 
 For components with a single styled element:
@@ -289,7 +328,9 @@ variants: {
 
 ```
 
-**CSS Custom Properties:** When using CSS variables in recipes, namespace them with the component name in kebab-case (e.g., `--accordion-font-size`, `--menu-item-padding`) to prevent collisions.
+**CSS Custom Properties:** When using CSS variables in recipes, namespace them
+with the component name in kebab-case (e.g., `--accordion-font-size`,
+`--menu-item-padding`) to prevent collisions.
 
 ### Token Categories
 
@@ -508,7 +549,8 @@ export const menuSlotRecipe = defineSlotRecipe({
 - [ ] Variants defined (if applicable)
 - [ ] Default variants specified
 - [ ] Design tokens used (not hardcoded values)
-- [ ] **CSS custom properties namespaced with component name in kebab-case** (if used)
+- [ ] **CSS custom properties namespaced with component name in kebab-case** (if
+      used)
 - [ ] **Recipe registered in theme configuration**
 - [ ] State modifiers properly defined
 - [ ] Dark mode styles included (if needed)

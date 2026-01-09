@@ -21,6 +21,153 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
 
+## Quick Start: What Do You Want To Do?
+
+Choose the command that matches your task:
+
+```mermaid
+flowchart TD
+    Start[What do you want to do?] --> A{Creating NEW<br/>component?}
+    A -->|Yes| ProposeComponent["/propose-component ComponentName"]
+    A -->|No| B{Fixing a bug?}
+
+    B -->|Yes| DirectFix["Just implement directly<br/>No ceremony needed"]
+    B -->|No| C{Updating<br/>documentation?}
+
+    C -->|Yes| CreateDocs["/create-eng-docs ComponentName"]
+    C -->|No| D{Breaking change<br/>or architecture?}
+
+    D -->|Yes| OpenSpec["/openspec:proposal"]
+    D -->|No| E{Updating specific<br/>file type?}
+
+    E -->|Yes| UseSkill["Use skill directly:<br/>/writing-types, /writing-stories, etc."]
+    E -->|No| Other["Describe your task<br/>I'll guide you"]
+
+    style ProposeComponent fill:#4CAF50
+    style DirectFix fill:#4CAF50
+    style CreateDocs fill:#4CAF50
+    style OpenSpec fill:#4CAF50
+    style UseSkill fill:#FFC107
+```
+
+**90% of the time, you need ONE of these:**
+
+- **Creating a component?** → `/propose-component ComponentName`
+- **Fixing a bug?** → Just implement directly (no ceremony)
+- **Updating docs?** → `/create-eng-docs ComponentName`
+- **Breaking change?** → `/openspec:proposal`
+
+## Common Workflows
+
+### Creating a New Component
+
+Use the `/propose-component` command:
+
+```
+/propose-component Toast
+```
+
+This command will:
+
+1. Invoke `/brainstorm` to clarify requirements
+2. Validate against Nimbus standards
+3. Create an OpenSpec proposal
+4. Generate implementation tasks with TDD approach
+5. Coordinate nimbus-coder to implement all required files
+6. Invoke nimbus-reviewer to validate compliance
+
+### Fixing a Bug
+
+Just implement the fix directly:
+
+```
+Read the file, understand the issue, make the change, test it.
+No OpenSpec proposal needed for bug fixes.
+```
+
+### Updating Documentation
+
+Use the `/create-eng-docs` command:
+
+```
+/create-eng-docs Button
+```
+
+This creates both `.dev.mdx` and `.docs.spec.tsx` files with comprehensive
+documentation.
+
+### Making Breaking Changes
+
+Use the `/openspec:proposal` command:
+
+```
+/openspec:proposal
+```
+
+This creates a change proposal for:
+
+- Architecture changes
+- Breaking API changes
+- Cross-cutting concerns
+- Performance optimizations
+
+## Understanding How It Works (Optional)
+
+### The Command → Agent → Skill Pipeline
+
+**Commands** orchestrate complete workflows:
+
+- `/propose-component` handles the full component creation process
+- `/create-eng-docs` generates documentation
+- `/openspec:proposal` creates change proposals
+
+**Agents** handle multi-step phases (typically invoked BY commands):
+
+- `nimbus-researcher` - Gathers documentation and patterns
+- `nimbus-coder` - Implements features following guidelines
+- `nimbus-reviewer` - Validates against Nimbus standards
+
+**Skills** create specific file types (invoked by agents OR directly):
+
+- `writing-types` - TypeScript type definitions
+- `writing-stories` - Storybook stories with play functions
+- `writing-recipes` - Chakra UI styling recipes
+- `writing-slots` - Slot component wrappers
+- `writing-developer-documentation` - Engineering docs
+- `writing-designer-documentation` - Designer docs
+- `writing-i18n` - Internationalization files
+- `brainstorm` - Design exploration
+
+**When to invoke directly:**
+
+- **Commands**: Always (your main interface)
+- **Agents**: Rarely (only for custom workflows)
+- **Skills**: Sometimes (when updating single file types)
+
+### When to Use OpenSpec
+
+**Use `/propose-component`** for NEW UI components:
+
+- Creates OpenSpec proposal + Nimbus component standards
+- Validates against WCAG, React Aria, Chakra UI patterns
+- Generates TDD task list with acceptance criteria
+
+**Use `/openspec:proposal`** for everything else:
+
+- Architecture changes
+- Breaking API changes
+- Cross-cutting concerns
+- Performance optimizations
+- New patterns (not components)
+
+**Skip OpenSpec** for:
+
+- Bug fixes (restoring intended behavior)
+- Typos, formatting, comments
+- Documentation updates
+- Test additions for existing behavior
+- Dependency updates (non-breaking)
+
 ## OpenSpec Proposal Guidance
 
 For non-fix changes (new features, breaking changes, architecture shifts),

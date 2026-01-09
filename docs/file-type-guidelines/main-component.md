@@ -149,7 +149,6 @@ export const Menu = {
   Item: MenuItem,
   // ... other exports
 };
-
 ````
 
 ### Documenting Compound Component Parts
@@ -426,7 +425,6 @@ export const Select = {
   Content: SelectContent,
   Option: SelectOption,
 };
-
 ```
 
 ## React Aria Integration
@@ -461,6 +459,345 @@ export const Button = (props: ButtonProps) => {
   );
 };
 ```
+
+## Accessibility Requirements
+
+All Nimbus components MUST meet WCAG 2.1 AA accessibility standards. This
+section outlines the key requirements and patterns for ensuring components are
+accessible.
+
+### React Aria Foundation
+
+Nimbus components use React Aria Components as the accessibility foundation:
+
+**Benefits:**
+
+- **ARIA roles and attributes** - Automatically applied
+- **Keyboard navigation** - Built-in support for standard patterns
+- **Focus management** - Proper focus handling and restoration
+- **Screen reader support** - Announcements and context
+
+**Integration approach:**
+
+```typescript
+import { Button as RaButton } from 'react-aria-components';
+
+export const Button = (props: ButtonProps) => {
+  return (
+    <ButtonSlot asChild>
+      <RaButton {...props}>
+        {children}
+      </RaButton>
+    </ButtonSlot>
+  );
+};
+```
+
+### WCAG 2.1 AA Compliance
+
+All components must meet these WCAG principles:
+
+#### 1. Perceivable
+
+**Information must be presentable to users in ways they can perceive:**
+
+- **Alternative text**: Images and icons must have text alternatives
+
+  ```typescript
+  <Icon aria-label="Close dialog" />
+  // or
+  <img src="logo.svg" alt="Company logo" />
+  ```
+
+- **Color contrast**: Text must meet 4.5:1 contrast ratio (3:1 for large text)
+  - Use Nimbus color tokens which are contrast-tested
+  - Test custom colors with contrast checkers
+
+- **Visual indicators**: Don't rely on color alone
+
+  ```typescript
+  // ❌ WRONG - Color only
+  <Text color="red.11">Error</Text>
+
+  // ✅ CORRECT - Color + icon
+  <Box display="flex" gap="200">
+    <Icon name="error" color="red.11" />
+    <Text color="red.11">Error</Text>
+  </Box>
+  ```
+
+#### 2. Operable
+
+**Interface components must be operable:**
+
+- **Keyboard accessible**: All functionality available via keyboard
+
+  ```typescript
+  // React Aria handles this automatically
+  <RaButton onPress={handleClick}>Click me</RaButton>
+
+  // Standard keyboard patterns:
+  // - Tab: Focus next/previous
+  // - Enter/Space: Activate buttons
+  // - Arrow keys: Navigate lists/menus
+  // - Escape: Close overlays
+  ```
+
+- **Focus visible**: Clear focus indicators
+
+  ```typescript
+  // Nimbus provides focus styles via design tokens
+  _focusVisible: {
+    outline: '2px solid',
+    outlineColor: 'primary.9',
+    outlineOffset: '2px',
+  }
+  ```
+
+- **No keyboard traps**: Users can navigate away from any component
+  ```typescript
+  // For modals/dialogs, React Aria handles focus trapping
+  // and restoration automatically
+  ```
+
+#### 3. Understandable
+
+**Information and operation must be understandable:**
+
+- **Labels and instructions**: All inputs must have labels
+
+  ```typescript
+  // ✅ CORRECT - Visible label
+  <Field.Root>
+    <Field.Label>Email address</Field.Label>
+    <TextInput name="email" />
+  </Field.Root>
+
+  // ✅ CORRECT - aria-label for icon-only
+  <IconButton aria-label="Close" icon="close" />
+  ```
+
+- **Error identification**: Errors must be clearly described
+
+  ```typescript
+  <Field.Root invalid>
+    <Field.Label>Email</Field.Label>
+    <TextInput name="email" />
+    <Field.ErrorMessage>
+      Please enter a valid email address
+    </Field.ErrorMessage>
+  </Field.Root>
+  ```
+
+- **Consistent navigation**: Predictable behavior and patterns
+
+#### 4. Robust
+
+**Content must be robust enough for assistive technologies:**
+
+- **Valid HTML**: Use semantic HTML elements
+
+  ```typescript
+  // ✅ CORRECT - Semantic HTML
+  <button type="button">Click me</button>
+  <nav>...</nav>
+  <main>...</main>
+
+  // ❌ WRONG - div soup
+  <div onClick={handleClick}>Click me</div>
+  ```
+
+- **Proper ARIA usage**: React Aria provides correct ARIA attributes
+
+### Keyboard Navigation Patterns
+
+Different component types have standard keyboard patterns:
+
+#### Buttons and Links
+
+- **Enter/Space**: Activate
+- **Tab**: Move focus to next element
+
+#### Menus and Dropdowns
+
+- **Enter/Space**: Open menu
+- **Arrow Down/Up**: Navigate items
+- **Enter**: Select item
+- **Escape**: Close menu
+
+#### Dialogs and Modals
+
+- **Escape**: Close dialog
+- **Tab**: Cycle through focusable elements (focus trap)
+- **Focus returns** to trigger element on close
+
+#### Form Fields
+
+- **Tab**: Move between fields
+- **Arrow keys**: Navigate radio groups, selects
+- **Space**: Toggle checkboxes
+- **Enter**: Submit form (when in input)
+
+### Focus Management
+
+Proper focus handling is critical for keyboard users:
+
+**Focus indicators:**
+
+```typescript
+// All interactive elements must have visible focus
+_focusVisible: {
+  outline: '2px solid',
+  outlineColor: 'primary.9',
+  outlineOffset: '2px',
+}
+```
+
+**Focus restoration:**
+
+```typescript
+// React Aria handles this for overlays
+// Focus returns to trigger when dialog closes
+<Dialog.Root>
+  <Dialog.Trigger>Open</Dialog.Trigger>
+  <Dialog.Content>
+    {/* Focus trapped here while open */}
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+**Initial focus:**
+
+```typescript
+// Set initial focus in overlays
+<Dialog.Content>
+  <TextInput autoFocus name="search" />
+  {/* ... */}
+</Dialog.Content>
+```
+
+### Screen Reader Support
+
+Ensure components work well with screen readers:
+
+**Descriptive labels:**
+
+```typescript
+// ✅ CORRECT - Clear purpose
+<IconButton aria-label="Close navigation menu" icon="close" />
+
+// ❌ WRONG - Vague
+<IconButton aria-label="Close" icon="close" />
+```
+
+**Live regions for dynamic updates:**
+
+```typescript
+// Announce important changes
+<Box role="status" aria-live="polite">
+  {successMessage}
+</Box>
+
+// Urgent announcements
+<Box role="alert" aria-live="assertive">
+  {errorMessage}
+</Box>
+```
+
+**Hidden content:**
+
+```typescript
+// Visually hidden but available to screen readers
+<VisuallyHidden>
+  Additional context for screen reader users
+</VisuallyHidden>
+```
+
+### Testing Accessibility
+
+**Automated testing:**
+
+```typescript
+// Storybook stories with play functions
+export const Base: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: "Click me" });
+
+    // Test keyboard activation
+    await userEvent.tab();
+    expect(button).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+
+    // Verify ARIA attributes
+    expect(button).toHaveAttribute("aria-pressed", "true");
+  },
+};
+```
+
+**Manual testing checklist:**
+
+- [ ] Navigate with keyboard only (no mouse)
+- [ ] Test with screen reader (VoiceOver, NVDA, JAWS)
+- [ ] Check color contrast ratios
+- [ ] Verify focus indicators are visible
+- [ ] Test with browser zoom at 200%
+- [ ] Verify all interactive elements have labels
+
+### Common Accessibility Patterns
+
+**Icon-only buttons:**
+
+```typescript
+<IconButton
+  aria-label="Delete item"
+  icon="trash"
+  onPress={handleDelete}
+/>
+```
+
+**Loading states:**
+
+```typescript
+<Button isLoading aria-label="Loading, please wait">
+  Submit
+</Button>
+```
+
+**Disabled state communication:**
+
+```typescript
+<Button
+  isDisabled
+  aria-disabled="true"
+  title="Complete the form to enable"
+>
+  Submit
+</Button>
+```
+
+**Expandable content:**
+
+```typescript
+<Accordion.Root>
+  <Accordion.Item>
+    <Accordion.Trigger aria-expanded={isOpen}>
+      Section title
+    </Accordion.Trigger>
+    <Accordion.Content>
+      {/* Content */}
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+### Resources
+
+- **React Aria Documentation**: https://react-spectrum.adobe.com/react-aria/
+- **WCAG 2.1 Guidelines**: https://www.w3.org/WAI/WCAG21/quickref/
+- **ARIA Authoring Practices**: https://www.w3.org/WAI/ARIA/apg/
+- **Nimbus Accessibility Guide**: See `docs/accessibility-guide.md` (if
+  available)
 
 ## Cross-Component Imports (CRITICAL)
 
@@ -527,12 +864,7 @@ import { Button } from "@/components/button/button";
 
 // Other Nimbus components imported from main barrel export are fine
 // because rich-text-toolbar doesn't have its own barrel export (it's internal)
-import {
-  ToggleButtonGroup,
-  IconButton,
-  Text,
-  Separator,
-} from "@/components";
+import { ToggleButtonGroup, IconButton, Text, Separator } from "@/components";
 ```
 
 ### When to Use Direct Imports
@@ -582,8 +914,8 @@ import { Button, Badge, Icon } from "@commercetools/nimbus";
 
 This works because:
 
-1. Consumers import from the **main package entry point**
-   (`dist/index.es.js`), not individual component chunks
+1. Consumers import from the **main package entry point** (`dist/index.es.js`),
+   not individual component chunks
 2. The package build resolves all internal dependencies
 3. Consumers' bundlers handle tree-shaking based on what they import
 

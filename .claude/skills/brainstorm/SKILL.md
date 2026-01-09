@@ -22,6 +22,16 @@ looks right so far.
 
 **Understanding the idea:**
 
+**Note**: This skill is typically invoked by agents like nimbus-researcher when
+requirements are unclear. You can also invoke it directly when:
+
+- Starting a new component and need to explore design options
+- Facing architectural decisions with multiple valid approaches
+- Requirements are ambiguous and need clarification
+
+For complete component creation with OpenSpec integration, use
+`/propose-component` command instead.
+
 - You SHOULD begin by reviewing the current project state (files, docs, recent
   commits). This ensures the design fits existing patterns and doesn't duplicate
   work.

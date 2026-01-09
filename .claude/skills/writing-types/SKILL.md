@@ -1,15 +1,21 @@
 ---
-description: Create, update, or validate TypeScript type definitions for components
+description:
+  Create, update, or validate TypeScript type definitions for components
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Types Skill
 
-You are a Nimbus TypeScript types specialist. This skill helps you create, update, or validate type definition files (`{component}.types.ts`) that define the public API contract for components with proper TypeScript interfaces and type safety.
+You are a Nimbus TypeScript types specialist. This skill helps you create,
+update, or validate type definition files (`{component}.types.ts`) that define
+the public API contract for components with proper TypeScript interfaces and
+type safety.
 
 ## Critical Requirements
 
-**Type files are the public API contract.** Every component MUST have comprehensive TypeScript types that define props interfaces, recipe variants, and ensure type safety for consumers.
+**Type files are the public API contract.** Every component MUST have
+comprehensive TypeScript types that define props interfaces, recipe variants,
+and ensure type safety for consumers.
 
 ## Mode Detection
 
@@ -25,51 +31,47 @@ If no mode is specified, default to **create**.
 
 Before implementation, you MUST research in parallel:
 
-1. **Read** type definition guidelines:
+1. **Read** JSDoc standards:
+
+   ```bash
+   cat docs/jsdoc-standards.md
+   ```
+
+2. **Read** naming conventions:
+
+   ```bash
+   cat docs/naming-conventions.md
+   ```
+
+3. **Read** type definition guidelines:
+
    ```bash
    cat docs/file-type-guidelines/types.md
    ```
 
-2. **Analyze** similar component types:
+4. **Analyze** similar component types:
+
    ```bash
    # Find similar components
-   ls packages/nimbus/src/components/*/
-*.types.ts
+   ls packages/nimbus/src/components/*/*.types.ts
 
    # Read reference implementations
    cat packages/nimbus/src/components/button/button.types.ts  # Simple
    cat packages/nimbus/src/components/menu/menu.types.ts      # Compound
    ```
 
-3. **Check** component complexity tier:
+5. **Check** component complexity tier:
+   - See docs/file-type-guidelines/types.md for tier decision flow
    - Tier 1: Simple (Button, Badge)
    - Tier 2: Slot-based (TextInput, NumberInput)
    - Tier 3: Compound (Menu, Dialog)
    - Tier 4: Complex (DataTable, DatePicker)
 
-4. **Review** recipe and slot files:
+6. **Review** recipe and slot files if they exist:
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.recipe.ts
    cat packages/nimbus/src/components/{component}/{component}.slots.tsx
    ```
-
-## Component Tier Decision Flow
-
-Use this diagram to determine the appropriate tier for your component:
-
-```mermaid
-graph TD
-    Start[Analyze Component] --> Q1{Multiple<br/>sub-component<br/>parts?}
-
-    Q1 -->|Yes| Q2{Has generic<br/>types or<br/>context?}
-    Q1 -->|No| Q3{Multiple<br/>visual<br/>slots?}
-
-    Q2 -->|Yes| Tier4[Tier 4: Complex<br/>DataTable, DatePicker<br/>200-400 lines]
-    Q2 -->|No| Tier3[Tier 3: Compound<br/>Menu, Dialog<br/>100-200 lines]
-
-    Q3 -->|Yes| Tier2[Tier 2: Slot-Based<br/>TextInput, NumberInput<br/>50-100 lines]
-    Q3 -->|No| Tier1[Tier 1: Simple<br/>Button, Badge<br/>10-30 lines]
-```
 
 ## The Universal Four-Layer Pattern (CRITICAL)
 
@@ -90,14 +92,18 @@ type ConflictingProps = keyof AriaProps;
 type ExcludedProps = "css" | "colorScheme";
 
 // Layer 4: Main Props (Public API)
-export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | ExcludedProps> &
+export type ComponentProps = Omit<
+  ComponentRootSlotProps,
+  ConflictingProps | ExcludedProps
+> &
   AriaProps & {
     ref?: React.Ref<HTMLElement>;
     customProp?: string;
   };
 ```
 
-**Key Principle:** Slot props are ALWAYS the foundation. Never build props from scratch.
+**Key Principle:** Slot props are ALWAYS the foundation. Never build props from
+scratch.
 
 ## Component Tier Decision Matrix
 
@@ -106,6 +112,7 @@ export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | Exc
 **Examples:** Button, Avatar, Separator, Icon, Badge
 
 **Type Structure:**
+
 ```
 RecipeProps → RootSlotProps → MainProps
 ```
@@ -113,6 +120,7 @@ RecipeProps → RootSlotProps → MainProps
 **Files:** ~10-30 lines
 
 **Template:**
+
 ```typescript
 import type {
   HTMLChakraProps,
@@ -166,6 +174,7 @@ export type ButtonProps = ButtonRootSlotProps & {
 **Examples:** TextInput, NumberInput, MoneyInput, PasswordInput
 
 **Type Structure:**
+
 ```
 RecipeProps → Multiple SlotProps → MainProps
 ```
@@ -173,12 +182,14 @@ RecipeProps → Multiple SlotProps → MainProps
 **Files:** ~50-100 lines
 
 **Slot Pattern:**
+
 - `RootSlotProps` - Container element
 - `InputSlotProps` - Input element
 - `LeadingElementSlotProps` - Start decoration
 - `TrailingElementSlotProps` - End decoration
 
 **Template:**
+
 ```typescript
 import type {
   HTMLChakraProps,
@@ -196,7 +207,10 @@ type TextInputRecipeProps = SlotRecipeProps<"textInput">;
 // SLOT PROPS
 // ============================================================
 
-export type TextInputRootSlotProps = HTMLChakraProps<"div", TextInputRecipeProps>;
+export type TextInputRootSlotProps = HTMLChakraProps<
+  "div",
+  TextInputRecipeProps
+>;
 export type TextInputInputSlotProps = HTMLChakraProps<"input">;
 export type TextInputLeadingElementSlotProps = HTMLChakraProps<"div">;
 export type TextInputTrailingElementSlotProps = HTMLChakraProps<"div">;
@@ -233,6 +247,7 @@ export type TextInputProps = TextInputRootSlotProps & {
 **Examples:** Menu, Dialog, Card, Tabs, Accordion
 
 **Type Structure:**
+
 ```
 RootSlotProps (with recipe) + Multiple SubComponentProps
 ```
@@ -240,10 +255,12 @@ RootSlotProps (with recipe) + Multiple SubComponentProps
 **Files:** ~100-200 lines
 
 **Naming Pattern:**
+
 - Root: `{Component}RootProps`
 - Parts: `{Component}{Part}Props`
 
 **Template:**
+
 ```typescript
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type {
@@ -305,23 +322,24 @@ export type MenuTriggerProps = MenuTriggerSlotProps & {
 /**
  * Props for the Menu.Item component.
  */
-export type MenuItemProps = MenuItemSlotProps & RaMenuItemProps & {
-  /**
-   * Unique value for the menu item
-   */
-  value: string;
+export type MenuItemProps = MenuItemSlotProps &
+  RaMenuItemProps & {
+    /**
+     * Unique value for the menu item
+     */
+    value: string;
 
-  /**
-   * Whether the item is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
+    /**
+     * Whether the item is disabled
+     * @default false
+     */
+    isDisabled?: boolean;
 
-  /**
-   * Reference to the item element
-   */
-  ref?: React.Ref<HTMLDivElement>;
-};
+    /**
+     * Reference to the item element
+     */
+    ref?: React.Ref<HTMLDivElement>;
+  };
 ```
 
 ### Tier 4: Complex Compositions
@@ -329,6 +347,7 @@ export type MenuItemProps = MenuItemSlotProps & RaMenuItemProps & {
 **Examples:** DataTable, DatePicker, Pagination, ComboBox
 
 **Type Structure:**
+
 ```
 All of above + ContextValue + Helper types + Generics
 ```
@@ -336,11 +355,13 @@ All of above + ContextValue + Helper types + Generics
 **Files:** ~200-400 lines
 
 **Additional Patterns:**
+
 - Generic types: `<T extends object>`
 - Context value types
 - Helper types (SortDescriptor, ColumnItem, etc.)
 
 **Template:**
+
 ```typescript
 import type { ReactNode } from "react";
 import type {
@@ -370,7 +391,10 @@ type DataTableRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type DataTableRootSlotProps = HTMLChakraProps<"div", DataTableRecipeProps>;
+export type DataTableRootSlotProps = HTMLChakraProps<
+  "div",
+  DataTableRecipeProps
+>;
 export type DataTableTableSlotProps = HTMLChakraProps<"table">;
 
 // ============================================================
@@ -454,20 +478,6 @@ import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 // Sub-component props for compound components
 ```
 
-## Naming Conventions (CRITICAL)
-
-| Type Category | Pattern | Example |
-|--------------|---------|---------|
-| **Recipe Props** | `{Component}RecipeProps` | `ButtonRecipeProps` |
-| **Slot Props (Root)** | `{Component}RootSlotProps` | `MenuRootSlotProps` |
-| **Slot Props (Parts)** | `{Component}{Part}SlotProps` | `MenuTriggerSlotProps` |
-| **Main Props** | `{Component}Props` | `ButtonProps` |
-| **Sub-component Props** | `{Component}{Part}Props` | `MenuTriggerProps` |
-| **React Aria Imports** | `Ra{Component}` prefix | `RaButton`, `RaMenuProps` |
-| **Helper Types** | `Excluded{Component}Props` | `ExcludedNumberInputProps` |
-| **Utility Types** | Descriptive names | `SortDescriptor`, `ColumnItem` |
-| **Context Values** | `{Component}ContextValue` | `DataTableContextValue` |
-
 ### React Aria Import Convention (CRITICAL)
 
 **ALWAYS** prefix React Aria imports with "Ra":
@@ -491,12 +501,17 @@ Types that component **consumers** need to import:
 
 ```typescript
 // ✅ These belong in component.types.ts
-export type ComponentNameProps = { /* ... */ };
-export type UseComponentNameOptions = { /* ... */ };
+export type ComponentNameProps = {
+  /* ... */
+};
+export type UseComponentNameOptions = {
+  /* ... */
+};
 export type ComponentVariant = "solid" | "outline" | "ghost";
 ```
 
 **Characteristics:**
+
 - Imported by component consumers
 - Referenced in documentation
 - Part of external contract
@@ -508,51 +523,22 @@ Types used only within component implementation:
 
 ```typescript
 // ✅ In utils/sanitize-svg.ts
-type SanitizationOptions = { /* ... */ };
+type SanitizationOptions = {
+  /* ... */
+};
 
 // ✅ In hooks/use-internal-state.ts
-type InternalHookState = { /* ... */ };
+type InternalHookState = {
+  /* ... */
+};
 ```
 
 **Characteristics:**
+
 - Never imported by consumers
 - Implementation details
 - Can change without affecting users
 - Colocated with usage for maintainability
-
-## JSDoc Documentation Requirements
-
-### All Properties MUST Have JSDoc
-
-```typescript
-export type ButtonProps = ButtonRootSlotProps & {
-  /**
-   * Whether the button is in a loading state
-   * @default false
-   */
-  isLoading?: boolean;
-
-  /**
-   * Icon to display before the button text
-   * @example <Icon name="add" />
-   */
-  startIcon?: React.ReactNode;
-
-  /**
-   * Reference to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
-};
-```
-
-### JSDoc Standards
-
-- **Required**: JSDoc comments for every property within types
-- **Optional**: JSDoc comments on type definitions themselves
-- Use `@default` tag for props with defaults
-- Use `@example` for complex props
-- Use `@deprecated` for legacy props
-- Use `@see` for related documentation
 
 ## Recipe Variant Props Integration
 
@@ -567,8 +553,8 @@ export type ButtonProps = ButtonSlotProps & {
 
 // ❌ INCORRECT - Don't redeclare recipe variants
 export type ButtonProps = ButtonSlotProps & {
-  size?: "sm" | "md" | "lg";  // Already in ButtonSlotProps!
-  variant?: "solid" | "outline";  // Already in ButtonSlotProps!
+  size?: "sm" | "md" | "lg"; // Already in ButtonSlotProps!
+  variant?: "solid" | "outline"; // Already in ButtonSlotProps!
 };
 ```
 
@@ -664,6 +650,7 @@ export type CustomComponentProps = {
 ### Step 1: Determine Component Tier
 
 Analyze component to determine tier:
+
 - Tier 1: Simple, single element
 - Tier 2: Multiple slots, form components
 - Tier 3: Compound with multiple parts
@@ -672,6 +659,7 @@ Analyze component to determine tier:
 ### Step 2: Create File Structure
 
 Start with imports:
+
 ```typescript
 import type {
   HTMLChakraProps,
@@ -680,14 +668,13 @@ import type {
 } from "@chakra-ui/react";
 
 // For React Aria integration:
-import type {
-  ButtonProps as RaButtonProps,
-} from "react-aria-components";
+import type { ButtonProps as RaButtonProps } from "react-aria-components";
 ```
 
 ### Step 3: Define Recipe Props
 
 If component has custom styling:
+
 ```typescript
 type ComponentRecipeProps = {
   /**
@@ -706,14 +693,19 @@ type ComponentRecipeProps = {
 ### Step 4: Define Slot Props
 
 For each visual element:
+
 ```typescript
-export type ComponentRootSlotProps = HTMLChakraProps<"div", ComponentRecipeProps>;
+export type ComponentRootSlotProps = HTMLChakraProps<
+  "div",
+  ComponentRecipeProps
+>;
 export type ComponentPartSlotProps = HTMLChakraProps<"span">;
 ```
 
 ### Step 5: Define Helper Types
 
 For Tier 3/4 components with conflicts:
+
 ```typescript
 type ConflictingProps = keyof SomeAriaProps;
 type ExcludedProps = "css" | "colorScheme";
@@ -722,6 +714,7 @@ type ExcludedProps = "css" | "colorScheme";
 ### Step 6: Define Main Props
 
 Public API with JSDoc:
+
 ```typescript
 export type ComponentProps = ComponentRootSlotProps & {
   /**
@@ -740,6 +733,7 @@ export type ComponentProps = ComponentRootSlotProps & {
 ### Step 7: Define Sub-Component Props
 
 For compound components:
+
 ```typescript
 /**
  * Props for the Component.Part.
@@ -777,12 +771,14 @@ export type ComponentPartProps = ComponentPartSlotProps & {
 You MUST validate against these requirements:
 
 #### File Structure
+
 - [ ] Types file exists with `.ts` extension
 - [ ] Section dividers in correct order (Recipe → Slot → Helper → Main)
 - [ ] Only consumer-facing types in file
 - [ ] Internal types colocated with usage
 
 #### Naming Conventions
+
 - [ ] All naming follows conventions table
 - [ ] Props follow `{ComponentName}Props` pattern
 - [ ] React Aria imports use "Ra" prefix
@@ -790,6 +786,7 @@ You MUST validate against these requirements:
 - [ ] Slot props: `{Component}RootSlotProps`, `{Component}{Part}SlotProps`
 
 #### Type Construction
+
 - [ ] Uses `type` syntax (not `interface`)
 - [ ] Extends appropriate slot props
 - [ ] Recipe variants automatically inherited (not explicit)
@@ -797,6 +794,7 @@ You MUST validate against these requirements:
 - [ ] Four-layer pattern followed
 
 #### Documentation
+
 - [ ] JSDoc comments for all properties
 - [ ] Default values documented with `@default`
 - [ ] Complex props have `@example` tags
@@ -804,6 +802,7 @@ You MUST validate against these requirements:
 - [ ] No file-level JSDoc preamble
 
 #### Type Safety
+
 - [ ] Generic types used appropriately
 - [ ] No inline complex types
 - [ ] No implementation details leaked
@@ -819,26 +818,32 @@ You MUST validate against these requirements:
 ### Component Tier: [1 | 2 | 3 | 4]
 
 ### Files Reviewed
+
 - Types file: `{component}.types.ts`
 - Slots file: `{component}.slots.tsx`
 - Recipe file: `{component}.recipe.ts`
 
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
+
 - [Violation with guideline reference and line number]
 
 ### ⚠️ Warnings (SHOULD FIX)
+
 - [Non-critical improvements]
 
 ### Type Structure Assessment
+
 - Layer organization: [Correct | Incorrect]
 - Naming conventions: [Followed | Violations found]
 - JSDoc coverage: [Complete | Partial | Missing]
 - Recipe integration: [Automatic | Explicit (wrong)]
 
 ### Recommendations
+
 - [Specific improvements needed]
 ```
 

@@ -64,6 +64,17 @@ detailed guidelines:
 - **[Architecture Decisions](./file-type-guidelines/architecture-decisions.md)** -
   Decision matrix for component design
 
+### Cross-Cutting Standards
+
+These documents provide standards that apply across all component types:
+
+- **[JSDoc Standards](./jsdoc-standards.md)** - Documentation comment patterns
+  for props, types, and test sections
+- **[Naming Conventions](./naming-conventions.md)** - File, component, type, and
+  variable naming patterns
+- **[Accessibility Requirements](./file-type-guidelines/main-component.md#accessibility-requirements)** -
+  WCAG 2.1 AA compliance guidelines and React Aria integration
+
 ## Navigation by Task
 
 ### 🚀 Creating a New Component
