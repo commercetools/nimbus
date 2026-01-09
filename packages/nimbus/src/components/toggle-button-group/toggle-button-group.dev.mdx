@@ -1,0 +1,463 @@
+---
+title: ToggleButtonGroup Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ToggleButtonGroup, type ToggleButtonGroupProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The ToggleButtonGroup component groups multiple toggle buttons together, allowing users to select one or more options from a set of related choices. It uses a compound component structure with `Root` and `Button` sub-components:
+
+```jsx-live-dev
+const App = () => (
+  <ToggleButtonGroup.Root aria-label="Text alignment">
+    <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+)
+```
+
+By default, the group operates in single-selection mode where only one button can be selected at a time. Each button must have a unique `id` prop that identifies it within the group.
+
+## Usage examples
+
+### Size options
+
+The component supports two size variants to match your interface density:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <ToggleButtonGroup.Root size="md" aria-label="Medium text alignment">
+      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+
+    <ToggleButtonGroup.Root size="xs" aria-label="Small text alignment">
+      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+)
+```
+
+### Color palettes
+
+Choose from semantic color palettes to match your design context:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <ToggleButtonGroup.Root colorPalette="primary" aria-label="Primary alignment">
+      <ToggleButtonGroup.Button id="left">
+        <Icons.FormatAlignLeft />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">
+        <Icons.FormatAlignCenter />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">
+        <Icons.FormatAlignRight />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+
+    <ToggleButtonGroup.Root colorPalette="critical" aria-label="Critical actions">
+      <ToggleButtonGroup.Button id="delete">
+        <Icons.Delete />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="warning">
+        <Icons.Warning />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="block">
+        <Icons.Block />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+
+    <ToggleButtonGroup.Root colorPalette="neutral" aria-label="Neutral formatting">
+      <ToggleButtonGroup.Button id="bold">
+        <Icons.FormatBold />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="italic">
+        <Icons.FormatItalic />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="underline">
+        <Icons.FormatUnderlined />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+)
+```
+
+### With icons
+
+Icons can be used alone or combined with text labels:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <ToggleButtonGroup.Root aria-label="Icon-only formatting">
+      <ToggleButtonGroup.Button id="bold" aria-label="Bold">
+        <Icons.FormatBold />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="italic" aria-label="Italic">
+        <Icons.FormatItalic />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="underline" aria-label="Underline">
+        <Icons.FormatUnderlined />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+
+    <ToggleButtonGroup.Root aria-label="Text alignment with labels">
+      <ToggleButtonGroup.Button id="left">
+        <Icons.FormatAlignLeft /> Left
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">
+        <Icons.FormatAlignCenter /> Center
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">
+        <Icons.FormatAlignRight /> Right
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+)
+```
+
+When using icon-only buttons, always provide an `aria-label` on each button for screen reader accessibility.
+
+### Selection modes
+
+The group supports both single-selection (default) and multi-selection modes:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Single selection (default)</Text>
+      <ToggleButtonGroup.Root aria-label="Text alignment">
+        <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Multiple selection</Text>
+      <ToggleButtonGroup.Root selectionMode="multiple" aria-label="Text formatting">
+        <ToggleButtonGroup.Button id="bold" aria-label="Bold">
+          <Icons.FormatBold />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="italic" aria-label="Italic">
+          <Icons.FormatItalic />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="underline" aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+  </Stack>
+)
+```
+
+In single-selection mode, selecting a button automatically deselects any previously selected button. In multi-selection mode, users can select multiple buttons independently.
+
+### Disabled state
+
+Disable the entire group or individual buttons:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Disabled group</Text>
+      <ToggleButtonGroup.Root isDisabled aria-label="Disabled alignment">
+        <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Individual disabled buttons</Text>
+      <ToggleButtonGroup.Root aria-label="Partial alignment">
+        <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center" isDisabled>Center</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+  </Stack>
+)
+```
+
+### Uncontrolled mode
+
+Use `defaultSelectedKeys` to set initial selection without managing state:
+
+```jsx-live-dev
+const App = () => {
+  const handleSelectionChange = (keys) => {
+    console.log('Selection changed:', Array.from(keys));
+  };
+
+  return (
+    <ToggleButtonGroup.Root
+      defaultSelectedKeys={['center']}
+      onSelectionChange={handleSelectionChange}
+      aria-label="Text alignment"
+    >
+      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  );
+}
+```
+
+### Controlled mode
+
+For full control over selection state, use `selectedKeys` with `onSelectionChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set(['left']));
+
+  return (
+    <Stack direction="column" gap="300">
+      <ToggleButtonGroup.Root
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        aria-label="Text alignment"
+      >
+        <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+
+      <Text fontSize="350">
+        Selected: {Array.from(selectedKeys).join(', ') || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+In controlled mode, the component's selection state is fully managed by your application. The `selectedKeys` prop accepts a `Set` containing the IDs of selected buttons.
+
+### Multi-selection with controlled state
+
+Combine `selectionMode="multiple"` with controlled state for complex selection logic:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedFormats, setSelectedFormats] = React.useState(new Set([]));
+
+  const formatNames = {
+    bold: 'Bold',
+    italic: 'Italic',
+    underline: 'Underline'
+  };
+
+  const selectedList = Array.from(selectedFormats)
+    .map(key => formatNames[key])
+    .join(', ');
+
+  return (
+    <Stack direction="column" gap="300">
+      <ToggleButtonGroup.Root
+        selectionMode="multiple"
+        selectedKeys={selectedFormats}
+        onSelectionChange={setSelectedFormats}
+        aria-label="Text formatting"
+      >
+        <ToggleButtonGroup.Button id="bold" aria-label="Bold">
+          <Icons.FormatBold />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="italic" aria-label="Italic">
+          <Icons.FormatItalic />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="underline" aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+
+      <Text fontSize="350">
+        Active formats: {selectedList || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The ToggleButtonGroup component follows WCAG 2.1 AA guidelines and uses React Aria for robust accessibility support.
+
+#### Role
+
+- **Single-selection mode (default)**:
+  - Root element has `role="radiogroup"`
+  - Each button has `role="radio"`
+- **Multi-selection mode**:
+  - Root element has `role="toolbar"`
+  - Each button has `role="button"` with `aria-pressed` attribute
+
+#### Labeling
+
+- **Group label required**: Always provide an `aria-label` or `aria-labelledby` on the Root component
+- **Button labels**: Each button must have accessible text content or an `aria-label`
+- **Icon-only buttons**: Must include an `aria-label` on each button
+
+```jsx-live-dev
+const App = () => (
+  <ToggleButtonGroup.Root aria-label="Text formatting options">
+    <ToggleButtonGroup.Button id="bold" aria-label="Toggle bold">
+      <Icons.FormatBold />
+    </ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="italic" aria-label="Toggle italic">
+      <Icons.FormatItalic />
+    </ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+)
+```
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus into/out of the button group |
+| `Arrow Left/Up` | Move focus to the previous button |
+| `Arrow Right/Down` | Move focus to the next button |
+| `Space` | Toggle the focused button's selection state |
+| `Home` | Move focus to the first button |
+| `End` | Move focus to the last button |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "text-alignment-toggle-group";
+
+export const Example = () => (
+  <ToggleButtonGroup.Root id={PERSISTENT_ID} aria-label="Text alignment">
+    <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+);
+```
+
+## API Reference
+
+<PropsTable id="ToggleButtonGroup" />
+
+## Common patterns
+
+### Text editor toolbar
+
+Combine multiple toggle button groups to create a rich text formatting toolbar:
+
+```jsx-live-dev
+const App = () => {
+  const [alignment, setAlignment] = React.useState(new Set(['left']));
+  const [formats, setFormats] = React.useState(new Set([]));
+
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <ToggleButtonGroup.Root
+        selectionMode="multiple"
+        selectedKeys={formats}
+        onSelectionChange={setFormats}
+        size="xs"
+        aria-label="Text formatting"
+      >
+        <ToggleButtonGroup.Button id="bold" aria-label="Bold">
+          <Icons.FormatBold />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="italic" aria-label="Italic">
+          <Icons.FormatItalic />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="underline" aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+
+      <Separator orientation="vertical" height="6" />
+
+      <ToggleButtonGroup.Root
+        selectedKeys={alignment}
+        onSelectionChange={setAlignment}
+        size="xs"
+        aria-label="Text alignment"
+      >
+        <ToggleButtonGroup.Button id="left" aria-label="Align left">
+          <Icons.FormatAlignLeft />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center" aria-label="Align center">
+          <Icons.FormatAlignCenter />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right" aria-label="Align right">
+          <Icons.FormatAlignRight />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+  );
+}
+```
+
+### View mode selector
+
+Use toggle button groups to switch between different view modes:
+
+```jsx-live-dev
+const App = () => {
+  const [viewMode, setViewMode] = React.useState(new Set(['grid']));
+
+  const selectedMode = Array.from(viewMode)[0] || 'grid';
+
+  return (
+    <Stack direction="column" gap="300">
+      <ToggleButtonGroup.Root
+        selectedKeys={viewMode}
+        onSelectionChange={setViewMode}
+        aria-label="View mode"
+      >
+        <ToggleButtonGroup.Button id="grid" aria-label="Grid view">
+          <Icons.GridView />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="list" aria-label="List view">
+          <Icons.ViewList />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="column" aria-label="Column view">
+          <Icons.ViewColumn />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+
+      <Text fontSize="350">Current view: {selectedMode}</Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ToggleButtonGroup within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: toggle-button-group.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-togglebuttongroup--docs)
+- [React Aria ToggleButton](https://react-aria.adobe.com/ToggleButton)
+- [ARIA: radio role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/radio_role)
