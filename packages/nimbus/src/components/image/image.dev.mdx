@@ -114,6 +114,53 @@ const App = () => (
 )
 ```
 
+### Object position
+
+Use the `align` prop to control the focal point of the image within its container:
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Top aligned</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Top aligned image"
+        fit="cover"
+        align="top"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Center aligned (default)</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Center aligned image"
+        fit="cover"
+        align="center"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Bottom aligned</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Bottom aligned image"
+        fit="cover"
+        align="bottom"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+  </Stack>
+)
+```
+
 ### Lazy loading
 
 Enable lazy loading to defer loading images until they're near the viewport, improving initial page load performance:
@@ -194,53 +241,6 @@ const App = () => (
       borderRadius="full"
       fit="cover"
     />
-  </Stack>
-)
-```
-
-### Object position
-
-Use the `align` prop to control the focal point of the image within its container:
-
-```jsx-live-dev
-const App = () => (
-  <Stack gap="400">
-    <Box>
-      <Text fontWeight="semibold" marginBottom="200">Top aligned</Text>
-      <Image 
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
-        alt="Top aligned image"
-        fit="cover"
-        align="top"
-        width="300px"
-        height="200px"
-        rounded="md"
-      />
-    </Box>
-    <Box>
-      <Text fontWeight="semibold" marginBottom="200">Center aligned (default)</Text>
-      <Image 
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
-        alt="Center aligned image"
-        fit="cover"
-        align="center"
-        width="300px"
-        height="200px"
-        rounded="md"
-      />
-    </Box>
-    <Box>
-      <Text fontWeight="semibold" marginBottom="200">Bottom aligned</Text>
-      <Image 
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
-        alt="Bottom aligned image"
-        fit="cover"
-        align="bottom"
-        width="300px"
-        height="200px"
-        rounded="md"
-      />
-    </Box>
   </Stack>
 )
 ```
