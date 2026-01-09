@@ -1,0 +1,578 @@
+---
+title: Image Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Image, type ImageProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The Image component displays images with built-in support for accessibility, lazy loading, and responsive behavior.
+
+```jsx-live-dev
+const App = () => (
+  <Image 
+    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+    alt="Mountain landscape with blue sky"
+    rounded="md"
+    maxWidth="400px"
+  />
+)
+```
+
+## Usage examples
+
+### Aspect ratio control
+
+Use the `aspectRatio` prop to maintain a specific aspect ratio regardless of the image's natural dimensions:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box maxWidth="250px">
+      <Image 
+        src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop"
+        alt="Landscape with 16:9 ratio"
+        aspectRatio={16 / 9}
+        rounded="md"
+      />
+    </Box>
+    <Box maxWidth="250px">
+      <Image 
+        src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop"
+        alt="Square 1:1 ratio"
+        aspectRatio={1}
+        rounded="md"
+      />
+    </Box>
+    <Box maxWidth="250px">
+      <Image 
+        src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&h=300&fit=crop"
+        alt="Portrait 3:4 ratio"
+        aspectRatio={3 / 4}
+        rounded="md"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+### Object fit options
+
+Control how the image fills its container using the `fit` prop. This maps to the CSS `object-fit` property:
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">cover (default)</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+        alt="Cover fit example"
+        fit="cover"
+        width="300px"
+        height="200px"
+        rounded="md"
+        border="1px solid"
+        borderColor="border.muted"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">contain</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+        alt="Contain fit example"
+        fit="contain"
+        width="300px"
+        height="200px"
+        rounded="md"
+        border="1px solid"
+        borderColor="border.muted"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">fill</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+        alt="Fill fit example"
+        fit="fill"
+        width="300px"
+        height="200px"
+        rounded="md"
+        border="1px solid"
+        borderColor="border.muted"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+### Object position
+
+Use the `align` prop to control the focal point of the image within its container:
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Top aligned</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Top aligned image"
+        fit="cover"
+        align="top"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Center aligned (default)</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Center aligned image"
+        fit="cover"
+        align="center"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Bottom aligned</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop"
+        alt="Bottom aligned image"
+        fit="cover"
+        align="bottom"
+        width="300px"
+        height="200px"
+        rounded="md"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+### Lazy loading
+
+Enable lazy loading to defer loading images until they're near the viewport, improving initial page load performance:
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Lazy loading enabled</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop"
+        alt="Nature scene"
+        loading="lazy"
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Eager loading</Text>
+      <Image 
+        src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop"
+        alt="Forest landscape"
+        loading="eager"
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+### Responsive images
+
+Use `srcSet` and `sizes` to serve different image resolutions based on the device's screen size and pixel density:
+
+```jsx-live-dev
+const App = () => (
+  <Image 
+    src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&fit=crop"
+    srcSet="
+      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&fit=crop 400w,
+      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&fit=crop 800w,
+      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1200&fit=crop 1200w
+    "
+    sizes="(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px"
+    alt="Responsive nature image"
+    rounded="md"
+    maxWidth="full"
+  />
+)
+```
+
+### Circular images
+
+Create circular images for avatars or profile pictures using border radius:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Image 
+      src="https://i.pravatar.cc/150?img=1"
+      alt="User profile"
+      boxSize="100px"
+      borderRadius="full"
+      fit="cover"
+    />
+    <Image 
+      src="https://i.pravatar.cc/150?img=2"
+      alt="User profile"
+      boxSize="80px"
+      borderRadius="full"
+      fit="cover"
+    />
+    <Image 
+      src="https://i.pravatar.cc/150?img=3"
+      alt="User profile"
+      boxSize="60px"
+      borderRadius="full"
+      fit="cover"
+    />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Usage context
+
+The Image component is a styled wrapper around the native HTML `<img>` element with enhanced features:
+
+**When to use Image:**
+- When you need Chakra UI styling capabilities (responsive props, theme tokens)
+- For consistent styling across your application
+- When using features like `fit` or `align` props for easier object-fit control
+- For integration with Nimbus theme and design system
+
+**When to use native `<img>`:**
+- In simple cases where no styling or special features are needed
+- When optimizing for minimal bundle size
+- For static content that doesn't require theme integration
+
+### Accessibility
+
+The Image component provides accessibility through proper HTML image semantics and ARIA support.
+
+#### Mandatory alt text
+
+Every image must have an `alt` attribute. The alt text should:
+- Describe the image content and context for screen reader users
+- Be empty (`alt=""`) for purely decorative images
+- Describe the action if the image is interactive (e.g., part of a link or button)
+- Provide meaningful information, not just "image" or the file name
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Informative image</Text>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+        alt="Snow-capped mountain peaks at sunrise with pink and orange sky"
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Decorative image (empty alt)</Text>
+      <Image
+        src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop"
+        alt=""
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+#### Accessibility standards
+
+- **Role**: The Image component renders as an `<img>` element with implicit `img` role
+- **Labeling**: Always provide descriptive `alt` text. For complex images (charts, diagrams), consider providing additional context through captions or aria-describedby
+
+#### Keyboard Navigation
+
+Images are not focusable by default. Keyboard navigation only applies when images are wrapped in interactive elements such as buttons or links. In those cases, ensure the wrapping element has proper focus indicators and keyboard event handlers.
+
+#### Persistent ID tracking
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-hero-image";
+
+export const Example = () => (
+  <Image 
+    id={PERSISTENT_ID}
+    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&fit=crop"
+    alt="Featured product image"
+  />
+);
+```
+
+## API reference
+
+<PropsTable id="Image" />
+
+The Image component accepts all standard HTML `<img>` attributes including:
+- `src`: Image source URL
+- `alt`: Alternative text for accessibility
+- `srcSet`: Responsive image sources
+- `sizes`: Size hints for responsive images
+- `loading`: "lazy" or "eager" loading behavior
+- `decoding`: "async", "sync", or "auto" for image decoding
+- `crossOrigin`: CORS settings
+- `referrerPolicy`: Referrer policy for image requests
+
+Plus Chakra UI style props and the following enhanced props:
+- `fit`: Object fit behavior (maps to `object-fit` CSS property)
+- `align`: Object position (maps to `object-position` CSS property)
+
+## Common patterns
+
+### Product image display
+
+Display product images with consistent aspect ratios and hover effects:
+
+```jsx-live-dev
+const App = () => (
+  <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap="400">
+    <Box>
+      <Image 
+        src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&fit=crop"
+        alt="Modern minimalist watch with leather strap"
+        aspectRatio={1}
+        rounded="md"
+        transition="transform 0.2s"
+        _hover={{ transform: "scale(1.05)" }}
+        cursor="pointer"
+      />
+      <Text fontWeight="semibold" marginTop="200">Classic Watch</Text>
+      <Text color="fg.muted">$299.00</Text>
+    </Box>
+    <Box>
+      <Image 
+        src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&fit=crop"
+        alt="White designer sunglasses on marble surface"
+        aspectRatio={1}
+        rounded="md"
+        transition="transform 0.2s"
+        _hover={{ transform: "scale(1.05)" }}
+        cursor="pointer"
+      />
+      <Text fontWeight="semibold" marginTop="200">Designer Sunglasses</Text>
+      <Text color="fg.muted">$189.00</Text>
+    </Box>
+    <Box>
+      <Image 
+        src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&fit=crop"
+        alt="Brown leather sneakers with white soles"
+        aspectRatio={1}
+        rounded="md"
+        transition="transform 0.2s"
+        _hover={{ transform: "scale(1.05)" }}
+        cursor="pointer"
+      />
+      <Text fontWeight="semibold" marginTop="200">Leather Sneakers</Text>
+      <Text color="fg.muted">$159.00</Text>
+    </Box>
+  </SimpleGrid>
+)
+```
+
+### Avatar with fallback
+
+Use Image within custom avatar implementations or as profile pictures:
+
+```jsx-live-dev
+const App = () => {
+  const [imageError, setImageError] = React.useState(false);
+  
+  const handleError = () => {
+    setImageError(true);
+  };
+  
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Box position="relative">
+        {!imageError ? (
+          <Image 
+            src="https://i.pravatar.cc/150?img=8"
+            alt="John Doe profile picture"
+            boxSize="80px"
+            borderRadius="full"
+            fit="cover"
+            onError={handleError}
+          />
+        ) : (
+          <Box 
+            boxSize="80px"
+            borderRadius="full"
+            bg="bg.muted"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            fontWeight="semibold"
+            fontSize="xl"
+          >
+            JD
+          </Box>
+        )}
+      </Box>
+      <Box>
+        <Text fontWeight="semibold">John Doe</Text>
+        <Text color="fg.muted" fontSize="sm">Product Designer</Text>
+      </Box>
+    </Stack>
+  );
+}
+```
+
+### Hero image with overlay
+
+Create hero sections with images and text overlays:
+
+```jsx-live-dev
+const App = () => (
+  <Box position="relative" height="400px" rounded="lg" overflow="hidden">
+    <Image 
+      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&fit=crop"
+      alt="Mountain landscape hero background"
+      fit="cover"
+      width="full"
+      height="full"
+    />
+    <Box 
+      position="absolute"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      bg="blackAlpha.600"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="column"
+      gap="400"
+      padding="600"
+    >
+      <Text 
+        fontSize="4xl" 
+        fontWeight="bold" 
+        color="white"
+        textAlign="center"
+      >
+        Explore the Great Outdoors
+      </Text>
+      <Text 
+        fontSize="lg" 
+        color="white"
+        textAlign="center"
+        maxWidth="600px"
+      >
+        Discover breathtaking landscapes and unforgettable adventures
+      </Text>
+      <Button colorPalette="teal" size="md">
+        Start Your Journey
+      </Button>
+    </Box>
+  </Box>
+)
+```
+
+### Image gallery grid
+
+Display a grid of images with consistent sizing and spacing:
+
+```jsx-live-dev
+const App = () => (
+  <SimpleGrid columns={{ base: 2, md: 3 }} gap="300">
+    <Image 
+      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&fit=crop"
+      alt="Mountain landscape"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+    <Image 
+      src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&fit=crop"
+      alt="Forest path"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+    <Image 
+      src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&fit=crop"
+      alt="Forest wilderness"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+    <Image 
+      src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&fit=crop"
+      alt="Misty forest"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+    <Image 
+      src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&fit=crop"
+      alt="Golden field"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+    <Image 
+      src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&fit=crop"
+      alt="Ocean beach"
+      aspectRatio={4 / 3}
+      rounded="md"
+      fit="cover"
+      cursor="pointer"
+      transition="opacity 0.2s"
+      _hover={{ opacity: 0.8 }}
+    />
+  </SimpleGrid>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Image within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: image.docs.spec.tsx}}
+
+## Resources
+
+- [Chakra UI Image Documentation](https://www.chakra-ui.com/docs/components/image)
+- [MDN: The Image Embed element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img)
+- [WCAG Image Alternative Text Guidelines](https://www.w3.org/WAI/tutorials/images/)
