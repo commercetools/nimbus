@@ -431,6 +431,17 @@ export function getActiveEnvironmentUris(): string[] {
 }
 
 /**
+ * Flush all environments
+ * Useful when elements might be in a different environment than expected
+ * (e.g., nested components created via createElementFromDefinition)
+ */
+export function flushAllEnvironments(): void {
+  environmentsByUri.forEach((env) => {
+    env.flush();
+  });
+}
+
+/**
  * Set message sender for broadcasting Remote DOM messages
  * Applies to all existing and future environments
  */

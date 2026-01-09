@@ -5,7 +5,10 @@ import type { RemoteDomElement } from "../types/remote-dom.js";
 import { createRemoteDomResource } from "../utils/create-remote-dom-resource.js";
 import { commonStyleSchema } from "../utils/common-schemas.js";
 import { createElementFromDefinition } from "../utils/create-element-from-definition.js";
-import { getRemoteEnvironment } from "../remote-dom/environment.js";
+import {
+  getRemoteEnvironment,
+  flushAllEnvironments,
+} from "../remote-dom/environment.js";
 import { handleButtonClick } from "./button.js";
 import { queueAction } from "../utils/action-queue.js";
 import { showToast } from "../utils/toaster.js";
@@ -36,14 +39,43 @@ const editModeByUri = new Map<
 // Store edit instruction by URI (for save action)
 const editInstructionByUri = new Map<string, string>();
 
+// Store direct reference to flex container element by URI
+// This is needed because when data tables are created via createElementFromDefinition,
+// the elements are in the parent's environment, not the data table's own URI environment
+const flexContainerByUri = new Map<string, Element>();
+
+/**
+ * Get the flex container element for a URI
+ * Checks the direct reference map first, then falls back to environment lookup
+ */
+function getFlexContainer(uri: string): Element | null {
+  // First check direct reference (for nested data tables created via createElementFromDefinition)
+  const directRef = flexContainerByUri.get(uri);
+  if (directRef) return directRef;
+
+  // Fall back to environment lookup (for data tables created via createDataTable tool)
+  const env = getRemoteEnvironment(uri);
+  const root = env.getRoot() as Element;
+  return root.firstChild as Element | null;
+}
+
+/**
+ * Flush mutations - handles both direct and nested data tables
+ * For nested data tables (created via createElementFromDefinition), elements are
+ * attached to the parent's environment, not the data table's own URI environment.
+ * So we flush all environments to ensure mutations are sent.
+ */
+function flushMutations() {
+  // Flush all environments because nested data tables may be attached to
+  // a different environment (the parent's) than their own URI
+  flushAllEnvironments();
+}
+
 /**
  * Handle drawer close events - set isOpen to false
  */
 export function handleDrawerClose(uri: string) {
-  const env = getRemoteEnvironment(uri);
-  const root = env.getRoot() as Element;
-  const flexContainer = root.firstChild as Element | null;
-
+  const flexContainer = getFlexContainer(uri);
   if (!flexContainer) return;
 
   const drawer = flexContainer.querySelector(
@@ -52,7 +84,7 @@ export function handleDrawerClose(uri: string) {
   if (!drawer) return;
 
   drawer.isOpen = false;
-  env.flush();
+  flushMutations();
 }
 
 /**
@@ -212,10 +244,7 @@ export function handleDataTableRowClick(uri: string, rowId: string) {
  * Update the data table with new row data
  */
 function updateDataTable(uri: string, updatedData: Record<string, unknown>[]) {
-  const env = getRemoteEnvironment(uri);
-  const root = env.getRoot() as Element;
-  const flexContainer = root.firstChild as Element | null;
-
+  const flexContainer = getFlexContainer(uri);
   if (!flexContainer) return;
 
   const dataTable = flexContainer.querySelector(
@@ -225,7 +254,7 @@ function updateDataTable(uri: string, updatedData: Record<string, unknown>[]) {
   if (!dataTable) return;
 
   dataTable.rows = JSON.stringify(updatedData);
-  env.flush();
+  flushMutations();
 }
 
 /**
@@ -236,10 +265,7 @@ function renderDrawerContent(
   rowData: Record<string, unknown>,
   isEditMode: boolean
 ) {
-  const env = getRemoteEnvironment(uri);
-  const root = env.getRoot() as Element;
-  const flexContainer = root.firstChild as Element | null;
-
+  const flexContainer = getFlexContainer(uri);
   if (!flexContainer) return;
 
   const detailsContent = flexContainer.querySelector(
@@ -333,6 +359,7 @@ function renderDrawerContent(
       "nimbus-button"
     ) as RemoteDomElement;
     saveButton.setAttribute("id", "save-changes-button");
+    saveButton["data-uri"] = uri; // Use correct URI for button events (property, not attribute - Remote DOM only tracks properties)
     saveButton.variant = "solid";
     saveButton.styleProps = { marginTop: "400" };
     const saveButtonText = document.createTextNode("Save Changes");
@@ -404,27 +431,23 @@ function renderDrawerContent(
     detailsContent.appendChild(stack);
   }
 
-  env.flush();
+  flushMutations();
 }
 
 /**
  * Dynamically update drawer with row data and open it
  */
 function updateDetailsDrawer(uri: string, rowData: Record<string, unknown>) {
-  const env = getRemoteEnvironment(uri);
-  const root = env.getRoot() as Element;
-
-  const flexContainer = root.firstChild as Element | null;
+  const flexContainer = getFlexContainer(uri);
   if (!flexContainer) return;
 
   const drawer = flexContainer.querySelector(
     "#details-drawer"
   ) as RemoteDomElement | null;
-
   if (!drawer) return;
 
   drawer.isOpen = true;
-  env.flush();
+  flushMutations();
 
   renderDrawerContent(uri, rowData, false);
 }
@@ -477,9 +500,10 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
   }));
 
   // Transform rows to include id field and preserve ALL original data
+  // If row has no id, use index as fallback
   const dataTableRows = rows.map((row, idx) => ({
-    id: row.id ? String(row.id) : `row-${idx}`,
     ...row,
+    id: row.id !== undefined && row.id !== null ? String(row.id) : `row-${idx}`,
   }));
 
   // Generate URI for storing row data
@@ -496,6 +520,14 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
   dataTableElement.density = "default";
   dataTableElement.width = "100%";
   dataTableElement["aria-label"] = ariaLabel;
+
+  // When showDetails is enabled, store the URI on the data table element
+  // This allows the client to use the correct URI for row click events
+  // (necessary when the data table is nested inside another component like Stack)
+  // Use property assignment, not setAttribute - Remote DOM only tracks properties
+  if (showDetails) {
+    dataTableElement["data-uri"] = uri;
+  }
 
   if (!showDetails) {
     // No details mode - just return the data table element
@@ -526,6 +558,9 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
   drawerRoot.setAttribute("id", "details-drawer");
   drawerRoot.isOpen = false;
   drawerRoot.isDismissable = true;
+  // Store the data table's URI on the drawer so client can use correct URI for events
+  // Use property assignment, not setAttribute - Remote DOM only tracks properties
+  drawerRoot["data-uri"] = uri;
 
   // Hidden trigger
   const drawerTrigger = document.createElement(
@@ -572,6 +607,7 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
     "nimbus-button"
   ) as RemoteDomElement;
   editToggle.setAttribute("id", "edit-toggle");
+  editToggle["data-uri"] = uri; // Use correct URI for button events (property, not setAttribute - Remote DOM only tracks properties)
   editToggle.variant = "ghost";
   editToggle.size = "sm";
   editToggle.appendChild(document.createTextNode("Edit"));
@@ -581,6 +617,7 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
     "nimbus-drawer-close-trigger"
   ) as RemoteDomElement;
   drawerClose.setAttribute("aria-label", "Close drawer");
+  drawerClose["data-uri"] = uri; // Use correct URI for close events (property, not setAttribute - Remote DOM only tracks properties)
   headerActions.appendChild(drawerClose);
 
   drawerHeader.appendChild(headerActions);
@@ -607,6 +644,11 @@ export function createDataTableElement(args: CreateDataTableElementArgs): {
   if (editAction?.instruction) {
     editInstructionByUri.set(uri, editAction.instruction);
   }
+
+  // Store direct reference to flex container so event handlers can find it
+  // This is critical for nested data tables (created via createElementFromDefinition)
+  // where the elements are in the parent's environment, not the data table's own URI
+  flexContainerByUri.set(uri, rootElement);
 
   return { element: rootElement, uri, dataTableRows };
 }

@@ -18,6 +18,7 @@ export const NimbusButton = createRemoteElement({
     isLoading: true,
     type: true,
     id: true, // For event handling and action configuration
+    "data-uri": true, // URI for event routing (used for buttons in data table drawers)
     onPress: { event: true },
   },
 });

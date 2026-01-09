@@ -26,6 +26,9 @@ export class NimbusDataTable extends RemoteElement {
       width: String,
       "aria-label": String,
 
+      // URI for event routing (used when table is nested in other components)
+      "data-uri": String,
+
       // StyleProps object
       styleProps: Object,
     };

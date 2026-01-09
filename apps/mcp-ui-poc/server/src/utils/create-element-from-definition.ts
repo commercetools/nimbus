@@ -46,13 +46,25 @@ export function createElementFromDefinition(
       Array.isArray(parsedColumns) &&
       Array.isArray(parsedRows)
     ) {
+      // Validate that editAction is provided when showDetails is enabled
+      // This matches the validation in registerDataTableTool
+      const editActionObj = editAction as { instruction: string } | undefined;
+      if (!editActionObj?.instruction) {
+        throw new Error(
+          "editAction.instruction is REQUIRED when showDetails=true for nimbus-data-table. " +
+            "Provide an instruction template for Claude to execute when saving edits. " +
+            "Example: editAction={ instruction: 'Update product {id} with data: {formData}. Use commerce update_product tool.' }. " +
+            "Without it, the Edit button cannot save changes."
+        );
+      }
+
       const { element } = createDataTableElement({
         title: title as string | undefined,
         columns: parsedColumns,
         rows: parsedRows,
         ariaLabel: (ariaLabel as string) || "Data table",
         showDetails: true,
-        editAction: editAction as { instruction: string } | undefined,
+        editAction: editActionObj,
       });
 
       // Apply any remaining props to the root element
@@ -64,11 +76,35 @@ export function createElementFromDefinition(
     }
 
     // No showDetails - create simple data table element
+    // Use createDataTableElement for consistent handling (proper JSON serialization, row IDs, etc.)
+    if (Array.isArray(parsedColumns) && Array.isArray(parsedRows)) {
+      const { element } = createDataTableElement({
+        title: title as string | undefined,
+        columns: parsedColumns,
+        rows: parsedRows,
+        ariaLabel: (ariaLabel as string) || "Data table",
+        showDetails: false,
+      });
+
+      // Apply any remaining props to the element
+      Object.entries(restProps).forEach(([key, value]) => {
+        element[key] = value;
+      });
+
+      return element;
+    }
+
+    // Fallback: If columns/rows aren't valid arrays, create basic element
+    // This shouldn't normally happen, but ensures we don't crash
     const element = document.createElement(def.type) as RemoteDomElement;
 
-    // Set all properties including columns/rows
+    // Serialize columns and rows if they're arrays
     Object.entries(properties).forEach(([key, value]) => {
-      element[key] = value;
+      if ((key === "columns" || key === "rows") && Array.isArray(value)) {
+        element[key] = JSON.stringify(value);
+      } else {
+        element[key] = value;
+      }
     });
 
     return element;

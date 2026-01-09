@@ -168,18 +168,24 @@ export function ChatInterface() {
   function compactMessageHistory(
     messages: Message[]
   ): { role: "user" | "assistant"; content: string }[] {
+    // Filter out messages with empty content (e.g., streaming placeholders)
+    // Claude API requires all messages to have non-empty content except final assistant
+    const validMessages = messages.filter(
+      (msg) => msg.content && msg.content.trim() !== ""
+    );
+
     // Keep last 5 messages intact, summarize older ones
     const keepRecent = 5;
 
-    if (messages.length <= keepRecent) {
-      return messages.map((msg) => ({
+    if (validMessages.length <= keepRecent) {
+      return validMessages.map((msg) => ({
         role: msg.role,
         content: msg.content || "",
       }));
     }
 
-    const oldMessages = messages.slice(0, -keepRecent);
-    const recentMessages = messages.slice(-keepRecent);
+    const oldMessages = validMessages.slice(0, -keepRecent);
+    const recentMessages = validMessages.slice(-keepRecent);
 
     // Create summary of old messages
     const summary = `[Previous conversation summary: User asked about ${oldMessages.filter((m) => m.role === "user").length} topics. Data was displayed using UI components.]`;

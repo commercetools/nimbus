@@ -49,6 +49,10 @@ export function registerComponentTagsResource(server: McpServer) {
                   ariaLabel: "Required accessibility label",
                   allowsSorting: "Boolean to enable column sorting",
                   isRowClickable: "Boolean to enable row click events",
+                  showDetails:
+                    "Boolean - REQUIRED for row click details. When true, clicking a row opens a drawer showing all row data. Always set to true when displaying data that users may want to inspect in detail.",
+                  editAction:
+                    "Object with { instruction: string } - enables edit button in details drawer",
                   density: "'default' | 'compact' | 'comfortable'",
                 },
               },

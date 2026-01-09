@@ -100,6 +100,17 @@ export function registerStackTool(server: McpServer) {
         }
       }
       if (args.children) {
+        // Debug: Log children being processed
+        console.log("🔍 Stack processing children:", {
+          childCount: args.children.length,
+          childTypes: args.children.map(
+            (c: Record<string, unknown>) => c.type || "string"
+          ),
+          dataTableChild: args.children.find(
+            (c: Record<string, unknown>) => c.type === "nimbus-data-table"
+          ),
+        });
+
         args.children.forEach((childDef: Record<string, unknown>) => {
           if (typeof childDef === "string") {
             const sanitizedText = sanitizeTextContent(childDef);

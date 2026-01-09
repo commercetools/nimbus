@@ -146,8 +146,15 @@ const simple =
  * Button with click handling
  */
 const ButtonWrapper = (props: Record<string, unknown>) => {
-  const uri = useUri();
+  const parentUri = useUri();
+  // Use data-uri if present (set by server for buttons in data table drawers)
+  const dataUri = props["data-uri"] as string | undefined;
+  const uri = dataUri || parentUri;
+
   const { styleProps, id, onPress, ...rest } = props;
+  // Remove data-uri from rest props so it doesn't get passed to the component
+  delete rest["data-uri"];
+
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const handlePress = id
@@ -192,8 +199,25 @@ const ButtonWrapper = (props: Record<string, unknown>) => {
  * DataTable with row click handling
  */
 const DataTableWrapper = (props: Record<string, unknown>) => {
-  const uri = useUri();
+  const parentUri = useUri();
+  // Use data-uri if present (set by server for nested data tables with showDetails)
+  // This ensures events use the correct URI where row data is stored
+  const dataUri = props["data-uri"] as string | undefined;
+  const uri = dataUri || parentUri;
+
+  // Debug logging
+  console.log("🔍 DataTableWrapper props:", {
+    dataUri,
+    parentUri,
+    uri,
+    isRowClickable: props.isRowClickable,
+    hasDataUriProp: "data-uri" in props,
+    allPropKeys: Object.keys(props),
+  });
+
   const { columns, rows, isRowClickable, onRowClick, ...rest } = props;
+  // Remove data-uri from rest props so it doesn't get passed to the component
+  delete rest["data-uri"];
 
   const parsedColumns =
     typeof columns === "string" ? JSON.parse(columns as string) : columns;
@@ -230,12 +254,21 @@ const DataTableWrapper = (props: Record<string, unknown>) => {
 
   const handleRowClick = isRowClickable
     ? (row: DataTableRowItem) => {
+        console.log("🔍 DataTable handleRowClick called:", {
+          rowId: row.id,
+          uri,
+        });
         sendClientEvent("dataTableRowClick", uri, { rowId: row.id }, false);
         if (typeof onRowClick === "function") {
           onRowClick(row);
         }
       }
     : undefined;
+
+  console.log("🔍 DataTable handleRowClick setup:", {
+    isRowClickable,
+    hasHandler: !!handleRowClick,
+  });
 
   return (
     <Nimbus.DataTable
@@ -273,8 +306,14 @@ const MoneyInputWrapper = (props: Record<string, unknown>) => {
  * Drawer.Root with state sync
  */
 const DrawerRootWrapper = (props: Record<string, unknown>) => {
-  const uri = useUri();
+  const parentUri = useUri();
+  // Use data-uri if present (set by server for data table detail drawers)
+  const dataUri = props["data-uri"] as string | undefined;
+  const uri = dataUri || parentUri;
+
   const { styleProps, isOpen, isDismissable = true, children, ...rest } = props;
+  // Remove data-uri from rest props so it doesn't get passed to the component
+  delete rest["data-uri"];
 
   const handleOpenChange = (newIsOpen: boolean) => {
     if (!newIsOpen) {
@@ -299,8 +338,14 @@ const DrawerRootWrapper = (props: Record<string, unknown>) => {
  * Drawer.CloseTrigger with click handling
  */
 const DrawerCloseTriggerWrapper = (props: Record<string, unknown>) => {
-  const uri = useUri();
+  const parentUri = useUri();
+  // Use data-uri if present (set by server for data table detail drawer close buttons)
+  const dataUri = props["data-uri"] as string | undefined;
+  const uri = dataUri || parentUri;
+
   const { styleProps, ...rest } = props;
+  // Remove data-uri from rest props so it doesn't get passed to the component
+  delete rest["data-uri"];
 
   const handlePress = () => {
     sendClientEvent("drawerClose", uri, {}, false);

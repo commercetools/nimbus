@@ -12,6 +12,7 @@ export const NimbusDrawerRoot = createRemoteElement({
     isDismissable: true, // Allow closing via backdrop/Escape
     isKeyboardDismissDisabled: true,
     onOpenChange: { event: true }, // Event handler for open state changes
+    "data-uri": true, // URI for event routing (used for data table detail drawers)
   },
 });
 
@@ -57,6 +58,7 @@ export const NimbusDrawerCloseTrigger = createRemoteElement({
   properties: {
     styleProps: true,
     "aria-label": true,
+    "data-uri": true, // URI for event routing (used for data table detail drawer close)
   },
 });
 
