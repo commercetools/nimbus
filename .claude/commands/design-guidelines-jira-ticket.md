@@ -12,20 +12,23 @@ nimbus component's design guidelines documentation.
 
 ## **Always Required**
 
-- Design documentation should focus on visual and interaction design, not
-  implementation details
-- use clear and succinct language
-- prefer brevity over large amounts of detail
-- requirements reflect the current state of the nimbus component
-- requirements highlight any differences between the nimbus component and its
-  figma design
-- highlight any attributes or features of the component that might not be
-  obvious to a designer
-- Refer to `docs/file-type-guidelines/documentation.md` as a guideline for what
-  to include, but **do not** explicitly list proposed content for every section.
-  The designer will decide the document's content
-- include a link to the component's storybook story
-- if applicable, include a link to the component's current documentation page
+You MUST follow these requirements when creating the JIRA ticket:
+
+- You MUST ensure design documentation focuses on visual and interaction design,
+  not implementation details
+- You MUST use clear and succinct language
+- You SHOULD prefer brevity over large amounts of detail
+- You MUST ensure requirements reflect the current state of the Nimbus component
+- You MUST highlight any differences between the Nimbus component and its Figma
+  design
+- You MUST highlight any attributes or features of the component that might not
+  be obvious to a designer
+- You SHOULD refer to `docs/file-type-guidelines/documentation.md` as a
+  guideline for what to include, but you MUST NOT explicitly list proposed
+  content for every section. The designer will decide the document's content
+- You MUST include a link to the component's Storybook story
+- You SHOULD include a link to the component's current documentation page (if
+  applicable)
 
 ## Input Requirements
 
@@ -164,24 +167,21 @@ and formatting requirements:
 
 ## Common Pitfalls to Avoid
 
-❌ **Don't** include implementation details in design-focused tickets\
-❌ **Don't** miss the mapping between Figma terminology and code terminology\
-❌ **Don't** create overly technical acceptance criteria for designers\
-❌ **Don't** forget to link to Storybook or documentation\
-❌ **Don't** list every possible example - focus on representative visual and
-interaction states\
-❌ **Don't** duplicate content between "Discrepancies from Design" and "Anatomy
-Differences" sections
+You MUST NOT include implementation details in design-focused tickets. You MUST
+map between Figma terminology and code terminology. You MUST NOT create overly
+technical acceptance criteria for designers. You MUST NOT forget to link to
+Storybook or documentation. You MUST NOT list every possible example - focus on
+representative visual and interaction states. You MUST NOT duplicate content
+between "Discrepancies from Design" and "Anatomy Differences" sections.
 
-✅ **Do** focus on visual appearance and user interaction\
-✅ **Do** use clear, designer-friendly language\
-✅ **Do** map Figma terms to component structure clearly\
-✅ **Do** provide specific, actionable acceptance criteria\
-✅ **Do** highlight non-obvious component behaviors
+Instead, you SHOULD focus on visual appearance and user interaction. You MUST
+use clear, designer-friendly language. You MUST map Figma terms to component
+structure clearly. You MUST provide specific, actionable acceptance criteria.
+You SHOULD highlight non-obvious component behaviors.
 
 ## Pre-Submission Checklist
 
-Before submitting the JIRA ticket, verify:
+Before submitting the JIRA ticket, you MUST verify:
 
 - [ ] All anatomy terms from Figma are mapped to code terms
 - [ ] All visual variants are documented
@@ -195,3 +195,11 @@ Before submitting the JIRA ticket, verify:
 - [ ] "Discrepancies from Design" covers visual/variant differences
 - [ ] "Anatomy Differences" covers structural/hierarchy differences
 - [ ] Language is clear and avoids unnecessary technical jargon
+
+## RFC 2119 Key Words
+
+- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
+- **MUST NOT** / **SHALL NOT** - Absolute prohibition
+- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
+- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
+- **MAY** / **OPTIONAL** - Truly optional

@@ -16,8 +16,8 @@ dependent checks.
 node --version
 ```
 
-**Requirement**: >= 22.10 **Fix if missing/outdated**: Install Node.js v22.14.0+
-via nvm: `nvm install 22`
+**Requirement**: You MUST have Node.js >= 22.10 installed. If you need to
+install or update, use nvm: `nvm install 22` (installs v22.14.0+)
 
 ### Step 2: Check pnpm Version
 
@@ -25,9 +25,11 @@ via nvm: `nvm install 22`
 pnpm --version
 ```
 
-**Requirement**: >= 10 **Fix if missing**: `npm install -g pnpm@latest`
+**Requirement**: You MUST have pnpm >= 10 installed. If you need to install or
+update, run: `npm install -g pnpm@latest`
 
-If pnpm is not installed, skip Steps 3-5 (they depend on pnpm).
+**Note**: If pnpm is not installed, you MUST skip Steps 3-5 (they depend on
+pnpm).
 
 ### Step 3: Check Dependencies Installed
 
@@ -35,8 +37,8 @@ If pnpm is not installed, skip Steps 3-5 (they depend on pnpm).
 pnpm install
 ```
 
-**Requirement**: Command exits successfully (exit code 0) **Fix if fails**:
-Check error output and resolve dependency issues
+**Requirement**: This command MUST exit successfully (exit code 0). If it fails,
+you SHOULD check the error output and resolve any dependency issues.
 
 ### Step 4: Check OpenSpec Installed
 
@@ -44,8 +46,8 @@ Check error output and resolve dependency issues
 pnpm exec openspec --version
 ```
 
-**Requirement**: Command returns a version number **Fix if missing**: Run
-`pnpm install` (openspec is a devDependency)
+**Requirement**: This command MUST return a version number. If OpenSpec is
+missing, you SHOULD run `pnpm install` (openspec is a devDependency).
 
 ### Step 5: Check Playwright Chromium
 
@@ -61,11 +63,12 @@ Then verify Chromium browser is installed:
 pnpm exec playwright install --list
 ```
 
-Look for a line containing `chromium-` in the Browsers section. If missing, the
-browser needs to be installed.
+Look for a line containing `chromium-` in the Browsers section. If it's missing,
+you MUST install the browser.
 
-**Requirement**: Playwright package installed AND Chromium browser available in
-the list **Fix if missing**: `pnpm playwright:install`
+**Requirement**: You MUST have both the Playwright package installed AND
+Chromium browser available in the list. If Chromium is missing, run:
+`pnpm playwright:install`
 
 ## Output Format
 
@@ -116,7 +119,15 @@ http://localhost:6006. Happy building!
 
 ## Important Notes
 
-- Run checks sequentially since some depend on others
-- Always show the full results table even if some checks fail
-- Provide clear, copy-pasteable fix commands for any failures
-- End on a positive note when everything passes
+- You MUST run checks sequentially since some depend on others
+- You MUST always show the full results table even if some checks fail
+- You SHOULD provide clear, copy-pasteable fix commands for any failures
+- You SHOULD end on a positive note when everything passes
+
+## RFC 2119 Key Words
+
+- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
+- **MUST NOT** / **SHALL NOT** - Absolute prohibition
+- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
+- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
+- **MAY** / **OPTIONAL** - Truly optional
