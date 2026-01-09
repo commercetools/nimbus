@@ -1,0 +1,486 @@
+---
+title: Accordion Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+Import the Accordion compound component and its TypeScript types:
+
+```tsx
+import { Accordion, type AccordionRootProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The Accordion is a compound component with multiple parts that work together. At
+minimum, you need `Accordion.Root`, `Accordion.Item`, `Accordion.Header`, and
+`Accordion.Content`:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Accordion.Root>
+      <Accordion.Item value="item-1">
+        <Accordion.Header>First Section</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            This is the content for the first section. Click the header to
+            expand or collapse this content area.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value="item-2">
+        <Accordion.Header>Second Section</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            This is the content for the second section. Only one section can
+            be open at a time by default.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value="item-3">
+        <Accordion.Header>Third Section</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            This is the content for the third section. Each item needs a
+            unique value for proper identification.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  );
+};
+```
+
+## Usage examples
+
+### Size variants
+
+The Accordion component supports two size variants: `sm` (small) and `md`
+(medium, default). The size affects the font size, icon size, and padding:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Small Size</Text>
+        <Accordion.Root size="sm">
+          <Accordion.Item value="sm-1">
+            <Accordion.Header>Compact Header</Accordion.Header>
+            <Accordion.Content>
+              <Text>Smaller padding and font size for dense layouts.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="sm-2">
+            <Accordion.Header>Another Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>Perfect for sidebars or constrained spaces.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Medium Size (Default)</Text>
+        <Accordion.Root size="md">
+          <Accordion.Item value="md-1">
+            <Accordion.Header>Standard Header</Accordion.Header>
+            <Accordion.Content>
+              <Text>Default size with comfortable spacing for most use cases.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="md-2">
+            <Accordion.Header>Another Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>Provides good balance between readability and space efficiency.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Multiple item expansion
+
+By default, only one accordion item can be expanded at a time. Use the
+`allowsMultipleExpanded` prop to allow multiple items to be open simultaneously:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Single Expansion (Default)</Text>
+        <Accordion.Root>
+          <Accordion.Item value="single-1">
+            <Accordion.Header>First Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>Opening this closes other sections automatically.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="single-2">
+            <Accordion.Header>Second Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>Only one section can be open at a time.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="single-3">
+            <Accordion.Header>Third Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>This is the default behavior for accordions.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Multiple Expansion</Text>
+        <Accordion.Root allowsMultipleExpanded>
+          <Accordion.Item value="multi-1">
+            <Accordion.Header>First Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>Multiple sections can be open at the same time.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="multi-2">
+            <Accordion.Header>Second Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>This is useful for comparison or reference scenarios.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="multi-3">
+            <Accordion.Header>Third Section</Accordion.Header>
+            <Accordion.Content>
+              <Text>Users can expand as many sections as they need.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Disabled state
+
+Disable the entire accordion or individual items to prevent user interaction:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Fully Disabled Accordion</Text>
+        <Accordion.Root isDisabled>
+          <Accordion.Item value="disabled-1">
+            <Accordion.Header>Disabled Header</Accordion.Header>
+            <Accordion.Content>
+              <Text>This content cannot be accessed.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="disabled-2">
+            <Accordion.Header>Another Disabled Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>All items are disabled when the root is disabled.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Partially Disabled Accordion</Text>
+        <Accordion.Root>
+          <Accordion.Item value="enabled-1">
+            <Accordion.Header>Active Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>This item is enabled and can be interacted with.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="disabled-item" isDisabled>
+            <Accordion.Header>Disabled Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>This content is disabled.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="enabled-2">
+            <Accordion.Header>Another Active Item</Accordion.Header>
+            <Accordion.Content>
+              <Text>Individual items can be disabled while others remain active.</Text>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Uncontrolled mode
+
+Use `defaultExpandedKeys` to set which items are initially expanded without
+managing state yourself:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Accordion.Root
+      allowsMultipleExpanded
+      defaultExpandedKeys={["features", "accessibility"]}
+    >
+      <Accordion.Item value="features">
+        <Accordion.Header>Key Features</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            This section is expanded by default. The accordion manages its own state
+            internally, making it simple to use when you don't need external control.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value="accessibility">
+        <Accordion.Header>Accessibility</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            Also expanded by default. Users can expand/collapse items, and the component
+            tracks the state automatically.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value="usage">
+        <Accordion.Header>Usage Guidelines</Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            This section starts collapsed. Uncontrolled mode is ideal for simple
+            accordions where you don't need to track the expanded state externally.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  );
+};
+```
+
+### Controlled mode
+
+For full control over the expanded state, use the `expandedKeys` and
+`onExpandedChange` props. This is useful when you need to:
+
+- Synchronize accordion state with URL parameters
+- Track analytics when sections are expanded
+- Implement custom expand/collapse logic
+- Integrate with external state management
+
+```jsx-live-dev
+const App = () => {
+  const [expandedKeys, setExpandedKeys] = React.useState(new Set(["section-1"]));
+
+  return (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="600">
+        Expanded sections: {expandedKeys.size}
+      </Text>
+      <Text fontSize="350" color="neutral.11">
+        Current: {Array.from(expandedKeys).join(", ") || "none"}
+      </Text>
+
+      <Accordion.Root
+        allowsMultipleExpanded
+        expandedKeys={expandedKeys}
+        onExpandedChange={setExpandedKeys}
+      >
+        <Accordion.Item value="section-1">
+          <Accordion.Header>First Section</Accordion.Header>
+          <Accordion.Content>
+            <Text>
+              The parent component has full control over which sections are expanded.
+              You can track state changes, persist to localStorage, or sync with URLs.
+            </Text>
+          </Accordion.Content>
+        </Accordion.Item>
+        <Accordion.Item value="section-2">
+          <Accordion.Header>Second Section</Accordion.Header>
+          <Accordion.Content>
+            <Text>
+              Controlled mode gives you complete flexibility to implement custom
+              behavior around the accordion's expanded state.
+            </Text>
+          </Accordion.Content>
+        </Accordion.Item>
+        <Accordion.Item value="section-3">
+          <Accordion.Header>Third Section</Accordion.Header>
+          <Accordion.Content>
+            <Text>
+              Use this pattern when you need to integrate the accordion with
+              application-level state management or routing.
+            </Text>
+          </Accordion.Content>
+        </Accordion.Item>
+      </Accordion.Root>
+
+      <Button
+        size="md"
+        variant="outline"
+        onClick={() => setExpandedKeys(new Set(["section-1", "section-2", "section-3"]))}
+      >
+        Expand All
+      </Button>
+      <Button
+        size="md"
+        variant="outline"
+        onClick={() => setExpandedKeys(new Set())}
+      >
+        Collapse All
+      </Button>
+    </Stack>
+  );
+};
+```
+
+### Header with right-aligned content
+
+Add buttons, badges, or other elements to the right side of accordion headers
+using `Accordion.HeaderRightContent`:
+
+```jsx-live-dev
+const App = () => {
+  const [counts, setCounts] = React.useState({ item1: 0, item2: 0, item3: 0 });
+
+  const handleIncrement = (item: keyof typeof counts, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent accordion from toggling
+    setCounts(prev => ({ ...prev, [item]: prev[item] + 1 }));
+  };
+
+  return (
+    <Accordion.Root>
+      <Accordion.Item value="item-1">
+        <Accordion.Header>
+          Settings
+          <Accordion.HeaderRightContent>
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={(e) => handleIncrement('item1', e)}
+            >
+              Edit ({counts.item1})
+            </Button>
+          </Accordion.HeaderRightContent>
+        </Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            Configure your account settings. The edit button in the header doesn't
+            trigger the accordion toggle, allowing independent actions.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+
+      <Accordion.Item value="item-2">
+        <Accordion.Header>
+          Notifications
+          <Accordion.HeaderRightContent>
+            <Badge colorPalette="warning" size="xs">
+              3 new
+            </Badge>
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={(e) => handleIncrement('item2', e)}
+              marginLeft="200"
+            >
+              Clear ({counts.item2})
+            </Button>
+          </Accordion.HeaderRightContent>
+        </Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            View your recent notifications. You can add multiple elements to the
+            right side of the header, like badges and action buttons.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+
+      <Accordion.Item value="item-3">
+        <Accordion.Header>
+          Privacy
+          <Accordion.HeaderRightContent>
+            <Icons.Lock fontSize="500" color="neutral.11" />
+          </Accordion.HeaderRightContent>
+        </Accordion.Header>
+        <Accordion.Content>
+          <Text>
+            Manage your privacy preferences. Icons can also be added to provide
+            visual context or status indicators.
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+The Accordion component is built with React Aria and follows the WAI-ARIA
+Accordion pattern. It provides:
+
+**Role:**
+
+- Each accordion item has `role="group"`
+- Headers are implemented as `button` elements
+
+**Labeling:**
+
+- Headers use `aria-expanded` to indicate their state (true/false)
+- Content panels are properly associated with their headers
+- Each item should have a unique `value` prop for proper identification
+
+**Keyboard navigation:**
+
+- `Space` or `Enter` - Toggle the focused accordion item
+- `Tab` - Move focus to the next focusable element
+- `Shift + Tab` - Move focus to the previous focusable element
+- Arrow keys - Navigate between accordion headers (when focus is on a header)
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-settings-accordion";
+
+export const SettingsAccordion = () => (
+  <Accordion.Root id={PERSISTENT_ID}>
+    <Accordion.Item value="profile">
+      <Accordion.Header>Profile Settings</Accordion.Header>
+      <Accordion.Content>
+        <Text>Edit your profile information</Text>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
+
+## API Reference
+
+<PropsTable id="Accordion" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Accordion
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: accordion.docs.spec.tsx}}
+
+## Resources
+
+- [Accordion Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-accordion--docs)
+- [React Aria DisclosureGroup Documentation](https://react-aria.adobe.com/DisclosureGroup)
+- [WAI-ARIA Accordion Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/)
