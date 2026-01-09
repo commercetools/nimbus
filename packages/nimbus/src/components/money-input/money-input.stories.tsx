@@ -16,6 +16,32 @@ import type {
   CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
+import { LocalizedStringDictionary } from "@internationalized/string";
+import { moneyInputMessagesStrings } from "./money-input.messages";
+
+// Helper to get messages for testing (normalizes locale like the hook does)
+function getMessage(key: string, locale: string): string {
+  const dictionary = new LocalizedStringDictionary(moneyInputMessagesStrings);
+  const normalizedLocale = normalizeLocaleForTesting(locale);
+  const message = dictionary.getStringForLocale(key, normalizedLocale);
+  return typeof message === "string" ? message : (message?.({}) ?? "");
+}
+
+function normalizeLocaleForTesting(locale: string): string {
+  const supportedLocales = new Set(["en", "de", "es", "fr-FR", "pt-BR"]);
+  if (supportedLocales.has(locale)) return locale;
+
+  const langMap: Record<string, string> = {
+    en: "en",
+    de: "de",
+    es: "es",
+    fr: "fr-FR",
+    pt: "pt-BR",
+  };
+
+  const lang = locale.split(/[-_]/)[0].toLowerCase();
+  return langMap[lang] ?? "en";
+}
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
@@ -390,14 +416,17 @@ export const CurrencySwitchingTest: Story = {
 
 export const EULocaleFormattingExample: Story = {
   render: (args) => (
+    // Note: The locale prop on NimbusI18nProvider takes precedence over
+    // the locale set in Storybook's toolbar. This ensures the component
+    // always uses "de-DE" regardless of Storybook's global locale setting.
     <NimbusI18nProvider locale="de-DE">
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
           EU Locale Formatting (de-DE) - High Precision
         </div>
         <div style={{ fontSize: "14px", marginBottom: "16px", color: "#666" }}>
-          In German locale: 1.234.567,89 (periods for thousands, comma for
-          decimals)
+          German locale formatting (overrides Storybook locale): 1.234.567,89
+          (periods for thousands, comma for decimals)
         </div>
 
         {/* German locale examples */}
@@ -429,12 +458,17 @@ export const EULocaleFormattingExample: Story = {
     const canvas = within(canvasElement);
 
     // All should show high precision badges since they exceed standard fraction digits
-    const badges = canvas.getAllByLabelText(/high precision price/i);
+    // NOTE: This test will fail locally until locale normalization is implemented
+    // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
+    // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
+    const highPrecisionLabel = getMessage("highPrecisionPrice", "de");
+    const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
 
     // With German locale NimbusI18nProvider, React Aria formats with German conventions
+    const amountInputLabel = getMessage("amountInputLabel", "de");
     const inputs = await canvas.findAllByRole("textbox", {
-      name: /Amount/i,
+      name: amountInputLabel,
     });
 
     // Verify the inputs exist and are working

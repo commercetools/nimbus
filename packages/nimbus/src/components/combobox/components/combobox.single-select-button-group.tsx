@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useIntl } from "react-intl";
 import {
   Close as CloseIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
@@ -7,9 +6,10 @@ import {
 } from "@commercetools/nimbus-icons";
 import { IconButton, Flex, Box } from "@/components";
 import { ComboBoxStateContext } from "react-aria-components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { ComboBoxButtonGroupSlot } from "../combobox.slots";
 import { type ComboBoxButtonGroupProps } from "../combobox.types";
-import { messages } from "../combobox.i18n";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 /**
  * Internal button group for single-select ComboBox (clear and toggle buttons)
@@ -21,7 +21,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
   isReadOnly,
   isLoading,
 }: ComboBoxButtonGroupProps) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
   const state = useContext(ComboBoxStateContext);
   return (
     <ComboBoxButtonGroupSlot>
@@ -32,7 +32,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
           size="2xs"
           variant="ghost"
           colorPalette="primary"
-          aria-label={intl.formatMessage(messages.clearSelection)}
+          aria-label={msg.format("clearSelection")}
           isDisabled={isDisabled || isReadOnly}
           _expanded={{ bg: "transparent" }}
           onPress={() => state?.setSelectedKey(null)}
@@ -58,7 +58,7 @@ export const ComboBoxSingleSelectButtonGroup = ({
         <IconButton
           size="2xs"
           variant="ghost"
-          aria-label={intl.formatMessage(messages.toggleCombobox)}
+          aria-label={msg.format("toggleCombobox")}
           colorPalette="neutral"
           my="auto"
           isDisabled={isDisabled || isReadOnly}

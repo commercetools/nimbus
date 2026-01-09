@@ -73,7 +73,8 @@ docs/
 3. **Type Safety** - Comprehensive TypeScript definitions
 4. **Testing** - Interactive components must have play functions
 5. **Documentation** - Every component needs complete MDX documentation
-6. **Internationalization** - Translatable UI text via react-intl
+6. **Internationalization** - Translatable UI text via compile-time message
+   compilation (`@internationalized/string` with `LocalizedStringDictionary`)
 
 ## 🛠 Development Workflow
 

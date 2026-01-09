@@ -16,8 +16,9 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Component Library**: React components with WCAG 2.1 AA compliant
   implementation using React Aria patterns
 - **Design System**: Design token-based theming system with Chakra UI v3 recipes
-- **Internationalization**: Centralized i18n package with react-intl integration
-  and Transifex support
+- **Internationalization**: Compile-time message compilation using
+  `@internationalized/string` with `LocalizedStringDictionary` and Transifex
+  support
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
@@ -220,8 +221,8 @@ This project follows strict development standards detailed in the documentation:
   @docs/file-type-guidelines/documentation.md
 - **Accessibility**: WCAG 2.1 AA compliance using React Aria
   @docs/file-type-guidelines/architecture-decisions.md
-- **Internationalization**: react-intl integration for translatable UI text
-  @docs/file-type-guidelines/i18n.md
+- **Internationalization**: Compile-time message compilation for translatable UI
+  text @docs/file-type-guidelines/i18n.md
 
 ## File Review Protocol
 
@@ -380,6 +381,7 @@ The system detects test mode via environment variables:
 - **`VITEST=true`**: Manual override for forcing test mode
 
 **Manual Override Example:**
+
 ```bash
 # Force test mode (use built bundle) even in development
 VITEST=true pnpm start:storybook
@@ -391,8 +393,11 @@ pnpm start:storybook
 #### Developer Visibility
 
 Storybook logs which mode is active on startup:
-- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
-- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` -
+  Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or
+  production mode
 
 This helps confirm whether your changes require a build before testing.
 

@@ -6,10 +6,10 @@ import {
   SearchField as RaSearchField,
   Input as RaInput,
 } from "react-aria-components";
-import { useIntl } from "react-intl";
 import { Search, Close } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { searchInputSlotRecipe } from "./search-input.recipe";
 import {
   SearchInputRootSlot,
@@ -17,7 +17,7 @@ import {
   SearchInputInputSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
-import { messages } from "./search-input.i18n";
+import { searchInputMessagesStrings } from "./search-input.messages";
 
 /**
  * # SearchInput
@@ -31,7 +31,7 @@ import { messages } from "./search-input.i18n";
 export const SearchInput = (props: SearchInputProps) => {
   const { ref: forwardedRef, ...restProps } = props;
 
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(searchInputMessagesStrings);
   const recipe = useSlotRecipe({ recipe: searchInputSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
@@ -60,7 +60,7 @@ export const SearchInput = (props: SearchInputProps) => {
             size="2xs"
             variant="ghost"
             colorPalette="primary"
-            aria-label={intl.formatMessage(messages.clearInput)}
+            aria-label={msg.format("clearInput")}
             onPress={() => state.setValue("")}
             opacity={state.value ? 1 : 0}
             pointerEvents={state.value ? "auto" : "none"}

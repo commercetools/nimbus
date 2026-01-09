@@ -1,4 +1,3 @@
-import { useIntl } from "react-intl";
 import {
   ToggleButtonGroup,
   Text,
@@ -6,6 +5,7 @@ import {
   Toolbar,
   IconToggleButton,
 } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { UPDATE_ACTIONS } from "../constants";
 import {
   WrapText,
@@ -13,7 +13,7 @@ import {
   DensitySmall,
   FormatAlignJustify,
 } from "@commercetools/nimbus-icons";
-import { messages } from "../data-table.i18n";
+import { dataTableMessagesStrings } from "../data-table.messages";
 import { useDataTableContext } from "./data-table.context";
 import type { DataTableProps } from "../data-table.types";
 
@@ -22,7 +22,7 @@ export const LayoutSettingsPanel = ({
 }: {
   onSettingsChange?: DataTableProps["onSettingsChange"];
 }) => {
-  const { formatMessage } = useIntl();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const context = useDataTableContext();
 
   // Connected to DataTable context state
@@ -54,7 +54,7 @@ export const LayoutSettingsPanel = ({
     >
       {/* Text visibility section */}
       <SimpleGrid.Item colSpan={1}>
-        <Text fontWeight="500">{formatMessage(messages.textVisibility)}</Text>
+        <Text fontWeight="500">{msg.format("textVisibility")}</Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
         <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
@@ -62,36 +62,36 @@ export const LayoutSettingsPanel = ({
             w="full"
             selectedKeys={textVisibility ? ["preview"] : ["full"]}
             onSelectionChange={handleTextVisibilityChange}
-            aria-label={formatMessage(messages.textVisibilityAriaLabel)}
+            aria-label={msg.format("textVisibilityAriaLabel")}
           >
             <IconToggleButton
               id="full"
               size="xs"
-              aria-label={formatMessage(messages.fullText)}
+              aria-label={msg.format("fullText")}
               variant="ghost"
               px="300"
               flex="1"
             >
               <WrapText />
-              {formatMessage(messages.fullText)}
+              {msg.format("fullText")}
             </IconToggleButton>
             <IconToggleButton
               id="preview"
               size="xs"
-              aria-label={formatMessage(messages.TextPreviews)}
+              aria-label={msg.format("textPreviews")}
               variant="ghost"
               px="300"
               flex="1"
             >
               <ShortText />
-              {formatMessage(messages.TextPreviews)}
+              {msg.format("textPreviews")}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>
       </SimpleGrid.Item>
       {/* Row density section */}
       <SimpleGrid.Item colSpan={1}>
-        <Text fontWeight="500">{formatMessage(messages.RowDensity)}</Text>
+        <Text fontWeight="500">{msg.format("rowDensity")}</Text>
       </SimpleGrid.Item>
       <SimpleGrid.Item colSpan={3}>
         <Toolbar orientation="horizontal" variant="outline" size="xs" w="full">
@@ -100,29 +100,29 @@ export const LayoutSettingsPanel = ({
             colorPalette="primary"
             selectedKeys={[rowDensity]}
             onSelectionChange={handleRowDensityChange}
-            aria-label={formatMessage(messages.RowDensityAriaLabel)}
+            aria-label={msg.format("rowDensityAriaLabel")}
           >
             <IconToggleButton
               id="comfortable"
               size="xs"
               variant="ghost"
-              aria-label={formatMessage(messages.comfortable)}
+              aria-label={msg.format("comfortable")}
               px="300"
               flex="1"
             >
               <DensitySmall />
-              {formatMessage(messages.comfortable)}
+              {msg.format("comfortable")}
             </IconToggleButton>
             <IconToggleButton
               id="compact"
               size="xs"
               variant="ghost"
-              aria-label={formatMessage(messages.compact)}
+              aria-label={msg.format("compact")}
               px="300"
               flex="1"
             >
               <FormatAlignJustify />
-              {formatMessage(messages.compact)}
+              {msg.format("compact")}
             </IconToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>

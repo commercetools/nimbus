@@ -9,6 +9,7 @@ import {
   KeyboardArrowDown,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import {
   NumberInputRootSlot,
   NumberInputInputSlot,
@@ -19,8 +20,7 @@ import {
 } from "./number-input.slots";
 import type { NumberInputProps } from "./number-input.types";
 import { numberInputRecipe } from "./number-input.recipe";
-import { useIntl } from "react-intl";
-import { messages } from "./number-input.i18n";
+import { numberInputMessagesStrings } from "./number-input.messages";
 /**
  * # NumberInput
  *
@@ -36,7 +36,7 @@ export const NumberInput = (props: NumberInputProps) => {
     ...restProps
   } = props;
   const { locale } = useLocale();
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(numberInputMessagesStrings);
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -51,8 +51,8 @@ export const NumberInput = (props: NumberInputProps) => {
   const enhancedFunctionalProps = {
     ...functionalProps,
     locale: locale,
-    incrementAriaLabel: intl.formatMessage(messages.increment),
-    decrementAriaLabel: intl.formatMessage(messages.decrement),
+    incrementAriaLabel: msg.format("increment"),
+    decrementAriaLabel: msg.format("decrement"),
   };
 
   // Pass enhanced props to react-aria

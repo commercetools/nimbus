@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useIntl } from "react-intl";
 import { ChevronLeft, ChevronRight } from "@commercetools/nimbus-icons";
 import {
   Flex,
@@ -11,7 +10,9 @@ import {
 } from "@/components";
 import { usePagination } from "./hooks/use-pagination";
 import type { PaginationProps } from "./pagination.types";
-import { messages } from "./pagination.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { paginationMessagesStrings } from "./pagination.messages";
+import { useLocale } from "react-aria-components";
 
 /**
  * # Pagination
@@ -22,7 +23,8 @@ import { messages } from "./pagination.i18n";
  * @see {@link https://nimbus-documentation.vercel.app/components/pagination}
  */
 export const Pagination = (props: PaginationProps) => {
-  const intl = useIntl();
+  const { locale } = useLocale();
+  const msg = useLocalizedStringFormatter(paginationMessagesStrings);
   const {
     totalItems,
     currentPage,
@@ -69,7 +71,7 @@ export const Pagination = (props: PaginationProps) => {
             isClearable={false}
             selectedKey={pagination.pageSize.toString()}
             onSelectionChange={handlePageSizeChange}
-            aria-label={intl.formatMessage(messages.itemsPerPage)}
+            aria-label={msg.format("itemsPerPage")}
           >
             <Select.Options>
               {pageSizeSelectOptions.map((option) => (
@@ -79,9 +81,7 @@ export const Pagination = (props: PaginationProps) => {
               ))}
             </Select.Options>
           </Select.Root>
-          <Text color="neutral.12">
-            {intl.formatMessage(messages.itemsPerPageText)}
-          </Text>
+          <Text color="neutral.12">{msg.format("itemsPerPageText")}</Text>
         </Flex>
       )}
       <Flex flexGrow="1" />
@@ -90,20 +90,20 @@ export const Pagination = (props: PaginationProps) => {
         align="center"
         gap="200"
         role="navigation"
-        aria-label={ariaLabel ?? intl.formatMessage(messages.pagination)}
+        aria-label={ariaLabel ?? msg.format("pagination")}
       >
         <IconButton
           onClick={pagination.goToPreviousPage}
           isDisabled={!pagination.hasPreviousPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={intl.formatMessage(messages.goToPreviousPage)}
+          aria-label={msg.format("goToPreviousPage")}
         >
           <ChevronLeft />
         </IconButton>
 
         <Flex align="center" gap="200">
-          <Text color="neutral.12">{intl.formatMessage(messages.page)}</Text>
+          <Text color="neutral.12">{msg.format("page")}</Text>
           {enablePageInput ? (
             <NumberInput
               value={pagination.currentPage}
@@ -115,7 +115,7 @@ export const Pagination = (props: PaginationProps) => {
               step={1}
               isDisabled={false}
               width="9ch"
-              aria-label={intl.formatMessage(messages.currentPage)}
+              aria-label={msg.format("currentPage")}
               aria-current="page"
             />
           ) : (
@@ -124,9 +124,16 @@ export const Pagination = (props: PaginationProps) => {
             </Text>
           )}
           <Text color="neutral.12">
-            {intl.formatMessage(messages.ofTotalPages, {
-              totalPages: intl.formatNumber(pagination.totalPages),
-            })}
+            {(() => {
+              // Format the number with locale-specific formatting
+              const formattedTotalPages = new Intl.NumberFormat(locale).format(
+                pagination.totalPages
+              );
+
+              return msg.format("ofTotalPages", {
+                totalPages: formattedTotalPages,
+              });
+            })()}
           </Text>
         </Flex>
 
@@ -135,7 +142,7 @@ export const Pagination = (props: PaginationProps) => {
           isDisabled={!pagination.hasNextPage}
           variant="ghost"
           colorPalette="primary"
-          aria-label={intl.formatMessage(messages.goToNextPage)}
+          aria-label={msg.format("goToNextPage")}
         >
           <ChevronRight />
         </IconButton>

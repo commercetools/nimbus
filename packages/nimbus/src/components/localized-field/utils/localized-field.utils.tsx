@@ -1,4 +1,3 @@
-import { FormattedMessage } from "react-intl";
 import {
   FormField,
   type CurrencyCode,
@@ -7,7 +6,8 @@ import {
   type FieldErrorsData,
   MoneyInput,
 } from "@/components";
-import { messages } from "../localized-field.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import type { LocalizedString } from "../localized-field.types";
 
 type LanguagesSplitByDefaultLocale = {
@@ -21,11 +21,12 @@ type CustomFormikErrors<Values> = {
   [K in keyof Values]?: FieldErrorsData;
 };
 
-export const RequiredValueErrorMessage = () => (
-  <FormField.Error>
-    <FormattedMessage {...messages.missingRequiredField} />
-  </FormField.Error>
-);
+export const RequiredValueErrorMessage = () => {
+  const msg = useLocalizedStringFormatter(localizedFieldMessagesStrings);
+  return (
+    <FormField.Error>{msg.format("missingRequiredField")}</FormField.Error>
+  );
+};
 
 export const getLocaleFieldAttribute = (
   fieldGroupAttr?: string,

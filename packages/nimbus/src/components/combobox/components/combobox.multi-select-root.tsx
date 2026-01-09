@@ -6,7 +6,6 @@ import {
   type KeyboardEvent,
 } from "react";
 import React from "react";
-import { useIntl } from "react-intl";
 import { mergeRefs } from "@chakra-ui/react";
 import {
   Popover as RaPopover,
@@ -29,7 +28,8 @@ import {
 } from "../combobox.slots";
 import type { ComboBoxMultiSelect } from "../combobox.types";
 import { ComboBoxLeadingElement } from "./combobox.leading-element";
-import { messages } from "../combobox.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { comboBoxMessagesStrings } from "../../combo-box/combo-box.messages";
 
 function getLastValueInSet(set: Set<Key>) {
   let value;
@@ -72,7 +72,7 @@ export const MultiSelectRoot = <T extends object>({
   leadingElement,
   ...props
 }: ComboBoxMultiSelect<T>) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(comboBoxMessagesStrings);
   // Internal state for popover, enables opening on first focus
   const [isOpen, setOpen] = useState(false);
   const preventNextFocusOpen = useRef(false);
@@ -303,7 +303,7 @@ export const MultiSelectRoot = <T extends object>({
       </RaPressable>
       <ComboBoxPopoverSlot asChild>
         <RaPopover triggerRef={triggerRef} placement="bottom start">
-          <RaDialog aria-label={intl.formatMessage(messages.comboboxDialog)}>
+          <RaDialog aria-label={msg.format("comboboxDialog")}>
             <RaAutocomplete
               filter={defaultFilter ?? contains}
               inputValue={inputValue}
@@ -315,7 +315,7 @@ export const MultiSelectRoot = <T extends object>({
                   isDisabled={isDisabled}
                   isReadOnly={isReadOnly}
                   isRequired={isRequired}
-                  aria-label={intl.formatMessage(messages.filterOptions)}
+                  aria-label={msg.format("filterOptions")}
                 >
                   <RaInput
                     onKeyDownCapture={handleInputKeyDown}
@@ -331,7 +331,7 @@ export const MultiSelectRoot = <T extends object>({
                 shouldFocusWrap={true}
                 disabledKeys={isDisabled ? "all" : disabledKeys}
                 escapeKeyBehavior="none"
-                aria-label={intl.formatMessage(messages.options)}
+                aria-label={msg.format("options")}
                 renderEmptyState={renderEmptyState}
               >
                 {children}
