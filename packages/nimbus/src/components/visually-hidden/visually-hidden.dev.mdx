@@ -1,0 +1,428 @@
+---
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { VisuallyHidden, type VisuallyHiddenProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => (
+  <VisuallyHidden>
+    This text is hidden visually but accessible to screen readers
+  </VisuallyHidden>
+);
+```
+
+## Usage examples
+
+### Screen reader-only content
+
+Provide additional context for screen reader users without cluttering the visual interface.
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="bold">
+        Product Price
+        <VisuallyHidden as="span"> (in US Dollars)</VisuallyHidden>
+      </Text>
+      <Text fontSize="xl">$29.99</Text>
+    </Box>
+    
+    <Box>
+      <Button>
+        <VisuallyHidden>Add to cart: </VisuallyHidden>
+        Add to Cart
+      </Button>
+    </Box>
+  </Stack>
+);
+```
+
+### Focusable content
+
+Use `isFocusable` to make hidden content visible when it receives keyboard focus. This is essential for skip navigation links.
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <VisuallyHidden isFocusable>
+      <Button>Skip to main content</Button>
+    </VisuallyHidden>
+    
+    <Text color="neutral.3" fontSize="sm">
+      Press Tab to see the skip link appear
+    </Text>
+    
+    <Box p="400" bg="neutral.7" borderRadius="md">
+      <Text fontWeight="bold" mb="200">Main Content</Text>
+      <Text>Focus the skip link with Tab, and it will become visible.</Text>
+    </Box>
+  </Stack>
+);
+```
+
+### Inline vs block content
+
+Use the `as` prop to control whether VisuallyHidden renders as a block (`div`) or inline (`span`) element.
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="bold" mb="200">Block element (default)</Text>
+      <Text>Before text</Text>
+      <VisuallyHidden>Hidden block content</VisuallyHidden>
+      <Text>After text</Text>
+    </Box>
+    
+    <Box>
+      <Text fontWeight="bold" mb="200">Inline element (as="span")</Text>
+      <Text>
+        Before text
+        <VisuallyHidden as="span"> hidden inline content </VisuallyHidden>
+        after text.
+      </Text>
+    </Box>
+  </Stack>
+);
+```
+
+### Icon with accessible label
+
+Provide accessible labels for icon-only buttons.
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400" direction="row">
+    <Button>
+      <Icon name="settings" />
+      <VisuallyHidden>Settings</VisuallyHidden>
+    </Button>
+    
+    <Button>
+      <Icon name="notifications" />
+      <VisuallyHidden>Notifications</VisuallyHidden>
+    </Button>
+    
+    <Button>
+      <Icon name="help" />
+      <VisuallyHidden>Help</VisuallyHidden>
+    </Button>
+  </Stack>
+);
+```
+
+### Status announcements
+
+Provide status updates that are only announced to screen readers.
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = React.useState<string[]>([]);
+  
+  const addItem = () => {
+    setItems([...items, `Item ${items.length + 1}`]);
+  };
+  
+  const removeItem = (index: number) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
+  
+  return (
+    <Stack gap="400">
+      <Box>
+        <Button onClick={addItem}>Add Item</Button>
+      </Box>
+      
+      <VisuallyHidden role="status" aria-live="polite">
+        {items.length} {items.length === 1 ? 'item' : 'items'} in list
+      </VisuallyHidden>
+      
+      <Stack gap="200">
+        {items.map((item, index) => (
+          <Box 
+            key={index} 
+            p="300" 
+            bg="neutral.7" 
+            borderRadius="md"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Text>{item}</Text>
+            <Button size="sm" onClick={() => removeItem(index)}>
+              Remove
+            </Button>
+          </Box>
+        ))}
+      </Stack>
+      
+      {items.length === 0 && (
+        <Text color="neutral.3">No items in list</Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Usage context
+
+**When to use VisuallyHidden**:
+- Skip navigation links for keyboard users
+- Additional context for screen reader users
+- Accessible labels for icon-only buttons
+- Status announcements for dynamic content
+- Form hints that don't need to be visible
+
+**When NOT to use**:
+- Don't use for critical information that all users need
+- Don't hide interactive elements without `isFocusable` prop
+- Avoid using as a substitute for proper semantic HTML
+- Don't use to hide content from all users (use `display: none` or conditional rendering instead)
+
+### Accessibility
+
+**Role**: The component renders as a `<div>` or `<span>` with CSS that hides it visually while keeping it accessible to screen readers.
+
+**Labeling**: The content inside VisuallyHidden is read by screen readers:
+
+```tsx
+<Button>
+  <Icon name="delete" />
+  <VisuallyHidden>Delete item</VisuallyHidden>
+</Button>
+```
+
+**Keyboard navigation**: 
+- By default, hidden content cannot receive keyboard focus
+- With `isFocusable={true}`, the first focusable element inside becomes visible when focused
+- Essential for skip navigation patterns
+
+**ARIA attributes**: You can add ARIA attributes for live regions and status announcements:
+
+```tsx
+<VisuallyHidden role="status" aria-live="polite">
+  Loading complete
+</VisuallyHidden>
+```
+
+### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "skip-navigation-link";
+
+export const SkipLink = () => (
+  <VisuallyHidden id={PERSISTENT_ID} isFocusable>
+    <Button>Skip to main content</Button>
+  </VisuallyHidden>
+);
+```
+
+## API reference
+
+<PropsTable id="VisuallyHidden" />
+
+## Common patterns
+
+### Skip to main content
+
+A standard accessibility pattern for keyboard navigation.
+
+```jsx-live-dev
+const App = () => {
+  const mainContentRef = React.useRef<HTMLDivElement>(null);
+  
+  const handleSkip = () => {
+    mainContentRef.current?.focus();
+  };
+  
+  return (
+    <Stack gap="400">
+      <VisuallyHidden isFocusable>
+        <Button onClick={handleSkip}>Skip to main content</Button>
+      </VisuallyHidden>
+      
+      <Box p="400" bg="neutral.7" borderRadius="md">
+        <Text fontWeight="bold">Navigation Area</Text>
+        <Text fontSize="sm" color="neutral.3">
+          Press Tab to reveal the skip link
+        </Text>
+      </Box>
+      
+      <Box 
+        ref={mainContentRef}
+        tabIndex={-1}
+        p="400" 
+        bg="primary.7" 
+        borderRadius="md"
+      >
+        <Text fontWeight="bold" mb="200">Main Content</Text>
+        <Text>This is the main content area that users can skip to.</Text>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Accessible data tables
+
+Provide additional context for screen reader users navigating tables.
+
+```jsx-live-dev
+const App = () => {
+  const data = [
+    { product: 'Widget A', price: 29.99, stock: 45 },
+    { product: 'Widget B', price: 39.99, stock: 12 },
+    { product: 'Widget C', price: 19.99, stock: 0 },
+  ];
+  
+  return (
+    <Box overflowX="auto">
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '12px', borderBottom: '2px solid #e2e8f0' }}>
+              Product
+            </th>
+            <th style={{ textAlign: 'right', padding: '12px', borderBottom: '2px solid #e2e8f0' }}>
+              Price
+            </th>
+            <th style={{ textAlign: 'right', padding: '12px', borderBottom: '2px solid #e2e8f0' }}>
+              Stock
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>
+                {item.product}
+              </td>
+              <td style={{ textAlign: 'right', padding: '12px', borderBottom: '1px solid #e2e8f0' }}>
+                <VisuallyHidden as="span">Price: </VisuallyHidden>
+                ${item.price.toFixed(2)}
+              </td>
+              <td style={{ textAlign: 'right', padding: '12px', borderBottom: '1px solid #e2e8f0' }}>
+                <VisuallyHidden as="span">Stock: </VisuallyHidden>
+                {item.stock === 0 ? (
+                  <span style={{ color: '#ef4444' }}>
+                    Out of stock
+                    <VisuallyHidden as="span"> for {item.product}</VisuallyHidden>
+                  </span>
+                ) : (
+                  item.stock
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Box>
+  );
+};
+```
+
+### Form field descriptions
+
+Provide additional hints for form fields without cluttering the UI.
+
+```jsx-live-dev
+const App = () => {
+  const [password, setPassword] = React.useState('');
+  
+  return (
+    <Stack gap="400">
+      <Box>
+        <Text as="label" fontWeight="semibold" mb="200" display="block">
+          Password
+        </Text>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          aria-describedby="password-hint"
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            borderRadius: '4px',
+            border: '1px solid #cbd5e0',
+          }}
+        />
+        <VisuallyHidden id="password-hint">
+          Password must be at least 8 characters long and contain a number
+        </VisuallyHidden>
+        <Text fontSize="sm" color="neutral.3" mt="100">
+          Min. 8 characters
+        </Text>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Loading states
+
+Announce loading states to screen reader users.
+
+```jsx-live-dev
+const App = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [data, setData] = React.useState<string | null>(null);
+  
+  const loadData = () => {
+    setIsLoading(true);
+    setData(null);
+    
+    setTimeout(() => {
+      setData('Data loaded successfully!');
+      setIsLoading(false);
+    }, 2000);
+  };
+  
+  return (
+    <Stack gap="400">
+      <Button onClick={loadData} isDisabled={isLoading}>
+        {isLoading ? 'Loading...' : 'Load Data'}
+      </Button>
+      
+      <VisuallyHidden role="status" aria-live="polite" aria-atomic="true">
+        {isLoading ? 'Loading data, please wait' : ''}
+        {data ? 'Data loaded successfully' : ''}
+      </VisuallyHidden>
+      
+      {data && (
+        <Box p="400" bg="success.7" borderRadius="md">
+          <Text>{data}</Text>
+        </Box>
+      )}
+    </Stack>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using VisuallyHidden within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: visually-hidden.docs.spec.tsx}}
+
+## Resources
+
+- [VisuallyHidden component in Storybook](https://nimbus-storybook.vercel.app/?path=/docs/utils-visuallyhidden--docs)
+- [React Aria VisuallyHidden documentation](https://react-spectrum.adobe.com/react-aria/VisuallyHidden.html)
+- [WebAIM: Invisible Content](https://webaim.org/techniques/css/invisiblecontent/)
+- [W3C Skip Navigation](https://www.w3.org/TR/WCAG20-TECHS/G1.html)
