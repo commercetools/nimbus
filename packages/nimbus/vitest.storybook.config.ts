@@ -56,7 +56,7 @@ export default defineConfig(async () => {
           // ... use playwright to run tests with locale set via contextOptions
           provider: playwright({
             contextOptions: {
-              locale: "en-US",
+              locale: "en",
             },
           }),
           // ... only in chromium
