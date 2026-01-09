@@ -82,17 +82,18 @@ For each dependency group (or the specified target group):
    ```
 
 2. **Version Comparison:**
-   - Only update to latest minor/patch versions (no major bumps)
-   - Respect semver constraints (e.g., `^7.28.0` can go to `^7.29.1` but not
-     `^8.0.0`)
-   - **CRITICAL: React Runtime Constraint** - Since this is a React UI library,
-     the **runtime packages** `react`, `react-dom`, and `@emotion/react` are
-     **FROZEN** at their current versions. UI library consumers must control
-     these peer dependency versions. However, `@types/react`,
-     `@types/react-dom`, `@chakra-ui/*`, and React Aria packages **CAN and
-     SHOULD be updated** to their latest minor/patch versions. If any package
-     update would require upgrading `react`, `react-dom`, or `@emotion/react`
-     runtime packages, **HALT IMMEDIATELY** and report the conflict.
+   - You MUST only update to latest minor/patch versions (no major bumps)
+   - You MUST respect semver constraints (e.g., `^7.28.0` can go to `^7.29.1`
+     but not `^8.0.0`)
+   - **Critical Constraint on React Runtime**: Since this is a React UI library,
+     the runtime packages `react`, `react-dom`, and `@emotion/react` are frozen
+     at their current versions. You MUST NOT update these packages because UI
+     library consumers must control these peer dependency versions. However, you
+     CAN and SHOULD update `@types/react`, `@types/react-dom`, `@chakra-ui/*`,
+     and React Aria packages to their latest minor/patch versions. If any
+     package update would require upgrading `react`, `react-dom`, or
+     `@emotion/react` runtime packages, you MUST immediately halt and report the
+     conflict.
 
 3. **Update Workspace Catalog:**
    - Modify `pnpm-workspace.yaml` catalog entries with new versions
@@ -137,7 +138,8 @@ For each dependency group (or the specified target group):
    - Report any packages that were skipped (major version changes)
    - Identify packages that are already at latest versions
    - Display total update count by category
-   - Note: Keep frozen packages and "already at latest" packages separate in the PR body
+   - Note: Keep frozen packages and "already at latest" packages separate in the
+     PR body
 
 4. **Create Pull Request:**
 
@@ -317,9 +319,17 @@ If user wants to preview changes first, show:
 
 ---
 
-**Remember:** Safety first! Always verify builds and tests between dependency
-groups. If anything fails, rollback immediately and investigate before
-proceeding.
+**Remember:** Safety first! You MUST always verify builds and tests between
+dependency groups. If anything fails, you MUST rollback immediately and
+investigate before proceeding.
+
+## RFC 2119 Key Words
+
+- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
+- **MUST NOT** / **SHALL NOT** - Absolute prohibition
+- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
+- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
+- **MAY** / **OPTIONAL** - Truly optional
 
 ---
 

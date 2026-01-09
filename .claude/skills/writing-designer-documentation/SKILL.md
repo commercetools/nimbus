@@ -1,48 +1,44 @@
 ---
-description: Create, update, or validate designer-facing MDX documentation files
+description: Create, update, or validate designer MDX documentation files
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Designer Documentation Skill
 
-You are a Nimbus designer documentation specialist. This skill helps you create, update, or validate designer-facing MDX documentation files (`{component}.mdx`) that explain design patterns, visual guidelines, and usage recommendations.
+You are a Nimbus designer documentation specialist. Create, update, or validate
+designer MDX files (`{component}.mdx`) that explain design patterns, visual
+guidelines, and usage recommendations for non-technical audiences.
 
-## Critical Requirements
-
-**Designer documentation is for non-technical audiences.** Focus on design decisions, visual patterns, usage guidelines, and when to use/not use components—NOT implementation details.
+**CRITICAL**: Focus on design decisions, visual patterns, and usage
+guidelines—NOT implementation details.
 
 ## Mode Detection
-
-Parse the request to determine the operation:
 
 - **create** - Generate new designer documentation file
 - **update** - Enhance existing documentation, add sections, update guidelines
 - **validate** - Check documentation compliance with guidelines
 
-If no mode is specified, default to **create**.
+You MUST default to **create** if no mode is specified. This ensures missing
+docs get created rather than accidentally updating an existing file.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Before implementation, you SHOULD research these areas in parallel:
 
-1. **Read** `@docs/file-type-guidelines/documentation.md` for MDX patterns
-2. **Read** existing component documentation for consistency:
-   ```bash
-   # Find similar component docs
-   ls packages/nimbus/src/components/*/*.mdx
-
-   # Read representative examples
-   cat packages/nimbus/src/components/button/button.mdx
-   cat packages/nimbus/src/components/menu/menu.mdx
-   ```
-3. **Check** for Figma design resources
-4. **Analyze** component's design purpose and visual patterns
+1. You MUST read `@docs/file-type-guidelines/documentation.md` for MDX patterns
+   (ensures consistency with other docs)
+2. You MUST read existing component docs for consistency:
+   `packages/nimbus/src/components/*/{component}.mdx` (shows what's already
+   documented)
+3. You SHOULD check for Figma design resources (improves completeness if
+   available)
+4. You MUST analyze the component's design purpose and visual patterns (ensures
+   content is design-focused, not implementation)
 
 ## File Structure
 
 ### Location
 
-Designer documentation files MUST be located at:
 ```
 packages/nimbus/src/components/{component}/{component}.mdx
 ```
@@ -51,547 +47,277 @@ packages/nimbus/src/components/{component}/{component}.mdx
 
 ```yaml
 ---
-id: Components-ComponentName # REQUIRED: Unique identifier
-title: Component Name # REQUIRED: Display name
-description: Brief description of the component # REQUIRED: One-line description
-documentState: InitialDraft # OPTIONAL: InitialDraft|ReviewedInternal|Published
-lifecycleState: Stable # OPTIONAL: Experimental|Alpha|Beta|Stable|Deprecated
-order: 999 # REQUIRED: Menu display order (use 999 as default)
-menu: # REQUIRED: Menu hierarchy array
+id: Components-ComponentName
+title: Component Name
+description: Brief one-line description
+documentState: InitialDraft # InitialDraft|ReviewedInternal|Published
+lifecycleState: Stable # Experimental|Alpha|Beta|Stable|Deprecated
+order: 999
+menu:
   - Components
-  - Category Name # Data Display, Navigation, Inputs, Feedback, Overlay, etc.
+  - Category Name # Inputs, Data Display, Navigation, Feedback, Overlay, Layout, Typography
   - Component Name
-tags: # REQUIRED: Search tags array
+tags:
   - component
   - relevant-keywords
-figmaLink: >- # OPTIONAL but RECOMMENDED: Link to Figma design library
-  https://www.figma.com/design/...
+figmaLink: https://www.figma.com/design/...
 ---
 ```
 
-### Component Categories
-
-Use appropriate category in menu hierarchy:
-
-- **Inputs** - Form controls (Button, TextInput, Select, Checkbox)
-- **Data Display** - Read-only displays (Badge, Card, Table, List)
-- **Navigation** - Navigation elements (Menu, Tabs, Pagination)
-- **Feedback** - Status indicators (Alert, Loading, Progress)
-- **Overlay** - Modal elements (Dialog, Drawer, Popover, Tooltip)
-- **Layout** - Layout primitives (Stack, Grid, Box, Flex)
-- **Typography** - Text elements (Text, Heading, Code)
-
 ## Content Structure (REQUIRED)
-
-Designer documentation MUST follow this structure:
 
 ### 1. Title and Overview
 
 ```markdown
 # Component Name
 
-Brief introduction paragraph (1-2 sentences) explaining what the component is
-and its primary purpose from a design perspective.
+Brief introduction (1-2 sentences) from design perspective.
 
 ## Overview
 
-Detailed explanation of:
-- Component's design purpose
-- Key visual characteristics
-- Primary use cases
-- Design rationale
+Explain: design purpose, key visual characteristics, primary use cases, design
+rationale.
 
 ### Resources
 
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](figmaLink)
-[Related ARIA Pattern](ariaPatternLink) # If applicable
+[Figma library](figmaLink) [Related ARIA Pattern](ariaPatternLink) # If
+applicable
 ```
 
-### 2. Design Hierarchy (For components with visual hierarchy)
+### 2. Design Hierarchy (if applicable)
 
 ```markdown
 ### Hierarchy
 
-#### Primary actions
-
-Description of when and how to use primary styling.
-
-- **Key characteristic**: Explanation of design decision
-- **Usage context**: When to apply this hierarchy
-
-```jsx-live
-const App = () => (
-  <ComponentName variant="primary" size="md">
-    Primary Example
-  </ComponentName>
-)
-```
-
-#### Secondary actions
-
-Description of secondary styling and usage.
-
-```jsx-live
-const App = () => (
-  <ComponentName variant="secondary" size="md">
-    Secondary Example
-  </ComponentName>
-)
-```
+Explain primary, secondary, tertiary actions with design rationale and jsx-live
+examples.
 ```
 
 ### 3. Variables (REQUIRED)
 
-```markdown
+````markdown
 ## Variables
-
-Get familiar with the features.
 
 ### Size
 
-#### Medium (40px)
-
-This is the default and preferred size. Explanation of when to use.
+Explain each size with design rationale:
 
 ```jsx-live
 const App = () => (
-  <ComponentName size="md">
-    Medium Size
-  </ComponentName>
+  <Stack direction="horizontal" gap="400">
+    <ComponentName size="sm">Small</ComponentName>
+    <ComponentName size="md">Medium (default)</ComponentName>
+    <ComponentName size="lg">Large</ComponentName>
+  </Stack>
 )
 ```
-
-#### Small (32px)
-
-Explanation of when to use smaller size. Context about space constraints.
-
-```jsx-live
-const App = () => (
-  <ComponentName size="sm">
-    Small Size
-  </ComponentName>
-)
-```
+````
 
 ### Color Palette
 
-#### Primary
-
-Explanation of primary color palette usage and context.
+Document each variant's purpose:
 
 ```jsx-live
 const App = () => (
-  <ComponentName colorPalette="primary">
-    Primary Palette
-  </ComponentName>
+  <Stack direction="horizontal" gap="400">
+    <ComponentName colorPalette="primary">Primary</ComponentName>
+    <ComponentName colorPalette="critical">Critical</ComponentName>
+  </Stack>
 )
 ```
 
-#### Critical
-
-Explanation of when to use critical/destructive styling.
-
-```jsx-live
-const App = () => (
-  <ComponentName colorPalette="critical">
-    Critical Palette
-  </ComponentName>
-)
-```
-```
+````
 
 ### 4. Guidelines (OPTIONAL but RECOMMENDED)
 
 ```markdown
 ## Guidelines
 
-Use this component strategically to enhance user workflow.
-
 ### Best practices
 
-- **Design principle 1**: Explanation and rationale
-- **Design principle 2**: Explanation and rationale
-- **Visual hierarchy**: How to maintain proper relationships
+- Design principle with rationale
+- Visual hierarchy guidance
 
 ### When to use
 
 > [!TIP]\
-> When to use
-
-- **Use case 1**: Description of appropriate usage
-- **Use case 2**: Description of appropriate usage
-- **Use case 3**: Description of appropriate usage
+> Use when...
+- Use case 1
+- Use case 2
 
 > [!CAUTION]\
-> When not to use
+> When NOT to use
+- Avoid case 1
+- Anti-pattern to avoid
+````
 
-- **Avoid case 1**: Description of when NOT to use
-- **Avoid case 2**: Description of when NOT to use
-- **Anti-pattern 3**: Common mistake to avoid
-```
-
-### 5. Writing Guidelines (For components with text content)
+### 5. Writing Guidelines (if applicable)
 
 ```markdown
 ## Writing guidelines
 
-- Clear guideline for content creators
-- Concise and actionable advice
-- Context about localization impacts
+Guidelines for content creators and terminology preferences.
 
 ## Preferred words
 
-| **Text** | **Description** |
-| --- | --- |
-| **Save** | Explanation of when and why to use this term |
-| **Cancel** | Explanation with design context |
+| Text       | Description    |
+| ---------- | -------------- |
+| **Save**   | When to use    |
+| **Cancel** | Design context |
 
 ## Avoid these words
 
-| **Text** | **Use this instead** |
-| --- | --- |
-| **OK** | Use words that explain the action |
-| **Continue** | Use "Next" for consistency |
+| Avoid    | Use instead            |
+| -------- | ---------------------- |
+| OK       | Actions that explain   |
+| Continue | Context-specific words |
 ```
 
-### 6. Usage Examples with Visual Context
+### 6. Usage Examples (Optional)
 
-```markdown
-## Usage
-
-### Icons in components
-
-Explanation of icon placement and design rationale.
-
-> [!TIP]\
-> **Do**
-
-- Guideline for correct usage
-- Best practice with visual example
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    <ComponentName>
-      <Icons.Add />
-      Correct Usage
-    </ComponentName>
-    <ComponentName>
-      Action
-      <Icons.ArrowForward />
-    </ComponentName>
-  </Stack>
-)
-```
-
-> [!CAUTION]\
-> **Don't**
-
-- Explanation of what NOT to do
-- Anti-pattern explanation
-
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    <ComponentName>
-      <Icons.Wrong />
-      Incorrect Usage
-      <Icons.Wrong />
-    </ComponentName>
-  </Stack>
-)
-```
-```
+Show correct vs. incorrect usage with Do/Don't sections and jsx-live examples.
 
 ## Code Examples (jsx-live Blocks)
 
-### Requirements
+**CRITICAL**: Use `jsx-live` blocks (NOT `jsx-live-dev`).
 
-**CRITICAL**: Use `jsx-live` blocks (NOT `jsx-live-dev`) for designer documentation:
-
-```markdown
-```jsx-live
-const App = () => (
-  <ComponentName>
-    Example
-  </ComponentName>
-)
-```
-```
-
-### Available Components
-
-All Nimbus components are available globally—NO imports needed:
-- All Nimbus components (Button, Stack, Card, etc.)
-- Icons namespace (Icons.Add, Icons.Close, etc.)
-- React hooks (useState, useEffect, etc.)
-
-### Example Patterns
-
-#### Simple Visual Example
-
-```markdown
-```jsx-live
-const App = () => (
-  <Badge colorPalette="primary" size="md">
-    <Icons.Check />
-    Status Badge
-  </Badge>
-)
-```
-```
-
-#### Comparison Examples
-
-Show variants side-by-side for visual comparison:
-
-```markdown
-```jsx-live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    <Button variant="solid">Solid</Button>
-    <Button variant="outline">Outline</Button>
-    <Button variant="ghost">Ghost</Button>
-  </Stack>
-)
-```
-```
-
-#### Interactive State Examples
-
-Demonstrate interactive behavior when relevant to design:
-
-```markdown
-```jsx-live
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Stack direction="column" gap="400">
-      <Button onPress={() => setIsOpen(!isOpen)}>
-        Toggle
-      </Button>
-      {isOpen && <Text>Content is visible</Text>}
-    </Stack>
-  );
-}
-```
-```
+All Nimbus components available globally—NO imports needed. For detailed
+jsx-live patterns, see writing-developer-documentation skill.
 
 ## Create Mode
 
-### Step 1: Gather Design Context
-
-You MUST gather:
-- Component's design purpose and visual role
-- Visual hierarchy and variants
-- Color palette usage
-- Size variations
-- Icon usage patterns
-- Figma design resources
-
-### Step 2: Write Frontmatter
-
-Create appropriate frontmatter with:
-- Unique ID following `Components-{ComponentName}` pattern
-- Clear, concise description
-- Proper menu hierarchy with category
-- Relevant tags
-- Figma link (if available)
-
-### Step 3: Write Overview Section
-
-Explain the component from a design perspective:
-- What it is and why it exists
-- Key visual characteristics
-- Primary design use cases
-- Design rationale
-
-### Step 4: Document Visual Variants
-
-For each visual variant:
-- Explain WHEN to use (design context)
-- Explain WHY (design rationale)
-- Show visual example with jsx-live block
-- Include relevant hierarchy information
-
-### Step 5: Write Guidelines
-
-Create actionable design guidelines:
-- Best practices with rationale
-- When to use (with examples)
-- When NOT to use (anti-patterns)
-- Visual hierarchy guidance
-- Accessibility considerations from design perspective
-
-### Step 6: Add Writing Guidelines (if applicable)
-
-For components with text content:
-- Preferred terminology
-- Words to avoid
-- Localization considerations
-- Tone and voice guidance
+**Step 1**: Gather design context (purpose, hierarchy, colors, sizes, icons,
+Figma resources) **Step 2**: Write frontmatter with ID, menu hierarchy, tags
+**Step 3**: Write overview explaining component from design perspective **Step
+4**: Document visual variants with jsx-live examples and rationale **Step 5**:
+Create actionable design guidelines (best practices, when to use/avoid) **Step
+6**: Add writing guidelines if text content applies
 
 ## Update Mode
 
-### Process
+1. You MUST read the current documentation file (understand what exists before
+   changing)
+2. You SHOULD identify gaps in design guidance (visual hierarchy, use cases,
+   color palette)
+3. You MUST preserve existing structure and tone (don't rewrite what's working)
+4. You MUST maintain consistency with other designer docs (don't deviate from
+   established style without reason)
+5. You SHOULD enhance with visual examples where they clarify (not every section
+   needs jsx-live examples, only places where visual demonstration helps)
 
-1. You MUST read the current documentation file
-2. You MUST identify gaps in design guidance
-3. You SHOULD preserve existing structure and tone
-4. You MUST maintain consistency with other designer docs
-5. You MUST enhance with visual examples where needed
-
-### Common Updates
-
-- **Add missing section** - Guidelines, writing guidelines, usage patterns
-- **Enhance examples** - Better visual demonstrations
-- **Update guidelines** - New best practices, updated recommendations
-- **Add Figma links** - Link to design resources
-- **Improve descriptions** - Clearer explanations of design decisions
+Common updates: missing sections, better examples, updated guidelines, Figma
+links, clearer explanations.
 
 ## Validate Mode
 
 ### Validation Checklist
 
-You MUST validate against these requirements:
+#### File Structure (ALL REQUIRED - breaks build or navigation if violated)
 
-#### File Structure
-- [ ] File location: `packages/nimbus/src/components/{component}/{component}.mdx`
-- [ ] Frontmatter with ALL required fields
-- [ ] Unique ID following `Components-{ComponentName}` pattern
-- [ ] Proper menu hierarchy with category
-- [ ] Tags array including `component`
-- [ ] Figma link (if available)
+- [ ] File location:
+      `packages/nimbus/src/components/{component}/{component}.mdx` (MUST match)
+- [ ] All required frontmatter fields present (MUST exist)
+- [ ] ID follows pattern: `Components-{ComponentName}` (MUST match, breaks
+      search/routing if wrong)
+- [ ] Menu hierarchy includes proper category (MUST have)
+- [ ] Tags array present (MUST have)
+- [ ] Figma link present (SHOULD have if available)
 
-#### Content Structure
-- [ ] H1 title matching component name
-- [ ] Brief introduction paragraph
-- [ ] Overview section explaining design purpose
-- [ ] Resources section with links
-- [ ] Variables section showing visual variants
-- [ ] Guidelines section (recommended)
+#### Content Structure (SHOULD have unless inapplicable)
+
+- [ ] H1 title matching component name (UX clarity)
+- [ ] Introduction paragraph (sets context)
+- [ ] Overview section explaining design purpose (design rationale)
+- [ ] Resources section with links (reference materials)
+- [ ] Variables section with jsx-live examples (shows options)
+- [ ] Guidelines section (helps designers decide when to use)
 
 #### Code Examples
-- [ ] Uses `jsx-live` blocks (NOT `jsx-live-dev`)
-- [ ] NO import statements in examples
-- [ ] Examples are visually focused
-- [ ] Examples show design variants clearly
-- [ ] Proper formatting and indentation
-- [ ] Realistic, production-ready examples
+
+- [ ] MUST use `jsx-live` blocks (NOT `jsx-live-dev`)
+- [ ] MUST NOT have import statements
+- [ ] MUST be visually focused on design, not implementation
+- [ ] MUST show design variants clearly
+- [ ] SHOULD be production-ready examples
 
 #### Design Focus
-- [ ] Content is designer-focused (NOT implementation)
-- [ ] Explains WHEN and WHY to use
-- [ ] Visual hierarchy explained
-- [ ] Color palette usage documented
-- [ ] Size variants with design rationale
-- [ ] Accessibility mentioned from user perspective
+
+- [ ] MUST be designer-focused (NOT implementation)
+- [ ] MUST explain WHEN and WHY to use
+- [ ] MUST document visual hierarchy and color palette
+- [ ] MUST include size variants with rationale
+- [ ] SHOULD mention accessibility from user perspective
 
 #### Writing Quality
-- [ ] Clear, concise descriptions
-- [ ] Design rationale provided
-- [ ] Best practices documented
-- [ ] Anti-patterns identified
-- [ ] Consistent tone and voice
-- [ ] No technical jargon without explanation
 
-### Validation Report Format
+- [ ] MUST have clear, concise descriptions
+- [ ] MUST include design rationale
+- [ ] MUST document best practices
+- [ ] MUST identify anti-patterns
+- [ ] MUST have consistent tone
+- [ ] MUST avoid technical jargon
+
+### Validation Report
 
 ```markdown
 ## Designer Documentation Validation: {ComponentName}
 
 ### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
 
-### Files Reviewed
-- Documentation file: `{component}.mdx`
-- Guidelines: `docs/file-type-guidelines/documentation.md`
-
 ### ✅ Compliant
+
 [List passing checks]
 
 ### ❌ Violations (MUST FIX)
-- [Violation with guideline reference and line number]
+
+[Violations with line references]
 
 ### ⚠️ Warnings (SHOULD FIX)
-- [Non-critical improvements]
+
+[Non-critical improvements]
 
 ### Design Focus Assessment
+
 - Design rationale: [Present | Partial | Missing]
 - Visual examples: [Comprehensive | Adequate | Insufficient]
 - Guidelines quality: [Excellent | Good | Needs improvement]
 - Writing guidelines: [Present | Not applicable | Missing]
 
 ### Recommendations
-- [Specific improvements needed]
+
+[Specific improvements needed]
 ```
 
-## Common Patterns
+## Common Component Patterns
 
-### Button-type Components
+**Button-type**: Visual hierarchy (primary/secondary/tertiary), action
+importance, color semantics, icon placement, button labels
 
-Focus on:
-- Visual hierarchy (primary, secondary, tertiary)
-- Action hierarchy and importance
-- Color palette for different actions
-- Icon placement and usage
-- Writing guidelines for button labels
+**Form**: Input states, validation feedback, error presentation, size variants,
+labels
 
-### Form Components
+**Feedback**: Visual importance hierarchy, color semantics
+(info/success/warning/error), quick-recognition icons, message content
 
-Focus on:
-- Input states and validation
-- Visual feedback for user actions
-- Error state presentation
-- Size variants for different contexts
-- Label and placeholder guidance
-
-### Feedback Components
-
-Focus on:
-- Visual hierarchy of importance
-- Color semantics (info, success, warning, error)
-- Icon usage for quick recognition
-- When to use which feedback type
-- Content guidelines for messages
-
-### Overlay Components
-
-Focus on:
-- When to use vs alternatives
-- Size and placement guidelines
-- Content structure recommendations
-- Dismissal patterns
-- Accessibility from user perspective
+**Overlay**: When to use vs. alternatives, size/placement guidelines, content
+structure, dismissal patterns, user-perspective accessibility
 
 ## Error Recovery
 
 If validation fails:
 
-1. You MUST check frontmatter structure
-2. You MUST verify unique ID format
-3. You MUST ensure menu hierarchy is correct
-4. You MUST confirm jsx-live blocks (not jsx-live-dev)
-5. You SHOULD review tone (designer-focused, not technical)
+1. You MUST verify frontmatter structure and unique ID (blocks build if wrong)
+2. You MUST ensure menu hierarchy is correct (affects navigation)
+3. You MUST confirm jsx-live blocks (not jsx-live-dev) (doc generation
+   requirement)
+4. You SHOULD review tone (designer-focused, not technical) - fixes readability
 
 ## Reference Examples
-
-You SHOULD reference these documentation files:
 
 - **Simple**: `packages/nimbus/src/components/badge/badge.mdx`
 - **Form**: `packages/nimbus/src/components/text-input/text-input.mdx`
 - **Interactive**: `packages/nimbus/src/components/button/button.mdx`
 - **Overlay**: `packages/nimbus/src/components/dialog/dialog.mdx`
-
-## RFC 2119 Key Words
-
-- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
-- **MUST NOT** / **SHALL NOT** - Absolute prohibition
-- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
-- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
-- **MAY** / **OPTIONAL** - Truly optional
 
 ---
 

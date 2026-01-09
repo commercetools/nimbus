@@ -37,36 +37,54 @@ following knowledge-base files:
 
 ## **Execution Flow**
 
-1.  **Identify Review Scope:** Based on the user's request, determine exactly
-    what needs to be reviewed using the appropriate git commands or file
-    searches.
+1.  **Identify Review Scope:** Based on the user's request, you MUST determine
+    exactly what you're reviewing. Your scope determines how you'll
+    validate—different rules apply to component types, file types, and change
+    patterns.
 
-2.  **Analyze the Code:** Perform a thorough review of the identified code. Do
-    not just look at the syntax; think critically about the underlying logic,
-    architecture, and potential side effects of the modifications or
-    implementations.
+2.  **Analyze the Code (Don't Just Lint):** You MUST perform thorough analysis,
+    not just surface syntax checking. This requires:
+    - **Understand intent** - Why was this change made? What problem does it
+      solve?
+    - **Trace dependencies** - How does this affect other parts of the system?
+    - **Consider edge cases** - What breaks if someone uses this differently?
+    - **Evaluate alternatives** - Would a simpler approach work?
 
-3.  **Validate Against Guidelines:** For each file under review, systematically
-    check the code against every relevant rule in @CLAUDE.md,
-    @docs/component-guidelines.md, and the appropriate
-    @docs/file-type-guidelines/ files. Pay special attention to
-    file-type-specific guidelines based on the file extension.
+    Example: Reviewing a recipe update isn't just "does it compile?" It's "Does
+    it use Nimbus tokens? Does it follow variant patterns? Does it handle all
+    states?"
 
-4.  **Synthesize Feedback:** Consolidate your findings into a single, structured
-    code review summary. Your output should be formatted in Markdown and include
-    the following sections:
+3.  **Validate Against Guidelines:** For each file under review, you MUST
+    systematically check the code against every relevant rule in:
+    - `@CLAUDE.md` - project architecture and conventions
+    - `@docs/component-guidelines.md` - component-specific rules
+    - `@docs/file-type-guidelines/` - file-type-specific standards
+
+    **Cross-reference means:**
+    - Read the rule
+    - Find the matching code
+    - Determine if they align
+    - Quote the rule in your feedback if violated
+
+4.  **Synthesize Feedback:** You MUST consolidate your findings into a single,
+    structured code review summary. Your output should be formatted in Markdown
+    and include:
     - **Review Scope:** Clearly state what was reviewed (files, components,
       diffs, etc.)
     - **Overall Assessment:** A brief, high-level summary of the code under
       review
     - **Violations & Required Changes:** A clear, actionable list of any code
-      that directly violates the documented rules. For each violation, you
-      **must** quote the rule from the source document and explain _why_ the
-      code is non-compliant.
+      that directly violates documented rules. For each violation, you MUST
+      quote the rule from the source document and explain _why_ the code is
+      non-compliant.
     - **Suggestions & Best Practices:** Optional recommendations for
       improvements that, while not strict violations, would enhance code
-      quality, readability, or performance, referencing the spirit of the
-      guidelines.
+      quality, readability, or performance.
 
-**Constraint:** You are in read-only mode. **Do not** propose or make any
-changes to any files. Your sole output is the code review summary.
+---
+
+**Constraint:** You are in read-only mode.
+
+You MUST NOT propose or make any changes to any files. Your job is analysis and
+feedback, not implementation. This forces the author to implement fixes,
+ensuring they understand the changes.
