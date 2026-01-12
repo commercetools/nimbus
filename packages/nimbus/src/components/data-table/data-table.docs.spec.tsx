@@ -9,18 +9,18 @@ const columns: DataTableColumnItem[] = [
   {
     id: "name",
     header: "Name",
-    accessor: (row) => row.name as React.ReactNode,
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
     isSortable: true,
   },
   {
     id: "email",
     header: "Email",
-    accessor: (row) => row.email as React.ReactNode,
+    accessor: (row: Record<string, unknown>) => row.email as React.ReactNode,
   },
   {
     id: "role",
     header: "Role",
-    accessor: (row) => row.role as React.ReactNode,
+    accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
     isSortable: true,
   },
 ];
@@ -573,11 +573,20 @@ describe("DataTable - Accessibility", () => {
  */
 describe("DataTable.Manager - Basic rendering", () => {
   it("renders the settings button", () => {
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row) => row.name },
-      { id: "email", header: "Email", accessor: (row) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -604,11 +613,20 @@ describe("DataTable.Manager - Basic rendering", () => {
 
   it("settings button is clickable", async () => {
     const user = userEvent.setup();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row) => row.name },
-      { id: "email", header: "Email", accessor: (row) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -647,12 +665,25 @@ describe("DataTable.Manager - Basic rendering", () => {
 describe("DataTable.Manager - Column management", () => {
   it("displays visible and hidden columns in separate lists", async () => {
     const user = userEvent.setup();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
-      { id: "role", header: "Role", accessor: (row: any) => row.role },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
+      {
+        id: "role",
+        header: "Role",
+        accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com", role: "Admin" },
     ];
 
@@ -688,11 +719,20 @@ describe("DataTable.Manager - Column management", () => {
   it("calls onColumnsChange when column visibility changes", async () => {
     const user = userEvent.setup();
     const handleColumnsChange = vi.fn();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -731,11 +771,20 @@ describe("DataTable.Manager - Column management", () => {
 describe("DataTable.Manager - Layout settings", () => {
   it("displays layout settings tab", async () => {
     const user = userEvent.setup();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -766,11 +815,20 @@ describe("DataTable.Manager - Layout settings", () => {
   it("calls onSettingsChange when layout settings change", async () => {
     const user = userEvent.setup();
     const handleSettingsChange = vi.fn();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -809,11 +867,20 @@ describe("DataTable.Manager - Layout settings", () => {
 describe("DataTable.Manager - Custom settings", () => {
   it("displays custom settings tab when provided", async () => {
     const user = userEvent.setup();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
@@ -849,11 +916,20 @@ describe("DataTable.Manager - Custom settings", () => {
 
   it("renders custom settings panel content", async () => {
     const user = userEvent.setup();
-    const managerColumns = [
-      { id: "name", header: "Name", accessor: (row: any) => row.name },
-      { id: "email", header: "Email", accessor: (row: any) => row.email },
+    const managerColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "email",
+        header: "Email",
+        accessor: (row: Record<string, unknown>) =>
+          row.email as React.ReactNode,
+      },
     ];
-    const managerRows = [
+    const managerRows: DataTableRowItem[] = [
       { id: "1", name: "Alice", email: "alice@example.com" },
     ];
 
