@@ -178,52 +178,6 @@ const App = () => {
 }
 ```
 
-### Interactive tables
-
-Enable hover highlighting with the `interactive` prop. This provides visual feedback when users hover over rows:
-
-```jsx-live-dev
-const App = () => {
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  const users = [
-    { id: '1', name: 'Alice Cooper', email: 'alice@example.com', role: 'Admin' },
-    { id: '2', name: 'Bob Martinez', email: 'bob@example.com', role: 'Editor' },
-    { id: '3', name: 'Carol White', email: 'carol@example.com', role: 'Viewer' },
-  ];
-
-  return (
-    <Stack gap="400">
-      {selectedRow && (
-        <Text>Selected: {selectedRow.name} ({selectedRow.role})</Text>
-      )}
-      <Table.Root interactive>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Name</Table.ColumnHeader>
-            <Table.ColumnHeader>Email</Table.ColumnHeader>
-            <Table.ColumnHeader>Role</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {users.map((user) => (
-            <Table.Row
-              key={user.id}
-              onClick={() => setSelectedRow(user)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Table.Cell>{user.name}</Table.Cell>
-              <Table.Cell>{user.email}</Table.Cell>
-              <Table.Cell>{user.role}</Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
-    </Stack>
-  );
-}
-```
-
 ### Sticky headers
 
 Use `stickyHeader` to keep the table header visible when scrolling. Combine with `Table.ScrollArea` for scrollable content:
@@ -599,5 +553,5 @@ These examples demonstrate how to test your implementation when using Table with
 ## Resources
 
 - [Chakra UI - Table Documentation](https://chakra-ui.com/docs/components/table)
-- [DataTable Component](../data-table) - Advanced table with sorting, selection, and more features
+- [DataTable Component](../components/data-display/datatable) - Advanced table with sorting, selection, and more features
 - [MDN - HTML Table Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
