@@ -9,12 +9,20 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { DataTable, type DataTableProps, type DataTableColumnItem, type DataTableRowItem, type SortDescriptor } from '@commercetools/nimbus';
+import {
+  DataTable,
+  type DataTableProps,
+  type DataTableColumnItem,
+  type DataTableRowItem,
+  type SortDescriptor,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
 
-The DataTable renders data in a tabular format with support for sorting, selection, resizing, and nested content. At minimum, you need to provide `columns` and `rows`:
+The DataTable renders data in a tabular format with support for sorting,
+selection, resizing, and nested content. At minimum, you need to provide
+`columns` and `rows`:
 
 ```jsx-live-dev
 const App = () => {
@@ -38,39 +46,44 @@ const App = () => {
 
 ### Column configuration
 
-Each column requires an `id`, `header`, and `accessor` function. Additional options control sorting, resizing, and custom rendering:
+Each column requires an `id`, `header`, and `accessor` function. Additional
+options control sorting, resizing, and custom rendering:
 
 ```tsx
-import type { DataTableColumnItem } from '@commercetools/nimbus';
+import type { DataTableColumnItem } from "@commercetools/nimbus";
 
 const columns: DataTableColumnItem[] = [
   {
-    id: 'name',
-    header: 'Product Name',
+    id: "name",
+    header: "Product Name",
     accessor: (row) => row.name,
-    isSortable: true,      // Enable sorting for this column
-    isResizable: true,     // Enable column resizing
-    isRowHeader: true,     // Mark as row header for accessibility
-    width: 200,            // Initial width in pixels
-    minWidth: 100,         // Minimum width when resizing
-    maxWidth: 400,         // Maximum width when resizing
+    isSortable: true, // Enable sorting for this column
+    isResizable: true, // Enable column resizing
+    isRowHeader: true, // Mark as row header for accessibility
+    width: 200, // Initial width in pixels
+    minWidth: 100, // Minimum width when resizing
+    maxWidth: 400, // Maximum width when resizing
   },
   {
-    id: 'status',
-    header: 'Status',
+    id: "status",
+    header: "Status",
     accessor: (row) => row.status,
     // Custom rendering with the render prop
     render: ({ value }) => (
-      <Badge colorPalette={value === 'Active' ? 'positive' : 'neutral'}>
+      <Badge colorPalette={value === "Active" ? "positive" : "neutral"}>
         {value}
       </Badge>
     ),
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     accessor: (row) => row.id,
-    headerIcon: <IconButton aria-label="Info" size="2xs" variant="ghost"><Info /></IconButton>,
+    headerIcon: (
+      <IconButton aria-label="Info" size="2xs" variant="ghost">
+        <Info />
+      </IconButton>
+    ),
     isSortable: false,
   },
 ];
@@ -78,15 +91,22 @@ const columns: DataTableColumnItem[] = [
 
 ### Row data structure
 
-Each row must have a unique `id` property. Additional properties are accessed via column `accessor` functions:
+Each row must have a unique `id` property. Additional properties are accessed
+via column `accessor` functions:
 
 ```tsx
-import type { DataTableRowItem } from '@commercetools/nimbus';
+import type { DataTableRowItem } from "@commercetools/nimbus";
 
 const rows: DataTableRowItem[] = [
-  { id: '1', name: 'Product A', status: 'Active', price: 99.99 },
-  { id: '2', name: 'Product B', status: 'Draft', price: 149.99, isDisabled: true },
-  { id: '3', name: 'Product C', status: 'Active', price: 79.99 },
+  { id: "1", name: "Product A", status: "Active", price: 99.99 },
+  {
+    id: "2",
+    name: "Product B",
+    status: "Draft",
+    price: 149.99,
+    isDisabled: true,
+  },
+  { id: "3", name: "Product C", status: "Active", price: 79.99 },
 ];
 ```
 
@@ -94,7 +114,8 @@ const rows: DataTableRowItem[] = [
 
 ### Density options
 
-The `density` prop controls row height and padding. Use `condensed` for data-dense interfaces:
+The `density` prop controls row height and padding. Use `condensed` for
+data-dense interfaces:
 
 ```jsx-live-dev
 const App = () => {
@@ -137,7 +158,8 @@ const App = () => {
 
 ### Sorting
 
-Enable sorting with `allowsSorting`. Individual columns can opt-out using `isSortable: false`:
+Enable sorting with `allowsSorting`. Individual columns can opt-out using
+`isSortable: false`:
 
 ```jsx-live-dev
 const App = () => {
@@ -249,7 +271,7 @@ const App = () => {
     <Stack gap="400">
       <Text>Selected: {selectedCount} row(s)</Text>
       <Stack direction="row" gap="300">
-        <Button 
+        <Button
           variant="outline"
           colorPalette="primary"
           size="md"
@@ -677,17 +699,326 @@ const App = () => {
 
 ### Available sub-components
 
-| Component | Description |
-|-----------|-------------|
-| `DataTable.Root` | Provider component that manages state and context |
-| `DataTable.Table` | The main table element |
-| `DataTable.Header` | Table header with column headers |
-| `DataTable.Body` | Table body containing rows |
-| `DataTable.Row` | Individual row component |
-| `DataTable.Cell` | Individual cell component |
-| `DataTable.Column` | Column header component |
-| `DataTable.Footer` | Footer section for pagination or summaries |
-| `DataTable.Manager` | Settings panel for column visibility and layout |
+| Component           | Description                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| `DataTable.Root`    | Provider component that manages state and context                                                       |
+| `DataTable.Table`   | The main table element                                                                                  |
+| `DataTable.Header`  | Table header with column headers                                                                        |
+| `DataTable.Body`    | Table body containing rows                                                                              |
+| `DataTable.Row`     | Individual row component                                                                                |
+| `DataTable.Cell`    | Individual cell component                                                                               |
+| `DataTable.Column`  | Column header component                                                                                 |
+| `DataTable.Footer`  | Footer section for pagination or summaries                                                              |
+| `DataTable.Manager` | Settings panel for column visibility and layout - [see detailed docs below](#advanced-datatablemanager) |
+
+## Advanced: DataTable.Manager
+
+The `DataTable.Manager` component provides a settings drawer for managing table
+configuration. It enables users to control column visibility, reorder columns,
+and adjust layout settings through an intuitive interface.
+
+### Manager overview
+
+DataTable.Manager must be used within a DataTable.Root to access table state and
+columns. It renders as a settings button that opens a drawer with multiple
+configuration tabs:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const [density, setDensity] = useState('default');
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
+    { id: '2', name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
+    { id: '3', name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' },
+  ];
+
+  const handleSettingsChange = (action) => {
+    if (action === 'toggleTextVisibility') {
+      setIsTruncated(!isTruncated);
+    } else if (action === 'toggleRowDensity') {
+      setDensity(density === 'default' ? 'condensed' : 'default');
+    }
+  };
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      visibleColumns={visibleColumns}
+      onColumnsChange={(updatedColumns) => {
+        setVisibleColumns(updatedColumns.map(col => col.id));
+      }}
+      isTruncated={isTruncated}
+      density={density}
+      onSettingsChange={handleSettingsChange}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Users</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+### Manager: Column visibility
+
+The Manager provides a dual-list interface for managing visible and hidden
+columns. Users can drag columns between lists, reorder visible columns, and
+search hidden columns:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'email']);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', department: 'Engineering' },
+    { id: '2', name: 'Bob Smith', email: 'bob@example.com', role: 'User', department: 'Sales' },
+  ];
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      visibleColumns={visibleColumns}
+      onColumnsChange={(updatedColumns) => {
+        setVisibleColumns(updatedColumns.map(col => col.id));
+      }}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Team Members</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+### Manager: Layout settings
+
+The Layout Settings tab allows users to control text truncation and row density.
+These settings update the table's visual appearance in real-time:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'description']);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const [density, setDensity] = useState('default');
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'description', header: 'Description', accessor: (row) => row.description },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Product A',
+      description: 'This is a very long description that will demonstrate text truncation when enabled'
+    },
+    {
+      id: '2',
+      name: 'Product B',
+      description: 'Another lengthy description to show how the layout settings affect content display'
+    },
+  ];
+
+  const handleSettingsChange = (action) => {
+    if (action === 'toggleTextVisibility') {
+      setIsTruncated(!isTruncated);
+    } else if (action === 'toggleRowDensity') {
+      setDensity(density === 'default' ? 'condensed' : 'default');
+    }
+  };
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      visibleColumns={visibleColumns}
+      onColumnsChange={(updatedColumns) => {
+        setVisibleColumns(updatedColumns.map(col => col.id));
+      }}
+      isTruncated={isTruncated}
+      density={density}
+      onSettingsChange={handleSettingsChange}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Products</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+### Manager: Custom settings tab
+
+Add a custom settings tab by providing the `customSettings` prop to
+DataTable.Root. This allows extending the Manager with application-specific
+configuration:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'status']);
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'status', header: 'Status', accessor: (row) => row.status },
+  ];
+
+  const allRows = [
+    { id: '1', name: 'Task A', status: 'Active' },
+    { id: '2', name: 'Task B', status: 'Inactive' },
+    { id: '3', name: 'Task C', status: 'Active' },
+  ];
+
+  const filteredRows = filterStatus === 'all'
+    ? allRows
+    : allRows.filter(row => row.status.toLowerCase() === filterStatus);
+
+  const customSettingsPanel = (
+    <Stack direction="column" gap="400">
+      <Text fontWeight="600">Filter Options</Text>
+      <ToggleButtonGroup.Root
+        selectedKeys={[filterStatus]}
+        onSelectionChange={(keys) => setFilterStatus(Array.from(keys)[0])}
+      >
+        <ToggleButton id="all">All</ToggleButton>
+        <ToggleButton id="active">Active</ToggleButton>
+        <ToggleButton id="inactive">Inactive</ToggleButton>
+      </ToggleButtonGroup.Root>
+    </Stack>
+  );
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={filteredRows}
+      visibleColumns={visibleColumns}
+      onColumnsChange={(updatedColumns) => {
+        setVisibleColumns(updatedColumns.map(col => col.id));
+      }}
+      customSettings={{
+        label: 'Filters',
+        icon: <Icons.FilterList />,
+        panel: customSettingsPanel,
+      }}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Tasks</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+### Manager: Controlled column state with persistence
+
+Manage column configuration externally for features like saving user
+preferences:
+
+```jsx-live-dev
+const App = () => {
+  const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+    { id: 'location', header: 'Location', accessor: (row) => row.location },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Alice Johnson',
+      email: 'alice@example.com',
+      role: 'Admin',
+      department: 'Engineering',
+      location: 'New York'
+    },
+  ];
+
+  const handleColumnsChange = (updatedColumns) => {
+    const newVisibleColumns = updatedColumns.map(col => col.id);
+    setVisibleColumns(newVisibleColumns);
+
+    // Example: Save to localStorage
+    localStorage.setItem('tableColumns', JSON.stringify(newVisibleColumns));
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <DataTable.Root
+        columns={columns}
+        rows={rows}
+        visibleColumns={visibleColumns}
+        onColumnsChange={handleColumnsChange}
+      >
+        <Stack direction="row" justifyContent="space-between" mb="400">
+          <Text fontSize="lg" fontWeight="600">Team Directory</Text>
+          <DataTable.Manager />
+        </Stack>
+        <DataTable.Table>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+      <Text fontSize="sm" color="gray.9">
+        Visible columns: {visibleColumns.join(', ')}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Manager: Context requirements
+
+DataTable.Manager **must** be used within a DataTable.Root component. It relies
+on the DataTable context for:
+
+- Column configuration (`columns`, `visibleColumns`)
+- Layout settings (`isTruncated`, `density`)
+- Callbacks (`onColumnsChange`, `onSettingsChange`)
+- Custom settings configuration
+
+Using Manager outside of DataTable.Root will throw an error.
 
 ## Component requirements
 
@@ -695,18 +1026,17 @@ const App = () => {
 
 The DataTable uses React Aria's Table components for full accessibility support:
 
-- **ARIA grid pattern**: The table implements the ARIA grid pattern with proper roles
-- **Keyboard navigation**: Full keyboard support with arrow keys, Tab, Enter, and Space
-- **Screen reader support**: Proper announcements for sorting, selection, and expansion
+- **ARIA grid pattern**: The table implements the ARIA grid pattern with proper
+  roles
+- **Keyboard navigation**: Full keyboard support with arrow keys, Tab, Enter,
+  and Space
+- **Screen reader support**: Proper announcements for sorting, selection, and
+  expansion
 
 Always provide an accessible label for the table:
 
 ```tsx
-<DataTable
-  columns={columns}
-  rows={rows}
-  aria-label="Product inventory table"
-/>
+<DataTable columns={columns} rows={rows} aria-label="Product inventory table" />
 ```
 
 Or with the compound component API:
@@ -720,6 +1050,24 @@ Or with the compound component API:
 </DataTable.Root>
 ```
 
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-inventory-table";
+
+export const Example = () => (
+  <DataTable
+    id={PERSISTENT_ID}
+    columns={columns}
+    rows={rows}
+    aria-label="Product inventory table"
+  />
+);
+```
+
 #### Keyboard navigation
 
 The component supports full keyboard interaction:
@@ -729,6 +1077,16 @@ The component supports full keyboard interaction:
 - `Enter` / `Space`: Activate sorting, selection, or expansion
 - `Escape`: Cancel current interaction
 
+The Manager drawer also supports keyboard navigation:
+
+- `Tab` / `Shift+Tab`: Navigate between the settings button, tabs, and controls
+- `Enter` / `Space`: Open the Manager drawer, activate tabs, toggle buttons
+- `Arrow keys`: Navigate between tab panels, reorder items in drag-and-drop
+  lists
+- `Escape`: Close the Manager drawer
+- Drag-and-drop keyboard operations: `Space` to pick up, arrow keys to move,
+  `Space` to drop
+
 ## API reference
 
 <PropsTable id="DataTable" />
@@ -737,23 +1095,24 @@ The component supports full keyboard interaction:
 
 ```tsx
 type DataTableColumnItem<T extends object = Record<string, unknown>> = {
-  id: string;                              // Unique column identifier
-  header: ReactNode;                       // Column header content
-  accessor: (row: T) => ReactNode;         // Function to extract cell value
-  render?: (cell: {                        // Custom cell renderer
+  id: string; // Unique column identifier
+  header: ReactNode; // Column header content
+  accessor: (row: T) => ReactNode; // Function to extract cell value
+  render?: (cell: {
+    // Custom cell renderer
     value: unknown;
     row: T;
     column: DataTableColumnItem<T>;
   }) => ReactNode;
-  isResizable?: boolean;                   // Enable column resizing
-  width?: number | null;                   // Initial width in pixels
-  defaultWidth?: number | null;            // Default width
-  minWidth?: number | null;                // Minimum width when resizing
-  maxWidth?: number | null;                // Maximum width when resizing
-  sticky?: boolean;                        // Stick column to edge
-  isSortable?: boolean;                    // Enable sorting for column
-  isRowHeader?: boolean;                   // Mark as row header (accessibility)
-  headerIcon?: ReactNode;                  // Icon in column header
+  isResizable?: boolean; // Enable column resizing
+  width?: number | null; // Initial width in pixels
+  defaultWidth?: number | null; // Default width
+  minWidth?: number | null; // Minimum width when resizing
+  maxWidth?: number | null; // Maximum width when resizing
+  sticky?: boolean; // Stick column to edge
+  isSortable?: boolean; // Enable sorting for column
+  isRowHeader?: boolean; // Mark as row header (accessibility)
+  headerIcon?: ReactNode; // Icon in column header
 };
 ```
 
@@ -761,7 +1120,7 @@ type DataTableColumnItem<T extends object = Record<string, unknown>> = {
 
 ```tsx
 type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
-  id: string;           // Unique row identifier (required)
+  id: string; // Unique row identifier (required)
   isDisabled?: boolean; // Disable row interactions
   [key: string]: unknown;
 };
@@ -771,14 +1130,21 @@ type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
 
 ```tsx
 type SortDescriptor = {
-  column: string;                        // Column ID to sort by
-  direction: 'ascending' | 'descending'; // Sort direction
+  column: string; // Column ID to sort by
+  direction: "ascending" | "descending"; // Sort direction
 };
 ```
 
+### DataTable.Manager API
+
+<PropsTable id="DataTableManager" />
+
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using DataTable in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using DataTable
+in your application. As the component's internal functionality is already tested
+by Nimbus, these patterns help you verify your integration and
+application-specific logic.
 
 {{docs-tests: data-table.docs.spec.tsx}}
 
@@ -787,4 +1153,3 @@ These examples demonstrate how to test your implementation when using DataTable 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-datatable--docs)
 - [React Aria Table](https://react-spectrum.adobe.com/react-aria/Table.html)
 - [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
-
