@@ -17,3 +17,4 @@ export { registerFormFieldTool } from "./form-field.js";
 export { registerDataTableTool } from "./data-table.js";
 export { registerSimpleFormTool } from "./simple-form.js";
 export { registerProductCardTool } from "./product-card.js";
+export { registerSwitchTool } from "./switch.js";

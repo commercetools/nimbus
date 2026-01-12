@@ -39,3 +39,4 @@ export {
   NimbusAlertDescription,
   NimbusAlertDismissButton,
 } from "./alert.js";
+export { NimbusSwitch } from "./switch.js";

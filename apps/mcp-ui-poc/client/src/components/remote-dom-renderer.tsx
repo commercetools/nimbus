@@ -303,6 +303,40 @@ const MoneyInputWrapper = (props: Record<string, unknown>) => {
 };
 
 /**
+ * Switch with change handling
+ */
+const SwitchWrapper = (props: Record<string, unknown>) => {
+  const uri = useUri();
+  const { styleProps, id, onChange, children, ...rest } = props;
+
+  const handleChange = id
+    ? (isSelected: boolean) => {
+        // Send change event to server
+        sendClientEvent(
+          "switchChange",
+          uri,
+          { switchId: id, isSelected },
+          false
+        );
+
+        if (typeof onChange === "function") {
+          onChange(isSelected);
+        }
+      }
+    : onChange;
+
+  return (
+    <Nimbus.Switch
+      {...rest}
+      {...(styleProps as Record<string, unknown>)}
+      onChange={handleChange}
+    >
+      {children}
+    </Nimbus.Switch>
+  );
+};
+
+/**
  * Drawer.Root with state sync
  */
 const DrawerRootWrapper = (props: Record<string, unknown>) => {
@@ -373,6 +407,7 @@ const componentRegistry: Record<string, AnyComponent> = {
   "nimbus-image": Nimbus.Image,
   "nimbus-text-input": Nimbus.TextInput,
   "nimbus-money-input": MoneyInputWrapper,
+  "nimbus-switch": SwitchWrapper,
   "nimbus-button": ButtonWrapper,
   "nimbus-data-table": DataTableWrapper,
   "nimbus-card-root": Nimbus.Card.Root,
@@ -489,6 +524,7 @@ const AlertDismissButtonWrapper = (props: Record<string, unknown>) => {
  */
 const customWrappers: Record<string, AnyComponent> = {
   "nimbus-button": ButtonWrapper,
+  "nimbus-switch": SwitchWrapper,
   "nimbus-data-table": DataTableWrapper,
   "nimbus-money-input": MoneyInputWrapper,
   "nimbus-form-field-root": FormFieldRootWrapper,
