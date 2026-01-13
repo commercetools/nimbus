@@ -1,0 +1,498 @@
+---
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { InlineSvg, type InlineSvgProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```jsx-live-dev
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+  </svg>`;
+  
+  return <InlineSvg data={svgData} size="md" />;
+};
+```
+
+## Usage examples
+
+### Size variants
+
+InlineSvg supports the same size variants as the Icon component.
+
+```jsx-live-dev
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="currentColor"/>
+  </svg>`;
+  
+  return (
+    <Stack gap="400" direction="row" align="center">
+      <InlineSvg data={svgData} size="2xs" />
+      <InlineSvg data={svgData} size="xs" />
+      <InlineSvg data={svgData} size="sm" />
+      <InlineSvg data={svgData} size="md" />
+      <InlineSvg data={svgData} size="lg" />
+      <InlineSvg data={svgData} size="xl" />
+    </Stack>
+  );
+};
+```
+
+### Color customization
+
+Use the `color` prop to control the icon color. The SVG should use `currentColor` to inherit the color.
+
+```jsx-live-dev
+const App = () => {
+  const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v8.72c0 4.55-3.12 8.86-8 10.19-4.88-1.33-8-5.64-8-10.19V7.78l8-3.6z" fill="currentColor"/>
+  </svg>`;
+  
+  return (
+    <Stack gap="400" direction="row">
+      <InlineSvg data={svgData} size="lg" color="primary.9" />
+      <InlineSvg data={svgData} size="lg" color="info.9" />
+      <InlineSvg data={svgData} size="lg" color="positive.9" />
+      <InlineSvg data={svgData} size="lg" color="warning.9" />
+      <InlineSvg data={svgData} size="lg" color="critical.9" />
+    </Stack>
+  );
+};
+```
+
+### Multi-color SVGs
+
+InlineSvg preserves inline colors defined in the SVG markup. Use this for icons with multiple colors that shouldn't inherit `currentColor`.
+
+```jsx-live-dev
+const App = () => {
+  const multiColorSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="3" width="18" height="18" rx="2" fill="#e11d48"/>
+    <circle cx="12" cy="12" r="5" fill="#10b981"/>
+    <path d="M12 9v6M9 12h6" stroke="white" stroke-width="2"/>
+  </svg>`;
+  
+  return (
+    <Stack gap="400">
+      <Box>
+        <Text mb="200" fontWeight="semibold">Multi-color SVG</Text>
+        <InlineSvg data={multiColorSvg} size="xl" />
+      </Box>
+      
+      <Text fontSize="sm" color="neutral.3">
+        Colors defined in the SVG are preserved regardless of the color prop
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Complex SVG structures
+
+InlineSvg handles complex SVG markup with multiple paths, groups, and attributes.
+
+```jsx-live-dev
+const App = () => {
+  const complexSvg = `<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+    <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+    <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+    <line x1="12" x2="12" y1="22.08" y2="12"/>
+  </svg>`;
+  
+  return <InlineSvg data={complexSvg} size="xl" color="primary.9" />;
+};
+```
+
+### Dynamic SVG content
+
+InlineSvg is useful when working with SVG strings from APIs or databases.
+
+```jsx-live-dev
+const App = () => {
+  const [selectedIcon, setSelectedIcon] = React.useState('heart');
+  
+  const icons = {
+    heart: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+    </svg>`,
+    star: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/>
+    </svg>`,
+    check: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+    </svg>`
+  };
+  
+  return (
+    <Stack gap="400">
+      <Stack gap="200" direction="row">
+        <Button
+          size="sm"
+          variant={selectedIcon === 'heart' ? 'solid' : 'outline'}
+          onClick={() => setSelectedIcon('heart')}
+        >
+          Heart
+        </Button>
+        <Button
+          size="sm"
+          variant={selectedIcon === 'star' ? 'solid' : 'outline'}
+          onClick={() => setSelectedIcon('star')}
+        >
+          Star
+        </Button>
+        <Button
+          size="sm"
+          variant={selectedIcon === 'check' ? 'solid' : 'outline'}
+          onClick={() => setSelectedIcon('check')}
+        >
+          Check
+        </Button>
+      </Stack>
+      
+      <Box 
+        p="600" 
+        bg="neutral.7" 
+        borderRadius="md"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <InlineSvg 
+          data={icons[selectedIcon]} 
+          size="xl" 
+          color="primary.9" 
+        />
+      </Box>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Usage context
+
+**When to use InlineSvg**:
+- Rendering SVG markup from strings (API responses, databases, CMS)
+- Dynamic SVG content that needs sanitization
+- When you need XSS protection for user-generated SVG content
+- SVG icons that aren't available in the nimbus-icons library
+
+**When NOT to use**:
+- For static icons - use the `Icon` component with `@commercetools/nimbus-icons` instead
+- For images - use the `Image` component
+- When you need `asChild` composition - InlineSvg always renders as an SVG element
+
+### Security
+
+**XSS Protection**: InlineSvg automatically sanitizes SVG content to remove:
+- `<script>` tags and event handlers (`onclick`, `onload`, etc.)
+- `<style>` tags (to prevent CSS injection)
+- Dangerous attributes like `xlink:href` with malicious payloads
+- Other potentially harmful SVG features
+
+**Safe SVG Requirements**:
+- SVG must be valid XML
+- Use `fill="currentColor"` or `stroke="currentColor"` for color inheritance
+- Avoid external resources (external stylesheets, fonts)
+- Test SVG content from untrusted sources
+
+```jsx-live-dev
+const App = () => {
+  // This malicious SVG will be sanitized - script tags and event handlers removed
+  const maliciousSvg = `<svg viewBox="0 0 24 24" onclick="alert('XSS')" xmlns="http://www.w3.org/2000/svg">
+    <script>alert('malicious')</script>
+    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="currentColor"/>
+  </svg>`;
+  
+  return (
+    <Stack gap="400">
+      <InlineSvg data={maliciousSvg} size="lg" color="positive.9" />
+      <Text fontSize="sm" color="neutral.3">
+        The SVG renders safely - malicious content has been removed
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Accessibility
+
+**Role**: InlineSvg renders with `role="presentation"` by default, treating the SVG as decorative.
+
+**Labeling**: For meaningful icons, provide accessible labels using surrounding context or ARIA attributes:
+
+```tsx
+<Button>
+  <InlineSvg data={saveSvg} size="sm" />
+  Save Document
+</Button>
+```
+
+**Standalone icons**: If the InlineSvg is the only content, ensure proper labeling:
+
+```tsx
+<button aria-label="Save document">
+  <InlineSvg data={saveSvg} size="md" />
+</button>
+```
+
+### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "feature-icon";
+
+export const FeatureIcon = () => {
+  const svgData = `<svg viewBox="0 0 24 24">...</svg>`;
+  
+  return (
+    <InlineSvg 
+      id={PERSISTENT_ID} 
+      data={svgData} 
+      size="lg" 
+      color="primary.9" 
+    />
+  );
+};
+```
+
+## API reference
+
+<PropsTable id="InlineSvg" />
+
+## Common patterns
+
+### Loading SVG from API
+
+Handle loading states and errors when fetching SVG data from an API.
+
+```jsx-live-dev
+const App = () => {
+  const [svgData, setSvgData] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  
+  const loadSvg = () => {
+    setIsLoading(true);
+    setError(null);
+    
+    // Simulate API call
+    setTimeout(() => {
+      const mockSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+      </svg>`;
+      setSvgData(mockSvg);
+      setIsLoading(false);
+    }, 1000);
+  };
+  
+  return (
+    <Stack gap="400">
+      <Button onClick={loadSvg} isDisabled={isLoading}>
+        {isLoading ? 'Loading...' : 'Load Icon from API'}
+      </Button>
+      
+      {svgData && (
+        <Box 
+          p="400" 
+          bg="positive.7" 
+          borderRadius="md"
+          display="flex"
+          alignItems="center"
+          gap="300"
+        >
+          <InlineSvg data={svgData} size="lg" color="positive.9" />
+          <Text>Icon loaded successfully!</Text>
+        </Box>
+      )}
+      
+      {error && (
+        <Box p="400" bg="critical.7" borderRadius="md">
+          <Text color="critical.9">{error}</Text>
+        </Box>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Fallback for invalid SVG
+
+Handle cases where SVG data might be invalid or fail sanitization.
+
+```jsx-live-dev
+const App = () => {
+  const [svgInput, setSvgInput] = React.useState('');
+  const [displaySvg, setDisplaySvg] = React.useState<string | null>(null);
+  
+  const validSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="currentColor"/>
+  </svg>`;
+  
+  const invalidSvg = 'This is not valid SVG markup';
+  
+  return (
+    <Stack gap="400">
+      <Stack gap="200" direction="row">
+        <Button size="sm" onClick={() => setDisplaySvg(validSvg)}>
+          Show Valid SVG
+        </Button>
+        <Button size="sm" onClick={() => setDisplaySvg(invalidSvg)}>
+          Show Invalid SVG
+        </Button>
+        <Button size="sm" onClick={() => setDisplaySvg(null)}>
+          Clear
+        </Button>
+      </Stack>
+      
+      {displaySvg && (
+        <Box p="400" bg="neutral.7" borderRadius="md">
+          {displaySvg.includes('<svg') ? (
+            <Stack gap="200" direction="row" align="center">
+              <InlineSvg data={displaySvg} size="lg" color="positive.9" />
+              <Text>Valid SVG rendered</Text>
+            </Stack>
+          ) : (
+            <Stack gap="200" direction="row" align="center">
+              <Icon name="error" size="lg" color="critical.9" />
+              <Text>Invalid SVG - showing fallback icon</Text>
+            </Stack>
+          )}
+        </Box>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Icon library from database
+
+Manage a collection of SVG icons stored as strings.
+
+```jsx-live-dev
+const App = () => {
+  // Simulated icon library from database
+  const iconLibrary = [
+    {
+      id: 'dashboard',
+      name: 'Dashboard',
+      svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/>
+      </svg>`
+    },
+    {
+      id: 'settings',
+      name: 'Settings',
+      svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/>
+      </svg>`
+    },
+    {
+      id: 'profile',
+      name: 'Profile',
+      svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+      </svg>`
+    }
+  ];
+  
+  return (
+    <Stack gap="400">
+      <Text fontWeight="semibold">Icon Library</Text>
+      <Stack gap="300">
+        {iconLibrary.map((icon) => (
+          <Box 
+            key={icon.id}
+            p="300" 
+            bg="neutral.7" 
+            borderRadius="md"
+            display="flex"
+            alignItems="center"
+            gap="300"
+          >
+            <InlineSvg data={icon.svg} size="md" color="primary.9" />
+            <Text>{icon.name}</Text>
+          </Box>
+        ))}
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Custom icon button
+
+Create icon buttons using SVG strings.
+
+```jsx-live-dev
+const App = () => {
+  const [count, setCount] = React.useState(0);
+  
+  const plusSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/>
+  </svg>`;
+  
+  const minusSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 13H5v-2h14v2z" fill="currentColor"/>
+  </svg>`;
+  
+  return (
+    <Stack gap="400">
+      <Stack gap="300" direction="row" align="center">
+        <Button
+          size="sm"
+          onClick={() => setCount(count - 1)}
+          isDisabled={count <= 0}
+        >
+          <InlineSvg data={minusSvg} size="sm" />
+        </Button>
+        
+        <Box 
+          minW="60px" 
+          textAlign="center" 
+          p="200" 
+          bg="neutral.7" 
+          borderRadius="md"
+        >
+          <Text fontWeight="bold">{count}</Text>
+        </Box>
+        
+        <Button
+          size="sm"
+          onClick={() => setCount(count + 1)}
+        >
+          <InlineSvg data={plusSvg} size="sm" />
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using InlineSvg within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: inline-svg.docs.spec.tsx}}
+
+## Resources
+
+- [InlineSvg component in Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-inlinesvg--docs)
+- [Icon component](/components/media/icon) - For static icons from the nimbus-icons library
+- [SVG on MDN](https://developer.mozilla.org/en-US/docs/Web/SVG)
+- [Content Security Policy for SVG](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
