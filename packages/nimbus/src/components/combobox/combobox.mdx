@@ -47,25 +47,35 @@ const App = () => {
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
       <ComboBox.Root size="md" items={options} placeholder="Search...">
-        {(item) => (
-          <ComboBox.Option id={item.id} textValue={item.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id} textValue={item.name}>
+                <Stack gap="100">
+                  <Text textStyle="sm">{item.name}</Text>
+                  <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+                </Stack>
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
       
       <ComboBox.Root size="sm" items={options} placeholder="Search...">
-        {(item) => (
-          <ComboBox.Option id={item.id} textValue={item.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id} textValue={item.name}>
+                <Stack gap="100">
+                  <Text textStyle="sm">{item.name}</Text>
+                  <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+                </Stack>
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
     </Stack>
   )
@@ -87,25 +97,35 @@ const App = () => {
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
       <ComboBox.Root variant="solid" items={options} placeholder="Search...">
-        {(item) => (
-          <ComboBox.Option id={item.id} textValue={item.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id} textValue={item.name}>
+                <Stack gap="100">
+                  <Text textStyle="sm">{item.name}</Text>
+                  <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+                </Stack>
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
       
       <ComboBox.Root variant="ghost" items={options} placeholder="Search...">
-        {(item) => (
-          <ComboBox.Option id={item.id} textValue={item.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id} textValue={item.name}>
+                <Stack gap="100">
+                  <Text textStyle="sm">{item.name}</Text>
+                  <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+                </Stack>
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
     </Stack>
   )
@@ -127,21 +147,29 @@ const App = () => {
   return (
     <Stack direction="horizontal" gap="400" alignItems="flex-start">
       <ComboBox.Root items={options} placeholder="Search...">
-        {(item) => (
-          <ComboBox.Option id={item.id} textValue={item.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id} textValue={item.name}>
+              <Stack gap="100">
+                <Text textStyle="sm">{item.name}</Text>
+                <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+              </Stack>
+            </ComboBox.Option>
+              )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
-      
+
       <ComboBox.Root
         selectionMode="multiple"
         items={options}
         placeholder="Search..."
       >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
         {(item) => (
           <ComboBox.Option id={item.id} textValue={item.name}>
             <Stack gap="100">
@@ -149,7 +177,9 @@ const App = () => {
               <Text textStyle="xs" color="neutral.11">{item.description}</Text>
             </Stack>
           </ComboBox.Option>
-        )}
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
     </Stack>
   )
@@ -229,16 +259,21 @@ const App = () => {
           return <Text padding="300">No results found</Text>;
         }}
       >
-        {(character) => (
-          <ComboBox.Option textValue={character.name}>
-            <Stack gap="100">
-              <Text textStyle="sm">{character.name}</Text>
-              <Text textStyle="xs" color="neutral.11">
-                {character.gender} • Born {character.birth_year}
-              </Text>
-            </Stack>
-          </ComboBox.Option>
-        )}
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(character) => (
+              <ComboBox.Option textValue={character.name}>
+                <Stack gap="100">
+                  <Text textStyle="sm">{character.name}</Text>
+                  <Text textStyle="xs" color="neutral.11">
+                    {character.gender} • Born {character.birth_year}
+                  </Text>
+                </Stack>
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
       </ComboBox.Root>
       {error && <FormField.ErrorMessage>{error}</FormField.ErrorMessage>}
     </FormField.Root>
@@ -349,14 +384,19 @@ const App = () => {
       aria-label="Food category selection"
       isRequired
     >
-      {(item) => (
-        <ComboBox.Option id={item.id} textValue={item.name}>
-          <Stack gap="100">
-            <Text textStyle="sm">{item.name}</Text>
-            <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-          </Stack>
-        </ComboBox.Option>
-      )}
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id} textValue={item.name}>
+              <Stack gap="100">
+                <Text textStyle="sm">{item.name}</Text>
+                <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+              </Stack>
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
     </ComboBox.Root>
   )
 }
