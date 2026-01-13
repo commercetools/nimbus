@@ -1,7 +1,7 @@
 ---
-id: Heading
+id: Components-Heading
 title: Heading
-description: renders a heading
+description: The heading component establishes typographic hierarchy throughout the product experience. It is crucial for organizing content, defining page structure, and improving content scan ability.
 documentState: InitialDraft
 order: 2
 menu:
@@ -9,15 +9,96 @@ menu:
   - Typography
   - Heading
 tags:
+  - component
+  - typography
   - heading
+figmaLink: >-
+  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=5373-117&focus-id=5373-92&m=dev
 ---
 
-# Heading
+## Overview
 
-Like Text, but with predefined styles for a heading/title look and semantic
-meaning, which makes source code easier to scan by clearly highlighting the
-content's hierarchy and purpose.
+Good headings are essential for organizing information and engaging users. They clearly communicate the content's topic, making the page scannable and easier to navigate. Effective headlines also improve accessibility for screen readers and aid search engine optimization (SEO) by defining content relevance.
+### Resources
 
-> [!NOTE]  
-> Checkout the [Text component](/components/typography/text) for configuration
-> options.
+Deep dive on details and access design library.
+
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=5373-117&focus-id=5373-92&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+#### Typographic scale and hierarchy
+
+These text styles are the recommended styles for headings.
+
+| **Category** | **Description** |
+| -------- | ----------- |
+| **Heading H1** | Primary page titles and largest headers. |
+| **Heading H2** | Used for secondary headlines. |
+| **Heading H3** | Used for tertiary headlines. |
+| **Heading H4** | Commonly used for section headers and large accordion titles. |
+
+## Guidelines
+
+Using headings is a good way to keep content accessible and formatted for those who use screen readers but also helps visual users understand the format of the page and easily scan to find the needed sections efficiently.
+
+### Best practices
+
+- **Keep hierarchy consistent**: Use a limited, predefined set of text styles to maintain visual consistency across all products. Add custom styles with caution.
+- **Prioritize line length**: Use optimal line lengths (typically 50 to 75 characters per line) to prevent eye strain and facilitate reading.
+- **Use concise language**: Write clearly, avoiding unnecessary jargon or overly long sentences to reduce cognitive load.
+- **Break up content**: Use short paragraphs, lists, and headings to break up large blocks of text, making content easier to scan.
+- **Maintain consistent tone**: The language, style, and formality should be consistent throughout the application, reflecting the brand's voice.
+- **Handle truncation gracefully**: When necessary, truncate long text with ellipses and provide a tooltip or interaction element to reveal the full content.
+- **Keep length in mind for translation**: When supporting text localization, length can expand more than 20%. Design experiences that can be flexible to shortening and lengthening of content.
+
+### Header Do's and Don'ts
+
+> [!TIP]\
+> **Do**
+>
+> - Use predefined headings, body sizes, and weights to clearly signal the importance of content.
+> - Always maintain sufficient contrast between text and its background to meet WCAG AA standards (4.5:1 minimum).
+> - Headings should be short and aid users when scanning sections.
+> - Ensure adequate vertical spacing (line-height) to prevent text lines from colliding and improve readability.
+> - Write clearly, avoiding unnecessary jargon and overly long sentences.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid introducing too many different font sizes, weights, or families, which destroys visual consistency.
+> - Never use color as the only method to convey meaning (e.g., indicating an error solely with red text).
+> - Avoid excessively long lines of text (over 80 characters), which makes tracking difficult and causes fatigue.
+> - Avoid line heights that are too small, which makes text visually dense and difficult to read.
+> - Never truncate text without providing a clear way (like a tooltip) to view the full content.
+> - Avoid pairing text colors that barely distinguish themselves from the background, even if they look "stylish."
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Heading as="h1" size="4xl">Heading H1</Heading>
+    <Heading as="h2" size="3xl">Heading H2</Heading>
+    <Heading as="h3" size="2xl">Heading H3</Heading>
+    <Heading as="h4" size="xl">Heading H4</Heading>
+  </Stack>
+)
+```
+
+### Accessibility Standards
+
+- **Semantic markup:** Use the correct HTML heading tags (`<h1>` to `<h6>`) to establish a document outline, rather than relying on font styling alone.
+- **Logical order:** Maintain the correct hierarchical order (e.g., `<h2>` follows `<h1>`, not `<h4>`).
+- **Informative text:** Ensure the headline clearly describes the content that immediately follows it for easy scanning.
+- **Contrast:** Maintain a high contrast ratio (`3:1` for large text, `4.5:1` for smaller/regular text) between the text and background.
+- **Visual distinction:** Ensure the headline is visually distinct (size, weight) from body text to aid quick visual scanning.
+- **Language attribute:** Use the lang attribute if the headline is in a language different from the rest of the page.
+
+## Specs
+
+<PropsTable id="Heading" />
