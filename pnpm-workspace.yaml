@@ -31,7 +31,7 @@ catalogs:
     vite-tsconfig-paths: ^5.1.4
     rollup: ^4.54.0
     rollup-plugin-tree-shakeable: ^2.0.0
-    "@vitest/browser": ^4.0.16
+    "@vitest/browser": ^4.0.17
     "@vitest/browser-playwright": ^4.0.16
     "@vitest/coverage-v8": ^4.0.16
     "@testing-library/dom": 10.4.1
