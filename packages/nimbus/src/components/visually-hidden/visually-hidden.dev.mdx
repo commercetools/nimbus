@@ -35,7 +35,7 @@ const App = () => (
         Product Price
         <VisuallyHidden as="span"> (in US Dollars)</VisuallyHidden>
       </Text>
-      <Text fontSize="xl">$29.99</Text>
+      <Text textStyle="xl">$29.99</Text>
     </Box>
     
     <Box>
@@ -59,7 +59,7 @@ const App = () => (
       <Button>Skip to main content</Button>
     </VisuallyHidden>
     
-    <Text color="neutral.3" fontSize="sm">
+    <Text color="neutral.11" textStyle="sm">
       Press Tab to see the skip link appear
     </Text>
     
@@ -93,31 +93,6 @@ const App = () => (
         after text.
       </Text>
     </Box>
-  </Stack>
-);
-```
-
-### Icon with accessible label
-
-Provide accessible labels for icon-only buttons.
-
-```jsx-live-dev
-const App = () => (
-  <Stack gap="400" direction="row">
-    <Button>
-      <Icon name="settings" />
-      <VisuallyHidden>Settings</VisuallyHidden>
-    </Button>
-    
-    <Button>
-      <Icon name="notifications" />
-      <VisuallyHidden>Notifications</VisuallyHidden>
-    </Button>
-    
-    <Button>
-      <Icon name="help" />
-      <VisuallyHidden>Help</VisuallyHidden>
-    </Button>
   </Stack>
 );
 ```
@@ -168,7 +143,7 @@ const App = () => {
       </Stack>
       
       {items.length === 0 && (
-        <Text color="neutral.3">No items in list</Text>
+        <Text color="neutral.11">No items in list</Text>
       )}
     </Stack>
   );
@@ -258,7 +233,7 @@ const App = () => {
       
       <Box p="400" bg="neutral.7" borderRadius="md">
         <Text fontWeight="bold">Navigation Area</Text>
-        <Text fontSize="sm" color="neutral.3">
+        <Text fontSize="sm" color="neutral.11">
           Press Tab to reveal the skip link
         </Text>
       </Box>
@@ -365,7 +340,7 @@ const App = () => {
         <VisuallyHidden id="password-hint">
           Password must be at least 8 characters long and contain a number
         </VisuallyHidden>
-        <Text fontSize="sm" color="neutral.3" mt="100">
+        <Text fontSize="sm" color="neutral.11" mt="100">
           Min. 8 characters
         </Text>
       </Box>
