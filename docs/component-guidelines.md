@@ -38,7 +38,8 @@ detailed guidelines:
 - **[Unit Tests ({utility}.spec.ts)](./file-type-guidelines/unit-testing.md)** -
   Fast, isolated tests for utilities, hooks, and documentation examples
 - **[Documentation Tests ({component}.docs.spec.tsx)](../engineering-docs-validation.md)** -
-  Consumer-facing test examples automatically injected into `.dev.mdx` documentation
+  Consumer-facing test examples automatically injected into `.dev.mdx`
+  documentation
 
 ### Styling System Files (When Needed)
 
@@ -63,6 +64,17 @@ detailed guidelines:
 - **[Architecture Decisions](./file-type-guidelines/architecture-decisions.md)** -
   Decision matrix for component design
 
+### Cross-Cutting Standards
+
+These documents provide standards that apply across all component types:
+
+- **[JSDoc Standards](./jsdoc-standards.md)** - Documentation comment patterns
+  for props, types, and test sections
+- **[Naming Conventions](./naming-conventions.md)** - File, component, type, and
+  variable naming patterns
+- **[Accessibility Requirements](./file-type-guidelines/main-component.md#accessibility-requirements)** -
+  WCAG 2.1 AA compliance guidelines and React Aria integration
+
 ## Navigation by Task
 
 ### 🚀 Creating a New Component
@@ -81,13 +93,15 @@ detailed guidelines:
    needed
 7. **[Write Stories](./file-type-guidelines/stories.md)** - Add Storybook
    stories with play functions for testing
-8. **[Document](./file-type-guidelines/documentation.md)** - Create MDX
-   documentation
+8. **[Document](./file-type-guidelines/documentation.md)** - Create designer
+   documentation (`.mdx`) and engineering documentation (`.dev.mdx`)
 9. **[Add Documentation Tests](../engineering-docs-validation.md)** - Create
    `.docs.spec.tsx` with consumer test examples (optional but recommended)
 10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
 
-**Note**: All component behavior is tested in Storybook stories with play functions. Documentation tests (`.docs.spec.tsx`) provide consumer-facing examples.
+**Note**: All component behavior is tested in Storybook stories with play
+functions. Documentation tests (`.docs.spec.tsx`) provide consumer-facing
+examples.
 
 ### 🎨 Adding Styling to Components
 
@@ -181,8 +195,8 @@ component-name/
 ├── component-name.recipe.ts       # Styling recipes (if needed)
 ├── component-name.i18n.ts         # i18n messages (if needed)
 ├── component-name.stories.tsx     # Storybook stories (required)
-├── component-name.mdx            # Documentation (required)
-├── component-name.dev.mdx        # Engineering guide (optional)
+├── component-name.mdx            # Designer documentation (required)
+├── component-name.dev.mdx        # Engineering documentation (required)
 ├── component-name.docs.spec.tsx  # Documentation tests (optional, recommended)
 ├── components/                    # Compound parts (if compound)
 │   ├── component-name.root.tsx
@@ -211,18 +225,18 @@ component-name/
 
 ### Naming Conventions
 
-| File Type     | Pattern                        | Example              |
-| ------------- | ------------------------------ | -------------------- |
-| Component     | `{component-name}.tsx`         | `button.tsx`         |
-| Types         | `{component-name}.types.ts`    | `button.types.ts`    |
-| Recipe        | `{component-name}.recipe.ts`   | `button.recipe.ts`   |
-| Slots         | `{ComponentName}Slot`          | `ButtonSlot`         |
-| Props         | `{ComponentName}Props`         | `ButtonProps`        |
-| Hooks         | `use{Functionality}`           | `useButton`          |
-| i18n          | `{component-name}.i18n.ts`     | `button.i18n.ts`     |
-| Stories       | `{component-name}.stories.tsx` | `button.stories.tsx` |
-| Documentation | `{component-name}.mdx`         | `button.mdx`         |
-| Engineering Docs | `{component-name}.dev.mdx`  | `button.dev.mdx`     |
+| File Type           | Pattern                          | Example                |
+| ------------------- | -------------------------------- | ---------------------- |
+| Component           | `{component-name}.tsx`           | `button.tsx`           |
+| Types               | `{component-name}.types.ts`      | `button.types.ts`      |
+| Recipe              | `{component-name}.recipe.ts`     | `button.recipe.ts`     |
+| Slots               | `{ComponentName}Slot`            | `ButtonSlot`           |
+| Props               | `{ComponentName}Props`           | `ButtonProps`          |
+| Hooks               | `use{Functionality}`             | `useButton`            |
+| i18n                | `{component-name}.i18n.ts`       | `button.i18n.ts`       |
+| Stories             | `{component-name}.stories.tsx`   | `button.stories.tsx`   |
+| Documentation       | `{component-name}.mdx`           | `button.mdx`           |
+| Engineering Docs    | `{component-name}.dev.mdx`       | `button.dev.mdx`       |
 | Documentation Tests | `{component-name}.docs.spec.tsx` | `button.docs.spec.tsx` |
 
 ### Import Conventions

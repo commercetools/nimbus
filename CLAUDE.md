@@ -1,7 +1,179 @@
-# CLAUDE.md
+<!-- OPENSPEC:START -->
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `./openspec/AGENTS.md` when the request:
+
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big
+  performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `./openspec/AGENTS.md` to learn:
+
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
+
+## Quick Start: What Do You Want To Do?
+
+Choose the command that matches your task:
+
+```mermaid
+flowchart TD
+    Start[What do you want to do?] --> A{Creating NEW<br/>component?}
+    A -->|Yes| ProposeComponent["/propose-component ComponentName"]
+    A -->|No| B{Fixing a bug?}
+
+    B -->|Yes| DirectFix["Just implement directly<br/>No ceremony needed"]
+    B -->|No| C{Updating<br/>documentation?}
+
+    C -->|Yes| CreateDocs["/create-eng-docs ComponentName"]
+    C -->|No| D{Breaking change<br/>or architecture?}
+
+    D -->|Yes| OpenSpec["/openspec:proposal"]
+    D -->|No| E{Updating specific<br/>file type?}
+
+    E -->|Yes| UseSkill["Use skill directly:<br/>/writing-types, /writing-stories, etc."]
+    E -->|No| Other["Describe your task<br/>I'll guide you"]
+
+    style ProposeComponent fill:#4CAF50
+    style DirectFix fill:#4CAF50
+    style CreateDocs fill:#4CAF50
+    style OpenSpec fill:#4CAF50
+    style UseSkill fill:#FFC107
+```
+
+**90% of the time, you need ONE of these:**
+
+- **Creating a component?** → `/propose-component ComponentName`
+- **Fixing a bug?** → Just implement directly (no ceremony)
+- **Updating docs?** → `/create-eng-docs ComponentName`
+- **Breaking change?** → `/openspec:proposal`
+
+## Common Workflows
+
+### Creating a New Component
+
+Use the `/propose-component` command:
+
+```
+/propose-component Toast
+```
+
+This command will:
+
+1. Invoke `/brainstorm` to clarify requirements
+2. Validate against Nimbus standards
+3. Create an OpenSpec proposal
+4. Generate implementation tasks with TDD approach
+5. Coordinate nimbus-coder to implement all required files
+6. Invoke nimbus-reviewer to validate compliance
+
+### Fixing a Bug
+
+Just implement the fix directly:
+
+```
+Read the file, understand the issue, make the change, test it.
+No OpenSpec proposal needed for bug fixes.
+```
+
+### Updating Documentation
+
+Use the `/create-eng-docs` command:
+
+```
+/create-eng-docs Button
+```
+
+This creates both `.dev.mdx` and `.docs.spec.tsx` files with comprehensive
+documentation.
+
+### Making Breaking Changes
+
+Use the `/openspec:proposal` command:
+
+```
+/openspec:proposal
+```
+
+This creates a change proposal for:
+
+- Architecture changes
+- Breaking API changes
+- Cross-cutting concerns
+- Performance optimizations
+
+## Understanding How It Works (Optional)
+
+### The Command → Agent → Skill Pipeline
+
+**Commands** orchestrate complete workflows:
+
+- `/propose-component` handles the full component creation process
+- `/create-eng-docs` generates documentation
+- `/openspec:proposal` creates change proposals
+
+**Agents** handle multi-step phases (typically invoked BY commands):
+
+- `nimbus-researcher` - Gathers documentation and patterns
+- `nimbus-coder` - Implements features following guidelines
+- `nimbus-reviewer` - Validates against Nimbus standards
+
+**Skills** create specific file types (invoked by agents OR directly):
+
+- `writing-types` - TypeScript type definitions
+- `writing-stories` - Storybook stories with play functions
+- `writing-recipes` - Chakra UI styling recipes
+- `writing-slots` - Slot component wrappers
+- `writing-developer-documentation` - Engineering docs
+- `writing-designer-documentation` - Designer docs
+- `writing-i18n` - Internationalization files
+- `brainstorm` - Design exploration
+
+**When to invoke directly:**
+
+- **Commands**: Always (your main interface)
+- **Agents**: Rarely (only for custom workflows)
+- **Skills**: Sometimes (when updating single file types)
+
+### When to Use OpenSpec
+
+**Use `/propose-component`** for NEW UI components:
+
+- Creates OpenSpec proposal + Nimbus component standards
+- Validates against WCAG, React Aria, Chakra UI patterns
+- Generates TDD task list with acceptance criteria
+
+**Use `/openspec:proposal`** for everything else:
+
+- Architecture changes
+- Breaking API changes
+- Cross-cutting concerns
+- Performance optimizations
+- New patterns (not components)
+
+**Skip OpenSpec** for:
+
+- Bug fixes (restoring intended behavior)
+- Typos, formatting, comments
+- Documentation updates
+- Test additions for existing behavior
+- Dependency updates (non-breaking)
+
+## OpenSpec Proposal Guidance
+
+For non-fix changes (new features, breaking changes, architecture shifts),
+suggest creating an OpenSpec proposal via `/openspec:proposal` before
+implementing. Proceed directly only for bug fixes, typos, config changes, and
+tests for existing behavior.
 
 ## Project Overview
 
@@ -181,88 +353,14 @@ pnpm changeset:status
 - **apps/docs**: Documentation SPA with interactive examples and auto-generated
   content
 
-### Component File Structure
+### Component Development
 
-For detailed component file organization and structure patterns, see:
-@docs/component-guidelines.md
+For comprehensive component development guidance, see:
 
-### Component Development Guidelines
-
-**For comprehensive component creation instructions, implementation patterns,
-file structure guidelines, and architectural decisions, see:**
-
-- **Documentation Overview** - Main documentation hub and navigation
-  @docs/readme.md
-- **Component Guidelines** - Main hub for all component development
-  @docs/component-guidelines.md
-- **Architecture Decisions** - Decision matrix for component design
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Component Templates** - Ready-to-use boilerplate code
-  @docs/component-templates/
-
-**IMPORTANT: All file reviews MUST follow the File Review Protocol below. Never
-provide feedback without first validating against the appropriate guidelines.**
-
-### Development Standards
-
-This project follows strict development standards detailed in the documentation:
-
-- **Styling**: Chakra UI v3 with design token-based recipes
-  @docs/file-type-guidelines/recipes.md
-- **Testing**:
-  - Storybook interaction tests (browser-based, required for interactive
-    components) @docs/file-type-guidelines/stories.md
-  - Unit tests (JSDOM-based, fast isolated tests)
-    @docs/file-type-guidelines/unit-testing.md
-- **TypeScript**: Strict typing with comprehensive interfaces
-  @docs/file-type-guidelines/types.md
-- **Documentation**: JSDoc comments required for all code
-  @docs/file-type-guidelines/documentation.md
-- **Accessibility**: WCAG 2.1 AA compliance using React Aria
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Internationalization**: react-intl integration for translatable UI text
-  @docs/file-type-guidelines/i18n.md
-
-## File Review Protocol
-
-For comprehensive file review procedures, see @docs/file-review-protocol.md
-
-**Quick Reference:**
-
-1. Identify file type by extension/location
-2. Load corresponding guidelines document
-3. Run validation checklist systematically
-4. Report compliance status before content feedback
-
-### Key Architectural Patterns
-
-For comprehensive architectural patterns, component decision matrices, React
-Aria integration strategies, and styling system architecture, see:
-
-- **Multi-layered Architecture & React Aria Integration**:
-  @docs/file-type-guidelines/architecture-decisions.md
-- **Component Structure Patterns**: @docs/component-guidelines.md
-- **Styling System Details**: @docs/file-type-guidelines/recipes.md
-
-### Critical Development Rules
-
-For complete development rules, patterns, and requirements, see:
-
-- **Recipe Registration & Styling Rules**: @docs/file-type-guidelines/recipes.md
-- **Testing Requirements**: @docs/file-type-guidelines/stories.md
-- **Compound Component Patterns**:
-  @docs/file-type-guidelines/compound-components.md
-- **Type Safety Guidelines**: @docs/file-type-guidelines/types.md
-- **Internationalization**: @docs/file-type-guidelines/i18n.md
-- **Cross-Chunk Imports (CRITICAL)**: When importing components or types across
-  different component directories, import directly from implementation files
-  (e.g., `button.tsx`, `button.types.ts`) rather than barrel exports
-  (`index.ts`) to avoid circular chunk dependencies. See
-  @docs/file-type-guidelines/main-component.md "Cross-Component Imports" for
-  details.
-
-**IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
-provide feedback without first validating against the appropriate guidelines.**
+- Component Guidelines: `./docs/component-guidelines.md`
+- Architecture Decisions:
+  `./docs/file-type-guidelines/architecture-decisions.md`
+- File Review Protocol: `./docs/file-review-protocol.md`
 
 ## MCP Server Tools
 
@@ -331,78 +429,6 @@ The testing system uses Vitest with two distinct test types:
 - Unit tests focus exclusively on pure functions, custom hooks, and business
   logic
 
-### Testing Workflow
-
-**CRITICAL: Storybook tests run against the built bundle, NOT source files.**
-
-#### Development vs Testing Mode
-
-The Storybook configuration has two distinct modes:
-
-- **Development mode** (`pnpm start:storybook`): Uses source alias for HMR
-  - Alias: `@commercetools/nimbus` → `packages/nimbus/src`
-  - Enables instant feedback while editing components
-  - Changes reflect immediately without rebuilding
-
-- **Testing mode** (`pnpm test:storybook`): Uses built bundle
-  - Alias: None - imports from `packages/nimbus/dist`
-  - Tests run against production-like code
-  - Ensures tests validate actual published behavior
-
-#### Testing Your Changes
-
-To test component changes in Storybook tests, follow this workflow:
-
-```bash
-# 1. Make your changes to component source files
-# 2. Build the package to update the dist folder
-pnpm --filter @commercetools/nimbus build
-
-# 3. Run Storybook tests
-pnpm test:storybook
-
-# Or run specific test file
-pnpm test packages/nimbus/src/components/button/button.stories.tsx
-```
-
-**Why build is required:**
-
-- Tests import from `@commercetools/nimbus` which resolves to `dist/` during
-  testing
-- Without building, tests run against stale code from previous build
-- This matches how consumers use the package (from `node_modules`)
-
-#### Detection Logic
-
-The system detects test mode via environment variables:
-
-- **`VITEST_WORKER_ID`**: Automatically set by Vitest when running tests
-- **`VITEST=true`**: Manual override for forcing test mode
-
-**Manual Override Example:**
-```bash
-# Force test mode (use built bundle) even in development
-VITEST=true pnpm start:storybook
-
-# Normal development mode (use source files with HMR)
-pnpm start:storybook
-```
-
-#### Developer Visibility
-
-Storybook logs which mode is active on startup:
-- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
-- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
-
-This helps confirm whether your changes require a build before testing.
-
-#### Common Pitfalls
-
-- ❌ **Making changes and immediately running tests** - Tests will use old code
-- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
-- ✅ **Build first, then test** - Ensures tests validate actual changes
-- ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
-
 ### Build Dependencies
 
 Understanding build order is crucial:
@@ -411,8 +437,3 @@ Understanding build order is crucial:
 2. **Packages** (`packages/*`) - Depend on tokens
 3. **Documentation** (`apps/docs`) - Depends on packages
 4. **i18n compilation** - Translation data for runtime
-
-### Component Development Workflow
-
-For detailed development workflows, implementation steps, and common pitfalls,
-see: @docs/component-guidelines.md

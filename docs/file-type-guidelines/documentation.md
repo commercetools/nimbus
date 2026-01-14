@@ -5,24 +5,50 @@
 
 ## Purpose
 
-MDX documentation files (`{component-name}.mdx`) provide comprehensive
-documentation for components in the Nimbus documentation site. They combine
-markdown content with live code examples.
+There are two types of MDX documentation files for components:
+
+1. **Designer documentation** (`{component-name}.mdx`) - For designers on the
+   documentation site, explaining the component's design purpose, visual usage,
+   and best practices
+2. **Engineering documentation** (`{component-name}.dev.mdx`) - For developers,
+   with technical implementation details and internal API documentation
 
 ## When to Use
 
 **Always required** - Every public-facing component in the Nimbus design system
-must have MDX documentation that:
+must have both MDX documentation files.
 
-- Explains the component's purpose and when to use it
-- Shows usage examples with live code (using `jsx-live` blocks)
-- Documents props and API (using `<PropsTable>` component)
-- Provides accessibility information (keyboard navigation, ARIA attributes, WCAG
-  compliance)
-- Links to design resources (Figma, React Aria docs when applicable)
+### Designer Documentation (`{component-name}.mdx`)
+
+Required documentation for designers that:
+
+- Explains the component's design purpose and when to use it
+- Shows visual usage examples with live code (using `jsx-live` blocks)
+- Documents design variants and visual options (using `<PropsTable>` component)
+- Provides accessibility information from a user perspective (keyboard
+  navigation, screen reader support, WCAG compliance)
+- Links to design resources (Figma, ARIA patterns when applicable)
 
 **Note**: Internal utility components or non-exported components don't require
 MDX documentation.
+
+### Engineering Documentation (`{component-name}.dev.mdx`)
+
+Required for every public component. This file is consumed by the engineering
+documentation validation system and should contain:
+
+- **Implementation overview** - Key design decisions and architectural notes
+- **Props documentation** - Technical details about each prop with examples
+- **Advanced usage examples** - Complex patterns and edge cases for developers
+- **TypeScript types** - Complete type definitions and their relationships
+- **Integration patterns** - How to use with React Aria, hooks, context, etc.
+- **Testing notes** - Guidance on testing strategies and edge cases
+- **Styling system details** - How recipes and slots work for this component
+- **Accessibility details** - ARIA implementation specifics
+
+The `.dev.mdx` file serves as the source of truth for component API
+documentation and is automatically validated against actual TypeScript
+definitions.
 
 ## File Structure
 
@@ -523,9 +549,14 @@ Supported in the Nimbus documentation site:
 
 ## Validation Checklist
 
+### Required Files
+
+- [ ] **Designer documentation** (`{component-name}.mdx`) exists
+- [ ] **Engineering documentation** (`{component-name}.dev.mdx`) exists
+
 ### Required Elements
 
-- [ ] MDX file exists with `.mdx` extension
+- [ ] MDX files exist with `.mdx` extension
 - [ ] **Required frontmatter fields**: id, title, description, order, menu, tags
 - [ ] Unique `id` field following `Components-{ComponentName}` pattern
 - [ ] Proper `menu` hierarchy with category placement
@@ -554,6 +585,18 @@ Supported in the Nimbus documentation site:
 - [ ] Keyboard navigation table when applicable
 - [ ] Screen reader support information
 - [ ] External resource links (Figma, React Aria, ARIA patterns)
+
+### Engineering Documentation (`.dev.mdx`) Requirements
+
+- [ ] File exists with `.dev.mdx` extension
+- [ ] **Implementation overview** section with design decisions
+- [ ] **Complete props documentation** with type information and examples
+- [ ] **Advanced usage examples** for complex patterns
+- [ ] **TypeScript types** documented with descriptions
+- [ ] **Integration patterns** showing React Aria, hooks, or context usage
+- [ ] **Testing guidance** for component behavior
+- [ ] **Styling details** explaining recipes and slots
+- [ ] **Accessibility implementation notes** with ARIA specifics
 
 ### Quality Checks
 
