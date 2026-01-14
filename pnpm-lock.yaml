@@ -7,8 +7,8 @@ settings:
 catalogs:
   react:
     '@chakra-ui/cli':
-      specifier: ^3.27.1
-      version: 3.27.1
+      specifier: ^3.31.0
+      version: 3.31.0
     '@chakra-ui/react':
       specifier: ^3.27.1
       version: 3.27.1
@@ -535,7 +535,7 @@ importers:
     devDependencies:
       '@chakra-ui/cli':
         specifier: catalog:react
-        version: 3.27.1(@chakra-ui/react@3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 3.31.0(@chakra-ui/react@3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@chakra-ui/react':
         specifier: catalog:react
         version: 3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -857,11 +857,6 @@ packages:
     resolution: {integrity: sha512-HFN59MmQXGHVyYadKLVumYsA9dBFun/ldYxipEjzA4196jpLZd8UjEEBLkbEkvfYreDqJhZxYAWFPtrfhNpj4w==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.28.4':
-    resolution: {integrity: sha512-yZbBqeM6TkpP9du/I2pUZnJsRMGGvOuIrhjzC1AwHwW+6he4mni6Bp/m8ijn0iOuZuPI2BfkCoSRunpyjnrQKg==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-
   '@babel/parser@7.28.5':
     resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
     engines: {node: '>=6.0.0'}
@@ -949,8 +944,8 @@ packages:
   '@bundled-es-modules/postcss-calc-ast-parser@0.1.6':
     resolution: {integrity: sha512-y65TM5zF+uaxo9OeekJ3rxwTINlQvrkbZLogYvQYVoLtxm4xEiHfZ7e/MyiWbStYyWZVZkVqsaVU6F4SUK5XUA==}
 
-  '@chakra-ui/cli@3.27.1':
-    resolution: {integrity: sha512-xaI3j6tx3DD/1ff1g17lhLEsFntAH5I877D3H83n+OK+RTXQ5xZ8PDRhpGhW/X1PxqndbM6nqpPT7JdzZVBizg==}
+  '@chakra-ui/cli@3.31.0':
+    resolution: {integrity: sha512-qRnDImPeZ2kILMlH953PfZNcrAZ4kwY8W+dL8BuBibSTDq5llbeIIowk4SA15MaSzMnRpgY7lQUNzNvN4ZPSIw==}
     hasBin: true
     peerDependencies:
       '@chakra-ui/react': '>=3.0.0-next.0'
@@ -1671,6 +1666,9 @@ packages:
 
   '@pandacss/is-valid-prop@0.54.0':
     resolution: {integrity: sha512-UhRgg1k9VKRCBAHl+XUK3lvN0k9bYifzYGZOqajDid4L1DyU813A1L0ZwN4iV9WX5TX3PfUugqtgG9LnIeFGBQ==}
+
+  '@pandacss/is-valid-prop@1.5.1':
+    resolution: {integrity: sha512-AlOt+MqqwDlIdVEdW6wEtvDmX8MmPv004oD+7tdGN54HKpD9jqrwPwwS9p7YQ7nai631JlyladshFHqe1xl7+w==}
 
   '@pkgr/core@0.2.9':
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
@@ -3044,9 +3042,9 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  '@visulima/boxen@2.0.4':
-    resolution: {integrity: sha512-kySSEsFjgU4l+/gjRsb6XYjhGZsYevDTwLHGe0F3QaOpKGlCExSYmiuN6NaMbOUMas1F00sxPQjL/1ojrEjckw==}
-    engines: {node: '>=20.18 <=24.x'}
+  '@visulima/boxen@2.0.10':
+    resolution: {integrity: sha512-ljghUzl32eUxIixARh8HBBJ2SXz2mJoD7C7Tl9/AEerN/PNihq1PMkzX/QPvMYOXpKrwoPt8ISNOc2EUacX5Wg==}
+    engines: {node: '>=20.18 <=25.x'}
     os: [darwin, linux, win32]
 
   '@vitejs/plugin-react-swc@4.2.2':
@@ -5437,8 +5435,8 @@ packages:
   package-manager-detector@0.2.11:
     resolution: {integrity: sha512-BEnLolu+yuz22S56CU1SUKq3XC3PkwD5wv4ikR4MfGvnRVcmzXR9DwSlW2fEamyTPyXHomBJRzgapeuBvRNzJQ==}
 
-  package-manager-detector@1.3.0:
-    resolution: {integrity: sha512-ZsEbbZORsyHuO00lY1kV3/t72yp6Ysay6Pd17ZAlNGuGwmWDLCJxFpRs0IzfXfj1o4icJOkUEioexFHzyPurSQ==}
+  package-manager-detector@1.5.0:
+    resolution: {integrity: sha512-uBj69dVlYe/+wxj8JOpr97XfsxH/eumMt6HqjNTmJDf/6NO9s+0uxeOneIz3AsPt2m6y9PqzDzd3ATcU17MNfw==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -6823,7 +6821,7 @@ snapshots:
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-module-transforms': 7.28.3(@babel/core@7.28.4)
       '@babel/helpers': 7.28.4
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/traverse': 7.28.4
       '@babel/types': 7.28.4
@@ -6966,10 +6964,6 @@ snapshots:
       '@babel/template': 7.27.2
       '@babel/types': 7.28.4
 
-  '@babel/parser@7.28.4':
-    dependencies:
-      '@babel/types': 7.28.5
-
   '@babel/parser@7.28.5':
     dependencies:
       '@babel/types': 7.28.5
@@ -7029,7 +7023,7 @@ snapshots:
   '@babel/template@7.27.2':
     dependencies:
       '@babel/code-frame': 7.27.1
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       '@babel/types': 7.28.4
 
   '@babel/traverse@7.28.4':
@@ -7097,14 +7091,18 @@ snapshots:
     dependencies:
       postcss-calc-ast-parser: 0.1.4
 
-  '@chakra-ui/cli@3.27.1(@chakra-ui/react@3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+  '@chakra-ui/cli@3.31.0(@chakra-ui/react@3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
+      '@babel/core': 7.28.5
+      '@babel/parser': 7.28.5
+      '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.28.5)
       '@chakra-ui/react': 3.27.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@clack/prompts': 0.11.0
-      '@pandacss/is-valid-prop': 0.54.0
+      '@pandacss/is-valid-prop': 1.5.1
+      '@types/babel__core': 7.20.5
       '@types/cli-table': 0.3.4
       '@types/debug': 4.1.12
-      '@visulima/boxen': 2.0.4
+      '@visulima/boxen': 2.0.10
       bundle-n-require: 1.1.2
       chokidar: 3.6.0
       cli-table: 0.3.11
@@ -7115,10 +7113,10 @@ snapshots:
       https-proxy-agent: 7.0.6
       look-it-up: 2.1.0
       node-fetch: 3.3.2
-      package-manager-detector: 1.3.0
+      package-manager-detector: 1.5.0
       prettier: 3.6.2
+      recast: 0.23.11
       scule: 1.3.0
-      sucrase: 3.35.0
       zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
@@ -7887,6 +7885,8 @@ snapshots:
       fastq: 1.19.1
 
   '@pandacss/is-valid-prop@0.54.0': {}
+
+  '@pandacss/is-valid-prop@1.5.1': {}
 
   '@pkgr/core@0.2.9': {}
 
@@ -9844,7 +9844,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@visulima/boxen@2.0.4': {}
+  '@visulima/boxen@2.0.10': {}
 
   '@vitejs/plugin-react-swc@4.2.2(@swc/helpers@0.5.17)(vite@7.3.0(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
@@ -12928,7 +12928,7 @@ snapshots:
     dependencies:
       quansync: 0.2.11
 
-  package-manager-detector@1.3.0: {}
+  package-manager-detector@1.5.0: {}
 
   parent-module@1.0.1:
     dependencies:
