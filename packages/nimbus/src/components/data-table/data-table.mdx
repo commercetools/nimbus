@@ -352,6 +352,163 @@ const App = () => {
 }
 ```
 
+### Data table manager
+
+Data table managerThe data table manager enables customization of the displayed data and structure within a Data table. It provides a single interface for users to personalize complex data views to match their specific workflow needs. It organizes customization options into two primary tabs: **Visible columns** and **Layout settings**.
+
+- **Visible columns:** This tab controls the visibility and order of available data columns within the data table.
+- **Layout settings:** This tab controls structural and display properties for the entire table view. Users have control over the row density and text truncation.
+
+```jsx-live
+const App = () => {
+  const allColumns = [
+    {
+      id: "product-name",
+      header: "Product name",
+      accessor: (row) => row.name,
+      isSortable: true,
+    },
+    {
+      id: "sku",
+      header: "SKU",
+      accessor: (row) => row.sku,
+      isSortable: true,
+    },
+    {
+      id: "status",
+      header: "Status",
+      accessor: (row) => (
+        <Badge
+          colorPalette={
+            row.status === "Published"
+              ? "success"
+              : row.status === "Modified"
+                ? "warning"
+                : "neutral"
+          }
+          size="xs"
+        >
+          {row.status}
+        </Badge>
+      ),
+    },
+    {
+      id: "category",
+      header: "Category",
+      accessor: (row) => row.category,
+    },
+    {
+      id: "inventory",
+      header: "Inventory",
+      accessor: (row) => row.inventory,
+    },
+    {
+      id: "price",
+      header: "Price",
+      accessor: (row) => row.price,
+    },
+    {
+      id: "store",
+      header: "Store",
+      accessor: (row) => row.store,
+    },
+  ];
+
+  const initialVisibleColumns = [
+    allColumns[0], // product-name
+    allColumns[1], // sku
+    allColumns[2], // status
+    allColumns[3], // category
+    allColumns[4], // inventory
+  ];
+
+  const data = [
+    {
+      id: "1",
+      name: "Midnight Bloom Silk Blouse",
+      sku: "MID-BLM-SLK-BLS",
+      status: "Published",
+      category: "Clothing",
+      inventory: 120,
+      price: "$89.99",
+      store: "Main Store",
+    },
+    {
+      id: "2",
+      name: "Urban Canvas Denim",
+      sku: "URB-CAN-DNM",
+      status: "Modified",
+      category: "Clothing",
+      inventory: 85,
+      price: "$129.99",
+      store: "Downtown",
+    },
+    {
+      id: "3",
+      name: "Coastal Breeze Linen Pants",
+      sku: "COS-BRZ-LIN-PNT",
+      status: "Published",
+      category: "Clothing",
+      inventory: 200,
+      price: "$79.99",
+      store: "Beach Shop",
+    },
+  ];
+
+  const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const [density, setDensity] = useState("default");
+
+  const handleColumnsChange = (updatedColumns) => {
+    setVisibleColumns(updatedColumns);
+  };
+
+  const handleSettingsChange = (action) => {
+    if (!action) {
+      return;
+    }
+    switch (action) {
+      case "toggleTextVisibility":
+        setIsTruncated(!isTruncated);
+        break;
+      case "toggleRowDensity":
+        setDensity(density === "condensed" ? "default" : "condensed");
+        break;
+    }
+  };
+
+  return (
+    <Stack direction="column" gap={16}>
+      <DataTable.Root
+        columns={allColumns}
+        rows={data}
+        visibleColumns={visibleColumns.map((col) => col.id)}
+        allowsSorting={true}
+        isTruncated={isTruncated}
+        density={density}
+        onColumnsChange={handleColumnsChange}
+        onSettingsChange={handleSettingsChange}
+      >
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          width="100%"
+        >
+          <Text>Table settings</Text>
+          <Box p={8}>
+            <DataTable.Manager />
+          </Box>
+        </Flex>
+        <DataTable.Table aria-label="Products table">
+          <DataTable.Header aria-label="Products table header" />
+          <DataTable.Body aria-label="Products table body" />
+        </DataTable.Table>
+      </DataTable.Root>
+    </Stack>
+  );
+}
+```
+
 ### Guidelines
 ---
 
