@@ -1,0 +1,805 @@
+---
+title: ComboBox Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ComboBox, type ComboBoxRootProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation uses the `items` prop with a render function:
+
+```jsx-live-dev
+const App = () => {
+  const animals = [
+    { id: 'koala', name: 'Koala' },
+    { id: 'panda', name: 'Panda' },
+    { id: 'giraffe', name: 'Giraffe' },
+  ];
+
+  return (
+    <ComboBox.Root items={animals} aria-label="Select an animal">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root size="sm" items={options} aria-label="Small combobox">
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <ComboBox.Root size="md" items={options} aria-label="Medium combobox">
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+    </Stack>
+  );
+}
+```
+
+### Visual variants
+
+Choose between `solid` and `ghost` variants to match your design context:
+
+```jsx-live-dev
+const App = () => {
+  const options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root variant="solid" items={options} aria-label="Solid combobox">
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <ComboBox.Root variant="ghost" items={options} aria-label="Ghost combobox">
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+    </Stack>
+  );
+}
+```
+
+### Single-select mode
+
+By default, ComboBox operates in single-select mode where users can select one
+option at a time:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const fruits = [
+    { id: 'apple', name: 'Apple' },
+    { id: 'banana', name: 'Banana' },
+    { id: 'orange', name: 'Orange' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root
+        items={fruits}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionMode="single"
+        aria-label="Select a fruit"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Text fontSize="sm">
+        {selectedKeys.length > 0 ? `Selected: ${selectedKeys[0]}` : 'No selection'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Multi-select mode
+
+Enable multi-select to allow users to choose multiple options displayed as tags:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const animals = [
+    { id: 'koala', name: 'Koala' },
+    { id: 'panda', name: 'Panda' },
+    { id: 'giraffe', name: 'Giraffe' },
+    { id: 'elephant', name: 'Elephant' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root
+        items={animals}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionMode="multiple"
+        aria-label="Select animals"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Text fontSize="sm">
+        Selected: {selectedKeys.length} item{selectedKeys.length !== 1 ? 's' : ''}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Leading element
+
+Add a leading icon to enhance the visual context:
+
+```jsx-live-dev
+const App = () => {
+  const animals = [
+    { id: 'koala', name: 'Koala' },
+    { id: 'panda', name: 'Panda' },
+    { id: 'giraffe', name: 'Giraffe' },
+  ];
+
+  return (
+    <ComboBox.Root
+      items={animals}
+      leadingElement={<Icons.Search aria-hidden="true" />}
+      placeholder="Search..."
+      aria-label="Search for an animal"
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Disabled state
+
+Use `isDisabled` to disable the combobox:
+
+```jsx-live-dev
+const App = () => {
+  const options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+  ];
+
+  return (
+    <ComboBox.Root items={options} isDisabled aria-label="Disabled combobox">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Invalid state
+
+Mark the combobox as invalid for form validation:
+
+```jsx-live-dev
+const App = () => {
+  const options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+  ];
+
+  return (
+    <ComboBox.Root items={options} isInvalid aria-label="Invalid combobox">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Read-only state
+
+Use `isReadOnly` for display-only scenarios:
+
+```jsx-live-dev
+const App = () => {
+  const fruits = [
+    { id: 'apple', name: 'Apple' },
+    { id: 'banana', name: 'Banana' },
+  ];
+
+  return (
+    <ComboBox.Root
+      items={fruits}
+      isReadOnly
+      selectedKeys={["apple"]}
+      aria-label="Read-only combobox"
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Option groups
+
+Organize options into sections with headers:
+
+```jsx-live-dev
+const App = () => {
+  const foodCategories = [
+    {
+      id: 'fruits',
+      name: 'Fruits',
+      children: [
+        { id: 'apple', name: 'Apple' },
+        { id: 'banana', name: 'Banana' },
+        { id: 'orange', name: 'Orange' },
+      ],
+    },
+    {
+      id: 'vegetables',
+      name: 'Vegetables',
+      children: [
+        { id: 'carrot', name: 'Carrot' },
+        { id: 'broccoli', name: 'Broccoli' },
+        { id: 'spinach', name: 'Spinach' },
+      ],
+    },
+  ];
+
+  return (
+    <ComboBox.Root items={foodCategories} aria-label="Select a food">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(category) => (
+            <ComboBox.Section
+              id={category.id}
+              label={category.name}
+              items={category.children}
+            >
+              {(item) => (
+                <ComboBox.Option id={item.id} textValue={item.name}>
+                  {item.name}
+                </ComboBox.Option>
+              )}
+            </ComboBox.Section>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Dynamic options with items
+
+Use the `items` prop for rendering dynamic data efficiently:
+
+```jsx-live-dev
+const App = () => {
+  const animals = [
+    { id: 'koala', name: 'Koala' },
+    { id: 'panda', name: 'Panda' },
+    { id: 'giraffe', name: 'Giraffe' },
+    { id: 'elephant', name: 'Elephant' },
+  ];
+
+  return (
+    <ComboBox.Root items={animals} aria-label="Select an animal">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option key={item.id} id={item.id}>
+              {item.name}
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Custom filtering
+
+Customize how options are filtered using the `filter` prop:
+
+```jsx-live-dev
+const App = () => {
+  const animals = [
+    { id: 1, name: 'Koala', category: 'Marsupial' },
+    { id: 2, name: 'Panda', category: 'Bear' },
+    { id: 3, name: 'Giraffe', category: 'Mammal' },
+    { id: 4, name: 'Elephant', category: 'Mammal' },
+  ];
+
+  // Use the built-in multi-property filter
+  const multiPropertyFilter = useCallback(
+    ComboBox.filters.createMultiPropertyFilter(['name', 'category']),
+    []
+  );
+
+  return (
+    <ComboBox.Root
+      items={animals}
+      filter={multiPropertyFilter}
+      aria-label="Search animals"
+      placeholder="Search by name or category..."
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option key={item.id} id={item.id}>
+              {item.name} ({item.category})
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Custom options creation
+
+Allow users to create new options by typing and pressing Enter:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { id: 1, name: 'Apple' },
+    { id: 2, name: 'Banana' },
+    { id: 3, name: 'Orange' },
+  ]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const handleCreateOption = useCallback((newItem) => {
+    console.log('Created:', newItem.name);
+  }, []);
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root
+        items={items}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionMode="multiple"
+        allowsCustomOptions
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+        onCreateOption={handleCreateOption}
+        aria-label="Select or create fruits"
+        placeholder="Type to search or create..."
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option key={item.id} id={item.id}>
+                {item.name}
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Text fontSize="sm">
+        Type a custom fruit and press Enter to create it!
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Async data loading
+
+Load options asynchronously with built-in debouncing and loading states:
+
+```jsx-live-dev
+const App = () => {
+  // Simulated API call
+  const loadPokemon = useCallback(async (filterText, signal) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const allPokemon = [
+      { id: 1, name: 'Bulbasaur' },
+      { id: 2, name: 'Charmander' },
+      { id: 3, name: 'Squirtle' },
+      { id: 4, name: 'Pikachu' },
+      { id: 5, name: 'Jigglypuff' },
+    ];
+
+    return allPokemon.filter(p =>
+      p.name.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, []);
+
+  return (
+    <ComboBox.Root
+      async={{
+        load: loadPokemon,
+        minSearchLength: 2,
+        debounce: 300,
+      }}
+      aria-label="Search Pokemon"
+      placeholder="Type to search..."
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option key={item.id} id={item.id}>
+              {item.name}
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+### Controlled input value
+
+Control the input text for advanced scenarios:
+
+```jsx-live-dev
+const App = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const fruits = [
+    { id: 'apple', name: 'Apple' },
+    { id: 'banana', name: 'Banana' },
+    { id: 'orange', name: 'Orange' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root
+        items={fruits}
+        inputValue={inputValue}
+        onInputChange={setInputValue}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionMode="single"
+        aria-label="Controlled combobox"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(item) => (
+              <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Text fontSize="sm">Input: {inputValue || '(empty)'}</Text>
+    </Stack>
+  );
+}
+```
+
+### Menu trigger behavior
+
+Control when the dropdown menu opens using `menuTrigger`:
+
+```jsx-live-dev
+const App = () => {
+  const options = [
+    { id: '1', name: 'Option 1' },
+    { id: '2', name: 'Option 2' },
+  ];
+
+  return (
+    <Stack direction="column" gap="400">
+      <Box>
+        <Text fontSize="sm" fontWeight="medium" mb="200">
+          menuTrigger="focus" (default) - Opens when clicking input or toggle button
+        </Text>
+        <ComboBox.Root items={options} menuTrigger="focus" aria-label="Focus trigger">
+          <ComboBox.Trigger />
+          <ComboBox.Popover>
+            <ComboBox.ListBox>
+              {(item) => (
+                <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+              )}
+            </ComboBox.ListBox>
+          </ComboBox.Popover>
+        </ComboBox.Root>
+      </Box>
+      <Box>
+        <Text fontSize="sm" fontWeight="medium" mb="200">
+          menuTrigger="input" - Opens only when typing (try typing in the input)
+        </Text>
+        <ComboBox.Root items={options} menuTrigger="input" aria-label="Input trigger">
+          <ComboBox.Trigger />
+          <ComboBox.Popover>
+            <ComboBox.ListBox>
+              {(item) => (
+                <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+              )}
+            </ComboBox.ListBox>
+          </ComboBox.Popover>
+        </ComboBox.Root>
+      </Box>
+      <Box>
+        <Text fontSize="sm" fontWeight="medium" mb="200">
+          menuTrigger="manual" - Opens only via toggle button (input click does nothing)
+        </Text>
+        <ComboBox.Root items={options} menuTrigger="manual" aria-label="Manual trigger">
+          <ComboBox.Trigger />
+          <ComboBox.Popover>
+            <ComboBox.ListBox>
+              {(item) => (
+                <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+              )}
+            </ComboBox.ListBox>
+          </ComboBox.Popover>
+        </ComboBox.Root>
+      </Box>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The ComboBox handles most accessibility requirements internally via React Aria.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "example-combobox";
+
+export const Example = () => (
+  <ComboBox.Root id={PERSISTENT_ID} aria-label="Select an option">
+    <ComboBox.Trigger />
+    <ComboBox.Popover>
+      <ComboBox.ListBox>
+        <ComboBox.Option id="1">Option 1</ComboBox.Option>
+      </ComboBox.ListBox>
+    </ComboBox.Popover>
+  </ComboBox.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab` / `Shift+Tab`: Navigate to/from the combobox
+- `Arrow Down`: Opens the menu and moves focus to the next option
+- `Arrow Up`: Opens the menu and moves focus to the previous option
+- `Enter`: Selects the focused option (or creates custom option if
+  `allowsCustomOptions` is enabled)
+- `Escape`: Closes the menu
+- `Home` / `End`: Jump to first/last option
+- Type to filter: Type characters to filter options in real-time
+
+## API reference
+
+<PropsTable id="ComboBox" />
+
+## Common patterns
+
+### Product search with categories
+
+A common e-commerce pattern combining filtering, grouping, and multi-select:
+
+```jsx-live-dev
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const products = [
+    { id: 1, name: 'MacBook Pro', category: 'Electronics' },
+    { id: 2, name: 'iPhone', category: 'Electronics' },
+    { id: 3, name: 'Desk Chair', category: 'Furniture' },
+    { id: 4, name: 'Standing Desk', category: 'Furniture' },
+    { id: 5, name: 'Coffee Maker', category: 'Appliances' },
+  ];
+
+  // Group products by category
+  const groupedByCategory = products.reduce((acc, product) => {
+    if (!acc[product.category]) {
+      acc[product.category] = [];
+    }
+    acc[product.category].push(product);
+    return acc;
+  }, {});
+
+  return (
+    <Stack direction="column" gap="400">
+      <ComboBox.Root
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionMode="multiple"
+        placeholder="Search products..."
+        aria-label="Select products"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {Object.entries(groupedByCategory).map(([category, items]) => (
+              <ComboBox.Section key={category} label={category}>
+                {items.map(item => (
+                  <ComboBox.Option key={item.id} id={item.id}>
+                    {item.name}
+                  </ComboBox.Option>
+                ))}
+              </ComboBox.Section>
+            ))}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Text fontSize="sm">
+        {selectedKeys.length} product{selectedKeys.length !== 1 ? 's' : ''} selected
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Tag selection with creation
+
+Enable users to select from existing tags or create new ones:
+
+```jsx-live-dev
+const App = () => {
+  const [tags, setTags] = useState([
+    { id: 1, label: 'React' },
+    { id: 2, label: 'TypeScript' },
+    { id: 3, label: 'JavaScript' },
+  ]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  const handleCreateTag = useCallback((newTag) => {
+    setTags(prev => [...prev, newTag]);
+  }, []);
+
+  return (
+    <ComboBox.Root
+      items={tags}
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+      selectionMode="multiple"
+      allowsCustomOptions
+      getNewOptionData={(inputValue) => ({
+        id: Date.now(),
+        label: inputValue,
+      })}
+      onCreateOption={handleCreateTag}
+      getTextValue={(item) => item.label}
+      placeholder="Add tags..."
+      aria-label="Select or create tags"
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option key={item.id} id={item.id}>
+              {item.label}
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ComboBox
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: combobox.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-combobox--docs)
+- [React Aria ComboBox](https://react-spectrum.adobe.com/react-aria/ComboBox.html)
+- [ARIA Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)
