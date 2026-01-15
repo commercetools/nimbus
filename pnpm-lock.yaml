@@ -162,8 +162,8 @@ catalogs:
       version: 4.0.17
   utils:
     '@types/lodash':
-      specifier: ^4.17.21
-      version: 4.17.21
+      specifier: ^4.17.23
+      version: 4.17.23
     '@types/node':
       specifier: ^24.10.1
       version: 24.10.1
@@ -441,7 +441,7 @@ importers:
         version: 9.39.2
       '@types/lodash':
         specifier: catalog:utils
-        version: 4.17.21
+        version: 4.17.23
       '@types/react':
         specifier: catalog:react
         version: 19.2.8
@@ -3063,8 +3063,8 @@ packages:
   '@types/lodash@4.17.20':
     resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
-  '@types/lodash@4.17.21':
-    resolution: {integrity: sha512-FOvQ0YPD5NOfPgMzJihoT+Za5pdkDJWcbpuj1DjaKZIr/gxodQjY/uWEFlTNqW2ugXHUiL8lRQgw63dzKHZdeQ==}
+  '@types/lodash@4.17.23':
+    resolution: {integrity: sha512-RDvF6wTulMPjrNdCoYRC8gNR880JNGT8uB+REUpC2Ns4pRqQJhGz90wh7rgdXDPpCczF3VGktDuFGVnz8zP7HA==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -10152,7 +10152,7 @@ snapshots:
 
   '@types/lodash@4.17.20': {}
 
-  '@types/lodash@4.17.21': {}
+  '@types/lodash@4.17.23': {}
 
   '@types/mdast@4.0.4':
     dependencies:
