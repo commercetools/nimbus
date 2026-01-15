@@ -34,7 +34,7 @@ import {
   SelectableCollectionContext,
   type Selection,
 } from "react-aria-components";
-import { useIntl } from "react-intl";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { extractStyleProps } from "@/utils";
 import { ComboBoxRootSlot } from "../combobox.slots";
 import type {
@@ -42,7 +42,7 @@ import type {
   ComboBoxRootContextValue,
   ComboBoxAsyncConfig,
 } from "../combobox.types";
-import { messages } from "../combobox.i18n";
+import { comboboxMessagesStrings } from "../combobox.messages";
 import {
   defaultGetKey,
   defaultGetTextValue,
@@ -462,7 +462,7 @@ type ComboBoxRootInnerProps<T extends object> = ComboBoxRootProps<T> & {
 const ComboBoxRootInner = <T extends object>(
   props: ComboBoxRootInnerProps<T> & {}
 ) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(comboboxMessagesStrings);
   const {
     selectionMode = "single",
     items,
@@ -1334,7 +1334,7 @@ const ComboBoxRootInner = <T extends object>(
       TagGroupContext,
       {
         id: tagGroupId,
-        "aria-label": intl.formatMessage(messages.selectedValues),
+        "aria-label": msg.format("selectedValues"),
         items: selectedItemsFromState, // Selected items to display as tags
         onRemove: removeKey, // Handle tag removal
       },
@@ -1348,13 +1348,13 @@ const ComboBoxRootInner = <T extends object>(
         slots: {
           toggle: {
             onPress: toggleOpen,
-            "aria-label": intl.formatMessage(messages.toggleOptions),
+            "aria-label": msg.format("toggleOptions"),
             isDisabled: isDisabled || isReadOnly,
             isPressed: isOpen, // Visual indicator that menu is open
           },
           clear: {
             onPress: clearSelection,
-            "aria-label": intl.formatMessage(messages.clearSelection),
+            "aria-label": msg.format("clearSelection"),
             style:
               normalizedSelectedKeys.size > 0 ? undefined : { display: "none" },
             isDisabled:
@@ -1410,7 +1410,7 @@ const ComboBoxRootInner = <T extends object>(
         ref: listBoxRef, // Ref for scroll positioning
         renderEmptyState, // Custom empty state renderer
         shouldFocusWrap, // Whether to wrap focus from last to first item
-        "aria-label": intl.formatMessage(messages.options),
+        "aria-label": msg.format("options"),
       },
     ],
 
