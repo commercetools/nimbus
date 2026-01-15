@@ -246,15 +246,11 @@ pnpm generate:tokens
 ### Internationalization (i18n)
 
 ```bash
-# Compile translation files for runtime
-cd packages/i18n
-pnpm build
+# Extract messages from .i18n.ts files and compile
+pnpm extract-intl
 
-# Or from root
+# Compile only (after downloading translations from Transifex)
 pnpm --filter @commercetools/nimbus-i18n build
-
-# Or use the formatjs CLI directly from root
-pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/data packages/i18n/compiled-data
 ```
 
 ### Testing
