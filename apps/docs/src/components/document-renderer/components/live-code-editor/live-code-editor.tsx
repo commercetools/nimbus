@@ -13,6 +13,8 @@ import {
   getLocalTimeZone,
   today,
 } from "@internationalized/date";
+import { useAsyncList } from "react-stately";
+import { useDebouncedCallback } from "use-debounce";
 
 const baseHooks = {
   useState,
@@ -33,6 +35,8 @@ const scope = {
   parseZonedDateTime,
   getLocalTimeZone,
   today,
+  useAsyncList,
+  useDebouncedCallback,
 };
 
 const removeImportStatements = (code: string) => {

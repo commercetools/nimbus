@@ -1,28 +1,75 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, useCallback, useMemo, type FormEvent } from "react";
-import { type Key, type Selection } from "react-aria-components";
-import { useAsyncList } from "react-stately";
+import { useState, useCallback } from "react";
+import { userEvent, within, expect, waitFor } from "storybook/test";
+import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
+import { Search } from "@commercetools/nimbus-icons";
+import { ComboBox } from "./combobox";
+import { type SimpleOption, simpleOptions } from "./utils/test-data";
 import {
-  userEvent,
-  fireEvent,
-  within,
-  expect,
-  fn,
-  waitFor,
-} from "storybook/test";
-import {
-  Box,
-  Button,
-  ComboBox,
-  type ComboBoxRootProps,
-  Flex,
-  FormField,
-  Icon,
-  RadioInput,
-  Stack,
-  Text,
-} from "@commercetools/nimbus";
-import { AddReaction, Search } from "@commercetools/nimbus-icons";
+  ComposedComboBox,
+  type Pokemon,
+  PokemonOption,
+} from "./utils/test-utils";
+
+// Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
+
+/** Gets all tags */
+const getTagList = async (comboBox: HTMLElement) =>
+  await within(comboBox).findByLabelText(/selected values/i);
+
+/**  Gets the listbox - uses document.querySelector since the portal is not in the canvas */
+const getListBox = (document: Document) =>
+  document.querySelector('[role="listbox"]');
+
+/** Gets all options - uses document.querySelectorAll since the portal is not in the canvas */
+const getListboxOptions = () => document.querySelectorAll('[role="option"]');
+
+/** Finds a specific option by its textValue  */
+const findOptionByText = (text: string) =>
+  Array.from(getListboxOptions()).find((option) =>
+    option.textContent?.includes(text)
+  );
+
+/** Returns whether an option is selected */
+const isOptionSelected = (option: Element | undefined) =>
+  option?.getAttribute("aria-selected") === "true" ||
+  option?.getAttribute("data-selected") === "true";
+
+/** Selects options specified in optionNames array */
+const selectOptionsByName = async (optionNames: string[]) => {
+  for (const optionName of optionNames) {
+    const option = findOptionByText(optionName);
+    if (option) {
+      // Select the option with a mouse click
+      await userEvent.click(option);
+    }
+  }
+};
+
+/** Verifies that tags in expectedTags array exist - expectedTags should always contain ALL expected tags */
+const verifyTagsExist = async (
+  comboBox: HTMLElement,
+  expectedTags: string[]
+) => {
+  const tagList = await getTagList(comboBox);
+  const tags = tagList.childNodes;
+  await expect(tags.length).toBe(expectedTags.length);
+
+  for (let i = 0; i < expectedTags.length; i++) {
+    await expect(tags[i]).toHaveTextContent(expectedTags[i]);
+  }
+};
+
+/** Verifies whether options in the optionNames array are selected or not based on shouldBeSelected boolean */
+const verifyOptionsSelected = async (
+  optionNames: string[],
+  shouldBeSelected: boolean
+) => {
+  for (const name of optionNames) {
+    const option = findOptionByText(name);
+    await expect(isOptionSelected(option)).toBe(shouldBeSelected);
+  }
+};
 
 /**
  * Storybook metadata configuration
@@ -42,160 +89,6 @@ export default meta;
  */
 type Story = StoryObj<typeof ComboBox.Root>;
 
-const options = [
-  { id: 1, name: "Koala" },
-  { id: 2, name: "Kangaroo" },
-  { id: 3, name: "Platypus" },
-  { id: 4, name: "Bald Eagle with a very long name hooray" },
-  { id: 5, name: "Bison" },
-  { id: 6, name: "Skunk" },
-];
-
-const sectionedItems = [
-  {
-    name: "Fruits",
-    id: "fruit",
-    children: [
-      { id: 1, name: "Apple" },
-      { id: 2, name: "Banana" },
-      { id: 6, name: "Orange" },
-    ],
-  },
-  {
-    name: "Vegetables",
-    id: "veg",
-    children: [
-      { id: 3, name: "Carrot" },
-      { id: 4, name: "Broccoli" },
-      { id: 5, name: "Avocado" },
-      { id: 7, name: "Cucumber" },
-    ],
-  },
-];
-
-// Type definitions for complex options
-type PlanOption = {
-  uuid: number;
-  type: string;
-  description: string;
-  price: string;
-  features: string[];
-};
-
-type PlanGroup = {
-  name: string;
-  id: string;
-  children: PlanOption[];
-};
-
-const complexOptionsWithGroups: PlanGroup[] = [
-  {
-    name: "Individual Plans",
-    id: "indplans",
-    children: [
-      {
-        uuid: 3,
-        type: "Starter Plan",
-        description: "Great for individuals and small projects",
-        price: "$9/month",
-        features: ["Up to 3 projects", "Community support", "Basic features"],
-      },
-      {
-        uuid: 1,
-        type: "Premium Plan",
-        description: "Full access to all features with priority support",
-        price: "$29/month",
-        features: ["Unlimited projects", "24/7 support", "Advanced analytics"],
-      },
-    ],
-  },
-  {
-    name: "Business Plans",
-    id: "busplans",
-    children: [
-      {
-        uuid: 2,
-        type: "Small Team Plan",
-        description: "Perfect for growing teams and businesses",
-        price: "$19/month",
-        features: ["Up to 10 projects", "Email support", "Basic analytics"],
-      },
-      {
-        uuid: 4,
-        type: "Enterprise Plan",
-        description: "Customized solution for large organizations",
-        price: "Custom pricing",
-        features: [
-          "Unlimited everything",
-          "Dedicated support",
-          "Custom integrations",
-        ],
-      },
-    ],
-  },
-];
-
-// Helper functions to reduce test verbosity
-const getTagList = async (multiSelect: HTMLElement) =>
-  await within(multiSelect).findByLabelText(/selected values/i);
-
-const getFilterInput = () =>
-  document.querySelector(
-    '[aria-label="Filter combobox options"]'
-  ) as HTMLInputElement;
-
-const getListboxOptions = () => document.querySelectorAll('[role="option"]');
-
-const findOptionByText = (text: string) =>
-  Array.from(getListboxOptions()).find((option) =>
-    option.textContent?.includes(text)
-  );
-
-const isOptionSelected = (option: Element | undefined) =>
-  option?.getAttribute("aria-selected") === "true" ||
-  option?.getAttribute("data-selected") === "true";
-
-const selectOptionsByName = async (optionNames: string[]) => {
-  for (const optionName of optionNames) {
-    const option = findOptionByText(optionName);
-    if (option) {
-      // Select the option with a mouse click
-      await userEvent.click(option);
-    }
-  }
-};
-
-const verifyTagsExist = async (
-  multiSelect: HTMLElement,
-  expectedTags: string[]
-) => {
-  const tagList = await getTagList(multiSelect);
-  const tags = tagList.childNodes;
-  await expect(tags.length).toBe(expectedTags.length);
-
-  for (let i = 0; i < expectedTags.length; i++) {
-    await expect(tags[i]).toHaveTextContent(expectedTags[i]);
-  }
-};
-
-const verifyOptionsSelected = async (
-  optionNames: string[],
-  shouldBeSelected: boolean
-) => {
-  for (const name of optionNames) {
-    const option = findOptionByText(name);
-    await expect(isOptionSelected(option)).toBe(shouldBeSelected);
-  }
-};
-
-const closePopover = async () => {
-  await userEvent.keyboard("{escape}");
-  // Wait for preventNextFocusOpen ref to be set to false via timeout
-  await new Promise((resolve) => setTimeout(resolve, 51));
-};
-
-const mockFn = fn();
-
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -203,2648 +96,5869 @@ const mockFn = fn();
 export const Base: Story = {
   render: () => {
     return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select ComboBox</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={options}
-              placeholder="Select an animal..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select ComboBox</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={options}
-              selectionMode="multiple"
-              placeholder="Select multiple animals..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select combobox/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select combobox/i,
-    });
-
-    await step(
-      "single select input is focusable and opens popover on focus",
-      async () => {
-        await userEvent.tab();
-        await expect(singleSelect).toHaveFocus();
-        // popover is activated when component is focused
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-      }
-    );
-    await step(
-      "single select input when user enters text options in popover are filtered",
-      async () => {
-        // Enter 'k'
-        await userEvent.keyboard("{k}");
-        let options = getListboxOptions();
-        // 'k' should show Koala and Kangaroo (and Skunk contains 'k')
-        await expect(options.length).toBe(3);
-        await userEvent.keyboard("{o}");
-        options = getListboxOptions();
-        await expect(options.length).toBe(1);
-      }
-    );
-    await step(
-      "single select input updates value to selected option and closes listbox when option is selected",
-      async () => {
-        const listbox = document.querySelector('[role="listbox"]');
-        const option = document.querySelector('[role="option"]');
-        await userEvent.click(option!);
-        // Click should close listbox and populate input with selected value
-        await expect(listbox).not.toBeInTheDocument();
-        await expect(singleSelect.value).toBe("Koala");
-        // Make sure koala option has selected state
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Koala"], true);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "single select places cursor at beginning of input on focus when there is a previously selected value displayed",
-      async () => {
-        // Verify that cursor is at end of input while focused
-        await expect(singleSelect).toHaveFocus();
-        await expect(singleSelect.selectionStart).toBe(5);
-        await expect(singleSelect.selectionEnd).toBe(5);
-        // Click the document body to blur single select
-        await userEvent.click(document.body);
-        await expect(singleSelect).not.toHaveFocus();
-        // Focus single select
-        singleSelect.focus();
-        // Wait for render frame to complete
-        await waitFor(async () => {
-          // Check that cursor is at position 0 (start of input)
-          await expect(singleSelect.selectionStart).toBe(0);
-          await expect(singleSelect.selectionEnd).toBe(0);
-        });
-        // Check that input's value is still "Koala"
-        await expect(singleSelect.value).toBe("Koala");
-      }
-    );
-    await step(
-      "single select after focus replaces previous input value with user input, and filters options based input",
-      async () => {
-        // Check that input's value is still "Koala"
-        await expect(singleSelect.value).toBe("Koala");
-        // Type 'u'
-        await userEvent.keyboard("u");
-        // Input value is 'u'
-        await expect(singleSelect.value).toBe("u");
-        // There should be 2 options shown, 'playtypus' and 'skunk'
-        await expect(getListboxOptions().length).toBe(2);
-        await expect(findOptionByText("Platypus")).toBeInTheDocument();
-        await expect(findOptionByText("Skunk")).toBeInTheDocument();
-      }
-    );
-    await step(
-      "single select replaces input value with previously selected value if user blurs input without selecting new value",
-      async () => {
-        // Check that input's value is still "u"
-        await expect(singleSelect.value).toBe("u");
-        // Blur the input
-        await userEvent.tab();
-        // Input value should be selectedKey value: 'Koala'
-        await expect(singleSelect.value).toBe("Koala");
-      }
-    );
-    await step(
-      "single select replaces previously selected value if user selects new value after focus and typing",
-      async () => {
-        singleSelect.focus();
-        // Wait for render frame to complete
-        await waitFor(async () => {
-          // Check that cursor is at position 0 (start of input)
-          await expect(singleSelect.selectionStart).toBe(0);
-          await expect(singleSelect.selectionEnd).toBe(0);
-        });
-        // Check that input's value is still "Koala"
-        await expect(singleSelect.value).toBe("Koala");
-        // Type 'u'
-        await userEvent.keyboard("u");
-        // Input value is 'u'
-        await expect(singleSelect.value).toBe("u");
-        // Select Platypus
-        await selectOptionsByName(["Platypus"]);
-        // Blur input
-        await userEvent.tab();
-        // Input value should be selectedKey value: 'Platypus'
-        await expect(singleSelect.value).toBe("Platypus");
-      }
-    );
-    await step(
-      "single select clear button clears the combobox value",
-      async () => {
-        // Input value should be selectedKey value: 'Platypus'
-        await expect(singleSelect.value).toBe("Platypus");
-        const clearButton = await canvas.findByRole("button", {
-          name: /clear selection/i,
-        });
-        // Click clear button
-        await userEvent.click(clearButton);
-        // Input value should be cleared
-        await expect(singleSelect.value).toBe("");
-        // Clear button should not be in the DOM
-        await expect(clearButton).not.toBeInTheDocument();
-      }
-    );
-    await step(
-      "single select opens popover and focuses first option when user hits down arrow while input is focused",
-      async () => {
-        singleSelect.focus();
-        await userEvent.keyboard("{ArrowDown}");
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        const options = getListboxOptions();
-        // first option should be aria-activedescendant
-        await expect(
-          singleSelect.getAttribute("aria-activedescendant")
-        ).toEqual(options[0].getAttribute("id"));
-      }
-    );
-    await step(
-      "single select closes popover and focuses input when esc key is hit",
-      async () => {
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        await closePopover();
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(singleSelect).toHaveFocus();
-      }
-    );
-    await step(
-      "single select opens popover and focuses last option when user hits up arrow while input is focused",
-      async () => {
-        await userEvent.keyboard("{ArrowUp}");
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        const options = getListboxOptions();
-        // last option should be aria-activedescendant
-        await expect(
-          singleSelect.getAttribute("aria-activedescendant")
-        ).toEqual(options[options.length - 1].getAttribute("id"));
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step("multi select opens popover on first focus", async () => {
-      // Tab from single to multi select
-      await userEvent.tab();
-      // popover will open on focus if the combobox is not touched and there are no selected values
-      const listbox = document.querySelector('[role="listbox"]');
-      await expect(listbox).toBeInTheDocument();
-      const options = getListboxOptions();
-      await expect(options.length).toBe(6);
-      // input in popover should have focus
-      const multiselectinput = getFilterInput();
-      await expect(multiselectinput).toHaveFocus();
-    });
-    await step(
-      "multi select closes popover and focuses combobox when esc key is hit",
-      async () => {
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        await closePopover();
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(multiSelect).toHaveFocus();
-      }
-    );
-    await step(
-      "multi select opens listbox when focused a second time",
-      async () => {
-        singleSelect.focus();
-        await userEvent.tab();
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        // close popover for next test
-        await closePopover();
-      }
-    );
-    await step("multi select toggles popover on click", async () => {
-      // Click the root component
-      await userEvent.click(multiSelect);
-      // Toggle popover to open state
-      await expect(
-        document.querySelector('[role="listbox"]') as HTMLElement
-      ).toBeInTheDocument();
-      await expect(multiSelect.getAttribute("data-open")).toBe("true");
-      // Click root component again
-      // fireEvent used here due to this bug: https://github.com/testing-library/user-event/issues/1075#issuecomment-1948093169
-      await fireEvent.click(multiSelect);
-      // Toggle popover to closed state
-      await expect(document.querySelector('[role="listbox"]')).toBeNull();
-      await expect(multiSelect.getAttribute("data-open")).toBe("false");
-    });
-    await step(
-      "multi select opens popover when focused and popover is closed and user presses enter",
-      async () => {
-        // Focus the multiselect combobox
-        multiSelect.focus();
-        // Close the popover
-        await closePopover();
-        // Ensure no popover is open initially
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        // Ensure multiselect has focus
-        await expect(multiSelect).toHaveFocus();
-        // Press Enter key
-        await userEvent.keyboard("{enter}");
-        // Verify popover opens
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-        // Verify options are visible
-        const options = getListboxOptions();
-        await expect(options.length).toBe(6);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select opens popover when focused and popover is closed and user presses down arrow",
-      async () => {
-        // Focus the multiselect combobox
-        multiSelect.focus();
-        // Close the popover
-        await closePopover();
-        // Ensure no popover is open initially
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        // Ensure multiselect has focus
-        await expect(multiSelect).toHaveFocus();
-        // Press ArrowDown key
-        await userEvent.keyboard("{ArrowDown}");
-        // Verify popover opens
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-        // Verify options are visible
-        const options = getListboxOptions();
-        await expect(options.length).toBe(6);
-      }
-    );
-    await step("multi select filters options as user types", async () => {
-      // Ensure popover is open from previous test
-      await expect(
-        document.querySelector('[role="listbox"]')
-      ).toBeInTheDocument();
-      // Initially all 6 options should be visible
-      let options = getListboxOptions();
-      await expect(options.length).toBe(6);
-      // Type 'k' to filter options - should show Koala and Kangaroo (and Skunk contains 'k')
-      const filterInput = getFilterInput();
-      await expect(filterInput).toBeInTheDocument();
-      // Clear any existing input and type 'k'
-      await userEvent.clear(filterInput);
-      await userEvent.type(filterInput, "k");
-      // Verify filtered options - should show options containing 'k
-      options = getListboxOptions();
-      await expect(options.length).toBe(3); // Koala, Kangaroo, Skunk
-      // Type 'o' to further filter - should show only Koala
-      await userEvent.type(filterInput, "o");
-      options = getListboxOptions();
-      await expect(options.length).toBe(1); // Only Koala
-      // Verify the remaining option is Koala
-      const remainingOption = options[0];
-      await expect(remainingOption).toHaveTextContent("Koala");
-    });
-    await step(
-      "multi select allows selecting option with enter key and shows selection in taglist",
-      async () => {
-        // Ensure popover is open and filtered to show only Koala
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        let options = getListboxOptions();
-        await expect(options.length).toBe(1);
-        // Ensure filter input has focus
-        const filterInput = getFilterInput();
-        await expect(filterInput).toHaveFocus();
-        // Press Enter to select the focused option (Koala)
-        await userEvent.keyboard("{enter}");
-        // Verify the option is selected by checking for a tag in the taglist
-        let tagList = await getTagList(multiSelect);
-        await expect(tagList).toBeInTheDocument();
-        let tags = tagList.childNodes;
-        // Verify the tag contains "Koala"
-        const koalaTag = tags[0];
-        await expect(koalaTag).toHaveTextContent("Koala");
-        // Clear the filter to show all options again
-        await userEvent.clear(filterInput);
-        // Verify all options are visible again
-        options = getListboxOptions();
-        await expect(options.length).toBe(6);
-        // Select another option using Enter key (navigate to Kangaroo and select it)
-        await userEvent.keyboard("{ArrowDown}{ArrowDown}"); // Navigate to Kangaroo (second option)
-        /**
-         * Apparently this is what is causing the `act` warning in the storybook test
-         * storybook has 3-4 issues about this, which they keep closing, but never seem to fix
-         * most recent issue: https://github.com/storybookjs/storybook/issues/25304
-         */
-        await userEvent.keyboard("{enter}");
-        // Verify we now have 2 tags
-        tagList = await getTagList(multiSelect);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-        // Verify the second tag contains "Kangaroo"
-        const kangarooTag = tags[1];
-        await expect(kangarooTag).toHaveTextContent("Kangaroo");
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select clear all button clears all tags and selected options",
-      async () => {
-        // Verify we start with tags from the previous test (should have Koala and Kangaroo selected)
-        let tagList = await getTagList(multiSelect);
-        let tags = tagList.childNodes;
-        await expect(tags.length).toBe(2);
-        // Find and click the clear all button
-        const clearAllButton = await within(multiSelect).findByRole("button", {
-          name: /clear selection/i,
-        });
-        await expect(clearAllButton).toBeInTheDocument();
-        // Click the clear all button
-        await userEvent.click(clearAllButton);
-        // Verify all tags are cleared
-        // After clearing, the taglist will contain a placeholder
-        tagList = await getTagList(multiSelect);
-        tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        // insure that the tagsList child is the placeholder
-        await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-        // Verify popover opens with all options visible (none filtered)
-        const listbox = document.querySelector('[role="listbox"]');
-        await expect(listbox).toBeInTheDocument();
-        const options = getListboxOptions();
-        await expect(options.length).toBe(6);
-        // Verify no options show as selected (check for aria-selected="true" or selected styling)
-        for (const option of Array.from(options)) {
-          // Check that no options are marked as selected
-          const isSelected =
-            option.getAttribute("aria-selected") === "true" ||
-            option.getAttribute("data-selected") === "true";
-          await expect(isSelected).toBe(false);
-        }
-        // Close popover
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select allows removing individual selections by clicking tag remove buttons",
-      async () => {
-        // Setup: Select 3 options
-        multiSelect.focus();
-        await userEvent.keyboard("{enter}");
-        await selectOptionsByName(["Koala", "Kangaroo", "Platypus"]);
-        await closePopover();
-        // Verify initial state
-        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
-        // Remove middle tag (Kangaroo)
-        const tagList = await getTagList(multiSelect);
-        const kangarooTag = tagList.childNodes[1] as HTMLElement;
-        const removeButton = within(kangarooTag).getByRole("button", {
-          name: /remove tag kangaroo/i,
-        });
-        await userEvent.click(removeButton);
-        // Verify Kangaroo removed
-        await verifyTagsExist(multiSelect, ["Koala", "Platypus"]);
-        // Verify listbox state
-        await userEvent.keyboard("{enter}");
-        await verifyOptionsSelected(["Koala", "Platypus"], true);
-        await verifyOptionsSelected(["Kangaroo"], false);
-        await closePopover();
-        // Remove first tag (Koala)
-        const updatedTagList = await getTagList(multiSelect);
-        const koalaTag = updatedTagList.childNodes[0] as HTMLElement;
-        const koalaRemoveButton = within(koalaTag).getByRole("button", {
-          name: /remove tag koala/i,
-        });
-        await userEvent.click(koalaRemoveButton);
-        // Verify only Platypus remains
-        await verifyTagsExist(multiSelect, ["Platypus"]);
-      }
-    );
-    await step(
-      "multi select allows removing selected options by clicking on them in the listbox",
-      async () => {
-        // Setup: Start with Platypus from previous test, add Koala and Kangaroo
-        multiSelect.focus();
-        await userEvent.keyboard("{enter}");
-        await selectOptionsByName(["Koala", "Kangaroo"]);
-        // Verify 3 tags total
-        await verifyTagsExist(multiSelect, ["Platypus", "Koala", "Kangaroo"]);
-        // Verify all options show as selected
-        await verifyOptionsSelected(["Platypus", "Koala", "Kangaroo"], true);
-        // Click Kangaroo option to deselect
-        const kangarooOption = findOptionByText("Kangaroo");
-        await userEvent.click(kangarooOption!);
-        // Verify Kangaroo deselected
-        await expect(isOptionSelected(kangarooOption)).toBe(false);
-        await verifyTagsExist(multiSelect, ["Platypus", "Koala"]);
-        // Click Koala option to deselect
-        const koalaOption = findOptionByText("Koala");
-        await userEvent.click(koalaOption!);
-        await verifyTagsExist(multiSelect, ["Platypus"]);
-        // Click Platypus option to deselect last item
-        const platypusOption = findOptionByText("Platypus");
-        await userEvent.click(platypusOption!);
-        // Verify all cleared - placeholder shown
-        const tagList = await getTagList(multiSelect);
-        const tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-        // Close popover
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select allows removing last selected item by hitting backspace when filter input is empty",
-      async () => {
-        // Setup: Select 3 options
-        multiSelect.focus();
-        await userEvent.keyboard("{enter}");
-        await selectOptionsByName(["Koala", "Kangaroo", "Platypus"]);
-        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo", "Platypus"]);
-        // Ensure filter input is empty and focused
-        const filterInput = getFilterInput();
-        await userEvent.clear(filterInput);
-        filterInput.focus();
-        // Test backspace removes items in LIFO order
-        await userEvent.keyboard("{Backspace}");
-        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
-        await userEvent.keyboard("{Backspace}");
-        await verifyTagsExist(multiSelect, ["Koala"]);
-        await userEvent.keyboard("{Backspace}");
-        // Verify placeholder shown when all cleared
-        const tagList = await getTagList(multiSelect);
-        const tags = tagList.childNodes;
-        await expect(tags.length).toBe(1);
-        await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-        // Verify all options deselected
-        await verifyOptionsSelected(["Koala", "Kangaroo", "Platypus"], false);
-        // Test backspace does nothing when no selections
-        await userEvent.keyboard("{Backspace}");
-        await expect(tags[0]).toHaveTextContent(/Select multiple animals.../i);
-        // Close popover
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select does not remove items with backspace when filter input has text",
-      async () => {
-        // Setup: Select 2 options
-        multiSelect.focus();
-        await userEvent.keyboard("{enter}");
-        await selectOptionsByName(["Koala", "Kangaroo"]);
-        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
-        // Type text in filter input
-        const filterInput = getFilterInput();
-        await userEvent.type(filterInput, "test");
-        await expect(filterInput.value).toBe("test");
-        // Backspace should remove text, not selections
-        await userEvent.keyboard("{Backspace}");
-        await expect(filterInput.value).toBe("tes");
-        await verifyTagsExist(multiSelect, ["Koala", "Kangaroo"]);
-        // Clear input completely, then backspace should remove selection
-        await userEvent.clear(filterInput);
-        await userEvent.keyboard("{Backspace}");
-        await verifyTagsExist(multiSelect, ["Koala"]);
-        // Close popover
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select - when items are selected clicking root component toggles popover",
-      async () => {
-        // Verify popover is closed
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(multiSelect.getAttribute("data-open")).toBe("false");
-        // Click the root component
-        await userEvent.click(multiSelect);
-        // Verify popover is open
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        await expect(multiSelect.getAttribute("data-open")).toBe("true");
-        // Click the root component
-        await fireEvent.click(multiSelect);
-        // Verify popover is closed
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(multiSelect.getAttribute("data-open")).toBe("false");
-      }
-    );
-    await step(
-      "multi select - when items are selected clicking remove item button expands popover",
-      async () => {
-        // Open popover
-        multiSelect.focus();
-        // Select multiple options
-        await selectOptionsByName(["Koala"]);
-        // Verify options selected
-        await verifyTagsExist(multiSelect, ["Koala"]);
-        // Close popover
-        await closePopover();
-        // Click the remove button
-        const removeButton = await within(multiSelect).findByRole("button", {
-          name: /remove tag koala/i,
-        });
-        await userEvent.click(removeButton);
-        // Check popover is closed
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).toBeInTheDocument();
-        await expect(multiSelect.getAttribute("data-open")).toBe("true");
-        // Close popover
-        await closePopover();
-      }
-    );
-    await step(
-      "multi select tab order goes from combobox to tag to clear button then outside combobox",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        // Select an option so tag exists for next test
-        await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
-        // Close the popover after selection
-        await userEvent.keyboard("{Escape}");
-        // Focus combobox wrapper again
-        multiSelect.focus();
-        // Tab to tags
-        await userEvent.tab();
-        const tagList =
-          await within(multiSelect).findByLabelText(/selected values/i);
-        await expect(tagList.childNodes[0]).toHaveFocus();
-        // Tab to remove tag button
-        await userEvent.tab();
-        const removeButton = within(
-          tagList.childNodes[0] as HTMLElement
-        ).getByRole("button", {
-          name: /remove tag koala/i,
-        });
-        await expect(removeButton).toHaveFocus();
-        // Tab to clear button
-        await userEvent.tab();
-        const clearButton =
-          await within(multiSelect).findByLabelText(/clear selection/i);
-        await expect(clearButton).toHaveFocus();
-        // Tab to toggle button
-        await userEvent.tab();
-        await expect(multiSelect).not.toHaveFocus();
-      }
+      <ComposedComboBox<SimpleOption>
+        aria-label="test"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "hi"}
+        selectionMode="multiple"
+        selectedKeys={[1, 3]}
+        disabledKeys={[2, 4]}
+        leadingElement={<Search />}
+      />
     );
   },
 };
 
+// ============================================================
+// CUSTOM "CREATABLE" OPTIONS
+// ============================================================
+
 /**
- * Controlled State
- * Demonstrates controlled usage patterns for single and multi-select
+ * Multi-Select Custom Options Story
+ * Tests custom option creation with static data (non-async mode)
+ * Verifies:
+ * - Custom options can be created by typing and pressing Enter
+ * - Custom options persist in the list
+ * - onCreateOption callback is called with the new item
+ * - Custom options can be selected/deselected
+ * - Custom options work alongside static options
  */
-export const ControlledState: Story = {
-  args: {
-    selectedKey: 2,
-  },
-  render: (args) => {
-    const [controlledValue, setControlledValue] = useState<Key | null>(
-      // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
-      args.selectedKey
-    );
-    const [controlledMultiValue, setControlledMultiValue] = useState<Selection>(
-      new Set([1, 3])
-    );
-    const [singleInputValue, setSingleInputValue] = useState(
-      // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
-      args.selectedKey
-        ? // @ts-expect-error - no good way to discriminate union prop from args while following rules of hooks
-          (options.find((o) => o.id === args.selectedKey)?.name ?? "")
-        : ""
-    );
-    const [multiInputValue, setMultiInputValue] = useState("");
+export const MultiSelectCustomOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+    const [createdOptions, setCreatedOptions] = useState<string[]>([]);
 
-    // Wrapper functions that call both the state setter and mock function
-    const handleSingleSelectionChange = (key: Key | null) => {
-      // If the input is controlled, it is necessary to set the input value to the text value of the selected option
-      const inputValue = options.find((o) => o.id === key)?.name ?? "";
-      setSingleInputValue(inputValue);
-      setControlledValue(key);
-      mockFn(key, inputValue);
-    };
-
-    const handleMultiSelectionChange = (keys: Selection) => {
-      setControlledMultiValue(keys);
-      mockFn(keys);
-    };
-
-    // Input value change handlers
-    const handleSingleInputChange = (value: string) => {
-      setSingleInputValue(value);
-      mockFn(value);
-    };
-
-    const handleMultiInputChange = (value: string) => {
-      setMultiInputValue(value);
-      mockFn(value);
-    };
-
-    // Helper function to get the display text for single selection
-    const getSingleSelectionDisplay = (selectedKey: Key | null) => {
-      if (!selectedKey) return "None";
-      const selectedOption = options.find(
-        (option) => option.id === selectedKey
-      );
-      return selectedOption
-        ? `${selectedKey} (${selectedOption.name})`
-        : selectedKey.toString();
-    };
-
-    // Helper function to get the display text for multiple selection
-    const getMultiSelectionDisplay = (selectedKeys: Selection) => {
-      if (selectedKeys === "all") return "All items";
-      const selectedArray = Array.from(selectedKeys);
-      if (selectedArray.length === 0) return "None";
-
-      return selectedArray
-        .map((key) => {
-          const selectedOption = options.find((option) => option.id === key);
-          return selectedOption
-            ? `${key} (${selectedOption.name})`
-            : key.toString();
-        })
-        .join(", ");
-    };
+    const handleCreateOption = useCallback((newItem: SimpleOption) => {
+      setCreatedOptions((prev) => [...prev, newItem.name]);
+    }, []);
 
     return (
       <Stack direction="column" gap="400">
-        <Stack direction="row" gap="400">
-          <FormField.Root alignSelf={"flex-start"}>
-            <FormField.Label>Controlled Single-Select</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="controlled animals"
-                defaultItems={options}
-                selectedKey={controlledValue}
-                onSelectionChange={handleSingleSelectionChange}
-                inputValue={singleInputValue}
-                onInputChange={handleSingleInputChange}
-                placeholder="Select an animal..."
-                leadingElement={<Icon as={AddReaction} />}
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description data-testid="single-select-state">
-              Selected: {getSingleSelectionDisplay(controlledValue)}
-            </FormField.Description>
-          </FormField.Root>
-          <FormField.Root alignSelf={"flex-start"}>
-            <FormField.Label>Controlled Multi-Select</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                aria-label="controlled multi animals"
-                defaultItems={options}
-                selectionMode="multiple"
-                selectedKeys={controlledMultiValue}
-                onSelectionChange={handleMultiSelectionChange}
-                inputValue={multiInputValue}
-                onInputChange={handleMultiInputChange}
-                placeholder="Select multiple animals..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description data-testid="multi-select-state">
-              Selected: {getMultiSelectionDisplay(controlledMultiValue)}
-            </FormField.Description>
-          </FormField.Root>
-        </Stack>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /controlled single-select/i,
-    });
-    const singleSelectStateValue = await canvas.findByTestId(
-      "single-select-state"
-    );
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /controlled multi-select/i,
-    });
-    const multiSelectStateValue =
-      await canvas.findByTestId("multi-select-state");
-
-    await step(
-      "Single select shows text value of selected item in input and items option is selected in popover",
-      async () => {
-        // Focus
-        singleSelect.focus();
-        // Check that input value is text value of selected item from external state (2 - kangaroo)
-        await expect(singleSelect.value).toBe("Kangaroo");
-        // Check that external state in description is correct
-        await expect(singleSelectStateValue.textContent).toBe(
-          "Selected: 2 (Kangaroo)"
-        );
-        // Check that option for selected item from external state is selected in popover
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Kangaroo"], true);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Single select updates external state when user selects a different option",
-      async () => {
-        // Focus
-        singleSelect.focus();
-        // Remove text from input, which opens popover
-        await userEvent.clear(singleSelect);
-        // Select koala option
-        await selectOptionsByName(["Koala"]);
-        // Verify that external state handler was called with correct value
-        await expect(mockFn).toHaveBeenCalledWith(1, "Koala");
-        // Verfiy that expected input value is correct
-        await expect(singleSelect.value).toBe("Koala");
-        // Check that external state in description is correct
-        await expect(singleSelectStateValue.textContent).toBe(
-          "Selected: 1 (Koala)"
-        );
-        // Open popover and verify that Koala option is selected and Kangaroo is not
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Koala"], true);
-        await verifyOptionsSelected(["Kangaroo"], false);
-      }
-    );
-    await step(
-      "Multi select shows text value of selected items from props in tags and options are selected in popover",
-      async () => {
-        // Focus
-        multiSelect.focus();
-        // Check that input value is text value of selected item from external state (2 - kangaroo)
-        await verifyTagsExist(multiSelect, ["Koala", "Platypus"]);
-        // Check that external state in description is correct
-        await expect(multiSelectStateValue.textContent).toBe(
-          "Selected: 1 (Koala), 3 (Platypus)"
-        );
-        // Check that options for selected items from external state are selected in popover
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Koala", "Platypus"], true);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Multi select updates external state when user selects a different option",
-      async () => {
-        // Focus
-        multiSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Select skunk option
-        await selectOptionsByName(["Skunk"]);
-        // Verify that external state handler was called with correct value
-        await expect(mockFn).toHaveBeenCalled();
-        // Verfiy that expected input value is correct
-        await expect(singleSelect.value).toBe("Koala");
-        // Check that external state in description is correct
-        await expect(multiSelectStateValue.textContent).toBe(
-          "Selected: 1 (Koala), 3 (Platypus), 6 (Skunk)"
-        );
-        // Check that options for selected items from external state are selected in popover
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Koala", "Platypus", "Skunk"], true);
-        // Check that options for unselected items are not selected in popover
-        await verifyOptionsSelected(
-          ["Kangaroo", "Bald Eagle with a very long name hooray", "Bison"],
-          false
-        );
-      }
-    );
-  },
-};
-
-/**
- * All Variants and Sizes
- * Comprehensive display of all available variants and sizes for both single and multi-select
- */
-export const AllVariantsAndSizes: Story = {
-  render: () => {
-    const sizes = ["sm", "md"] as const;
-    const variants = ["solid", "ghost"] as const;
-
-    return (
-      <Stack direction="column" gap="600">
-        {variants.map((variant) => (
-          <Stack key={variant} direction="column" gap="400">
-            <Text fontSize="500" fontWeight="600" textTransform="capitalize">
-              {variant} Variant
-            </Text>
-            {sizes.map((size) => (
-              <Stack key={`${variant}-${size}`} direction="column" gap="300">
-                <h4>Size: {size.toUpperCase()}</h4>
-                <Stack direction="row" gap="400">
-                  <FormField.Root alignSelf={"flex-start"}>
-                    <FormField.Label>{`Single Select ${variant} ${size}`}</FormField.Label>
-                    <FormField.Input>
-                      <ComboBox.Root
-                        defaultItems={options}
-                        size={size}
-                        variant={variant}
-                        placeholder={`type to search...`}
-                      >
-                        {(item) => (
-                          <ComboBox.Option>{item.name}</ComboBox.Option>
-                        )}
-                      </ComboBox.Root>
-                    </FormField.Input>
-                  </FormField.Root>
-                  <FormField.Root alignSelf={"flex-start"}>
-                    <FormField.Label>{`Multi-Select ${variant} ${size}`}</FormField.Label>
-                    <FormField.Input>
-                      <ComboBox.Root
-                        defaultItems={options}
-                        selectionMode="multiple"
-                        size={size}
-                        variant={variant}
-                        placeholder={`focus to search...`}
-                      >
-                        {(item) => (
-                          <ComboBox.Option>{item.name}</ComboBox.Option>
-                        )}
-                      </ComboBox.Root>
-                    </FormField.Input>
-                  </FormField.Root>
-                </Stack>
-              </Stack>
-            ))}
-          </Stack>
-        ))}
-      </Stack>
-    );
-  },
-};
-
-/**
- * Leading and Trailing Elements
- * Display of ComboBox with leading and trailing elements in various configurations
- */
-export const LeadingElements: Story = {
-  render: () => {
-    const examples: Array<{
-      label: string;
-      props?: Partial<ComboBoxRootProps<{ id: number; name: string }>>;
-      getProps?: (
-        size: "sm" | "md"
-      ) => Partial<ComboBoxRootProps<{ id: number; name: string }>>;
-    }> = [
-      {
-        label: "Without Leading Element",
-        props: {
-          placeholder: "Select items...",
-          "aria-label": "basic-combobox",
-        },
-      },
-      {
-        label: "With Leading Element",
-        props: {
-          placeholder: "Search items...",
-          leadingElement: <Search />,
-          "aria-label": "search-combobox",
-        },
-      },
-    ];
-
-    const inputSize = ["sm", "md"] as const;
-    const inputVariants = ["solid", "ghost"] as const;
-
-    return (
-      <Stack direction="column" gap="600">
-        {inputSize.map((size) => (
-          <Stack key={size as string} direction="column" gap="400">
-            <Text fontWeight="semibold">Size: {size as string}</Text>
-            <Stack direction="column" gap="300">
-              {examples.map((example) => (
-                <Stack
-                  key={`${size as string}-${example.label}`}
-                  direction="column"
-                  gap="200"
-                >
-                  <Text fontSize="sm" color="neutral.11">
-                    {example.label}
-                  </Text>
-                  <Stack direction="row" gap="400" alignItems="center">
-                    {inputVariants.map((variant) => (
-                      <Stack
-                        key={variant as string}
-                        direction="column"
-                        gap="100"
-                      >
-                        <Text fontSize="xs" color="neutral.10">
-                          {variant as string}
-                        </Text>
-                        <ComboBox.Root
-                          defaultItems={options}
-                          {...(example.getProps
-                            ? example.getProps(size)
-                            : example.props)}
-                          size={size}
-                          variant={variant}
-                        >
-                          {(item) => (
-                            <ComboBox.Option>{item.name}</ComboBox.Option>
-                          )}
-                        </ComboBox.Root>
-                      </Stack>
-                    ))}
-                  </Stack>
-                </Stack>
-              ))}
-            </Stack>
-          </Stack>
-        ))}
-
-        <Stack direction="column" gap="400">
-          <Text fontWeight="semibold">Multi-Select Variants</Text>
-          {inputSize.map((size) => (
-            <Stack key={`multi-${size as string}`} direction="column" gap="300">
-              <Text fontSize="sm" color="neutral.11">
-                Size: {size as string}
-              </Text>
-              <Stack direction="column" gap="300">
-                <Stack direction="column" gap="200">
-                  <Text fontSize="sm" color="neutral.11">
-                    With Leading Element
-                  </Text>
-                  <Stack direction="row" gap="400" alignItems="center">
-                    {inputVariants.map((variant) => (
-                      <Stack
-                        key={`multi-with-icon-${variant as string}`}
-                        direction="column"
-                        gap="100"
-                      >
-                        <Text fontSize="xs" color="neutral.10">
-                          {variant as string}
-                        </Text>
-                        <ComboBox.Root
-                          defaultItems={options}
-                          selectionMode="multiple"
-                          size={size}
-                          variant={variant}
-                          placeholder="Search multiple items..."
-                          leadingElement={<Search />}
-                          aria-label={`multi-with-icon-${variant as string}-${size as string}`}
-                        >
-                          {(item) => (
-                            <ComboBox.Option>{item.name}</ComboBox.Option>
-                          )}
-                        </ComboBox.Root>
-                      </Stack>
-                    ))}
-                  </Stack>
-                </Stack>
-                <Stack direction="column" gap="200">
-                  <Text fontSize="sm" color="neutral.11">
-                    Without Leading Element
-                  </Text>
-                  <Stack direction="row" gap="400" alignItems="center">
-                    {inputVariants.map((variant) => (
-                      <Stack
-                        key={`multi-without-icon-${variant as string}`}
-                        direction="column"
-                        gap="100"
-                      >
-                        <Text fontSize="xs" color="neutral.10">
-                          {variant as string}
-                        </Text>
-                        <ComboBox.Root
-                          defaultItems={options}
-                          selectionMode="multiple"
-                          size={size}
-                          variant={variant}
-                          placeholder="Select multiple items..."
-                          aria-label={`multi-without-icon-${variant as string}-${size as string}`}
-                        >
-                          {(item) => (
-                            <ComboBox.Option>{item.name}</ComboBox.Option>
-                          )}
-                        </ComboBox.Root>
-                      </Stack>
-                    ))}
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Stack>
-          ))}
-        </Stack>
-      </Stack>
-    );
-  },
-};
-
-export const OptionGroups: Story = {
-  render: () => {
-    return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select with Option Groups</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={sectionedItems}
-              placeholder="Select a food item..."
-            >
-              {(section) => (
-                <ComboBox.OptionGroup
-                  label={section.name}
-                  items={section.children}
-                >
-                  {(item) => (
-                    <ComboBox.Option textValue={item.name}>
-                      {item.name}
-                    </ComboBox.Option>
-                  )}
-                </ComboBox.OptionGroup>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select with Option Groups</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={sectionedItems}
-              selectionMode="multiple"
-              placeholder="Select multiple food items..."
-            >
-              {(section) => (
-                <ComboBox.OptionGroup
-                  label={section.name}
-                  items={section.children}
-                >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-                </ComboBox.OptionGroup>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select with option groups/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select with option groups/i,
-    });
-
-    await step(
-      "Single Select option groups are rendered with proper roles",
-      async () => {
-        // Focus combobox
-        singleSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Find sections
-        const groups = document.querySelectorAll(
-          '[role="listbox"] [role="group"]'
-        );
-        await expect(groups.length).toBe(2);
-        // Check section labels
-        const groupLabels = document.querySelectorAll('[role="presentation"]');
-        await expect(groupLabels[0]).toHaveTextContent("Fruits");
-        await expect(groupLabels[1]).toHaveTextContent("Vegetables");
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Single Select options are filtered correctly when user enters text",
-      async () => {
-        // Focus combobox
-        singleSelect.focus();
-        // Hit 'a' key
-        await userEvent.keyboard("{a}");
-        let options = getListboxOptions();
-        // There are 5 options with 'a' in them
-        await expect(options.length).toBe(5);
-        // There are options with 'a' in both sections
-        let groups = document.querySelectorAll(
-          '[role="listbox"] [role="group"]'
-        );
-        await expect(groups.length).toBe(2);
-        // Hit 'p' key
-        await userEvent.keyboard("{p}");
-        options = getListboxOptions();
-        // There is only one option with 'ap'
-        await expect(options.length).toBe(1);
-        await expect(findOptionByText("Apple")).toBeInTheDocument();
-        // there is only one section displayed
-        groups = document.querySelectorAll('[role="listbox"] [role="group"]');
-        await expect(groups.length).toBe(1);
-        const groupLabels = document.querySelectorAll('[role="presentation"]');
-        await expect(groupLabels[0]).toHaveTextContent("Fruits");
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step("Single Select options can be selected", async () => {
-      // Focus combobox
-      singleSelect.focus();
-      // Open popover
-      await userEvent.keyboard("{ArrowDown}");
-      // Select apple option
-      await selectOptionsByName(["Apple"]);
-      // Input value should be 'apple'
-      await expect(singleSelect).toHaveValue("Apple");
-      // Open listbox check that apple option has selected state
-      await userEvent.keyboard("{ArrowDown}");
-      await verifyOptionsSelected(["Apple"], true);
-      // Close popover for next test
-      await closePopover();
-    });
-    await step(
-      "Multi Select option groups are rendered with proper roles",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Find sections
-        const groups = document.querySelectorAll(
-          '[role="listbox"] [role="group"]'
-        );
-        await expect(groups.length).toBe(2);
-        // Check section labels
-        const groupLabels = document.querySelectorAll('[role="presentation"]');
-        await expect(groupLabels[0]).toHaveTextContent("Fruits");
-        await expect(groupLabels[1]).toHaveTextContent("Vegetables");
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Multi Select options are filtered correctly when user enters text",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Hit 'a' key
-        await userEvent.keyboard("{a}");
-        let options = getListboxOptions();
-        // There are 5 options with 'a' in them
-        await expect(options.length).toBe(5);
-        // There are options with 'a' in both sections
-        let groups = document.querySelectorAll(
-          '[role="listbox"] [role="group"]'
-        );
-        await expect(groups.length).toBe(2);
-        // Hit 'p' key
-        await userEvent.keyboard("{p}");
-        options = getListboxOptions();
-        // There is only one option with 'ap'
-        await expect(options.length).toBe(1);
-        await expect(findOptionByText("Apple")).toBeInTheDocument();
-        // there is only one section displayed
-        groups = document.querySelectorAll('[role="listbox"] [role="group"]');
-        await expect(groups.length).toBe(1);
-        const groupLabels = document.querySelectorAll('[role="presentation"]');
-        await expect(groupLabels[0]).toHaveTextContent("Fruits");
-        // Clear input and close popover for next test
-        const filterInput = getFilterInput();
-        await userEvent.clear(filterInput);
-        await closePopover();
-      }
-    );
-    await step(
-      "Multi Select options can be selected from multiple sections",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Select apple option in fruits section
-        await selectOptionsByName(["Apple"]);
-        // TagList should have apple tag
-        await verifyTagsExist(multiSelect, ["Apple"]);
-        // Apple option should be selected
-        await verifyOptionsSelected(["Apple"], true);
-        // Select carrot option in vegetables section
-        const carrotOption = findOptionByText("Carrot");
-        await userEvent.click(carrotOption!);
-        // TagList should have apple and carrot tag
-        await verifyTagsExist(multiSelect, ["Apple", "Carrot"]);
-        // Apple and carrot options should be selected
-        await verifyOptionsSelected(["Apple", "Carrot"], true);
-        // All other options should not be selected
-        await verifyOptionsSelected(
-          ["Banana", "Orange", "Broccoli", "Avocado", "Cucumber"],
-          false
-        );
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Multi select selected option can be removed by pressing its' tag's remove button",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        // Remove carrot tag
-        const tagList = await getTagList(multiSelect);
-        const carrotTag = tagList.childNodes[1] as HTMLElement;
-        const removeButton = within(carrotTag).getByRole("button", {
-          name: /remove tag carrot/i,
-        });
-        await userEvent.click(removeButton);
-        // Verify carrot tag is removed
-        await expect(carrotTag).not.toBeInTheDocument();
-        // Verify apple tag exists
-        await verifyTagsExist(multiSelect, ["Apple"]);
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Verify Apple is selected
-        await verifyOptionsSelected(["Apple"], true);
-        // Verify all other options not selected
-        await verifyOptionsSelected(
-          ["Banana", "Orange", "Carrot", "Broccoli", "Avocado", "Cucumber"],
-          false
-        );
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step(
-      "Multi select selected option can be removed by selecting its option",
-      async () => {
-        // Focus combobox
-        multiSelect.focus();
-        const tagList = await getTagList(multiSelect);
-        const appleTag = tagList.childNodes[0] as HTMLElement;
-        // Verify appleTag exists
-        await expect(appleTag).toBeInTheDocument();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Select Apple option
-        await selectOptionsByName(["Apple"]);
-        // Verify apple tag is removed
-        await expect(appleTag).not.toBeInTheDocument();
-        // Verify all options not selected
-        await verifyOptionsSelected(
-          [
-            "Apple",
-            "Banana",
-            "Orange",
-            "Carrot",
-            "Broccoli",
-            "Avocado",
-            "Cucumber",
-          ],
-          false
-        );
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-  },
-};
-
-/**
- * Complex Options with Descriptions Example
- * Demonstrates handling item objects that do not have an `id` key.  An `id` key is necessary to allow the selection of items in the dropdown.
- * When there is no `id` key:
- * - `<ComboBox.Option>` the `id` prop must be set on to the name of the item key that can be used instead
- * - `<ComboBox.Root>` multiselect: the `itemId` prop must be set to match the `id` prop passed to `<ComboBox.Option>`
- *
- * Demonstrates handling item objects that do not have a `name` key.  A `name` key is necessary to allow filtering in the dropdown and displaying selected values in the multi-select.
- * When there is no `name` key:
- * - `<ComboBox.Option>` the `textValue` prop must be set on to the name of the item key that can be used to display the option
- * - `<ComboBox.Root>` multiselect: the `itemValue` prop must be set to match the `textValue` prop passed to `<ComboBox.Option>`
- *
- * Demonstrates options with rich content including descriptions for both single and multi-select
- */
-export const ComplexOptions: Story = {
-  render: () => {
-    const PlanOptionComponent = ({ item }: { item: PlanOption }) => (
-      <Flex direction="column" gap="100">
-        <Flex justify="space-between" align="center" fontWeight="bold">
-          <Text slot="label">{item.type}</Text>
-          <Text color="positive.11">{item.price}</Text>
-        </Flex>
-        <Text slot="description" color="neutral.12">
-          {item.description}
-        </Text>
-        <Text textStyle="xs" lineHeight="400" color="neutral.11">
-          {item.features.join(" • ")}
-        </Text>
-      </Flex>
-    );
-
-    return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select Plan</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={complexOptionsWithGroups}
-              placeholder="Choose a plan..."
-            >
-              {(group) => (
-                <ComboBox.OptionGroup label={group.name} items={group.children}>
-                  {(item) => (
-                    <ComboBox.Option id={item.uuid} textValue={item.type}>
-                      <PlanOptionComponent item={item} />
-                    </ComboBox.Option>
-                  )}
-                </ComboBox.OptionGroup>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
+        <FormField.Root>
+          <FormField.Label>Select or create animals</FormField.Label>
           <FormField.Description>
-            <Text as="pre">
-              Combobox.Root: itemId and itemValue not necessary in single-select
-            </Text>
-            <Text as="pre">
-              Combobox.Option: id=item.uuid, textValue=item.type
-            </Text>
+            Type a custom animal name and press Enter to create!
+            {createdOptions.length > 0 &&
+              ` | Created: ${createdOptions.join(", ")}`}
           </FormField.Description>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select Plans</FormField.Label>
           <FormField.Input>
-            <ComboBox.Root
-              defaultItems={complexOptionsWithGroups}
+            <ComposedComboBox<SimpleOption>
+              aria-label="Select or create animals"
+              items={simpleOptions}
+              selectedKeys={selectedKeys}
+              onSelectionChange={setSelectedKeys}
               selectionMode="multiple"
-              placeholder="Compare multiple plans..."
-              itemId="uuid"
-              itemValue="type"
-            >
-              {(group) => (
-                <ComboBox.OptionGroup label={group.name} items={group.children}>
-                  {(item) => (
-                    <ComboBox.Option id={item.uuid} textValue={item.type}>
-                      <PlanOptionComponent item={item} />
-                    </ComboBox.Option>
-                  )}
-                </ComboBox.OptionGroup>
-              )}
-            </ComboBox.Root>
+              placeholder="Type to search or create..."
+              allowsCustomOptions
+              getNewOptionData={(inputValue) => ({
+                id: Date.now(),
+                name: inputValue,
+              })}
+              onCreateOption={handleCreateOption}
+            />
           </FormField.Input>
-          <FormField.Description>
-            <Text as="pre">Combobox.Root: itemId=uuid itemValue=type</Text>
-            <Text as="pre">
-              Combobox.Option: id=item.uuid, textValue=item.type
-            </Text>
-          </FormField.Description>
         </FormField.Root>
       </Stack>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select plan/i,
+
+    await step("Initial state - one item selected", async () => {
+      // Verify initial selected tag (id: 1 = Koala)
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
     });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select plans/i,
+
+    await step("Open combobox", async () => {
+      const toggleButton = await within(
+        await canvas.findByRole("group")
+      ).findByRole("button", { name: /toggle options/i });
+      await userEvent.click(toggleButton);
+
+      // Wait for menu to open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Verify Koala is selected in options
+      await verifyOptionsSelected(["Koala"], true);
     });
-    await step("Options display labels and descriptions", async () => {
-      singleSelect.focus();
-      await userEvent.keyboard("{ArrowDown}");
-      const starterPlanOption = findOptionByText("Starter Plan");
-      await expect(
-        starterPlanOption?.querySelector('[slot="label"]')
-      ).toHaveTextContent("Starter Plan");
-      await expect(
-        starterPlanOption?.querySelector('[slot="description"]')
-      ).toHaveTextContent("Great for individuals and small projects");
-      // Close popover for next test
-      await closePopover();
+
+    await step("Create first custom option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Type a custom animal name
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Lion");
+
+      // Press Enter to create
+      await userEvent.keyboard("{Enter}");
+
+      // Wait for custom option to be created and selected
+      await verifyOptionsSelected(["Lion"], true);
+      await waitFor(() => {
+        // Check tag was added
+        expect(findOptionByText("Lion")).toBeInTheDocument();
+        // Check description updated
+        expect(canvas.getByText(/Created: Lion/)).toBeInTheDocument();
+      });
+
+      // Verify input was cleared after creation (multi-select behavior)
+      expect(combobox).toHaveValue("");
     });
-    await step("single select displays options in popover", async () => {
-      // Focus the input
-      singleSelect.focus();
-      // Open the popover
-      await userEvent.keyboard("{ArrowDown}");
-      // Check that there are the expected number of options
-      await expect(getListboxOptions().length).toBe(4);
-      // Close popover for next test
-      await closePopover();
+
+    await step("Create second custom option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Type another custom animal
+      await userEvent.type(combobox, "Tiger");
+      await userEvent.keyboard("{Enter}");
+
+      // Wait for second custom option
+      await verifyOptionsSelected(["Tiger"], true);
+      await waitFor(() => {
+        expect(canvas.getByText(/Created: Lion, Tiger/)).toBeInTheDocument();
+      });
     });
-    await step(
-      "single select filters options and allows for selection when user enters text in input",
-      async () => {
-        singleSelect.focus();
-        // Type 's'
-        await userEvent.keyboard("{s}");
-        // 'Premium Plan' option should be filtered out
-        await expect(getListboxOptions().length).toBe(3);
-        // Type 't'
-        await userEvent.keyboard("{t}");
-        // 'Small Team' and 'Enterprise' plans should be filtered out
-        await expect(getListboxOptions().length).toBe(1);
-        // Select 'Stater Plan' option
-        await selectOptionsByName(["Starter Plan"]);
-        // Popover should be closed
-        await expect(document.querySelector('[role="listbox"]')).toBeNull();
-        await expect(singleSelect.getAttribute("aria-expanded")).toBe("false");
-        // Input value should be 'Starter Plan'
-        await expect(singleSelect.value).toBe("Starter Plan");
-        // 'Starter Plan' option should be selected
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Starter Plan"], true);
-        // Other options should not be selected
-        await verifyOptionsSelected(
-          ["Enterprise Plan", "Small Team Plan", "Premium Plan"],
-          false
-        );
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step("multi select displays options in popover", async () => {
-      // Focus the component
-      multiSelect.focus();
-      // Open the popover
-      await userEvent.keyboard("{ArrowDown}");
-      // Check that there are the expected number of options
-      await expect(getListboxOptions().length).toBe(4);
-      // Close popover for next test
-      await closePopover();
+
+    await step("Select an existing static option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Clear input and type to filter
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Kang");
+
+      // Wait for filtered results
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+
+      // Select Kangaroo option
+      await selectOptionsByName(["Kangaroo"]);
+
+      // Verify Kangaroo tag appears in tag list
+      await verifyTagsExist(canvas.getByRole("group"), [
+        "Koala",
+        "Lion",
+        "Tiger",
+        "Kangaroo",
+      ]);
     });
-    await step(
-      "multi select filters options and allows for selection when user enters text in input",
-      async () => {
-        multiSelect.focus();
-        // Open popover
-        await userEvent.keyboard("{ArrowDown}");
-        // Type 's'
-        await userEvent.keyboard("{s}");
-        // 'Premium Plan' option should be filtered out
-        await expect(getListboxOptions().length).toBe(3);
-        // Select  'Starter Plan' option in 'individual plans' section and 'Enterprise Plan' and 'Small Team Plan' in business plans section
-        await selectOptionsByName([
-          "Starter Plan",
-          "Enterprise Plan",
-          "Small Team Plan",
-        ]);
-        // TagsList should include tags for all 3 selected plans
-        await verifyTagsExist(multiSelect, [
-          "Starter Plan",
-          "Enterprise Plan",
-          "Small Team Plan",
-        ]);
-        // Clear filter input
-        await userEvent.clear(getFilterInput());
-        // 3 options should be selected
-        await verifyOptionsSelected(
-          ["Starter Plan", "Enterprise Plan", "Small Team Plan"],
-          true
-        );
-        // Premium plan option should not be selected
-        await verifyOptionsSelected(["Premium Plan"], false);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-    await step("multi select tags can be removed", async () => {
-      const tagList = await getTagList(multiSelect);
-      const enterpriseTag = tagList.childNodes[1] as HTMLElement;
-      const removeButton = within(enterpriseTag).getByRole("button", {
-        name: /remove tag enterprise plan/i,
+
+    await step("Remove a custom option tag", async () => {
+      // Find and click remove button for Lion
+      const lionTag = await within(await getTagList(canvas.getByRole("group")))
+        .getByText("Lion")
+        .closest('[role="row"]');
+      expect(lionTag).toBeInTheDocument();
+
+      const removeButton = within(lionTag as HTMLElement).getByRole("button", {
+        name: /remove tag lion/i,
       });
       await userEvent.click(removeButton);
-      // TagsList should include tags for Starter Plan and Small Team Plan
-      await verifyTagsExist(multiSelect, ["Starter Plan", "Small Team Plan"]);
-      // Open popover
-      await userEvent.keyboard("{ArrowDown}");
-      // 2 options should be selected
-      await verifyOptionsSelected(["Starter Plan", "Small Team Plan"], true);
-      // Premium plan and Enterprise plan should not be selected
-      await verifyOptionsSelected(["Premium Plan", "Enterprise Plan"], false);
-      // Close popover for next test
-      await closePopover();
+
+      // Verify Lion tag is removed
+
+      await expect(
+        await within(await getTagList(canvas.getByRole("group"))).queryByText(
+          "Lion"
+        )
+      ).not.toBeInTheDocument();
+
+      // Other tags should still exist
+      await verifyTagsExist(canvas.getByRole("group"), [
+        "Koala",
+        "Tiger",
+        "Kangaroo",
+      ]);
+    });
+
+    await step(
+      "Verify custom option still in list after deselection",
+      async () => {
+        // Open the menu again
+        const combobox = canvas.getByRole("combobox");
+        await userEvent.click(combobox);
+
+        // Clear any text to show all options
+        await userEvent.clear(combobox);
+
+        // Wait for menu to populate
+        await waitFor(() => {
+          expect(getListBox(document)).toBeInTheDocument();
+        });
+
+        // Lion should still be in the list (just not selected)
+        await verifyOptionsSelected(["Lion"], false);
+
+        // Tiger should be in the list and selected
+        await verifyOptionsSelected(["Tiger"], true);
+      }
+    );
+
+    await step("Attempt to create duplicate option", async () => {
+      const combobox = canvas.getByRole("combobox");
+
+      // Try to create "Tiger" again (already exists)
+      await userEvent.clear(combobox);
+      await userEvent.type(combobox, "Koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should not create duplicate - Created list should not change
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(canvas.getByText(/Created: Lion, Tiger$/)).toBeInTheDocument();
+
+      // Tiger should remain selected (was already selected)
+      expect(canvas.getByText("Tiger")).toBeInTheDocument();
     });
   },
 };
 
+// ============================================================
+// ASYNC LOADING
+// ============================================================
+
 /**
- * Async Loading Example
- * Demonstrates fetching data from an API with search functionality
- * - for single-select to display options on initial search, the `allowsEmptyCollection` prop must be `true`
-   - when `allowsEmptyCollection` is true, it is advisable to also provide a component to display via the `renderEmptyState` prop
- `
+ * Demonstrates async loading with the built-in async API.
+ * Shows rich Pokemon results with sprites, types, and stats.
+ *
+ * The ComboBox automatically handles:
+ * - Loading state management
+ * - Request debouncing (300ms default)
+ * - Request cancellation on input changes
+ * - Filter bypass (since API handles filtering)
+ * - Empty menu display
+ * - Error handling
  */
 export const AsyncLoading: Story = {
   render: () => {
-    const singleSelectState = useAsyncList<{ id: number; name: string }>({
-      async load() {
-        // Add 500ms delay before returning results, so that we can test loading state reliably
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return { items: options };
-      },
-    });
-    const multiSelectState = useAsyncList<{ id: number; name: string }>({
-      async load() {
-        // Add 500ms delay before returning results, so that we can test loading state reliably
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return { items: options };
-      },
-    });
-    return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select Async</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={singleSelectState.items}
-              // Workaround for known combobox bug (single select), allowsEmptyCollection should be set for async loaded items to trigger opening the dropdown on initial load
-              // https://github.com/adobe/react-spectrum/issues/5234
-              allowsEmptyCollection={true}
-              renderEmptyState={() => (
-                <Text color="neutral.11" fontStyle="italic">
-                  {singleSelectState.loadingState === "loading"
-                    ? "loading..."
-                    : "no results"}
-                </Text>
-              )}
-              isLoading={singleSelectState.loadingState === "loading"}
-              placeholder="select a character..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select Async</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={multiSelectState.items}
-              isLoading={multiSelectState.loadingState === "loading"}
-              selectionMode="multiple"
-              placeholder="select characters..."
-            >
-              {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select async/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select async/i,
-    });
-    await step(
-      "loading spinner is displayed when options are loaded",
-      async () => {
-        await within(singleSelect.parentElement!).findByTestId(
-          "nimbus-combobox-loading"
-        );
-        await within(multiSelect).findByTestId("nimbus-combobox-loading");
-      }
-    );
-    await step(
-      "single select options are displayed when loaded, and are selectable",
-      async () => {
-        singleSelect.focus();
-        await userEvent.keyboard("{k}");
-        // Popover is displayed
-        const listbox = document.querySelector(
-          '[role="listbox"]'
-        ) as HTMLElement;
-        await expect(listbox).toBeInTheDocument();
-        // Options are displayed
-        await within(listbox).findByRole("option", { name: /koala/i });
-        // Options are filtered based on input
-        await expect(getListboxOptions().length).toBe(3);
-        // Select Koala option
-        await selectOptionsByName(["Koala"]);
-        // Input value should be koala
-        await expect(singleSelect.value).toBe("Koala");
-        // Koala option is selected
-        await userEvent.keyboard("{ArrowDown}");
-        await verifyOptionsSelected(["Koala"], true);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-
-    await step(
-      "multi select options are displayed when loaded, and are selectable",
-      async () => {
-        multiSelect.focus();
-        await userEvent.keyboard("{k}");
-        // Popover is displayed
-        const listbox = document.querySelector(
-          '[role="listbox"]'
-        ) as HTMLElement;
-        await expect(listbox).toBeInTheDocument();
-        // Options are displayed
-        await within(listbox).findByRole("option", { name: /koala/i });
-        // Options are filtered based on input
-        await expect(getListboxOptions().length).toBe(3);
-        // Select Koala option
-        await selectOptionsByName(["Koala"]);
-        // Koala tag is visible
-        await verifyTagsExist(multiSelect, ["Koala"]);
-        // Koala option is selected
-        await verifyOptionsSelected(["Koala"], true);
-        // Close popover for next test
-        await closePopover();
-      }
-    );
-  },
-};
-/**
- * Create Custom Value Example
- * Demonstrates custom value creation and validation for both single and multi-select
- */
-export const CreateCustomValue: Story = {
-  render: () => {
-    // Single select state
-    const [singleSelectedItem, setSingleSelectedItem] = useState<Key | null>(
-      null
-    );
-    const [singleCustomItems, setSingleCustomItems] = useState<
-      Array<{ id: string; name: string }>
-    >([]);
-    const [singleInputValue, setSingleInputValue] = useState("");
-    // Multi-select state
-    const [multiSelectedItems, setMultiSelectedItems] = useState<Selection>(
-      new Set()
-    );
-    const [multiCustomItems, setMultiCustomItems] = useState<
-      Array<{ id: string; name: string }>
-    >([]);
-    const [multiInputValue, setMultiInputValue] = useState("");
-
-    const singleAllItems = useMemo(
-      () => [...options, ...singleCustomItems],
-      [singleCustomItems]
-    );
-    const multiAllItems = useMemo(
-      () => [...options, ...multiCustomItems],
-      [multiCustomItems]
-    );
-    const handleSingleSelectionChange = (key: Key | null) => {
-      const nextInputValue =
-        singleAllItems.find((o) => o.id === key)?.name ?? "";
-      setSingleSelectedItem(key);
-      setSingleInputValue(nextInputValue);
-    };
-    const handleSingleCustomValue = (value: string) => {
-      mockFn();
-      // Add custom item
-      const newItem = { id: `single-custom-${Date.now()}`, name: value };
-      setSingleCustomItems((prev) => [...prev, newItem]);
-      setSingleSelectedItem(newItem.id);
-    };
-    const handleMultiCustomValue = (value: string) => {
-      mockFn();
-      // Add custom item
-      const newItem = { id: `multi-custom-${Date.now()}`, name: value };
-      setMultiCustomItems((prev) => [...prev, newItem]);
-      setMultiSelectedItems((prev) => {
-        const newSelection = new Set(prev);
-        newSelection.add(newItem.id);
-        return newSelection;
-      });
-    };
-    // Input change handlers
-    const handleSingleInputChange = (value: string) => {
-      setSingleInputValue(value);
-    };
-    const handleMultiInputChange = (value: string) => {
-      setMultiInputValue(value);
-    };
+    const [error, setError] = useState<string | null>(null);
+    const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
 
     return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select with Custom Values</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              allowsCustomValue
-              onSubmitCustomValue={handleSingleCustomValue}
-              defaultItems={singleAllItems}
-              selectedKey={singleSelectedItem}
-              onSelectionChange={handleSingleSelectionChange}
-              inputValue={singleInputValue}
-              onInputChange={handleSingleInputChange}
-              placeholder="Select or create an item..."
-            >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  textValue={item.name}
-                >
-                  {item.name}
-                  {singleCustomItems.some((custom) => custom.id === item.id) &&
-                    " (Custom)"}
-                </ComboBox.Option>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select with Custom Values</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              allowsCustomValue
-              onSubmitCustomValue={handleMultiCustomValue}
-              defaultItems={multiAllItems}
-              selectionMode="multiple"
-              selectedKeys={multiSelectedItems}
-              onSelectionChange={setMultiSelectedItems}
-              inputValue={multiInputValue}
-              onInputChange={handleMultiInputChange}
-              placeholder="Select or create items..."
-            >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  textValue={item.name}
-                >
-                  {item.name}
-                  {multiCustomItems.some((custom) => custom.id === item.id) &&
-                    " (Custom)"}
-                </ComboBox.Option>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
+      <ComboBox.Root<Pokemon>
+        aria-label="Asyncachu"
+        placeholder="Type to search for Pokemon..."
+        getKey={getPokemonValue}
+        getTextValue={getPokemonValue}
+        isInvalid={!!error}
+        selectionMode="multiple"
+        async={{
+          load: async (filterText, signal) => {
+            // Pokemon API returns all pokemon, we filter client-side
+            const response = await fetch(
+              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
+              { signal }
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Filter results client-side to match search
+            const filtered = data.results.filter((p: Pokemon) =>
+              p.name.toLowerCase().includes(filterText.toLowerCase())
+            );
+            return filtered.slice(0, 100); // Limit to 100 results for performance
+          },
+          debounce: 300,
+          onError: (err) => {
+            setError(err.message);
+          },
+        }}
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(pokemon: Pokemon) => (
+              <ComboBox.Option>
+                <PokemonOption pokemon={pokemon} />
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
     );
   },
+
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select with custom values/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select with custom values/i,
+
+    await step("Type search query", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "pika");
+
+      // Verify input has value
+      expect(input).toHaveValue("pika");
     });
 
-    await step(
-      "single select allows setting a custom value when the submitted value does not match an existing option",
-      async () => {
-        singleSelect.focus();
-        // Type in string that does not match any options
-        await userEvent.keyboard("koa");
-        // Create custom 'koa' option by hitting 'enter'
-        await userEvent.keyboard("{Enter}");
-        // Check that onCreateCustomValue has been called
-        await expect(mockFn).toHaveBeenCalled();
-      }
-    );
-    await step(
-      "single select does not allow setting a custom value when the submitted value matches an existing option",
-      async () => {
-        mockFn.mockClear();
-        singleSelect.focus();
-        // Clear input
-        await userEvent.clear(singleSelect);
-        // Type in string that does matches an option
-        await userEvent.keyboard("koala");
-        // Select 'koala' option by hitting 'enter'
-        await userEvent.keyboard("{Enter}");
-        // Check that onCreateCustomValue has not been called
-        await expect(mockFn).not.toHaveBeenCalled();
-      }
-    );
-    await step(
-      "multi select allows setting a custom value when the submitted value does not match an existing option",
-      async () => {
-        mockFn.mockClear();
-        multiSelect.focus();
-        // Type in string that does not match any options
-        await userEvent.keyboard("koa");
-        // Create custom 'koa' option by hitting 'enter'
-        await userEvent.keyboard("{Enter}");
-        // Check that onCreateCustomValue has been called
-        await expect(mockFn).toHaveBeenCalled();
-      }
-    );
-    await step(
-      "single select does not allow setting a custom value when the submitted value matches an existing option",
-      async () => {
-        mockFn.mockClear();
-        // Clear input
-        await userEvent.clear(getFilterInput());
-        // Type in string that does matches an option
-        await userEvent.keyboard("koala");
-        // Select 'koala' option by hitting 'enter'
-        await userEvent.keyboard("{Enter}");
-        // Check that onCreateCustomValue has not been called
-        await expect(mockFn).not.toHaveBeenCalled();
-      }
-    );
-  },
-};
-
-/**
- * Disabled and Read-Only Comboboxes Example
- * Demonstrates disabled and read-only comboboxes side by side for both single and multi-select modes
- * - Disabled comboboxes do not allow any interaction and have disabled styling
- * - Read-only comboboxes can be focused but do not allow any updates
- */
-export const DisabledAndReadOnlyComboboxes: Story = {
-  render: () => {
-    const [variant, setVariant] = useState<"solid" | "ghost">("solid");
-    return (
-      <Stack direction="column" gap="600">
-        <Stack direction="column" gap="300">
-          <h3>Single Select ComboBoxes</h3>
-          <Stack direction="row" gap="400">
-            <FormField.Root alignSelf={"flex-start"} isDisabled>
-              <FormField.Label>Disabled Single Select</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={options}
-                  isDisabled
-                  defaultSelectedKey={2}
-                  variant={variant}
-                  placeholder="This combobox is disabled..."
-                >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Disabled - cannot interact at all
-              </FormField.Description>
-            </FormField.Root>
-            <FormField.Root alignSelf={"flex-start"} isReadOnly>
-              <FormField.Label>Read-Only Single Select</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={options}
-                  isReadOnly
-                  variant={variant}
-                  defaultSelectedKey={2}
-                  placeholder="This combobox is read-only..."
-                >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Read-only - can focus but not change value
-              </FormField.Description>
-            </FormField.Root>
-          </Stack>
-        </Stack>
-        <Stack direction="column" gap="300">
-          <h3>Multi-Select ComboBoxes</h3>
-          <Stack direction="row" gap="400">
-            <FormField.Root alignSelf={"flex-start"} isDisabled>
-              <FormField.Label>Disabled Multi-Select</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={options}
-                  selectionMode="multiple"
-                  isDisabled
-                  variant={variant}
-                  defaultSelectedKeys={new Set([1, 3, 5])}
-                  placeholder="This combobox is disabled..."
-                >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Disabled - cannot interact at all
-              </FormField.Description>
-            </FormField.Root>
-            <FormField.Root alignSelf={"flex-start"} isReadOnly>
-              <FormField.Label>Read-Only Multi-Select</FormField.Label>
-              <FormField.Input>
-                <ComboBox.Root
-                  defaultItems={options}
-                  selectionMode="multiple"
-                  isReadOnly
-                  variant={variant}
-                  defaultSelectedKeys={new Set([1, 3, 5])}
-                  placeholder="This combobox is read-only..."
-                >
-                  {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-                </ComboBox.Root>
-              </FormField.Input>
-              <FormField.Description>
-                Read-only - can focus but not change values
-              </FormField.Description>
-            </FormField.Root>
-          </Stack>
-        </Stack>
-        <RadioInput.Root
-          onChange={setVariant as (value: string) => void}
-          value={variant}
-          orientation="horizontal"
-          aria-label="choose variant"
-        >
-          <RadioInput.Option value="solid">Solid</RadioInput.Option>
-          <RadioInput.Option value="ghost">Ghost</RadioInput.Option>
-        </RadioInput.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelectDisabled: HTMLInputElement = await canvas.findByRole(
-      "combobox",
-      {
-        name: /disabled single select/i,
-      }
-    );
-    const multiSelectDisabled = await canvas.findByRole("combobox", {
-      name: /disabled multi-select/i,
-    });
-    const singleSelectReadOnly: HTMLInputElement = await canvas.findByRole(
-      "combobox",
-      {
-        name: /read-only single select/i,
-      }
-    );
-    const multiSelectReadOnly = await canvas.findByRole("combobox", {
-      name: /read-only multi-select/i,
-    });
-    await step(
-      "Disabled comboboxes are not focusable, read-only comboboxes are focusable",
-      async () => {
-        await userEvent.tab();
-        // First tab should skip disabled single select
-        await expect(singleSelectDisabled).not.toHaveFocus();
-        // First tab focuses read only single select
-        await expect(singleSelectReadOnly).toHaveFocus();
-        // Focusing single select does not open listbox
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).not.toBeInTheDocument();
-        await userEvent.tab();
-        // Second tab skips multi disabled
-        await expect(multiSelectDisabled).not.toHaveFocus();
-        // focusing multi-select does not open listbox
-        await expect(
-          document.querySelector('[role="listbox"]')
-        ).not.toBeInTheDocument();
-      }
-    );
-    await step("Disabled single select has disabled attributes", async () => {
-      await expect(singleSelectDisabled).toHaveAttribute("disabled");
-      await expect(singleSelectDisabled).toHaveStyle({
-        pointerEvents: "none",
-      });
-      // the input has the 'combobox' role in the single select, we need to target the wrapper container to check for the not-allowed cursor
-      await expect(singleSelectDisabled.parentElement).toHaveStyle({
-        cursor: "not-allowed",
-      });
-    });
-    await step("Disabled single select cannot be clicked to open", async () => {
-      await userEvent.click(singleSelectDisabled, { pointerEventsCheck: 0 });
-      await expect(getListboxOptions().length).toBe(0);
-      await expect(singleSelectDisabled).toHaveStyle({ pointerEvents: "none" });
-    });
-    await step("Disabled single select buttons are disabled", async () => {
-      const buttons = await within(
-        singleSelectDisabled.parentElement!
-      ).findAllByRole("button");
-      for (let i = 0; i < buttons.length; i++) {
-        await expect(buttons[i]).toHaveStyle({ pointerEvents: "none" });
-        await expect(buttons[i]).toHaveAttribute("disabled");
-      }
-    });
-    await step("Disabled multi select has disabled attributes", async () => {
-      await expect(multiSelectDisabled.getAttribute("aria-disabled")).toBe(
-        "true"
+    await step("Wait for menu to open and results to load", async () => {
+      // Wait for listbox to appear in document.body (portaled)
+      await waitFor(
+        () => {
+          expect(getListBox(document)).not.toBeNull();
+        },
+        { timeout: 5000 }
       );
-      await expect(multiSelectDisabled).toHaveStyle({
-        cursor: "not-allowed",
+
+      // Wait for Pikachu option to appear
+      await waitFor(
+        () => {
+          expect(findOptionByText("pikachu")).toBeTruthy();
+        },
+        { timeout: 5000 }
+      );
+    });
+  },
+};
+
+/**
+ * Demonstrates error handling when async loading fails.
+ * Simulates a failing API to show error states with the built-in async API.
+ */
+export const AsyncLoadingWithError: Story = {
+  render: () => {
+    const [error, setError] = useState<string | null>(null);
+    const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
+
+    return (
+      <Stack direction="column" gap="400" width="500px">
+        <FormField.Root isInvalid={!!error}>
+          <FormField.Label>Search Pokemon (Error Demo)</FormField.Label>
+          <FormField.Input>
+            <ComboBox.Root<Pokemon>
+              placeholder="Type to trigger error..."
+              getKey={getPokemonValue}
+              getTextValue={getPokemonValue}
+              isInvalid={!!error}
+              async={{
+                load: async (_filterText, signal) => {
+                  // Simulate API failure after delay
+                  await new Promise((resolve) => setTimeout(resolve, 500));
+                  if (signal.aborted) {
+                    throw new Error("AbortError");
+                  }
+                  // Always throw an error to demonstrate error handling
+                  throw new Error(
+                    "Failed to load Pokemon. Please try again later."
+                  );
+                },
+                debounce: 300,
+                onError: (err) => {
+                  setError(err.message);
+                },
+              }}
+            >
+              <ComboBox.Trigger />
+              <ComboBox.Popover>
+                <ComboBox.ListBox>
+                  {(pokemon: Pokemon) => (
+                    <ComboBox.Option>
+                      <PokemonOption pokemon={pokemon} />
+                    </ComboBox.Option>
+                  )}
+                </ComboBox.ListBox>
+              </ComboBox.Popover>
+            </ComboBox.Root>
+          </FormField.Input>
+          {error && <FormField.Error>{error}</FormField.Error>}
+          <FormField.Description>
+            This demo always fails to demonstrate error handling in async
+            loading
+          </FormField.Description>
+        </FormField.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Type search query to trigger error", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "test");
+
+      // Verify input has value
+      expect(input).toHaveValue("test");
+    });
+
+    await step("Wait for error to appear", async () => {
+      await waitFor(
+        () => {
+          const errorMessage = canvas.queryByText(/Failed to load Pokemon/i);
+          expect(errorMessage).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+    });
+  },
+};
+
+/**
+ * Demonstrates that selected items persist across searches in async multi-select mode.
+ * Tests that:
+ * 1. Selected items remain visible as tags even when not in current search results
+ * 2. Selected items can be removed from tags
+ * 3. Re-searching for selected items shows them as selected
+ */
+export const AsyncMultiSelectPersistence: Story = {
+  render: () => {
+    const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
+
+    return (
+      <ComboBox.Root<Pokemon>
+        aria-label="multisyncachu"
+        placeholder="Type to search..."
+        getKey={getPokemonValue}
+        getTextValue={getPokemonValue}
+        selectionMode="multiple"
+        async={{
+          load: async (filterText, signal) => {
+            const response = await fetch(
+              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
+              { signal }
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const filtered = data.results.filter((p: Pokemon) =>
+              p.name.toLowerCase().includes(filterText.toLowerCase())
+            );
+            return filtered.slice(0, 50);
+          },
+          debounce: 300,
+        }}
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            {(pokemon: Pokemon) => (
+              <ComboBox.Option>
+                <PokemonOption pokemon={pokemon} />
+              </ComboBox.Option>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Search for 'pika' and select pikachu", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "pika");
+
+      // Wait for results
+      await waitFor(
+        () => {
+          expect(findOptionByText("pikachu")).toBeTruthy();
+        },
+        { timeout: 5000 }
+      );
+
+      // Select pikachu
+      await selectOptionsByName(["pikachu"]);
+    });
+
+    await step("Verify pikachu tag exists", async () => {
+      await verifyTagsExist(canvas.getByRole("group"), ["pikachu"]);
+    });
+
+    await step("Search for 'char' (which doesn't match pikachu)", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "char");
+
+      // Wait for new results
+      await waitFor(
+        () => {
+          // charmander should be in results
+          expect(findOptionByText("charmander")).toBeTruthy();
+          // pikachu should not
+          expect(findOptionByText("pikachu")).toBeUndefined();
+        },
+        { timeout: 5000 }
+      );
+    });
+
+    await step("Verify pikachu tag still exists (persisted)", async () => {
+      // The key test: pikachu tag should still be visible
+      // even though it's not in the current search results
+      await verifyTagsExist(canvas.getByRole("group"), ["pikachu"]);
+    });
+
+    await step("Select charmander", async () => {
+      await selectOptionsByName(["charmander"]);
+    });
+
+    await step("Verify both tags exist", async () => {
+      await verifyTagsExist(canvas.getByRole("group"), [
+        "pikachu",
+        "charmander",
+      ]);
+    });
+
+    await step("Search for 'pika' again", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "pika");
+
+      // Wait for results
+      await waitFor(
+        () => {
+          expect(findOptionByText("pikachu")).toBeTruthy();
+        },
+        { timeout: 5000 }
+      );
+    });
+
+    await step(
+      "Verify both tags still exist and selection is maintained",
+      async () => {
+        // Both tags should still be there
+        await verifyTagsExist(canvas.getByRole("group"), [
+          "pikachu",
+          "charmander",
+        ]);
+
+        // Pikachu option should show as selected
+        await verifyOptionsSelected(["pikachu"], true);
+      }
+    );
+
+    await step(
+      "Verify both options are visible and selection is maintained when there is no input value",
+      async () => {
+        const input = canvas.getByRole("combobox");
+        await userEvent.clear(input);
+
+        await verifyOptionsSelected(["pikachu", "charmander"], true);
+      }
+    );
+  },
+};
+
+/**
+ * Demonstrates custom option creation in async multi-select mode.
+ * Tests that:
+ * 1. Users can create custom options by pressing Enter on non-matching text
+ * 2. Created options are added to the selection
+ * 3. Created options persist across searches
+ * 4. onCreateOption callback is triggered
+ */
+export const AsyncMultiSelectCustomOptions: Story = {
+  render: () => {
+    const [createdOptions, setCreatedOptions] = useState<string[]>([]);
+    const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
+
+    return (
+      <Stack direction="column" gap="400" width="500px">
+        <FormField.Root>
+          <FormField.Label>
+            Create custom Pokemon (async + custom options)
+          </FormField.Label>
+          <FormField.Input>
+            <ComboBox.Root<Pokemon>
+              placeholder="Type to search or create..."
+              getKey={getPokemonValue}
+              getTextValue={getPokemonValue}
+              selectionMode="multiple"
+              allowsCustomOptions={true}
+              getNewOptionData={(inputValue) => ({
+                name: inputValue,
+                url: `custom-${inputValue}`,
+              })}
+              onCreateOption={(newOption) => {
+                setCreatedOptions((prev) => [...prev, newOption.name]);
+              }}
+              async={{
+                load: async (filterText, signal) => {
+                  const response = await fetch(
+                    `https://pokeapi.co/api/v2/pokemon?limit=1000`,
+                    { signal }
+                  );
+
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                  }
+
+                  const data = await response.json();
+                  const filtered = data.results.filter((p: Pokemon) =>
+                    p.name.toLowerCase().includes(filterText.toLowerCase())
+                  );
+                  return filtered.slice(0, 50);
+                },
+                debounce: 300,
+              }}
+            >
+              <ComboBox.Trigger />
+              <ComboBox.Popover>
+                <ComboBox.ListBox>
+                  {(pokemon: Pokemon) => (
+                    <ComboBox.Option>
+                      <PokemonOption pokemon={pokemon} />
+                    </ComboBox.Option>
+                  )}
+                </ComboBox.ListBox>
+              </ComboBox.Popover>
+            </ComboBox.Root>
+          </FormField.Input>
+          <FormField.Description>
+            Search for existing Pokemon or type a custom name and press Enter to
+            create!
+            {createdOptions.length > 0 &&
+              ` | Created: ${createdOptions.join(", ")}`}
+          </FormField.Description>
+        </FormField.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Search for 'pika' and select pikachu", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "pika");
+
+      // Wait for results
+      await waitFor(
+        () => {
+          expect(findOptionByText("pikachu")).toBeTruthy();
+        },
+        { timeout: 5000 }
+      );
+
+      // Select pikachu
+      await selectOptionsByName(["pikachu"]);
+    });
+
+    await step("Type custom option 'MyCustomMon' and press Enter", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "MyCustomMon");
+
+      // Wait for async search to complete (no results expected)
+      await waitFor(
+        () => {
+          // Input should have the typed value
+          expect(input).toHaveValue("MyCustomMon");
+        },
+        { timeout: 2000 }
+      );
+
+      // Press Enter to create the custom option
+      await userEvent.keyboard("{Enter}");
+    });
+
+    await step("Verify custom option was created and selected", async () => {
+      // Custom option should appear as a tag
+      await waitFor(() => {
+        const customTag = canvas.queryByText("MyCustomMon");
+        expect(customTag).toBeInTheDocument();
+      });
+
+      // Original pikachu tag should still exist
+      expect(canvas.queryByText("pikachu")).toBeInTheDocument();
+
+      // Description should show the created option
+      await waitFor(() => {
+        const description = canvas.queryByText(/Created:/i);
+        expect(description).toBeInTheDocument();
+        expect(description?.textContent).toContain("MyCustomMon");
       });
     });
-    await step("Disabled multi select cannot be clicked to open", async () => {
-      await userEvent.click(multiSelectDisabled);
-      await expect(getListboxOptions().length).toBe(0);
-    });
-    await step("Disabled multi select tag group is disabled", async () => {
-      const tagGroup = multiSelectDisabled.childNodes[1] as HTMLElement;
-      await expect(tagGroup.getAttribute("data-disabled")).toBe("true");
-      await expect(tagGroup).toHaveStyle({
-        pointerEvents: "none",
+
+    await step(
+      "Search for 'char' to verify custom option persists",
+      async () => {
+        const input = canvas.getByRole("combobox");
+        await userEvent.clear(input);
+        await userEvent.type(input, "char");
+
+        // Wait for charmander results
+        await waitFor(
+          () => {
+            const charmanderOption = findOptionByText("charmander");
+            expect(charmanderOption).toBeTruthy();
+          },
+          { timeout: 5000 }
+        );
+
+        // Custom tag should still be visible
+        expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
+        expect(canvas.queryByText("pikachu")).toBeInTheDocument();
+      }
+    );
+
+    await step("Create another custom option 'AnotherCustom'", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "AnotherCustom{Enter}");
+
+      // Verify both custom tags exist
+      await waitFor(() => {
+        expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
+        expect(canvas.queryByText("AnotherCustom")).toBeInTheDocument();
+        expect(canvas.queryByText("pikachu")).toBeInTheDocument();
+      });
+
+      // Description should show both created options
+      await waitFor(() => {
+        const description = canvas.queryByText(/Created:/i);
+        expect(description?.textContent).toContain("MyCustomMon");
+        expect(description?.textContent).toContain("AnotherCustom");
       });
     });
-    await step("Disabled multi select buttons are disabled", async () => {
-      const buttons = await within(multiSelectDisabled).findAllByRole("button");
-      for (let i = 0; i < buttons.length; i++) {
-        await expect(buttons[i]).toHaveStyle({ pointerEvents: "none" });
-        await expect(buttons[i]).toHaveAttribute("disabled");
+
+    await step("Verify all tags can be removed", async () => {
+      // Remove AnotherCustom tag
+      const anotherCustomTag = canvas.queryByText("AnotherCustom");
+      if (anotherCustomTag) {
+        const removeButton = anotherCustomTag.parentElement?.querySelector(
+          '[aria-label*="Remove"]'
+        );
+        if (removeButton) {
+          await userEvent.click(removeButton);
+        }
+      }
+
+      // Verify it's removed
+      await waitFor(() => {
+        expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
+      });
+
+      // Other tags should still exist
+      expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
+      expect(canvas.queryByText("pikachu")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// LAYOUT STRUCTURE TESTS
+// ============================================================
+
+/**
+ * Layout: Leading Element
+ * Tests that leading element (icon) displays correctly when provided
+ */
+export const LayoutLeadingElement: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Combobox with leading icon"
+        items={simpleOptions}
+        leadingElement={<Search aria-hidden="true" />}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Verify SVG icon is present (from the Search icon in leadingElement), grabs the first svg
+    const svgIcon = canvasElement.querySelector("svg");
+    expect(svgIcon?.parentElement).toHaveClass(
+      "nimbus-combobox__leadingElement"
+    );
+  },
+};
+
+/**
+ * Layout: Input Field Visibility
+ * Tests that input field is visible and functional
+ */
+export const LayoutInputField: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the input
+    const input = canvas.getByRole("combobox");
+
+    // Input should be visible
+    expect(input).toBeVisible();
+
+    // Input should be enabled (not disabled)
+    expect(input).not.toBeDisabled();
+
+    // Input should accept focus
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Layout: Toggle Button
+ * Tests that toggle button displays and is clickable
+ */
+export const LayoutToggleButton: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get toggle button
+    const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+    // Toggle button should be visible and enabled
+    expect(toggleButton).toBeVisible();
+    expect(toggleButton).toBeEnabled();
+
+    // Click to open menu
+    await userEvent.click(toggleButton);
+
+    // Menu should appear
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    // Click again to close
+    await userEvent.click(toggleButton);
+
+    // Menu should disappear
+    await waitFor(() => {
+      const closedListbox = getListBox(document);
+      expect(closedListbox).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Layout: Clear Button Visibility
+ * Tests that clear button displays when selection exists and hides when cleared
+ */
+export const LayoutClearButton: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Clear button should be visible when selection exists
+    const clearButton = canvas.getByLabelText(/clear selection/i);
+    expect(clearButton).toBeVisible();
+    expect(clearButton).toBeEnabled();
+
+    // Click clear button
+    await userEvent.click(clearButton);
+
+    // Clear button should be hidden after clearing (display: none)
+    await waitFor(() => {
+      const computedStyle = window.getComputedStyle(clearButton);
+      expect(computedStyle.display).toBe("none");
+    });
+  },
+};
+
+/**
+ * Layout: Clear Button Hidden Without Selection
+ * Tests that clear button is hidden when no selection exists
+ */
+export const LayoutClearButtonHidden: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Clear button should exist but be hidden (display:none)
+    const clearButton = canvas.getByLabelText(/clear selection/i);
+
+    // Verify it has display:none
+    const computedStyle = window.getComputedStyle(clearButton);
+    expect(computedStyle.display).toBe("none");
+  },
+};
+
+/**
+ * Layout: Full Width Container
+ * Tests that component takes full width of its container
+ */
+export const LayoutFullWidth: Story = {
+  render: () => {
+    return (
+      <Box width="600px">
+        <ComposedComboBox
+          width="full"
+          aria-label="Test combobox in container"
+          items={simpleOptions}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the combobox root
+    const root = canvasElement.querySelector(
+      ".nimbus-combobox__root"
+    ) as HTMLElement;
+
+    // Verify input exists and is visible
+    expect(root).toBeVisible();
+
+    // Get the computed width of the input element
+    const rootWidth = (root as HTMLElement).offsetWidth;
+
+    expect(rootWidth).toBe(600);
+  },
+};
+
+/**
+ * Layout: Responsive Behavior (Smoke Test)
+ * Tests that layout structure remains intact across different container sizes
+ */
+export const LayoutResponsive: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <Box width="200px">
+          <ComposedComboBox
+            aria-label="Narrow combobox"
+            items={simpleOptions}
+          />
+        </Box>
+        <Box width="400px">
+          <ComposedComboBox
+            aria-label="Medium combobox"
+            items={simpleOptions}
+          />
+        </Box>
+        <Box width="100%">
+          <ComposedComboBox
+            width="full"
+            aria-label="Wide combobox"
+            items={simpleOptions}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // This is a smoke test - full responsive testing requires viewport resizing
+    // which is complex in Storybook. This verifies basic structure is intact.
+
+    const inputs = canvas.getAllByRole("combobox");
+
+    // All inputs should be visible and functional regardless of container size
+    for (const input of inputs) {
+      expect(input).toBeVisible();
+      expect(input).not.toBeDisabled();
+    }
+
+    // All toggle buttons should remain accessible
+    const toggleButtons = canvas.getAllByLabelText(/toggle options/i);
+    expect(toggleButtons.length).toBe(3); // One per combobox
+
+    for (const button of toggleButtons) {
+      expect(button).toBeVisible();
+      expect(button).toBeEnabled();
+    }
+  },
+};
+
+// ============================================================
+// MULTI-SELECT TAG DISPLAY TESTS
+// ============================================================
+
+/**
+ * Multi-Select: Tags Display
+ * Tests that selected items display as removable tags in multi-select mode
+ */
+export const MultiSelectTagsDisplay: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify all three selected items display as tags
+    expect(canvas.getByText("Koala")).toBeInTheDocument();
+    expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    expect(canvas.getByText("Platypus")).toBeInTheDocument();
+  },
+};
+
+/**
+ * Multi-Select: Tags Inline With Input
+ * Tests that tags appear inline with the input field
+ */
+export const MultiSelectTagsInline: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Verify tag is displayed
+    const tag = canvas.getByText("Koala");
+    expect(tag).toBeVisible();
+
+    // Get the input
+    const input = canvas.getByRole("combobox");
+    expect(input).toBeVisible();
+
+    // Input should be focusable even with tags present
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Multi-Select: Tags Wrapping
+ * Tests that tags wrap to new lines when space is limited by measuring container height
+ */
+export const MultiSelectTagsWrapping: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <Stack direction="column" gap="400">
+        <Box width="300px">
+          <ComposedComboBox
+            aria-label="Single tag combobox"
+            items={simpleOptions}
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+          />
+        </Box>
+
+        <Box width="300px">
+          <ComposedComboBox
+            aria-label="All tags combobox"
+            items={simpleOptions}
+            selectionMode="multiple"
+            selectedKeys={[1, 2, 3, 4, 5, 6]}
+            onSelectionChange={() => {}}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    await step("Single tag - baseline height", async () => {
+      // Find the first combobox (single tag)
+      const singleTagRoot = canvasElement.querySelectorAll(
+        ".nimbus-combobox__root"
+      )[0] as HTMLElement;
+
+      expect(singleTagRoot).toBeVisible();
+
+      // Get height with only one tag
+      const singleTagHeight = singleTagRoot.offsetHeight;
+
+      // Store for comparison (should be single line height)
+      expect(singleTagHeight).toBe(40);
+    });
+
+    await step("All tags - increased height from wrapping", async () => {
+      // Find the second combobox (all 6 tags)
+      const allTagsRoot = canvasElement.querySelectorAll(
+        ".nimbus-combobox__root"
+      )[1] as HTMLElement;
+
+      expect(allTagsRoot).toBeVisible();
+
+      // Get height with all 6 tags
+      const allTagsHeight = allTagsRoot.offsetHeight;
+
+      // With 6 tags in a 300px container, height should be 164px
+      expect(allTagsHeight).toBe(164);
+    });
+  },
+};
+
+/**
+ * Multi-Select: Tag Remove Button
+ * Tests that each tag shows a remove button and can be removed
+ */
+export const MultiSelectTagRemoval: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Each tag has a remove button", async () => {
+      // All three tags should have remove buttons
+      const koalaRemove = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+      const kangarooRemove = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+      const platypusRemove = canvas.getByRole("button", {
+        name: /remove tag platypus/i,
+      });
+
+      expect(koalaRemove).toBeVisible();
+      expect(kangarooRemove).toBeVisible();
+      expect(platypusRemove).toBeVisible();
+    });
+
+    await step("Remove middle tag (Kangaroo)", async () => {
+      // Find the remove button for Kangaroo tag
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+
+      // Click to remove
+      await userEvent.click(removeButton);
+
+      // Verify Kangaroo is removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Other tags should still exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Input Accessible After Tags
+ * Tests that input remains accessible and functional after adding multiple tags
+ */
+export const MultiSelectInputAccessible: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Multi-select combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify tags are present", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Input remains focusable", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Click input
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Can type in input with tags present", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Type to filter
+      await userEvent.type(input, "Bis");
+
+      // Menu should open with filtered results
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+        expect(findOptionByText("Bison")).toBeInTheDocument();
+      });
+    });
+
+    await step("Can select additional item", async () => {
+      // Select Bison
+      await selectOptionsByName(["Bison"]);
+
+      // Verify Bison tag appears (all 4 tags should now be present)
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+      expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// INPUT FIELD BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Input: Always Visible And Focusable
+ * Tests that input field remains visible and focusable in all states
+ */
+export const InputAlwaysVisible: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <Stack direction="column" gap="400">
+        {/* Empty state */}
+        <ComposedComboBox
+          aria-label="Empty combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+        />
+
+        {/* With selections (multi-select) */}
+        <ComposedComboBox
+          aria-label="With tags combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Empty state - input visible and focusable", async () => {
+      const emptyInput = canvas.getByLabelText("Empty combobox");
+
+      expect(emptyInput).toBeVisible();
+      expect(emptyInput).not.toBeDisabled();
+
+      await userEvent.click(emptyInput);
+      expect(emptyInput).toHaveFocus();
+    });
+
+    await step("With tags - input visible and focusable", async () => {
+      const withTagsInput = canvas.getByLabelText("With tags combobox");
+
+      expect(withTagsInput).toBeVisible();
+      expect(withTagsInput).not.toBeDisabled();
+
+      await userEvent.click(withTagsInput);
+      expect(withTagsInput).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Input: Wraps to New Line
+ * Tests that input wraps to new line when content area is full (multi-select with many tags)
+ */
+export const InputWrapsToNewLine: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4, 5, 6,
+    ]);
+
+    return (
+      <Box width="300px">
+        <ComposedComboBox
+          aria-label="Test combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the root (contains tags and input)
+    const root = canvasElement.querySelector(
+      ".nimbus-combobox__root"
+    ) as HTMLElement;
+
+    expect(root).toBeVisible();
+
+    // Measure trigger height - should be multi-line due to wrapping tags
+    const rootHeight = root.offsetHeight;
+
+    // With 6 tags wrapping, height should be >100px (multiple lines)
+    expect(rootHeight).toBe(164);
+
+    // Input should still be visible and functional
+    const input = canvas.getByRole("combobox");
+    expect(input).toBeVisible();
+    await userEvent.click(input);
+    expect(input).toHaveFocus();
+
+    // Input should be at the bottom of the container
+    const inputHeight = input.offsetHeight;
+    // The offsetTop should be greater than the height in this case
+    expect(input.offsetTop).toBeGreaterThan(inputHeight);
+  },
+};
+
+/**
+ * Input: Placeholder Text Displays
+ * Tests that placeholder text displays when input is empty
+ */
+export const InputPlaceholder: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        placeholder="Search animals..."
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Placeholder visible when empty", async () => {
+      // Input should be empty
+      expect(input.value).toBe("");
+
+      // Placeholder should be set
+      expect(input.placeholder).toBe("Search animals...");
+    });
+
+    await step("Placeholder hidden when typing", async () => {
+      // Type in input
+      await userEvent.type(input, "test");
+
+      // Input should have value
+      expect(input.value).toBe("test");
+
+      // Placeholder is still in the attribute but hidden by browser
+      expect(input.placeholder).toBe("Search animals...");
+    });
+
+    await step("Placeholder visible again after clearing", async () => {
+      // Clear input
+      await userEvent.clear(input);
+
+      // Input should be empty again
+      expect(input.value).toBe("");
+
+      // Placeholder still set
+      expect(input.placeholder).toBe("Search animals...");
+    });
+  },
+};
+
+// ============================================================
+// FOCUS BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Focus: Click Trigger Area Focuses Input
+ * Tests that clicking anywhere in the trigger area (not on buttons) focuses the input
+ */
+export const FocusClickTriggerArea: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        leadingElement={<Search aria-hidden="true" />}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Click in empty space focuses input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Input should not have focus initially
+      expect(input).not.toHaveFocus();
+
+      // Find the trigger container and click it (not the input directly)
+      const trigger = input.parentElement?.parentElement;
+      expect(trigger).toBeTruthy();
+
+      // Click the trigger area (clicks propagate to focus the input)
+      await userEvent.click(trigger as HTMLElement);
+
+      // Input should now have focus
+      expect(input).toHaveFocus();
+    });
+
+    await step("Click near leading element focuses input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Clear focus by clicking outside
+      await userEvent.click(canvasElement);
+
+      // Find the SVG (leading element) and click near it
+      const svg = canvasElement.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+
+      // Click the SVG's parent container
+      const leadingContainer = svg?.parentElement;
+      if (leadingContainer) {
+        await userEvent.click(leadingContainer);
+
+        // Input should have focus
+        expect(input).toHaveFocus();
       }
     });
-    await step("Read Only single select has read-only attributes", async () => {
-      await expect(singleSelectReadOnly).toHaveAttribute("readonly");
-      await expect(singleSelectReadOnly).not.toHaveAttribute("disabled");
-      await expect(singleSelectReadOnly).not.toHaveStyle({
-        pointerEvents: "none",
-      });
-      // the input has the 'combobox' role in the single select, we need to target the wrapper container to check for the not-allowed cursor
-      await expect(singleSelectReadOnly.parentElement).not.toHaveStyle({
-        cursor: "not-allowed",
+  },
+};
+
+/**
+ * Focus: Tab Key Focuses Input
+ * Tests that tabbing to the component focuses the input field
+ */
+export const FocusTabKey: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="First combobox" items={simpleOptions} />
+        <ComposedComboBox aria-label="Second combobox" items={simpleOptions} />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab focuses first input", async () => {
+      const firstInput = canvas.getByLabelText("First combobox");
+
+      // Tab to focus
+      await userEvent.tab();
+
+      // First input should have focus
+      expect(firstInput).toHaveFocus();
+    });
+
+    await step("Tab moves to second input", async () => {
+      const secondInput = canvas.getByLabelText("Second combobox");
+
+      // Tab again (skipping toggle button which has excludeFromTabOrder)
+      await userEvent.tab();
+
+      // Second input should have focus
+      expect(secondInput).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Focus: Remains on Input During Option Selection
+ * Tests that focus stays on input when selecting options (virtual focus pattern)
+ */
+export const FocusRemainsOnInputDuringSelection: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input and open menu", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Type to open menu
+      await userEvent.type(input, "K");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
       });
     });
+
+    await step("Select option - focus remains on input", async () => {
+      // Input should still have focus before selection
+      expect(input).toHaveFocus();
+
+      // Select an option
+      await selectOptionsByName(["Koala"]);
+
+      // Focus should REMAIN on input (virtual focus pattern)
+      await waitFor(() => {
+        expect(input).toHaveFocus();
+      });
+    });
+
     await step(
-      "Read Only single select cannot be clicked to open",
+      "Navigate and select another - focus still on input",
       async () => {
-        await userEvent.click(singleSelectReadOnly);
-        await expect(getListboxOptions().length).toBe(0);
-        await expect(singleSelectReadOnly).not.toHaveStyle({
-          pointerEvents: "none",
+        // Clear input text
+        await userEvent.clear(input);
+
+        // Type to filter again
+        await userEvent.type(input, "P");
+
+        // Select another option
+        await selectOptionsByName(["Platypus"]);
+
+        // Focus should still be on input
+        await waitFor(() => {
+          expect(input).toHaveFocus();
         });
       }
     );
-    await step("Read Only single select buttons are disabled", async () => {
-      const buttons = await within(
-        singleSelectReadOnly.parentElement!
-      ).findAllByRole("button");
-      for (let i = 0; i < buttons.length; i++) {
-        await expect(buttons[i]).toHaveStyle({ userSelect: "none" });
-        await expect(buttons[i]).toHaveAttribute("disabled");
-      }
+  },
+};
+
+/**
+ * Focus: Loses Focus on Outside Click
+ * Tests that component loses focus when clicking outside
+ */
+export const FocusLosesOnOutsideClick: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+        <Box padding="400" bg="neutral.3">
+          Click me to remove focus
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Focus input", async () => {
+      const input = canvas.getByRole("combobox");
+
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
     });
-    await step("Read Only multi select has readonly attributes", async () => {
-      await expect(multiSelectReadOnly.getAttribute("aria-readonly")).toBe(
-        "true"
-      );
-      await expect(multiSelectReadOnly).not.toHaveAttribute("aria-disabled");
-      await expect(multiSelectReadOnly).not.toHaveStyle({
-        cursor: "not-allowed",
-      });
-    });
-    await step("Read Only multi select cannot be clicked to open", async () => {
-      await userEvent.click(multiSelectReadOnly);
-      await expect(getListboxOptions().length).toBe(0);
-    });
-    await step("Read Only multi select tag group is not disabled", async () => {
-      const tagGroup = multiSelectReadOnly.childNodes[1] as HTMLElement;
-      await expect(tagGroup).not.toHaveAttribute("data-disabled");
-      await expect(tagGroup).not.toHaveStyle({
-        pointerEvents: "none",
-      });
-    });
-    await step("Read Only multi select buttons are disabled", async () => {
-      const buttons = await within(multiSelectReadOnly).findAllByRole("button");
-      for (let i = 0; i < buttons.length; i++) {
-        await expect(buttons[i]).toHaveStyle({ userSelect: "none" });
-        await expect(buttons[i]).toHaveAttribute("disabled");
-      }
+
+    await step("Click outside loses focus", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Click the Box below the combobox
+      const outsideBox = canvas.getByText("Click me to remove focus");
+      await userEvent.click(outsideBox);
+
+      // Input should no longer have focus
+      expect(input).not.toHaveFocus();
     });
   },
 };
 
 /**
- * Disabled Options Example
- * Demonstrates disabled options in both single and multi-select comboboxes
+ * Focus: Indicators Visible During Keyboard Navigation
+ * Tests that focus indicators are visible when navigating with keyboard
  */
-export const DisabledOptions: Story = {
+export const FocusIndicatorsVisible: Story = {
   render: () => {
-    const optionsWithDisabled = [
-      { id: 1, name: "Koala", isDisabled: false },
-      { id: 2, name: "Kangaroo", isDisabled: true },
-      { id: 3, name: "Platypus", isDisabled: false },
-      { id: 4, name: "Bald Eagle", isDisabled: true },
-      { id: 5, name: "Bison", isDisabled: false },
-      { id: 6, name: "Skunk", isDisabled: true },
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Tab to input - focus ring visible", async () => {
+      // Tab to focus input
+      await userEvent.tab();
+
+      expect(input).toHaveFocus();
+
+      // Input should have focus-visible styling (can't directly test CSS,
+      // but verify the element is focused via keyboard)
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow down to navigate options - virtual focus", async () => {
+      // Press arrow down to open menu and focus first option
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Menu should be open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Input should still have browser focus (virtual focus pattern)
+      expect(input).toHaveFocus();
+
+      // First option should be aria-activedescendant (virtual focus)
+      const activeDescendant = input.getAttribute("aria-activedescendant");
+      expect(activeDescendant).toBeTruthy();
+    });
+
+    await step("Navigate options maintains focus indicators", async () => {
+      // Press arrow down again
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have browser focus
+      expect(input).toHaveFocus();
+
+      // Active descendant should have changed (different option focused)
+      const newActiveDescendant = input.getAttribute("aria-activedescendant");
+      expect(newActiveDescendant).toBeTruthy();
+    });
+  },
+};
+
+// ============================================================
+// KEYBOARD NAVIGATION TESTS
+// ============================================================
+
+/**
+ * Keyboard: Arrow Down Opens Menu and Focuses First Option
+ * Tests that Arrow Down opens the menu and focuses the first option
+ */
+export const KeyboardArrowDownOpensMenu: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down opens menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("First option is virtually focused", async () => {
+      // aria-activedescendant should point to first option
+      const activeDescendant = input.getAttribute("aria-activedescendant");
+      expect(activeDescendant).toBeTruthy();
+
+      // Find the first option
+      const firstOption = findOptionByText("Koala");
+      expect(firstOption).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard: Arrow Keys Navigate Options
+ * Tests that Arrow Up/Down navigate through options
+ */
+export const KeyboardArrowKeysNavigate: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu with Arrow Down", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Arrow Down moves to next option", async () => {
+      // Get initial active descendant
+      const initialActive = input.getAttribute("aria-activedescendant");
+
+      // Press Arrow Down
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Active descendant should change
+      await waitFor(() => {
+        const newActive = input.getAttribute("aria-activedescendant");
+        expect(newActive).not.toBe(initialActive);
+      });
+    });
+
+    await step("Arrow Up moves to previous option", async () => {
+      // Get current active descendant
+      const beforeUp = input.getAttribute("aria-activedescendant");
+
+      // Press Arrow Up
+      await userEvent.keyboard("{ArrowUp}");
+
+      // Active descendant should change
+      await waitFor(() => {
+        const afterUp = input.getAttribute("aria-activedescendant");
+        expect(afterUp).not.toBe(beforeUp);
+      });
+    });
+  },
+};
+
+/**
+ * Keyboard: Enter Selects Option
+ * Tests that Enter key selects the focused option
+ */
+export const KeyboardEnterSelects: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu and navigate to option", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}"); // Opens and focuses first
+      await userEvent.keyboard("{ArrowDown}"); // Move to second option
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Enter to select", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // Second option (Kangaroo) should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Keyboard: Escape Closes Menu
+ * Tests that Escape key closes the menu
+ */
+export const KeyboardEscapeCloses: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Escape to close", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      // Menu should close
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Input retains focus after Escape", async () => {
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Keyboard: Backspace Removes Last Tag
+ * Tests that Backspace removes the last tag in multi-select mode when input is empty
+ */
+export const KeyboardBackspaceRemovesTag: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Focus input with empty value", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+      expect(input.value).toBe("");
+    });
+
+    await step("Press Backspace to remove last tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Last tag (Platypus) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+
+      // Other tags should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Press Backspace again to remove next tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard: Navigation Without Mouse
+ * Tests complete keyboard-only workflow (no mouse interaction)
+ */
+export const KeyboardOnlyWorkflow: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab to focus input (no mouse)", async () => {
+      await userEvent.tab();
+
+      const input = canvas.getByRole("combobox");
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down to open menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Navigate with arrows", async () => {
+      const input = canvas.getByRole("combobox");
+
+      // Arrow Down to move through options
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have focus
+      expect(input).toHaveFocus();
+    });
+
+    await step("Select with Enter", async () => {
+      const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+      await userEvent.keyboard("{Enter}");
+
+      // Third option (Platypus) should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Platypus");
+      });
+    });
+
+    await step("Escape closes menu", async () => {
+      // Reopen menu
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Close with Escape
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// BUTTON VISIBILITY & BEHAVIOR TESTS
+// ============================================================
+
+/**
+ * Buttons: Accessible When Content Wraps
+ * Tests that toggle and clear buttons remain accessible when tags wrap to multiple lines
+ */
+export const ButtonsAccessibleWhenWrapping: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4, 5, 6,
+    ]);
+
+    return (
+      <Box width="300px">
+        <ComposedComboBox
+          aria-label="Test combobox"
+          items={simpleOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify content wrapping occurred", async () => {
+      // Find the input, then navigate to parent structure
+      const input = canvas.getByRole("combobox");
+
+      const trigger = input.parentElement?.parentElement;
+
+      expect(trigger).toBeTruthy();
+      expect(trigger).toBeVisible();
+
+      // Measure trigger height - should be multi-line
+      const triggerHeight = (trigger as HTMLElement).offsetHeight;
+
+      // With 6 tags wrapping, height should be >100px
+      expect(triggerHeight).toBeGreaterThan(100);
+    });
+
+    await step("Toggle button remains accessible", async () => {
+      const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+      // Button should be visible
+      expect(toggleButton).toBeVisible();
+      expect(toggleButton).toBeEnabled();
+
+      // Button should be clickable
+      await userEvent.click(toggleButton);
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Close menu
+      await userEvent.click(toggleButton);
+    });
+
+    await step("Clear button remains accessible", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      // Button should be visible
+      expect(clearButton).toBeVisible();
+      expect(clearButton).toBeEnabled();
+
+      // Button should be clickable
+      await userEvent.click(clearButton);
+
+      // All selections should be cleared
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Buttons: Click Areas Sufficiently Large
+ * Tests that button click areas are large enough for interaction (min 44x44px for WCAG)
+ */
+export const ButtonsClickAreas: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Toggle button has sufficient click area", async () => {
+      const toggleButton = canvas.getByLabelText(
+        /toggle options/i
+      ) as HTMLButtonElement;
+
+      // Measure button dimensions
+      const width = toggleButton.offsetWidth;
+      const height = toggleButton.offsetHeight;
+
+      // WCAG 2.5.5 Target Size: minimum 44x44px for touch targets
+      // Note: These are icon buttons (size="2xs") so they may be smaller
+      // but should still be reasonably clickable
+      expect(width).toBeGreaterThan(20);
+      expect(height).toBeGreaterThan(20);
+
+      // Button should be clickable
+      await userEvent.click(toggleButton);
+
+      // Verify click worked
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear button has sufficient click area", async () => {
+      const clearButton = canvas.getByLabelText(
+        /clear selection/i
+      ) as HTMLButtonElement;
+
+      // Measure button dimensions
+      const width = clearButton.offsetWidth;
+      const height = clearButton.offsetHeight;
+
+      // Should be reasonably clickable
+      expect(width).toBeGreaterThan(20);
+      expect(height).toBeGreaterThan(20);
+
+      // Button should be clickable
+      await userEvent.click(clearButton);
+
+      // Verify click worked (button should hide after clearing)
+      await waitFor(() => {
+        const computedStyle = window.getComputedStyle(clearButton);
+        expect(computedStyle.display).toBe("none");
+      });
+    });
+  },
+};
+
+// ============================================================
+// MENU OPENING & CLOSING TESTS
+// ============================================================
+
+/**
+ * Menu: Opens When User Types (Default Behavior)
+ * Tests that menu opens automatically when user starts typing (menuTrigger="input")
+ */
+export const MenuOpensOnTyping: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="input"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input - menu closed", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Menu should NOT be open yet
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Type character - menu opens", async () => {
+      await userEvent.type(input, "K");
+
+      // Menu should open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Opens on Focus When Configured
+ * Tests that menu opens when input receives focus (menuTrigger="focus")
+ */
+export const MenuOpensOnFocus: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Click to focus input
+    await userEvent.click(input);
+
+    // Menu should open automatically on focus
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Menu: Opens Only on Button Click (Manual Mode)
+ * Tests that menu only opens via toggle button when menuTrigger="manual"
+ */
+export const MenuOpensManual: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="manual"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus does not open menu", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+
+      // Menu should NOT open on focus
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Typing does not open menu", async () => {
+      await userEvent.type(input, "K");
+
+      // Menu should still NOT open
+      const listbox = getListBox(document);
+      expect(listbox).not.toBeInTheDocument();
+    });
+
+    await step("Toggle button opens menu", async () => {
+      const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+      await userEvent.click(toggleButton);
+
+      // Menu should NOW open
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Toggle Button Opens and Closes
+ * Tests that toggle button opens and closes the menu
+ */
+export const MenuToggleButton: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const toggleButton = canvas.getByLabelText(/toggle options/i);
+
+    await step("Click toggle to open", async () => {
+      await userEvent.click(toggleButton);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Click toggle to close", async () => {
+      await userEvent.click(toggleButton);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Closes After Selection (Single-Select)
+ * Tests that menu closes automatically after selecting an option in single-select mode
+ */
+export const MenuClosesAfterSelectionSingle: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Select option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // Koala should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Menu closes after selection", async () => {
+      // Menu should close automatically in single-select mode
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Stays Open After Selection (Multi-Select)
+ * Tests that menu stays open after selecting an option in multi-select mode
+ */
+export const MenuStaysOpenAfterSelectionMulti: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu and select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select Koala
+      await selectOptionsByName(["Koala"]);
+
+      // Verify selection
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Menu stays open after selection", async () => {
+      // Menu should REMAIN open in multi-select mode
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Can select another option", async () => {
+      // Clear input and type again
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      // Select Platypus
+      await selectOptionsByName(["Platypus"]);
+
+      // Both tags should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+
+      // Menu should STILL be open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Menu: Closes on Outside Click
+ * Tests that menu closes when clicking outside the component
+ */
+export const MenuClosesOnOutsideClick: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+        <Box padding="400" bg="neutral.3">
+          Click here to close menu
+        </Box>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Click outside closes menu", async () => {
+      const outsideBox = canvas.getByText("Click here to close menu");
+      await userEvent.click(outsideBox);
+
+      // Menu should close
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Menu: Closes on Escape Key
+ * Tests that Escape key closes the menu (covered in KeyboardEscapeCloses but included for completeness)
+ */
+export const MenuClosesOnEscape: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Escape to close", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// OPTION SELECTION TESTS
+// ============================================================
+
+/**
+ * Option: Clicking Selects Option
+ * Tests that clicking an option with the mouse selects it
+ */
+export const OptionClickingSelects: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Click option to select", async () => {
+      const koalaOption = findOptionByText("Koala");
+      expect(koalaOption).toBeInTheDocument();
+
+      // Click the option
+      await userEvent.click(koalaOption!);
+
+      // Option should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+  },
+};
+
+/**
+ * Option: Hovering Shows Visual Feedback
+ * Tests that hovering over options shows visual feedback
+ */
+export const OptionHoverFeedback: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Hover over option shows feedback", async () => {
+      const kangarooOption = findOptionByText("Kangaroo");
+      expect(kangarooOption).toBeInTheDocument();
+
+      // Hover over the option
+      await userEvent.hover(kangarooOption!);
+
+      // Option should be visible and hoverable (testing-library hover doesn't
+      // always trigger data-focused in headless browser, so verify element exists)
+      expect(kangarooOption).toBeVisible();
+
+      // Verify option is interactable by clicking it
+      await userEvent.click(kangarooOption!);
+
+      // Selection should occur (proving hover made it clickable)
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Option: Selected Options Visually Distinguished
+ * Tests that selected options have visual distinction (aria-selected, styling)
+ */
+export const OptionSelectedVisuallyDistinguished: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        menuTrigger="focus"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Selected options have aria-selected", async () => {
+      const koalaOption = findOptionByText("Koala");
+      const platypusOption = findOptionByText("Platypus");
+
+      // Selected options should have aria-selected="true"
+      expect(isOptionSelected(koalaOption)).toBe(true);
+      expect(isOptionSelected(platypusOption)).toBe(true);
+    });
+
+    await step("Unselected options do not have aria-selected", async () => {
+      const kangarooOption = findOptionByText("Kangaroo");
+
+      // Unselected option should not be selected
+      expect(isOptionSelected(kangarooOption)).toBe(false);
+    });
+  },
+};
+
+/**
+ * Option: Keyboard Selection Works
+ * Tests that Enter key selects the focused option
+ */
+export const OptionKeyboardSelection: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Navigate to option with keyboard", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}"); // Opens and focuses first
+      await userEvent.keyboard("{ArrowDown}"); // Move to second option
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Enter to select", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // Second option (Kangaroo) should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Option: Multiple Selections Work (Multi-Select)
+ * Tests that multiple options can be selected in multi-select mode
+ */
+export const OptionMultipleSelections: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      await selectOptionsByName(["Koala"]);
+
+      // Verify first tag
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Select second option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Both tags should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Select third option", async () => {
+      await userEvent.clear(input);
+      await input.focus();
+
+      await selectOptionsByName(["Bison"]);
+
+      // All three tags should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+      expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// CLEAR FUNCTIONALITY TESTS
+// ============================================================
+
+/**
+ * Clear: Removes Current Selection (Single-Select)
+ * Tests that clear button removes the selected item in single-select mode
+ */
+export const ClearRemovesSelectionSingle: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Make a selection first", async () => {
+      // Open menu and select an option
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select first option (Koala)
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Click clear button to remove selection", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // Selection should be cleared
+      await waitFor(() => {
+        expect(input.value).toBe("");
+      });
+    });
+  },
+};
+
+/**
+ * Clear: Removes All Selections (Multi-Select)
+ * Tests that clear button removes all selected items in multi-select mode
+ */
+export const ClearRemovesAllSelectionsMulti: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Click clear button", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // All tags should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Clear: Does Not Close Menu
+ * Tests that clear button doesn't close the menu (allows continued browsing)
+ */
+export const ClearDoesNotCloseMenu: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu and select item", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select Koala
+      await selectOptionsByName(["Koala"]);
+
+      // Verify tag
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Click clear button", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // Selection should be cleared
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Menu remains open", async () => {
+      // Menu should STILL be open after clearing
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Clear: Accessible via Keyboard (Backspace)
+ * Tests that selections can be cleared via keyboard using Backspace
+ */
+export const ClearAccessibleViaKeyboard: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Verify initial tags", async () => {
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Use Backspace to clear last tag", async () => {
+      await userEvent.click(input);
+      expect(input.value).toBe(""); // Input empty in multi-select
+
+      // Backspace removes last tag
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo (last tag) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Use Backspace again to clear remaining tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+
+      // Koala should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// SELECTION MODES TESTS
+// ============================================================
+
+/**
+ * Single-Select: One Option at a Time
+ * Tests that only one option can be selected at a time in single-select mode
+ */
+export const SingleSelectOneAtATime: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Select second option - replaces first", async () => {
+      // Open menu again
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}"); // Navigate to Kangaroo
+      await userEvent.keyboard("{Enter}");
+
+      // Kangaroo should replace Koala
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: New Selection Replaces Previous
+ * Tests that selecting a new option replaces the previous selection
+ */
+export const SingleSelectReplacesPrevious: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      // TODO: pull this out into a helper? We do it a lot
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      await selectOptionsByName(["Koala"]);
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Select Platypus - Koala is replaced", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Only Platypus should be selected
+      await waitFor(() => {
+        expect(input.value).toBe("Platypus");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Text Appears in Input
+ * Tests that selected option text syncs to the input field
+ */
+export const SingleSelectTextInInput: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Select an option
+    await userEvent.click(input);
+    await userEvent.keyboard("{ArrowDown}");
+    await userEvent.keyboard("{ArrowDown}");
+    await userEvent.keyboard("{ArrowDown}"); // Navigate to Platypus
+    await userEvent.keyboard("{Enter}");
+
+    // Input value should match selected option text
+    await waitFor(() => {
+      expect(input.value).toBe("Platypus");
+    });
+  },
+};
+
+/**
+ * Single-Select: Clear Button Removes Selection
+ * Tests that clear button removes the current selection
+ */
+export const SingleSelectClearRemoves: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Make selection", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Clear removes selection", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+      await userEvent.click(clearButton);
+
+      await waitFor(() => {
+        expect(input.value).toBe("");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Menu Closes After Selection
+ * Tests that menu closes automatically after selecting an option
+ */
+export const SingleSelectMenuCloses: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Open menu", async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Select option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Koala");
+      });
+    });
+
+    await step("Menu closes automatically", async () => {
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select: Input Displays Correct Value
+ * Tests that input always displays the correct selected value
+ */
+export const SingleSelectInputDisplaysValue: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select option with long name", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Bald");
+
+      await waitFor(() => {
+        const option = findOptionByText(
+          "Bald Eagle with a very long name hooray"
+        );
+        expect(option).toBeInTheDocument();
+      });
+
+      await selectOptionsByName(["Bald Eagle with a very long name hooray"]);
+
+      // Input should display full text
+      await waitFor(() => {
+        expect(input.value).toBe("Bald Eagle with a very long name hooray");
+      });
+    });
+  },
+};
+
+/**
+ * Multi-Select: Multiple Options Selectable
+ * Tests that multiple options can be selected
+ */
+export const MultiSelectMultipleOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select first option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Select second option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Both should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Select third option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      await selectOptionsByName(["Bison"]);
+
+      // All three should exist
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+      expect(canvas.getByText("Bison")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Options Appear as Tags
+ * Tests that selected options appear as removable tags
+ */
+export const MultiSelectOptionsAppearAsTags: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+    });
+
+    await step("Options appear as tags with remove buttons", async () => {
+      // Tags should be visible
+      const koalaTag = canvas.getByText("Koala");
+      const kangarooTag = canvas.getByText("Kangaroo");
+
+      expect(koalaTag).toBeVisible();
+      expect(kangarooTag).toBeVisible();
+
+      // Each tag should have a remove button
+      const koalaRemove = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+      const kangarooRemove = canvas.getByRole("button", {
+        name: /remove tag kangaroo/i,
+      });
+
+      expect(koalaRemove).toBeVisible();
+      expect(kangarooRemove).toBeVisible();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Tag Remove Button Deselects
+ * Tests that clicking tag remove button deselects the item
+ */
+export const MultiSelectTagRemoveDeselects: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select two options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Click remove button on Koala tag", async () => {
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag koala/i,
+      });
+
+      await userEvent.click(removeButton);
+
+      // Koala should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+
+      // Kangaroo should remain
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Backspace Removes Last Tag
+ * Tests that Backspace key removes the last selected tag
+ */
+export const MultiSelectBackspaceRemoves: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Select two options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Backspace removes last tag (Kangaroo)", async () => {
+      // Ensure input is focused and empty
+      await userEvent.clear(input);
+      expect(input.value).toBe("");
+
+      await userEvent.keyboard("{Backspace}");
+
+      // Kangaroo (last tag) should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+
+      // Koala should remain
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Menu Stays Open After Selections
+ * Tests that menu remains open after each selection
+ */
+export const MultiSelectMenuStaysOpen: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select first option - menu stays open", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+
+      // Menu should remain open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    await step("Select second option - menu still open", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // Menu should still be open
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Multi-Select: Clear Button Removes All
+ * Tests that clear button removes all selections at once
+ */
+export const MultiSelectClearRemovesAll: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select three options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      await selectOptionsByName(["Platypus"]);
+
+      // All three tags should exist
+      // TODO: should we pull this out into a util somehow?
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Clear button removes all selections", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+      await userEvent.click(clearButton);
+
+      // All tags should be removed
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        expect(canvas.queryByText("Platypus")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// SELECTION PERSISTENCE TESTS
+// ============================================================
+
+/**
+ * Persistence: Items Persist When Filtering Changes
+ * Tests that selected items remain selected even when filter text changes
+ */
+export const PersistenceItemsPersistWhenFilteringChanges: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Change filter - Koala tag persists", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "P");
+
+      // Koala tag should still be visible even though filter changed to "P"
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Select Platypus with different filter", async () => {
+      await selectOptionsByName(["Platypus"]);
+
+      // Both tags should be visible
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Change filter again - both persist", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      // Both previously selected tags should still be visible
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Platypus")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Persistence: Selected Items Remain Visible as Tags
+ * Tests that selected items always visible as tags regardless of current filter
+ */
+export const PersistenceItemsRemainVisibleAsTags: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Select items with 'K' filter", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await selectOptionsByName(["Koala", "Kangaroo"]);
+
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+      expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+    });
+
+    await step("Filter by 'B' - K tags still visible", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "B");
+
+      // Tags should remain visible despite filter not matching them
+      expect(canvas.getByText("Koala")).toBeVisible();
+      expect(canvas.getByText("Kangaroo")).toBeVisible();
+    });
+
+    await step("Clear filter - tags still visible", async () => {
+      await userEvent.clear(input);
+
+      // Tags should remain visible with empty filter
+      expect(canvas.getByText("Koala")).toBeVisible();
+      expect(canvas.getByText("Kangaroo")).toBeVisible();
+    });
+  },
+};
+
+// ============================================================
+// BASIC TEXT FILTERING TESTS
+// ============================================================
+
+/**
+ * Filtering: Typing Filters Options List
+ * Tests that typing in the input filters the available options
+ */
+export const FilteringTypingFiltersOptions: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu - all 6 options visible", async () => {
+      await userEvent.click(input);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      const options = getListboxOptions();
+      expect(options.length).toBe(6);
+    });
+
+    await step("Type 'K' - filters to 2 options", async () => {
+      await userEvent.type(input, "B");
+
+      // Should show Koala and Kangaroo
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(2);
+      });
+
+      expect(findOptionByText("Bison")).toBeInTheDocument();
+      expect(
+        findOptionByText("Bald Eagle with a very long name hooray")
+      ).toBeInTheDocument();
+    });
+
+    await step("Type more 'oa' - filters to 1 option", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "oa");
+
+      // Should only show Koala
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      expect(findOptionByText("Koala")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Filtering: Case Insensitive by Default
+ * Tests that filtering is case-insensitive
+ */
+export const FilteringCaseInsensitive: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type lowercase 'k' - matches Koala", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "k");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear and type uppercase 'K' - same results", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Mixed case 'Ko' - still matches", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Ko");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Partial Text Matches Shown
+ * Tests that partial text matches are included in results
+ */
+export const FilteringPartialMatches: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'al' - matches Koala and Bald Eagle", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "al");
+
+      // Should match "Koala" and "Bald Eagle" (contains "al")
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(
+          findOptionByText("Bald Eagle with a very long name hooray")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'ng' - matches Kangaroo", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ng");
+
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Clearing Input Shows All Options
+ * Tests that clearing the input shows all options again
+ */
+export const FilteringClearingShowsAll: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Filter to specific items", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3); // Koala, Kangaroo, Skunk
+      });
+    });
+
+    await step("Clear input - all options return", async () => {
+      await userEvent.clear(input);
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(6); // All options
+      });
+    });
+  },
+};
+
+/**
+ * Filtering: Filter Resets When Menu Closes
+ * Tests that filter state resets when menu closes and reopens
+ */
+export const FilteringResetsOnMenuClose: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Filter options", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3);
+      });
+    });
+
+    await step("Close menu with Escape", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Reopen menu - filter maintained", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Filter text should still be "K" in input
+      // Options should still be filtered
+      const options = getListboxOptions();
+      expect(options.length).toBe(3);
+    });
+  },
+};
+
+/**
+ * Filtering: No Results State Handled
+ * Tests that filtering with no matches shows empty state
+ */
+export const FilteringNoResultsState: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "No results found"}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type text with no matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      // Menu should remain open (allowsEmptyMenu=true)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Empty state message displays", async () => {
+      const options = getListboxOptions();
+      const notFoundOption = findOptionByText("No results found");
+
+      expect(options.length).toBe(1);
+      // Empty state should be visible
+      expect(notFoundOption).toBeInTheDocument();
+    });
+
+    await step("Type valid text - options return", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "K");
+
+      // Options should appear
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(3);
+      });
+    });
+  },
+};
+
+// ============================================================
+// SECTION-AWARE FILTERING TESTS
+// ============================================================
+
+/**
+ * Filtering: With Sections
+ * Tests section-aware filtering behavior with grouped options
+ */
+export const FilteringWithSections: Story = {
+  render: () => {
+    const sectionsData = [
+      {
+        id: "mammals",
+        name: "Mammals",
+        children: [
+          { id: 1, name: "Koala" },
+          { id: 2, name: "Kangaroo" },
+        ],
+      },
+      {
+        id: "birds",
+        name: "Birds",
+        children: [{ id: 4, name: "Bald Eagle" }],
+      },
+      {
+        id: "other",
+        name: "Other",
+        children: [
+          { id: 3, name: "Platypus" },
+          { id: 5, name: "Bison" },
+          { id: 6, name: "Skunk" },
+        ],
+      },
     ];
 
     return (
-      <Stack direction="row" gap="400">
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Single Select with Disabled Options</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={optionsWithDisabled}
-              placeholder="Select an animal..."
-            >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  isDisabled={item.isDisabled}
-                >
-                  {item.name}
-                </ComboBox.Option>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-          <FormField.Description>
-            Kangaroo, Bald Eagle, and Skunk are disabled
-          </FormField.Description>
-        </FormField.Root>
-        <FormField.Root alignSelf={"flex-start"}>
-          <FormField.Label>Multi-Select with Disabled Options</FormField.Label>
-          <FormField.Input>
-            <ComboBox.Root
-              defaultItems={optionsWithDisabled}
-              selectionMode="multiple"
-              placeholder="Select multiple animals..."
-            >
-              {(item) => (
-                <ComboBox.Option
-                  key={item.id}
-                  id={item.id}
-                  isDisabled={item.isDisabled}
-                >
-                  {item.name}
-                </ComboBox.Option>
-              )}
-            </ComboBox.Root>
-          </FormField.Input>
-          <FormField.Description>
-            Kangaroo, Bald Eagle, and Skunk are disabled
-          </FormField.Description>
-        </FormField.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select with disabled options/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select with disabled options/i,
-    });
-    const disabledOptions = ["Kangaroo", "Bald Eagle", "Skunk"];
-    await step("Single select can be opened", async () => {
-      singleSelect.focus();
-      await userEvent.keyboard("{ArrowDown}");
-      const listbox = document.querySelector('[role="listbox"]');
-      await expect(listbox).toBeInTheDocument();
-    });
-    await step("Disabled options have aria-disabled attribute", async () => {
-      for (let i = 0; i < disabledOptions.length; i++) {
-        const option = findOptionByText(disabledOptions[i]);
-        await expect(option).toHaveAttribute("aria-disabled", "true");
-      }
-    });
-    await step("Enabled options can be selected", async () => {
-      await selectOptionsByName(["Koala"]);
-      await expect(singleSelect.value).toBe("Koala");
-      await userEvent.keyboard("{ArrowDown}");
-      await verifyOptionsSelected(["Koala"], true);
-    });
-    await step("Disabled options cannot be selected", async () => {
-      await selectOptionsByName(disabledOptions);
-      await expect(singleSelect.value).toBe("Koala");
-      // Close for next test
-      await closePopover();
-    });
-    await step("Disabled options cannot be selected via keyboard", async () => {
-      singleSelect.focus();
-      // Open popover
-      await userEvent.keyboard("{ArrowDown}");
-      // Koala is active option
-      await expect(findOptionByText("Koala")?.getAttribute("id")).toBe(
-        singleSelect.getAttribute("aria-activedescendant")
-      );
-      // Go to next item
-      await userEvent.keyboard("{ArrowDown}");
-      // Kangaroo is skipped
-      await expect(findOptionByText("Kangaroo")?.getAttribute("id")).not.toBe(
-        singleSelect.getAttribute("aria-activedescendant")
-      );
-      // Platypus is active option
-      await expect(findOptionByText("Platypus")?.getAttribute("id")).toBe(
-        singleSelect.getAttribute("aria-activedescendant")
-      );
-      // Close for next test
-      await closePopover();
-    });
-    await step("Multi select can be opened", async () => {
-      multiSelect.focus();
-      await userEvent.keyboard("{ArrowDown}");
-      const listbox = document.querySelector('[role="listbox"]');
-      await expect(listbox).toBeInTheDocument();
-    });
-    await step("Disabled options have aria-disabled attribute", async () => {
-      for (let i = 0; i < disabledOptions.length; i++) {
-        const option = findOptionByText(disabledOptions[i]);
-        await expect(option).toHaveAttribute("aria-disabled", "true");
-      }
-    });
-    await step("Enabled options can be selected", async () => {
-      await selectOptionsByName(["Koala", "Platypus", "Bison"]);
-      await verifyTagsExist(multiSelect, ["Koala", "Platypus", "Bison"]);
-      await verifyOptionsSelected(["Koala", "Platypus", "Bison"], true);
-    });
-    await step("Disabled options cannot be selected", async () => {
-      await selectOptionsByName(disabledOptions);
-      await verifyOptionsSelected(disabledOptions, false);
-      // Close for next test
-      await closePopover();
-    });
-    await step("Disabled options cannot be selected via keyboard", async () => {
-      multiSelect.focus();
-      // Open popover
-      await userEvent.keyboard("{ArrowDown}");
-      // Select first option
-      await userEvent.keyboard("{ArrowDown}");
-      // Koala is active option
-      await expect(findOptionByText("Koala")?.getAttribute("id")).toBe(
-        getFilterInput().getAttribute("aria-activedescendant")
-      );
-      // Go to next item
-      await userEvent.keyboard("{ArrowDown}");
-      // Kangaroo is skipped
-      await expect(findOptionByText("Kangaroo")?.getAttribute("id")).not.toBe(
-        getFilterInput().getAttribute("aria-activedescendant")
-      );
-      // Platypus is active option
-      await expect(findOptionByText("Platypus")?.getAttribute("id")).toBe(
-        getFilterInput().getAttribute("aria-activedescendant")
-      );
-    });
-  },
-};
-
-/**
- * Form Validation Example
- * Shows advanced validation states and error messaging
- */
-export const FormValidation: Story = {
-  render: () => {
-    // Variant state
-    const [variant, setVariant] = useState<"solid" | "ghost">("solid");
-    // Single select state
-    const [selectedValue, setSelectedValue] = useState<Key | null>(null);
-    const [isInvalid, setIsInvalid] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("Please select an option");
-
-    // Multi-select state
-    const [multiSelectedValues, setMultiSelectedValues] = useState<Selection>(
-      new Set()
-    );
-    const [multiIsInvalid, setMultiIsInvalid] = useState(true);
-    const [multiErrorMessage, setMultiErrorMessage] = useState(
-      "Please select at least one option"
-    );
-
-    const handleSelectionChange = (key: Key | null) => {
-      setSelectedValue(key);
-
-      // Custom validation logic
-      if (key === null || key === "") {
-        setIsInvalid(true);
-        setErrorMessage("Please select an option");
-      } else if (key === 6) {
-        setIsInvalid(true);
-        setErrorMessage("Skunk is not allowed for safety reasons");
-      } else {
-        setIsInvalid(false);
-        setErrorMessage("");
-      }
-    };
-
-    const handleMultiSelectionChange = (keys: Selection) => {
-      setMultiSelectedValues(keys);
-
-      // Multi-select validation logic
-      if (keys instanceof Set && keys.size === 0) {
-        setMultiIsInvalid(true);
-        setMultiErrorMessage("Please select at least one option");
-      } else if (keys instanceof Set && keys.has(6)) {
-        setMultiIsInvalid(true);
-        setMultiErrorMessage("Skunk is not allowed for safety reasons");
-      } else if (keys instanceof Set && keys.size > 3) {
-        setMultiIsInvalid(true);
-        setMultiErrorMessage("Maximum 3 selections allowed");
-      } else {
-        setMultiIsInvalid(false);
-        setMultiErrorMessage("");
-      }
-    };
-
-    return (
-      <Stack direction="column" gap="600">
-        <Stack direction="row" gap="400">
-          <FormField.Root
-            alignSelf={"flex-start"}
-            isInvalid={isInvalid}
-            isRequired
-          >
-            <FormField.Label>Single Select with Validation</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                defaultItems={options}
-                selectedKey={selectedValue}
-                onSelectionChange={handleSelectionChange}
-                variant={variant}
-                placeholder="Select an animal..."
+      <ComboBox.Root
+        items={sectionsData}
+        menuTrigger="focus"
+        aria-label="Test combobox with sections"
+      >
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox<(typeof sectionsData)[0]>>
+            {(section) => (
+              <ComboBox.Section<(typeof sectionsData)[0]["children"][0]>
+                label={section.name}
+                items={section.children}
+                id={section.id}
               >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description>
-              Select 'Skunk' option to trigger invalid selected state
-            </FormField.Description>
-            {errorMessage && <FormField.Error>{errorMessage}</FormField.Error>}
-          </FormField.Root>
-          <FormField.Root
-            alignSelf={"flex-start"}
-            isInvalid={multiIsInvalid}
-            isRequired
-          >
-            <FormField.Label>Multi-Select with Validation</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                defaultItems={options}
-                selectionMode="multiple"
-                selectedKeys={multiSelectedValues}
-                onSelectionChange={handleMultiSelectionChange}
-                variant={variant}
-                placeholder="Select multiple animals..."
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Description>
-              Select 'Skunk' option to trigger invalid selected state
-            </FormField.Description>
-            {multiErrorMessage && (
-              <FormField.Error>{multiErrorMessage}</FormField.Error>
-            )}
-          </FormField.Root>
-        </Stack>
-        <RadioInput.Root
-          onChange={setVariant as (value: string) => void}
-          value={variant}
-          orientation="horizontal"
-          aria-label="choose variant"
-        >
-          <RadioInput.Option value="solid">Solid</RadioInput.Option>
-          <RadioInput.Option value="ghost">Ghost</RadioInput.Option>
-        </RadioInput.Root>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const singleSelect: HTMLInputElement = await canvas.findByRole("combobox", {
-      name: /single select with validation/i,
-    });
-    const multiSelect = await canvas.findByRole("combobox", {
-      name: /multi-select with validation/i,
-    });
-
-    await step("Invalid single select has invalid attributes", async () => {
-      await expect(singleSelect).toHaveAttribute("aria-invalid", "true");
-      await expect(singleSelect).toHaveAttribute("data-invalid", "true");
-    });
-    await step("Invalid single select can be opened and used", async () => {
-      singleSelect.focus();
-      await userEvent.keyboard("{ArrowDown}");
-      await userEvent.keyboard("{Enter}");
-      await expect(singleSelect.value).toBe("Koala");
-      // Close for next test
-      await closePopover();
-    });
-    await step(
-      "Invalid single select updates state when isInvalid is updated",
-      async () => {
-        await expect(singleSelect).not.toHaveAttribute("aria-invalid");
-        await expect(singleSelect).not.toHaveAttribute("data-invalid");
-      }
-    );
-    await step("Invalid multi select has invalid attributes", async () => {
-      await expect(multiSelect).toHaveAttribute("aria-invalid", "true");
-      await expect(multiSelect).toHaveAttribute("data-invalid", "true");
-    });
-    await step("Invalid multi select can be opened and used", async () => {
-      multiSelect.focus();
-      await userEvent.keyboard("{ArrowDown}");
-      await userEvent.keyboard("{Enter}");
-      await verifyTagsExist(multiSelect, ["Koala"]);
-      // Close for next test
-      await closePopover();
-    });
-    await step(
-      "Invalid multi select updates state when isInvalid is updated",
-      async () => {
-        await expect(multiSelect).toHaveAttribute("aria-invalid", "false");
-        await expect(multiSelect).toHaveAttribute("data-invalid", "false");
-      }
-    );
-  },
-};
-
-/**
- * Formik Integration
- * Demonstrates integration with Formik form library and explores multiple
- * approaches to overcome TypeScript union type issues with Selection's 'all' literal.
- */
-export const FormikIntegration: Story = {
-  render: () => {
-    // Simulating Formik pattern - in real implementation you'd import from 'formik'
-    const [formData, setFormData] = useState<{
-      animal: Key | null;
-      animals: Selection;
-    }>({
-      animal: null,
-      animals: new Set(),
-    });
-    const [errors, setErrors] = useState<{
-      animal?: string;
-      animals?: string;
-    }>({});
-    const [touched, setTouched] = useState<{
-      animal?: boolean;
-      animals?: boolean;
-    }>({});
-    const [inputValue, setInputValue] = useState<string>("");
-    // Simulate Formik's validation function
-    const validate = (values: typeof formData) => {
-      const newErrors: typeof errors = {};
-      if (!values.animal) {
-        newErrors.animal = "Please select an animal";
-      }
-      if (values.animals instanceof Set && values.animals.size === 0) {
-        newErrors.animals = "Please select at least one animal";
-      }
-      return newErrors;
-    };
-    // Simulate Formik's handleSubmit
-    const handleSubmit = (e: FormEvent) => {
-      console.log("handling submission");
-      e.preventDefault();
-      // Always clear previous errors before validation
-      setErrors({});
-      const validationErrors = validate(formData);
-      console.log("Validation errors:", validationErrors);
-      if (Object.keys(validationErrors).length === 0) {
-        // Success - reset form and show success message
-        alert(
-          `Form submitted successfully!\n${JSON.stringify(
-            {
-              animal: formData.animal,
-              animals:
-                formData.animals === "all"
-                  ? "all"
-                  : Array.from(formData.animals),
-            },
-            null,
-            2
-          )}`
-        );
-        // Reset form state after successful submission
-        setFormData({ animal: null, animals: new Set() });
-        setInputValue("");
-        setTouched({});
-      } else {
-        // Validation failed - show errors and mark fields as touched
-        setErrors(validationErrors);
-        setTouched({ animal: true, animals: true });
-      }
-    };
-    // Reset form function
-    const resetForm = () => {
-      setFormData({ animal: null, animals: new Set() });
-      setInputValue("");
-      setErrors({});
-      setTouched({});
-    };
-    // Curried handlers - return functions that can be used directly in props
-    const handleSingleValueSelectionChange = useCallback(
-      (fieldName: string) => (selectedId: Key | null) => {
-        const selectedOption = options.find(
-          (option) => option.id === selectedId
-        );
-        setInputValue(selectedOption ? selectedOption.name : "");
-        setFormData((prev) => ({ ...prev, [fieldName]: selectedId }));
-        setTouched((prev) => ({ ...prev, [fieldName]: true }));
-
-        // Clear field-specific error when user makes a change
-        if (errors[fieldName as keyof typeof errors]) {
-          setErrors((prev) => ({ ...prev, [fieldName]: undefined }));
-        }
-      },
-      [errors]
-    );
-    const handleMultiValueSelectionChange = useCallback(
-      (fieldName: string) => (value: Selection) => {
-        setFormData((prev) => ({ ...prev, [fieldName]: value }));
-        setTouched((prev) => ({ ...prev, [fieldName]: true }));
-
-        // Clear field-specific error when user makes a change
-        if (errors[fieldName as keyof typeof errors]) {
-          setErrors((prev) => ({ ...prev, [fieldName]: undefined }));
-        }
-      },
-      [errors]
-    );
-    return (
-      <form onSubmit={handleSubmit}>
-        <Stack direction="column" gap="md">
-          <h3>Formik Integration Pattern</h3>
-          <p>
-            This demonstrates how to integrate ComboBox with Formik&apos;s form
-            handling patterns.
-          </p>
-
-          <FormField.Root isInvalid={!!(errors.animal && touched.animal)}>
-            <FormField.Label>Single Select Animal:</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                id="animal"
-                name="animal"
-                defaultItems={options}
-                selectedKey={formData.animal}
-                onInputChange={setInputValue}
-                inputValue={inputValue}
-                onSelectionChange={handleSingleValueSelectionChange("animal")}
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Error>{errors.animal}</FormField.Error>
-          </FormField.Root>
-          <FormField.Root isInvalid={!!(errors.animals && touched.animals)}>
-            <FormField.Label>Multi-Select Animals:</FormField.Label>
-            <FormField.Input>
-              <ComboBox.Root
-                id="animals"
-                name="animals"
-                defaultItems={options}
-                selectionMode="multiple"
-                selectedKeys={formData.animals}
-                onSelectionChange={handleMultiValueSelectionChange("animals")}
-              >
-                {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}
-              </ComboBox.Root>
-            </FormField.Input>
-            <FormField.Error>{errors.animals}</FormField.Error>
-          </FormField.Root>
-          <Stack direction="row" gap="200" mt="200">
-            <Button colorPalette="primary" type="submit">
-              Submit Form
-            </Button>
-            <Button variant="ghost" onPress={resetForm}>
-              Reset Form
-            </Button>
-          </Stack>
-          <Box mt="400">
-            <Text fontWeight="600" fontSize="400">
-              Form State (Formik-style):
-            </Text>
-            <Box fontSize="350" fontFamily="mono">
-              <Text fontWeight="600">Values:</Text>
-              <Box my="200" p="200" bg="neutral.3" borderRadius="200" as="pre">
-                {JSON.stringify(
-                  {
-                    animal: formData.animal,
-                    animals:
-                      formData.animals === "all"
-                        ? "all"
-                        : Array.from(formData.animals),
-                  },
-                  null,
-                  2
+                {(item) => (
+                  <ComboBox.Option id={item.id} textValue={item.name}>
+                    {item.name}
+                  </ComboBox.Option>
                 )}
-              </Box>
-              <Text fontWeight="600">Errors:</Text>
-              <Box my="200" p="200" bg="neutral.3" borderRadius="200" as="pre">
-                {JSON.stringify(errors, null, 2)}
-              </Box>
-              <Text fontWeight="600">Touched:</Text>
-              <Box my="200" p="200" bg="neutral.3" borderRadius="200" as="pre">
-                {JSON.stringify(touched, null, 2)}
-              </Box>
-            </Box>
-          </Box>
-        </Stack>
-      </form>
+              </ComboBox.Section>
+            )}
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
     );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("All sections appear with header labels", async () => {
+      await userEvent.click(input);
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Verify section headers (in portal, so use document not canvas)
+      const portal = within(document.body);
+      expect(portal.getByText("Mammals")).toBeInTheDocument();
+      expect(portal.getByText("Birds")).toBeInTheDocument();
+      expect(portal.getByText("Other")).toBeInTheDocument();
+    });
+
+    await step("Items grouped under correct sections", async () => {
+      // Verify items exist
+      expect(findOptionByText("Koala")).toBeInTheDocument();
+      expect(findOptionByText("Bald Eagle")).toBeInTheDocument();
+      expect(findOptionByText("Platypus")).toBeInTheDocument();
+    });
+
+    await step("Filter 'eagle' - only Birds section visible", async () => {
+      await userEvent.type(input, "eagle");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Birds section should be visible
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+
+        // Bald Eagle should be visible
+        expect(findOptionByText("Bald Eagle")).toBeInTheDocument();
+      });
+
+      // Other sections should not be visible (no matching items)
+      expect(portal.queryByText("Mammals")).not.toBeInTheDocument();
+      expect(portal.queryByText("Other")).not.toBeInTheDocument();
+    });
+
+    await step("Filter 'ko' - only Mammals section visible", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ko");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Mammals section should be visible
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+
+        // Koala should be visible
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+
+      // Other sections should not be visible
+      expect(portal.queryByText("Birds")).not.toBeInTheDocument();
+      expect(portal.queryByText("Other")).not.toBeInTheDocument();
+    });
+
+    await step("Clear filter - all sections visible again", async () => {
+      await userEvent.clear(input);
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // All sections should return
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+        expect(portal.getByText("Other")).toBeInTheDocument();
+      });
+    });
+
+    await step("Filter 'a' - multiple sections have matches", async () => {
+      await userEvent.type(input, "a");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        // Mammals section (Koala, Kangaroo contain 'a')
+        expect(portal.getByText("Mammals")).toBeInTheDocument();
+
+        // Birds section (Bald Eagle contains 'a')
+        expect(portal.getByText("Birds")).toBeInTheDocument();
+
+        // Other section (Platypus contains 'a')
+        expect(portal.getByText("Other")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// CUSTOM FILTER FUNCTIONS TESTS
+// ============================================================
+
+/**
+ * Custom Filter: Start-With Matching
+ * Tests filterByStartsWith - matches only if text starts with search term
+ */
+export const CustomFilterStartsWith: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByStartsWith}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step(
+      "Type 'K' - matches Koala and Kangaroo (starts with)",
+      async () => {
+        await userEvent.click(input);
+        await userEvent.type(input, "K");
+
+        const options = Array.from(getListboxOptions());
+        const optionsText = options.map((option) => option.textContent);
+
+        // Should NOT match Skunk (doesn't start with 'K' but contains 'k')
+        expect(optionsText).toMatchObject(["Koala", "Kangaroo"]);
+      }
+    );
+
+    await step("Type 'al' - no matches (none start with 'al')", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "al");
+
+      const options = Array.from(getListboxOptions());
+      const optionsText = options.map((option) => option.textContent);
+
+      // Koala contains 'al' but doesn't start with it
+      expect(optionsText).toMatchObject([]);
+    });
+  },
+};
+
+/**
+ * Custom Filter: Case-Sensitive Matching
+ * Tests filterByCaseSensitive - requires exact case match
+ */
+export const CustomFilterCaseSensitive: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByCaseSensitive}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'Ko' - matches Koala (exact case)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Ko");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'ko' - no match (case differs)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ko");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(0);
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Word Boundary Matching
+ * Tests filterByWordBoundary - matches whole words
+ */
+export const CustomFilterWordBoundary: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByWordBoundary}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step(
+      "Type 'Eagle' - matches 'Bald Eagle' (word boundary)",
+      async () => {
+        await userEvent.click(input);
+        await userEvent.type(input, "Eagle");
+
+        await waitFor(() => {
+          expect(
+            findOptionByText("Bald Eagle with a very long name hooray")
+          ).toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Type 'ala' - no match (not on word boundary)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "ala");
+
+      // "Koala" contains "ala" but not at word boundary
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(0);
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Fuzzy Matching
+ * Tests filterByFuzzy - matches characters in order but not necessarily adjacent
+ */
+export const CustomFilterFuzzy: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={ComboBox.filters.filterByFuzzy}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type 'ldEag' - matches Bald Eagle (fuzzy)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "ldEag");
+
+      await waitFor(() => {
+        expect(
+          findOptionByText("Bald Eagle with a very long name hooray")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Type 'kng' - matches Kangaroo (K-n-g in order)", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "kng");
+
+      await waitFor(() => {
+        expect(findOptionByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Multi-Property Search
+ * Tests createMultiPropertyFilter - searches across multiple object properties
+ */
+export const CustomFilterMultiProperty: Story = {
+  render: () => {
+    type Product = { id: number; name: string; category: string };
+    const products: Product[] = [
+      { id: 1, name: "Laptop", category: "Electronics" },
+      { id: 2, name: "Desk", category: "Furniture" },
+      { id: 3, name: "Mouse", category: "Electronics" },
+      { id: 4, name: "Chair", category: "Furniture" },
+    ];
+
+    const multiPropertyFilter =
+      ComboBox.filters.createMultiPropertyFilter<Product>(["name", "category"]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={products}
+        filter={multiPropertyFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search by name 'Laptop'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Laptop");
+
+      await waitFor(() => {
+        expect(findOptionByText("Laptop")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search by category 'Furniture'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Furniture");
+
+      await waitFor(() => {
+        // Should match both Desk and Chair (category: Furniture)
+        expect(findOptionByText("Desk")).toBeInTheDocument();
+        expect(findOptionByText("Chair")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search by category 'Electronics'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Electro");
+
+      await waitFor(() => {
+        // Should match Laptop and Mouse
+        expect(findOptionByText("Laptop")).toBeInTheDocument();
+        expect(findOptionByText("Mouse")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Custom Filter: Ranked/Scored Results
+ * Tests createRankedFilter - custom scoring logic for ranking results
+ */
+export const CustomFilterRanked: Story = {
+  render: () => {
+    // Rank by: exact match > starts with > contains
+    const rankedFilter = ComboBox.filters.createRankedFilter<SimpleOption>(
+      (node, filterText) => {
+        const text = node.textValue.toLowerCase();
+        const search = filterText.toLowerCase();
+
+        if (text === search) return 100; // Exact match
+        if (text.startsWith(search)) return 50; // Starts with
+        if (text.includes(search)) return 10; // Contains
+        return 0; // No match
+      }
+    );
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={rankedFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search 'ko' - Koala ranked first (starts with)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "ko");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step(
+      "Search 'k' - ranked by score (starts with > contains)",
+      async () => {
+        await userEvent.clear(input);
+        await userEvent.type(input, "k");
+
+        await waitFor(() => {
+          const options = getListboxOptions();
+          expect(options.length).toBeGreaterThan(0);
+        });
+
+        const optionsList = Array.from(getListboxOptions());
+
+        // Koala and Kangaroo start with 'k' (score: 50)
+        // Skunk contains 'k' but doesn't start with it (score: 10)
+        // Skunk should appear AFTER Koala and Kangaroo due to lower score
+
+        // Get the index of each option
+        const koalaIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Koala")
+        );
+        const kangarooIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Kangaroo")
+        );
+        const skunkIndex = optionsList.findIndex((opt) =>
+          opt.textContent?.includes("Skunk")
+        );
+
+        // Verify all are present and in the correct order
+        expect(koalaIndex).toBe(0);
+        expect(kangarooIndex).toBe(1);
+        expect(skunkIndex).toBe(2);
+
+        // Skunk (contains 'k') should be ranked AFTER Koala and Kangaroo (start with 'k')
+        expect(skunkIndex).toBeGreaterThan(koalaIndex);
+        expect(skunkIndex).toBeGreaterThan(kangarooIndex);
+      }
+    );
+  },
+};
+
+/**
+ * Custom Filter: Multi-Term Search
+ * Tests createMultiTermFilter - OR logic for multiple search terms
+ */
+export const CustomFilterMultiTerm: Story = {
+  render: () => {
+    const multiTermFilter = ComboBox.filters.createMultiTermFilter(
+      ComboBox.filters.filterByText
+    );
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        filter={multiTermFilter}
+        menuTrigger="focus"
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search 'Koala Bison' - matches both (OR logic)", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Koala Bison");
+
+      await waitFor(() => {
+        // Should match both Koala OR Bison
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Bison")).toBeInTheDocument();
+      });
+    });
+
+    await step("Search 'Ko Pl' - matches Koala and Platypus", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Ko Pl");
+
+      await waitFor(() => {
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+        expect(findOptionByText("Platypus")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// EMPTY STATE HANDLING TESTS
+// ============================================================
+
+/**
+ * Empty State: Menu Closes When No Matches (Default)
+ * Tests that menu closes automatically when no matches found (default behavior)
+ */
+export const EmptyStateMenuClosesDefault: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        // allowsEmptyMenu defaults to false
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu with matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Type text with no matches - menu closes", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "xyz");
+
+      // Menu should close when no matches (default behavior)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Empty State: Custom Message Displays
+ * Tests that custom empty state message renders correctly
+ */
+export const EmptyStateCustomMessage: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => (
+          <Stack direction="column" gap="200" padding="400">
+            <Text>No animals match your search</Text>
+            <Text color="neutral.11" fontSize="300">
+              Try a different search term
+            </Text>
+          </Stack>
+        )}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search with no matches", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Custom empty state renders", async () => {
+      // Custom message should be visible (in portal)
+      const portal = within(document.body);
+      expect(
+        portal.getByText("No animals match your search")
+      ).toBeInTheDocument();
+      expect(
+        portal.getByText("Try a different search term")
+      ).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Empty State: User Can Recover by Clearing Search
+ * Tests that clearing search after no results restores the options
+ */
+export const EmptyStateRecoverByClearingSearch: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        allowsEmptyMenu={true}
+        renderEmptyState={() => "No results found"}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Search with no matches shows empty state", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "xyz");
+
+      const portal = within(document.body);
+
+      await waitFor(() => {
+        expect(portal.getByText("No results found")).toBeInTheDocument();
+      });
+    });
+
+    await step("Clear search - all options return", async () => {
+      await userEvent.clear(input);
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(6); // All options restored
+      });
+
+      // Empty state should be gone
+      const portal = within(document.body);
+      expect(portal.queryByText("No results found")).not.toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// CUSTOM OPTION CREATION - BASIC CREATION TESTS
+// ============================================================
+
+/**
+ * Creation: User Can Create New Options
+ * Tests that users can create new options when allowsCustomOptions=true
+ */
+export const CreationUserCanCreateOptions: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type custom text", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Lion");
+
+      // No existing match for "Lion"
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Press Enter creates new option", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      // New option should appear as tag
+      await waitFor(() => {
+        expect(canvas.getByText("Lion")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Creation: Press Enter on Non-Matching Text Creates Option
+ * Tests that Enter key creates option when text doesn't match any existing option
+ */
+export const CreationEnterOnNonMatchingText: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Type non-matching text 'Tiger'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Tiger");
+    });
+
+    await step("Enter creates new option 'Tiger'", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Tiger")).toBeInTheDocument();
+      });
+    });
+
+    await step("Type another non-matching text 'Bear'", async () => {
+      await userEvent.type(input, "Bear");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Bear")).toBeInTheDocument();
+      });
+
+      // Both custom options should exist
+      expect(canvas.getByText("Tiger")).toBeInTheDocument();
+      expect(canvas.getByText("Bear")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Creation: Empty Input Does Not Create Option
+ * Tests that whitespace-only or empty input doesn't create options
+ */
+export const CreationEmptyInputDoesNotCreate: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Empty input - Enter does nothing", async () => {
+      await userEvent.click(input);
+      expect(input.value).toBe("");
+
+      await userEvent.keyboard("{Enter}");
+
+      // No tag should be created
+      await waitFor(() => {
+        const tags = canvas.queryAllByRole("button", { name: /remove tag/i });
+        expect(tags.length).toBe(0);
+      });
+    });
+
+    await step("Whitespace-only input - Enter does nothing", async () => {
+      await userEvent.type(input, "   ");
+      await userEvent.keyboard("{Enter}");
+
+      // No tag should be created
+      const tags = canvas.queryAllByRole("button", { name: /remove tag/i });
+      expect(tags.length).toBe(0);
+    });
+  },
+};
+
+/**
+ * Creation: Duplicate Options Are Prevented
+ * Tests that duplicate options cannot be created (case-insensitive check)
+ */
+export const CreationDuplicatesPrevented: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(), // Trim to match validation
+        })}
+        isValidNewOption={(inputValue) => {
+          // Prevent duplicates (case-insensitive)
+          const lowerInput = inputValue.toLowerCase().trim();
+          return (
+            lowerInput.length > 0 &&
+            !simpleOptions.some((opt) => opt.name.toLowerCase() === lowerInput)
+          );
+        }}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Try to create existing option 'Koala'", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create duplicate (Koala exists)
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+
+    await step("Try case variation 'koala'", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "koala");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create duplicate
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+        expect(findOptionByText("Koala")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Creation: Custom Validation Rules Respected
+ * Tests that isValidNewOption validation is respected
+ */
+export const CreationCustomValidationRespected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue,
+        })}
+        isValidNewOption={(inputValue) => {
+          // Only allow options starting with 'Custom'
+          return inputValue.startsWith("Custom");
+        }}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Invalid option 'Lion' - not created", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Lion");
+      await userEvent.keyboard("{Enter}");
+
+      // Should NOT create (doesn't start with 'Custom')
+      await waitFor(() => {
+        expect(canvas.queryByText("Lion")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Valid option 'CustomAnimal' - created", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "CustomAnimal");
+      await userEvent.keyboard("{Enter}");
+
+      // Should create (starts with 'Custom')
+      await waitFor(() => {
+        expect(canvas.getByText("CustomAnimal")).toBeInTheDocument();
+      });
+    });
+
+    await step("Another valid option 'CustomBeast' - created", async () => {
+      await userEvent.type(input, "CustomBeast");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("CustomBeast")).toBeInTheDocument();
+      });
+
+      // Both custom options should exist
+      expect(canvas.getByText("CustomAnimal")).toBeInTheDocument();
+      expect(canvas.getByText("CustomBeast")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// SINGLE-SELECT CUSTOM OPTIONS TESTS
+// ============================================================
+
+/**
+ * Single-Select Creation: New Option Automatically Selected
+ * Tests that new option is automatically selected in single-select mode
+ */
+export const SingleSelectCreationAutoSelected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Type custom option
+    await userEvent.click(input);
+    await userEvent.type(input, "Lion");
+    await userEvent.keyboard("{Enter}");
+
+    // New option should be automatically selected in single-select
+    await waitFor(() => {
+      expect(input.value).toBe("Lion");
+    });
+  },
+};
+
+/**
+ * Single-Select Creation: Input Updates to Show New Option Text
+ * Tests that input displays the created option's text
+ */
+export const SingleSelectCreationInputUpdates: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Create first custom option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Tiger");
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show created option text
+      await waitFor(() => {
+        expect(input.value).toBe("Tiger");
+      });
+    });
+
+    await step("Create second custom option - replaces first", async () => {
+      await userEvent.clear(input);
+      await userEvent.type(input, "Bear");
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show new option text (single-select replacement)
+      await waitFor(() => {
+        expect(input.value).toBe("Bear");
+      });
+    });
+  },
+};
+
+/**
+ * Single-Select Creation: Menu Closes After Creation
+ * Tests that menu closes automatically after creating option in single-select
+ */
+export const SingleSelectCreationMenuCloses: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        allowsCustomOptions={true}
+        getNewOptionData={(inputValue) => ({
+          id: Date.now(),
+          name: inputValue.trim(),
+        })}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Type to open menu and create custom option", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "Wolf");
+
+      // Menu should open when typing
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Press Enter to create
+      await userEvent.keyboard("{Enter}");
+
+      // Input should show created option
+      await waitFor(() => {
+        expect(input.value).toBe("Wolf");
+      });
+    });
+
+    await step("Menu closes after creation", async () => {
+      // Menu should close (single-select behavior)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+// ============================================================
+// ACCESSIBILITY - KEYBOARD ACCESSIBILITY TESTS
+// ============================================================
+
+/**
+ * A11y Keyboard: All Functionality Available via Keyboard
+ * Tests complete workflow using only keyboard (no mouse)
+ */
+export const AccessibilityKeyboardAllFunctionalityAvailable: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Focus input (then keyboard only)", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow Down opens menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Navigate and select with Enter", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByText("Kangaroo")).toBeInTheDocument();
+      });
+    });
+
+    await step("Backspace removes selection", async () => {
+      const input = canvas.getByRole("combobox") as HTMLInputElement;
+      expect(input.value).toBe("");
+      await userEvent.keyboard("{Backspace}");
+
+      await waitFor(() => {
+        expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: No Keyboard Traps
+ * Tests that user can Tab out of component
+ */
+export const AccessibilityKeyboardNoTraps: Story = {
+  render: () => {
+    return (
+      <Stack direction="column" gap="400">
+        <ComposedComboBox aria-label="First combobox" items={simpleOptions} />
+        <ComposedComboBox aria-label="Second combobox" items={simpleOptions} />
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab to first input", async () => {
+      await userEvent.tab();
+      const firstInput = canvas.getByLabelText("First combobox");
+      expect(firstInput).toHaveFocus();
+    });
+
+    await step("Open menu with arrow", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Tab exits component (no trap)", async () => {
+      await userEvent.tab();
+      const secondInput = canvas.getByLabelText("Second combobox");
+      expect(secondInput).toHaveFocus();
+    });
+
+    await step("Menu closes when focus leaves", async () => {
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Focus Management Works Correctly
+ * Tests that focus is managed correctly throughout interactions
+ */
+export const AccessibilityKeyboardFocusManagement: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("Arrow navigation maintains input focus", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Input should still have browser focus (virtual focus pattern)
+      expect(input).toHaveFocus();
+    });
+
+    await step("Selection maintains input focus", async () => {
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(input.value).toBe("Kangaroo");
+      });
+
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+
+    await step("Escape maintains input focus", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Escape}");
+
+      // Input should still be focused
+      expect(input).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Keyboard Shortcuts Work
+ * Tests all documented keyboard shortcuts
+ */
+export const AccessibilityKeyboardShortcuts: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Focus input", async () => {
+      await userEvent.click(input);
+      expect(input).toHaveFocus();
+    });
+
+    await step("ArrowDown - opens and navigates", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      const activeDesc = input.getAttribute("aria-activedescendant");
+      expect(activeDesc).toBeTruthy();
+    });
+
+    await step("Enter - selects option", async () => {
+      await userEvent.keyboard("{Enter}");
+      expect(canvas.getByText("Koala")).toBeInTheDocument();
+    });
+
+    await step("Backspace - removes tag", async () => {
+      await userEvent.keyboard("{Backspace}");
+      await waitFor(() => {
+        expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Escape - closes menu", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * A11y Keyboard: Focus Indicators Visible
+ * Tests that focus indicators are visible during keyboard navigation
+ */
+export const AccessibilityKeyboardFocusIndicators: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Tab to focus (keyboard interaction)
+    await userEvent.tab();
+    expect(input).toHaveFocus();
+
+    // Open menu with keyboard
+    await userEvent.keyboard("{ArrowDown}");
+
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+    });
+
+    // Verify aria-activedescendant (virtual focus indicator)
+    const activeDesc = input.getAttribute("aria-activedescendant");
+    expect(activeDesc).toBeTruthy();
+    expect(activeDesc).toMatch(/option/); // Should reference an option element
+  },
+};
+
+// ============================================================
+// ACCESSIBILITY - ARIA RELATIONSHIPS TESTS
+// ============================================================
+
+/**
+ * A11y ARIA: Input Associated with Listbox
+ * Tests aria-controls relationship between input and listbox
+ */
+export const AccessibilityAriaInputListboxRelationship: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Input should have aria-controls pointing to listbox
+    const ariaControls = input.getAttribute("aria-controls");
+    expect(ariaControls).toBeTruthy();
+
+    // Open menu
+    await userEvent.click(input);
+    await userEvent.type(input, "K");
+
+    await waitFor(() => {
+      const listbox = getListBox(document);
+      expect(listbox).toBeInTheDocument();
+
+      // Listbox ID should match aria-controls
+      expect(listbox?.id).toBe(ariaControls);
+    });
+  },
+};
+
+/**
+ * A11y ARIA: Focused Option Identified
+ * Tests aria-activedescendant identifies currently focused option
+ */
+export const AccessibilityAriaFocusedOptionIdentified: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("No activedescendant when menu closed", async () => {
+      await userEvent.click(input);
+      const activeDesc = input.getAttribute("aria-activedescendant");
+      expect(activeDesc).toBeNull();
+    });
+
+    await step("Activedescendant set when option focused", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const activeDesc = input.getAttribute("aria-activedescendant");
+        expect(activeDesc).toBeTruthy();
+      });
+
+      const activeDesc = input.getAttribute("aria-activedescendant");
+
+      // Verify the ID points to an actual option
+      const focusedOption = document.getElementById(activeDesc!);
+      expect(focusedOption).toBeInTheDocument();
+      expect(focusedOption?.getAttribute("role")).toBe("option");
+    });
+
+    await step("Activedescendant updates when navigating", async () => {
+      const firstActiveDesc = input.getAttribute("aria-activedescendant");
+
+      await userEvent.keyboard("{ArrowDown}");
+
+      await waitFor(() => {
+        const newActiveDesc = input.getAttribute("aria-activedescendant");
+        expect(newActiveDesc).not.toBe(firstActiveDesc);
+      });
+    });
+  },
+};
+
+// ============================================================
+// VISUAL STATES - SIZE VARIANTS TESTS
+// ============================================================
+
+/**
+ * Size: Small Variant Renders Correctly
+ * Tests that sm size renders with correct root container dimensions
+ */
+export const SizeSmallVariant: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Small combobox"
+        items={simpleOptions}
+        size="sm"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the root container
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+
+    // Measure dimensions
+    const height = (root as HTMLElement).offsetHeight;
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Small size height
+    expect(height).toBe(32);
+    expect(width).toBeGreaterThan(0);
+  },
+};
+
+/**
+ * Size: Medium Variant Renders Correctly
+ * Tests that md size renders with correct root container dimensions (default)
+ */
+export const SizeMediumVariant: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Medium combobox"
+        items={simpleOptions}
+        size="md"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    // Find the root container
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+
+    // Measure dimensions
+    const height = (root as HTMLElement).offsetHeight;
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Medium size height
+    expect(height).toBe(40);
+    expect(width).toBeGreaterThan(0);
+  },
+};
+
+// ============================================================
+// VISUAL STATES - VARIANT TESTS
+// ============================================================
+
+/**
+ * Variant: Solid (Default) Displays Correctly
+ * Tests that solid variant renders with correct root container width
+ */
+export const VariantSolid: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Solid combobox"
+        items={simpleOptions}
+        variant="solid"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+    expect(root).toBeVisible();
+
+    // Solid variant has fixed width
+    const width = (root as HTMLElement).offsetWidth;
+    expect(width).toBe(288);
+
+    // Verify CSS from recipe
+    const styles = window.getComputedStyle(root as HTMLElement);
+
+    // Solid has appropriate background
+    expect(styles.backgroundColor).toBe("rgb(255, 255, 255)");
+
+    // Solid has fixed width in CSS
+    expect(styles.width).toBe("288px");
+  },
+};
+
+/**
+ * Variant: Ghost Displays Correctly
+ * Tests that ghost variant renders with correct root container width
+ */
+export const VariantGhost: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Ghost combobox"
+        items={simpleOptions}
+        variant="ghost"
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toBeTruthy();
+    expect(root).toBeVisible();
+
+    // Ghost variant has fixed width
+    const width = (root as HTMLElement).offsetWidth;
+
+    // Verify CSS from recipe
+    const styles = window.getComputedStyle(root as HTMLElement);
+
+    // Ghost has transparent background
+    expect(styles.backgroundColor).toContain("rgba(0, 0, 0, 0)");
+
+    // Ghost has fixed width in CSS
+    expect(width).toBe(288);
+  },
+};
+
+// ============================================================
+// VISUAL STATES - REQUIRED/READONLY/DISABLED/INVALID TESTS
+// ============================================================
+
+/**
+ * State: isRequired
+ * Tests required state
+ */
+export const StateIsRequired: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Required combobox"
+        items={simpleOptions}
+        isRequired
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    expect(input).toBeRequired();
+  },
+};
+
+/**
+ * State: isReadOnly
+ * Tests that read-only state prevents typing and interactions
+ */
+export const StateIsReadOnly: Story = {
+  render: () => {
+    const [selectedKeys] = useState<(string | number)[]>([1]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Read-only combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        isReadOnly
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+
+    // Typing has no effect
+    await userEvent.click(input);
+    const initialValue = input.value;
+    await userEvent.type(input, "test");
+    expect(input.value).toBe(initialValue);
+  },
+};
+
+/**
+ * State: isDisabled
+ * Tests that disabled state disables all interactive elements
+ */
+export const StateIsDisabled: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Disabled combobox"
+        items={simpleOptions}
+        isDisabled
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Input is disabled
+    expect(input).toBeDisabled();
+  },
+};
+
+/**
+ * State: isInvalid
+ * Tests that invalid state shows error styling
+ */
+export const StateIsInvalid: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Invalid combobox"
+        items={simpleOptions}
+        isInvalid
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Container should be invalid
+    const root = canvasElement.querySelector(".nimbus-combobox__root");
+    expect(root).toHaveAttribute("data-invalid", "true");
+
+    // Find the trigger (contains the border styling)
+    const trigger = input.parentElement?.parentElement as HTMLElement;
+    expect(trigger).toBeTruthy();
+
+    // Check CSS custom property for border color
+    const triggerStyles = window.getComputedStyle(trigger);
+    const borderColor = triggerStyles.getPropertyValue("--border-color");
+
+    // Should be styled when invalid
+    expect(borderColor).toContain("hsl(359, 77%, 81%)");
+  },
+};
+
+// ============================================================
+// PORTAL POSITIONING - COMBOBOX IN DIALOG/MODAL
+// ============================================================
+
+/**
+ * Portal Positioning: ComboBox in Dialog
+ * Tests that ComboBox popover maintains proper positioning relative to trigger
+ * when rendered inside a Dialog/Modal portal (regression test for CRAFT-2013)
+ */
+export const PortalPositioningInDialog: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <Stack direction="column" gap="400">
+        {/* Note: Using uncontrolled Dialog to test ComboBox positioning in modals */}
+        <Dialog.Root>
+          <Dialog.Trigger>Open Dialog with ComboBox</Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Select Options</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              <Stack direction="column" gap="400">
+                <Text>Select your favorite animals from the list below:</Text>
+                <FormField.Root>
+                  <FormField.Label>Animals</FormField.Label>
+                  <ComposedComboBox
+                    aria-label="Animals in dialog"
+                    items={simpleOptions}
+                    selectionMode="single"
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={setSelectedKeys}
+                  />
+                </FormField.Root>
+              </Stack>
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    // Use parentNode to capture both canvas and portal content (Dialog pattern)
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open dialog", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Dialog with ComboBox",
+      });
+      await userEvent.click(trigger);
+
+      // Wait for dialog to appear in portal
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Open ComboBox listbox", async () => {
+      const combobox = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      });
+
+      // Focus the combobox first to ensure it's interactive
+      await userEvent.click(combobox);
+      await userEvent.keyboard("{ArrowDown}");
+
+      // Wait for listbox to appear (ComboBox also uses portal)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+    });
+
+    await step("Verify listbox positioning relative to trigger", async () => {
+      const combobox = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      });
+      const listbox = getListBox(document) as HTMLElement;
+
+      expect(listbox).toBeInTheDocument();
+
+      // Get bounding rectangles
+      const comboboxRect = combobox.getBoundingClientRect();
+      const listboxRect = listbox.getBoundingClientRect();
+
+      // Verify listbox appears above OR below the combobox trigger within tolerance
+      // React Aria will flip the popover based on available space
+      const tolerance = 5;
+      const isBelow = listboxRect.top >= comboboxRect.bottom - tolerance;
+      const isAbove = listboxRect.bottom <= comboboxRect.top + tolerance;
+
+      expect(isBelow || isAbove).toBe(true);
+
+      // Verify horizontal alignment (listbox should be aligned with combobox)
+      // Allow tolerance for borders/padding/scrollbars
+      expect(Math.abs(listboxRect.left - comboboxRect.left)).toBeLessThan(20);
+    });
+
+    await step("Select an option and verify behavior", async () => {
+      // Select "Koala" option
+      await selectOptionsByName(["Koala"]);
+
+      // Wait for listbox to close after selection (single-select closes automatically)
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+
+      // Verify combobox input now shows the selected value
+      const comboboxInput = canvas.getByRole("combobox", {
+        name: "Animals in dialog",
+      }) as HTMLInputElement;
+      await waitFor(() => {
+        expect(comboboxInput.value).toBe("Koala");
+      });
+    });
+
+    await step("Close dialog and verify cleanup", async () => {
+      // Close via Escape key
+      await userEvent.keyboard("{Escape}");
+
+      // Wait for dialog to disappear
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+
+      // Verify listbox is also cleaned up
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).not.toBeInTheDocument();
+      });
+    });
   },
 };

@@ -64,7 +64,6 @@ export const DatePicker = (props: DatePickerProps) => {
                 hourCycle={hourCycle}
                 trailingElement={
                   <Box>
-                    {/* @ts-expect-error react aria is adding the aria-label prop */}
                     <IconButton
                       variant="ghost"
                       size={overlayButtonSize}
@@ -72,7 +71,6 @@ export const DatePicker = (props: DatePickerProps) => {
                     >
                       <Close />
                     </IconButton>
-                    {/* @ts-expect-error react aria is adding the aria-label prop */}
                     <IconButton
                       variant="ghost"
                       size={overlayButtonSize}

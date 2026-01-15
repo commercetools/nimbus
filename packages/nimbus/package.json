@@ -59,7 +59,8 @@
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^5.2.1",
     "react-stately": "catalog:react",
-    "react-use": "^17.5.1"
+    "react-use": "^17.5.1",
+    "use-debounce": "^10.0.0"
   },
   "devDependencies": {
     "@chakra-ui/cli": "catalog:react",
@@ -68,6 +69,7 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
+    "@react-types/shared": "catalog:tooling",
     "@storybook/addon-a11y": "catalog:tooling",
     "@storybook/addon-docs": "catalog:tooling",
     "@storybook/addon-vitest": "catalog:tooling",
