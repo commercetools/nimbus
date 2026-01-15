@@ -22,7 +22,7 @@ export function NimbusProvider({
   // Inner content with all the existing providers
   // If no locale is provided, use browser's locale as fallback
   const content = (
-    <IntlProvider locale={locale ?? navigator.language} defaultLocale="en">
+    <IntlProvider locale={locale ?? navigator.language} defaultLocale="en-US">
       <ChakraProvider value={system}>
         <NimbusColorModeProvider enableSystem={false} {...props}>
           <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
