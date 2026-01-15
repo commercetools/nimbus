@@ -14,7 +14,11 @@ import { ComboBox, type ComboBoxRootProps } from "@commercetools/nimbus";
 
 ### Basic usage
 
-The simplest implementation uses the `items` prop with a render function:
+ComboBox supports two patterns for defining options:
+
+#### With items prop (recommended for dynamic data)
+
+Use the `items` prop when working with data from APIs, state, or dynamic sources:
 
 ```jsx-live-dev
 const App = () => {
@@ -38,6 +42,28 @@ const App = () => {
   );
 }
 ```
+
+#### With static children (requires textValue)
+
+For static lists, you **must** include the `textValue` prop on each option for selections to display correctly:
+
+```jsx-live-dev
+const App = () => (
+  <ComboBox.Root aria-label="Select an animal">
+    <ComboBox.Trigger />
+    <ComboBox.Popover>
+      <ComboBox.ListBox>
+        <ComboBox.Option id="koala" textValue="Koala">Koala</ComboBox.Option>
+        <ComboBox.Option id="panda" textValue="Panda">Panda</ComboBox.Option>
+        <ComboBox.Option id="giraffe" textValue="Giraffe">Giraffe</ComboBox.Option>
+      </ComboBox.ListBox>
+    </ComboBox.Popover>
+  </ComboBox.Root>
+)
+```
+
+> [!WARNING]\
+> Without `textValue` on static children, selected values will not display in the input field or as tags. Always include `textValue` when not using the `items` prop.
 
 ## Usage examples
 
