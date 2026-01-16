@@ -335,13 +335,13 @@ export default function App() {
 
 ### Dynamic locale switching
 
-Allow users to change the application language at runtime:
+Allow users to change the application language at runtime by managing locale state:
 
 ```tsx
 'use client';
 
 import { useState } from 'react';
-import { NimbusProvider } from '@commercetools/nimbus';
+import { NimbusProvider, useLocale } from '@commercetools/nimbus';
 import { useRouter } from 'next/navigation';
 
 export function Providers({
@@ -359,17 +359,19 @@ export function Providers({
       locale={locale}
       router={{ navigate: router.push }}
     >
-      {/* Provide locale setter through context or props */}
-      <LocaleContext.Provider value={{ locale, setLocale }}>
-        {children}
-      </LocaleContext.Provider>
+      <LocaleSwitcher setLocale={setLocale} />
+      {children}
     </NimbusProvider>
   );
 }
 
-// Usage in a component
-function LocaleSwitcher() {
-  const { locale, setLocale } = useLocale();
+function LocaleSwitcher({
+  setLocale
+}: {
+  setLocale: (locale: string) => void;
+}) {
+  // Read current locale from React Aria context
+  const { locale } = useLocale();
 
   return (
     <Select.Root value={locale} onValueChange={setLocale}>
@@ -383,6 +385,8 @@ function LocaleSwitcher() {
   );
 }
 ```
+
+**Note:** For deeply nested components, you can use React Context to avoid prop drilling, but for most cases, passing `setLocale` as a prop is sufficient.
 
 ### TypeScript: Router options type augmentation
 
@@ -651,25 +655,25 @@ NimbusProvider **can** be nested, but it's rarely necessary. For most applicatio
 
 **Note:** Color mode cannot be scoped because `next-themes` operates globally on the document element. Nested providers will change the global theme, not create a scoped theme for their subtree.
 
-#### Locale-only changes with IntlProvider
+#### Locale-only changes with NimbusI18nProvider
 
-For cases where you only need to change the locale (without affecting router or theme), use `IntlProvider` directly. This is more lightweight than nesting a full `NimbusProvider`:
+For cases where you only need to change the locale (without affecting router or theme), use `NimbusI18nProvider` directly. This is more lightweight than nesting a full `NimbusProvider`:
 
 ```tsx
-import { NimbusProvider, IntlProvider } from '@commercetools/nimbus';
+import { NimbusProvider, NimbusI18nProvider } from '@commercetools/nimbus';
 
 export default function App() {
   return (
     <NimbusProvider locale="en">
       <MainContent /> {/* Uses English locale */}
 
-      <IntlProvider locale="de">
+      <NimbusI18nProvider locale="de">
         <GermanSection /> {/* Uses German locale */}
-      </IntlProvider>
+      </NimbusI18nProvider>
 
-      <IntlProvider locale="es">
+      <NimbusI18nProvider locale="es">
         <SpanishSection /> {/* Uses Spanish locale */}
-      </IntlProvider>
+      </NimbusI18nProvider>
 
       <MoreContent /> {/* Back to English locale */}
     </NimbusProvider>
@@ -679,7 +683,7 @@ export default function App() {
 
 **When to use which:**
 - Use **nested `NimbusProvider`** when you need to change locale AND router configuration
-- Use **`IntlProvider`** when you only need to change locale (more efficient)
+- Use **`NimbusI18nProvider`** when you only need to change locale (more efficient)
 
 ### Accessibility
 
@@ -812,4 +816,4 @@ process.env.NODE_ENV = 'test';
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-nimbusprovider--docs)
 - [next-themes Documentation](https://github.com/pacocoursey/next-themes)
 - [React Aria RouterProvider](https://react-spectrum.adobe.com/react-aria/routing.html)
-- [React Intl Documentation](https://formatjs.io/docs/react-intl/)
+- [React Aria I18nProvider](https://react-spectrum.adobe.com/react-aria/I18nProvider.html)
