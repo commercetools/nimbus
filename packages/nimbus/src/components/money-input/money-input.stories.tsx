@@ -8,6 +8,7 @@ import {
   MoneyInput,
   Text,
   Stack,
+  type BoxProps,
 } from "@commercetools/nimbus";
 
 import type {
@@ -16,6 +17,27 @@ import type {
   CustomEvent,
   MoneyInputProps,
 } from "./money-input.types";
+
+/**
+ * Reusable debug display component for showing state in stories.
+ * Uses semantic color tokens for proper dark mode support.
+ */
+const DebugDisplay = ({
+  children,
+  ...props
+}: { children: React.ReactNode } & BoxProps) => (
+  <Box
+    as="pre"
+    mt="400"
+    p="200"
+    bg="neutral.2"
+    borderRadius="100"
+    textStyle="xs"
+    {...props}
+  >
+    {children}
+  </Box>
+);
 
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
@@ -62,7 +84,7 @@ const MoneyInputExample = ({
   };
 
   return (
-    <div style={{ minHeight: "200px" }}>
+    <Box minHeight="200px">
       <MoneyInput
         value={value}
         currencies={currencies}
@@ -72,20 +94,8 @@ const MoneyInputExample = ({
         aria-label="Money Input Example"
         {...props}
       />
-
-      {/* Debug display */}
-      <pre
-        style={{
-          marginTop: "16px",
-          padding: "8px",
-          backgroundColor: "#f5f5f5",
-          fontSize: "12px",
-          borderRadius: "4px",
-        }}
-      >
-        {JSON.stringify(value, null, 2)}
-      </pre>
-    </div>
+      <DebugDisplay>{JSON.stringify(value, null, 2)}</DebugDisplay>
+    </Box>
   );
 };
 
@@ -265,7 +275,7 @@ export const NoCurrenciesList: Story = {
 
 export const DifferentCurrencies: Story = {
   render: (args) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <Stack direction="column" gap="400">
       <MoneyInputExample
         initialValue={{ amount: "1000", currencyCode: "JPY" }}
         currencies={["JPY", "KRW"]}
@@ -278,7 +288,7 @@ export const DifferentCurrencies: Story = {
         aria-label="Money input example"
         {...args}
       />
-    </div>
+    </Stack>
   ),
   args: {
     hasHighPrecisionBadge: true,
@@ -287,7 +297,7 @@ export const DifferentCurrencies: Story = {
 
 export const ConsistentFormattingAcrossCurrencies: Story = {
   render: (args) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <Stack direction="column" gap="400">
       <MoneyInputExample
         initialValue={{ amount: "1234.567", currencyCode: "USD" }}
         currencies={["USD"]}
@@ -306,7 +316,7 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
         aria-label="Money input example"
         {...args}
       />
-    </div>
+    </Stack>
   ),
   args: {
     hasHighPrecisionBadge: true,
@@ -391,14 +401,14 @@ export const CurrencySwitchingTest: Story = {
 export const EULocaleFormattingExample: Story = {
   render: (args) => (
     <NimbusI18nProvider locale="de-DE">
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
+      <Stack direction="column" gap="400">
+        <Text fontWeight="bold">
           EU Locale Formatting (de-DE) - High Precision
-        </div>
-        <div style={{ fontSize: "14px", marginBottom: "16px", color: "#666" }}>
+        </Text>
+        <Text fontSize="sm" color="neutral.11" mb="200">
           In German locale: 1.234.567,89 (periods for thousands, comma for
           decimals)
-        </div>
+        </Text>
 
         {/* German locale examples */}
         <MoneyInputExample
@@ -419,7 +429,7 @@ export const EULocaleFormattingExample: Story = {
           aria-label="Money input example"
           {...args}
         />
-      </div>
+      </Stack>
     </NimbusI18nProvider>
   ),
   args: {
@@ -451,12 +461,12 @@ export const EULocaleFormattingExample: Story = {
 // Static Methods Testing Story
 export const CurrencyFormattingTest: Story = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      <div>
-        <Text mb={2} fontSize="lg" fontWeight="bold">
+    <Stack direction="column" gap="600">
+      <Box>
+        <Text mb="200" fontSize="lg" fontWeight="bold">
           Currency Formatting Test
         </Text>
-        <Text mb={4} fontSize="sm" color="neutral.11">
+        <Text mb="400" fontSize="sm" color="neutral.11">
           Test that currencies format to proper decimal places on blur:
           <br />
           • USD/EUR: "99.9" should become "99.90"
@@ -464,12 +474,12 @@ export const CurrencyFormattingTest: Story = {
           • JPY: "99.5" should become "99"
           <br />• High precision values should remain unchanged
         </Text>
-      </div>
+      </Box>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <Stack direction="column" gap="400">
         {/* USD Test */}
         <Box>
-          <Text mb={1} fontSize="sm" fontWeight="medium">
+          <Text mb="100" fontSize="sm" fontWeight="medium">
             USD (2 decimal places) - Try "99.9" and blur
           </Text>
           <MoneyInputExample
@@ -481,7 +491,7 @@ export const CurrencyFormattingTest: Story = {
 
         {/* EUR Test */}
         <Box>
-          <Text mb={1} fontSize="sm" fontWeight="medium">
+          <Text mb="100" fontSize="sm" fontWeight="medium">
             EUR (2 decimal places) - Try "123.4" and blur
           </Text>
           <MoneyInputExample
@@ -493,7 +503,7 @@ export const CurrencyFormattingTest: Story = {
 
         {/* JPY Test */}
         <Box>
-          <Text mb={1} fontSize="sm" fontWeight="medium">
+          <Text mb="100" fontSize="sm" fontWeight="medium">
             JPY (0 decimal places) - Try "99.0" and blur
           </Text>
           <MoneyInputExample
@@ -505,7 +515,7 @@ export const CurrencyFormattingTest: Story = {
 
         {/* High Precision Test */}
         <Box>
-          <Text mb={1} fontSize="sm" fontWeight="medium">
+          <Text mb="100" fontSize="sm" fontWeight="medium">
             USD High Precision - "99.12345" should stay unchanged
           </Text>
           <MoneyInputExample
@@ -514,8 +524,8 @@ export const CurrencyFormattingTest: Story = {
             aria-label="High precision formatting test"
           />
         </Box>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -903,7 +913,7 @@ export const ModernApiTest: Story = {
     };
 
     return (
-      <div style={{ minHeight: "200px", width: "400px" }}>
+      <Box minHeight="200px" width="400px">
         <MoneyInput
           value={value}
           currencies={DEFAULT_CURRENCIES}
@@ -915,18 +925,18 @@ export const ModernApiTest: Story = {
           data-testid="modern-money-input"
           aria-label="Money input example"
         />
-        <Box mt="4" p="2" bg="blue.50" borderRadius="md">
+        <Box mt="400" p="200" bg="neutral.3" borderRadius="100">
           <Text fontSize="sm" fontWeight="semibold">
             Modern API Events (last 5):
           </Text>
           <Box data-testid="modern-events" fontSize="xs">
             {events.length === 0 ? (
-              <Text fontFamily="mono" color="gray.500">
+              <Text fontFamily="mono" color="neutral.11">
                 No events yet
               </Text>
             ) : (
               events.slice(-5).map((event, index) => (
-                <Box key={index} mb="12px">
+                <Box key={index} mb="300">
                   <Text
                     as="pre"
                     fontFamily="mono"
@@ -940,7 +950,7 @@ export const ModernApiTest: Story = {
             )}
           </Box>
         </Box>
-      </div>
+      </Box>
     );
   },
   play: async ({ canvasElement }) => {
