@@ -15,14 +15,13 @@ tags:
 
 ---
 
-# NimbusProvider
+The `NimbusProvider` component is a required wrapper that provides theming, internationalization, and routing context for all Nimbus components. It must be placed at the root of your application.
 
-The `NimbusProvider` component provides the foundational context for all Nimbus components, including theming, internationalization, and optional client-side routing configuration.
+## When to use
+
+**Required setup**: Every application using Nimbus components must include `NimbusProvider` at the root level. Without it, Nimbus components will not function.
 
 ## Basic usage
-
-Without configuration, the `NimbusProvider` will provide the default theme and color mode (light)
-and infer the locale from the browser.
 
 ```tsx
 import { NimbusProvider } from "@commercetools/nimbus";
@@ -36,96 +35,31 @@ function App() {
 }
 ```
 
-## Set up locale
+## Configuration options
 
-The `NimbusProvider` supports internationalization through the `locale` prop. You can specify a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to set the locale for all Nimbus components.
+### Locale
 
-```tsx
-import { NimbusProvider } from "@commercetools/nimbus";
-
-function App() {
-  return (
-    <NimbusProvider locale="de-DE">
-      <YourApp />
-    </NimbusProvider>
-  );
-}
-```
-
-If no locale is provided, it defaults to the user's browser locale.
-
-
-## Set up router
-
-The `NimbusProvider` can be configured with client-side routing to enable seamless navigation for all Nimbus components that support links (like `Link`, `Button` with href, etc.).
-
-### React router
+Set the language for all Nimbus components using a BCP47 language tag (e.g., `"en"`, `"de-DE"`, `"fr-FR"`). If not provided, the browser's locale is used.
 
 ```tsx
-import { useNavigate, useHref } from 'react-router-dom';
-import { NimbusProvider } from "@commercetools/nimbus";
-
-function App() {
-  const navigate = useNavigate();
-
-  return (
-    <NimbusProvider 
-      router={{ 
-        navigate,
-        useHref 
-      }}
-    >
-      <YourApp />
-    </NimbusProvider>
-  );
-}
+<NimbusProvider locale="de-DE">
+  <YourApp />
+</NimbusProvider>
 ```
 
-### Next.js app router
+### Router
+
+Configure client-side routing to enable navigation for interactive Nimbus components. See the Implementation tab for framework-specific setup examples.
 
 ```tsx
-'use client';
-import { useRouter } from 'next/navigation';
-import { NimbusProvider } from "@commercetools/nimbus";
-
-function ClientProviders({ children }) {
-  const router = useRouter();
-
-  return (
-    <NimbusProvider 
-      router={{ 
-        navigate: router.push 
-      }}
-    >
-      {children}
-    </NimbusProvider>
-  );
-}
+<NimbusProvider router={{ navigate }}>
+  <YourApp />
+</NimbusProvider>
 ```
 
-### Next.js with base path
+### Theme
 
-```tsx
-'use client';
-import { useRouter } from 'next/navigation';
-import { NimbusProvider } from "@commercetools/nimbus";
-
-function ClientProviders({ children }) {
-  const router = useRouter();
-  const useHref = (href: string) => process.env.BASE_PATH + href;
-
-  return (
-    <NimbusProvider 
-      router={{ 
-        navigate: router.push,
-        useHref 
-      }}
-    >
-      {children}
-    </NimbusProvider>
-  );
-}
-```
+Control color mode (light/dark) through props inherited from `next-themes`. Common options include `defaultTheme`, `enableSystem`, and `storageKey`.
 
 ## Props
 

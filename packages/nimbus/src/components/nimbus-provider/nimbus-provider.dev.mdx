@@ -1,0 +1,815 @@
+---
+title: NimbusProvider Component
+tab-title: Implementation
+tab-order: 3
+---
+
+NimbusProvider is the foundational wrapper component that provides theming, internationalization, and routing context to all Nimbus components. It must be placed at the root of your application to enable Nimbus components to function correctly.
+
+## Getting started
+
+### Import
+
+```tsx
+import { NimbusProvider, type NimbusProviderProps } from '@commercetools/nimbus';
+```
+
+### Minimal setup
+
+At minimum, wrap your application root with NimbusProvider. Without configuration, it will:
+- Use the default Nimbus theme with light mode
+- Infer locale from the user's browser (`navigator.language`)
+- Use standard anchor tag navigation (no client-side routing)
+
+```tsx
+// app/layout.tsx (Next.js) or main.tsx (Vite/CRA)
+import { NimbusProvider } from '@commercetools/nimbus';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NimbusProvider>
+          {children}
+        </NimbusProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+## Setup guides
+
+### Locale configuration
+
+Specify a locale using a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to control the language for all Nimbus components with internationalized text (date pickers, form validation messages, etc.).
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+export default function App() {
+  return (
+    <NimbusProvider locale="de-DE">
+      {/* All Nimbus components will use German locale */}
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+**Supported locales:**
+- `en` - English (default)
+- `de-DE` - German
+- `fr-FR` - French
+- `es-ES` - Spanish
+- `pt-PT` - Portuguese
+- And more (see `@commercetools/nimbus-i18n` package)
+
+**Fallback behavior:**
+If no locale is provided, NimbusProvider uses `navigator.language`. If the detected locale is not available, it falls back to English.
+
+### Color mode configuration
+
+NimbusProvider integrates with `next-themes` for color mode management. Configure color mode behavior through props inherited from `ThemeProviderProps`:
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+export default function App() {
+  return (
+    <NimbusProvider
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange={false}
+    >
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+**Common color mode props:**
+- `defaultTheme`: `"light" | "dark" | "system"` - Initial theme (default: `"light"`)
+- `enableSystem`: `boolean` - Respect system color preference (default: `false`)
+- `disableTransitionOnChange`: `boolean` - Disable CSS transitions when changing themes (default: `false`)
+- `storageKey`: `string` - LocalStorage key for persisting theme preference (default: `"theme"`)
+
+To toggle color mode in your application, use the `useColorMode` hook from Chakra UI:
+
+```tsx
+import { useColorMode } from '@chakra-ui/react';
+
+function ThemeToggle() {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  return (
+    <Button onClick={toggleColorMode}>
+      Switch to {colorMode === 'light' ? 'dark' : 'light'} mode
+    </Button>
+  );
+}
+```
+
+## Framework integration
+
+NimbusProvider's `router` prop enables client-side navigation for all Nimbus components with `href` props (Link, Button with href, Menu items, etc.). Configure it to match your routing framework.
+
+### React Router (v6)
+
+```tsx
+// app/providers.tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useNavigate, useHref } from 'react-router-dom';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+
+  return (
+    <NimbusProvider
+      router={{
+        navigate,
+        useHref // Optional: for href transformation
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+
+// main.tsx
+import { BrowserRouter } from 'react-router-dom';
+import { Providers } from './providers';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <BrowserRouter>
+    <Providers>
+      <App />
+    </Providers>
+  </BrowserRouter>
+);
+```
+
+**Important:** NimbusProvider must be a child of `BrowserRouter` to access React Router's hooks.
+
+### Next.js App Router
+
+```tsx
+// app/providers.tsx
+'use client';
+
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useRouter } from 'next/navigation';
+
+export function Providers({
+  children,
+  locale
+}: {
+  children: React.ReactNode;
+  locale?: string;
+}) {
+  const router = useRouter();
+
+  return (
+    <NimbusProvider
+      locale={locale}
+      router={{
+        navigate: router.push
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+
+// app/layout.tsx
+import { Providers } from './providers';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+**Note:** The `'use client'` directive is required because `useRouter` is a client-side hook.
+
+### Next.js with internationalization
+
+```tsx
+// app/[locale]/providers.tsx
+'use client';
+
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useRouter } from 'next/navigation';
+
+export function Providers({
+  children,
+  locale
+}: {
+  children: React.ReactNode;
+  locale: string;
+}) {
+  const router = useRouter();
+
+  return (
+    <NimbusProvider
+      locale={locale}
+      router={{
+        navigate: router.push
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+
+// app/[locale]/layout.tsx
+import { Providers } from './providers';
+
+export default function LocaleLayout({
+  children,
+  params
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
+  return (
+    <html lang={params.locale}>
+      <body>
+        <Providers locale={params.locale}>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+### Next.js with base path
+
+If your Next.js app uses a base path, transform hrefs using the `useHref` option:
+
+```tsx
+'use client';
+
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useRouter } from 'next/navigation';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+  const useHref = (href: string) => `${basePath}${href}`;
+
+  return (
+    <NimbusProvider
+      router={{
+        navigate: router.push,
+        useHref
+      }}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+```
+
+### Next.js Pages Router
+
+```tsx
+// pages/_app.tsx
+import type { AppProps } from 'next/app';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useRouter } from 'next/router';
+
+export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
+  return (
+    <NimbusProvider
+      locale={router.locale}
+      router={{
+        navigate: (href) => router.push(href)
+      }}
+    >
+      <Component {...pageProps} />
+    </NimbusProvider>
+  );
+}
+```
+
+### Remix
+
+```tsx
+// app/root.tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useNavigate } from '@remix-run/react';
+
+export default function App() {
+  const navigate = useNavigate();
+
+  return (
+    <html>
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <NimbusProvider router={{ navigate }}>
+          <Outlet />
+        </NimbusProvider>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+```
+
+## Advanced configuration
+
+### Dynamic locale switching
+
+Allow users to change the application language at runtime:
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useRouter } from 'next/navigation';
+
+export function Providers({
+  children,
+  initialLocale = 'en'
+}: {
+  children: React.ReactNode;
+  initialLocale?: string;
+}) {
+  const [locale, setLocale] = useState(initialLocale);
+  const router = useRouter();
+
+  return (
+    <NimbusProvider
+      locale={locale}
+      router={{ navigate: router.push }}
+    >
+      {/* Provide locale setter through context or props */}
+      <LocaleContext.Provider value={{ locale, setLocale }}>
+        {children}
+      </LocaleContext.Provider>
+    </NimbusProvider>
+  );
+}
+
+// Usage in a component
+function LocaleSwitcher() {
+  const { locale, setLocale } = useLocale();
+
+  return (
+    <Select.Root value={locale} onValueChange={setLocale}>
+      <Select.Trigger>{locale}</Select.Trigger>
+      <Select.Content>
+        <Select.Item value="en">English</Select.Item>
+        <Select.Item value="de-DE">Deutsch</Select.Item>
+        <Select.Item value="fr-FR">Français</Select.Item>
+      </Select.Content>
+    </Select.Root>
+  );
+}
+```
+
+### TypeScript: Router options type augmentation
+
+If you need type-safe router options (like React Router's `NavigateOptions` or Next.js router options), use TypeScript module augmentation:
+
+```tsx
+// types/nimbus.d.ts
+import type { NavigateOptions } from 'react-router-dom';
+
+declare module '@commercetools/nimbus' {
+  interface NimbusRouterOptionsBase {
+    routerOptions?: NavigateOptions;
+  }
+}
+
+// Now the router config is fully typed
+import { NimbusProvider } from '@commercetools/nimbus';
+import { useNavigate } from 'react-router-dom';
+
+function Providers({ children }) {
+  const navigate = useNavigate();
+
+  const typedNavigate = (href: string, options?: NavigateOptions) => {
+    navigate(href, options);
+  };
+
+  return (
+    <NimbusProvider router={{ navigate: typedNavigate }}>
+      {children}
+    </NimbusProvider>
+  );
+}
+```
+
+**For Next.js App Router:**
+
+```tsx
+// types/nimbus.d.ts
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+
+declare module '@commercetools/nimbus' {
+  interface NimbusRouterOptionsBase {
+    routerOptions?: Parameters<AppRouterInstance['push']>[1];
+  }
+}
+```
+
+### Server-side rendering considerations
+
+**Hydration warnings:**
+If you see hydration mismatches related to color mode or locale, ensure the server and client render the same initial state:
+
+```tsx
+// Next.js App Router
+import { cookies } from 'next/headers';
+
+export default function RootLayout({ children }) {
+  const cookieStore = cookies();
+  const theme = cookieStore.get('theme')?.value || 'light';
+
+  return (
+    <html className={theme}>
+      <body>
+        <Providers defaultTheme={theme}>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+**Script for SSR color mode:**
+To prevent flash of incorrect theme, add a blocking script in your HTML head:
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme') || 'light';
+                document.documentElement.classList.add(theme);
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body>
+        <NimbusProvider enableSystem={false}>
+          {children}
+        </NimbusProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### Accessing provider context
+
+Components can access the router context provided by NimbusProvider through React Aria's `RouterProvider`:
+
+```tsx
+import { useRouter } from 'react-aria';
+
+function CustomLink({ href, children }) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (router) {
+      router.navigate(href);
+    } else {
+      window.location.href = href;
+    }
+  };
+
+  return (
+    <button onClick={handleClick}>
+      {children}
+    </button>
+  );
+}
+```
+
+**Note:** Most Nimbus components handle routing automatically. You typically don't need to access router context directly.
+
+## Troubleshooting
+
+### Missing provider error
+
+**Error:** `Cannot read properties of undefined (reading 'theme')` or similar context errors.
+
+**Solution:** Ensure NimbusProvider wraps your entire application, including the component tree where Nimbus components are used.
+
+```tsx
+// ❌ Wrong: Provider missing
+function App() {
+  return <Button>Click me</Button>; // Error!
+}
+
+// ✅ Correct: Provider wraps app
+function App() {
+  return (
+    <NimbusProvider>
+      <Button>Click me</Button>
+    </NimbusProvider>
+  );
+}
+```
+
+### Router navigation not working
+
+**Issue:** Links use full page reload instead of client-side navigation.
+
+**Solution:** Verify that:
+1. The `router` prop is correctly configured
+2. The router framework's context is available (e.g., inside `BrowserRouter` for React Router)
+3. The navigate function is not undefined
+
+```tsx
+// Debug: Check if router is available
+function DebugRouter() {
+  const router = useRouter(); // from react-aria
+  console.log('Router available:', !!router);
+  return null;
+}
+```
+
+### Locale not applying
+
+**Issue:** Components still show English text despite setting locale.
+
+**Solution:**
+1. Ensure the locale is a valid BCP47 tag (e.g., `"de-DE"` not `"de"` for German)
+2. Verify the locale is supported by `@commercetools/nimbus-i18n`
+3. Check that translation files are included in your build
+
+```tsx
+// Check available locales
+import { SUPPORTED_LOCALES } from '@commercetools/nimbus-i18n';
+console.log('Supported locales:', SUPPORTED_LOCALES);
+```
+
+### Hydration mismatch with color mode
+
+**Issue:** Console warning about hydration mismatch or flash of wrong theme.
+
+**Solution:** Use `suppressHydrationWarning` on the `<html>` tag and ensure server renders with the same theme:
+
+```tsx
+<html suppressHydrationWarning>
+  <body>
+    <NimbusProvider defaultTheme={serverTheme}>
+      {children}
+    </NimbusProvider>
+  </body>
+</html>
+```
+
+### TypeScript errors with router config
+
+**Issue:** Type errors when passing router options.
+
+**Solution:** Use module augmentation to extend the router options type (see "TypeScript: Router options type augmentation" above).
+
+## Component requirements
+
+### Placement
+
+NimbusProvider **must** be placed at or near the root of your application component tree. It should wrap all components that use Nimbus.
+
+**Correct placement hierarchy:**
+```html
+<html>
+  <body>
+    <NimbusProvider>          ← Provider at root
+      <YourApp>               ← Your app components
+        <Button />            ← Nimbus components work
+      </YourApp>
+    </NimbusProvider>
+  </body>
+</html>
+```
+
+**For framework-specific routing:**
+```
+<BrowserRouter>               ← React Router context
+  <NimbusProvider router={{}} ← Provider inside router
+    <YourApp />
+  </NimbusProvider>
+</BrowserRouter>
+```
+
+### Nesting providers
+
+NimbusProvider **can** be nested, but it's rarely necessary. For most applications, a single provider at the root is sufficient.
+
+**What works with nesting:**
+- ✅ **Locale** - Inner provider's locale overrides outer provider (uses React Context)
+- ✅ **Router** - Inner provider's router overrides outer provider (uses React Context)
+- ❌ **Color mode** - Cannot be scoped to nested providers (uses global state via next-themes)
+
+```tsx
+// Nesting works for locale and router contexts
+<NimbusProvider locale="en" router={outerRouter}>
+  <Page1 /> {/* Uses English locale and outerRouter */}
+
+  <NimbusProvider locale="de-DE" router={innerRouter}>
+    <Page2 /> {/* Uses German locale and innerRouter */}
+  </NimbusProvider>
+
+  <Page3 /> {/* Back to English locale and outerRouter */}
+</NimbusProvider>
+
+// ✅ Recommended: Single provider at root
+<NimbusProvider locale={currentLocale} router={router}>
+  <Page1 />
+  <Page2 />
+  <Page3 />
+</NimbusProvider>
+```
+
+**Note:** Color mode cannot be scoped because `next-themes` operates globally on the document element. Nested providers will change the global theme, not create a scoped theme for their subtree.
+
+#### Locale-only changes with IntlProvider
+
+For cases where you only need to change the locale (without affecting router or theme), use `IntlProvider` directly. This is more lightweight than nesting a full `NimbusProvider`:
+
+```tsx
+import { NimbusProvider, IntlProvider } from '@commercetools/nimbus';
+
+export default function App() {
+  return (
+    <NimbusProvider locale="en">
+      <MainContent /> {/* Uses English locale */}
+
+      <IntlProvider locale="de">
+        <GermanSection /> {/* Uses German locale */}
+      </IntlProvider>
+
+      <IntlProvider locale="es">
+        <SpanishSection /> {/* Uses Spanish locale */}
+      </IntlProvider>
+
+      <MoreContent /> {/* Back to English locale */}
+    </NimbusProvider>
+  );
+}
+```
+
+**When to use which:**
+- Use **nested `NimbusProvider`** when you need to change locale AND router configuration
+- Use **`IntlProvider`** when you only need to change locale (more efficient)
+
+### Accessibility
+
+NimbusProvider itself has no accessibility requirements as it's a pure context provider with no visual rendering. However, it enables accessibility features across Nimbus components:
+
+- **Internationalization**: Provides locale context for date/time formatting and translated messages
+- **Router integration**: Enables proper link semantics and navigation announcements
+- **Theme context**: Ensures consistent color contrast and visual theming
+
+## Testing your application
+
+When writing tests for components that use Nimbus, wrap them with NimbusProvider in your test utilities:
+
+### Test utilities setup
+
+Create a custom render function that includes NimbusProvider:
+
+```tsx
+// test-utils.tsx
+import { render, RenderOptions } from '@testing-library/react';
+import { NimbusProvider } from '@commercetools/nimbus';
+
+interface CustomRenderOptions extends RenderOptions {
+  locale?: string;
+  router?: {
+    navigate?: jest.Mock;
+    useHref?: (href: string) => string;
+  };
+}
+
+export function renderWithProvider(
+  ui: React.ReactElement,
+  options?: CustomRenderOptions
+) {
+  const { locale = 'en', router, ...renderOptions } = options || {};
+
+  return render(
+    <NimbusProvider locale={locale} router={router}>
+      {ui}
+    </NimbusProvider>,
+    renderOptions
+  );
+}
+
+// Re-export everything from @testing-library/react
+export * from '@testing-library/react';
+```
+
+### Testing with router mocks
+
+```tsx
+// MyComponent.test.tsx
+import { renderWithProvider, screen } from './test-utils';
+import { MyComponent } from './MyComponent';
+
+describe('MyComponent', () => {
+  it('navigates when link is clicked', async () => {
+    const mockNavigate = jest.fn();
+
+    renderWithProvider(
+      <MyComponent />,
+      {
+        router: { navigate: mockNavigate }
+      }
+    );
+
+    const link = screen.getByRole('link', { name: 'Go to page' });
+    await userEvent.click(link);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/page');
+  });
+});
+```
+
+### Testing with different locales
+
+```tsx
+// LocalizedComponent.test.tsx
+import { renderWithProvider, screen } from './test-utils';
+import { DatePicker } from '@commercetools/nimbus';
+
+describe('LocalizedComponent', () => {
+  it('displays dates in German format', () => {
+    renderWithProvider(
+      <DatePicker value={new Date('2024-03-15')} />,
+      { locale: 'de-DE' }
+    );
+
+    // Verify German date format
+    expect(screen.getByText(/15\.03\.2024/)).toBeInTheDocument();
+  });
+
+  it('displays dates in English format', () => {
+    renderWithProvider(
+      <DatePicker value={new Date('2024-03-15')} />,
+      { locale: 'en-US' }
+    );
+
+    // Verify English date format
+    expect(screen.getByText(/03\/15\/2024/)).toBeInTheDocument();
+  });
+});
+```
+
+### Vitest setup
+
+If using Vitest, add NimbusProvider to your test setup file:
+
+```tsx
+// vitest.setup.ts
+import { afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+
+// Optional: Set default test environment variables
+process.env.NODE_ENV = 'test';
+```
+
+## API reference
+
+<PropsTable id="NimbusProvider" />
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-nimbusprovider--docs)
+- [next-themes Documentation](https://github.com/pacocoursey/next-themes)
+- [React Aria RouterProvider](https://react-spectrum.adobe.com/react-aria/routing.html)
+- [React Intl Documentation](https://formatjs.io/docs/react-intl/)
