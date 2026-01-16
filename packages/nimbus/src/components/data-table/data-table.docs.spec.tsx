@@ -597,7 +597,7 @@ describe("DataTable.Manager - Basic rendering", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -637,7 +637,7 @@ describe("DataTable.Manager - Basic rendering", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -694,7 +694,7 @@ describe("DataTable.Manager - Column management", () => {
           rows={managerRows}
           visibleColumns={["name", "email"]}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -744,7 +744,7 @@ describe("DataTable.Manager - Column management", () => {
           visibleColumns={["name"]}
           onColumnsChange={handleColumnsChange}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -795,7 +795,7 @@ describe("DataTable.Manager - Layout settings", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -840,7 +840,7 @@ describe("DataTable.Manager - Layout settings", () => {
           visibleColumns={["name"]}
           onSettingsChange={handleSettingsChange}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -897,7 +897,7 @@ describe("DataTable.Manager - Custom settings", () => {
           visibleColumns={["name"]}
           customSettings={customSettings}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -946,7 +946,7 @@ describe("DataTable.Manager - Custom settings", () => {
           visibleColumns={["name"]}
           customSettings={customSettings}
         >
-          <DataTable.Manager />
+          <DataTable.Manager aria-label="Table settings" />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
