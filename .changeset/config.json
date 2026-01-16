@@ -9,13 +9,12 @@
   "commit": false,
   "fixed": [
     [
-      "@commercetools/nimbus-i18n",
       "@commercetools/nimbus",
       "@commercetools/nimbus-tokens",
       "@commercetools/nimbus-icons"
     ]
   ],
-  "ignore": ["color-tokens", "blank-app", "docs"],
+  "ignore": ["@commercetools/nimbus-i18n", "color-tokens", "blank-app", "docs"],
   "access": "restricted",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false,

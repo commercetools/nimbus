@@ -1,8 +1,8 @@
-import { FormattedMessage } from "react-intl";
 import { FieldErrorsRoot, FieldErrorsMessage } from "./field-errors.slots";
-import { messages } from "./field-errors.i18n";
 import type { FieldErrorsProps } from "./field-errors.types";
 import { FieldErrorTypes } from "./field-errors.types";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { fieldErrorsMessagesStrings } from "./field-errors.messages";
 
 const isObject = (obj: unknown): boolean => typeof obj === "object";
 
@@ -54,48 +54,53 @@ const getCustomMessage = (
 
 /**
  * Get built-in localized message for a given error key
+ * @param key - The error key
+ * @param format - The format function from useLocalizedStringFormatter
  */
-const getBuiltInMessage = (key: string): React.ReactNode => {
+const getBuiltInMessage = (
+  key: string,
+  format: (key: string) => string
+): string | null => {
   switch (key) {
     // Basic validation
     case FieldErrorTypes.MISSING:
-      return <FormattedMessage {...messages.missingRequiredField} />;
+      return format("missingRequiredField");
     case FieldErrorTypes.INVALID:
-      return <FormattedMessage {...messages.invalidValue} />;
+      return format("invalidValue");
     case FieldErrorTypes.EMPTY:
-      return <FormattedMessage {...messages.emptyValue} />;
+      return format("emptyValue");
 
     // Length validation
     case FieldErrorTypes.MIN_LENGTH:
-      return <FormattedMessage {...messages.valueTooShort} />;
+      return format("valueTooShort");
     case FieldErrorTypes.MAX_LENGTH:
-      return <FormattedMessage {...messages.valueTooLong} />;
+      return format("valueTooLong");
 
     // Format validation
     case FieldErrorTypes.FORMAT:
-      return <FormattedMessage {...messages.invalidFormat} />;
+      return format("invalidFormat");
     case FieldErrorTypes.DUPLICATE:
-      return <FormattedMessage {...messages.duplicateValue} />;
+      return format("duplicateValue");
 
     // Numeric validation
     case FieldErrorTypes.NEGATIVE:
-      return <FormattedMessage {...messages.invalidNegativeNumber} />;
+      return format("invalidNegativeNumber");
     case FieldErrorTypes.FRACTIONS:
-      return <FormattedMessage {...messages.invalidFractionalNumber} />;
+      return format("invalidFractionalNumber");
     case FieldErrorTypes.BELOW_MIN:
-      return <FormattedMessage {...messages.valueBelowMinimum} />;
+      return format("valueBelowMinimum");
     case FieldErrorTypes.ABOVE_MAX:
-      return <FormattedMessage {...messages.valueAboveMaximum} />;
+      return format("valueAboveMaximum");
     case FieldErrorTypes.OUT_OF_RANGE:
-      return <FormattedMessage {...messages.valueOutOfRange} />;
+      return format("valueOutOfRange");
 
     // Server/async validation
     case FieldErrorTypes.INVALID_FROM_SERVER:
-      return <FormattedMessage {...messages.invalidFromServer} />;
+      return format("invalidFromServer");
     case FieldErrorTypes.NOT_FOUND:
-      return <FormattedMessage {...messages.resourceNotFound} />;
+      return format("resourceNotFound");
     case FieldErrorTypes.BLOCKED:
-      return <FormattedMessage {...messages.valueBlocked} />;
+      return format("valueBlocked");
 
     default:
       return null;
@@ -125,6 +130,8 @@ export const FieldErrors = ({
   customMessages,
   ...props
 }: FieldErrorsProps) => {
+  const msg = useLocalizedStringFormatter(fieldErrorsMessagesStrings);
+
   // Don't render if not visible or no errors
   if (!isVisible) return null;
   if (!errors || !isObject(errors)) return null;
@@ -167,7 +174,7 @@ export const FieldErrors = ({
         }
 
         // Fall back to built-in localized messages
-        const builtInMessage = getBuiltInMessage(key);
+        const builtInMessage = getBuiltInMessage(key, msg.format);
         if (builtInMessage) {
           return (
             <FieldErrorsMessage key={key}>{builtInMessage}</FieldErrorsMessage>

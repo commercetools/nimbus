@@ -9,6 +9,7 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
 import treeShakeable from "rollup-plugin-tree-shakeable";
 import { analyzer } from "vite-bundle-analyzer";
+import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
 
 // Turns every index file inside src/components, along with the main `src/index.ts` and `setup-jsdom-polyfills` entrypoints, into separate entry-points/files for better tree-shaking in consuming apps.
 // Defining entrypoints and chunking files is recommended over using `output.preserveModules` - https://rollupjs.org/configuration-options/#input
@@ -53,7 +54,6 @@ const external = [
   // React core
   "react",
   "react-dom",
-  "react-intl",
   "react/jsx-runtime",
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
@@ -91,10 +91,11 @@ export default defineConfig(async () => {
       viteTsconfigPaths(),
       react(),
       // Only package locale strings for locales we internationalize in our products
+      // Locales are defined in packages/i18n/scripts/locales.ts (single source of truth)
       // https://github.com/commercetools/merchant-center-application-kit/blob/main/packages/i18n/README.md#supported-locales
       // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
       optimizeLocales.vite({
-        locales: ["en-US", "fr-FR", "pt-BR", "es-ES", "de-DE"],
+        locales: LOCALE_BCP47_CODES,
       }),
     ],
     build: {

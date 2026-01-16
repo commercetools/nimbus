@@ -41,7 +41,6 @@
     "react-aria-components": "catalog:react",
     "react-docgen-typescript": "^2.4.0",
     "react-dom": "catalog:react",
-    "react-intl": "catalog:react",
     "react-live": "^4.1.7",
     "react-stately": "catalog:react",
     "react-router": "^7.12.0",

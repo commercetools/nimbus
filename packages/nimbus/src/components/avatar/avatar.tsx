@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useIntl } from "react-intl";
 import { Image } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";
-import { messages } from "./avatar.i18n";
+import { avatarMessagesStrings } from "./avatar.messages";
 
 function getInitials(firstName: string, lastName: string) {
   return (
@@ -34,15 +34,19 @@ function getInitials(firstName: string, lastName: string) {
  * ```
  */
 export const Avatar = (props: AvatarProps) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(avatarMessagesStrings);
   const { ref, firstName, lastName, src, alt, ...rest } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const fullName = `${firstName} ${lastName}`;
 
+  const avatarLabel = msg.format("avatarLabel", {
+    fullName,
+  });
+
   const sharedProps = {
-    "aria-label": intl.formatMessage(messages.avatarLabel, { fullName }),
+    "aria-label": avatarLabel,
     ref,
     ...rest,
   };

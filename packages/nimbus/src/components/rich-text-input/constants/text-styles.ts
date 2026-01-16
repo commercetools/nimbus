@@ -1,6 +1,3 @@
-import type { IntlShape } from "react-intl";
-import { messages } from "../rich-text-input.i18n";
-
 /**
  * Text style definitions for rich text editor block formatting
  *
@@ -26,12 +23,14 @@ export type TextStyleDefinition = {
 
 /**
  * Returns text style definitions with localized labels
- * @param intl - react-intl IntlShape instance for formatting messages
+ * @param format - Format function from useLocalizedStringFormatter
  */
-export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
+export const getTextStyles = (
+  format: (key: string) => string
+): TextStyleDefinition[] => [
   {
     id: "paragraph",
-    label: intl.formatMessage(messages.paragraph),
+    label: format("paragraph"),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -39,7 +38,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "heading-one",
-    label: intl.formatMessage(messages.headingOne),
+    label: format("headingOne"),
     props: {
       textStyle: "2xl",
       fontWeight: "500",
@@ -47,7 +46,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "heading-two",
-    label: intl.formatMessage(messages.headingTwo),
+    label: format("headingTwo"),
     props: {
       textStyle: "xl",
       fontWeight: "500",
@@ -55,7 +54,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "heading-three",
-    label: intl.formatMessage(messages.headingThree),
+    label: format("headingThree"),
     props: {
       textStyle: "lg",
       fontWeight: "500",
@@ -63,7 +62,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "heading-four",
-    label: intl.formatMessage(messages.headingFour),
+    label: format("headingFour"),
     props: {
       textStyle: "md",
       fontWeight: "500",
@@ -71,7 +70,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "heading-five",
-    label: intl.formatMessage(messages.headingFive),
+    label: format("headingFive"),
     props: {
       textStyle: "xs",
       fontWeight: "500",
@@ -79,7 +78,7 @@ export const getTextStyles = (intl: IntlShape): TextStyleDefinition[] => [
   },
   {
     id: "block-quote",
-    label: intl.formatMessage(messages.quote),
+    label: format("quote"),
     props: {
       textStyle: "md",
       fontWeight: "400",

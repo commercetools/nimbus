@@ -13,7 +13,6 @@ component-name, componentName Location: components/component-name.root.tsx
 import { useRef } from "react";
 import { useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { useIntl } from "react-intl";
 // Uncomment if using React Aria
 // import { ComponentName as RaComponentName } from 'react-aria-components';
 import { ComponentNameRootSlot } from "../component-name.slots";
@@ -21,7 +20,8 @@ import type { ComponentNameRootProps } from "../component-name.types";
 // Uncomment if using context
 // import { ComponentNameProvider } from '../component-name-context';
 // Uncomment if component needs i18n
-// import { messages } from '../component-name.i18n';
+// import { useLocalizedStringFormatter } from "@/hooks";
+// import { componentMessagesStrings } from "../component-name.messages";
 
 /**
  * Root component that provides configuration and context

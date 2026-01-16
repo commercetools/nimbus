@@ -188,8 +188,9 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Component Library**: React components with WCAG 2.1 AA compliant
   implementation using React Aria patterns
 - **Design System**: Design token-based theming system with Chakra UI v3 recipes
-- **Internationalization**: Centralized i18n package with react-intl integration
-  and Transifex support
+- **Internationalization**: Compile-time message compilation using
+  `@internationalized/string` with `LocalizedStringDictionary` and Transifex
+  support
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
@@ -245,15 +246,11 @@ pnpm generate:tokens
 ### Internationalization (i18n)
 
 ```bash
-# Compile translation files for runtime
-cd packages/i18n
-pnpm build
+# Extract messages from .i18n.ts files and compile
+pnpm extract-intl
 
-# Or from root
+# Compile only (after downloading translations from Transifex)
 pnpm --filter @commercetools/nimbus-i18n build
-
-# Or use the formatjs CLI directly from root
-pnpm dlx @formatjs/cli compile-folder --format=transifex --ast packages/i18n/data packages/i18n/compiled-data
 ```
 
 ### Testing

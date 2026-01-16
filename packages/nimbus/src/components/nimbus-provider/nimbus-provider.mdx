@@ -39,17 +39,69 @@ function App() {
 
 ### Locale
 
-Set the language for all Nimbus components using a BCP47 language tag (e.g., `"en"`, `"de-DE"`, `"fr-FR"`). If not provided, the browser's locale is used.
+The `NimbusProvider` supports internationalization through the `locale` prop. You can specify a locale string (e.g., `"en"`, `"de"`, `"de-DE"`) to set the locale for all Nimbus components.
 
-```tsx
-<NimbusProvider locale="de-DE">
-  <YourApp />
-</NimbusProvider>
+> 🔧 **For developer documentation on locale resolution architecture and technical details, see [i18n Guidelines](../../../../docs/file-type-guidelines/i18n.md#locale-resolution)**
+
+### Locale Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Locale Resolution Flow                    │
+└─────────────────────────────────────────────────────────────┘
+
+1. Component calls useLocale()
+   │
+   └─→ Reads from React Aria I18nProvider context
+       │
+       ├─→ Nearest NimbusI18nProvider (if nested)
+       │   │
+       │   └─→ Wraps React Aria's I18nProvider
+       │
+       ├─→ Parent NimbusProvider (if no nested provider)
+       │   │
+       │   └─→ NimbusI18nProvider (receives locale prop)
+       │       │
+       │       └─→ Wraps React Aria's I18nProvider
+       │
+       └─→ Browser default (if no provider found)
+
+┌─────────────────────────────────────────────────────────────┐
+│                      Precedence Order                        │
+└─────────────────────────────────────────────────────────────┘
+
+Highest Priority (most specific)
+  ↓
+1. Nested NimbusI18nProvider locale prop
+2. Nested NimbusProvider locale prop
+3. Parent NimbusProvider locale prop
+4. Browser locale (navigator.language)
+  ↓
+Lowest Priority (fallback)
 ```
 
-### Router
+**How it works:** All Nimbus components use `useLocale()` from `react-aria-components` to retrieve the locale for message localization and formatting. The locale flows through the provider hierarchy, with nested providers taking precedence over parent providers.
 
-Configure client-side routing to enable navigation for interactive Nimbus components. See the Implementation tab for framework-specific setup examples.
+```tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+
+function App() {
+  return (
+    <NimbusProvider locale="de-DE">
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+If no locale is provided, components will use the locale from the nearest `I18nProvider` context or fall back to the browser's default locale.
+
+
+## Set up router
+
+The `NimbusProvider` can be configured with client-side routing to enable seamless navigation for all Nimbus components that support links (like `Link`, `Button` with href, etc.).
+
+### React router
 
 ```tsx
 <NimbusProvider router={{ navigate }}>

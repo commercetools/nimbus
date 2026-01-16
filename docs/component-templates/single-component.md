@@ -12,13 +12,13 @@ component-name, componentName
 import { useRef } from "react";
 import { useObjectRef, mergeProps } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { useIntl } from "react-intl";
 // Uncomment if using React Aria
 // import { ComponentName as RaComponentName } from 'react-aria-components';
 import { ComponentNameSlot } from "./component-name.slots";
 import type { ComponentNameProps } from "./component-name.types";
 // Uncomment if component needs i18n
-// import { messages } from './component-name.i18n';
+// import { useLocalizedStringFormatter } from "@/hooks";
+// import { componentMessagesStrings } from "./component-name.messages";
 
 /**
  * ComponentName
@@ -48,8 +48,8 @@ export const ComponentName = (props: ComponentNameProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   // Uncomment if using i18n
-  // const intl = useIntl();
-  // const ariaLabel = intl.formatMessage(messages.defaultLabel);
+  // const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  // const ariaLabel = msg.format("defaultLabel");
 
   // Component logic here
 

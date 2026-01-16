@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { useIntl } from "react-intl";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
 import {
@@ -21,7 +20,8 @@ import {
   DataTableSelectionCell,
 } from "./data-table.slots";
 import type { DataTableProps } from "./data-table.types";
-import { messages } from "./data-table.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "./data-table.messages";
 
 // Default DataTable component that provides the standard structure
 const DataTableBase = function DataTable({
@@ -32,19 +32,15 @@ const DataTableBase = function DataTable({
   footer?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 }) {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   return (
     <DataTableRoot ref={ref} {...props}>
-      <DataTableTable aria-label={intl.formatMessage(messages.dataTable)}>
-        <DataTableHeader
-          aria-label={intl.formatMessage(messages.dataTableHeader)}
-        />
-        <DataTableBody
-          aria-label={intl.formatMessage(messages.dataTableBody)}
-        />
+      <DataTableTable aria-label={msg.format("dataTable")}>
+        <DataTableHeader aria-label={msg.format("dataTableHeader")} />
+        <DataTableBody aria-label={msg.format("dataTableBody")} />
       </DataTableTable>
       {footer && <DataTableFooter>{footer}</DataTableFooter>}
     </DataTableRoot>

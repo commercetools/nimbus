@@ -7,8 +7,8 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
-import { useIntl } from "react-intl";
-import { messages } from "../date-picker.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { datePickerMessagesStrings } from "../date-picker.messages";
 
 /**
  * DatePickerCustomContext - Custom context provider for DatePicker
@@ -21,7 +21,7 @@ export const DatePickerCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(datePickerMessagesStrings);
   const buttonContext = useSlottedContext(ButtonContext) || {};
   const datePickerState = useContext(DatePickerStateContext);
   const noInputValue = datePickerState?.dateValue === null;
@@ -35,13 +35,13 @@ export const DatePickerCustomContext = ({
   const getDefaultTimeInputAriaLabel = () => {
     switch (granularity) {
       case "hour":
-        return intl.formatMessage(messages.enterTimeHour);
+        return msg.format("Time.enterTimeHour");
       case "minute":
-        return intl.formatMessage(messages.enterTimeHourMinute);
+        return msg.format("Time.enterTimeHourMinute");
       case "second":
-        return intl.formatMessage(messages.enterTimeHourMinuteSecond);
+        return msg.format("Time.enterTimeHourMinuteSecond");
       default:
-        return intl.formatMessage(messages.enterTime);
+        return msg.format("Time.enterTime");
     }
   };
 
@@ -68,7 +68,7 @@ export const DatePickerCustomContext = ({
     /** Clear button that displays when there's a value in each segment - hidden from both visual and screen readers when there's no value */
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": intl.formatMessage(messages.clearInput),
+      "aria-label": msg.format("clearInput"),
       isDisabled: isDatePickerDisabled,
       // Hide the button when there's no value
       style: noInputValue ? { display: "none" } : undefined,

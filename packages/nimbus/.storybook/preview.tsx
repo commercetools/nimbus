@@ -3,7 +3,7 @@ import type { Preview } from "@storybook/react-vite";
 
 import { APCACheck } from "./apca-check";
 import { CustomDocsContainer } from "./docs-container";
-import { ThemeDecorator, WithIntlDecorator } from "./decorators";
+import { ThemeDecorator } from "./decorators";
 
 const apca = APCACheck("custom", (fontSize: string) => {
   const size = parseFloat(fontSize);
@@ -59,7 +59,6 @@ const preview: Preview = {
   },
   tags: ["autodocs", "a11y-test"],
   decorators: [
-    WithIntlDecorator,
     (Story, context) => {
       return (
         <ThemeDecorator context={context}>

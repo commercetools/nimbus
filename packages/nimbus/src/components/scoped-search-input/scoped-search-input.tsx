@@ -1,9 +1,9 @@
 import { useCallback, useId, useRef } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { useIntl } from "react-intl";
 import { Select } from "@/components/select/select";
 import { SearchInput } from "@/components/search-input/search-input";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
 import { scopedSearchInputSlotRecipe } from "./scoped-search-input.recipe";
 import {
   ScopedSearchInputRootSlot,
@@ -17,7 +17,7 @@ import type {
   ScopedSearchInputOptionGroup,
 } from "./scoped-search-input.types";
 import { isEmpty } from "./utils/helpers";
-import { messages } from "./scoped-search-input.i18n";
+import { scopedSearchInputMessagesStrings } from "./scoped-search-input.messages";
 
 /**
  * ScopedSearchInput
@@ -53,7 +53,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
     size,
   } = props;
 
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(scopedSearchInputMessagesStrings);
 
   // Split recipe props
   const recipe = useSlotRecipe({ recipe: scopedSearchInputSlotRecipe });
@@ -122,9 +122,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             selectedKey={value.option}
             onSelectionChange={isReadOnly ? undefined : handleOptionChange}
             placeholder={selectPlaceholder}
-            aria-label={
-              selectAriaLabel || intl.formatMessage(messages.selectLabel)
-            }
+            aria-label={selectAriaLabel || msg.format("selectLabel")}
             aria-controls={searchId}
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
@@ -182,9 +180,7 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
             onSubmit={handleSubmit}
             onClear={isClearable ? handleReset : undefined}
             placeholder={searchPlaceholder}
-            aria-label={
-              searchAriaLabel || intl.formatMessage(messages.searchLabel)
-            }
+            aria-label={searchAriaLabel || msg.format("searchLabel")}
             aria-describedby={ariaDescribedby}
             aria-labelledby={ariaLabelledby}
             size={size}

@@ -2,8 +2,8 @@ import { Close } from "@commercetools/nimbus-icons";
 import { DrawerCloseTriggerSlot } from "../drawer.slots";
 import type { DrawerCloseTriggerProps } from "../drawer.types";
 import { IconButton } from "@/components";
-import { messages } from "../drawer.i18n";
-import { useIntl } from "react-intl";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { drawerMessagesStrings } from "../drawer.messages";
 
 /**
  * Drawer.CloseTrigger - A button that closes the drawer when activated
@@ -11,8 +11,8 @@ import { useIntl } from "react-intl";
  * @supportsStyleProps
  */
 export const DrawerCloseTrigger = (props: DrawerCloseTriggerProps) => {
+  const msg = useLocalizedStringFormatter(drawerMessagesStrings);
   const { ref: forwardedRef, "aria-label": ariaLabel, ...restProps } = props;
-  const intl = useIntl();
 
   return (
     <DrawerCloseTriggerSlot>
@@ -21,7 +21,7 @@ export const DrawerCloseTrigger = (props: DrawerCloseTriggerProps) => {
         slot="close"
         size="xs"
         variant="ghost"
-        aria-label={ariaLabel || intl.formatMessage(messages.closeTrigger)}
+        aria-label={ariaLabel || msg.format("closeTrigger")}
         {...restProps}
       >
         <Close />

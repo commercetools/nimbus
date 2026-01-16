@@ -1,5 +1,4 @@
 import { useRef, useCallback, useEffect } from "react";
-import { useIntl } from "react-intl";
 import {
   Row as RaRow,
   Collection as RaCollection,
@@ -22,7 +21,8 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
-import { messages } from "../data-table.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -86,7 +86,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
   ref,
   ...props
 }: DataTableRowProps<T>) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const {
     activeColumns,
     search,
@@ -360,7 +360,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label={intl.formatMessage(messages.selectRow)}
+                  aria-label={msg.format("selectRow")}
                 />
               </Box>
             </DataTableCell>

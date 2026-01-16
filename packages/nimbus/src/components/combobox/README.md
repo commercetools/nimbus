@@ -176,7 +176,13 @@ combobox/
 ├── combobox.types.ts                   # TypeScript interfaces (400+ lines)
 ├── combobox.recipe.ts                  # Chakra UI styling (slot recipe)
 ├── combobox.slots.tsx                  # Styled slot components
-├── combobox.i18n.ts                    # Internationalization messages
+├── combobox.messages.ts                # Internationalization messages
+├── intl/                               # Locale-specific message files
+│   ├── en.ts
+│   ├── de.ts
+│   ├── es.ts
+│   ├── fr-FR.ts
+│   └── pt-BR.ts
 ├── combobox.stories.tsx                # Storybook stories with interaction tests
 ├── combobox.mdx                        # Component documentation
 └── TESTING_PLAN.md                     # Comprehensive testing checklist

@@ -1,5 +1,4 @@
 import { useCallback, useState, useMemo } from "react";
-import { useIntl } from "react-intl";
 import type { Key } from "react-aria-components";
 import {
   Button,
@@ -11,13 +10,14 @@ import {
   SearchInput,
   Separator,
 } from "@/components";
+import { useLocalizedStringFormatter } from "@/hooks";
 import {
   Refresh,
   VisibilityOff,
   Visibility,
 } from "@commercetools/nimbus-icons";
 import type { ColumnManagerListItem } from "../data-table.types";
-import { messages } from "../data-table.i18n";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 // Type for items with onRemoveItem provided by DraggableList.Root
 type TColumnListItemWithRemove = ColumnManagerListItem & {
@@ -43,7 +43,7 @@ export const VisibleColumnsPanel = ({
   handleResetColumns: () => void;
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const { formatMessage } = useIntl();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   if (!hiddenItems || !visibleItems) {
     return null;
@@ -129,7 +129,7 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <VisibilityOff />
             <Text fontWeight="700" fontSize="sm" w="full">
-              {formatMessage(messages.hiddenColumns)}
+              {msg.format("hiddenColumns")}
             </Text>
           </Stack>
           <Stack
@@ -145,8 +145,8 @@ export const VisibleColumnsPanel = ({
               w="full"
               size="sm"
               variant="ghost"
-              placeholder={formatMessage(messages.searchHiddenColumns)}
-              aria-label={formatMessage(messages.searchHiddenColumns)}
+              placeholder={msg.format("searchHiddenColumns")}
+              aria-label={msg.format("searchHiddenColumns")}
               onChange={handleSearch}
               value={searchValue}
               data-testid="search-hidden-columns"
@@ -164,11 +164,11 @@ export const VisibleColumnsPanel = ({
               overflowY="auto"
               items={searchedHiddenItems}
               onUpdateItems={handleHiddenColumnsListUpdate}
-              aria-label={formatMessage(messages.hiddenColumnsAriaLabel)}
+              aria-label={msg.format("hiddenColumnsAriaLabel")}
               data-testid="hidden-columns-list"
               renderEmptyState={
                 <Text fontSize="sm" color="gray.9">
-                  {formatMessage(messages.noHiddenColumns)}
+                  {msg.format("noHiddenColumns")}
                 </Text>
               }
             >
@@ -191,7 +191,7 @@ export const VisibleColumnsPanel = ({
           <Stack direction="row" alignItems="center" mb="200">
             <Visibility />
             <Text fontWeight="700" fontSize="sm">
-              {formatMessage(messages.visibleColumnsList)}
+              {msg.format("visibleColumnsList")}
             </Text>
           </Stack>
           <DraggableList.Root
@@ -201,7 +201,7 @@ export const VisibleColumnsPanel = ({
             overflowY="auto"
             items={visibleItems}
             onUpdateItems={handleVisibleColumnsListUpdate}
-            aria-label={formatMessage(messages.visibleColumnsAria)}
+            aria-label={msg.format("visibleColumnsAria")}
             data-testid="visible-columns-list"
           >
             {(item) => (
@@ -228,10 +228,10 @@ export const VisibleColumnsPanel = ({
           colorPalette="primary"
           size="xs"
           onClick={handleResetColumns}
-          aria-label={formatMessage(messages.reset)}
+          aria-label={msg.format("reset")}
         >
           <Refresh />
-          {formatMessage(messages.reset)}
+          {msg.format("reset")}
         </Button>
       </Box>
     </Stack>

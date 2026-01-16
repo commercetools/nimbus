@@ -32,7 +32,8 @@ complex compositions.
 
 ### Standard Context Pattern
 
-**Note:** This is an illustrative example showing context patterns. Accordion in Nimbus uses React Aria's DisclosureGroup which handles state internally.
+**Note:** This is an illustrative example showing context patterns. Accordion in
+Nimbus uses React Aria's DisclosureGroup which handles state internally.
 
 ```typescript
 // Example context pattern (illustrative)
@@ -115,7 +116,8 @@ export function useAccordionContext() {
 
 ### Custom React Aria Context
 
-For components that extend React Aria with additional functionality, use React Aria's `Provider` with context slots:
+For components that extend React Aria with additional functionality, use React
+Aria's `Provider` with context slots:
 
 ```typescript
 // date-picker.custom-context.tsx
@@ -128,8 +130,8 @@ import {
   useSlottedContext,
 } from "react-aria-components";
 import type { PressEvent, TimeValue } from "react-aria";
-import { useIntl } from "react-intl";
-import messages from "../date-picker.i18n";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { datePickerMessagesStrings } from "../date-picker.messages";
 
 /**
  * Custom context wrapper for React Aria DatePicker
@@ -140,7 +142,7 @@ export const DatePickerCustomContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(datePickerMessagesStrings);
 
   // Access existing React Aria contexts
   const buttonContext = useSlottedContext(ButtonContext) || {};
@@ -164,7 +166,7 @@ export const DatePickerCustomContext = ({
     },
     clear: {
       onPress: () => datePickerState?.setValue(null),
-      "aria-label": intl.formatMessage(messages.clearInput),
+      "aria-label": msg.format("clearInput"),
       isDisabled: isDatePickerDisabled,
       style: noInputValue ? { display: "none" } : undefined,
       "aria-hidden": noInputValue ? true : undefined,
@@ -180,7 +182,7 @@ export const DatePickerCustomContext = ({
         }
       },
       granularity: granularity === "day" ? undefined : granularity,
-      "aria-label": intl.formatMessage(messages.enterTime),
+      "aria-label": msg.format("enterTime"),
     },
   };
 
@@ -285,7 +287,8 @@ export function TabsProvider({
 
 ### Complex State Management
 
-For components with complex state, keep context simple and move business logic to the component implementation:
+For components with complex state, keep context simple and move business logic
+to the component implementation:
 
 ```typescript
 // data-table-context.tsx
@@ -317,7 +320,9 @@ export const useDataTableContext = <
 };
 ```
 
-**Note:** Complex data processing (filtering, sorting, pagination) is typically handled in the component implementation or via external libraries like TanStack Table, not in the context provider.
+**Note:** Complex data processing (filtering, sorting, pagination) is typically
+handled in the component implementation or via external libraries like TanStack
+Table, not in the context provider.
 
 ## Hook Pattern for Context
 
@@ -373,7 +378,7 @@ type ComponentContextValue = {
   isOpen: boolean;
   data: any[];
   // ... other values
-}
+};
 
 /**
  * Hook with optional selector for performance
@@ -517,10 +522,12 @@ export function Provider({
 
 ## Validation Checklist
 
-- [ ] Context file with appropriate naming pattern (`{component}-context.tsx` or `{component}.custom-context.tsx`)
+- [ ] Context file with appropriate naming pattern (`{component}-context.tsx` or
+      `{component}.custom-context.tsx`)
 - [ ] Provider component exported
 - [ ] Hook for accessing context
-- [ ] Error handling in hook (optional - throw if context must be present, return undefined if optional)
+- [ ] Error handling in hook (optional - throw if context must be present,
+      return undefined if optional)
 - [ ] Context value memoized (when appropriate for performance)
 - [ ] TypeScript interfaces defined
 - [ ] JSDoc documentation for context and hooks

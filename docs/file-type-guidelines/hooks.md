@@ -6,9 +6,16 @@
 
 ## Purpose
 
-The `hooks/` directory contains component-specific React hooks that encapsulate
-complex logic, state management, and side effects. Organizing hooks in a dedicated
-folder keeps component implementations clean and logic well-organized.
+Hooks encapsulate complex logic, state management, and side effects. There are
+two types of hooks in Nimbus:
+
+- **Component-specific hooks**: Used by a single component, located in
+  `components/{component}/hooks/`
+- **Shared/package-level hooks**: Used across multiple components, located in
+  `src/hooks/`
+
+Organizing hooks in dedicated folders keeps component implementations clean and
+logic well-organized.
 
 ## When to Use
 
@@ -26,11 +33,15 @@ Create a hook when you need to:
 
 ## Critical Rule: Hooks Location
 
-**ALL hooks MUST go in the `hooks/` subfolder** - Never place hooks in the
+**ALL hooks MUST go in a `hooks/` subfolder** - Never place hooks in the
 component root directory.
 
+### Component-Specific Hooks
+
+Hooks used by a single component go in that component's `hooks/` subfolder:
+
 ```
-✅ CORRECT Structure:
+✅ CORRECT Structure (Component-specific):
 component-name/
 ├── component-name.tsx
 ├── hooks/
@@ -46,11 +57,40 @@ component-name/
 └── index.ts
 ```
 
+### Shared/Package-Level Hooks
+
+Hooks used across multiple components go in `src/hooks/` at the package level:
+
+```
+✅ CORRECT Structure (Shared hooks):
+packages/nimbus/src/hooks/
+├── use-localized-string-formatter/
+│   ├── use-localized-string-formatter.ts
+│   └── index.ts
+├── use-color-mode/
+│   ├── use-color-mode.ts
+│   └── index.ts
+└── index.ts
+```
+
+**Examples of shared hooks:**
+
+- `useLocalizedStringFormatter` - Used by all components for i18n
+- `useColorMode` - Used across components for theme switching
+- `useHotkeys` - Used for keyboard shortcuts across components
+- `useCopyToClipboard` - Shared utility hook
+
+**When to use shared hooks:**
+
+- Hook is used by 3+ different components
+- Hook provides cross-cutting functionality (i18n, theming, utilities)
+- Hook is part of the public API (`@/hooks` alias)
+
 ## File Structure
 
 ### Basic Hook Structure
 
-```typescript
+````typescript
 // hooks/use-component-name.ts
 import { useState, useCallback, useMemo } from "react";
 
@@ -69,14 +109,17 @@ export function useComponentName(options) {
   // Hook implementation
   const [state, setState] = useState(options.defaultValue);
 
-  const handleChange = useCallback((newValue) => {
-    setState(newValue);
-    options.onChange?.(newValue);
-  }, [options.onChange]);
+  const handleChange = useCallback(
+    (newValue) => {
+      setState(newValue);
+      options.onChange?.(newValue);
+    },
+    [options.onChange]
+  );
 
   return { value: state, setValue: handleChange };
 }
-```
+````
 
 ### Hooks Index File
 
@@ -111,19 +154,20 @@ Use kebab-case with `use-` prefix:
 
 Define types based on visibility:
 
-**Public hooks** (exported for consumers): Define types in `component-name.types.ts`
+**Public hooks** (exported for consumers): Define types in
+`component-name.types.ts`
 
 ```typescript
 // component-name.types.ts
 export type UseComponentNameOptions = {
   defaultValue?: string;
   onChange?: (value: string) => void;
-}
+};
 
 export type UseComponentNameReturn = {
   value: string;
   setValue: (value: string) => void;
-}
+};
 ```
 
 **Internal hooks** (not exported): Define types inline in the hook file
@@ -132,7 +176,7 @@ export type UseComponentNameReturn = {
 // hooks/use-internal-helper.ts
 type InternalState = {
   // Internal types here
-}
+};
 
 export function useInternalHelper() {
   // Implementation
@@ -152,17 +196,19 @@ export function usePagination({ totalItems, currentPage, onPageChange }) {
   const isControlled = currentPage !== undefined;
   const page = isControlled ? currentPage : internalPage;
 
-  const goToPage = useCallback((newPage: number) => {
-    if (!isControlled) {
-      setInternalPage(newPage);
-    }
-    onPageChange?.(newPage);
-  }, [isControlled, onPageChange]);
+  const goToPage = useCallback(
+    (newPage: number) => {
+      if (!isControlled) {
+        setInternalPage(newPage);
+      }
+      onPageChange?.(newPage);
+    },
+    [isControlled, onPageChange]
+  );
 
   return { page, goToPage };
 }
 ```
-
 
 ## JSDoc Requirements
 
@@ -173,7 +219,7 @@ Document hooks with:
 - `@returns` for return value
 - `@example` showing usage
 
-```typescript
+````typescript
 /**
  * Manages pagination state and navigation
  *
@@ -185,7 +231,7 @@ Document hooks with:
  * const { page, goToPage } = usePagination({ totalItems: 100 });
  * ```
  */
-```
+````
 
 ## Testing Hooks
 
@@ -214,14 +260,19 @@ export const InteractiveTest: Story = {
 
 ## Validation Checklist
 
-- [ ] Hook in `hooks/` subfolder (never in root)
+- [ ] Hook in correct location:
+  - Component-specific: `components/{component}/hooks/`
+  - Shared/package-level: `src/hooks/`
 - [ ] File name: `use-*` with kebab-case
 - [ ] Function name: `use*` with camelCase
-- [ ] Public types in component types file, internal types colocated
+- [ ] Public types in component types file (component hooks) or hook file
+      (shared hooks), internal types colocated
 - [ ] JSDoc with description, @param, @returns, @example
-- [ ] Exported from `hooks/index.ts`
+- [ ] Exported from `hooks/index.ts` (component hooks) or `src/hooks/index.ts`
+      (shared hooks)
 - [ ] Dependencies array correct for useCallback/useMemo/useEffect
 - [ ] Cleanup functions for side effects (if applicable)
+- [ ] Shared hooks exported from `@/hooks` alias (if part of public API)
 
 ---
 
