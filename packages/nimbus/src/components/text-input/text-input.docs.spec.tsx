@@ -13,7 +13,7 @@ describe("TextInput - Basic rendering", () => {
   it("renders input element", () => {
     render(
       <NimbusProvider>
-        <TextInput placeholder="Enter text" />
+        <TextInput aria-label="Text input" placeholder="Enter text" />
       </NimbusProvider>
     );
 
@@ -24,7 +24,7 @@ describe("TextInput - Basic rendering", () => {
   it("renders with placeholder text", () => {
     render(
       <NimbusProvider>
-        <TextInput placeholder="Email address" />
+        <TextInput aria-label="Email" placeholder="Email address" />
       </NimbusProvider>
     );
 
@@ -55,7 +55,7 @@ describe("TextInput - Interactions", () => {
     const user = userEvent.setup();
     render(
       <NimbusProvider>
-        <TextInput placeholder="Type here" />
+        <TextInput aria-label="Text input" placeholder="Type here" />
       </NimbusProvider>
     );
 
@@ -70,7 +70,7 @@ describe("TextInput - Interactions", () => {
     const handleChange = vi.fn();
     render(
       <NimbusProvider>
-        <TextInput onChange={handleChange} />
+        <TextInput aria-label="Text input" onChange={handleChange} />
       </NimbusProvider>
     );
 
@@ -92,7 +92,11 @@ describe("TextInput - Controlled mode", () => {
   it("displays controlled value", () => {
     render(
       <NimbusProvider>
-        <TextInput value="controlled value" onChange={() => {}} />
+        <TextInput
+          aria-label="Text input"
+          value="controlled value"
+          onChange={() => {}}
+        />
       </NimbusProvider>
     );
 
@@ -103,7 +107,11 @@ describe("TextInput - Controlled mode", () => {
   it("updates when controlled value changes", () => {
     const { rerender } = render(
       <NimbusProvider>
-        <TextInput value="first value" onChange={() => {}} />
+        <TextInput
+          aria-label="Text input"
+          value="first value"
+          onChange={() => {}}
+        />
       </NimbusProvider>
     );
 
@@ -111,7 +119,11 @@ describe("TextInput - Controlled mode", () => {
 
     rerender(
       <NimbusProvider>
-        <TextInput value="second value" onChange={() => {}} />
+        <TextInput
+          aria-label="Text input"
+          value="second value"
+          onChange={() => {}}
+        />
       </NimbusProvider>
     );
 
@@ -130,6 +142,7 @@ describe("TextInput - Elements", () => {
     render(
       <NimbusProvider>
         <TextInput
+          aria-label="Search input"
           leadingElement={<span data-testid="icon">🔍</span>}
           placeholder="Search"
         />
@@ -143,6 +156,7 @@ describe("TextInput - Elements", () => {
     render(
       <NimbusProvider>
         <TextInput
+          aria-label="Text input"
           trailingElement={<button data-testid="clear">Clear</button>}
           placeholder="Input"
         />
@@ -159,6 +173,7 @@ describe("TextInput - Elements", () => {
     render(
       <NimbusProvider>
         <TextInput
+          aria-label="Text input"
           trailingElement={<button onClick={handleClick}>Action</button>}
         />
       </NimbusProvider>
@@ -180,7 +195,11 @@ describe("TextInput - Validation states", () => {
   it("renders disabled state", () => {
     render(
       <NimbusProvider>
-        <TextInput isDisabled placeholder="Disabled" />
+        <TextInput
+          aria-label="Disabled input"
+          isDisabled
+          placeholder="Disabled"
+        />
       </NimbusProvider>
     );
 
@@ -191,7 +210,7 @@ describe("TextInput - Validation states", () => {
   it("renders invalid state", () => {
     render(
       <NimbusProvider>
-        <TextInput isInvalid placeholder="Invalid" />
+        <TextInput aria-label="Invalid input" isInvalid placeholder="Invalid" />
       </NimbusProvider>
     );
 
@@ -202,7 +221,12 @@ describe("TextInput - Validation states", () => {
   it("renders read-only state", () => {
     render(
       <NimbusProvider>
-        <TextInput isReadOnly value="Read-only" onChange={() => {}} />
+        <TextInput
+          aria-label="Read-only input"
+          isReadOnly
+          value="Read-only"
+          onChange={() => {}}
+        />
       </NimbusProvider>
     );
 
@@ -213,7 +237,11 @@ describe("TextInput - Validation states", () => {
   it("renders required state", () => {
     render(
       <NimbusProvider>
-        <TextInput isRequired placeholder="Required" />
+        <TextInput
+          aria-label="Required input"
+          isRequired
+          placeholder="Required"
+        />
       </NimbusProvider>
     );
 
