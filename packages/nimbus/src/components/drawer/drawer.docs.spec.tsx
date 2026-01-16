@@ -151,7 +151,7 @@ describe("Drawer - Controlled state", () => {
         <NimbusProvider>
           <Button onPress={() => setIsOpen(true)}>External Open</Button>
           <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>
-            <Drawer.Content>
+            <Drawer.Content aria-label="Controlled drawer">
               <Drawer.Body>Content</Drawer.Body>
             </Drawer.Content>
           </Drawer.Root>
