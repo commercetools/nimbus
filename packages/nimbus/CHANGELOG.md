@@ -1,5 +1,105 @@
 # @commercetools/nimbus
 
+## 2.2.0
+
+### Minor Changes
+
+- [#732](https://github.com/commercetools/nimbus/pull/732)
+  [`f9d25d6`](https://github.com/commercetools/nimbus/commit/f9d25d63692b0854aca6a6633f3674274a4e1d09)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Update minor
+  versions of tooling dependencies
+
+- [#630](https://github.com/commercetools/nimbus/pull/630)
+  [`dcf5f6f`](https://github.com/commercetools/nimbus/commit/dcf5f6f197f9c8a71dad284ddb88d8cece70de83)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Update Combobox to new
+  context-based architecture and add missing features.
+
+- [#713](https://github.com/commercetools/nimbus/pull/713)
+  [`fc7515a`](https://github.com/commercetools/nimbus/commit/fc7515a7e92ff397523c6050a4bd1b5882ff4528)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Introduced
+  SearchInputField component with supplemental guideline and engineering
+  documentation.
+
+- [#841](https://github.com/commercetools/nimbus/pull/841)
+  [`0fe5368`](https://github.com/commercetools/nimbus/commit/0fe5368ec8b097aa961b7f8a53251fd24dda35a4)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Components now use
+  `useLocalizedStringFormatter` with pre-compiled message dictionaries instead
+  of runtime `react-intl` parsing.
+
+### Patch Changes
+
+- [#842](https://github.com/commercetools/nimbus/pull/842)
+  [`421ed44`](https://github.com/commercetools/nimbus/commit/421ed44d4dd5b11b8879edbe3a1c74654c09115e)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Ensure
+  `FormField.Label`'s required asterisk is always aligned to the top right
+
+- [#612](https://github.com/commercetools/nimbus/pull/612)
+  [`f92fb51`](https://github.com/commercetools/nimbus/commit/f92fb515479f0565429f8bbfc0749f2aea5fbc12)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update
+  DateRangePickerField types
+
+- [#690](https://github.com/commercetools/nimbus/pull/690)
+  [`5ce31d4`](https://github.com/commercetools/nimbus/commit/5ce31d469aacd11a40738ea00dbd111cd5cc3eb5)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Update `colors.bg`
+  semantic css value to use `colors.neutral.1` and `colors.fg` to use
+  `colors.neutral.12` instead of setting them as `black` and `white`
+
+- [#648](https://github.com/commercetools/nimbus/pull/648)
+  [`3dca992`](https://github.com/commercetools/nimbus/commit/3dca992703186af8c45a57ed16402f19bb8cfd5f)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Fix cross-chunk
+  circular dependencies by importing directly from implementation files
+
+  Previously, components importing from other components' barrel exports
+  (index.ts) created circular chunk dependencies during the build process. This
+  has been fixed by updating all cross-component imports to import directly from
+  implementation files (e.g., `button.tsx`, `button.types.ts`) instead of barrel
+  exports.
+
+  Changes:
+  - Updated 29 cross-component imports across 15 files in components and
+    patterns directories
+  - Added comprehensive documentation about the cross-chunk import pattern in
+    docs/component-guidelines.md and docs/file-type-guidelines/main-component.md
+  - Clarified vite.config.ts warning suppression to specifically target
+    intentional compound component barrel export patterns
+  - Added inline documentation in vite.config.ts explaining the relationship
+    between build configuration and import requirements
+
+  This change prevents potential circular dependency warnings, ensures
+  predictable module initialization order, and maintains optimal code splitting
+  behavior.
+
+- [#683](https://github.com/commercetools/nimbus/pull/683)
+  [`2807ffe`](https://github.com/commercetools/nimbus/commit/2807ffe14e5287eaace93622cca71c719bd27884)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Create NumberInputField
+
+- [#664](https://github.com/commercetools/nimbus/pull/664)
+  [`7fb5136`](https://github.com/commercetools/nimbus/commit/7fb5136ce4748e35aa5fbe4fa6a35664d7ab6b63)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - removed unnecessary
+  tabIndex property from Card
+
+- [#655](https://github.com/commercetools/nimbus/pull/655)
+  [`bf19ab6`](https://github.com/commercetools/nimbus/commit/bf19ab6376c825292a1a7584afd943412e09f080)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix an issue with card
+  backgrounds in dark-mode
+
+- [#693](https://github.com/commercetools/nimbus/pull/693)
+  [`23a7c3f`](https://github.com/commercetools/nimbus/commit/23a7c3fd10efea25194e5826d16cf3f02d0dc264)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Change internal layout
+  strategy of Alert component
+
+- [#649](https://github.com/commercetools/nimbus/pull/649)
+  [`edc52bd`](https://github.com/commercetools/nimbus/commit/edc52bd01e948d450cfca9a7514e779b06acb28d)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Update docs image
+  for TagGroup in use.
+
+- Updated dependencies
+  [[`f92fb51`](https://github.com/commercetools/nimbus/commit/f92fb515479f0565429f8bbfc0749f2aea5fbc12),
+  [`f9d25d6`](https://github.com/commercetools/nimbus/commit/f9d25d63692b0854aca6a6633f3674274a4e1d09),
+  [`04a8510`](https://github.com/commercetools/nimbus/commit/04a8510051585cfa67dcf64e141bccce6749d625)]:
+  - @commercetools/nimbus-icons@2.2.0
+  - @commercetools/nimbus-tokens@2.2.0
+
 ## 2.1.0
 
 ### Minor Changes
