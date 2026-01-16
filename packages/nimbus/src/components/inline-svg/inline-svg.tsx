@@ -21,7 +21,7 @@ import { useInlineSvg } from "./hooks";
  * @see {@link https://nimbus-documentation.vercel.app/components/media/inline-svg}
  */
 export const InlineSvg = (props: InlineSvgProps) => {
-  const { data, ref, ...rest } = props;
+  const { data, ref, slot, ...rest } = props;
 
   const { isValid, svgAttributes, innerSvgContent } = useInlineSvg(data);
 
@@ -32,7 +32,7 @@ export const InlineSvg = (props: InlineSvgProps) => {
 
   // Always render as SVG - no asChild support
   return (
-    <InlineSvgRootSlot asChild {...rest}>
+    <InlineSvgRootSlot asChild slot={slot ?? undefined} {...rest}>
       <svg
         ref={ref}
         role="presentation"
