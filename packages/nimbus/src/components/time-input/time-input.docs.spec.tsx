@@ -638,7 +638,11 @@ describe("TimeInput - Form integration", () => {
       <NimbusProvider>
         <div>
           <label htmlFor="time-field">Meeting time</label>
-          <TimeInput id="time-field" defaultValue={new Time(10, 0)} />
+          <TimeInput
+            aria-label="Meeting time"
+            id="time-field"
+            defaultValue={new Time(10, 0)}
+          />
         </div>
       </NimbusProvider>
     );
