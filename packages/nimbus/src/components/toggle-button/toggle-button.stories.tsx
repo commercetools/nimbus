@@ -136,7 +136,9 @@ export const Sizes: Story = {
     return (
       <Stack direction="column" gap="400" align="start">
         {sizes.map((size) => (
-          <ToggleButton size={size}>Toggle</ToggleButton>
+          <ToggleButton key={size} size={size}>
+            Toggle
+          </ToggleButton>
         ))}
       </Stack>
     );
