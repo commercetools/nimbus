@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { within, expect } from "storybook/test";
+import { within, expect, fn } from "storybook/test";
 import { Group, InlineSvg } from "@commercetools/nimbus";
 
 const meta: Meta<typeof InlineSvg> = {
@@ -259,6 +259,14 @@ export const InvalidSvg: Story = {
   args: {
     data: "not valid svg content",
     size: "md",
+  },
+  beforeEach: () => {
+    // Suppress expected warning when invalid SVG is passed
+    const originalWarn = console.warn;
+    console.warn = fn();
+    return () => {
+      console.warn = originalWarn;
+    };
   },
   play: async ({ canvasElement, step }) => {
     await step("Invalid SVG does not render", async () => {

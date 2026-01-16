@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { InlineSvg, NimbusProvider } from "@commercetools/nimbus";
 
@@ -45,6 +45,9 @@ describe("InlineSvg - Basic usage", () => {
   });
 
   it("handles invalid SVG gracefully", () => {
+    // Suppress expected warning when invalid SVG is passed
+    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     const invalidSvg = "This is not valid SVG markup";
 
     render(
@@ -55,6 +58,12 @@ describe("InlineSvg - Basic usage", () => {
 
     // Component should not render when SVG is invalid
     expect(screen.queryByTestId("inline-svg")).not.toBeInTheDocument();
+
+    // Verify the warning was called and restore
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "InlineSvg: No SVG element found in markup"
+    );
+    consoleSpy.mockRestore();
   });
 });
 

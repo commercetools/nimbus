@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   defaultGetKey,
   defaultGetTextValue,
@@ -107,11 +107,27 @@ describe("collection utilities", () => {
 
     describe("fallback behavior", () => {
       it("converts object to string when no name or label", () => {
+        // Suppress expected warning when item lacks name/label
+        const consoleSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {});
+
         const item = { id: "1", value: "test" };
         expect(defaultGetTextValue(item)).toBe("[object Object]");
+
+        // Verify the warning was called
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Item should have 'name' or 'label' property")
+        );
+        consoleSpy.mockRestore();
       });
 
       it("handles objects with toString method", () => {
+        // Suppress expected warning when item lacks name/label
+        const consoleSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {});
+
         const item = {
           id: "1",
           toString() {
@@ -119,6 +135,8 @@ describe("collection utilities", () => {
           },
         };
         expect(defaultGetTextValue(item)).toBe("Custom String");
+
+        consoleSpy.mockRestore();
       });
     });
   });
