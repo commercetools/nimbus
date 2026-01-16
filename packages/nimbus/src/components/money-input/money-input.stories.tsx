@@ -88,7 +88,7 @@ const inputSize = ["md", "sm"] as const;
 
 // Interactive wrapper component
 const MoneyInputExample = ({
-  initialValue = { amount: "", currencyCode: "" },
+  initialValue = { amount: "", currencyCode: "EUR" },
   currencies = DEFAULT_CURRENCIES,
   ...props
 }: MoneyInputExampleProps) => {
@@ -366,7 +366,11 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
 
 export const CurrencySwitchingTest: Story = {
   render: (args) => (
-    <MoneyInputExample aria-label="Money input example" {...args} />
+    <MoneyInputExample
+      aria-label="Money input example"
+      initialValue={{ amount: "", currencyCode: "USD" }}
+      {...args}
+    />
   ),
   args: {
     hasHighPrecisionBadge: true,
@@ -380,20 +384,8 @@ export const CurrencySwitchingTest: Story = {
       name: /Currency/i,
     });
 
-    // Step 1: Select USD and enter 100.50, confirm it formats as such
-    // First, select USD (component starts with empty currency)
-    await userEvent.click(currencySelect!);
-    const listbox = document.querySelector('[role="listbox"]');
-    expect(listbox).toBeInTheDocument();
-
-    const options = document.querySelectorAll('[role="option"]');
-    // Find USD option by text content (DEFAULT_CURRENCIES: ["USD", "EUR", "GBP", "JPY"])
-    const usdOption = Array.from(options).find(
-      (opt) => opt.textContent === "USD"
-    );
-    await userEvent.click(usdOption!);
-
-    expect(currencySelect).toHaveTextContent("USD"); // Verify USD is selected
+    // Step 1: Verify USD is already selected, enter 100.50
+    expect(currencySelect).toHaveTextContent("USD");
     await userEvent.type(amountInput, "100.50");
     await userEvent.click(document.body); // Blur to format
     expect(amountInput).toHaveValue("100.50"); // USD (2 fraction digits) should preserve .50
