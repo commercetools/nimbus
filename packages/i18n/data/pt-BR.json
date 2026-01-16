@@ -23,30 +23,6 @@
     "developer_comment": "aria-label for previous year navigation button",
     "string": "Ano anterior"
   },
-  "Nimbus.ComboBox.clearSelection": {
-    "developer_comment": "aria-label for the clear selection button",
-    "string": "Limpar seleção"
-  },
-  "Nimbus.ComboBox.comboboxDialog": {
-    "developer_comment": "aria-label for the combobox dialog overlay",
-    "string": "Caixa de diálogo combobox"
-  },
-  "Nimbus.ComboBox.filterOptions": {
-    "developer_comment": "aria-label for the combobox filter input field",
-    "string": "Opções de filtro da combobox"
-  },
-  "Nimbus.ComboBox.options": {
-    "developer_comment": "aria-label for the combobox options list",
-    "string": "Opções da combobox"
-  },
-  "Nimbus.ComboBox.selectedValues": {
-    "developer_comment": "aria-label for the selected values tag group in multi-select",
-    "string": "Selecionar valores"
-  },
-  "Nimbus.ComboBox.toggleCombobox": {
-    "developer_comment": "aria-label for the combobox toggle button",
-    "string": "Escolher combobox"
-  },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
     "string": "Confortável"
