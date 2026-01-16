@@ -1,0 +1,500 @@
+---
+title: DraggableList Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DraggableList, type DraggableListRootProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation uses an array of items with `key` and `label` properties. The component automatically handles drag-and-drop reordering:
+
+```jsx-live-dev
+const App = () => {
+  const items = [
+    { key: '1', label: 'First item' },
+    { key: '2', label: 'Second item' },
+    { key: '3', label: 'Third item' },
+  ];
+
+  return (
+    <DraggableList.Root
+      items={items}
+      aria-label="Task list"
+    />
+  );
+}
+```
+
+**Important:** You must provide either an `aria-label` or `aria-labelledby` prop for accessibility. The drag-and-drop functionality requires an accessible label.
+
+## Working with React Aria drag-and-drop
+
+The DraggableList relies on React Aria Components' GridList and drag-and-drop hooks for accessible drag-and-drop functionality. This integration provides keyboard navigation, screen reader support, and touch-friendly interactions.
+
+### Drag-and-drop behavior
+
+React Aria's drag-and-drop system provides:
+- **Visual feedback**: Items show grab cursors and drag previews during interactions
+- **Drop indicators**: Visual cues show where items will be placed
+- **Move operations**: Items are moved (not copied) between lists
+- **Keyboard support**: Full keyboard navigation for drag-and-drop
+
+### Data format
+
+Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources.
+
+### State management
+
+The component uses React Stately's `useListData` hook internally to manage item state and reordering operations. This provides:
+- Efficient list operations (insert, remove, move)
+- Selection state management
+- Synchronization with external state via `onUpdateItems`
+
+> [!TIP]\
+> See [React Aria Drag and Drop](https://react-spectrum.adobe.com/react-aria/dnd.html) for complete API reference and advanced usage.
+
+## Usage examples
+
+### Size options
+
+The `sm` and `md` size variants are available to match your interface density:
+
+```jsx-live-dev
+const App = () => {
+  const [smallItems, setSmallItems] = useState([
+    { key: '1', label: 'Task 1' },
+    { key: '2', label: 'Task 2' },
+  ]);
+
+  const [mediumItems, setMediumItems] = useState([
+    { key: '3', label: 'Task 3' },
+    { key: '4', label: 'Task 4' },
+  ]);
+
+  return (
+    <Stack direction="row" gap="400">
+      <DraggableList.Root
+        items={smallItems}
+        onUpdateItems={setSmallItems}
+        size="sm"
+        aria-label="Small list"
+      />
+      <DraggableList.Root
+        items={mediumItems}
+        onUpdateItems={setMediumItems}
+        size="md"
+        aria-label="Medium list"
+      />
+    </Stack>
+  );
+}
+```
+
+### Item removal
+
+Enable item removal by setting `removableItems={true}`. When items are removed, the `onUpdateItems` callback receives the updated list:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Item 1' },
+    { key: '2', label: 'Item 2' },
+    { key: '3', label: 'Item 3' },
+  ]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={items}
+        removableItems
+        onUpdateItems={setItems}
+        aria-label="Removable items"
+      />
+      <Text fontSize="sm">Items: {items.length}</Text>
+    </Stack>
+  );
+}
+```
+
+### Custom item rendering
+
+For items without `key` and `label` properties, or when you need custom rendering, provide a render function as children:
+
+```jsx-live-dev
+const App = () => {
+  const items = [
+    { id: 'task-1', title: 'Design mockups', priority: 'High' },
+    { id: 'task-2', title: 'Write tests', priority: 'Medium' },
+    { id: 'task-3', title: 'Review PR', priority: 'Low' },
+  ];
+
+  return (
+    <DraggableList.Root
+      items={items}
+      getKey={(item) => item.id}
+      aria-label="Task priorities"
+    >
+      {(item) => (
+        <DraggableList.Item id={item.id}>
+          <Stack direction="column" gap="100" padding="200">
+            <Text fontWeight="500">{item.title}</Text>
+            <Text fontSize="sm" color="fg.muted">
+              Priority: {item.priority}
+            </Text>
+          </Stack>
+        </DraggableList.Item>
+      )}
+    </DraggableList.Root>
+  );
+}
+```
+
+**Note:** When using custom rendering, you must provide a `getKey` function to extract unique keys from your items. Wrap this function in `useCallback` to prevent unnecessary re-synchronization:
+
+```tsx
+const getKey = useCallback((item) => item.id, []);
+```
+
+### Controlled updates
+
+Use the `onUpdateItems` callback to track changes when items are reordered or removed:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'High priority' },
+    { key: '2', label: 'Medium priority' },
+    { key: '3', label: 'Low priority' },
+  ]);
+
+  const [updateCount, setUpdateCount] = useState(0);
+
+  const handleUpdateItems = useCallback((updatedItems) => {
+    setItems(updatedItems);
+    setUpdateCount(prev => prev + 1);
+  }, []);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={items}
+        onUpdateItems={handleUpdateItems}
+        aria-label="Priority list"
+      />
+      <Text fontSize="sm">
+        Order: {items.map(item => item.label).join(', ')}
+      </Text>
+      <Text fontSize="sm">Updates: {updateCount}</Text>
+    </Stack>
+  );
+}
+```
+
+### Custom empty state
+
+Customize the message displayed when the list is empty:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={items}
+        onUpdateItems={setItems}
+        renderEmptyState="No tasks yet. Add some items!"
+        aria-label="Empty task list"
+      />
+      <Button
+        size="md"
+        onClick={() => {
+          const newItem = {
+            key: Date.now().toString(),
+            label: `Task ${items.length + 1}`,
+          };
+          setItems([...items, newItem]);
+        }}
+      >
+        Add Task
+      </Button>
+    </Stack>
+  );
+}
+```
+
+### Multiple lists
+
+Items can be dragged between multiple DraggableList instances:
+
+```jsx-live-dev
+const App = () => {
+  const [todoItems, setTodoItems] = useState([
+    { key: '1', label: 'Design homepage' },
+    { key: '2', label: 'Write docs' },
+  ]);
+
+  const [doneItems, setDoneItems] = useState([
+    { key: '3', label: 'Setup project' },
+  ]);
+
+  return (
+    <Stack direction="row" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">To Do</Text>
+        <DraggableList.Root
+          items={todoItems}
+          onUpdateItems={setTodoItems}
+          aria-label="Todo list"
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Done</Text>
+        <DraggableList.Root
+          items={doneItems}
+          onUpdateItems={setDoneItems}
+          aria-label="Done list"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### TypeScript generics
+
+Use TypeScript generics to ensure type safety with your custom item data:
+
+```jsx-live-dev
+const App = () => {
+  type TaskItem = {
+    key: string;
+    label: string;
+    assignee: string;
+    status: 'pending' | 'active' | 'done';
+  };
+
+  const [tasks, setTasks] = useState<TaskItem[]>([
+    { key: '1', label: 'Review code', assignee: 'Alice', status: 'active' },
+    { key: '2', label: 'Write tests', assignee: 'Bob', status: 'pending' },
+  ]);
+
+  return (
+    <DraggableList.Root<TaskItem>
+      items={tasks}
+      onUpdateItems={setTasks}
+      aria-label="Team tasks"
+    >
+      {(item) => (
+        <DraggableList.Item id={item.key}>
+          <Stack direction="column" gap="100" padding="200">
+            <Text fontWeight="500">{item.label}</Text>
+            <Text fontSize="sm" color="fg.muted">
+              {item.assignee} • {item.status}
+            </Text>
+          </Stack>
+        </DraggableList.Item>
+      )}
+    </DraggableList.Root>
+  );
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+The DraggableList handles most accessibility requirements internally through React Aria's GridList component. However, you must always provide an accessible label using one of these methods:
+
+**Using DraggableList.Field (recommended):**
+
+```tsx
+<DraggableList.Field
+  label={intl.formatMessage(labelMessage)}
+  items={items}
+/>
+```
+
+**Using aria-labelledby:**
+
+```tsx
+<label id="list-label">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DraggableList.Root
+  aria-labelledby="list-label"
+  items={items}
+/>
+```
+
+**Using aria-label:**
+
+```tsx
+<DraggableList.Root
+  aria-label={intl.formatMessage(labelMessage)}
+  items={items}
+/>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-draggable-list";
+
+export const Example = () => (
+  <DraggableList.Root
+    id={PERSISTENT_ID}
+    aria-label="Task list"
+    items={items}
+  />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus between items and drag handles
+- `Arrow keys`: Navigate between items in the list
+- `Enter` / `Space`: Activate drag mode for the focused item
+- `Arrow keys` (during drag): Move the item up or down in the list
+- `Enter` / `Space` (during drag): Drop the item at the current position
+- `Escape` (during drag): Cancel the drag operation
+
+## API reference
+
+<PropsTable id="DraggableList" />
+
+## Common patterns
+
+### Form integration with validation
+
+Integrate DraggableList with form libraries like Formik for validated priority lists:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Critical bug' },
+    { key: '2', label: 'Feature request' },
+    { key: '3', label: 'Documentation' },
+  ]);
+
+  const [touched, setTouched] = useState(false);
+  const hasMinimumItems = items.length >= 2;
+
+  const handleUpdateItems = useCallback((updated) => {
+    setItems(updated);
+    setTouched(true);
+  }, []);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Field
+        label="Priority Order"
+        description="Drag to reorder by priority"
+        items={items}
+        onUpdateItems={handleUpdateItems}
+        error={touched && !hasMinimumItems ? 'At least 2 items required' : undefined}
+        isInvalid={touched && !hasMinimumItems}
+        aria-label="Priority list"
+      />
+      <Text fontSize="sm" color={hasMinimumItems ? 'positive.11' : 'critical.11'}>
+        {hasMinimumItems ? '✓ Valid' : '✗ Invalid: Add more items'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Dynamic item management
+
+Allow users to add, remove, and reorder items dynamically:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Task 1' },
+    { key: '2', label: 'Task 2' },
+  ]);
+  const [nextId, setNextId] = useState(3);
+
+  const addItem = () => {
+    const newItem = {
+      key: nextId.toString(),
+      label: `Task ${nextId}`,
+    };
+    setItems([...items, newItem]);
+    setNextId(nextId + 1);
+  };
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={items}
+        removableItems
+        onUpdateItems={setItems}
+        aria-label="Task manager"
+      />
+      <Button size="md" onClick={addItem}>
+        Add Task
+      </Button>
+    </Stack>
+  );
+}
+```
+
+### Synchronized state with external storage
+
+Sync list order with external state management or API:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Design system' },
+    { key: '2', label: 'API integration' },
+    { key: '3', label: 'Testing' },
+  ]);
+
+  const [lastSaved, setLastSaved] = useState('Not saved');
+
+  const handleUpdateItems = useCallback((updatedItems) => {
+    setItems(updatedItems);
+
+    // Simulate API save
+    setTimeout(() => {
+      setLastSaved(new Date().toLocaleTimeString());
+    }, 500);
+  }, []);
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={items}
+        onUpdateItems={handleUpdateItems}
+        aria-label="Project phases"
+      />
+      <Text fontSize="sm" color="fg.muted">
+        Last saved: {lastSaved}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DraggableList within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: draggable-list.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-draggablelist--docs)
+- [React Aria Drag and Drop](https://react-spectrum.adobe.com/react-aria/dnd.html)
