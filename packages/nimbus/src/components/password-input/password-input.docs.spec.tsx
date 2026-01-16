@@ -38,7 +38,10 @@ describe("PasswordInput - Basic rendering", () => {
   it("renders with placeholder text", () => {
     render(
       <NimbusProvider>
-        <PasswordInput placeholder="Enter your password" />
+        <PasswordInput
+          aria-label="Password"
+          placeholder="Enter your password"
+        />
       </NimbusProvider>
     );
 
@@ -206,6 +209,7 @@ describe("PasswordInput - Leading element", () => {
     render(
       <NimbusProvider>
         <PasswordInput
+          aria-label="Password"
           leadingElement={<span data-testid="lock-icon">🔒</span>}
           placeholder="Password"
         />
