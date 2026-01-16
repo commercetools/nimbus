@@ -26,6 +26,7 @@ describe("ScopedSearchInput - Basic rendering", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -48,6 +49,7 @@ describe("ScopedSearchInput - Basic rendering", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -64,6 +66,7 @@ describe("ScopedSearchInput - Basic rendering", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -91,6 +94,7 @@ describe("ScopedSearchInput - Interactions", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onValueChange={handleValueChange}
           onSubmit={vi.fn()}
@@ -114,6 +118,7 @@ describe("ScopedSearchInput - Interactions", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onValueChange={handleValueChange}
           onSubmit={vi.fn()}
@@ -152,6 +157,7 @@ describe("ScopedSearchInput - Interactions", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={handleSubmit}
           options={defaultOptions}
@@ -174,6 +180,7 @@ describe("ScopedSearchInput - Interactions", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onValueChange={handleValueChange}
           onSubmit={vi.fn()}
@@ -208,6 +215,7 @@ describe("ScopedSearchInput - Callbacks", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onTextChange={handleTextChange}
           onSubmit={vi.fn()}
@@ -231,6 +239,7 @@ describe("ScopedSearchInput - Callbacks", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onOptionChange={handleOptionChange}
           onSubmit={vi.fn()}
@@ -257,6 +266,7 @@ describe("ScopedSearchInput - Callbacks", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onValueChange={handleValueChange}
           onSubmit={vi.fn()}
@@ -297,6 +307,7 @@ describe("ScopedSearchInput - States", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -319,6 +330,7 @@ describe("ScopedSearchInput - States", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -337,6 +349,7 @@ describe("ScopedSearchInput - States", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -355,6 +368,7 @@ describe("ScopedSearchInput - States", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={defaultOptions}
@@ -408,6 +422,7 @@ describe("ScopedSearchInput - Validation", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={handleSubmit}
           options={defaultOptions}
@@ -458,6 +473,7 @@ describe("ScopedSearchInput - Grouped options", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onSubmit={vi.fn()}
           options={groupedOptions}
@@ -488,6 +504,7 @@ describe("ScopedSearchInput - Grouped options", () => {
     render(
       <NimbusProvider>
         <ScopedSearchInput
+          aria-label="Scoped search"
           value={value}
           onOptionChange={handleOptionChange}
           onSubmit={vi.fn()}

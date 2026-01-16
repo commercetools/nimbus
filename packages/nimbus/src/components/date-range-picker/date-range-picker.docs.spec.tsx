@@ -14,7 +14,7 @@ describe("DateRangePicker - Basic rendering", () => {
   it("renders start and end date inputs", () => {
     render(
       <NimbusProvider>
-        <DateRangePicker />
+        <DateRangePicker aria-label="Select date range" />
       </NimbusProvider>
     );
 
@@ -26,7 +26,7 @@ describe("DateRangePicker - Basic rendering", () => {
   it("renders calendar button", () => {
     render(
       <NimbusProvider>
-        <DateRangePicker />
+        <DateRangePicker aria-label="Select date range" />
       </NimbusProvider>
     );
 
@@ -47,7 +47,7 @@ describe("DateRangePicker - Interactions", () => {
     const user = userEvent.setup();
     render(
       <NimbusProvider>
-        <DateRangePicker />
+        <DateRangePicker aria-label="Select date range" />
       </NimbusProvider>
     );
 
@@ -66,7 +66,10 @@ describe("DateRangePicker - Interactions", () => {
     const handleChange = vi.fn();
     render(
       <NimbusProvider>
-        <DateRangePicker onChange={handleChange} />
+        <DateRangePicker
+          aria-label="Select date range"
+          onChange={handleChange}
+        />
       </NimbusProvider>
     );
 
@@ -96,7 +99,11 @@ describe("DateRangePicker - Date values", () => {
 
     render(
       <NimbusProvider>
-        <DateRangePicker value={dateRange} onChange={() => {}} />
+        <DateRangePicker
+          aria-label="Select date range"
+          value={dateRange}
+          onChange={() => {}}
+        />
       </NimbusProvider>
     );
 
@@ -110,7 +117,10 @@ describe("DateRangePicker - Date values", () => {
     const handleChange = vi.fn();
     render(
       <NimbusProvider>
-        <DateRangePicker onChange={handleChange} />
+        <DateRangePicker
+          aria-label="Select date range"
+          onChange={handleChange}
+        />
       </NimbusProvider>
     );
 
@@ -174,7 +184,10 @@ describe("DateRangePicker - Time selection", () => {
     const user = userEvent.setup();
     render(
       <NimbusProvider>
-        <DateRangePicker granularity="minute" />
+        <DateRangePicker
+          aria-label="Select date and time range"
+          granularity="minute"
+        />
       </NimbusProvider>
     );
 

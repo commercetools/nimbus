@@ -14,7 +14,7 @@ describe("Calendar - Basic rendering", () => {
   it("renders calendar grid", () => {
     render(
       <NimbusProvider>
-        <Calendar />
+        <Calendar aria-label="Select date" />
       </NimbusProvider>
     );
 
@@ -27,7 +27,7 @@ describe("Calendar - Basic rendering", () => {
 
     render(
       <NimbusProvider>
-        <Calendar defaultValue={defaultDate} />
+        <Calendar aria-label="Select date" defaultValue={defaultDate} />
       </NimbusProvider>
     );
 
@@ -49,7 +49,7 @@ describe("Calendar - Basic rendering", () => {
   it("renders navigation buttons", () => {
     render(
       <NimbusProvider>
-        <Calendar />
+        <Calendar aria-label="Select date" />
       </NimbusProvider>
     );
 
@@ -76,7 +76,7 @@ describe("Calendar - Controlled mode", () => {
 
     render(
       <NimbusProvider>
-        <Calendar value={controlledDate} />
+        <Calendar aria-label="Select date" value={controlledDate} />
       </NimbusProvider>
     );
 
@@ -99,6 +99,7 @@ describe("Calendar - Controlled mode", () => {
     render(
       <NimbusProvider>
         <Calendar
+          aria-label="Select date"
           value={null}
           onChange={handleChange}
           defaultFocusedValue={new CalendarDate(2025, 1, 15)}
@@ -129,7 +130,10 @@ describe("Calendar - Controlled mode", () => {
   it("allows programmatic value updates", () => {
     const { rerender } = render(
       <NimbusProvider>
-        <Calendar value={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          value={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
@@ -146,7 +150,10 @@ describe("Calendar - Controlled mode", () => {
     // Update to a new date
     rerender(
       <NimbusProvider>
-        <Calendar value={new CalendarDate(2025, 1, 20)} />
+        <Calendar
+          aria-label="Select date"
+          value={new CalendarDate(2025, 1, 20)}
+        />
       </NimbusProvider>
     );
 
@@ -174,7 +181,11 @@ describe("Calendar - Date constraints", () => {
 
     render(
       <NimbusProvider>
-        <Calendar minValue={minDate} defaultValue={minDate} />
+        <Calendar
+          aria-label="Select date"
+          minValue={minDate}
+          defaultValue={minDate}
+        />
       </NimbusProvider>
     );
 
@@ -194,7 +205,11 @@ describe("Calendar - Date constraints", () => {
 
     render(
       <NimbusProvider>
-        <Calendar maxValue={maxDate} defaultValue={maxDate} />
+        <Calendar
+          aria-label="Select date"
+          maxValue={maxDate}
+          defaultValue={maxDate}
+        />
       </NimbusProvider>
     );
 
@@ -215,6 +230,7 @@ describe("Calendar - Date constraints", () => {
     render(
       <NimbusProvider>
         <Calendar
+          aria-label="Select date"
           defaultValue={today}
           isDateUnavailable={(date) => {
             const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
@@ -248,6 +264,7 @@ describe("Calendar - Multi-month display", () => {
     render(
       <NimbusProvider>
         <Calendar
+          aria-label="Select date"
           defaultValue={new CalendarDate(2025, 1, 15)}
           visibleDuration={{ months: 2 }}
         />
@@ -265,6 +282,7 @@ describe("Calendar - Multi-month display", () => {
     render(
       <NimbusProvider>
         <Calendar
+          aria-label="Select date"
           defaultValue={new CalendarDate(2025, 1, 15)}
           visibleDuration={{ months: 2 }}
           pageBehavior="visible"
@@ -294,7 +312,11 @@ describe("Calendar - State props", () => {
   it("disables all interactions when isDisabled is true", () => {
     render(
       <NimbusProvider>
-        <Calendar isDisabled defaultValue={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          isDisabled
+          defaultValue={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
@@ -314,6 +336,7 @@ describe("Calendar - State props", () => {
     render(
       <NimbusProvider>
         <Calendar
+          aria-label="Select date"
           isReadOnly
           value={new CalendarDate(2025, 1, 15)}
           onChange={handleChange}
@@ -337,7 +360,11 @@ describe("Calendar - State props", () => {
   it("applies invalid styling when isInvalid is true", () => {
     render(
       <NimbusProvider>
-        <Calendar isInvalid defaultValue={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          isInvalid
+          defaultValue={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
@@ -360,7 +387,10 @@ describe("Calendar - Keyboard navigation", () => {
 
     render(
       <NimbusProvider>
-        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          defaultValue={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
@@ -393,7 +423,11 @@ describe("Calendar - Keyboard navigation", () => {
 
     render(
       <NimbusProvider>
-        <Calendar value={null} onChange={handleChange} />
+        <Calendar
+          aria-label="Select date"
+          value={null}
+          onChange={handleChange}
+        />
       </NimbusProvider>
     );
 
@@ -426,7 +460,10 @@ describe("Calendar - Internationalization", () => {
 
     render(
       <NimbusProvider locale="de-DE">
-        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          defaultValue={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
@@ -446,7 +483,10 @@ describe("Calendar - Internationalization", () => {
 
     render(
       <NimbusProvider locale="fr-FR">
-        <Calendar defaultValue={new CalendarDate(2025, 1, 15)} />
+        <Calendar
+          aria-label="Select date"
+          defaultValue={new CalendarDate(2025, 1, 15)}
+        />
       </NimbusProvider>
     );
 
