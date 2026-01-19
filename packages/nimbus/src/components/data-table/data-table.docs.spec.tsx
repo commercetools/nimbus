@@ -572,6 +572,16 @@ describe("DataTable - Accessibility", () => {
  * @docs-order 11
  */
 describe("DataTable.Manager - Basic rendering", () => {
+  // Suppress expected React Aria accessibility warnings that occur during
+  // component mounting (before open state is applied to ModalOverlay)
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  beforeEach(() => {
+    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it("renders the settings button", () => {
     const managerColumns: DataTableColumnItem[] = [
       {
@@ -663,6 +673,15 @@ describe("DataTable.Manager - Basic rendering", () => {
  * @docs-order 12
  */
 describe("DataTable.Manager - Column management", () => {
+  // Suppress expected React Aria accessibility warnings
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  beforeEach(() => {
+    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it("displays visible and hidden columns in separate lists", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
@@ -769,6 +788,15 @@ describe("DataTable.Manager - Column management", () => {
  * @docs-order 13
  */
 describe("DataTable.Manager - Layout settings", () => {
+  // Suppress expected React Aria accessibility warnings
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  beforeEach(() => {
+    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it("displays layout settings tab", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
@@ -865,6 +893,15 @@ describe("DataTable.Manager - Layout settings", () => {
  * @docs-order 14
  */
 describe("DataTable.Manager - Custom settings", () => {
+  // Suppress expected React Aria accessibility warnings
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  beforeEach(() => {
+    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it("displays custom settings tab when provided", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
