@@ -135,7 +135,9 @@ export const MoneyInput = (props: MoneyInputProps) => {
   const msg = useLocalizedStringFormatter(moneyInputMessagesStrings);
 
   // Convert string value to number for NumberInput
-  const numericValue = value.amount ? parseFloat(value.amount) : undefined;
+  // Always use parseFloat to maintain controlled mode - parseFloat("") returns NaN,
+  // which keeps NumberInput controlled (vs undefined which makes it uncontrolled)
+  const numericValue = parseFloat(value.amount);
 
   // Detect whether the currency select or currency label should display
   const hasNoCurrencies = !currencies || currencies.length === 0;
