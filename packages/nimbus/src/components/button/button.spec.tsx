@@ -36,7 +36,7 @@ describe("Button", () => {
     });
 
     it("Is clickable", async () => {
-      const user = userEvent.setup();
+      const user = userEvent;
       const onPress = vi.fn();
       render(
         <Button onPress={onPress} data-testid="test" aria-label="test-button">

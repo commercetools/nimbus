@@ -58,8 +58,10 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
 
   // Split recipe props from passable props (excludes component-specific handlers)
   const recipe = useSlotRecipe({ recipe: scopedSearchInputSlotRecipe });
-  const [recipeProps, restRecipeProps] =
-    recipe.splitVariantProps(passableProps);
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
+    size,
+    ...passableProps,
+  });
 
   // Extract style props
   const [styleProps, remainingProps] = extractStyleProps(restRecipeProps);
