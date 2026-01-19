@@ -12,6 +12,19 @@ import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
 
 /**
+ * Default delay between keyboard operations in drag tests.
+ * This timing is necessary for React Aria's drag-and-drop state machine.
+ */
+const DRAG_OPERATION_DELAY_MS = 50;
+
+/**
+ * Helper to wait for a specified duration.
+ * Used to ensure React Aria's drag-and-drop state machine processes events.
+ */
+const wait = (ms: number = DRAG_OPERATION_DELAY_MS) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
  * Helper function to drag an item using keyboard navigation
  * @param canvas - The testing-library canvas element
  * @param itemLabel - The label of the item to drag
@@ -37,9 +50,7 @@ async function dragItem(
   // Navigate using arrow keys
   const key = steps > 0 ? "{ArrowDown}" : "{ArrowUp}";
   for (let i = 0; i < Math.abs(steps); i++) {
-    // Small delay to ensure drag mode is fully activated and keyboard events are processed
-    // This timing is necessary for React Aria's drag-and-drop state machine
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await wait();
     await userEvent.keyboard(key);
   }
 
@@ -244,13 +255,15 @@ export const CrossListDragAndDrop: Story = {
       });
       sourceItemRow.focus();
 
-      // Start drag
+      // Start drag with waits between operations for React Aria's state machine
       await userEvent.keyboard("{ArrowLeft}");
+      await wait();
       await userEvent.keyboard("{Enter}");
+      await wait();
 
-      // Navigate to target grid - this is complex in React Aria
-      // For keyboard drag between lists, we need to use Tab to move between grids
+      // Navigate to target grid using Tab
       await userEvent.keyboard("{Tab}");
+      await wait();
 
       // Drop in target list
       await userEvent.keyboard("{Enter}");
