@@ -183,7 +183,7 @@ export const DataTableManager = () => {
         <Drawer.Content
           width="2xl"
           data-testid="data-table-manager-drawer"
-          aria-label={formatMessage(messages.settings)}
+          aria-label={msg.format("settings")}
         >
           <Drawer.Header>
             <Drawer.Title>{msg.format("settings")}</Drawer.Title>
@@ -192,7 +192,7 @@ export const DataTableManager = () => {
 
           <Drawer.Body>
             <Tabs.Root
-              tabListAriaLabel={formatMessage(messages.settingsTabsAriaLabel)}
+              tabListAriaLabel={msg.format("settingsTabsAriaLabel")}
               tabs={[
                 {
                   id: "visible-columns",
