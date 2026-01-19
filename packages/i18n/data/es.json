@@ -143,6 +143,10 @@
     "developer_comment": "aria-label for the settings button in the data table manager",
     "string": "Configuraciones de tablas"
   },
+  "Nimbus.DataTable.settingsTabsAriaLabel": {
+    "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
+    "string": "Settings tabs"
+  },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",
     "string": "Vistas preliminares de texto"
