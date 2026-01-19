@@ -215,8 +215,8 @@ describe("Tabs - Interactions", () => {
     const secondTab = screen.getByRole("tab", { name: "Second" });
     const thirdTab = screen.getByRole("tab", { name: "Third" });
 
-    // Focus first tab
-    firstTab.focus();
+    // Use userEvent.tab() to focus first tab (avoids act() warnings)
+    await user.tab();
     expect(firstTab).toHaveFocus();
 
     // Navigate to second tab with ArrowRight
@@ -259,8 +259,8 @@ describe("Tabs - Interactions", () => {
     const firstTab = screen.getByRole("tab", { name: "First" });
     const thirdTab = screen.getByRole("tab", { name: "Third" });
 
-    // Focus first tab
-    firstTab.focus();
+    // Use userEvent.tab() to focus first tab (avoids act() warnings)
+    await user.tab();
 
     // Press End to jump to last tab
     await user.keyboard("{End}");

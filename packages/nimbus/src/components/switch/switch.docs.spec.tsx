@@ -67,9 +67,8 @@ describe("Switch - Interactions", () => {
       </NimbusProvider>
     );
 
-    const switchElement = screen.getByRole("switch");
-    switchElement.focus();
-
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard(" ");
     expect(handleChange).toHaveBeenCalledWith(true);
   });

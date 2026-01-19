@@ -116,9 +116,8 @@ describe("ToggleButton - Interactions", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button");
-    button.focus();
-
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard("{Enter}");
     expect(handleChange).toHaveBeenCalledWith(true);
   });
@@ -133,9 +132,8 @@ describe("ToggleButton - Interactions", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button");
-    button.focus();
-
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard(" ");
     expect(handleChange).toHaveBeenCalledWith(true);
   });

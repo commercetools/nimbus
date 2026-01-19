@@ -252,8 +252,10 @@ describe("PasswordInput - Keyboard navigation", () => {
     const input = screen.getByLabelText("Password");
     const toggleButton = screen.getByRole("button");
 
-    // Focus the toggle button
-    toggleButton.focus();
+    // Use userEvent.tab() to focus elements (avoids act() warnings)
+    // First tab focuses the input, second tab focuses the toggle button
+    await user.tab();
+    await user.tab();
     expect(toggleButton).toHaveFocus();
 
     // Press Enter to toggle
