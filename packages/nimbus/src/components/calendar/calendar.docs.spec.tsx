@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Calendar, NimbusProvider } from "@commercetools/nimbus";
 import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
@@ -402,7 +402,10 @@ describe("Calendar - Keyboard navigation", () => {
 
     // Focus the selected cell if it exists
     if (selectedCell) {
-      selectedCell.focus();
+      // Wrap focus in act() to handle React state updates (React 19 requires async act)
+      await act(async () => {
+        selectedCell.focus();
+      });
       expect(selectedCell).toHaveFocus();
 
       // Arrow keys should navigate to adjacent dates
@@ -438,7 +441,10 @@ describe("Calendar - Keyboard navigation", () => {
     );
 
     if (firstAvailableCell) {
-      firstAvailableCell.focus();
+      // Wrap focus in act() to handle React state updates (React 19 requires async act)
+      await act(async () => {
+        firstAvailableCell.focus();
+      });
       await user.keyboard("{Enter}");
 
       expect(handleChange).toHaveBeenCalledTimes(1);
