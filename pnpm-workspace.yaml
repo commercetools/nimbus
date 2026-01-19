@@ -57,7 +57,7 @@ catalogs:
     "@types/react": ^19.2.8
     "@types/react-dom": ^19.2.3
     react: ^19.0.0
-    react-dom: ^19.0.0
+    react-dom: ^19.2.3
     "@emotion/react": ^11.14.0
     "@emotion/is-prop-valid": ^1.4.0
     "@chakra-ui/cli": ^3.31.0
