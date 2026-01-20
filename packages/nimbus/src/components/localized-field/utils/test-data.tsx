@@ -205,9 +205,9 @@ export const emptyValuesStoryProps = {
     fieldData: {
       ...baseCurrencyData,
       values: {
-        USD: { amount: "", currencyCode: "USD" as CurrencyCode },
-        CNY: { amount: "", currencyCode: "CNY" as CurrencyCode },
-        EUR: { amount: "", currencyCode: "EUR" as CurrencyCode },
+        USD: undefined,
+        CNY: undefined,
+        EUR: undefined,
       },
     },
     fieldProps: {
