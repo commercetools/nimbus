@@ -460,14 +460,10 @@ describe("Calendar - Keyboard navigation", () => {
  */
 describe("Calendar - Internationalization", () => {
   it("renders with German locale", () => {
-    // Suppress expected MISSING_TRANSLATION warnings - translations exist in i18n package
-    // but are not loaded in test environment. The defaultMessage fallback works correctly.
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
     render(
       <NimbusProvider locale="de-DE">
         <Calendar
-          aria-label="Select date"
+          aria-label="Datum wählen"
           defaultValue={new CalendarDate(2025, 1, 15)}
         />
       </NimbusProvider>
@@ -478,15 +474,9 @@ describe("Calendar - Internationalization", () => {
 
     // German calendar should render with localized content
     // Specific weekday names would be in German
-
-    consoleSpy.mockRestore();
   });
 
   it("renders with French locale", () => {
-    // Suppress expected MISSING_TRANSLATION warnings - translations exist in i18n package
-    // but are not loaded in test environment. The defaultMessage fallback works correctly.
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
     render(
       <NimbusProvider locale="fr-FR">
         <Calendar
@@ -500,7 +490,5 @@ describe("Calendar - Internationalization", () => {
     expect(grid).toBeInTheDocument();
 
     // French calendar should render with localized content
-
-    consoleSpy.mockRestore();
   });
 });
