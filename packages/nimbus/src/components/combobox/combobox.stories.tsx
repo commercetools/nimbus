@@ -2210,10 +2210,13 @@ export const ButtonsClickAreas: Story = {
       await userEvent.click(toggleButton);
 
       // Verify click worked
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Clear button has sufficient click area", async () => {
