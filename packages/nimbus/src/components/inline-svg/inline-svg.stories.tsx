@@ -269,10 +269,17 @@ export const InvalidSvg: Story = {
     };
   },
   play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
     await step("Invalid SVG does not render", async () => {
-      // Component should handle invalid SVG gracefully and not render anything
-      const container = canvasElement.querySelector(".nimbus-icon");
-      expect(container).not.toBeInTheDocument();
+      const svg = canvas.queryByRole("presentation");
+      expect(svg).not.toBeInTheDocument();
+    });
+
+    await step("Warning is logged for invalid SVG", async () => {
+      expect(console.warn).toHaveBeenCalledWith(
+        "InlineSvg: No SVG element found in markup"
+      );
     });
   },
 };
