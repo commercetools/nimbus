@@ -116,27 +116,29 @@ const TextInputComponent = (props: TextInputProps) => {
   }, []);
 
   return (
-    <TextInputRootSlot
-      ref={rootRef}
-      className={props?.className as string}
-      {...recipeProps}
-      {...styleProps}
-      {...stateProps}
-    >
-      {leadingElement && (
-        <TextInputLeadingElementSlot>
-          {leadingElement}
-        </TextInputLeadingElementSlot>
-      )}
-      <TextInputInputSlot asChild>
-        <Input ref={ref} {...inputProps} />
-      </TextInputInputSlot>
-      {trailingElement && (
-        <TextInputTrailingElementSlot>
-          {trailingElement}
-        </TextInputTrailingElementSlot>
-      )}
-    </TextInputRootSlot>
+    <InputContext.Provider value={null}>
+      <TextInputRootSlot
+        ref={rootRef}
+        className={props?.className as string}
+        {...recipeProps}
+        {...styleProps}
+        {...stateProps}
+      >
+        {leadingElement && (
+          <TextInputLeadingElementSlot>
+            {leadingElement}
+          </TextInputLeadingElementSlot>
+        )}
+        <TextInputInputSlot asChild>
+          <Input ref={ref} {...inputProps} />
+        </TextInputInputSlot>
+        {trailingElement && (
+          <TextInputTrailingElementSlot>
+            {trailingElement}
+          </TextInputTrailingElementSlot>
+        )}
+      </TextInputRootSlot>
+    </InputContext.Provider>
   );
 };
 
