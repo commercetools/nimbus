@@ -18,16 +18,14 @@ import { List } from '@commercetools/nimbus';
 
 ### Basic usage
 
-The simplest implementation uses semantic HTML with the `asChild` prop:
+The simplest implementation renders as an unordered list (`<ul>`) by default:
 
 ```jsx-live-dev
 const App = () => (
-  <List.Root asChild>
-    <ul>
-      <List.Item>First item</List.Item>
-      <List.Item>Second item</List.Item>
-      <List.Item>Third item</List.Item>
-    </ul>
+  <List.Root>
+    <List.Item>First item</List.Item>
+    <List.Item>Second item</List.Item>
+    <List.Item>Third item</List.Item>
   </List.Root>
 )
 ```
@@ -43,15 +41,13 @@ const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Marker variant (default)</Text>
-      <List.Root asChild variant="marker">
-        <ul>
-          <List.Item>Red pandas</List.Item>
-          <List.Item>Pangolins</List.Item>
-          <List.Item>Opossums</List.Item>
-        </ul>
+      <List.Root variant="marker">
+        <List.Item>Red pandas</List.Item>
+        <List.Item>Pangolins</List.Item>
+        <List.Item>Opossums</List.Item>
       </List.Root>
     </Stack>
-    
+
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Plain variant</Text>
       <List.Root variant="plain">
@@ -82,66 +78,45 @@ const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Start (default)</Text>
-      <List.Root asChild align="start">
-        <ul>
-          <List.Item>Left-aligned item</List.Item>
-          <List.Item>Another item</List.Item>
-        </ul>
+      <List.Root align="start">
+        <List.Item>Left-aligned item</List.Item>
+        <List.Item>Another item</List.Item>
       </List.Root>
     </Stack>
-    
+
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Center</Text>
-      <List.Root asChild align="center">
-        <ul>
-          <List.Item>Center-aligned item</List.Item>
-          <List.Item>Another item</List.Item>
-        </ul>
+      <List.Root align="center">
+        <List.Item>Center-aligned item</List.Item>
+        <List.Item>Another item</List.Item>
       </List.Root>
     </Stack>
-    
+
     <Stack gap="200" flex="1">
       <Text fontWeight="600">End</Text>
-      <List.Root asChild align="end">
-        <ul>
-          <List.Item>Right-aligned item</List.Item>
-          <List.Item>Another item</List.Item>
-        </ul>
+      <List.Root align="end">
+        <List.Item>Right-aligned item</List.Item>
+        <List.Item>Another item</List.Item>
       </List.Root>
     </Stack>
   </Stack>
 )
 ```
 
-### Semantic HTML with asChild
+### Ordered lists
 
-Use the `asChild` prop to render as semantic HTML list elements (`<ul>` for unordered lists, `<ol>` for ordered lists):
+By default, `List.Root` renders as an unordered list (`<ul>`). Use the `as="ol"` prop when you need an ordered list:
 
 ```jsx-live-dev
 const App = () => (
-  <Stack direction="row" gap="600" alignItems="flex-start">
-    <Stack gap="200" flex="1">
-      <Text fontWeight="600">Unordered list (&lt;ul&gt;)</Text>
-      <List.Root asChild>
-        <ul>
-          <List.Item>Red pandas</List.Item>
-          <List.Item>Pangolins</List.Item>
-          <List.Item>Opossums</List.Item>
-        </ul>
-      </List.Root>
-    </Stack>
-    
-    <Stack gap="200" flex="1">
-      <Text fontWeight="600">Ordered list (&lt;ol&gt;)</Text>
-      <List.Root asChild>
-        <ol>
-          <List.Item>Boil water</List.Item>
-          <List.Item>Add pasta</List.Item>
-          <List.Item>Wait patiently to cook</List.Item>
-          <List.Item>Remove and drain pasta</List.Item>
-        </ol>
-      </List.Root>
-    </Stack>
+  <Stack gap="200">
+    <Text fontWeight="600">Ordered list (&lt;ol&gt;)</Text>
+    <List.Root as="ol">
+      <List.Item>Boil water</List.Item>
+      <List.Item>Add pasta</List.Item>
+      <List.Item>Wait patiently to cook</List.Item>
+      <List.Item>Remove and drain pasta</List.Item>
+    </List.Root>
   </Stack>
 )
 ```
@@ -181,26 +156,20 @@ Lists can be nested to create hierarchical structures. Use proper indentation an
 
 ```jsx-live-dev
 const App = () => (
-  <List.Root asChild gap="400">
-    <ul>
-      <List.Item>
-        Password requirements:
-        <List.Root asChild pl="400" gap="100">
-          <ul>
-            <List.Item>8 characters and 3 numbers</List.Item>
-            <List.Item>One special character (!@#$%^&*)</List.Item>
-          </ul>
-        </List.Root>
-      </List.Item>
-      <List.Item>
-        Name and email requirements:
-        <List.Root asChild pl="400" gap="200">
-          <ul>
-            <List.Item>Validation process</List.Item>
-          </ul>
-        </List.Root>
-      </List.Item>
-    </ul>
+  <List.Root gap="400">
+    <List.Item>
+      Password requirements:
+      <List.Root pl="400" gap="100">
+        <List.Item>8 characters and 3 numbers</List.Item>
+        <List.Item>One special character (!@#$%^&*)</List.Item>
+      </List.Root>
+    </List.Item>
+    <List.Item>
+      Name and email requirements:
+      <List.Root pl="400" gap="200">
+        <List.Item>Validation process</List.Item>
+      </List.Root>
+    </List.Item>
   </List.Root>
 )
 ```
@@ -214,34 +183,28 @@ const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Small gap (200)</Text>
-      <List.Root asChild gap="200">
-        <ul>
-          <List.Item>Item 1</List.Item>
-          <List.Item>Item 2</List.Item>
-          <List.Item>Item 3</List.Item>
-        </ul>
+      <List.Root gap="200">
+        <List.Item>Item 1</List.Item>
+        <List.Item>Item 2</List.Item>
+        <List.Item>Item 3</List.Item>
       </List.Root>
     </Stack>
-    
+
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Medium gap (400)</Text>
-      <List.Root asChild gap="400">
-        <ul>
-          <List.Item>Item 1</List.Item>
-          <List.Item>Item 2</List.Item>
-          <List.Item>Item 3</List.Item>
-        </ul>
+      <List.Root gap="400">
+        <List.Item>Item 1</List.Item>
+        <List.Item>Item 2</List.Item>
+        <List.Item>Item 3</List.Item>
       </List.Root>
     </Stack>
-    
+
     <Stack gap="200" flex="1">
       <Text fontWeight="600">Large gap (600)</Text>
-      <List.Root asChild gap="600">
-        <ul>
-          <List.Item>Item 1</List.Item>
-          <List.Item>Item 2</List.Item>
-          <List.Item>Item 3</List.Item>
-        </ul>
+      <List.Root gap="600">
+        <List.Item>Item 1</List.Item>
+        <List.Item>Item 2</List.Item>
+        <List.Item>Item 3</List.Item>
       </List.Root>
     </Stack>
   </Stack>
@@ -262,21 +225,17 @@ For image-heavy content or complex data comparison, consider using other compone
 
 ### Accessibility
 
-The List component uses semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies. When using the `asChild` prop, ensure you render as the appropriate semantic element:
+The List component uses semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies. By default, `List.Root` renders as `<ul>` and `List.Item` renders as `<li>`. Use the `as="ol"` prop when you need an ordered list:
 
 ```tsx
-// ✅ Correct - uses semantic <ul> element
-<List.Root asChild>
-  <ul>
-    <List.Item>Item 1</List.Item>
-  </ul>
+// ✅ Default - renders as <ul>
+<List.Root>
+  <List.Item>Item 1</List.Item>
 </List.Root>
 
-// ✅ Correct - uses semantic <ol> element
-<List.Root asChild>
-  <ol>
-    <List.Item>Item 1</List.Item>
-  </ol>
+// ✅ Ordered list - use as="ol"
+<List.Root as="ol">
+  <List.Item>Item 1</List.Item>
 </List.Root>
 ```
 
@@ -301,10 +260,8 @@ If your use case requires tracking and analytics for this component, it is good 
 const PERSISTENT_ID = "example-list";
 
 export const Example = () => (
-  <List.Root asChild id={PERSISTENT_ID}>
-    <ul>
-      <List.Item>Item 1</List.Item>
-    </ul>
+  <List.Root id={PERSISTENT_ID}>
+    <List.Item>Item 1</List.Item>
   </List.Root>
 );
 ```
@@ -341,13 +298,13 @@ const App = () => {
       {tasks.map((task) => (
         <List.Item key={task.id}>
           <List.Indicator>
-            <Icon 
+            <Icon
               color={task.completed ? "positive.9" : "neutral.7"}
             >
               {task.completed ? <Icons.Check /> : <Icons.Circle />}
             </Icon>
           </List.Indicator>
-          <Text 
+          <Text
             textDecoration={task.completed ? "line-through" : "none"}
             color={task.completed ? "neutral.9" : "fg.default"}
           >
@@ -375,16 +332,14 @@ const App = () => {
 
   return (
     <Box p="400" bg="neutral.2" borderRadius="200" width="fit-content">
-      <List.Root asChild variant="plain">
-        <ul>
-          {menuItems.map((item, index) => (
-            <List.Item key={index}>
-              <Link href={`#${item.toLowerCase()}`}>
-                {item}
-              </Link>
-            </List.Item>
-          ))}
-        </ul>
+      <List.Root variant="plain">
+        {menuItems.map((item, index) => (
+          <List.Item key={index}>
+            <Link href={`#${item.toLowerCase()}`}>
+              {item}
+            </Link>
+          </List.Item>
+        ))}
       </List.Root>
     </Box>
   );
@@ -399,29 +354,23 @@ Display a requirements checklist with nested items:
 const App = () => (
   <Box p="400" bg="neutral.1" borderRadius="200">
     <Text fontWeight="600" mb="300">Account Setup Requirements</Text>
-    <List.Root asChild gap="200">
-      <ul>
-        <List.Item>
-          Password requirements:
-          <List.Root asChild pl="400" gap="200" mt="200">
-            <ul>
-              <List.Item>Minimum 8 characters</List.Item>
-              <List.Item>At least 3 numbers</List.Item>
-              <List.Item>One special character (!@#$%^&*)</List.Item>
-            </ul>
-          </List.Root>
-        </List.Item>
-        <List.Item>
-          Profile information:
-          <List.Root asChild pl="400" gap="200" mt="200">
-            <ul>
-              <List.Item>Full name</List.Item>
-              <List.Item>Email address</List.Item>
-              <List.Item>Phone number (optional)</List.Item>
-            </ul>
-          </List.Root>
-        </List.Item>
-      </ul>
+    <List.Root gap="200">
+      <List.Item>
+        Password requirements:
+        <List.Root pl="400" gap="200" mt="200">
+          <List.Item>Minimum 8 characters</List.Item>
+          <List.Item>At least 3 numbers</List.Item>
+          <List.Item>One special character (!@#$%^&*)</List.Item>
+        </List.Root>
+      </List.Item>
+      <List.Item>
+        Profile information:
+        <List.Root pl="400" gap="200" mt="200">
+          <List.Item>Full name</List.Item>
+          <List.Item>Email address</List.Item>
+          <List.Item>Phone number (optional)</List.Item>
+        </List.Root>
+      </List.Item>
     </List.Root>
   </Box>
 )

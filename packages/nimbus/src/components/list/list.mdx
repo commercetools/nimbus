@@ -45,23 +45,19 @@ Vertical lists can function differently based on need. Using bullet points, numb
 ```jsx-live
 const App = () => (
   <Stack direction="horizontal" gap="800" alignItems="flex-start">
-    <List.Root asChild>
-      <ul>
-        <List.Item>Red pandas</List.Item>
-        <List.Item>Pangolins</List.Item>
-        <List.Item>Opossums</List.Item>
-        <List.Item>Aye-ayes</List.Item>
-        <List.Item>Okapi</List.Item>
-      </ul>
+    <List.Root>
+      <List.Item>Red pandas</List.Item>
+      <List.Item>Pangolins</List.Item>
+      <List.Item>Opossums</List.Item>
+      <List.Item>Aye-ayes</List.Item>
+      <List.Item>Okapi</List.Item>
     </List.Root>
-    <List.Root asChild>
-      <ol>
-        <List.Item>Boil water</List.Item>
-        <List.Item>Add pasta</List.Item>
-        <List.Item>Wait patiently to cook</List.Item>
-        <List.Item>Remove and drain pasta</List.Item>
-        <List.Item>Add final ingredients and serve</List.Item>
-      </ol>
+    <List.Root as="ol">
+      <List.Item>Boil water</List.Item>
+      <List.Item>Add pasta</List.Item>
+      <List.Item>Wait patiently to cook</List.Item>
+      <List.Item>Remove and drain pasta</List.Item>
+      <List.Item>Add final ingredients and serve</List.Item>
     </List.Root>
     <List.Root variant="plain">
       <List.Item>
@@ -114,38 +110,32 @@ const App = () => (
   <Stack direction="horizontal" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
       <Text fontWeight="bold" textAlign="left">Left</Text>
-      <List.Root asChild>
-        <ul>
-          <List.Item textAlign="left">Red pandas</List.Item>
-          <List.Item textAlign="left">Pangolins</List.Item>
-          <List.Item textAlign="left">Opossums</List.Item>
-          <List.Item textAlign="left">Aye-ayes</List.Item>
-          <List.Item textAlign="left">Okapi</List.Item>
-        </ul>
+      <List.Root>
+        <List.Item textAlign="left">Red pandas</List.Item>
+        <List.Item textAlign="left">Pangolins</List.Item>
+        <List.Item textAlign="left">Opossums</List.Item>
+        <List.Item textAlign="left">Aye-ayes</List.Item>
+        <List.Item textAlign="left">Okapi</List.Item>
       </List.Root>
     </Stack>
     <Stack gap="200" flex="1">
       <Text fontWeight="bold" textAlign="center">Center</Text>
-      <List.Root asChild>
-        <ul>
-          <List.Item textAlign="center">Red pandas</List.Item>
-          <List.Item textAlign="center">Pangolins</List.Item>
-          <List.Item textAlign="center">Opossums</List.Item>
-          <List.Item textAlign="center">Aye-ayes</List.Item>
-          <List.Item textAlign="center">Okapi</List.Item>
-        </ul>
+      <List.Root>
+        <List.Item textAlign="center">Red pandas</List.Item>
+        <List.Item textAlign="center">Pangolins</List.Item>
+        <List.Item textAlign="center">Opossums</List.Item>
+        <List.Item textAlign="center">Aye-ayes</List.Item>
+        <List.Item textAlign="center">Okapi</List.Item>
       </List.Root>
     </Stack>
     <Stack gap="200" flex="1">
       <Text fontWeight="bold" textAlign="right">Right</Text>
-      <List.Root asChild>
-        <ul>
-          <List.Item textAlign="right">Red pandas</List.Item>
-          <List.Item textAlign="right">Pangolins</List.Item>
-          <List.Item textAlign="right">Opossums</List.Item>
-          <List.Item textAlign="right">Aye-ayes</List.Item>
-          <List.Item textAlign="right">Okapi</List.Item>
-        </ul>
+      <List.Root>
+        <List.Item textAlign="right">Red pandas</List.Item>
+        <List.Item textAlign="right">Pangolins</List.Item>
+        <List.Item textAlign="right">Opossums</List.Item>
+        <List.Item textAlign="right">Aye-ayes</List.Item>
+        <List.Item textAlign="right">Okapi</List.Item>
       </List.Root>
     </Stack>
   </Stack>
@@ -161,74 +151,56 @@ const App = () => (
   <Stack direction="horizontal" gap="800" alignItems="flex-start">
     <Stack gap="200">
       <Text fontWeight="bold">Nested items</Text>
-      <List.Root asChild>
-        <ul>
-          <List.Item>
-            Password requirements:
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>8 characters and 3 numbers</List.Item>
-                <List.Item>One special character (!@#$%^&*)</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-          <List.Item>
-            Name and email requirements
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>Validation process</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-        </ul>
+      <List.Root>
+        <List.Item>
+          Password requirements:
+          <List.Root pl="400">
+            <List.Item>8 characters and 3 numbers</List.Item>
+            <List.Item>One special character (!@#$%^&*)</List.Item>
+          </List.Root>
+        </List.Item>
+        <List.Item>
+          Name and email requirements
+          <List.Root pl="400">
+            <List.Item>Validation process</List.Item>
+          </List.Root>
+        </List.Item>
       </List.Root>
     </Stack>
     <Stack gap="200">
       <Text fontWeight="bold">Gap space</Text>
-      <List.Root asChild gap="400">
-        <ul>
-          <List.Item>
-            Password requirements:
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>8 characters and 3 numbers</List.Item>
-                <List.Item>One special character (!@#$%^&*)</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-          <List.Item>
-            Name and email requirements
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>Validation process</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-        </ul>
+      <List.Root gap="400">
+        <List.Item>
+          Password requirements:
+          <List.Root pl="400">
+            <List.Item>8 characters and 3 numbers</List.Item>
+            <List.Item>One special character (!@#$%^&*)</List.Item>
+          </List.Root>
+        </List.Item>
+        <List.Item>
+          Name and email requirements
+          <List.Root pl="400">
+            <List.Item>Validation process</List.Item>
+          </List.Root>
+        </List.Item>
       </List.Root>
     </Stack>
     <Stack gap="200">
       <Text fontWeight="bold">Item wrapping</Text>
-      <List.Root asChild maxWidth="200px">
-        <ul>
-          <List.Item>
-            Password requirements:
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>8 characters and 3 numbers</List.Item>
-                <List.Item>One special character (!@#$%^&*)</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-          <List.Item>
-            Name and email requirements
-            <List.Root asChild pl="400">
-              <ul>
-                <List.Item>Validation process</List.Item>
-              </ul>
-            </List.Root>
-          </List.Item>
-        </ul>
+      <List.Root maxWidth="200px">
+        <List.Item>
+          Password requirements:
+          <List.Root pl="400">
+            <List.Item>8 characters and 3 numbers</List.Item>
+            <List.Item>One special character (!@#$%^&*)</List.Item>
+          </List.Root>
+        </List.Item>
+        <List.Item>
+          Name and email requirements
+          <List.Root pl="400">
+            <List.Item>Validation process</List.Item>
+          </List.Root>
+        </List.Item>
       </List.Root>
     </Stack>
   </Stack>
@@ -292,26 +264,20 @@ Accessibility ensures that digital content and functionality are usable by every
 
 ```jsx-live
 const App = () => (
-  <List.Root asChild>
-    <ul>
-      <List.Item>
-        Password requirements:
-        <List.Root asChild pl="400">
-          <ul>
-            <List.Item>8 characters and 3 numbers</List.Item>
-            <List.Item>One special character (!@#$%^&*)</List.Item>
-          </ul>
-        </List.Root>
-      </List.Item>
-      <List.Item>
-        Name and email requirements
-        <List.Root asChild pl="400">
-          <ul>
-            <List.Item>Validation process</List.Item>
-          </ul>
-        </List.Root>
-      </List.Item>
-    </ul>
+  <List.Root>
+    <List.Item>
+      Password requirements:
+      <List.Root pl="400">
+        <List.Item>8 characters and 3 numbers</List.Item>
+        <List.Item>One special character (!@#$%^&*)</List.Item>
+      </List.Root>
+    </List.Item>
+    <List.Item>
+      Name and email requirements
+      <List.Root pl="400">
+        <List.Item>Validation process</List.Item>
+      </List.Root>
+    </List.Item>
   </List.Root>
 )
 ```

@@ -13,12 +13,10 @@ describe("List - Basic rendering", () => {
   it("renders List.Root with children", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild data-testid="test-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-            <List.Item>Item 2</List.Item>
-            <List.Item>Item 3</List.Item>
-          </ul>
+        <List.Root data-testid="test-list">
+          <List.Item>Item 1</List.Item>
+          <List.Item>Item 2</List.Item>
+          <List.Item>Item 3</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -30,14 +28,12 @@ describe("List - Basic rendering", () => {
     expect(list).toHaveTextContent("Item 3");
   });
 
-  it("renders as semantic ul element with asChild", () => {
+  it("renders as semantic ul element by default", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild>
-          <ul data-testid="unordered-list">
-            <List.Item>Item 1</List.Item>
-            <List.Item>Item 2</List.Item>
-          </ul>
+        <List.Root data-testid="unordered-list">
+          <List.Item>Item 1</List.Item>
+          <List.Item>Item 2</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -46,14 +42,12 @@ describe("List - Basic rendering", () => {
     expect(list.tagName).toBe("UL");
   });
 
-  it("renders as semantic ol element with asChild", () => {
+  it("renders as semantic ol element with as prop", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild>
-          <ol data-testid="ordered-list">
-            <List.Item>Item 1</List.Item>
-            <List.Item>Item 2</List.Item>
-          </ol>
+        <List.Root as="ol" data-testid="ordered-list">
+          <List.Item>Item 1</List.Item>
+          <List.Item>Item 2</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -65,10 +59,8 @@ describe("List - Basic rendering", () => {
   it("renders List.Item with content", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild>
-          <ul>
-            <List.Item data-testid="list-item">List item content</List.Item>
-          </ul>
+        <List.Root>
+          <List.Item data-testid="list-item">List item content</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -89,11 +81,9 @@ describe("List - Variants", () => {
   it("renders with marker variant by default", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild data-testid="marker-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-            <List.Item>Item 2</List.Item>
-          </ul>
+        <List.Root data-testid="marker-list">
+          <List.Item>Item 1</List.Item>
+          <List.Item>Item 2</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -149,10 +139,8 @@ describe("List - Alignment", () => {
   it("applies start alignment by default", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild align="start" data-testid="start-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-          </ul>
+        <List.Root align="start" data-testid="start-list">
+          <List.Item>Item 1</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -164,10 +152,8 @@ describe("List - Alignment", () => {
   it("applies center alignment", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild align="center" data-testid="center-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-          </ul>
+        <List.Root align="center" data-testid="center-list">
+          <List.Item>Item 1</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -179,10 +165,8 @@ describe("List - Alignment", () => {
   it("applies end alignment", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild align="end" data-testid="end-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-          </ul>
+        <List.Root align="end" data-testid="end-list">
+          <List.Item>Item 1</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -202,18 +186,14 @@ describe("List - Nested lists", () => {
   it("renders nested lists correctly", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild data-testid="parent-list">
-          <ul>
-            <List.Item>
-              Parent item
-              <List.Root asChild data-testid="nested-list">
-                <ul>
-                  <List.Item>Nested item 1</List.Item>
-                  <List.Item>Nested item 2</List.Item>
-                </ul>
-              </List.Root>
-            </List.Item>
-          </ul>
+        <List.Root data-testid="parent-list">
+          <List.Item>
+            Parent item
+            <List.Root data-testid="nested-list">
+              <List.Item>Nested item 1</List.Item>
+              <List.Item>Nested item 2</List.Item>
+            </List.Root>
+          </List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -239,11 +219,9 @@ describe("List - Style props", () => {
   it("applies gap prop for spacing", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild gap="400" data-testid="spaced-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-            <List.Item>Item 2</List.Item>
-          </ul>
+        <List.Root gap="400" data-testid="spaced-list">
+          <List.Item>Item 1</List.Item>
+          <List.Item>Item 2</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -255,10 +233,8 @@ describe("List - Style props", () => {
   it("applies padding prop", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild p="400" data-testid="padded-list">
-          <ul>
-            <List.Item>Item 1</List.Item>
-          </ul>
+        <List.Root p="400" data-testid="padded-list">
+          <List.Item>Item 1</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -296,10 +272,8 @@ describe("List - Props forwarding", () => {
   it("forwards data attributes", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild data-testid="data-list" data-custom="custom-value">
-          <ul>
-            <List.Item>Content</List.Item>
-          </ul>
+        <List.Root data-testid="data-list" data-custom="custom-value">
+          <List.Item>Content</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -311,10 +285,8 @@ describe("List - Props forwarding", () => {
   it("forwards className prop", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild data-testid="class-list" className="custom-class">
-          <ul>
-            <List.Item>Content</List.Item>
-          </ul>
+        <List.Root data-testid="class-list" className="custom-class">
+          <List.Item>Content</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -326,10 +298,8 @@ describe("List - Props forwarding", () => {
   it("forwards id prop", () => {
     render(
       <NimbusProvider>
-        <List.Root asChild id="unique-list-id">
-          <ul>
-            <List.Item>Content</List.Item>
-          </ul>
+        <List.Root id="unique-list-id">
+          <List.Item>Content</List.Item>
         </List.Root>
       </NimbusProvider>
     );
@@ -342,14 +312,11 @@ describe("List - Props forwarding", () => {
     render(
       <NimbusProvider>
         <List.Root
-          asChild
           data-testid="aria-list"
           aria-label="Navigation list"
           role="navigation"
         >
-          <ul>
-            <List.Item>Content</List.Item>
-          </ul>
+          <List.Item>Content</List.Item>
         </List.Root>
       </NimbusProvider>
     );
