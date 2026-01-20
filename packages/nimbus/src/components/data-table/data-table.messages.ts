@@ -60,6 +60,7 @@ export type DataTableMessageKey =
   | "searchHiddenColumns"
   | "selectRow"
   | "settings"
+  | "settingsTabsAriaLabel"
   | "textPreviews"
   | "textPreviewsAriaLabel"
   | "textVisibility"

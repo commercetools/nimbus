@@ -29,6 +29,7 @@ export default {
   searchHiddenColumns: `Buscar...`,
   selectRow: `Selecionar linha`,
   settings: `Configurações da tabela`,
+  settingsTabsAriaLabel: `Settings tabs`,
   textPreviews: `Pré-visualizações de texto`,
   textPreviewsAriaLabel: `Seção de pré-visualizações de texto`,
   textVisibility: `Visibilidade do texto`,
