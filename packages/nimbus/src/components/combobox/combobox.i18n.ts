@@ -10,7 +10,7 @@ export const messages = defineMessages({
     id: "Nimbus.ComboBox.toggleOptions",
     description: "aria-label for toggle button to open/close options",
     defaultMessage: "Toggle options",
-    },
+  },
   clearSelection: {
     id: "Nimbus.ComboBox.clearSelection",
     description: "aria-label for clear selection button in ComboBox",
