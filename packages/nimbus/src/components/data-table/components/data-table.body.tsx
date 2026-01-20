@@ -1,12 +1,10 @@
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
 import type { DataTableBodyProps, DataTableRowItem } from "../data-table.types";
 import { DataTableBodySlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
-import { dataTableMessagesStrings } from "../data-table.messages";
 
 const DefaultEmptyStateMessage = () => (
   <Box w="100%" p="200">
@@ -21,22 +19,15 @@ const DefaultEmptyStateMessage = () => (
  */
 export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ref,
-  "aria-label": ariaLabelProp,
   ...props
 }: DataTableBodyProps<T>) => {
-  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { sortedRows, activeColumns, renderEmptyState } =
     useDataTableContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
-
-  // Use provided aria-label or fall back to default
-  const ariaLabel = ariaLabelProp ?? msg.format("dataTableBody");
-
   return (
     <DataTableBodySlot asChild {...styleProps}>
       <RaTableBody
         ref={ref}
-        aria-label={ariaLabel}
         items={sortedRows}
         dependencies={[activeColumns]}
         renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}

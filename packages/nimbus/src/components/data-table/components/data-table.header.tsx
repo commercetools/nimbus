@@ -25,7 +25,6 @@ export const DataTableHeader = <
   T extends DataTableColumnItem = DataTableColumnItem,
 >({
   ref,
-  "aria-label": ariaLabelProp,
   ...props
 }: DataTableHeaderProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
@@ -34,15 +33,10 @@ export const DataTableHeader = <
   // This can also be used to see if drag'n'drop is enabled
   const { selectionBehavior, selectionMode } = useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
-
-  // Use provided aria-label or fall back to default
-  const ariaLabel = ariaLabelProp ?? msg.format("dataTableHeader");
-
   return (
     <DataTableHeaderSlot {...styleProps} asChild>
       <RaTableHeader
         ref={ref}
-        aria-label={ariaLabel}
         className="data-table-header"
         {...(maxHeight && { ["data-sticky"]: true })}
         columns={activeColumns}

@@ -179,10 +179,4 @@ export const messages = defineMessages({
       "placeholder for the search input in the hidden columns section in the data table manager",
     defaultMessage: "Search...",
   },
-  settingsTabsAriaLabel: {
-    id: "Nimbus.DataTable.settingsTabsAriaLabel",
-    description:
-      "aria-label for the settings tabs in the data table manager drawer",
-    defaultMessage: "Settings tabs",
-  },
 });

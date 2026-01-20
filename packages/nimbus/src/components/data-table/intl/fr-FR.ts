@@ -29,7 +29,6 @@ export default {
   searchHiddenColumns: `Rechercher...`,
   selectRow: `Sélectionner une ligne`,
   settings: `Paramètres du tableau`,
-  settingsTabsAriaLabel: `Settings tabs`,
   textPreviews: `Aperçu du texte`,
   textPreviewsAriaLabel: `Section Aperçu du texte`,
   textVisibility: `Visibilité du texte`,

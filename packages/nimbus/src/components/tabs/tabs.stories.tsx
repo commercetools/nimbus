@@ -192,42 +192,6 @@ export const Base: Story = {
   },
 };
 
-/**
- * Tests the tabListAriaLabel prop which provides an accessible label
- * for the tab list when using the simplified `tabs` prop API.
- */
-export const TabListAriaLabel: Story = {
-  args: {
-    "data-testid": "aria-label-tabs",
-  },
-  render: (args) => (
-    <Tabs.Root
-      {...args}
-      tabs={simpleTabs}
-      tabListAriaLabel="History sections"
-    />
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step(
-      "TabList has aria-label from tabListAriaLabel prop",
-      async () => {
-        const tabList = await canvas.findByRole("tablist");
-        await expect(tabList).toHaveAttribute("aria-label", "History sections");
-      }
-    );
-
-    await step("Tabs are still functional with aria-label", async () => {
-      const secondTab = await canvas.findByRole("tab", {
-        name: "Monarchy and Republic",
-      });
-      await userEvent.click(secondTab);
-      await expect(secondTab).toHaveAttribute("aria-selected", "true");
-    });
-  },
-};
-
 export const CompoundComposition: Story = {
   args: {
     orientation: "horizontal",

@@ -65,11 +65,9 @@ const App = () => {
     },
   ];
 
-  return <Tabs.Root tabs={tabs} tabListAriaLabel="Tab sections" />;
+  return <Tabs.Root tabs={tabs} />;
 };
 ```
-
-When using the `tabs` prop, provide a `tabListAriaLabel` for accessibility. This label is applied to the tab list element for screen readers.
 
 ## Usage examples
 
@@ -519,8 +517,6 @@ The Tabs component follows WCAG 2.1 AA guidelines and implements the WAI-ARIA ta
 - Each tab must have an `id` prop that matches its corresponding panel
 - Tab content should be descriptive and concise
 - Complex tab labels can include icons and text
-- When using the `tabs` prop API, provide `tabListAriaLabel` to label the tab list for screen readers
-- When using the compound API, apply `aria-label` directly to `Tabs.List`
 
 #### Keyboard navigation
 

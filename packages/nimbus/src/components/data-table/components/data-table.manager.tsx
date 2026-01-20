@@ -180,11 +180,7 @@ export const DataTableManager = () => {
         placement="right"
         data-testid="data-table-manager-drawer"
       >
-        <Drawer.Content
-          width="2xl"
-          data-testid="data-table-manager-drawer"
-          aria-label={msg.format("settings")}
-        >
+        <Drawer.Content width="2xl" data-testid="data-table-manager-drawer">
           <Drawer.Header>
             <Drawer.Title>{msg.format("settings")}</Drawer.Title>
             <Drawer.CloseTrigger />
@@ -192,7 +188,6 @@ export const DataTableManager = () => {
 
           <Drawer.Body>
             <Tabs.Root
-              tabListAriaLabel={msg.format("settingsTabsAriaLabel")}
               tabs={[
                 {
                   id: "visible-columns",

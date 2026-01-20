@@ -29,7 +29,6 @@ export default {
   searchHiddenColumns: `Search...`,
   selectRow: `Select row`,
   settings: `Table settings`,
-  settingsTabsAriaLabel: `Settings tabs`,
   textPreviews: `Text previews`,
   textPreviewsAriaLabel: `Text previews section`,
   textVisibility: `Text visibility`,
