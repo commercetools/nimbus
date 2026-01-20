@@ -572,16 +572,6 @@ describe("DataTable - Accessibility", () => {
  * @docs-order 11
  */
 describe("DataTable.Manager - Basic rendering", () => {
-  // Suppress expected React Aria accessibility warnings that occur during
-  // component mounting (before open state is applied to ModalOverlay)
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
-  beforeEach(() => {
-    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-  });
-  afterEach(() => {
-    consoleSpy.mockRestore();
-  });
-
   it("renders the settings button", () => {
     const managerColumns: DataTableColumnItem[] = [
       {
@@ -607,7 +597,7 @@ describe("DataTable.Manager - Basic rendering", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -647,7 +637,7 @@ describe("DataTable.Manager - Basic rendering", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -673,15 +663,6 @@ describe("DataTable.Manager - Basic rendering", () => {
  * @docs-order 12
  */
 describe("DataTable.Manager - Column management", () => {
-  // Suppress expected React Aria accessibility warnings
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
-  beforeEach(() => {
-    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-  });
-  afterEach(() => {
-    consoleSpy.mockRestore();
-  });
-
   it("displays visible and hidden columns in separate lists", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
@@ -713,7 +694,7 @@ describe("DataTable.Manager - Column management", () => {
           rows={managerRows}
           visibleColumns={["name", "email"]}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -763,7 +744,7 @@ describe("DataTable.Manager - Column management", () => {
           visibleColumns={["name"]}
           onColumnsChange={handleColumnsChange}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -788,15 +769,6 @@ describe("DataTable.Manager - Column management", () => {
  * @docs-order 13
  */
 describe("DataTable.Manager - Layout settings", () => {
-  // Suppress expected React Aria accessibility warnings
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
-  beforeEach(() => {
-    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-  });
-  afterEach(() => {
-    consoleSpy.mockRestore();
-  });
-
   it("displays layout settings tab", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
@@ -823,7 +795,7 @@ describe("DataTable.Manager - Layout settings", () => {
           rows={managerRows}
           visibleColumns={["name"]}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -868,7 +840,7 @@ describe("DataTable.Manager - Layout settings", () => {
           visibleColumns={["name"]}
           onSettingsChange={handleSettingsChange}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -893,15 +865,6 @@ describe("DataTable.Manager - Layout settings", () => {
  * @docs-order 14
  */
 describe("DataTable.Manager - Custom settings", () => {
-  // Suppress expected React Aria accessibility warnings
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
-  beforeEach(() => {
-    consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-  });
-  afterEach(() => {
-    consoleSpy.mockRestore();
-  });
-
   it("displays custom settings tab when provided", async () => {
     const user = userEvent.setup();
     const managerColumns: DataTableColumnItem[] = [
@@ -934,7 +897,7 @@ describe("DataTable.Manager - Custom settings", () => {
           visibleColumns={["name"]}
           customSettings={customSettings}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
@@ -983,7 +946,7 @@ describe("DataTable.Manager - Custom settings", () => {
           visibleColumns={["name"]}
           customSettings={customSettings}
         >
-          <DataTable.Manager aria-label="Table settings" />
+          <DataTable.Manager />
           <DataTable.Table>
             <DataTable.Header />
             <DataTable.Body />
