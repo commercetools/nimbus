@@ -31,10 +31,9 @@ export function defaultGetTextValue<T extends object>(
   if ("label" in item) {
     return String((item as { label: unknown }).label);
   }
-  console.warn(
-    "ComboBox - Item should have 'name' or 'label' property. Provide a getTextValue function to ensure proper item display and filtering."
+  throw new Error(
+    "ComboBox - Item must have 'name' or 'label' property, or provide a getTextValue function"
   );
-  return String(item);
 }
 
 /**

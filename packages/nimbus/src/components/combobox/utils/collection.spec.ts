@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   defaultGetKey,
   defaultGetTextValue,
@@ -105,38 +105,19 @@ describe("collection utilities", () => {
       });
     });
 
-    describe("fallback behavior", () => {
-      it("converts object to string when no name or label", () => {
-        // Suppress expected warning when item lacks name/label
-        const consoleSpy = vi
-          .spyOn(console, "warn")
-          .mockImplementation(() => {});
-
+    describe("error handling", () => {
+      it("throws error for object without name or label", () => {
         const item = { id: "1", value: "test" };
-        expect(defaultGetTextValue(item)).toBe("[object Object]");
-
-        // Verify the warning was called
-        expect(consoleSpy).toHaveBeenCalledWith(
-          expect.stringContaining("Item should have 'name' or 'label' property")
+        expect(() => defaultGetTextValue(item)).toThrow(
+          "Item must have 'name' or 'label' property, or provide a getTextValue function"
         );
-        consoleSpy.mockRestore();
       });
 
-      it("handles objects with toString method", () => {
-        // Suppress expected warning when item lacks name/label
-        const consoleSpy = vi
-          .spyOn(console, "warn")
-          .mockImplementation(() => {});
-
-        const item = {
-          id: "1",
-          toString() {
-            return "Custom String";
-          },
-        };
-        expect(defaultGetTextValue(item)).toBe("Custom String");
-
-        consoleSpy.mockRestore();
+      it("throws error for empty object", () => {
+        const item = {};
+        expect(() => defaultGetTextValue(item)).toThrow(
+          "Item must have 'name' or 'label' property, or provide a getTextValue function"
+        );
       });
     });
   });
