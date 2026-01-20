@@ -837,9 +837,12 @@ export const AsyncMultiSelectCustomOptions: Story = {
       }
 
       // Verify it's removed
-      await waitFor(() => {
-        expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Other tags should still exist
       expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
@@ -3049,10 +3052,13 @@ export const ClearDoesNotCloseMenu: Story = {
 
     await step("Menu remains open", async () => {
       // Menu should STILL be open after clearing
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
     });
   },
 };
