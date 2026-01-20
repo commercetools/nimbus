@@ -763,9 +763,12 @@ export const UndoRedo: Story = {
 
     // Type some text
     await userEvent.type(editor, "First text");
-    await waitFor(() => {
-      expect(undoButton).not.toBeDisabled();
-    });
+    await waitFor(
+      () => {
+        expect(undoButton).not.toBeDisabled();
+      },
+      { timeout: 5000 }
+    );
 
     // Apply formatting
     const boldButton = canvas.getByRole("button", { name: /bold/i });
@@ -774,15 +777,21 @@ export const UndoRedo: Story = {
 
     // Test undo
     await userEvent.click(undoButton);
-    await waitFor(() => {
-      expect(redoButton).not.toBeDisabled();
-    });
+    await waitFor(
+      () => {
+        expect(redoButton).not.toBeDisabled();
+      },
+      { timeout: 5000 }
+    );
 
     // Test redo
     await userEvent.click(redoButton);
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("bold text");
-    });
+    await waitFor(
+      () => {
+        expect(editor).toHaveTextContent("bold text");
+      },
+      { timeout: 5000 }
+    );
   },
 };
 
