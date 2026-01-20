@@ -364,6 +364,55 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
   },
 };
 
+/**
+ * Tests selecting a currency from an initially empty state.
+ * Verifies that the dropdown works and formatting applies after selection.
+ */
+export const InitialCurrencySelectionTest: Story = {
+  render: (args) => (
+    <MoneyInputExample
+      aria-label="Money input example"
+      initialValue={{ amount: "", currencyCode: "" }}
+      {...args}
+    />
+  ),
+  args: {
+    hasHighPrecisionBadge: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const amountInput = await canvas.findByRole("textbox", {
+      name: /Amount/i,
+    });
+    const currencySelect = await canvas.findByRole("button", {
+      name: /Currency/i,
+    });
+
+    // Initially no currency is selected
+    expect(currencySelect).not.toHaveTextContent("USD");
+    expect(currencySelect).not.toHaveTextContent("EUR");
+
+    // Open dropdown and select USD
+    await userEvent.click(currencySelect);
+    const usdOption = Array.from(
+      document.querySelectorAll('[role="option"]')
+    ).find((opt) => opt.textContent === "USD");
+    await userEvent.click(usdOption!);
+
+    // Verify USD is now selected
+    expect(currencySelect).toHaveTextContent("USD");
+
+    // Enter amount and verify formatting works with selected currency
+    await userEvent.type(amountInput, "100.50");
+    await userEvent.click(document.body); // Blur to format
+    expect(amountInput).toHaveValue("100.50"); // USD (2 fraction digits)
+  },
+};
+
+/**
+ * Tests switching between currencies and verifies amount reformatting.
+ * Each currency has different decimal place rules that affect display.
+ */
 export const CurrencySwitchingTest: Story = {
   render: (args) => (
     <MoneyInputExample
@@ -384,7 +433,7 @@ export const CurrencySwitchingTest: Story = {
       name: /Currency/i,
     });
 
-    // Step 1: Verify USD is already selected, enter 100.50
+    // Enter amount with USD (already selected)
     expect(currencySelect).toHaveTextContent("USD");
     await userEvent.type(amountInput, "100.50");
     await userEvent.click(document.body); // Blur to format
