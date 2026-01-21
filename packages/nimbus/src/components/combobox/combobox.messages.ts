@@ -37,6 +37,6 @@ export const comboboxMessagesStrings: LocalizedStrings<
  */
 export type ComboboxMessageKey =
   | "clearSelection"
-  | "toggleOptions"
+  | "options"
   | "selectedValues"
-  | "options";
+  | "toggleOptions";
