@@ -100,7 +100,8 @@ examples** consumers can copy, not internal component behavior tests.
 Flag violations if tests check internal behavior (states, ARIA, keyboard nav)
 instead of consumer integration patterns (form libraries, async data).
 
-See [Testing Strategy Guide](docs/file-type-guidelines/testing-strategy.md).
+See
+[Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
 
 ### When You Review Directly vs. Invoke Skills
 

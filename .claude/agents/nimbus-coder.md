@@ -88,7 +88,8 @@ is to orchestrate these skills, not replace them.
 - **Consumer Implementation Tests** (`.docs.spec.tsx`): Documentation examples
   for consumer apps
 
-See [Testing Strategy Guide](docs/file-type-guidelines/testing-strategy.md).
+See
+[Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
 
 ### Orchestration Pattern
 
