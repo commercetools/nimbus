@@ -25,7 +25,7 @@
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
-    "string": "Clear selection"
+    "string": "Borrar selección"
   },
   "Nimbus.ComboBox.options": {
     "developer_comment": "aria-label for combobox menu options",
@@ -33,7 +33,7 @@
   },
   "Nimbus.ComboBox.selectedValues": {
     "developer_comment": "aria-label for selected values tag group",
-    "string": "Selected values"
+    "string": "Valores seleccionados"
   },
   "Nimbus.ComboBox.toggleOptions": {
     "developer_comment": "aria-label for toggle button to open/close options",
