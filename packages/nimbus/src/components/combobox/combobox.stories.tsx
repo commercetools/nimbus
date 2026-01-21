@@ -3042,14 +3042,98 @@ export const ClearDoesNotCloseMenu: Story = {
       await waitFor(() => {
         expect(canvas.queryByText("Koala")).not.toBeInTheDocument();
       });
+
+      // Input value should be cleared
+      await waitFor(() => {
+        expect(input).toHaveValue("");
+      });
+
+      // Input should retain focus
+      expect(input).toHaveFocus();
     });
 
     await step("Menu remains open", async () => {
+      // Add explicit delay to ensure menu state has settled
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
       // Menu should STILL be open after clearing
       await waitFor(() => {
         const listbox = getListBox(document);
         expect(listbox).toBeInTheDocument();
       });
+
+      // All options should be visible (filter reset)
+      const options = document.querySelectorAll('[role="option"]');
+      expect(options.length).toBeGreaterThan(0);
+    });
+  },
+};
+
+/**
+ * Clear: Does Not Close Menu (Single Select)
+ * Tests that clear button doesn't close the menu in single-select mode
+ */
+export const ClearDoesNotCloseMenuSingleSelect: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    await step("Open menu and select item", async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, "K");
+
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // Select Koala
+      await selectOptionsByName(["Koala"]);
+
+      // Verify selection - input should show "Koala"
+      expect(input).toHaveValue("Koala");
+    });
+
+    await step("Click clear button", async () => {
+      const clearButton = canvas.getByLabelText(/clear selection/i);
+
+      await userEvent.click(clearButton);
+
+      // Selection should be cleared - wait for state to update
+      await waitFor(() => {
+        expect(input).toHaveValue("");
+      });
+
+      // Input should retain focus
+      expect(input).toHaveFocus();
+    });
+
+    await step("Menu remains open", async () => {
+      // Add explicit delay to ensure menu state has settled
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // Menu should STILL be open after clearing
+      await waitFor(() => {
+        const listbox = getListBox(document);
+        expect(listbox).toBeInTheDocument();
+      });
+
+      // All options should be visible (filter reset)
+      const options = document.querySelectorAll('[role="option"]');
+      expect(options.length).toBeGreaterThan(0);
     });
   },
 };

@@ -513,6 +513,9 @@ const ComboBoxRootInner = <T extends object>(
   // REFS & IDS
   // ============================================================
 
+  // Get refs from context (shared with outer component)
+  const { triggerRef, inputRef } = useComboBoxRootContext();
+
   // Stable IDs for ARIA relationships
   const listboxId = useId();
   const tagGroupId = useId();
@@ -795,18 +798,37 @@ const ComboBoxRootInner = <T extends object>(
     disabledKeys,
   });
 
-  // Clear all selections (and input value in single-select)
+  // Clear all selections (and input value)
+  // Menu remains open after clearing to allow continued selection without reopening
   const clearSelection = useCallback(() => {
-    state.selectionManager.setSelectedKeys(new Set());
+    // Clear selection through handleSelectionChange for proper state management
+    handleSelectionChange(new Set());
 
-    if (selectionMode === "single") {
-      if (!isInputControlled) {
-        setInternalInputValue("");
-        prevInputValueRef.current = "";
-      }
-      onInputChange?.("");
+    // Explicitly clear input value for both modes
+    // Multi-select: clears the filter text
+    // Single-select: handleSelectionChange handles this via effect, but we set it explicitly for consistency
+    if (!isInputControlled) {
+      setInternalInputValue("");
+      prevInputValueRef.current = "";
     }
-  }, [state.selectionManager, selectionMode, isInputControlled, onInputChange]);
+    onInputChange?.("");
+
+    // Keep menu open after clearing (both single and multi-select)
+    // This allows user to continue selecting without manually reopening
+    setIsOpen(true);
+
+    // Refocus the input field to maintain context
+    // Use requestAnimationFrame to ensure DOM updates complete first
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  }, [
+    handleSelectionChange,
+    isInputControlled,
+    onInputChange,
+    setIsOpen,
+    inputRef,
+  ]);
 
   // Handle custom option creation (adds item and selects it)
   const handleCustomOptionCreated = useCallback(
@@ -1258,7 +1280,6 @@ const ComboBoxRootInner = <T extends object>(
 
   // Effect: Sync menu width with trigger width using ResizeObserver
   // Ensures menu stays aligned and properly sized when trigger resizes
-  const { triggerRef, inputRef } = useComboBoxRootContext();
   useEffect(() => {
     const triggerElement = triggerRef.current;
     if (!triggerElement) return;
