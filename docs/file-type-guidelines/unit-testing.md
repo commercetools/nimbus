@@ -597,6 +597,52 @@ describe("debounce", () => {
 });
 ```
 
+## Clean Testing Patterns (JSDOM)
+
+These patterns address JSDOM-specific behaviors in unit tests.
+
+### Controlled Component Initialization
+
+Controlled inputs must have defined initial values. An `undefined` value creates
+an uncontrolled input, which cannot later become controlled:
+
+```typescript
+const [value, setValue] = useState({ amount: "", currencyCode: "EUR" });
+```
+
+### Testing Expected Warning Behavior
+
+When testing edge cases that intentionally trigger warnings, capture and verify
+them as part of the test contract:
+
+```typescript
+it("warns on invalid input", () => {
+  const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+  // ... test code that triggers warning ...
+
+  expect(consoleSpy).toHaveBeenCalledWith(
+    expect.stringContaining("expected message")
+  );
+  consoleSpy.mockRestore();
+});
+```
+
+### Router Context for Navigation Tests
+
+Link components require router context to handle navigation. JSDOM doesn't
+implement browser navigation, so provide a mock router:
+
+```typescript
+const mockRouter = { navigate: vi.fn() };
+
+render(
+  <NimbusProvider router={mockRouter}>
+    <Link href="/page">Click me</Link>
+  </NimbusProvider>
+);
+```
+
 ## Best Practices
 
 ### Test Structure

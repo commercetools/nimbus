@@ -655,6 +655,24 @@ Common issues:
 - Timing issues (interactions too fast)
 - Missing `await` on async operations
 
+## Clean Testing Patterns
+
+You MUST follow the clean testing patterns documented in:
+
+- **Storybook patterns**:
+  `docs/file-type-guidelines/stories.md#clean-testing-patterns-storybook`
+- **JSDOM patterns**:
+  `docs/file-type-guidelines/unit-testing.md#clean-testing-patterns-jsdom`
+
+Key requirements:
+
+- Add `key` props when mapping arrays in render functions
+- Use `userEvent.tab()` for focus management (not `element.focus()`)
+- Await all `step()` calls including nested ones
+- Add timing delays for React Aria keyboard sequences
+- Provide `aria-label` for components without visible labels
+- Initialize controlled inputs with defined values
+
 ## Reference Examples
 
 You SHOULD reference these stories:
