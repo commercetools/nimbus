@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   Link,
+  SimpleGrid,
   Stack,
   Text,
 } from "@commercetools/nimbus";
@@ -129,40 +130,33 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
 
   return (
     <Box my="600">
-      <Stack gap="0" direction="row" wrap="wrap">
+      <SimpleGrid columns={3} gap="200">
         {sortedDocs.map((doc) => (
-          <Box width="1/3" key={doc.path}>
-            <Link textDecoration="none" href={doc.path}>
-              <Card.Root
-                _hover={{ bg: "colorPalette.2" }}
-                cardPadding="md"
-                borderStyle="none"
-                width="full"
-              >
-                <Card.Content>
-                  <Stack>
-                    <Box color="primary.11" textStyle="5xl" mb="200">
-                      <IconComponent id={doc.icon} fallback="Layers" />
-                    </Box>
-                    <Heading
-                      color="neutral.12"
-                      textDecoration="none"
-                      size="lg"
-                      truncate
-                    >
-                      {doc.title}
-                    </Heading>
+          <Link key={doc.path} textDecoration="none" href={doc.path}>
+            <Card.Root cardPadding="md" borderStyle="none" width="full">
+              <Card.Content>
+                <Stack>
+                  <Box color="primary.11" textStyle="5xl" mb="200">
+                    <IconComponent id={doc.icon} fallback="Layers" />
+                  </Box>
+                  <Heading
+                    color="neutral.12"
+                    textDecoration="none"
+                    size="lg"
+                    truncate
+                  >
+                    {doc.title}
+                  </Heading>
 
-                    <Text color="neutral.11" lineClamp={4}>
-                      {doc.description}
-                    </Text>
-                  </Stack>
-                </Card.Content>
-              </Card.Root>
-            </Link>
-          </Box>
+                  <Text color="neutral.11" lineClamp={4}>
+                    {doc.description}
+                  </Text>
+                </Stack>
+              </Card.Content>
+            </Card.Root>
+          </Link>
         ))}
-      </Stack>
+      </SimpleGrid>
     </Box>
   );
 };
