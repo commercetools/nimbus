@@ -572,6 +572,14 @@ Based on component features:
 - ✅ Use `userEvent.setup()` for interactions
 - ✅ Base test names on component features, not generic patterns
 
+### Consumer Implementation Tests
+
+Consumer Implementation Tests (`.docs.spec.tsx`) are **working code examples**
+consumers can copy to test components in their apps.
+
+See [Testing Strategy Guide](docs/file-type-guidelines/testing-strategy.md) for
+rules.
+
 ### Verify Tests
 
 ```bash

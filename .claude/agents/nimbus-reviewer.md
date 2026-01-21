@@ -92,6 +92,16 @@ review:
 - Suggest invoking that skill in "update" mode to fix
 - Explain the architectural impact
 
+### Test Category Compliance Review
+
+When reviewing `.docs.spec.tsx` files, verify they are **documentation
+examples** consumers can copy, not internal component behavior tests.
+
+Flag violations if tests check internal behavior (states, ARIA, keyboard nav)
+instead of consumer integration patterns (form libraries, async data).
+
+See [Testing Strategy Guide](docs/file-type-guidelines/testing-strategy.md).
+
 ### When You Review Directly vs. Invoke Skills
 
 **YOU review directly:**

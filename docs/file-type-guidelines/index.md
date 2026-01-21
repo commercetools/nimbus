@@ -19,6 +19,11 @@ and examples.
 - **[documentation.md](./documentation.md)** - MDX documentation
 - **[i18n.md](./i18n.md)** - Internationalization messages
 
+### Testing Strategy
+
+- **[testing-strategy.md](./testing-strategy.md)** - Decision guide for choosing
+  between Story Tests, Unit Tests, and Consumer Tests
+
 ### Styling System
 
 - **[recipes.md](./recipes.md)** - Chakra UI recipe patterns
@@ -80,7 +85,8 @@ Based on component needs:
 - **Compound structure**: When component has multiple parts
 - **Hooks**: When complex logic needs encapsulation
 - **Context**: When state needs to be shared between parts
-- **Unit tests**: For logic that cannot be practically covered in Storybook tests (utilities, hooks, algorithms)
+- **Unit tests**: For logic that cannot be practically covered in Storybook
+  tests (utilities, hooks, algorithms)
 
 ### Optional
 
@@ -123,7 +129,8 @@ For complex components only:
 - hooks.md
 - context-files.md
 - utils-and-constants.md
-- unit-testing.md (for logic not covered by Storybook: custom hooks, utility functions, algorithms)
+- unit-testing.md (for logic not covered by Storybook: custom hooks, utility
+  functions, algorithms)
 
 ---
 

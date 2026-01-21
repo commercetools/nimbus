@@ -408,23 +408,23 @@ capabilities.
 
 ### Testing Strategy
 
-The testing system uses Vitest with two distinct test types:
+The testing system uses Vitest with three distinct test categories:
 
-**Component Testing (Storybook stories with play functions):**
+| Category                          | File Pattern      | Purpose                                  | Audience     |
+| --------------------------------- | ----------------- | ---------------------------------------- | ------------ |
+| **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      | Internal     |
+| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        | Internal     |
+| **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps | **External** |
 
-- Stories serve as both maintainer documentation AND tests via play functions
-- Browser testing runs in headless Chromium with Playwright
-- **ALL component behavior, interactions, and visual states are tested in
-  Storybook**
-- **Critical**: Interactive components MUST have play functions that test user
-  interactions
+- **Story Tests**: Test component behavior with play functions in headless
+  Chromium via Playwright. ALL component states, interactions, and a11y tested
+  here.
+- **Internal Unit Tests**: Fast JSDOM-based tests for utilities and hooks.
+- **Consumer Implementation Tests**: Working code examples consumers can copy to
+  test components in their apps. Injected into `.dev.mdx` docs at build time.
 
-**Unit Testing (utilities and hooks only):**
-
-- Fast JSDOM-based tests for utilities, hooks, and non-component logic
-- All component testing happens in Storybook stories with play functions
-- Unit tests focus exclusively on pure functions, custom hooks, and business
-  logic
+See [Testing Strategy Guide](./docs/file-type-guidelines/testing-strategy.md)
+for detailed rules and examples.
 
 ### Build Dependencies
 
