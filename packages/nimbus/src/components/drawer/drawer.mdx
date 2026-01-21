@@ -28,7 +28,7 @@ A foundational drawer component for overlays that require user attention and int
 
 Drawers are overlay windows that appear on top of the main content to display important information, gather user input, or require user decisions. They temporarily disable the main interface until the user completes an action or dismisses the drawer.
 
-### Key Features
+### Key features
 
 - **Accessibility First**: Built with React Aria Components for WCAG 2.1 AA compliance
 - **Flexible Positioning**: Support for left, right, top, and bottom placements  
@@ -191,7 +191,7 @@ const App = () => {
 
 Use drawers strategically to enhance user workflow without disrupting the experience.
 
-### Best Practices
+### Best practices
 
 - **Use drawers sparingly**: Only when you need to interrupt the user's flow for critical actions
 - **Keep content focused**: Drawers should have a single, clear purpose
@@ -222,16 +222,8 @@ Use drawers strategically to enhance user workflow without disrupting the experi
 
 The Drawer component follows WCAG 2.1 AA guidelines and implements proper modal dialog patterns.
 
-### Keyboard Navigation
+### Screen reader support
 
-| Key | Action |
-|-----|--------|
-| `Tab` | Move focus to next focusable element within drawer |
-| `Shift + Tab` | Move focus to previous focusable element within drawer |
-| `Escape` | Close the drawer (unless disabled) |
-| `Enter/Space` | Activate focused button or trigger |
-
-### Screen Reader Support
 
 - **Role identification**: Drawer has `dialog` role with proper labeling
 - **Focus management**: Focus moves to drawer on open, returns to trigger on close

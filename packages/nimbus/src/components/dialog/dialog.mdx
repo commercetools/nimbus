@@ -28,7 +28,7 @@ A foundational dialog component for overlays that require user attention and int
 
 Dialogs are overlay windows that appear on top of the main content to display important information, gather user input, or require user decisions. They temporarily disable the main interface until the user completes an action or dismisses the dialog.
 
-### Key Features
+### Key features
 
 - **Accessibility First**: Built with React Aria Components for WCAG 2.1 AA compliance
 - **Flexible Positioning**: Support for center, top, and bottom placements  
@@ -225,7 +225,7 @@ const App = () => {
 
 Use dialogs strategically to enhance user workflow without disrupting the experience.
 
-### Best Practices
+### Best practices
 
 - **Use dialogs sparingly**: Only when you need to interrupt the user's flow for critical actions
 - **Keep content focused**: Dialogs should have a single, clear purpose
@@ -256,16 +256,8 @@ Use dialogs strategically to enhance user workflow without disrupting the experi
 
 The Dialog component follows WCAG 2.1 AA guidelines and implements proper modal dialog patterns.
 
-### Keyboard Navigation
+### Screen reader support
 
-| Key | Action |
-|-----|--------|
-| `Tab` | Move focus to next focusable element within dialog |
-| `Shift + Tab` | Move focus to previous focusable element within dialog |
-| `Escape` | Close the dialog (unless disabled) |
-| `Enter/Space` | Activate focused button or trigger |
-
-### Screen Reader Support
 
 - **Role identification**: Dialog has `dialog` role with proper labeling
 - **Focus management**: Focus moves to dialog on open, returns to trigger on close  
