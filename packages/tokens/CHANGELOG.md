@@ -1,5 +1,14 @@
 # @commercetools/nimbus-tokens
 
+## 2.2.0
+
+### Minor Changes
+
+- [#732](https://github.com/commercetools/nimbus/pull/732)
+  [`f9d25d6`](https://github.com/commercetools/nimbus/commit/f9d25d63692b0854aca6a6633f3674274a4e1d09)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Update minor
+  versions of tooling dependencies
+
 ## 2.1.0
 
 ### Patch Changes

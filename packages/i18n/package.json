@@ -9,18 +9,11 @@
     "directory": "packages/i18n"
   },
   "homepage": "https://nimbus-documentation.vercel.app/home",
-  "keywords": [
-    "typescript",
-    "design-system",
-    "react",
-    "nimbus"
-  ],
+  "keywords": ["typescript", "design-system", "react", "nimbus"],
   "license": "MIT",
   "private": true,
   "sideEffects": false,
-  "files": [
-    "data"
-  ],
+  "files": ["data"],
   "scripts": {
     "build": "pnpm build:compile",
     "build:compile": "pnpm build:split && pnpm build:compile-strings && pnpm build:dictionaries",
