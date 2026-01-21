@@ -133,7 +133,12 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
       <SimpleGrid columns={3} gap="200">
         {sortedDocs.map((doc) => (
           <Link key={doc.path} textDecoration="none" href={doc.path}>
-            <Card.Root cardPadding="md" borderStyle="none" width="full">
+            <Card.Root
+              _hover={{ bg: "colorPalette.2" }}
+              cardPadding="md"
+              borderStyle="none"
+              width="full"
+            >
               <Card.Content>
                 <Stack>
                   <Box color="primary.11" textStyle="5xl" mb="200">
