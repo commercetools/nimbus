@@ -70,7 +70,7 @@ catalogs:
     "@react-aria/optimize-locales-plugin": 1.1.5
     "@internationalized/date": ^3.10.1
     "@internationalized/string": ^3.2.7
-    react-intl: ^7.1.13
+    react-intl: ^8.1.1
   utils:
     dequal: ^2.0.3
     dompurify: ^3.3.1
