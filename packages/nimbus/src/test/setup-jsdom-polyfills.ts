@@ -73,19 +73,19 @@ if (typeof globalThis.structuredClone !== "function") {
  * - Media query hooks (useMediaQuery)
  * - Breakpoint-based rendering
  */
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: (query: unknown) => ({
-    matches: false, // Default, can be overridden in tests
-    media: query,
-    onchange: null,
-    addListener: () => {}, // Deprecated but needed
-    removeListener: () => {}, // Deprecated but needed
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    dispatchEvent: () => false,
-  }),
-});
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false, // Default, can be overridden in tests
+      media: query,
+      onchange: null,
+      addListener: () => {}, // Deprecated but needed
+      removeListener: () => {}, // Deprecated but needed
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
+}
 
 /**
  * Mock ResizeObserver
