@@ -143,11 +143,11 @@ describe("Checkbox - Interactions", () => {
       </NimbusProvider>
     );
 
-    const checkbox = screen.getByRole("checkbox");
-    checkbox.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard(" ");
 
-    expect(checkbox).toBeChecked();
+    expect(screen.getByRole("checkbox")).toBeChecked();
   });
 
   it("toggles with enter key when focused", async () => {
@@ -158,11 +158,11 @@ describe("Checkbox - Interactions", () => {
       </NimbusProvider>
     );
 
-    const checkbox = screen.getByRole("checkbox");
-    checkbox.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard("{Enter}");
 
-    expect(checkbox).toBeChecked();
+    expect(screen.getByRole("checkbox")).toBeChecked();
   });
 });
 

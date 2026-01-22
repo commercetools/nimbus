@@ -95,11 +95,11 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
         borderRadius: "0",
       },
       /** bodyCell within first column */
-      "[role='gridcell']:first-child &": {
+      "[role='gridcell']:first-of-type &": {
         borderLeftRadius: "200",
       },
       /** bodyCell within last column */
-      "[role='gridcell']:last-child &": {
+      "[role='gridcell']:last-of-type &": {
         borderRightRadius: "200",
       },
       /** start- & end-cell (shared styling) */

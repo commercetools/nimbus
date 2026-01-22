@@ -38,7 +38,10 @@ describe("PasswordInput - Basic rendering", () => {
   it("renders with placeholder text", () => {
     render(
       <NimbusProvider>
-        <PasswordInput placeholder="Enter your password" />
+        <PasswordInput
+          aria-label="Password"
+          placeholder="Enter your password"
+        />
       </NimbusProvider>
     );
 
@@ -206,6 +209,7 @@ describe("PasswordInput - Leading element", () => {
     render(
       <NimbusProvider>
         <PasswordInput
+          aria-label="Password"
           leadingElement={<span data-testid="lock-icon">🔒</span>}
           placeholder="Password"
         />
@@ -248,8 +252,10 @@ describe("PasswordInput - Keyboard navigation", () => {
     const input = screen.getByLabelText("Password");
     const toggleButton = screen.getByRole("button");
 
-    // Focus the toggle button
-    toggleButton.focus();
+    // Use userEvent.tab() to focus elements (avoids act() warnings)
+    // First tab focuses the input, second tab focuses the toggle button
+    await user.tab();
+    await user.tab();
     expect(toggleButton).toHaveFocus();
 
     // Press Enter to toggle

@@ -88,12 +88,12 @@ export const Sizes: Story = {
     return (
       <Stack direction="column" alignItems="stretch" width="100%">
         {sizes.map((size) => (
-          <Flex gap="400">
+          <Flex key={size as string} gap="400">
             <Text textStyle="md" fontWeight="500" minWidth="20ch">
               {size as string}
             </Text>
             <Box flexGrow="1">
-              <Stack key={size as string} direction="column" gap="200">
+              <Stack direction="column" gap="200">
                 <ProgressBar {...args} size={size} />
               </Stack>
             </Box>
@@ -150,12 +150,12 @@ export const Layouts: Story = {
     return (
       <Stack direction="column" alignItems="stretch" width="100%" gap="800">
         {layouts.map((layout) => (
-          <Flex gap="400">
+          <Flex key={layout as string} gap="400">
             <Text textStyle="md" fontWeight="500" minWidth="20ch">
               {layout as string}
             </Text>
             <Box flexGrow="1">
-              <Stack key={layout as string} direction="column" gap="200">
+              <Stack direction="column" gap="200">
                 <ProgressBar
                   {...args}
                   label={args.label + " - " + layout}
@@ -278,12 +278,12 @@ export const Indeterminate: Story = {
     return (
       <Stack direction="column" alignItems="stretch" width="100%" gap="800">
         {layouts.map((layout) => (
-          <Flex gap="400">
+          <Flex key={layout as string} gap="400">
             <Text textStyle="md" fontWeight="500" minWidth="20ch">
               {layout as string}
             </Text>
             <Box flexGrow="1">
-              <Stack key={layout as string} direction="column" gap="200">
+              <Stack direction="column" gap="200">
                 <ProgressBar
                   {...args}
                   label={args.label + " - " + layout}

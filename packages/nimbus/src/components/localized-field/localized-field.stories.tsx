@@ -663,7 +663,7 @@ export const DefaultExpanded: Story = {
     const canvas = within(canvasElement);
     await step("Text Field", async () => {
       const textField = await getFieldContainerForType(canvas, "text");
-      step("Field is expanded on mount", async () => {
+      await step("Field is expanded on mount", async () => {
         await checkFieldIsExpanded(textField, "text", baseLocales, "en");
       });
     });
@@ -672,7 +672,7 @@ export const DefaultExpanded: Story = {
         canvas,
         "multiLine"
       );
-      step("Field is expanded on mount", async () => {
+      await step("Field is expanded on mount", async () => {
         await checkFieldIsExpanded(
           multiLineField,
           "multiLine",
@@ -683,7 +683,7 @@ export const DefaultExpanded: Story = {
     });
     await step("RichText Field", async () => {
       const richTextField = await getFieldContainerForType(canvas, "richText");
-      step("Field is expanded on mount", async () => {
+      await step("Field is expanded on mount", async () => {
         await checkFieldIsExpanded(
           richTextField,
           "richText",
@@ -694,7 +694,7 @@ export const DefaultExpanded: Story = {
     });
     await step("Money Field", async () => {
       const moneyField = await getFieldContainerForType(canvas, "money");
-      step("Field is expanded on mount", async () => {
+      await step("Field is expanded on mount", async () => {
         await checkFieldIsExpanded(moneyField, "money", baseCurrencies, "USD");
       });
     });

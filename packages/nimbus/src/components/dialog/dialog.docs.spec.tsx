@@ -158,6 +158,7 @@ describe("Dialog - Form submission", () => {
               </Dialog.Header>
               <Dialog.Body>
                 <TextInput
+                  aria-label="Name"
                   placeholder="Name"
                   value={name}
                   onChange={(value) => setName(value)}

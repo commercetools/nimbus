@@ -2,6 +2,15 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Link, NimbusProvider } from "@commercetools/nimbus";
+import type { NimbusRouterConfig } from "../nimbus-provider/nimbus-provider.types";
+
+/**
+ * Mock router to prevent JSDOM "Not implemented: navigation" warnings
+ * when tests click on links or trigger navigation via keyboard.
+ */
+const mockRouter: NimbusRouterConfig = {
+  navigate: vi.fn(),
+};
 
 /**
  * @docs-section basic-rendering
@@ -59,7 +68,7 @@ describe("Link - Navigation", () => {
     const handleClick = vi.fn();
 
     render(
-      <NimbusProvider>
+      <NimbusProvider router={mockRouter}>
         <Link href="/page" onClick={handleClick}>
           Clickable Link
         </Link>
@@ -77,7 +86,7 @@ describe("Link - Navigation", () => {
     const handleClick = vi.fn();
 
     render(
-      <NimbusProvider>
+      <NimbusProvider router={mockRouter}>
         <Link href="/page" onClick={handleClick}>
           Keyboard Link
         </Link>

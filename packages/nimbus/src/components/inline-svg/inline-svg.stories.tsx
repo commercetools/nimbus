@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { within, expect } from "storybook/test";
+import { within, expect, fn } from "storybook/test";
 import { Group, InlineSvg } from "@commercetools/nimbus";
 
 const meta: Meta<typeof InlineSvg> = {
@@ -260,11 +260,26 @@ export const InvalidSvg: Story = {
     data: "not valid svg content",
     size: "md",
   },
+  beforeEach: () => {
+    // Suppress expected warning when invalid SVG is passed
+    const originalWarn = console.warn;
+    console.warn = fn();
+    return () => {
+      console.warn = originalWarn;
+    };
+  },
   play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
     await step("Invalid SVG does not render", async () => {
-      // Component should handle invalid SVG gracefully and not render anything
-      const container = canvasElement.querySelector(".nimbus-icon");
-      expect(container).not.toBeInTheDocument();
+      const svg = canvas.queryByRole("presentation");
+      expect(svg).not.toBeInTheDocument();
+    });
+
+    await step("Warning is logged for invalid SVG", async () => {
+      expect(console.warn).toHaveBeenCalledWith(
+        "InlineSvg: No SVG element found in markup"
+      );
     });
   },
 };

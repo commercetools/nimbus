@@ -54,6 +54,7 @@ describe("Tooltip - Basic rendering", () => {
  */
 describe("Tooltip - Interactions", () => {
   it("shows tooltip on focus", async () => {
+    const user = userEvent.setup();
     render(
       <NimbusProvider>
         <Tooltip.Root>
@@ -63,10 +64,8 @@ describe("Tooltip - Interactions", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button", { name: /action button/i });
-
-    // Focus the button to show tooltip
-    button.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
 
     await waitFor(() => {
       expect(screen.getByRole("tooltip")).toBeInTheDocument();
@@ -137,6 +136,7 @@ describe("Tooltip - Placement", () => {
  */
 describe("Tooltip - Portal rendering", () => {
   it("renders tooltip in portal", async () => {
+    const user = userEvent.setup();
     render(
       <NimbusProvider>
         <Tooltip.Root>
@@ -146,10 +146,8 @@ describe("Tooltip - Portal rendering", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button", { name: /show tooltip/i });
-
-    // Focus the button to trigger tooltip
-    button.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
 
     // Wait for portal content to appear
     await waitFor(() => {
@@ -167,6 +165,7 @@ describe("Tooltip - Portal rendering", () => {
  */
 describe("Tooltip - Timing", () => {
   it("respects custom delay", async () => {
+    const user = userEvent.setup();
     render(
       <NimbusProvider>
         <Tooltip.Root delay={0} closeDelay={0}>
@@ -176,10 +175,8 @@ describe("Tooltip - Timing", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button", { name: /instant/i });
-
-    // Focus button to trigger tooltip with delay={0}
-    button.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
 
     // With delay={0}, tooltip should appear immediately
     await waitFor(

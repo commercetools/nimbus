@@ -17,9 +17,11 @@ describe("MoneyInput Static Methods", () => {
   beforeEach(() => {
     originalWarn = console.warn;
     capturedWarnings = [];
+    // Capture warnings for assertions (suppresses console output)
     console.warn = (...args: unknown[]) => {
       capturedWarnings.push(args);
-      originalWarn.apply(console, args);
+      // Uncomment to see warnings during development:
+      // originalWarn.apply(console, args);
     };
   });
 

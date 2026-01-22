@@ -35,7 +35,8 @@ describe("Button", () => {
       expect(button).toHaveAttribute("aria-label", "test-button");
     });
 
-    it("Is clickable", () => {
+    it("Is clickable", async () => {
+      const user = userEvent;
       const onPress = vi.fn();
       render(
         <Button onPress={onPress} data-testid="test" aria-label="test-button">
@@ -44,9 +45,8 @@ describe("Button", () => {
       );
 
       const button = screen.getByTestId("test");
-      button.click();
+      await user.click(button);
       expect(onPress).toHaveBeenCalledTimes(1);
-      button.blur();
     });
 
     it("Is focusable with <tab> key", async () => {

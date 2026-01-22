@@ -708,7 +708,13 @@ export const AsyncMultiSelectCustomOptions: Story = {
                 <ComboBox.ListBox>
                   {(pokemon: Pokemon) => (
                     <ComboBox.Option>
-                      <PokemonOption pokemon={pokemon} />
+                      {pokemon.url.startsWith("custom-") ? (
+                        <Text textTransform="capitalize">
+                          {pokemon.name} (custom)
+                        </Text>
+                      ) : (
+                        <PokemonOption pokemon={pokemon} />
+                      )}
                     </ComboBox.Option>
                   )}
                 </ComboBox.ListBox>

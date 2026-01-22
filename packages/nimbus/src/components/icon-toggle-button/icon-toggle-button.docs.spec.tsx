@@ -151,11 +151,11 @@ describe("IconToggleButton - Interactions", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button");
-    button.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard(" ");
 
-    expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
   });
 
   it("toggles with enter key when focused", async () => {
@@ -168,11 +168,11 @@ describe("IconToggleButton - Interactions", () => {
       </NimbusProvider>
     );
 
-    const button = screen.getByRole("button");
-    button.focus();
+    // Use userEvent.tab() instead of element.focus() to avoid act() warnings
+    await user.tab();
     await user.keyboard("{Enter}");
 
-    expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
   });
 });
 

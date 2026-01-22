@@ -160,6 +160,7 @@ const ProductDetailsModal = ({
                     Product name
                   </Text>
                   <TextInput
+                    aria-label="Product name"
                     value={formData.name as string}
                     onChange={(value) => handleInputChange("name", value)}
                     width="100%"
@@ -171,6 +172,7 @@ const ProductDetailsModal = ({
                     Category
                   </Text>
                   <TextInput
+                    aria-label="Category"
                     value={formData.category as string}
                     onChange={(value) => handleInputChange("category", value)}
                     width="100%"
@@ -242,6 +244,7 @@ const ProductDetailsModal = ({
                     Product ID
                   </Text>
                   <TextInput
+                    aria-label="Product ID"
                     value={formData.key as string}
                     isReadOnly
                     width="100%"

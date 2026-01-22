@@ -51,13 +51,17 @@ export const ScopedSearchInput = (props: ScopedSearchInputProps) => {
     "aria-describedby": ariaDescribedby,
     "aria-labelledby": ariaLabelledby,
     size,
+    ...passableProps
   } = props;
 
   const msg = useLocalizedStringFormatter(scopedSearchInputMessagesStrings);
 
-  // Split recipe props
+  // Split recipe props from passable props (excludes component-specific handlers)
   const recipe = useSlotRecipe({ recipe: scopedSearchInputSlotRecipe });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
+    size,
+    ...passableProps,
+  });
 
   // Extract style props
   const [styleProps, remainingProps] = extractStyleProps(restRecipeProps);

@@ -50,7 +50,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
         defaultOpen,
       };
 
-  const [styleProps] = extractStyleProps(restProps);
+  const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
     <DrawerModalOverlaySlot asChild>
@@ -58,7 +58,9 @@ export const DrawerContent = (props: DrawerContentProps) => {
         <DrawerModalSlot asChild>
           <RaModal>
             <DrawerContentSlot asChild {...styleProps}>
-              <RaDialog ref={forwardedRef}>{children}</RaDialog>
+              <RaDialog ref={forwardedRef} {...functionalProps}>
+                {children}
+              </RaDialog>
             </DrawerContentSlot>
           </RaModal>
         </DrawerModalSlot>

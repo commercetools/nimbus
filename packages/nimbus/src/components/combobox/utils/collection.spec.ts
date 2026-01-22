@@ -105,20 +105,19 @@ describe("collection utilities", () => {
       });
     });
 
-    describe("fallback behavior", () => {
-      it("converts object to string when no name or label", () => {
+    describe("error handling", () => {
+      it("throws error for object without name or label", () => {
         const item = { id: "1", value: "test" };
-        expect(defaultGetTextValue(item)).toBe("[object Object]");
+        expect(() => defaultGetTextValue(item)).toThrow(
+          "Item must have 'name' or 'label' property, or provide a getTextValue function"
+        );
       });
 
-      it("handles objects with toString method", () => {
-        const item = {
-          id: "1",
-          toString() {
-            return "Custom String";
-          },
-        };
-        expect(defaultGetTextValue(item)).toBe("Custom String");
+      it("throws error for empty object", () => {
+        const item = {};
+        expect(() => defaultGetTextValue(item)).toThrow(
+          "Item must have 'name' or 'label' property, or provide a getTextValue function"
+        );
       });
     });
   });
