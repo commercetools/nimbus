@@ -65,27 +65,6 @@ const DebugDisplay = ({
   </Box>
 );
 
-/**
- * Reusable debug display component for showing state in stories.
- * Uses semantic color tokens for proper dark mode support.
- */
-const DebugDisplay = ({
-  children,
-  ...props
-}: { children: React.ReactNode } & BoxProps) => (
-  <Box
-    as="pre"
-    mt="400"
-    p="200"
-    bg="neutral.2"
-    borderRadius="100"
-    textStyle="xs"
-    {...props}
-  >
-    {children}
-  </Box>
-);
-
 // Props for the MoneyInputExample wrapper component
 type MoneyInputExampleProps = Partial<MoneyInputProps> & {
   initialValue?: MoneyInputValue;
