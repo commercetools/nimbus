@@ -16,7 +16,12 @@ import { extractStyleProps } from "@/utils";
  *
  * @supportsStyleProps
  */
-export const TabsRoot = ({ children, tabs, ...props }: TabsProps) => {
+export const TabsRoot = ({
+  children,
+  tabs,
+  tabListAriaLabel,
+  ...props
+}: TabsProps) => {
   const sysCtx = useChakraContext();
   // Standard pattern: Split recipe variants
   const recipe = useSlotRecipe({ key: "tabs" });
@@ -36,7 +41,7 @@ export const TabsRoot = ({ children, tabs, ...props }: TabsProps) => {
       <RATabs {...functionalProps} orientation={normalizedOrientation}>
         {children || (
           <>
-            <TabsList tabs={tabs} />
+            <TabsList tabs={tabs} aria-label={tabListAriaLabel} />
             <TabsPanels tabs={tabs} />
           </>
         )}

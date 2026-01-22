@@ -118,6 +118,11 @@ export type TabsProps = OmitInternalProps<TabsRootSlotProps> &
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     tabs?: TabItemProps[];
+    /**
+     * Accessible label for the tab list when using the simplified `tabs` prop API.
+     * Required for accessibility when not using children-based composition.
+     */
+    tabListAriaLabel?: string;
   };
 
 /**
