@@ -49,11 +49,14 @@ const removeImportStatements = (code: string) => {
 type LiveCodeEditorProps = {
   children?: ReactNode;
   className?: string;
+  defaultActiveTab?: "preview" | "editor";
 };
 
 export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   const [code, setCode] = useState(props.children);
-  const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview");
+  const [activeTab, setActiveTab] = useState<"preview" | "editor">(
+    props.defaultActiveTab || "preview"
+  );
 
   useEffect(() => {
     setCode(props.children);

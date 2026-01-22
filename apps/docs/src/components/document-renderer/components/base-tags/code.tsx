@@ -8,10 +8,17 @@ type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
 
 export const Code = (props: CodeProps) => {
   const { className, children, ...rest } = props;
+  const isLiveEditor = className?.includes("-live");
+  const isDevEnv = className?.includes("-live-dev");
 
   if (className) {
-    if (className.includes("-live")) {
-      return <LiveCodeEditor {...props} />;
+    if (isLiveEditor) {
+      return (
+        <LiveCodeEditor
+          {...props}
+          defaultActiveTab={isDevEnv ? "editor" : "preview"}
+        />
+      );
     }
 
     const language = className.replace(/language-/, "");
