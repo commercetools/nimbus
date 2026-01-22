@@ -328,6 +328,22 @@ export const Example = () => (
 
 <PropsTable id="Image" />
 
+
+The Image component accepts all standard HTML `<img>` attributes including:
+- `src`: Image source URL
+- `alt`: Alternative text for accessibility
+- `srcSet`: Responsive image sources
+- `sizes`: Size hints for responsive images
+- `loading`: "lazy" or "eager" loading behavior
+- `decoding`: "async", "sync", or "auto" for image decoding
+- `crossOrigin`: CORS settings
+- `referrerPolicy`: Referrer policy for image requests
+
+Plus Chakra UI style props and the following enhanced props:
+- `fit`: Object fit behavior (maps to `object-fit` CSS property)
+- `align`: Object position (maps to `object-position` CSS property)
+
+
 ## Common patterns
 
 ### Product image display
