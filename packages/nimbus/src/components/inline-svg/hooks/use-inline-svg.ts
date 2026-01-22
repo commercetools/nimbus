@@ -50,8 +50,8 @@ export function useInlineSvg(data: string) {
     // Preserve all attributes from the sanitized SVG element
     // Security: Only attributes that passed sanitization are included
     for (const attr of Array.from(svgEl.attributes)) {
-      // Convert kebab-case to camelCase for React compatibility
-      const reactAttrName = attr.name.replace(/-([a-z])/g, (_, letter) =>
+      // Convert kebab-case and namespace prefixes to camelCase for React compatibility
+      const reactAttrName = attr.name.replace(/[-:]([a-z])/g, (_, letter) =>
         letter.toUpperCase()
       );
       attrs[reactAttrName] = attr.value;
