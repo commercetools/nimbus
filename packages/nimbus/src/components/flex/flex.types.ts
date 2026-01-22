@@ -1,4 +1,4 @@
-import type { FlexProps as ChakraFlexProps } from "@chakra-ui/react";
+import type { FlexProps as ChakraFlexProps } from "@chakra-ui/react/flex";
 
 /**
  * Props for the Flex component

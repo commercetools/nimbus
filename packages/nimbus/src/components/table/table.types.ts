@@ -1,4 +1,4 @@
-import type { Table as ChakraTableType } from "@chakra-ui/react";
+import type { Table as ChakraTableType } from "@chakra-ui/react/table";
 
 /**
  * Props for the Table.Root component
