@@ -1,5 +1,31 @@
 # @commercetools/nimbus
 
+## 2.3.0
+
+### Minor Changes
+
+- [#921](https://github.com/commercetools/nimbus/pull/921)
+  [`060f534`](https://github.com/commercetools/nimbus/commit/060f534ac1ade0001255689b0c3e7558cc7ebb48)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add `tabListAriaLabel`
+  prop to Tabs component for improved accessibility
+
+### Patch Changes
+
+- [#921](https://github.com/commercetools/nimbus/pull/921)
+  [`060f534`](https://github.com/commercetools/nimbus/commit/060f534ac1ade0001255689b0c3e7558cc7ebb48)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add default aria-labels
+  to DataTable.Table, DataTable.Header, and DataTable.Body components for
+  improved accessibility
+
+- [#944](https://github.com/commercetools/nimbus/pull/944)
+  [`5afd39d`](https://github.com/commercetools/nimbus/commit/5afd39debd8bba3c030297eb913a3491a25c2545)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Fix missing
+  window.matchMedia polyfill in built setup-jsdom-polyfills output
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.3.0
+  - @commercetools/nimbus-icons@2.3.0
+
 ## 2.2.0
 
 ### Minor Changes
