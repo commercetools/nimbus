@@ -125,3 +125,32 @@ export type TableScrollAreaProps = React.ComponentPropsWithoutRef<
    */
   ref?: React.Ref<HTMLDivElement>;
 };
+
+/**
+ * Props for the Table.ColumnGroup component
+ *
+ * Column group container (colgroup element) for defining column widths.
+ */
+export type TableColumnGroupProps = React.ComponentPropsWithoutRef<
+  typeof ChakraTableType.ColumnGroup
+> & {
+  /**
+   * Ref forwarding to the colgroup element
+   */
+  ref?: React.Ref<HTMLTableColElement>;
+};
+
+/**
+ * Props for the Table.Column component
+ *
+ * Column definition (col element) for setting individual column properties.
+ * The primary prop for this component is `htmlWidth` which sets the width attribute.
+ */
+export type TableColumnProps = React.ComponentPropsWithoutRef<
+  typeof ChakraTableType.Column
+> & {
+  /**
+   * Ref forwarding to the col element
+   */
+  ref?: React.Ref<HTMLTableColElement>;
+};
