@@ -1,5 +1,18 @@
 # @commercetools/nimbus
 
+## 2.3.1
+
+### Patch Changes
+
+- [#946](https://github.com/commercetools/nimbus/pull/946)
+  [`b458b3f`](https://github.com/commercetools/nimbus/commit/b458b3fca5b3a5e819ed38ec70b912246c082abe)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Fixed Jest CommonJS module
+  resolution for Flex and Table components by replacing Chakra UI subpath
+  re-exports with custom wrapper implementations.
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.3.1
+  - @commercetools/nimbus-icons@2.3.1
+
 ## 2.3.0
 
 ### Minor Changes
