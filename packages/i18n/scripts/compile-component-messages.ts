@@ -37,10 +37,24 @@ import { LOCALE_CODES } from "./locales";
 const LOCALES = LOCALE_CODES;
 
 /**
+ * Special mappings for component name exceptions that don't follow standard PascalCase → kebab-case conversion
+ */
+const COMPONENT_DIR_MAPPING: Record<string, string> = {
+  ComboBox: "combobox", // Compound word treated as single word (not combo-box)
+};
+
+/**
  * Convert component name to directory name (PascalCase → kebab-case)
  * Example: "Alert" → "alert", "DatePicker" → "date-picker"
+ * Special cases are handled via COMPONENT_DIR_MAPPING
  */
 function componentToDir(component: string): string {
+  // Check for special case mappings first
+  if (COMPONENT_DIR_MAPPING[component]) {
+    return COMPONENT_DIR_MAPPING[component];
+  }
+
+  // Default conversion: PascalCase → kebab-case
   return component
     .replace(/([A-Z])/g, "-$1")
     .toLowerCase()

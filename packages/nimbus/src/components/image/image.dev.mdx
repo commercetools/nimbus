@@ -304,7 +304,7 @@ const App = () => (
 - **Role**: The Image component renders as an `<img>` element with implicit `img` role
 - **Labeling**: Always provide descriptive `alt` text. For complex images (charts, diagrams), consider providing additional context through captions or aria-describedby
 
-#### Keyboard Navigation
+#### Keyboard navigation
 
 Images are not focusable by default. Keyboard navigation only applies when images are wrapped in interactive elements such as buttons or links. In those cases, ensure the wrapping element has proper focus indicators and keyboard event handlers.
 
@@ -328,6 +328,7 @@ export const Example = () => (
 
 <PropsTable id="Image" />
 
+
 The Image component accepts all standard HTML `<img>` attributes including:
 - `src`: Image source URL
 - `alt`: Alternative text for accessibility
@@ -341,6 +342,7 @@ The Image component accepts all standard HTML `<img>` attributes including:
 Plus Chakra UI style props and the following enhanced props:
 - `fit`: Object fit behavior (maps to `object-fit` CSS property)
 - `align`: Object position (maps to `object-position` CSS property)
+
 
 ## Common patterns
 

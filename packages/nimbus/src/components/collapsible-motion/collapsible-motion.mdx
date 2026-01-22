@@ -18,7 +18,7 @@ A modern, accessible implementation of collapsible content with smooth height an
 
 CollapsibleMotion is a compound component that provides smooth, accessible collapsible content with height animations. It combines React Aria's accessibility features with Chakra UI's theming system to deliver a robust foundation for disclosure patterns, accordions, and expandable content sections.
 
-### Key Features
+### Key features
 
 - **Smooth height animations**: Customizable duration with automatic content measurement
 - **Full accessibility support**: Proper ARIA attributes and screen reader compatibility
@@ -172,15 +172,8 @@ const App = () => {
 
 CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets WCAG 2.1 AA standards.
 
-### Keyboard Navigation
+### Screen reader support
 
-| Key     | Action                             |
-| ------- | ---------------------------------- |
-| `Tab`   | Move focus to/from trigger element |
-| `Space` | Activate trigger when focused      |
-| `Enter` | Activate trigger when focused      |
-
-### Screen Reader Support
 
 - Automatically applies proper ARIA attributes (`aria-expanded`, `aria-controls`)
 - Content is not focusable when collapsed, improving screen reader experience
@@ -280,13 +273,7 @@ const App = () => {
 };
 ```
 
-## Specs
-
-<PropsTable id="CollapsibleMotionRoot" />
-
-<PropsTable id="CollapsibleMotionContent" />
-
-## Best Practices
+## Best practices
 
 ### Performance
 

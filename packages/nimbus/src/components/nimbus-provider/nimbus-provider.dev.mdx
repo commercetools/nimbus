@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
 
 ### Locale configuration
 
-Specify a locale using a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to control the language for all Nimbus components with internationalized text (date pickers, form validation messages, etc.).
+`NimbusProvider` accepts a `locale` prop and forwards it to `NimbusI18nProvider` internally. Specify a locale using a [BCP47 language tag](https://en.wikipedia.org/wiki/IETF_language_tag) to control the language for all Nimbus components with internationalized text (date pickers, form validation messages, etc.).
 
 ```tsx
 import { NimbusProvider } from '@commercetools/nimbus';

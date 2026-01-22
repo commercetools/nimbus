@@ -20,6 +20,13 @@ A number input allows users to enter numerical values and adjust them incrementa
 
 A number input allows users to enter a numeric value and adjust it using stepper buttons. It provides a quick and precise way to modify values within defined parameters, especially for small incremental changes.
 
+
+### Key features
+
+- **Value Clamping:** If a user types a value outside the defined min or max range, the value will snap to the nearest valid step or the min/max value on blur.
+- **Decimals:** Supports decimal values and step sizes.
+- **Percentages:** Can be configured to display values as percentages, automatically multiplying input by 100 for display and dividing by 100 for output.
+
 ### Resources
 
 Deep dive into implementation details and access the Nimbus design library.
@@ -122,25 +129,6 @@ Simple interactions are vital because they minimize user effort and cognitive lo
 > - Present a number input without clear feedback for different states.
 
 <img src="/images/number-input/number-input-dont.png" alt="number input dont guideline" width="275px" />
-
-## Specs
-
-### Keyboard interaction
-
-- `ArrowUp`: Increments the value.
-- `ArrowDown`: Decrements the value.
-- `Shift + ArrowUp/Down`: Increments/decrements the value by a larger step (typically 10x the defined step).
-- `Scroll Wheel`: Increments/decrements the value when the input is focused.
-
-### Features
-
-- **Value Clamping:** If a user types a value outside the defined min or max range, the value will snap to the nearest valid step or the min/max value on blur.
-- **Decimals:** Supports decimal values and step sizes.
-- **Percentages:** Can be configured to display values as percentages, automatically multiplying input by 100 for display and dividing by 100 for output.
-
-## Properties
-
-<PropsTable id="NumberInput" />
 
 ## Accessibility
 

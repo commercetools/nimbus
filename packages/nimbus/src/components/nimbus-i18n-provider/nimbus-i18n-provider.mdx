@@ -24,7 +24,7 @@ The NimbusI18nProvider component provides internationalization (i18n) context fo
 
 NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider, making it easy to set the locale for all React Aria components like DatePicker, Calendar, and NumberInput. This ensures consistent formatting across your application.
 
-### Key Features
+### Key features
 
 - **Locale-aware formatting**: Controls date, number, and currency formatting based on locale
 - **React Aria integration**: Built specifically for React Aria components
@@ -40,7 +40,7 @@ NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider, ma
 
 Get familiar with the features.
 
-### Basic Usage
+### Basic usage
 
 Wrap your application with NimbusI18nProvider to set the locale for React Aria components:
 
@@ -55,7 +55,7 @@ const App = () => (
 );
 ```
 
-### Different Locales
+### Different locales
 
 Change the locale prop to switch formatting:
 
@@ -106,7 +106,7 @@ const App = () => {
 };
 ```
 
-### Multiple Providers
+### Multiple providers
 
 You can nest NimbusI18nProviders to use different locales in different parts of your app:
 
@@ -169,15 +169,11 @@ Use NimbusI18nProvider strategically to support international date and number fo
   [i18n guidelines](../../../../docs/file-type-guidelines/i18n.md) for details)
 - **Non-React Aria components**: This only affects React Aria components, not general HTML or other component libraries
 
-## Specs
-
-<PropsTable id="NimbusI18nProvider" />
-
 ## Accessibility
 
 This component ensures locale-appropriate formatting for screen reader users.
 
-### Locale Codes
+### Locale codes
 
 Accepts any valid BCP47 language tag, including but not limited to:
 
@@ -190,13 +186,14 @@ Accepts any valid BCP47 language tag, including but not limited to:
 - `zh-CN` - Chinese (Simplified, China)
 - `pt-BR` - Portuguese (Brazil)
 
-### Screen Reader Support
+### Screen reader support
+
 
 - Dates and numbers are announced in locale-appropriate formats
 - Screen readers use the specified locale for pronunciation
 - Ensures ARIA labels reflect locale conventions
 
-### Best Practices
+### Best practices
 
 - Always provide a valid BCP47 locale code
 - Use region-specific codes when formatting differs (e.g., date order, decimal separators)

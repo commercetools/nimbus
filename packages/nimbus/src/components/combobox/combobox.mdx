@@ -20,6 +20,15 @@ A combobox is an input that combines a text field with a pop-up list of options.
 
 The combobox component provides both selection and text input capabilities. It displays a list of options that users can choose from, while also allowing them to type directly into the text field. This functionality improves user experience by assisting with value selection and, in some cases, prevents invalid entries.
 
+### Key features
+
+- **External State Management:** Full control over async logic using React Stately's `useAsyncList`
+- **Debouncing:** Use `useDebouncedCallback` from `use-debounce` to reduce API calls while typing
+- **Minimum Search Length:** Implement custom validation in the `load` function
+- **Automatic Cancellation:** `useAsyncList` cancels previous requests via AbortSignal
+- **Loading States:** Access `list.loadingState` to display loading indicators
+- **Error Handling:** Manage errors in your `load` function with full control
+
 ### Resources
 
 Deep dive into implementation details and access the Nimbus design library.
@@ -281,14 +290,6 @@ const App = () => {
 };
 ```
 
-**Key features of this pattern:**
-- **External State Management:** Full control over async logic using React Stately's `useAsyncList`
-- **Debouncing:** Use `useDebouncedCallback` from `use-debounce` to reduce API calls while typing
-- **Minimum Search Length:** Implement custom validation in the `load` function
-- **Automatic Cancellation:** `useAsyncList` cancels previous requests via AbortSignal
-- **Loading States:** Access `list.loadingState` to display loading indicators
-- **Error Handling:** Manage errors in your `load` function with full control
-
 ## Guidelines
 
 A combobox combines a text input with a dropdown list, allowing users to type a value or select from predefined options.
@@ -348,20 +349,6 @@ A well-designed combobox enhances user efficiency and accuracy by offering flexi
 
 <img src="/images/combobox/combobox-dont.png" alt="combobox do guideline" width="316px" />
 
-## Specs
-
-### Features
-
-- **Dynamic Filtering:** Options are filtered in real-time as users type
-- **Keyboard Navigation:** Full keyboard support with arrow keys and enter
-- **Custom Values:** Allows users to enter values not in the predefined list
-- **Multi-Selection:** Supports both single and multiple selection modes
-- **Accessibility:** Built-in ARIA attributes and screen reader support
-- **Loading States:** Shows loading indicators during async operations
-
-## Properties
-
-<PropsTable id="ComboBox" />
 
 ## Accessibility
 
@@ -402,29 +389,12 @@ const App = () => {
 }
 ```
 
-## Specs
-
-<PropsTable id="ComboBox" />
-
 ## Accessibility
 
 This component is built with React Aria and follows WCAG 2.1 AA guidelines.
 
-### Keyboard Navigation
+### Screen reader support
 
-| Key          | Action                                      |
-| ------------ | ------------------------------------------- |
-| `Tab`        | Move focus to/from combobox                 |
-| `Enter`      | Select highlighted option or create custom option |
-| `Space`      | Toggle popover open/closed when focused     |
-| `ArrowDown`  | Move focus to next option                   |
-| `ArrowUp`    | Move focus to previous option               |
-| `Home`       | Move focus to first option                  |
-| `End`        | Move focus to last option                   |
-| `Escape`     | Close popover and clear focus               |
-| `Backspace`  | Remove last selected tag (multi-select mode) |
-
-### Screen Reader Support
 
 - Properly announces combobox role and state
 - Announces open/closed state of popover
@@ -433,7 +403,7 @@ This component is built with React Aria and follows WCAG 2.1 AA guidelines.
 - Announces loading state
 - Provides descriptive labels for all interactive elements
 
-### Accessibility Standards
+### Accessibility standards
 
 - Always provide a visible label for the input.
 - If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.

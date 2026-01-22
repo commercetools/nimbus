@@ -40,7 +40,7 @@ const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
 
 Visually displaying keyboard components helps users learn how to work more quickly and more efficiently. 
 
-### Best Practices
+### Best practices
 
 - **Contextual usage:** Only use the KBD component when referencing a literal keyboard key press or shortcut. Do not use it for general UI elements (like buttons or links).
 - **Maintain conciseness:** Keep the content inside the KBD component short—usually one or two words, or a symbol—to represent the specific key (e.g., Enter, Shift, Ctrl).
@@ -66,10 +66,6 @@ This component is an additional way to convey information in a non interactive w
 - Don't use KBD for displaying long code snippets (use a `<code>` block instead).
 - Don't use KBD without accompanying explanatory text to provide context.
 
-### Properties
-
-<PropsTable id="Kbd" />
-
 ### Accessibility
 
 Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
@@ -78,7 +74,7 @@ Accessibility ensures that digital content and functionality are usable by every
 const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
 ```
 
-### Accessibility Standards
+### Accessibility standards
 
 - **Semantic Meaning:** The `<kbd>` element provides clear semantic meaning to screen readers, indicating that the enclosed text represents keyboard input.
 - **Reading Flow:** Ensure the KBD component doesn't interrupt the natural reading flow of the surrounding sentence.
