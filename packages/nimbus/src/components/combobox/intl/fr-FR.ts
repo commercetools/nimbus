@@ -6,7 +6,7 @@
 
 export default {
   clearSelection: `Effacer la sélection`,
-  options: `Options menu`,
+  options: `Menu d'options`,
   selectedValues: `Valeurs sélectionnées`,
-  toggleOptions: `Toggle options`,
+  toggleOptions: `Basculer les options`,
 };
