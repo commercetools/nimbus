@@ -233,6 +233,27 @@ git pull origin main
 git checkout -b security/fix-alerts-$(date +%Y-%m-%d)
 ```
 
+**Immediately after branch creation, verify you are on the new branch:**
+
+```bash
+git branch --show-current
+```
+
+**If branch creation fails** (e.g., branch already exists, checkout error): Stop
+immediately and report:
+
+```
+❌ Branch creation failed
+
+Could not create branch: security/fix-alerts-YYYY-MM-DD
+
+Reason: [specific error message from git]
+
+No changes were made. Please investigate the issue before re-running this command.
+```
+
+Exit without making any changes. Do NOT proceed to update dependencies.
+
 ### 5.2 Update Dependencies
 
 For each auto-fixable alert:
@@ -465,12 +486,24 @@ The PR is ready for review.
 | Peer dep conflict  | Move alert to "needs manual attention" with conflict details |
 | pnpm install fails | Rollback, report error, exit                                 |
 
+### Git Errors
+
+| Error                  | Response                                          |
+| ---------------------- | ------------------------------------------------- |
+| Branch creation fails  | Stop immediately, report error, exit (no changes) |
+| Branch already exists  | Stop, report conflict, let user investigate       |
+| Not on expected branch | Stop immediately, do NOT proceed with any changes |
+| Push fails             | Report error, branch remains local                |
+
 ---
 
 ## Important Constraints
 
 - You MUST verify GitHub CLI authentication before proceeding
 - You MUST check for clean working tree before making changes
+- You MUST verify the feature branch was created successfully before making any
+  changes
+- You MUST stop immediately if branch creation fails - do NOT proceed on main
 - You MUST present the full plan and wait for user approval
 - You MUST run all validation (lint, typecheck, test) before committing
 - You MUST rollback ALL changes if ANY validation fails (no partial fixes)
