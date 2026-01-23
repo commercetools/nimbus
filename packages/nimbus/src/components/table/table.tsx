@@ -9,6 +9,8 @@ import type {
   TableColumnHeaderProps,
   TableCellProps,
   TableScrollAreaProps,
+  TableColumnGroupProps,
+  TableColumnProps,
 } from "./table.types";
 
 /**
@@ -93,6 +95,18 @@ const TableScrollArea = (props: TableScrollAreaProps) => {
 };
 TableScrollArea.displayName = "Table.ScrollArea";
 
+const TableColumnGroup = (props: TableColumnGroupProps) => {
+  const { ref, ...restProps } = props;
+  return <ChakraTable.ColumnGroup ref={ref} {...restProps} />;
+};
+TableColumnGroup.displayName = "Table.ColumnGroup";
+
+const TableColumn = (props: TableColumnProps) => {
+  const { ref, ...restProps } = props;
+  return <ChakraTable.Column ref={ref} {...restProps} />;
+};
+TableColumn.displayName = "Table.Column";
+
 /**
  * Export Table with all sub-components as a compound component
  */
@@ -106,4 +120,6 @@ export const Table = {
   ColumnHeader: TableColumnHeader,
   Cell: TableCell,
   ScrollArea: TableScrollArea,
+  ColumnGroup: TableColumnGroup,
+  Column: TableColumn,
 };
