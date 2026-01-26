@@ -4,6 +4,54 @@ import userEvent from "@testing-library/user-event";
 import { NumberInput, NimbusProvider } from "@commercetools/nimbus";
 
 /**
+ * ## Why These Tests Use Keyboard Events Instead of Button Clicks
+ *
+ * As of React Aria 3.45.0 (and changes introduced in the April 2025 release),
+ * the increment/decrement button clicks no longer work reliably in JSDOM tests.
+ *
+ * ### Root Cause: Pointer Events Fallback Removal
+ *
+ * React Aria's `@react-aria/interactions` package reduced bundle size by 22%
+ * by "removing old browser fallbacks for pointer events."
+ * (See: https://react-spectrum.adobe.com/releases/2025-04-11.html)
+ *
+ * ### How NumberField Buttons Work
+ *
+ * The increment/decrement buttons use React Aria's `usePress` hook with
+ * `onPressStart` events. The `useSpinButton` hook handles value changes through:
+ * - `onPressStart` - Initiates increment/decrement
+ * - `onPressUp` - Stops spinning
+ * - `onPressEnd` - For touch, only increments if spinning hasn't occurred
+ *
+ * ### The JSDOM Problem
+ *
+ * JSDOM has incomplete Pointer Events support:
+ * 1. Pointer Events (`pointerdown`, `pointerup`) are the modern standard
+ * 2. Mouse Events (`mousedown`, `mouseup`) are the legacy fallback
+ * 3. React Aria previously had fallback code for mouse events - now removed
+ *
+ * When `user.click()` is called in JSDOM:
+ * - It dispatches mouse events (`mousedown`, `mouseup`, `click`)
+ * - React Aria's `usePress` only listens for pointer events
+ * - The button receives the click but `usePress` never recognizes it
+ * - Therefore `onPressStart` never fires, increment/decrement never happens
+ *
+ * ### Why Keyboard Works
+ *
+ * Keyboard events (`keydown`, `keyup`) are fully supported in JSDOM.
+ * `useSpinButton` has a separate `onKeyDown` handler that directly calls
+ * `onIncrement`/`onDecrement` - no pointer events involved.
+ *
+ * ### Testing Strategy
+ *
+ * - **JSDOM unit tests**: Use keyboard arrows (ArrowUp/ArrowDown)
+ * - **Storybook browser tests**: Button clicks work fine in real Chromium
+ *
+ * This is actually correct behavior - keyboard interaction is the accessible
+ * interface for NumberField, while stepper buttons are for mouse/touch users.
+ */
+
+/**
  * @docs-section basic-rendering
  * @docs-title Basic Rendering Tests
  * @docs-description Verify the component renders with expected elements
