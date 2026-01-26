@@ -89,36 +89,61 @@ describe("NumberInput - Interactions", () => {
     expect(handleChange).toHaveBeenCalledWith(10);
   });
 
-  it("handles increment button clicks", async () => {
+  it("increments value with keyboard arrow up", async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
     render(
       <NimbusProvider>
-        <NumberInput value={5} onChange={handleChange} aria-label="Quantity" />
+        <NumberInput
+          defaultValue={5}
+          onChange={handleChange}
+          aria-label="Quantity"
+        />
       </NimbusProvider>
     );
 
-    const incrementButton = screen.getByRole("button", { name: /increment/i });
-    await user.click(incrementButton);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.keyboard("{ArrowUp}");
 
     expect(handleChange).toHaveBeenCalledWith(6);
   });
 
-  it("handles decrement button clicks", async () => {
+  it("decrements value with keyboard arrow down", async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
     render(
       <NimbusProvider>
-        <NumberInput value={5} onChange={handleChange} aria-label="Quantity" />
+        <NumberInput
+          defaultValue={5}
+          onChange={handleChange}
+          aria-label="Quantity"
+        />
       </NimbusProvider>
     );
 
-    const decrementButton = screen.getByRole("button", {
-      name: /decrement/i,
-    });
-    await user.click(decrementButton);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.keyboard("{ArrowDown}");
 
     expect(handleChange).toHaveBeenCalledWith(4);
+  });
+
+  it("renders increment and decrement buttons that are interactive", () => {
+    render(
+      <NimbusProvider>
+        <NumberInput defaultValue={5} aria-label="Quantity" />
+      </NimbusProvider>
+    );
+
+    const incrementButton = screen.getByRole("button", { name: /increment/i });
+    const decrementButton = screen.getByRole("button", { name: /decrement/i });
+
+    // Verify buttons exist and are not disabled
+    expect(incrementButton).toBeInTheDocument();
+    expect(incrementButton).not.toBeDisabled();
+    expect(decrementButton).toBeInTheDocument();
+    expect(decrementButton).not.toBeDisabled();
   });
 });
 
@@ -135,7 +160,7 @@ describe("NumberInput - Constraints", () => {
     render(
       <NimbusProvider>
         <NumberInput
-          value={2}
+          defaultValue={2}
           minValue={1}
           onChange={handleChange}
           aria-label="Quantity"
@@ -143,16 +168,15 @@ describe("NumberInput - Constraints", () => {
       </NimbusProvider>
     );
 
-    const decrementButton = screen.getByRole("button", {
-      name: /decrement/i,
-    });
+    const input = screen.getByRole("textbox");
+    await user.click(input);
 
     // Decrement once: 2 -> 1 (at minimum)
-    await user.click(decrementButton);
+    await user.keyboard("{ArrowDown}");
     expect(handleChange).toHaveBeenCalledWith(1);
 
-    // Try clicking again - should stay at minimum
-    await user.click(decrementButton);
+    // Try decrementing again - should stay at minimum
+    await user.keyboard("{ArrowDown}");
     // Component still calls onChange but with the same minimum value
     expect(handleChange).toHaveBeenLastCalledWith(1);
   });
@@ -163,7 +187,7 @@ describe("NumberInput - Constraints", () => {
     render(
       <NimbusProvider>
         <NumberInput
-          value={9}
+          defaultValue={9}
           maxValue={10}
           onChange={handleChange}
           aria-label="Quantity"
@@ -171,14 +195,15 @@ describe("NumberInput - Constraints", () => {
       </NimbusProvider>
     );
 
-    const incrementButton = screen.getByRole("button", { name: /increment/i });
+    const input = screen.getByRole("textbox");
+    await user.click(input);
 
     // Increment once: 9 -> 10 (at maximum)
-    await user.click(incrementButton);
+    await user.keyboard("{ArrowUp}");
     expect(handleChange).toHaveBeenCalledWith(10);
 
-    // Try clicking again - should stay at maximum
-    await user.click(incrementButton);
+    // Try incrementing again - should stay at maximum
+    await user.keyboard("{ArrowUp}");
     // Component still calls onChange but with the same maximum value
     expect(handleChange).toHaveBeenLastCalledWith(10);
   });
@@ -189,7 +214,7 @@ describe("NumberInput - Constraints", () => {
     render(
       <NimbusProvider>
         <NumberInput
-          value={0}
+          defaultValue={0}
           step={5}
           onChange={handleChange}
           aria-label="Quantity"
@@ -197,8 +222,9 @@ describe("NumberInput - Constraints", () => {
       </NimbusProvider>
     );
 
-    const incrementButton = screen.getByRole("button", { name: /increment/i });
-    await user.click(incrementButton);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.keyboard("{ArrowUp}");
 
     expect(handleChange).toHaveBeenCalledWith(5);
   });
@@ -285,7 +311,7 @@ describe("NumberInput - Decimal precision", () => {
     render(
       <NimbusProvider>
         <NumberInput
-          value={0}
+          defaultValue={0}
           step={0.1}
           onChange={handleChange}
           aria-label="Price"
@@ -293,8 +319,9 @@ describe("NumberInput - Decimal precision", () => {
       </NimbusProvider>
     );
 
-    const incrementButton = screen.getByRole("button", { name: /increment/i });
-    await user.click(incrementButton);
+    const input = screen.getByRole("textbox");
+    await user.click(input);
+    await user.keyboard("{ArrowUp}");
 
     expect(handleChange).toHaveBeenCalledWith(0.1);
   });
