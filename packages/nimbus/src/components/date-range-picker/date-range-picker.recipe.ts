@@ -18,8 +18,6 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
     },
 
     group: {
-      "--border-width": "{sizes.25}",
-      "--border-color": "{colors.neutral.7}",
       // ========================================
       // BASE LAYOUT & VISUAL PROPERTIES
       // ========================================
@@ -28,7 +26,6 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       justifyContent: "flex-start",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       borderRadius: "200",
-      bg: "neutral.1",
       px: "300",
       gap: 0,
       position: "relative", // Ensure stacking context for border
@@ -102,14 +99,16 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       },
     },
     variant: {
-      solid: {},
+      solid: {
+        group: {
+          "--border-width": "{sizes.25}",
+          "--border-color": "{colors.neutral.7}",
+          bg: "neutral.1",
+        },
+      },
       ghost: {
         group: {
           bg: "transparent",
-          px: "300",
-          _hover: {
-            bg: "primary.2",
-          },
         },
       },
     },
