@@ -47,11 +47,6 @@ export type AvatarProps = OmitInternalProps<AvatarRootSlotProps> &
      */
     alt?: string;
     /**
-     * Whether the avatar is disabled
-     * @default false
-     */
-    isDisabled?: boolean;
-    /**
      * Custom content to override default avatar rendering
      */
     children?: React.ReactNode;
