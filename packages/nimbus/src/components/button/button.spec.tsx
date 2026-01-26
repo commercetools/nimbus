@@ -166,4 +166,31 @@ describe("Button", () => {
       expect(buttonRef.current).toBe(button);
     });
   });
+
+  describe("DOM prop filtering", () => {
+    it("Does not forward React Aria event props to DOM", () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      render(
+        <Button.Context.Provider
+          value={{
+            onFocusChange: () => {},
+            onHoverStart: () => {},
+            onPressChange: () => {},
+          }}
+        >
+          <Button data-testid="test">Test</Button>
+        </Button.Context.Provider>
+      );
+
+      // Should not warn about unknown event handler properties
+      expect(consoleSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining("Unknown event handler property")
+      );
+
+      consoleSpy.mockRestore();
+    });
+  });
 });
