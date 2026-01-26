@@ -23,23 +23,52 @@ How to add Nimbus to your react frontend.
 
 You can install Nimbus using your preferred package manager.
 
-### pnpm
+### Core Installation
+
+Install the core Nimbus packages along with required peer dependencies:
+
+#### pnpm
 
 ```bash
-pnpm add @commercetools/nimbus @commercetools/nimbus-icons
+pnpm add @commercetools/nimbus @commercetools/nimbus-icons @chakra-ui/react
 ```
 
-### npm
+#### npm
 
 ```bash
-npm install @commercetools/nimbus @commercetools/nimbus-icons
+npm install @commercetools/nimbus @commercetools/nimbus-icons @chakra-ui/react
 ```
 
-### yarn
+#### yarn
 
 ```bash
-yarn add @commercetools/nimbus @commercetools/nimbus-icons
+yarn add @commercetools/nimbus @commercetools/nimbus-icons @chakra-ui/react
 ```
+
+### Rich Text Editor (Optional)
+
+If you're using the Rich Text Input component, also install the Slate dependencies:
+
+#### pnpm
+
+```bash
+pnpm add slate@0.75.0 slate-history@0.113.1 slate-hyperscript@0.77.0 slate-react@0.75.0
+```
+
+#### npm
+
+```bash
+npm install slate@0.75.0 slate-history@0.113.1 slate-hyperscript@0.77.0 slate-react@0.75.0
+```
+
+#### yarn
+
+```bash
+yarn add slate@0.75.0 slate-history@0.113.1 slate-hyperscript@0.77.0 slate-react@0.75.0
+```
+
+> [!NOTE]
+> Nimbus requires React 19.x. If you're on an earlier version, upgrade with `pnpm add react@19 react-dom@19`
 
 ## 2. Set up NimbusProvider
 
@@ -99,9 +128,40 @@ export default App;
 That's it! You've successfully installed and set up Nimbus in your project. You
 can now explore and use the wide range of components offered by the library.
 
+## 4. Set up Testing (Optional)
+
+If you're using Jest or Vitest to test your application, you'll need to add Nimbus polyfills to your test configuration:
+
+### Jest
+
+```javascript
+// jest.config.js
+module.exports = {
+  setupFiles: [
+    '@commercetools/nimbus/setup-jsdom-polyfills'
+  ]
+};
+```
+
+### Vitest
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    setupFiles: ['@commercetools/nimbus/setup-jsdom-polyfills']
+  }
+});
+```
+
+For complete testing setup instructions, see the **[Testing Setup](/home/getting-started/testing-setup)** guide.
+
 ## Next steps
 
 Before diving into actual implementation work with Nimbus, take some time to familiarize yourself with the fundamentals.
 Once you have a solid grasp of these concepts, you'll be well-prepared to explore the individual component documentation and start building beautiful, accessible interfaces with Nimbus.
 
-👉 **[Explore the Core Concepts in detail →](/home/core-concepts)**
+### Essential Reading
+
+- 👉 **[Explore the Core Concepts in detail →](/home/getting-started/core-concepts)**
+- 🧪 **[Configure Testing Setup →](/home/getting-started/testing-setup)**
