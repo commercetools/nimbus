@@ -184,8 +184,8 @@ catalogs:
       specifier: ^3.3.1
       version: 3.3.1
     lodash:
-      specifier: ^4.17.21
-      version: 4.17.21
+      specifier: ^4.17.23
+      version: 4.17.23
 
 overrides:
   rollup: ^4.56.0
@@ -385,7 +385,7 @@ importers:
         version: 3.14.2
       lodash:
         specifier: catalog:utils
-        version: 4.17.21
+        version: 4.17.23
       prism-react-renderer:
         specifier: ^2.4.0
         version: 2.4.1(react@19.2.0)
@@ -5210,6 +5210,9 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
@@ -12690,6 +12693,8 @@ snapshots:
   lodash.startcase@4.4.0: {}
 
   lodash@4.17.21: {}
+
+  lodash@4.17.23: {}
 
   log-symbols@6.0.0:
     dependencies:
