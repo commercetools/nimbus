@@ -12,9 +12,7 @@ accessibility compliance.
 Multi-slot component **React Aria:** Uses `ComboBox` from react-aria-components
 **i18n:** 6 messages (toggleOptions, clearInputValue, suggestionsAvailable,
 etc.)
-
 ## Requirements
-
 ### Requirement: Single Selection with Input
 
 The component SHALL combine text input with selection capability.
@@ -88,6 +86,13 @@ The component SHALL control dropdown visibility intelligently.
 - **THEN** SHALL toggle dropdown open/closed
 - **AND** button SHALL show chevron icon
 - **AND** SHALL use i18n aria-label "Toggle options"
+
+#### Scenario: Close on scroll
+
+- **WHEN** dropdown is open and user scrolls the page
+- **THEN** SHALL close the dropdown
+- **AND** SHALL preserve current selection state
+- **AND** SHALL allow user to reopen dropdown after scrolling
 
 ### Requirement: Keyboard Interaction
 
@@ -339,3 +344,4 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL include selected value in form data
 - **AND** SHALL use name prop as field name
 - **AND** SHALL submit input value if allowsCustomValue={true}
+
