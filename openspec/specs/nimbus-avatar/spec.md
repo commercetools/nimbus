@@ -12,9 +12,7 @@ The Avatar component displays user profile images or initials in a visually dist
 ## Purpose
 
 Avatar provides a visual representation of users or entities within the interface. It displays profile images when available, automatically falls back to generated initials from names, and supports optional icon fallbacks. This enables users to quickly identify and associate actions, content, or data with specific users or entities throughout the application.
-
 ## Requirements
-
 ### Requirement: Image Display
 The component SHALL display user profile images from provided URLs.
 
@@ -281,22 +279,6 @@ The component SHALL prevent unintended text selection.
 - **AND** SHALL maintain visual polish
 - **AND** SHALL not interfere with surrounding text selection
 
-### Requirement: Disabled State Support
-The component SHALL support disabled visual state.
-
-#### Scenario: Disabled styling
-- **WHEN** isDisabled prop is set to true
-- **THEN** SHALL apply layerStyle "disabled" from theme
-- **AND** SHALL reduce opacity and visual prominence
-- **AND** SHALL indicate non-interactive state
-- **AND** SHALL apply to both image and initials display
-
-#### Scenario: Button context
-- **WHEN** avatar is wrapped in button element
-- **THEN** SHALL apply cursor "button" style
-- **AND** recipe rule `"button&"` SHALL add button cursor
-- **AND** SHALL indicate interactive capability
-
 ### Requirement: Focus Styling
 The component SHALL provide focus indicators when interactive.
 
@@ -442,35 +424,21 @@ The component SHALL accept data attributes per nimbus-core standards.
 - **AND** SHALL not require data-testid for basic testing
 
 ### Requirement: Type Safety
-The component SHALL provide comprehensive TypeScript types per nimbus-core standards.
 
-#### Scenario: Props interface
-- **WHEN** component is imported
-- **THEN** SHALL export AvatarProps interface from avatar.types.ts
-- **AND** SHALL include JSDoc comments for all props
-- **AND** SHALL extend OmitInternalProps<AvatarRootSlotProps>
-- **AND** SHALL include HTMLAttributes<HTMLDivElement>
+The component SHALL provide comprehensive TypeScript types per nimbus-core
+standards.
 
-#### Scenario: Recipe props
-- **WHEN** component uses recipe
-- **THEN** SHALL define AvatarRecipeProps type
-- **AND** SHALL include size variant with autocomplete (RecipeProps<"avatar">["size"])
-- **AND** SHALL include UnstyledProp for unstyled variant support
+#### Scenario: Required vs optional props (MODIFIED)
 
-#### Scenario: Slot props
-- **WHEN** component defines slots
-- **THEN** SHALL export AvatarRootSlotProps type
-- **AND** SHALL be defined as HTMLChakraProps<"div", AvatarRecipeProps>
-- **AND** SHALL provide type safety for slot component
-
-#### Scenario: Required vs optional props
 - **WHEN** defining component props
 - **THEN** firstName SHALL be required string
 - **AND** lastName SHALL be required string
 - **AND** src SHALL be optional string
 - **AND** alt SHALL be optional string
 - **AND** size SHALL be optional with type from recipe
-- **AND** isDisabled SHALL be optional boolean with default false
+- ~~**AND** isDisabled SHALL be optional boolean with default false~~
+
+**Change:** Removed `isDisabled` prop from type definition.
 
 ### Requirement: Theme Registration
 The component recipe SHALL be registered in theme configuration per nimbus-core standards.
@@ -605,3 +573,4 @@ The component SHALL follow consistent props handling pattern.
 - **THEN** SHALL create sharedProps object with aria-label, ref, and ...rest
 - **AND** SHALL spread sharedProps onto AvatarRoot component
 - **AND** SHALL ensure all relevant props reach root element
+
