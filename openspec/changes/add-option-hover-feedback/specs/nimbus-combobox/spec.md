@@ -29,3 +29,37 @@ standards.
 - **AND** hover styling SHALL be independent of keyboard focus state
 - **AND** SHALL NOT apply hover styling to disabled options
 - **AND** SHALL apply consistently across single-select and multi-select modes
+
+## MODIFIED Requirements
+
+### Requirement: Dropdown Opening
+
+The component SHALL control dropdown visibility intelligently.
+
+#### Scenario: Open on focus
+
+- **WHEN** input receives focus
+- **THEN** SHALL open dropdown
+- **AND** SHALL show all options (if no filter applied)
+- **OR** SHALL show filtered options
+
+#### Scenario: Open on input
+
+- **WHEN** user types in input
+- **THEN** SHALL open dropdown if closed
+- **AND** SHALL update filtered options
+- **AND** SHALL highlight first matching option
+
+#### Scenario: Toggle button
+
+- **WHEN** user clicks dropdown toggle button
+- **THEN** SHALL toggle dropdown open/closed
+- **AND** button SHALL show chevron icon
+- **AND** SHALL use i18n aria-label "Toggle options"
+
+#### Scenario: Close on scroll
+
+- **WHEN** dropdown is open and user scrolls the page
+- **THEN** SHALL close the dropdown
+- **AND** SHALL preserve current selection state
+- **AND** SHALL allow user to reopen dropdown after scrolling

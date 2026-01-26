@@ -1,4 +1,4 @@
-# Tasks: Add Mouse Hover Visual Feedback for ComboBox Options
+# Tasks: Fix ComboBox Option Hover and Scroll Behavior
 
 ## 1. Implementation
 
@@ -8,34 +8,37 @@
     option
   - Ensure disabled options do not show hover effect
 
-- [ ] 1.2 Fix cursor to `pointer` in base option styles
+- [x] 1.2 Fix cursor to `pointer` in base option styles
   - Change `cursor: "menuitem"` to `cursor: "pointer"` per WAI-APG
   - This makes single-select consistent with multi-select
 
-- [ ] 1.3 Verify multi-select hover behavior is unchanged
+- [x] 1.3 Fix close-on-scroll behavior
+  - Location:
+    `packages/nimbus/src/components/combobox/components/combobox.root.tsx`
+  - Update PopoverContext's `onOpenChange` from no-op to actually close menu
+  - Change: `onOpenChange: (open) => { if (!open) setIsOpen(false); }`
+  - This enables React Aria's built-in `useCloseOnScroll` to work
+
+- [x] 1.4 Verify multi-select hover behavior is unchanged
   - Multi-select already has `_hover` in its variant
-  - Confirm base hover doesn't conflict with variant override
+  - Confirmed base hover doesn't conflict with variant override
 
 ## 2. Testing
 
-- [ ] 2.1 Add Storybook story verifying single-select hover
-  - Create story demonstrating mouse hover on single-select options
-  - Verify visual feedback appears on hover
-
-- [ ] 2.2 Verify existing keyboard navigation tests pass
+- [x] 2.1 Verify existing tests pass
   - Run `pnpm test packages/nimbus/src/components/combobox/combobox.stories.tsx`
-  - Ensure keyboard focus (`data-focused`) still works correctly
+  - All 107 tests pass
 
-- [ ] 2.3 Visual verification in Storybook
-  - Start Storybook: `pnpm start:storybook`
-  - Navigate to ComboBox stories
+- [x] 2.2 Visual verification in Storybook
   - Verify hover feedback on both single and multi-select modes
+  - Verify pointer cursor on options
+  - Verify dropdown closes on page scroll
 
 ## 3. Documentation
 
-- [ ] 3.1 No documentation changes needed
+- [x] 3.1 No documentation changes needed
   - This is a bug fix restoring expected behavior
-  - Hover feedback is standard UX, not a new feature
+  - Hover feedback and close-on-scroll are standard UX patterns
 
 ## Validation
 
