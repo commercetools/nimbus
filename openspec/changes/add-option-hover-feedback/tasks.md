@@ -2,12 +2,17 @@
 
 ## 1. Implementation
 
-- [ ] 1.1 Add `_hover` style to base `option` slot in `combobox.recipe.ts`
+- [x] 1.1 Add `:hover` style to base `option` slot in `combobox.recipe.ts`
   - Location: `packages/nimbus/src/components/combobox/combobox.recipe.ts`
-  - Add `_hover: { bg: "primary.2" }` to base option styles (around line 176)
+  - Add `&:hover:not([data-disabled='true']): { bg: "primary.2" }` to base
+    option
   - Ensure disabled options do not show hover effect
 
-- [ ] 1.2 Verify multi-select hover behavior is unchanged
+- [ ] 1.2 Fix cursor to `pointer` in base option styles
+  - Change `cursor: "menuitem"` to `cursor: "pointer"` per WAI-APG
+  - This makes single-select consistent with multi-select
+
+- [ ] 1.3 Verify multi-select hover behavior is unchanged
   - Multi-select already has `_hover` in its variant
   - Confirm base hover doesn't conflict with variant override
 

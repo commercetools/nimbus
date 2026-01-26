@@ -165,7 +165,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     option: {
       focusRing: "outside",
-      cursor: "menuitem",
+      cursor: "pointer",
       color: "neutral.12",
       textStyle: "sm",
       padding: "200",

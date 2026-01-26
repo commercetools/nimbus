@@ -25,6 +25,7 @@ standards.
 
 - **WHEN** user hovers mouse over an option in the dropdown
 - **THEN** SHALL apply hover background styling (`primary.2`)
+- **AND** SHALL display pointer cursor to indicate interactivity (per WAI-APG)
 - **AND** hover styling SHALL be independent of keyboard focus state
 - **AND** SHALL NOT apply hover styling to disabled options
 - **AND** SHALL apply consistently across single-select and multi-select modes
