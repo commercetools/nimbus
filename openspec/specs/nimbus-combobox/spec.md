@@ -12,7 +12,9 @@ accessibility compliance.
 Multi-slot component **React Aria:** Uses `ComboBox` from react-aria-components
 **i18n:** 6 messages (toggleOptions, clearInputValue, suggestionsAvailable,
 etc.)
+
 ## Requirements
+
 ### Requirement: Single Selection with Input
 
 The component SHALL combine text input with selection capability.
@@ -261,6 +263,15 @@ standards.
 - **AND** SHALL prevent dropdown opening
 - **AND** SHALL set aria-readonly="true"
 
+#### Scenario: Option hover feedback
+
+- **WHEN** user hovers mouse over an option in the dropdown
+- **THEN** SHALL apply hover background styling (`primary.2`)
+- **AND** SHALL display pointer cursor to indicate interactivity (per WAI-APG)
+- **AND** hover styling SHALL be independent of keyboard focus state
+- **AND** SHALL NOT apply hover styling to disabled options
+- **AND** SHALL apply consistently across single-select and multi-select modes
+
 ### Requirement: Async Data Loading
 
 The component SHALL support async option loading.
@@ -344,4 +355,3 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL include selected value in form data
 - **AND** SHALL use name prop as field name
 - **AND** SHALL submit input value if allowsCustomValue={true}
-
