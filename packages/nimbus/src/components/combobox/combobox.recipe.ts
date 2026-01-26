@@ -180,6 +180,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       '&[data-focused="true"]': {
         bg: "primary.2",
       },
+      "&:hover:not([data-disabled='true'])": {
+        bg: "primary.2",
+      },
       '& [slot="label"]': {
         display: "block",
       },
