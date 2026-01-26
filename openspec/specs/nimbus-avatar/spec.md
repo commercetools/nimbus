@@ -6,6 +6,10 @@ The Avatar component displays user profile images or initials in a visually
 distinct, circular or square container. It provides automatic fallback from
 image to initials, supports multiple sizes, and integrates with the Nimbus
 design token system for consistent styling across the design system.
+The Avatar component displays user profile images or initials in a visually
+distinct, circular or square container. It provides automatic fallback from
+image to initials, supports multiple sizes, and integrates with the Nimbus
+design token system for consistent styling across the design system.
 
 **Component:** `Avatar` **Package:** `@commercetools/nimbus` **Type:**
 Single-slot component (Tier 1) **React Aria:** Not used (non-interactive display
@@ -234,6 +238,7 @@ standards.
 - **AND** SHALL support all Nimbus locales (en, de, es, fr-FR, pt-BR)
 
 #### Scenario: Custom aria-label override
+
 
 - **WHEN** aria-label prop is explicitly provided
 - **THEN** SHALL use provided aria-label value
