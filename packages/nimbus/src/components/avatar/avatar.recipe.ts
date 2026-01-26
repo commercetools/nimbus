@@ -19,9 +19,6 @@ export const avatarRecipe = defineRecipe({
     "button&": {
       cursor: "button",
     },
-    _disabled: {
-      layerStyle: "disabled",
-    },
   },
   variants: {
     size: {
