@@ -241,7 +241,7 @@ The component SHALL support internationalization for toggle button per nimbus-co
 - **WHEN** component renders
 - **THEN** SHALL use messages from password-input.i18n.ts
 - **AND** SHALL support all 5 Nimbus locales (en, de, es, fr-FR, pt-BR)
-- **AND** SHALL format messages via react-intl useIntl hook
+- **AND** SHALL format messages via plain TypeScript objects useIntl hook
 
 ### Requirement: TextInput Styling Inheritance
 The component SHALL inherit TextInput styling per nimbus-text-input spec.

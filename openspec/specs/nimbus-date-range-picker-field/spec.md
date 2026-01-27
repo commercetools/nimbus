@@ -553,7 +553,7 @@ The component SHALL support internationalization per nimbus-core standards.
 - **THEN** calendar button aria-label SHALL be localized
 - **AND** clear button aria-label SHALL be localized
 - **AND** time input labels SHALL be localized (if time granularity)
-- **AND** SHALL use react-intl for message translation
+- **AND** SHALL use plain TypeScript objects for message translation
 
 ### Requirement: Date Range Selection Use Cases
 The component SHALL support common date range selection scenarios per nimbus-core standards.

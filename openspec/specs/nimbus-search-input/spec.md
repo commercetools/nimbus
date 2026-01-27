@@ -386,7 +386,7 @@ The component SHALL support localization per nimbus-core standards.
 #### Scenario: Message integration
 - **WHEN** component renders
 - **THEN** SHALL use messages from search-input.i18n.ts
-- **AND** SHALL format messages via react-intl useIntl hook
+- **AND** SHALL format messages via plain TypeScript objects useIntl hook
 - **AND** SHALL support all 5 Nimbus locales
 - **AND** messages SHALL be extracted to @commercetools/nimbus-i18n
 

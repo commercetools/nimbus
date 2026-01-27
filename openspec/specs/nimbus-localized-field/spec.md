@@ -111,7 +111,7 @@ The component SHALL provide toggle button for expanding/collapsing locale/curren
 - **WHEN** toggle button renders
 - **THEN** collapsed state SHALL show "Show all languages" (text types) or "Show all currencies" (money type)
 - **AND** expanded state SHALL show "Hide all languages" or "Hide all currencies"
-- **AND** labels SHALL be localized via react-intl messages
+- **AND** labels SHALL be localized via plain TypeScript objects messages
 
 #### Scenario: Toggle button interaction
 - **WHEN** user clicks toggle button
@@ -581,7 +581,7 @@ The component SHALL provide localized messages per nimbus-core standards.
 #### Scenario: i18n message definition
 - **WHEN** component uses messages
 - **THEN** messages SHALL be defined in localized-field.i18n.ts
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** SHALL follow naming: Nimbus.LocalizedField.{messageKey}
 
 #### Scenario: Toggle button messages

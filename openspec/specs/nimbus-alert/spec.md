@@ -280,7 +280,7 @@ The component SHALL provide localized labels for dismiss button.
 
 #### Scenario: Default dismiss label
 - **WHEN** Alert.DismissButton renders
-- **THEN** SHALL use useIntl hook from react-intl
+- **THEN** SHALL use useLocalizedStringFormatter hook from @/hooks
 - **AND** SHALL format message from alert.i18n.ts
 - **AND** SHALL apply formatted message as aria-label
 - **AND** message id SHALL be "Nimbus.Alert.dismiss"
@@ -288,7 +288,7 @@ The component SHALL provide localized labels for dismiss button.
 
 #### Scenario: i18n message definition
 - **WHEN** i18n messages are defined
-- **THEN** SHALL define messages using defineMessages from react-intl
+- **THEN** SHALL define messages as plain TypeScript objects
 - **AND** SHALL include id, description, defaultMessage fields
 - **AND** messages SHALL be extractable for translation
 - **AND** SHALL integrate with Transifex workflow
