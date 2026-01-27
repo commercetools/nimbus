@@ -1,8 +1,9 @@
 # Proposal #1: KPI Card
 
-> **Status**: Not Started **Depends on**: Foundation (#0) **Can parallel with**:
-> Line Chart (#2), Bar Chart (#3) **Parent Plan**:
-> [nimbus-charts-plan.md](../nimbus-charts-plan.md)
+> **Status**: Ready for Implementation **Depends on**: Foundation (#0) **Can
+> parallel with**: Line Chart (#2), Bar Chart (#3) **Parent Plan**:
+> [nimbus-charts-plan.md](../nimbus-charts-plan.md) **Last Updated**: 2026-01-27
+> (brainstorm complete)
 
 ## Overview
 
@@ -14,67 +15,237 @@ for metrics like revenue, orders, AOV, and conversion rate.
 
 ### Component API
 
-**Compound composition:**
+**Compound composition only** (matches Nimbus patterns like Alert, Dialog):
 
 ```tsx
-<KpiCard.Root>
+<KpiCard.Root variant="default">
   <KpiCard.Label>Total Revenue</KpiCard.Label>
   <KpiCard.Value>$1,234,567</KpiCard.Value>
-  <KpiCard.Trend direction="up" value={12.5} />
+  <KpiCard.Trend direction="up" sentiment="positive">
+    +12.5%
+  </KpiCard.Trend>
   <KpiCard.Comparison>vs. last month</KpiCard.Comparison>
 </KpiCard.Root>
 ```
 
-**Simple props API:**
+**All slots are optional** except Root - consumers can use just Label + Value
+for simple metrics:
 
 ```tsx
-<KpiCard
-  label="Total Revenue"
-  value={1234567}
-  trend={{ direction: "up", value: 12.5 }}
-  comparison="vs. last month"
-  valueFormatter={(v) => `$${v.toLocaleString()}`}
-/>
+<KpiCard.Root>
+  <KpiCard.Label>Active Users</KpiCard.Label>
+  <KpiCard.Value>1,234</KpiCard.Value>
+</KpiCard.Root>
 ```
 
-### Features
+### Slots
 
-- Variants: `default`, `compact`
-- Trend directions: `up`, `down`, `unchanged`
-- Trend sentiment: `positive`, `negative`, `neutral` (up isn't always good)
-- Loading state (skeleton)
-- Custom value formatting
+| Slot         | Element | Purpose                                   |
+| ------------ | ------- | ----------------------------------------- |
+| `root`       | `div`   | Container, provides context               |
+| `label`      | `div`   | Metric name (e.g., "Total Revenue")       |
+| `value`      | `div`   | Primary metric value (e.g., "$1,234,567") |
+| `trend`      | `div`   | Direction arrow + change value            |
+| `comparison` | `div`   | Context text (e.g., "vs. last month")     |
+
+### Props & Types
+
+```typescript
+// KpiCard.Root
+type KpiCardRootProps = {
+  variant?: "default" | "compact";
+  children: React.ReactNode;
+};
+
+// KpiCard.Label
+type KpiCardLabelProps = {
+  children: React.ReactNode;
+  // Inherits Chakra style props via slot
+};
+
+// KpiCard.Value
+type KpiCardValueProps = {
+  children: React.ReactNode;
+  // Inherits Chakra style props via slot
+};
+
+// KpiCard.Trend
+type TrendDirection = "up" | "down" | "unchanged";
+type TrendSentiment = "positive" | "negative" | "neutral";
+
+type KpiCardTrendProps = {
+  direction: TrendDirection;
+  sentiment: TrendSentiment;
+  children: React.ReactNode; // The formatted value, e.g., "+12.5%"
+};
+
+// KpiCard.Comparison
+type KpiCardComparisonProps = {
+  children: React.ReactNode;
+  // Inherits Chakra style props via slot
+};
+```
+
+### Variants
+
+| Variant   | Use case                           | Visual differences                                  |
+| --------- | ---------------------------------- | --------------------------------------------------- |
+| `default` | Standalone cards, dashboards       | Larger value text (`heading-medium`), standard gaps |
+| `compact` | Dense dashboards, tables, sidebars | Smaller value text (`body-base`), tighter spacing   |
+
+### Trend Indicator
+
+**Direction** controls the arrow icon:
+
+- `up` → ArrowUpward icon
+- `down` → ArrowDownward icon
+- `unchanged` → Remove (minus) icon
+
+**Sentiment** controls the color (independent from direction):
+
+- `positive` → `positive.11` (green) - good change
+- `negative` → `critical.11` (red) - bad change
+- `neutral` → `neutral.11` (gray) - informational
+
+This separation is critical because "up" isn't always good (e.g., bounce rate
+increasing is bad).
+
+### Recipe
+
+```typescript
+export const kpiCardRecipe = defineSlotRecipe({
+  slots: ["root", "label", "value", "trend", "comparison"],
+  className: "nimbus-kpi-card",
+
+  base: {
+    root: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "100",
+    },
+    label: {
+      color: "neutral.11",
+      fontSize: "body-small",
+      fontWeight: "400",
+    },
+    value: {
+      color: "neutral.12",
+      fontWeight: "600",
+    },
+    trend: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "50",
+      fontSize: "body-small",
+    },
+    comparison: {
+      color: "neutral.10",
+      fontSize: "body-small",
+    },
+  },
+
+  variants: {
+    variant: {
+      default: {
+        value: { fontSize: "heading-medium" },
+      },
+      compact: {
+        root: { gap: "50" },
+        value: { fontSize: "body-base" },
+      },
+    },
+    sentiment: {
+      positive: { trend: { color: "positive.11" } },
+      negative: { trend: { color: "critical.11" } },
+      neutral: { trend: { color: "neutral.11" } },
+    },
+  },
+});
+```
+
+### i18n Messages
+
+Minimal messages for screen reader announcements only (visual text comes from
+children):
+
+```typescript
+// kpi-card.i18n.ts
+export const kpiCardMessages = defineMessages({
+  trendIncreasedBy: {
+    id: "nimbus-charts.kpi-card.trend-increased-by",
+    defaultMessage: "increased by",
+  },
+  trendDecreasedBy: {
+    id: "nimbus-charts.kpi-card.trend-decreased-by",
+    defaultMessage: "decreased by",
+  },
+  trendUnchangedAt: {
+    id: "nimbus-charts.kpi-card.trend-unchanged-at",
+    defaultMessage: "unchanged at",
+  },
+});
+```
 
 ### Files to Create
 
-- `kpi-card.tsx` - Main component + compound exports
-- `kpi-card.types.ts` - Type definitions
-- `kpi-card.recipe.ts` - Slot recipe
-- `kpi-card.slots.ts` - Slot components
-- `kpi-card.i18n.ts` - Trend labels ("increased", "decreased", "unchanged")
-- `kpi-card.stories.tsx` - Stories with play functions
-- `kpi-card.mdx` - Documentation
-- `components/` - Compound part implementations
+```
+packages/nimbus-charts/src/components/kpi-card/
+├── kpi-card.tsx              # Main compound export
+├── kpi-card.types.ts         # Type definitions
+├── kpi-card.recipe.ts        # Slot recipe
+├── kpi-card.slots.ts         # Chakra slot components
+├── kpi-card.i18n.ts          # Screen reader messages
+├── kpi-card.stories.tsx      # Stories with play functions
+├── kpi-card.dev.mdx          # Developer documentation
+├── components/
+│   ├── kpi-card.root.tsx     # Root with context provider
+│   ├── kpi-card.label.tsx    # Label slot
+│   ├── kpi-card.value.tsx    # Value slot
+│   ├── kpi-card.trend.tsx    # Trend with icon + a11y
+│   └── kpi-card.comparison.tsx # Comparison slot
+└── index.ts                  # Barrel export
+```
 
 ## Deliverables
 
 - [ ] Component with types, recipe, slots
 - [ ] i18n messages for trend labels
-- [ ] Stories covering all variants, states, and a11y
+- [ ] Stories covering:
+  - Default variant with all slots
+  - Compact variant
+  - All sentiment variations (positive/negative/neutral)
+  - All direction variations (up/down/unchanged)
+  - Minimal usage (just label + value)
+  - Loading state example (with Skeleton wrapper)
+  - Accessibility test (screen reader announcement)
 - [ ] MDX documentation
+
+## Key Decisions
+
+| Aspect              | Decision                         | Rationale                                           |
+| ------------------- | -------------------------------- | --------------------------------------------------- |
+| **API style**       | Compound only                    | Matches Nimbus patterns (Alert, Dialog, Drawer)     |
+| **Trend direction** | Separate from sentiment          | "Up" isn't always good (e.g., bounce rate)          |
+| **Trend value**     | Children only                    | Formatters are consumer responsibility (Foundation) |
+| **Loading state**   | Consumer wraps with `<Skeleton>` | YAGNI - Chakra's Skeleton works well                |
+| **Container**       | Naked (no border/background)     | Consumers wrap in Card/Box as needed                |
+| **Accessibility**   | VisuallyHidden + aria-labelledby | Follows Nimbus patterns (React Aria)                |
+| **i18n**            | Minimal (a11y labels only)       | Visual text formatted by consumer                   |
 
 ## Key Considerations
 
 - **Not SVG-based** - This is a layout component, not a chart
-- **A11y**: Semantic HTML, proper heading levels, ARIA for trend indicators
-- **i18n**: Trend labels need translation ("increased by 12.5%")
+- **A11y**: Uses Nimbus's `VisuallyHidden` for trend announcements,
+  `aria-labelledby` linking value to label
+- **i18n**: Only screen reader trend labels need translation
+- **Styling**: Uses semantic color tokens, naked by default
 
 ## Starting a Session
 
 ```
-I'm working on Proposal #1 (KPI Card) for nimbus-charts.
-See docs/proposals/charts/01-kpi-card.md for scope.
+I'm implementing Proposal #1 (KPI Card) for nimbus-charts.
+See docs/proposals/charts/01-kpi-card.md for the finalized scope.
 Foundation (#0) should be complete before starting.
 
-Let's brainstorm the component API and variants.
+Let's start with [types | recipe | slots | components].
 ```
