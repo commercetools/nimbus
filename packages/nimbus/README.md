@@ -56,17 +56,13 @@ pnpm run build
 
 ### Dependencies
 
-**`react-intl` is a dev dependency only** - it is not required at runtime:
+**Message extraction and runtime:**
 
-- **In `devDependencies`**: Needed for `.i18n.ts` source files which use
-  `defineMessages` from `react-intl`. The `@formatjs/cli extract` tool expects
-  this format to extract messages.
-- **Not in `peerDependencies`**: Consumers do not need to install `react-intl`.
-  Components use compiled `.messages.ts` dictionaries at runtime, not the
-  `.i18n.ts` source files.
-- **Runtime**: Components use `LocalizedStringDictionary` from
-  `@internationalized/string` and `react-aria-components` for message retrieval,
-  not `react-intl`.
+- **Extraction**: `.i18n.ts` source files are plain TypeScript objects extracted
+  by a custom script (`packages/i18n/scripts/extract-messages.ts`).
+- **Runtime**: Components use compiled `.messages.ts` dictionaries with
+  `LocalizedStringDictionary` from `@internationalized/string` and
+  `react-aria-components` for message retrieval.
 
 ### Quick Reference
 

@@ -3,17 +3,20 @@
 ## App Overview
 
 The `blank-app` is a minimal example application demonstrating:
+
 - How to consume Nimbus components in a real application
 - Basic setup and configuration requirements
 - Example component usage and patterns
 - IntlProvider setup for internationalization
 - Chakra UI theme provider integration
 
-**This is a reference implementation** - not meant for production use. It serves as a template and testing ground for Nimbus components.
+**This is a reference implementation** - not meant for production use. It serves
+as a template and testing ground for Nimbus components.
 
 ## Purpose
 
 Use this app to:
+
 - **Test Nimbus components** in a real application context
 - **Provide examples** for consumers integrating Nimbus
 - **Validate package exports** and imports work correctly
@@ -69,7 +72,6 @@ The app shows the minimal setup required to use Nimbus:
 // src/main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { IntlProvider } from 'react-intl'
 import { ChakraProvider } from '@chakra-ui/react'
 import { nimbusTheme } from '@commercetools/nimbus'
 import messages from '@commercetools/nimbus-i18n/compiled-data/core.json'
@@ -132,8 +134,8 @@ function App() {
 Shows how to customize the Nimbus theme (optional):
 
 ```typescript
-import { createSystem, defaultConfig } from '@chakra-ui/react'
-import { nimbusRecipes } from '@commercetools/nimbus'
+import { createSystem, defaultConfig } from "@chakra-ui/react";
+import { nimbusRecipes } from "@commercetools/nimbus";
 
 // Extend or customize Nimbus theme
 const customTheme = createSystem(defaultConfig, {
@@ -141,9 +143,9 @@ const customTheme = createSystem(defaultConfig, {
     recipes: {
       ...nimbusRecipes,
       // Add custom recipes or overrides
-    }
-  }
-})
+    },
+  },
+});
 ```
 
 ### 4. Icon Usage
@@ -185,7 +187,6 @@ To create a new app based on blank-app:
     "@commercetools/nimbus-i18n": "workspace:*",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "react-intl": "^6.0.0",
     "@chakra-ui/react": "^3.0.0"
   }
 }
@@ -305,7 +306,7 @@ body {
 Import in `src/main.tsx`:
 
 ```typescript
-import './styles.css'
+import "./styles.css";
 ```
 
 ## Troubleshooting
@@ -313,6 +314,7 @@ import './styles.css'
 ### Component Not Found
 
 If imports fail:
+
 1. Ensure packages are built: `pnpm build:packages`
 2. Check component is exported from `@commercetools/nimbus`
 3. Verify package.json dependencies are correct
@@ -321,6 +323,7 @@ If imports fail:
 ### Styles Not Applying
 
 If components look unstyled:
+
 1. Verify ChakraProvider wraps the app
 2. Check nimbusTheme is imported and passed
 3. Ensure tokens package is built: `pnpm build:tokens`
@@ -329,9 +332,11 @@ If components look unstyled:
 ### IntlProvider Errors
 
 If translations fail:
+
 1. Verify IntlProvider wraps the app
 2. Check messages import path is correct
-3. Ensure i18n package is built: `pnpm --filter @commercetools/nimbus-i18n build`
+3. Ensure i18n package is built:
+   `pnpm --filter @commercetools/nimbus-i18n build`
 4. Verify locale prop matches available messages
 
 ## Notes
