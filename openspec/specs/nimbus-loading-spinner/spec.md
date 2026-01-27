@@ -356,7 +356,7 @@ The component SHALL define translatable messages per nimbus-core standards.
 #### Scenario: Message definition file
 - **WHEN** i18n messages are defined
 - **THEN** SHALL create loading-spinner.i18n.ts file
-- **AND** SHALL use defineMessages from react-intl
+- **AND** SHALL use plain object from plain TypeScript objects
 - **AND** SHALL export messages object
 
 #### Scenario: Default loading message structure

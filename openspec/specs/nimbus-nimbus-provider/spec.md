@@ -132,12 +132,12 @@ The component SHALL provide color mode context to descendants.
 - **AND** SHALL return appropriate value based on current color mode
 - **AND** SHALL support responsive styling based on theme
 
-### Requirement: react-intl Provider Integration
-The component SHALL integrate react-intl for internationalization.
+### Requirement: plain TypeScript objects Provider Integration
+The component SHALL integrate plain TypeScript objects for internationalization.
 
 #### Scenario: IntlProvider configuration
 - **WHEN** NimbusProvider renders
-- **THEN** SHALL wrap children with IntlProvider from react-intl
+- **THEN** SHALL wrap children with IntlProvider from plain TypeScript objects
 - **AND** SHALL configure locale from locale prop or navigator.language fallback
 - **AND** SHALL set defaultLocale to "en"
 - **AND** SHALL provide message formatting context to descendants
@@ -165,7 +165,7 @@ The component SHALL support locale configuration via props.
 - **WHEN** locale prop is provided
 - **THEN** SHALL accept BCP47 language tag format (e.g., 'en-US', 'de-DE', 'fr-FR')
 - **AND** SHALL validate locale format
-- **AND** SHALL pass locale to both react-intl and React Aria providers
+- **AND** SHALL pass locale to both plain TypeScript objects and React Aria providers
 
 #### Scenario: Locale propagation
 - **WHEN** locale is set

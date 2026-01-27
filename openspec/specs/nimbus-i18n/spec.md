@@ -28,7 +28,7 @@ The system SHALL provide both source and compiled translation formats.
 #### Scenario: Compiled format
 - **WHEN** translations are consumed at runtime
 - **THEN** SHALL store compiled AST format in compiled-data/ directory
-- **AND** SHALL optimize for react-intl's formatMessage performance
+- **AND** SHALL optimize for plain TypeScript objects's formatMessage performance
 - **AND** SHALL reduce bundle size after minification
 
 ### Requirement: Message ID Convention
@@ -82,7 +82,7 @@ The system SHALL extract messages from component source files.
 #### Scenario: Message definition
 - **WHEN** component defines translatable text
 - **THEN** SHALL create {component}.i18n.ts file
-- **AND** SHALL use react-intl's defineMessages
+- **AND** SHALL use plain TypeScript objects's plain object
 - **AND** SHALL include id, description, and defaultMessage fields
 
 ### Requirement: AST Format Compilation
@@ -110,11 +110,11 @@ The system SHALL support Transifex workflow for translations.
 - **AND** SHALL support bidirectional sync (extract → Transifex → sync back)
 
 ### Requirement: Component i18n Usage
-The system SHALL integrate with react-intl for message formatting.
+The system SHALL integrate with plain TypeScript objects for message formatting.
 
 #### Scenario: Component message usage
 - **WHEN** component needs localized text
-- **THEN** SHALL import useIntl hook from react-intl
+- **THEN** SHALL import useIntl hook from plain TypeScript objects
 - **AND** SHALL import messages from {component}.i18n.ts
 - **AND** SHALL call intl.formatMessage(messages.key) for formatting
 - **AND** SHALL support variable interpolation: `intl.formatMessage(messages.key, { var: value })`

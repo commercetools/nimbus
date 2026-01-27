@@ -45,19 +45,19 @@ The component SHALL provide 15 standardized error types with localized messages 
 - **THEN** missing SHALL render "This field is required. Provide a value."
 - **AND** invalid SHALL render "The provided value is invalid."
 - **AND** empty SHALL render "This field cannot be empty."
-- **AND** messages SHALL be localized via react-intl
+- **AND** messages SHALL be localized via plain TypeScript objects
 
 #### Scenario: Length validation errors
 - **WHEN** error keys min or max are truthy
 - **THEN** min SHALL render "This value is too short."
 - **AND** max SHALL render "This value is too long."
-- **AND** messages SHALL be localized via react-intl
+- **AND** messages SHALL be localized via plain TypeScript objects
 
 #### Scenario: Format validation errors
 - **WHEN** error keys format or duplicate are truthy
 - **THEN** format SHALL render "Please enter a valid format."
 - **AND** duplicate SHALL render "This value is already in use. It must be unique."
-- **AND** messages SHALL be localized via react-intl
+- **AND** messages SHALL be localized via plain TypeScript objects
 
 #### Scenario: Numeric validation errors
 - **WHEN** error keys negative, fractions, belowMin, aboveMax, or outOfRange are truthy
@@ -66,14 +66,14 @@ The component SHALL provide 15 standardized error types with localized messages 
 - **AND** belowMin SHALL render "Value must be greater than or equal to the minimum."
 - **AND** aboveMax SHALL render "Value must be less than or equal to the maximum."
 - **AND** outOfRange SHALL render "Value must be within the acceptable range."
-- **AND** messages SHALL be localized via react-intl
+- **AND** messages SHALL be localized via plain TypeScript objects
 
 #### Scenario: Server validation errors
 - **WHEN** error keys invalidFromServer, notFound, or blocked are truthy
 - **THEN** invalidFromServer SHALL render "Server validation failed. Please check your input."
 - **AND** notFound SHALL render "The requested resource was not found."
 - **AND** blocked SHALL render "This value is not allowed."
-- **AND** messages SHALL be localized via react-intl
+- **AND** messages SHALL be localized via plain TypeScript objects
 
 ### Requirement: Error Type Constants
 The component SHALL export error type constants for type-safe usage.
@@ -248,12 +248,12 @@ The component SHALL integrate seamlessly with FormField component.
 - **AND** SHALL support validation-on-blur patterns
 
 ### Requirement: Internationalization Support
-The component SHALL provide full i18n support via react-intl per nimbus-core standards.
+The component SHALL provide full i18n support via plain TypeScript objects per nimbus-core standards.
 
 #### Scenario: Message definitions
 - **WHEN** component is authored
 - **THEN** SHALL define messages in field-errors.i18n.ts
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** message IDs SHALL follow format: Nimbus.FieldErrors.{messageKey}
 - **AND** SHALL include description for each message
 

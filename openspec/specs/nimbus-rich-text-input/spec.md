@@ -665,12 +665,12 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** recipe className SHALL be "nimbus-rich-text-input"
 
 ### Requirement: Internationalization Support
-The component SHALL support comprehensive i18n via react-intl.
+The component SHALL support comprehensive i18n via plain TypeScript objects.
 
 #### Scenario: Message definitions
 - **WHEN** component uses i18n messages
 - **THEN** SHALL define 24 messages in rich-text-input.i18n.ts
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** message IDs SHALL follow pattern: Nimbus.RichTextInput.{messageKey}
 
 #### Scenario: Toolbar messages

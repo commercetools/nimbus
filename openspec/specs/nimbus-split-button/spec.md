@@ -489,7 +489,7 @@ The component SHALL support internationalization for fallback messages.
 #### Scenario: Fallback message definition
 - **WHEN** component needs fallback text
 - **THEN** SHALL define messages in split-button.i18n.ts file
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** SHALL follow naming: `Nimbus.SplitButton.noActionsAvailable`
 
 #### Scenario: Fallback message usage

@@ -136,13 +136,13 @@ Utilities and hooks SHALL have unit tests.
 - **AND** SHALL be fast and isolated
 - **AND** component behavior SHALL be tested in Storybook, NOT unit tests
 
-### Requirement: react-intl Integration
+### Requirement: plain TypeScript objects Integration
 Components with user-facing text SHALL support internationalization.
 
 #### Scenario: Message definition
 - **WHEN** component needs translatable text
 - **THEN** SHALL define messages in {component}.i18n.ts file
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** SHALL follow naming: `Nimbus.{ComponentName}.{messageKey}`
 
 #### Scenario: Message usage
@@ -164,7 +164,7 @@ The package SHALL produce tree-shakeable bundles.
 - **WHEN** package is built
 - **THEN** SHALL output ESM (index.es.js) and CommonJS (index.cjs) bundles
 - **AND** SHALL include TypeScript declarations (dist/index.d.ts)
-- **AND** SHALL externalize peer dependencies (React, Chakra, Slate, react-intl)
+- **AND** SHALL externalize peer dependencies (React, Chakra, Slate, plain TypeScript objects)
 - **AND** SHALL bundle React Aria for version stability
 
 #### Scenario: Tree-shaking support
@@ -181,7 +181,7 @@ The package SHALL declare appropriate peer dependencies.
 - **THEN** SHALL require React 19.x as peer dependency
 - **AND** SHALL require @chakra-ui/react (workspace version)
 - **AND** SHALL require @commercetools/nimbus-icons and @commercetools/nimbus-tokens
-- **AND** SHALL require react-intl 7.x for components with i18n
+- **AND** SHALL require plain TypeScript objects 7.x for components with i18n
 - **AND** SHALL require slate 0.75.x for RichTextInput component
 
 ### Requirement: Consistent Prop Patterns

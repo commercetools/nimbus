@@ -11,7 +11,7 @@ The NimbusI18nProvider component provides internationalization context specifica
 
 ## Purpose
 
-The NimbusI18nProvider component establishes the locale context for React Aria components, controlling how dates, numbers, currencies, and other locale-sensitive data are formatted and displayed. This component is specifically for React Aria's internationalization system (not react-intl text translation), and it provides the locale context that React Aria components like DatePicker, Calendar, NumberInput, and RangeCalendar rely on for proper formatting.
+The NimbusI18nProvider component establishes the locale context for React Aria components, controlling how dates, numbers, currencies, and other locale-sensitive data are formatted and displayed. This component is specifically for React Aria's internationalization system (not plain TypeScript objects text translation), and it provides the locale context that React Aria components like DatePicker, Calendar, NumberInput, and RangeCalendar rely on for proper formatting.
 
 ## Requirements
 
@@ -419,7 +419,7 @@ The component SHALL provide comprehensive MDX documentation.
 #### Scenario: Overview section
 - **WHEN** documentation renders
 - **THEN** SHALL explain component purpose for React Aria I18n
-- **AND** SHALL clarify it's for React Aria components (not react-intl text translation)
+- **AND** SHALL clarify it's for React Aria components (not plain TypeScript objects text translation)
 - **AND** SHALL list key features: locale-aware formatting, React Aria integration, BCP47 codes
 
 #### Scenario: Usage examples
