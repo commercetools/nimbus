@@ -1,0 +1,80 @@
+---
+title: Toolbar
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+These guidelines provide comprehensive direction for designing and developing
+toolbars within Nimbus.
+
+### Best practices
+
+- **Contextual placement:** Place the toolbar directly above the content it
+  controls (e.g., above a text editor, above a data table). This ensures an
+  immediate, clear connection between the tools and the content being modified.
+- **Logical grouping:** Group related actions visually using small separators
+  (like vertical lines or subtle spacing) to aid readability. For example, group
+  text alignment controls together, and export actions together.
+- **Hierarchical order:** Arrange items based on usage frequency and logical
+  flow, placing the most common or primary actions prominently on the left (in
+  LTR languages).
+- **Minimize clutter:** Avoid overcrowding the toolbar. If there are too many
+  items, use secondary controls like overflow menus to hide less frequently used
+  actions.
+
+### Usage
+
+A toolbar's use is to provide a dedicated, contextual area for a set of related,
+frequently used actions and controls to manage the content directly below it.
+
+> [!TIP]\
+> When to use
+
+- **Group related actions and controls** in a compact, container.
+- **Offer contextual actions** relevant to the content being viewed or edited
+  (e.g., formatting options in a text editor, or bulk actions for a list or
+  table).
+- **Maintain screen space** by consolidating many items into a single, compact
+  bar.
+
+> [!CAUTION]\
+> When not to use
+
+- **The primary purpose is navigation** between different pages or application
+  views; use a navigation component or tabs instead.
+- **Actions are rarely used or require complex input;** use a menu or modal
+  dialog to house these actions to simplify.
+- **The area needs to display a large amount of primary content** without being
+  obscured.
+- **Only one or two actions are needed** for a view; consider placing these
+  directly or within a relevant component, like a card.
+
+### Toolbar in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do group related actions and controls in a compact container.
+> - Offer contextual actions relevant to the content being viewed or edited
+>   (e.g., formatting options in a text editor, or bulk actions for a list).
+> - Maintain screen space by consolidating many items into a single, compact
+>   bar.
+
+![Do](/images/toolbar/toolbar-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't overcrowd the toolbar with too many items; use an overflow menu
+>   instead.
+> - Don't place unrelated actions next to each other without visual separation
+>   to group similar functions.
+> - Don't use a standard text button with a label when an icon button is
+>   sufficient and space is limited.
+> - Don't assume the user understands an icon without a descriptive tooltip.
+> - Don't hide actions that are temporarily disabled, as this causes shifting
+>   elements and breaks muscle memory.
+
+![Don't](/images/toolbar/toolbar-dont.png)

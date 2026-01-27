@@ -1,0 +1,196 @@
+---
+title: ProgressBar
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Progress bar guidelines aim to provide clear and consistent visual feedback to
+users during processing delays, ensuring they understand the system is active
+and preventing frustration by indicating that they need to wait.
+
+### Best practices
+
+- **Communicate the process:** Always provide a clear label describing the
+  process the progress bar is tracking, like 'uploading file' or 'submitting
+  form'.
+- **Show progress with numbers:** Include a percentage or a fraction (e.g., 50%
+  or 10/20) to give users a precise understanding of the progress.
+- **Provide feedback on status:** Use text to indicate the current state, such
+  as 'uploading,' 'complete,' or 'error.'
+- **Keep it moving:** The progress bar should not stop or go backward. If a task
+  is paused, the bar should also pause, and the label should reflect the new
+  status.
+- **Use the right type:** Use a determinate bar for tasks with a known end
+  point. Use an indeterminate bar for tasks with an unknown duration.
+- **Be accessible:** Ensure the progress bar is accessible to screen readers by
+  using proper ARIA attributes like `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`, and `aria-label`.
+
+### Usage
+
+Progress bars communicate the status of ongoing operations to users, reducing
+uncertainty and improving perceived performance.
+
+> [!TIP]\
+> When to use
+
+- **When a process takes a few seconds or longer:** A progress bar is useful for
+  tasks that are not instantaneous. For short delays, a spinner or loading
+  skeleton may be more appropriate.
+- **When the progress of a task can be quantified:** A progress bar is best for
+  tasks with a known beginning and end, where a percentage or specific value can
+  be tracked.
+- **To manage user expectations:** When users know a process is underway and can
+  see its progress, it reduces anxiety and provides a sense of control.
+- **To provide a visual indicator of progress:** A progress bar is a clear
+  visual cue that something is happening in the background, preventing users
+  from thinking the application has frozen or crashed.
+
+> [!CAUTION]\
+> When not to use
+
+- **For instantaneous tasks:** Do not use a progress bar for a task that takes
+  less than a second to complete. The visual appearance and disappearance of the
+  bar can be distracting.
+- **When the process cannot be measured:** Avoid using a determinate progress
+  bar if the total time or progress is unknown. This can lead to misleading
+  information and a poor user experience. An indeterminate progress bar or a
+  spinner is a better choice in this case.
+- **When providing an indefinite loading state:** For a task with an unknown or
+  infinite duration, use a spinner to indicate that a process is running without
+  implying a specific completion time.
+
+### Progress bar uses
+
+Be clear when using progress bar within the interface. It is important to let
+the user know what is happening within working processes.
+
+> [!TIP]\
+> **Do**
+>
+> - Do use a determinate progress bar when the total time or size is known. This
+>   provides a clear sense of progress and completion.
+> - Do provide a label for context. Labels help users understand what the
+>   progress bar represents.
+> - Do use a progress bar for user-initiated tasks. It gives the user a sense of
+>   control and feedback on their actions.
+> - Do ensure the progress bar is responsive. It should adapt to different
+>   screen sizes without distorting the design.
+
+```jsx-live
+const App = () => {
+  const [indexingKey, setIndexingKey] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    if (indexingKey === 0) return;
+
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, [indexingKey]);
+
+  const handleIndexClick = () => {
+    setIndexingKey((prev) => prev + 1);
+  };
+
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <Alert.Root tone="info" variant="outlined">
+        <Alert.Description>
+          Indexing your project catalog. You can keep using the Merchant Center in the meantime but your changes will be applied only after the process has finished. We will notify you once we are done.
+        </Alert.Description>
+      </Alert.Root>
+      {indexingKey > 0 && (
+        <ProgressBar
+          value={progress}
+          label="Indexing projects..."
+          colorPalette="primary"
+        />
+      )}
+      <Button
+        variant="solid"
+        colorPalette="primary"
+        width="fit-content"
+        onClick={handleIndexClick}
+      >
+        Index the project catalog
+      </Button>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use a determinate progress bar for tasks with an unknown duration. Use
+>   an indeterminate bar instead to avoid misleading the user.
+> - Don't show a progress bar without providing the context needed to understand
+>   what is being loaded.
+> - Don't use multiple progress bars for a single task. One bar should be
+>   sufficient to represent the overall progress.
+> - Don't show erratic animation with a progress bar, simplify tasks so that it
+>   can be estimated in a single bar or use an indeterminate animation instead.
+> - Don't use a progress bar for system-initiated background tasks. These tasks
+>   should be handled without user intervention or visible indicators.
+
+```jsx-live
+const App = () => {
+  const [isRunning, setIsRunning] = React.useState(false);
+  const [value, setValue] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!isRunning) return;
+
+    setValue(0);
+    const interval = setInterval(() => {
+      setValue((prev) => {
+        // Simulate erratic progress
+        const change = Math.random() > 0.5 ? 15 : -10;
+        const newValue = prev + change;
+        if (newValue > 100) return 100;
+        if (newValue < 0) return 0;
+        return newValue;
+      });
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
+  const handleStart = () => {
+    setValue(0);
+    setIsRunning(true);
+  };
+
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <ProgressBar
+        value={value}
+        label="Don't do: erratic progress loading"
+        colorPalette="primary"
+      />
+      <Button
+        onClick={handleStart}
+        isDisabled={isRunning}
+        width="fit-content"
+        colorPalette="primary"
+        variant="solid"
+      >
+        Start
+      </Button>
+    </Stack>
+  )
+}
+```

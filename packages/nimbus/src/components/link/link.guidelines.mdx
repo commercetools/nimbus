@@ -1,0 +1,165 @@
+---
+title: Link
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Link guidelines ensure that interactive text or elements are clearly
+identifiable, describe their destination or function, are keyboard accessible,
+and maintain sufficient visual contrast for all users.
+
+### Best practices
+
+- **Links are meant to be used in inline placements, buttons are standalone
+  elements.** Additionally, if you need an icon next to your link, use a link
+  styled button instead of using a link and an icon.
+- **Use links for navigation** rather than to complete an action. Links are
+  tertiary actions should give users access to information or navigate to other
+  pages when helpful to the user.
+  - Stylized navigation like footers and nav items are more often buttons rather
+    than links.
+- **Use clear and concise text:** Use link text that accurately and concisely
+  describes the destination or purpose of the link. Avoid generic phrases like
+  "click here". Remember that translation will add 20% more length on average.
+- **Accessibility:** Default color contrast passes accessibility guidelines, if
+  customizing, please ensure your links pass color contrast guidelines. Use ARIA
+  attributes to provide additional context to assistive technologies.
+
+### Usage
+
+Linked text, the clickable text that forms a hyperlink, should be used
+strategically to enhance navigation and provide access to relevant information.
+
+> [!TIP]\
+> When to use
+
+- **Navigation:** Users expect links to move them from to one location to
+  another within a product. When moving outside the product or when opening a
+  new page, use the
+  [link styled button](/components/inputs/button#tertiary-actions).
+- **Tertiary actions that need explanation:** when showing a user an error or
+  explanation it is nice to offer a link for the user.
+- **Contextual information:** To provide access to related content, definitions,
+  or supporting materials.
+
+> [!CAUTION]\
+> When not to use
+
+- **Redundancy:** If the same destination can be reached through more intuitive
+  navigation (e.g., menus, breadcrumbs).
+- **Disrupting flow:** Overuse of links within paragraphs can disrupt the
+  reading flow and make it difficult for users to focus on the main content.
+- **Ambiguity:** If the link text is unclear or doesn't accurately describe the
+  destination, it can lead to confusion and frustration.
+- **Accessibility issues:** If links are not properly styled or labeled, they
+  can be inaccessible to users with disabilities.
+
+### Length of text
+
+Keep text links short and accurately describe the action that will be taken.
+
+> [!TIP]\
+> **Do**
+>
+> - Explain where the link will go clearly, but keep it short as possible.
+
+```jsx-live
+const App = () => (
+  <Link href="#" size="sm" fontColor="primary">
+    Manage permissions
+  </Link>
+ );
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not make an entire sentence a hyperlink.
+
+```jsx-live
+const App = () => (
+  <Link href="#" size="sm" fontColor="primary">
+    Click here to know all there is to know about making custom views in the Merchant Center.
+  </Link>
+ );
+```
+
+### Actions
+
+Users expect links to navigate rather than submit actions. Do not use links to
+do what a button would accomplish better.
+
+> [!TIP]\
+> **Do**
+>
+> - Implementations like this are more familiar to the user. They will expect to navigate to the page where they can accomplish this action.
+
+```jsx-live
+const App = () =>  (
+   <Box>
+    There has been an issue with your payment.{" "}
+    <Link href="#" fontColor="primary">
+      Update payment
+    </Link>
+  </Box>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use links for actions that buttons are more commonly used for.
+
+```jsx-live
+const App = () => (
+   <Stack direction="horizontal" alignItems="center" gap="400" >
+     <Link href="#" fontColor="primary">
+      Save
+     </Link>
+     <Link href="#" fontColor="primary">
+      Delete
+     </Link>
+  </Stack>
+);
+```
+
+### Links inside alerts
+
+Text links inherit colors depending on placement.
+
+> [!TIP]\
+> **Do**
+>
+> - If possible lead the user to where they can fix or learn more about what
+>   happened so they might correct the action to complete their task.
+
+```jsx-live
+const App = () =>  (
+  <Alert.Root colorPalette="critical" variant="outlined" width="9600">
+    <Alert.Description>
+     Something went wrong. <Link>Read more</Link>
+    </Alert.Description>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not link the entire message, do not have multiple sentences in a link.
+> - Do not use default link colors when you can use inherited colors to provide
+>   the best consistency for a user.
+
+```jsx-live
+const App = () =>(
+  <Alert.Root colorPalette="critical" variant="outlined" width="9600">
+    <Alert.Description>
+     <Link color="primary">Something went wrong. Read more</Link>
+    </Alert.Description>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```

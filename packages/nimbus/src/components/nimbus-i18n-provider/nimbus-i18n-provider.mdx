@@ -137,38 +137,6 @@ const App = () => (
 );
 ```
 
-## Guidelines
-
-Use NimbusI18nProvider strategically to support international date and number formatting.
-
-### Best practices
-
-- **Wrap at root level**: Place NimbusI18nProvider at the root of your application to provide i18n context to all React Aria components
-- **Use BCP47 codes**: Always use proper BCP47 language tags (e.g., 'en-US', 'de-DE', 'fr-FR')
-- **Regional specificity**: Include region codes when formatting differs by region (e.g., 'en-US' vs 'en-GB')
-- **Dynamic locale**: Allow users to switch locales at runtime for better user experience
-- **Consistent currency**: When formatting currency, ensure the currency code matches the locale expectations
-
-### When to use
-
-> [!TIP]\
-> When to use
-
-- **International applications**: When your app serves users in multiple countries
-- **Date formatting**: When you need locale-appropriate date formats (MM/DD/YYYY vs DD.MM.YYYY)
-- **Number formatting**: When you need locale-appropriate number separators (1,234.56 vs 1.234,56)
-- **Currency formatting**: When displaying prices in different currencies and formats
-- **React Aria components**: When using DatePicker, Calendar, NumberInput, or other React Aria date/number components
-
-> [!CAUTION]\
-> When not to use
-
-- **Single locale apps**: If your app only targets one locale, you may not need NimbusI18nProvider
-- **Text translation**: This component provides locale context for React Aria
-  components. Nimbus components use compiled message dictionaries (see
-  [i18n guidelines](../../../../docs/file-type-guidelines/i18n.md) for details)
-- **Non-React Aria components**: This only affects React Aria components, not general HTML or other component libraries
-
 ## Accessibility
 
 This component ensures locale-appropriate formatting for screen reader users.

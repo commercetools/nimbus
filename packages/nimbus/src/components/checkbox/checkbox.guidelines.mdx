@@ -1,0 +1,133 @@
+---
+title: Checkbox
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Ensure users can clearly perceive and interact with binary selection options,
+providing visual and programmatic cues for their checked or unchecked state,
+along with accessible labels for understanding their purpose.
+
+### Best practices
+
+- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable
+  notifications' over 'Disable notifications’.
+- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's
+  purpose.
+- **Logical Grouping:** Group related checkboxes together visually and
+  logically.
+- **Visual Feedback:** Provide clear visual feedback when the checkbox is
+  checked or unchecked.
+- **Error Handling:** If a checkbox is required, provide clear error messages if
+  the user forgets to check it.
+
+### Usage
+
+- **Single Checkbox:** Used for binary choices (e.g., "I agree to the terms and
+  conditions").
+- **Checkbox Groups:** Allow users to select multiple options from a list.
+- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like
+  selecting multiple items in a table.
+
+### Logical grouping
+
+Maintain a clear and predictable order for checkboxes to facilitate efficient
+scanning and selection.
+
+> [!TIP]\
+> **Do**
+>
+> - Capitalize the first letter of the label.
+> - Use short and clear labeling.
+> - Group information easily for the user to make the correct selection to
+>   accomplish their goals.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Grid.Item>
+      <Checkbox isIndeterminate>All general fields</Checkbox>
+    </Grid.Item>
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected isDisabled>Product key</Checkbox>
+        <Checkbox isSelected>Name</Checkbox>
+        <Checkbox>Product type key</Checkbox>
+        <Checkbox>Description</Checkbox>
+        <Checkbox>Category keys</Checkbox>
+      </Stack>
+    </Grid.Item>
+  </Grid>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don’t overwhelm the user with options that are uncategorized.
+> - There is no reason to use all caps or punctuation.
+
+```jsx-live
+const App = () => (
+  <Grid templateColumns="repeat(2, 1fr)" gap="400">
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected>Product key</Checkbox>
+        <Checkbox isSelected>NAME...</Checkbox>
+        <Checkbox>Valid from</Checkbox>
+        <Checkbox>Discount prices</Checkbox>
+        <Checkbox>Asset name!</Checkbox>
+      </Stack>
+    </Grid.Item>
+    <Grid.Item>
+      <Stack direction="column">
+        <Checkbox isSelected>Price key?</Checkbox>
+        <Checkbox isSelected>Price value.</Checkbox>
+        <Checkbox>PRICE COUNTRY</Checkbox>
+        <Checkbox isSelected>Valid until</Checkbox>
+        <Checkbox>Category keys.</Checkbox>
+      </Stack>
+    </Grid.Item>
+  </Grid>
+)
+```
+
+### Positive framing
+
+Frame checkbox actions with affirmative language to promote clarity and user
+confidence.
+
+> [!TIP]\
+> **Do**
+>
+> - Simple labels provide clear options for users.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="1400" alignItems="center">
+    <Text fontSize="300" fontWeight="500">Preferences</Checkbox>
+    <Checkbox isSelected>Include product and variant information</Checkbox>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don’t contradict available options. This information should be simplified
+>   further.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" gap="1400" alignItems="top">
+    <Text fontSize="300" fontWeight="500">Preferences</Checkbox>
+
+    <Stack direction="column">
+      <Checkbox isIndeterminate>Don’t include Product- and Variant- level information in every row.</Checkbox>
+      <Checkbox isSelected ml="600">Don’t include Variant level information, but keep Product- level information.</Checkbox>
+    </Stack>
+  </Stack>
+)
+```

@@ -1,0 +1,77 @@
+---
+title: RangeCalendar
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Calendar guidelines focus on creating intuitive and accessible interfaces for
+viewing, navigating, and interacting with dates and events.
+
+### Best practices
+
+- **Clear visual hierarchy:** Distinguish between days, weeks, months, and
+  years. Highlight the current date and any selected dates.
+- **Intuitive navigation:** Provide clear controls to move between different
+  time periods (days, weeks, months, years).
+- **Easy date range selection:** For applications requiring date ranges, provide
+  an intuitive way to select start and end dates, often with visual
+  highlighting.
+- **Clear labels and instructions:** Provide clear labels for navigation
+  controls and any interactive elements within the calendar.
+
+### Usage
+
+A calendar is used to visually display and manage time-based information,
+allowing users to view, schedule, and interact with dates. A common way this
+component is used is within the popover, and paired with the date input.
+
+> [!TIP]\
+> When to use
+
+- **Scheduling:** When users need to select specific dates.
+- **Visualizing time-based data:** To display data or to filter data in a
+  corresponding visual.
+- **Date range selection:** When users need to select a start and end date for a
+  period.
+- **Browsing dates:** When users need to navigate through different days, weeks,
+  or months to find a specific date.
+- **Contextual awareness of dates:** When the day of the week or the
+  relationship between dates is important for decision-making.
+- **Recurring events:** To allow users to set up and manage events that repeat
+  on a regular basis.
+
+### Keeping interactions simple
+
+Simple calendar interactions are vital because they minimize user effort and
+cognitive load, allowing for quick and efficient time management, the calendar's
+primary function.
+
+> [!TIP]\
+> **Do**
+>
+> - Provide clear navigation. Make it easy to move between days, weeks, months,
+>   and years using intuitive controls (arrows, drop downs).
+> - Enable easy date range selection. If your application requires date ranges,
+>   make the selection process straightforward (e.g., click start, click end).
+> - Consider time zones (if applicable). If your application deals with users in
+>   different time zones, handle and display times accordingly.
+> - Ensure navigation controls are clearly labeled and their function is
+>   obvious.
+
+![interaction - do's](/images/range-calendar/interaction-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't over clutter. Avoid displaying too much information on the calendar
+>   grid at once, which can make it overwhelming.
+> - Don't make navigation confusing. Ensure navigation controls are clearly
+>   labeled and their function is obvious.
+> - Don't use it for simple date input. If users know the exact date, a direct
+>   date input field might be more efficient.
+> - Don't auto-submit on date selection. Avoid automatically submitting forms or
+>   triggering actions immediately after a date is selected.
+
+![interaction - dont's](/images/range-calendar/interaction-dont.png)

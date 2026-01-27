@@ -1,0 +1,120 @@
+---
+title: LoadingSpinner
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Loading spinner guidelines aim to provide clear and consistent visual feedback
+to users during processing delays, ensuring they understand the system is active
+and preventing frustration by indicating that they need to wait.
+
+### Best practices
+
+- **Appropriate placement:** Position the spinner close to the element or area
+  that's loading. For full-page loads, center the spinner on the screen. For
+  inline loading, place the spinner in the location of the content that will be
+  loading.
+- **Provide context:** If the loading time is expected to be lengthy, consider
+  adding a brief message like "Loading..." or "Please wait..." alongside the
+  spinner. For very long loading periods, consider adding a percentage bar, or
+  estimated time to let the user come back when ready.
+- **Responsive and smooth animation:** Ensure the spinner's animation is smooth
+  and doesn't lag or stutter.
+- **Accessibility:** Use ARIA attributes (e.g., aria-busy, aria-label) to
+  provide context for screen readers. If the loading time is excessive, provide
+  a way to cancel the loading process.
+- **Avoid overuse:** Use spinners only when necessary, such as during data
+  fetching or processing.
+- **Fallback options:** Have a fallback plan in case the loading action fails.
+  Display an error message, and provide a way for the user to retry.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Data is being fetched:** When your application is retrieving data from a
+  server or database, especially if it might take a noticeable amount of time.
+- **Processes are running:** During background operations, file uploads, or
+  complex calculations that cause a delay.
+- **Content is loading:** When new content is being loaded dynamically, such as
+  images, videos, or web pages.
+- **Actions are being processed:** After a user initiates an action, such as
+  submitting a form or saving data, and the system requires time to complete the
+  task.
+- **Any time a user action causes a delay:** When a user interacts with the UI
+  and there is a delay that could cause confusion or a perception of the UI
+  being broken.
+
+> [!CAUTION]\
+> When not to use
+
+- **For extremely quick actions:** If an action completes in less than a few
+  hundred milliseconds, a spinner is unnecessary and can feel jarring or
+  distracting.
+- **For simple UI interactions:** Actions like toggling a switch, expanding a
+  menu, or simple animations shouldn't trigger a spinner.
+- **When the wait is unpredictable or excessively long:** If you can't provide
+  any indication of how long the wait will be, or if it might be excessively
+  long, consider alternative indicators with a cancel option or other help text.
+- **When it creates unnecessary visual clutter:** Overusing spinners can make
+  the UI feel busy and distracting.
+- **When a more subtle visual cue is sufficient:** For very short delays, a
+  change in cursor, a slight fade, or a brief message might be more appropriate.
+
+### Loading spinner within elements
+
+When showing the process of content loading you may add the loading spinner
+within elements.
+
+> [!TIP]\
+> **Do**
+>
+> - Use loading spinner in a disabled state so a user cannot interact with the
+>   button fully till the action is complete.
+> - If the time expected to complete is short, no language is needed.
+
+```jsx-live
+const App = () => <Flex gap="200">
+  <Button colorPalette="primary" variant="solid" isDisabled>
+    <LoadingSpinner colorPalette="white" /> 
+    Saving...
+  </Button> 
+  <Button colorPalette="primary" variant="solid" isDisabled>
+    <LoadingSpinner colorPalette="white" />
+  </Button>
+</Flex>
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not keep the button clickable while using a loading state.
+> - Do not use creative or funny phrases if using loading spinner in small
+>   areas, to avoid confusing the user.
+
+```jsx-live
+const App = () => <Flex gap="200">
+  <Button colorPalette="primary" variant="solid">
+    <LoadingSpinner colorPalette="white" /> 
+    Remembering details...
+  </Button>
+)
+```
+
+> [!TIP]\
+> **Do**
+>
+> - Use the loading spinner to show that content will be populated in that area.
+
+![Do](/images/loading-spinner/combo-box-guideline-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use long statements. Try to keep updates and explainers short, as
+>   translation will consistently add about 20% more length.
+
+![Don't](/images/loading-spinner/combo-box-guideline-dont.png)

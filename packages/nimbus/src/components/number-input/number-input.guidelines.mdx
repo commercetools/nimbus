@@ -1,0 +1,72 @@
+---
+title: NumberInput
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Number input guidelines focus on clear labels, suitable ranges, easy interaction via keyboard and buttons, and strong error handling, all while following WCAG accessibility rules.
+
+### Best practices
+
+- **Labels:** Always include a concise and clear label using sentence case. Labels should not be hidden. In the rare case where context is sufficient and label can be absent, review the design with an accessibility expert.
+- **Default values:** Provide a clear default value (e.g., '1' for quantity, '0' for children) that is likely to be the most common selection. Avoid leaving the input blank.
+- **Helper text:** Use helper text to indicate maximum or minimum values, or other constraints. It is optional and is replaced by error messages during validation.
+- **Increment size:** Determine an increment size that is relative to the value range. For example, use increments of 1 for a 0-10 range and increments of 10 for a 0-100 range.
+- **Unit symbols:** Include unit symbols to the right of the input field or increase button when applicable, using standard abbreviations.
+- **Read-only state:** Use when the user can view but not modify the value.
+- **Disabled state:** Use when the number input is not interactive.
+- **Validation:**
+  - Provide clear and concise error messages below the input field, replacing any helper text.
+  - Highlight errors visually, for example, with a red border and an error icon.
+  - Avoid immediate validation that may frustrate users; allow them to complete their input before displaying validation results.
+
+### Usage
+
+A number input lets users enter and adjust a numeric value with stepper buttons, best for small, incremental changes within set limits.
+
+> [!TIP]\
+> When to use
+
+- **Numeric values:** When the input is exclusively a number (e.g., quantity, age).
+- **Small, incremental adjustments:** When users need to change values by a few clicks, or relative to the current state, without knowing exact figures.
+- **Bypassing keyboard limitations:** Particularly useful for mobile devices where direct numerical input might be cumbersome.
+
+> [!CAUTION]\
+> When not to use
+
+- **Large value changes:** When a wide range of values requires many clicks (e.g., 1 to 300); a slider is more appropriate.
+- **Continuous variables:** For values like prices or distances where exact, precise input within a wide range is crucial; a text input is better.
+- **Infinite numeric ranges:** Without defined limits, users are unsure of "reasonable" values, causing frustration. Storing infinite values on the backend is often unfeasible; applications need concrete data.
+- **Non-mathematical numbers:** Values like credit card numbers, phone numbers, or postal codes, which are strings despite containing digits.
+
+### Keeping interactions simple
+
+Simple interactions are vital because they minimize user effort and cognitive load, allowing for quick and efficient value management.
+
+> [!TIP]\
+> **Do**
+>
+> - Use for quantifiable numeric values.
+> - Provide clear and concise labels.
+> - Set appropriate min and max values.
+> - Define a logical step value.
+> - Include units (e.g., "$", "kg", "%") as prefixes or suffixes.
+> - Allow keyboard interaction for incrementing and decrementing.
+> - Provide helpful error messages for invalid input.
+> - Design for clear visual feedback in all states (hover, focus, disabled, invalid).
+
+<img src="/images/number-input/number-input-do.png" alt="number input do guideline" width="384px" />
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Use for non-numeric input (e.g., phone numbers that are better suited for text fields to allow for formatting).
+> - Omit clear labels or help text.
+> - Forget to set min and max values when there are constraints.
+> - Use excessively small or large step values that hinder usability.
+> - Rely solely on visual cues for accessibility; use ARIA attributes.
+> - Present a number input without clear feedback for different states.
+
+<img src="/images/number-input/number-input-dont.png" alt="number input dont guideline" width="275px" />

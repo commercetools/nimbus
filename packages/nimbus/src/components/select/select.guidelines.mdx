@@ -1,0 +1,214 @@
+---
+title: Select
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+### Best practice
+
+- **Include a label:** Give the users context on what is being asked for when
+  making a selection. A picker without a label is ambiguous and not accessible.
+  Use "Select" or "Search and select" as a default placeholder label wording.
+  - In rare cases where context is sufficient to not need a label, these
+    placements should still be given an aria-label in HTML.
+  - **Placeholders:** Should function as a prompt not a value. Do not use a
+    placeholder as a label.
+- **Keep contents concise:** Long menu items that wrap to multiple lines should
+  be kept to a minimum. If this becomes a frequent concern, consider an
+  alternate UI component or pattern to allow for more breathing room for
+  content.
+- **Organize content:** The default organization is alphabetical, if a user
+  benefits from better organization please improve their experience with better
+  categories.
+- **Include help text when needed:** If more information is needed to provide
+  context, include helper text below the field for the user. Replace helper text
+  with error text if applicable and needed.
+- **Don't neglect ARIA attributes:** If you are building a custom select input,
+  ensure that you use proper ARIA attributes to make the select box accessible
+  to screen readers.
+
+#### When to use a solid vs. ghost styled select input
+
+| **Type**    | **Use this instead** |
+|-------------|----------------------|
+| **Solid-style** | <ul><li>The default option to use in forms.</li><li>Typically the best experience to use with content created by a user.</li><li>When you want to include search for the content.</li></ul>                |
+| **Ghost-style** | <ul><li>The default option to use to filter or build rules around content. Ex: filtering assets for the user.</li><li>Best used within rule building experiences such as discounts.</li><li>Ideal to be used in condensed areas, with condensed and familiar options for the user, as in simple filters or quick actions like "delete".</li></ul> |
+
+### Usage
+
+Select inputs are common and users are familiar with their uses. Keeping
+consistent with the guidelines will help our products intuitive and easy to
+understand, even through complicated areas.
+
+### Solid-styled widths
+
+These placements are more regular, they have either a maximum width of 268px
+or form wide. The popover width should match the width of the field itself.
+
+> [!TIP]\
+> **Do**
+> - The form is at maximum size (when not in a pull page form) and the popover
+>   matches the width of the field.
+> - Longer options flow to the next lines, and when chosen, those longer texts
+>   are truncated so the user can still see the icons clearly.
+
+![](/images/select/solid-styled-widths.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Do not have different widths for select inputs.
+> - Do not change the width of the field to match the content once selected.
+
+![](/images/select/solid-styled-widths-dont.png)
+
+### Ghost-styled widths
+There are a few differences that ghost-styled select inputs have that aren't
+needed with solid-style placements. Ghost-styled fields should hug width, with
+popovers having a min width matching the field, and max width being 268px unless
+on a page wide form.
+
+> [!TIP]\
+> **Do**
+> - Select input field width set to "hug" with max width popover at 268px.
+> - Content flows to next line when needed.
+
+![](/images/select/ghost-styled-widths.png)
+
+> [!CAUTION]\
+> **Don't**
+> - This drop down icon looks like it is not related to the select input field.
+> - Do not truncate options that should flow to the next line.
+
+![](/images/select/ghost-styled-widths-dont.png)
+
+> [!TIP]\
+> **Do**
+> - With short selectable content, match content width to match the select
+>   input "hug" width.
+
+![](/images/select/short-selectable-content.png)
+
+
+> [!CAUTION]\
+> **Don't**
+> - Do not set the popover width to "hug", this content should match the
+>   width of the field.
+
+![](/images/select/short-selectable-content-dont.png)
+
+### Labels and preselection
+
+Make sure to place tooltips in areas where they will be seen easily.
+
+> [!TIP]\
+> **Do**
+> - Use a short and easily understandable label. Describe, do not use labels
+>   as instructions.
+> - Use placeholder if there isn't a most common or default choice.
+
+![](/images/select/labels-and-preselection.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Do not rely on placeholders instead of labels.
+> - Do not preselect a random option unless it's genuinely the most common
+>   or default choice.
+
+![](/images/select/labels-and-preselection-dont.png)
+
+
+### Labels and layout exceptions
+
+With the ghost styling for labels, there are some placements that can be used
+without labels and have varying widths based on placement. These are most
+commonly found in filters and with rule builders.
+
+> [!TIP]\
+> **Do**
+> - Use a short and easily understandable label.
+> - Use placeholder if there isn't a most common or default choice.
+
+![](/images/select/labels-and-layout-exceptions.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Try not to overuse drop downs. Do not make it unclear what parts of a
+>   ghost-styled are interactive to the user.
+> - Make sure that if logic is being used that it goes through user testing
+>   and is understandable for the targeted user.
+
+![](/images/select/labels-and-layout-exceptions-dont.png)
+
+### Keep menu items concise
+
+Keep menu items short and concise. Long menu items that cause text to wrap
+multiple lines are discouraged. If text wrapping becomes a frequent concern,
+consider revising the text or use alternative UI patterns that will give your
+content more space.
+
+> [!TIP]\
+> **Do**
+> - Use a short and easily understandable label. Describe, do not use labels
+>   as instructions.
+> - Text can flow to three lines, but truncate further text.
+
+![](/images/select/keep-menu-items-concise.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Keep content short or make sure that the location has enough room to
+>   display content with more space.
+> - Don't use additional labels or explainers when unneeded.
+> - Do not encourage lengthy text for drop down experiences. Text can flow to
+>   three lines, but truncate further text.
+
+![](/images/select/keep-menu-items-concise-dont.png)
+
+### Organize dropdown content when possible
+
+Use grouping structures if all items in a list can be grouped for a better user
+experience. By default, organize by alphabetical order.
+
+> [!TIP]\
+> **Do**
+> - Use labels within popover/drop downs to organize content.
+> - Allow if possible for the user to search for items with type ahead fuzzy
+>   search.
+> - If actions lists become bulky and hard to scan, consider another experience
+>   for the user.
+
+![](/images/select/organize-dropdown-content-when-possible.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Don't bury frequently used actions within a dropdown or menu; instead,
+>   prioritize them at the top and group related actions together to facilitate
+>   quick user selection.
+
+![](/images/select/organize-dropdown-content-when-possible-dont.png)
+
+
+### Help and error text inclusion
+
+Use helper text when needed, and replace helper text with error text if
+triggered.
+
+> [!TIP]\
+> **Do**
+> - Use helper text to give more context to the select input when needed.
+>   Omit if self explanatory.
+> - Error and helper text should be short and easily understood.
+
+![](/images/select/help-and-error-text-inclusion.png)
+
+> [!CAUTION]\
+> **Don't**
+> - Don't show both helper text and information text simultaneously.
+
+![](/images/select/help-and-error-text-inclusion-dont.png)

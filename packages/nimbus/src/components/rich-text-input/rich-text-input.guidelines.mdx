@@ -1,0 +1,83 @@
+---
+title: RichTextInput
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+These guidelines provide comprehensive direction for designing and developing
+rich text inputs within Nimbus.
+
+### Best practices
+
+- **Make responsive changes:** Apply changes immediately to the selected text
+  upon clicking a toolbar control.
+- **Utilize tooltips and labels:** Include tooltips for all toolbar actions to
+  enhance discoverability and accessibility.
+- **Keep a user's focus:** Maintain the user's focus within the text area after
+  an action or toggle is selected.
+- **Allow for common shortcuts:** Support standard keyboard shortcuts for
+  formatting (e.g., Ctrl/Cmd+B for bold).
+- **Make it easier to correct mistakes:** Offer an undo/redo history for content
+  changes, and allow for a large enough input window so a user can quickly read
+  content without needing to scroll line by line.
+- **Tailor tooling:** Determine the required formatting options based on the
+  user's needs for the specific application.
+- **Curate tools into meaningful similar collections:** Group related controls
+  logically in the toolbar (e.g., text styling, lists, media).
+
+## Usage
+
+Rich text inputs should be used in areas where a user knows that a longer
+response or description is expected.
+
+> [!TIP]\
+> When to use
+
+- **Editing long-form content:** Such as product descriptions, knowledge base
+  articles, or email bodies, where visual hierarchy and style are necessary for
+  readability.
+- **Formatting text:** Such as applying bold, italics, underlines, or specific
+  heading levels.
+- **Structuring content:** With bulleted or numbered lists.
+- **Embedding external elements:** Like links, images, or videos within other
+  content.
+
+> [!CAUTION]\
+> When not to use
+
+- **Short answers:** Or single-line inputs, such as names, titles, or search
+  queries.
+- **Specific data entry:** Unformatted text is required, like SKUs, passwords,
+  or simple codes.
+- **Plain text communication:** Such as chat messages or comments, where
+  formatting options can clutter the interface or distract from the
+  conversation.
+- **Inputs that need to be strictly controlled:** Where the application's style
+  guide should be the only source of formatting (e.g., when there is passing
+  through of styling and content to another site).
+
+### Rich text input in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do use tooltips for tools represented by icons. In the case of paragraph
+>   styles show the style in the dropdown, not just stated in plain text.
+> - Do provide more height for the input to see a few lines of text and reduce
+>   scrolling.
+> - Do utilize an undo and redo button to assist a user with writing and editing
+>   text when possible.
+
+![Do](/images/rich-text-input/rich-text-input-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't make the input so small that you cannot easily see a few lines of
+>   text.
+> - Don't move the rich text toolbar to sit on the bottom of the input.
+> - Don't overload the rich text toolbar with tools that are unnecessary.
+
+![Don't](/images/rich-text-input/rich-text-input-dont.png)
