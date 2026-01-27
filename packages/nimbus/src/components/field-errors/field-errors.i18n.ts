@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   // Basic validation
   missingRequiredField: {
     id: "Nimbus.FieldErrors.missingRequiredField",
@@ -85,4 +83,4 @@ export const messages = defineMessages({
     description: "Error message for blocked or restricted values",
     defaultMessage: "This value is not allowed.",
   },
-});
+};
