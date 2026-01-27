@@ -1,0 +1,154 @@
+---
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+These guidelines provide comprehensive direction for designing and developing data tables within Nimbus.
+
+#### Best practices
+
+- **Display relevant data:** Only include columns and data necessary for the user's current task. Avoid overwhelming users with excessive information.
+
+- **Allow for customization:** Allow users to organize and display important information in a way that suits their preferences, whether that means viewing more data on a single screen or having a table manager to add or reorder columns.
+The more customizable the workspace, the more effective users will be in completing their tasks.
+
+- **Keep column headers concise:** Use clear, brief labels for column headers to ensure quick understanding.
+
+- **Use sticky column headers:** Keep headers visible when users scroll vertically through a long table.
+Offer sorting and filtering: Include mechanisms to sort data by any column and filter the dataset to help users find specific information.
+
+#### Usage
+
+Data tables are great for displaying large sets of information that can have different statuses or data that needs to be compared. Users can click through for more information held in modals or further detail pages. 
+
+> [!TIP]\
+> When to use
+
+- Presenting complex, structured data.
+- Comparing different attributes of multiple items.
+- Allowing users to analyze and manipulate large datasets.
+- Where bulk actions are being made, it can make sense to have users make selections from a data table.
+
+> [!CAUTION]\
+> When not to use
+
+- Presenting simple lists of items.
+- Displaying content with complex, varying layouts (use card or a grid layout).
+- Presenting an action-focused list where the primary interaction is on the whole item.
+- Within a small space where a user will need to scroll multiple directions in a frustrating way to understand the information presented.
+- To display information that is not meant to be read in the format of a data table like long blocks of text.
+
+#### Tags and tag group in use 
+
+> [!TIP]\
+> **Do**
+> - Do keep the table design simple and focused on data.
+> - Do provide clear visual feedback on the currently sorted column.
+> - Do ensure all interactive elements within the table are accessible (e.g., buttons, links).
+> - Do allow users to select one or multiple rows where needed.
+
+```jsx-live
+const App = () => {
+  const data = [
+    { id: 1, name: 'Product A', modified: '2023-10-27', status: "Published" },
+    { id: 2, name: 'Product B', modified: '2023-10-26', status: "Modified" },
+  ];
+  const columns = [
+    { 
+      id: 'name',
+      header: "Name",
+      accessor: (row) => row.name, 
+      isSortable: true,
+    },
+    { 
+      id: 'modified',
+      header: "Date Modified",
+      accessor: (row) => row.modified, 
+      isSortable: true,
+    },
+    {
+      id: "status",
+      header: "Status",
+      isSortable: true,
+      accessor: (row) => row.status,
+      render: ({ value }) => {
+        let colorPalette;
+        switch (value) {
+          case "Published":
+            colorPalette = "positive";
+            break;
+          case "Modified":
+            colorPalette = "warning";
+            break;
+          default:
+            colorPalette = "neutral";
+        }
+
+        return (
+          <Badge colorPalette={colorPalette} size="xs">
+            {value}
+          </Badge>
+        );
+      },
+  },
+  ];
+  return <DataTable
+    rows={data}
+    columns={columns}
+    selectionMode={"multiple"} 
+  />;
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+> - Don’t overcomplicate the layout with too many visual elements or unnecessary actions.
+> - Don’t force horizontal scrolling on the user unless absolutely necessary for the data.
+> - Don’t use tables only for layout purposes; they are for data only.
+
+```jsx-live
+const App = () => {
+  const data = [
+  {
+    id: 1,
+    blogTitle: "How to increase sales with abandoned cart discounts.",
+    readBlog:
+      "One highly effective strategy to recover revenue from abandoned shopping carts is the targeted use of cart discounts, which serve as a final, personalized incentive to encourage conversion. By analyzing the items in the abandoned cart and the customer's shopping history, retailers can deploy an automated, time-sensitive email offering a specific discount—such as a percentage off, a fixed dollar amount, or free shipping—designed to overcome the specific price sensitivity or hesitation that caused the abandonment. This direct appeal mitigates the perceived cost or barrier, making the original purchase seem more valuable and urgent, significantly increasing the likelihood that the customer will return to complete their transaction...",
+  },
+  {
+    id: 2,
+    blogTitle :"Want to know how Buy One Get One works? ",
+    readBlog:
+      "Want to know how Buy One Get One works? ', readBlog: 'You know those Buy One, Get One (BOGO) deals? They're super popular because they're basically magic for getting people to shop. The idea is simple: you buy one thing at the regular price and get the second one for free or maybe half-off. It works so well because everyone loves getting something for nothing, which makes us buy more than we planned. That's a win-win: the customer feels like they got a steal, and the store boosts its sales and clears out all that extra stuff that's just sitting on the shelves.",
+  },
+];
+  const columns = [
+    { 
+      id: 'blogTitle',
+      header: "Blog title",
+      accessor: (row) => row.blogTitle, 
+      render: ({value}) => {
+         return (
+          <Box fontWeight="800">
+            {value}
+          </Box>
+        );
+      },
+      isResizable: true, 
+    },
+    { 
+      id: 'readBlog',
+      header: "Read blog",
+      accessor: (row) => row.readBlog, 
+      isResizable: true,
+    },
+  ];
+  return <DataTable 
+    rows={data} 
+    columns={columns} 
+    selectionMode={"multiple"} 
+  />;
+}
+```
