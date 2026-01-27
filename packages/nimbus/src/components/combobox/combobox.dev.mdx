@@ -29,7 +29,7 @@ const App = () => {
   ];
 
   return (
-    <ComboBox.Root items={animals} aria-label="Select an animal">
+    <ComboBox.Root items={animals} placeholder="Select an animal..." aria-label="Select an animal">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -49,7 +49,7 @@ For static lists, you **must** include the `textValue` prop on each option for s
 
 ```jsx-live-dev
 const App = () => (
-  <ComboBox.Root aria-label="Select an animal">
+  <ComboBox.Root placeholder="Select an animal..." aria-label="Select an animal">
     <ComboBox.Trigger />
     <ComboBox.Popover>
       <ComboBox.ListBox>
@@ -80,7 +80,7 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <ComboBox.Root size="sm" items={options} aria-label="Small combobox">
+      <ComboBox.Root size="sm" items={options} placeholder="Small size..." aria-label="Small combobox">
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -90,7 +90,7 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      <ComboBox.Root size="md" items={options} aria-label="Medium combobox">
+      <ComboBox.Root size="md" items={options} placeholder="Medium size..." aria-label="Medium combobox">
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -118,7 +118,7 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <ComboBox.Root variant="solid" items={options} aria-label="Solid combobox">
+      <ComboBox.Root variant="solid" items={options} placeholder="Solid variant..." aria-label="Solid combobox">
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -128,7 +128,7 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      <ComboBox.Root variant="ghost" items={options} aria-label="Ghost combobox">
+      <ComboBox.Root variant="ghost" items={options} placeholder="Ghost variant..." aria-label="Ghost combobox">
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -165,6 +165,7 @@ const App = () => {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
         selectionMode="single"
+        placeholder="Select a fruit..."
         aria-label="Select a fruit"
       >
         <ComboBox.Trigger />
@@ -206,6 +207,7 @@ const App = () => {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
         selectionMode="multiple"
+        placeholder="Select animals..."
         aria-label="Select animals"
       >
         <ComboBox.Trigger />
@@ -269,7 +271,7 @@ const App = () => {
   ];
 
   return (
-    <ComboBox.Root items={options} isDisabled aria-label="Disabled combobox">
+    <ComboBox.Root items={options} isDisabled placeholder="Disabled..." aria-label="Disabled combobox">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -295,7 +297,7 @@ const App = () => {
   ];
 
   return (
-    <ComboBox.Root items={options} isInvalid aria-label="Invalid combobox">
+    <ComboBox.Root items={options} isInvalid placeholder="Select an option..." aria-label="Invalid combobox">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -325,6 +327,7 @@ const App = () => {
       items={fruits}
       isReadOnly
       selectedKeys={["apple"]}
+      inputValue="Apple"
       aria-label="Read-only combobox"
     >
       <ComboBox.Trigger />
@@ -368,7 +371,7 @@ const App = () => {
   ];
 
   return (
-    <ComboBox.Root items={foodCategories} aria-label="Select a food">
+    <ComboBox.Root items={foodCategories} placeholder="Select a food..." aria-label="Select a food">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -406,7 +409,7 @@ const App = () => {
   ];
 
   return (
-    <ComboBox.Root items={animals} aria-label="Select an animal">
+    <ComboBox.Root items={animals} placeholder="Select an animal..." aria-label="Select an animal">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -587,6 +590,7 @@ const App = () => {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
         selectionMode="single"
+        placeholder="Select a fruit..."
         aria-label="Controlled combobox"
       >
         <ComboBox.Trigger />
@@ -621,7 +625,7 @@ const App = () => {
         <Text fontSize="sm" fontWeight="medium" mb="200">
           menuTrigger="focus" (default) - Opens when clicking input or toggle button
         </Text>
-        <ComboBox.Root items={options} menuTrigger="focus" aria-label="Focus trigger">
+        <ComboBox.Root items={options} menuTrigger="focus" placeholder="Click to open..." aria-label="Focus trigger">
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
@@ -636,7 +640,7 @@ const App = () => {
         <Text fontSize="sm" fontWeight="medium" mb="200">
           menuTrigger="input" - Opens only when typing (try typing in the input)
         </Text>
-        <ComboBox.Root items={options} menuTrigger="input" aria-label="Input trigger">
+        <ComboBox.Root items={options} menuTrigger="input" placeholder="Type to open..." aria-label="Input trigger">
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
@@ -651,7 +655,7 @@ const App = () => {
         <Text fontSize="sm" fontWeight="medium" mb="200">
           menuTrigger="manual" - Opens only via toggle button (input click does nothing)
         </Text>
-        <ComboBox.Root items={options} menuTrigger="manual" aria-label="Manual trigger">
+        <ComboBox.Root items={options} menuTrigger="manual" placeholder="Use button to open..." aria-label="Manual trigger">
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
