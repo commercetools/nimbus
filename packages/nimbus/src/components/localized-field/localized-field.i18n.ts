@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   missingRequiredField: {
     id: "Nimbus.LocalizedField.missingRequiredField",
     description: "Error message for missing required value",
@@ -35,4 +33,4 @@ export const messages = defineMessages({
       "Label for hiding all currency inputs when toggle button is pressed",
     defaultMessage: "Hide all currencies",
   },
-});
+};
