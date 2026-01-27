@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   emptyMessage: {
     id: "Nimbus.DraggableList.emptyMessage",
     description: "message displayed when drag-and-drop enabled list is empty",
@@ -11,4 +9,4 @@ export const messages = defineMessages({
     description: "label for button that removes an item from the list",
     defaultMessage: "remove item",
   },
-});
+};
