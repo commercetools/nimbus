@@ -251,7 +251,7 @@ The SearchInput handles most accessibility requirements internally. However, you
 
 ```tsx
 <label id="search-label">
-  {intl.formatMessage(searchMessage)}
+  {msg.format(searchMessage)}
 </label>
 <SearchInput aria-labelledby="search-label" />
 ```
@@ -260,7 +260,7 @@ The SearchInput handles most accessibility requirements internally. However, you
 
 ```tsx
 <label htmlFor="search-input">
-  {intl.formatMessage(searchMessage)}
+  {msg.format(searchMessage)}
 </label>
 <SearchInput id="search-input" />
 ```
@@ -268,7 +268,7 @@ The SearchInput handles most accessibility requirements internally. However, you
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<SearchInput aria-label={intl.formatMessage(searchMessage)} />
+<SearchInput aria-label={msg.format(searchMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

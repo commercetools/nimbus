@@ -51,14 +51,16 @@ STYLE GUIDELINES:
 
 REMOVAL BEFORE PUBLISHING:
 - Remove all HTML comments (<!-- ... -->)
+
 - Remove section guidance notes
-- Keep only the content relevant to your component
--->
+- Keep only the content relevant to your component -->
 
 <!-- OPTIONAL: Include this section ONLY for field pattern components -->
+
 ## Comparison: field pattern vs manual composition
 
 **With [ComponentName]Field:**
+
 ```tsx
 <[ComponentName]Field
   label="[Label Text]"
@@ -71,6 +73,7 @@ REMOVAL BEFORE PUBLISHING:
 ```
 
 **Manual composition:**
+
 ```tsx
 <FormField.Root isInvalid={!!(errors && touched)}>
   <FormField.Label>[Label Text]</FormField.Label>
@@ -93,12 +96,14 @@ REMOVAL BEFORE PUBLISHING:
 ### When to use which
 
 **Use [ComponentName]Field when:**
+
 - Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
 
 **Use [ComponentName] with manual FormField composition when:**
+
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -111,12 +116,13 @@ REMOVAL BEFORE PUBLISHING:
 ### Import
 
 ```tsx
-import { ComponentName, type ComponentNameProps } from '@commercetools/nimbus';
+import { ComponentName, type ComponentNameProps } from "@commercetools/nimbus";
 ```
 
 ### Basic usage
 
 <!-- Customize this description based on your component -->
+
 The simplest implementation uses [uncontrolled/controlled] mode:
 
 ```jsx-live-dev
@@ -135,7 +141,8 @@ const App = () => (
 <!-- Example from DateRangePicker: Working with date values -->
 <!-- Customize this section title and content based on your component's dependencies -->
 
-The [ComponentName] relies on [library name]'s [concepts] for [purpose]. This library provides [key features].
+The [ComponentName] relies on [library name]'s [concepts] for [purpose]. This
+library provides [key features].
 
 ### [Concept] types
 
@@ -166,6 +173,7 @@ const value2 = [helperFunction2]('[example]');
 ### Converting to [format]
 
 <!-- Example: Converting date objects to ISO strings -->
+
 Use [method] to convert [type] for [purpose]:
 
 ```tsx
@@ -174,7 +182,8 @@ const [example] = new [Type]([params]);
 ```
 
 > [!TIP]\
-> See [[library documentation link]([url])] for complete API reference and advanced usage.
+> See [[library documentation link]([url])] for complete API reference and
+> advanced usage.
 
 <!-- END CONDITIONAL SECTION -->
 
@@ -208,6 +217,7 @@ Order subsections from simple to complex, ending with controlled/uncontrolled mo
 ### Size options
 
 <!-- Only include if your component has size variants -->
+
 The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx-live-dev
@@ -222,6 +232,7 @@ const App = () => (
 ### Visual variants
 
 <!-- Only include if your component has visual variants -->
+
 Choose between [variant names] variants to match your design context:
 
 ```jsx-live-dev
@@ -237,6 +248,7 @@ const App = () => (
 ### [Component-specific feature]
 
 <!-- Example: "Granularity options" for DateRangePicker -->
+
 The `[propName]` prop controls [behavior description]:
 
 ```jsx-live-dev
@@ -249,6 +261,7 @@ const App = () => (
 ```
 
 **Behavioral differences:**
+
 - `[propName]="[value1]"`: [Description of behavior]
 - `[propName]="[value2]"`: [Description of behavior]
 
@@ -274,11 +287,13 @@ const App = () => {
 }
 ```
 
-Use uncontrolled mode when you need to capture the selected value without managing state yourself.
+Use uncontrolled mode when you need to capture the selected value without
+managing state yourself.
 
 ### Controlled mode
 
-For scenarios requiring programmatic control or coordination with other components, use controlled mode:
+For scenarios requiring programmatic control or coordination with other
+components, use controlled mode:
 
 ```jsx-live-dev
 const App = () => {
@@ -299,6 +314,7 @@ const App = () => {
 ```
 
 Use controlled mode when you need to:
+
 - Synchronize the value with external state
 - Validate or transform selections
 - Clear or programmatically set the value
@@ -308,16 +324,12 @@ Use controlled mode when you need to:
 <!-- Add as many subsections as needed for your component's features -->
 <!-- Examples: Time zone handling, custom formatting, validation rules, etc. -->
 
-[Description of the feature]:
+[Description of the feature]: ```jsx-live-dev
 
-```jsx-live-dev
-const App = () => (
-  <[ComponentName]
-    [featureProp]={[value]}
-    [additionalProp]={[value]}
-  />
-)
-```
+const App = () => ( <[ComponentName] [featureProp]={[value]}
+[additionalProp]={[value]} /> )
+
+````
 
 ## Component requirements
 
@@ -350,27 +362,29 @@ The [ComponentName] handles most accessibility requirements internally. However,
 
 ```tsx
 <label id="label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format("labelMessage")}
 </label>
 <[ComponentName] aria-labelledby="label-id" />
-```
+````
 
 - Associating a `<label>` element with the `[ComponentName]` using `htmlFor`:
 
 ```tsx
 <label htmlFor="component-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format("labelMessage")}
 </label>
 <[ComponentName] id="component-id" />
 ```
 
-If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+If your design requires that the label should not be visible, the label should
+be set using the `aria-label` prop:
 
 ```tsx
-<[ComponentName] aria-label={intl.formatMessage(labelMessage)} />
+<[ComponentName] aria-label={msg.format("labelMessage")} />
 ```
 
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
 
 ```tsx
 const PERSISTENT_ID = "example-[component-name]";
@@ -383,19 +397,27 @@ export const Example = () => (
 #### Keyboard navigation
 
 <!-- Customize based on your component's keyboard interactions -->
+
 The component supports full keyboard interaction:
+
 - `Tab` / `Shift+Tab`: [Description]
 - `Arrow keys`: [Description]
 - `Enter` / `Space`: [Description]
 - `Escape`: [Description]
 
 <!-- OPTIONAL: For field pattern components, include error handling -->
+
 ### Error handling
 
 <!-- Only include for field pattern components -->
-[ComponentName]Field uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+
+[ComponentName]Field uses the `FieldErrors` component to display validation
+errors with built-in localized messages. For custom error messages, use the
+`renderError` prop (see [Custom error rendering](#custom-error-rendering)
+below).
 
 **Error object format** (`FieldErrorsData`):
+
 ```tsx
 type FieldErrorsData = {
   [key: string]: boolean | string | ReactNode;
@@ -403,21 +425,24 @@ type FieldErrorsData = {
 
 // Examples:
 const errors = {
-  missing: true,              // Built-in message: "This field is required"
-  format: true,               // Built-in message: "Please enter a valid format"
-  custom: "Custom error text" // Custom message
+  missing: true, // Built-in message: "This field is required"
+  format: true, // Built-in message: "Please enter a valid format"
+  custom: "Custom error text", // Custom message
 };
 ```
 
 ## API reference
 
 <!-- MANDATORY SECTION -->
+
 <PropsTable id="[ComponentName]" />
 
 <!-- OPTIONAL: For field pattern components with custom error rendering -->
+
 ### Custom error rendering
 
 <!-- Only include for field pattern components that support renderError -->
+
 Use the `renderError` prop to customize how specific error keys are displayed:
 
 ```tsx
@@ -441,9 +466,11 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 ```
 
 <!-- OPTIONAL: Include for field pattern components -->
+
 ## Form integration
 
 <!-- Only include for field pattern components -->
+
 [ComponentName]Field integrates seamlessly with Formik:
 
 ```tsx
@@ -487,9 +514,11 @@ const MyForm = () => {
 ```
 
 **Key integration points:**
+
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or strings)
+- **Errors**: Pass `errors.fieldName` (supports FieldErrorsData format or
+  strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## Common patterns
@@ -506,28 +535,18 @@ in production applications. Examples should demonstrate:
 
 ### [Pattern name 1]
 
-[Description of the use case]:
+[Description of the use case]: ```jsx-live-dev
 
-```jsx-live-dev
-const App = () => {
-  const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
+const App = () => { const [value, setValue] =
+useState<ComponentNameProps["value"]>([initialValue]);
 
-  // [Description of logic]
-  const [derivedValue] = [computation];
+// [Description of logic] const [derivedValue] = [computation];
 
-  return (
-    <Stack direction="column" gap="400">
-      <[ComponentName]
-        value={value}
-        onChange={setValue}
-      />
-      <Text fontSize="sm">
-        {[displayLogic]}
-      </Text>
-    </Stack>
-  );
+return ( <Stack direction="column" gap="400"> <[ComponentName] value={value}
+onChange={setValue} /> <Text fontSize="sm"> {[displayLogic]} </Text> </Stack> );
 }
-```
+
+````
 
 ### [Pattern name 2]
 
@@ -552,11 +571,14 @@ const App = () => {
     </Stack>
   );
 }
-```
+````
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using [ComponentName] in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+[ComponentName] in your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
 
 ### Basic rendering tests
 
@@ -620,6 +642,7 @@ describe('[ComponentName] interactions', () => {
 ### Testing with [specific values/types]
 
 <!-- Only include if component has special value handling requirements -->
+
 Test [value type] handling using [library]:
 
 ```tsx
@@ -654,6 +677,7 @@ describe('[ComponentName] with [value type]', () => {
 ### Testing [specific feature]
 
 <!-- Add as many testing subsections as needed for component-specific features -->
+
 When using [feature], test [behavior]:
 
 ```tsx
@@ -683,9 +707,10 @@ describe('[ComponentName] with [feature]', () => {
 <!-- MANDATORY SECTION -->
 
 <!-- For base components: -->
+
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-[component]--docs)
-<!-- - [React Aria [ComponentName]](https://react-spectrum.adobe.com/react-aria/[Component].html) -->
-<!-- - [ARIA [Pattern] Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/[pattern]/) -->
+  <!-- - [React Aria [ComponentName]](https://react-spectrum.adobe.com/react-aria/[Component].html) -->
+  <!-- - [ARIA [Pattern] Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/[pattern]/) -->
 
 <!-- For field patterns, also include: -->
 <!-- - [Base Component](components/[category]/[component]) -->

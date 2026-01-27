@@ -227,7 +227,7 @@ The component SHALL support message localization per nimbus-core standards.
 #### Scenario: Message usage
 - **WHEN** component renders with localized text
 - **THEN** SHALL use useLocalizedStringFormatter hook from @/hooks
-- **AND** SHALL call intl.formatMessage(messages.avatarLabel, { fullName })
+- **AND** SHALL call msg.format("avatarLabel, { fullName }")
 - **AND** SHALL support variable interpolation for fullName parameter
 
 #### Scenario: Message format

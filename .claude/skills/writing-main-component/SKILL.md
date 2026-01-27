@@ -246,7 +246,7 @@ guideline references.
 - [ ] **Data attributes**: State-based data attributes: `data-disabled`,
       `data-invalid`, `data-selected` (as needed)
 - [ ] **Icon labels**: Icon-only elements have `aria-label` using
-      `intl.formatMessage(messages.*)` for i18n
+      `msg.format("*")` for i18n
 - [ ] **Color not sole indicator**: Color not sole indicator of state (icons +
       text + aria attributes used)
 - [ ] **Overlay focus management**: For overlays, focus management (trap,
@@ -706,7 +706,7 @@ export const Component = (props: ComponentProps) => {
 **Steps:**
 
 1. Create i18n file if not exists: `/writing-i18n create ComponentName`
-2. Import useIntl and messages in component
+2. Import useLocalizedStringFormatter and message strings in component
 3. Replace hardcoded strings with formatMessage calls
 4. Update aria-labels to use i18n
 
@@ -726,8 +726,8 @@ export const messages = {
 import { messages } from './component.i18n';
 
 export const Component = (props: ComponentProps) => {
-  const intl = useIntl();
-  const closeLabel = intl.formatMessage(messages.closeLabel);
+  const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  const closeLabel = msg.format("closeLabel");
 
   return (
     <div>
@@ -1438,25 +1438,25 @@ complexity tier.
 
 Use this matrix to find the right example component for specific patterns:
 
-| Pattern Need               | Example Component | Key Feature                    | File Path                                                      |
-| -------------------------- | ----------------- | ------------------------------ | -------------------------------------------------------------- |
-| **Ref Forwarding**         | Button            | mergeRefs + useObjectRef       | `packages/nimbus/src/components/button/button.tsx`             |
-| **React Aria Hook**        | Button            | useButton integration          | `packages/nimbus/src/components/button/button.tsx`             |
-| **React Aria Component**   | Checkbox          | Component wrapper              | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
-| **Render Function**        | Checkbox          | State-based rendering          | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
-| **Child Processing**       | SplitButton       | React.Children.forEach         | `packages/nimbus/src/components/split-button/split-button.tsx` |
-| **Composition**            | SplitButton       | Multiple component composition | `packages/nimbus/src/components/split-button/split-button.tsx` |
-| **i18n Integration**       | SplitButton       | useIntl + formatMessage        | `packages/nimbus/src/components/split-button/split-button.tsx` |
-| **Simple Compound**        | Tooltip           | Minimal compound structure     | `packages/nimbus/src/components/tooltip/tooltip.tsx`           |
-| **Layout Compound**        | Card              | Slot-only composition          | `packages/nimbus/src/components/card/card.tsx`                 |
-| **Context Management**     | Drawer            | Context + state sharing        | `packages/nimbus/src/components/drawer/drawer.tsx`             |
-| **Overlay Pattern**        | Drawer            | Focus trap + restoration       | `packages/nimbus/src/components/drawer/drawer.tsx`             |
-| **Conditional React Aria** | Drawer            | Child-based wrapper logic      | `packages/nimbus/src/components/drawer/drawer.tsx`             |
-| **Selection State**        | Menu              | Selection management           | `packages/nimbus/src/components/menu/menu.tsx`                 |
-| **Keyboard Navigation**    | Menu, Tabs        | Arrow key handling             | `packages/nimbus/src/components/menu/menu.tsx`                 |
-| **Multi-Panel**            | Tabs              | Panel coordination             | `packages/nimbus/src/components/tabs/tabs.tsx`                 |
-| **Slot Recipe**            | Checkbox, Menu    | Multi-slot styling             | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
-| **Style Props Support**    | Button            | extractStyleProps              | `packages/nimbus/src/components/button/button.tsx`             |
+| Pattern Need               | Example Component | Key Feature                              | File Path                                                      |
+| -------------------------- | ----------------- | ---------------------------------------- | -------------------------------------------------------------- |
+| **Ref Forwarding**         | Button            | mergeRefs + useObjectRef                 | `packages/nimbus/src/components/button/button.tsx`             |
+| **React Aria Hook**        | Button            | useButton integration                    | `packages/nimbus/src/components/button/button.tsx`             |
+| **React Aria Component**   | Checkbox          | Component wrapper                        | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
+| **Render Function**        | Checkbox          | State-based rendering                    | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
+| **Child Processing**       | SplitButton       | React.Children.forEach                   | `packages/nimbus/src/components/split-button/split-button.tsx` |
+| **Composition**            | SplitButton       | Multiple component composition           | `packages/nimbus/src/components/split-button/split-button.tsx` |
+| **i18n Integration**       | SplitButton       | useLocalizedStringFormatter + msg.format | `packages/nimbus/src/components/split-button/split-button.tsx` |
+| **Simple Compound**        | Tooltip           | Minimal compound structure               | `packages/nimbus/src/components/tooltip/tooltip.tsx`           |
+| **Layout Compound**        | Card              | Slot-only composition                    | `packages/nimbus/src/components/card/card.tsx`                 |
+| **Context Management**     | Drawer            | Context + state sharing                  | `packages/nimbus/src/components/drawer/drawer.tsx`             |
+| **Overlay Pattern**        | Drawer            | Focus trap + restoration                 | `packages/nimbus/src/components/drawer/drawer.tsx`             |
+| **Conditional React Aria** | Drawer            | Child-based wrapper logic                | `packages/nimbus/src/components/drawer/drawer.tsx`             |
+| **Selection State**        | Menu              | Selection management                     | `packages/nimbus/src/components/menu/menu.tsx`                 |
+| **Keyboard Navigation**    | Menu, Tabs        | Arrow key handling                       | `packages/nimbus/src/components/menu/menu.tsx`                 |
+| **Multi-Panel**            | Tabs              | Panel coordination                       | `packages/nimbus/src/components/tabs/tabs.tsx`                 |
+| **Slot Recipe**            | Checkbox, Menu    | Multi-slot styling                       | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
+| **Style Props Support**    | Button            | extractStyleProps                        | `packages/nimbus/src/components/button/button.tsx`             |
 
 ---
 

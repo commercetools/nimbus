@@ -147,8 +147,8 @@ Components with user-facing text SHALL support internationalization.
 
 #### Scenario: Message usage
 - **WHEN** component renders localized text
-- **THEN** SHALL use useIntl hook
-- **AND** SHALL call intl.formatMessage(messages.key)
+- **THEN** SHALL use useLocalizedStringFormatter hook
+- **AND** SHALL call msg.format("key")
 - **AND** SHALL support variable interpolation
 
 #### Scenario: Message extraction

@@ -114,10 +114,10 @@ The system SHALL integrate with plain TypeScript objects for message formatting.
 
 #### Scenario: Component message usage
 - **WHEN** component needs localized text
-- **THEN** SHALL import useIntl hook from plain TypeScript objects
+- **THEN** SHALL import useLocalizedStringFormatter hook from plain TypeScript objects
 - **AND** SHALL import messages from {component}.i18n.ts
-- **AND** SHALL call intl.formatMessage(messages.key) for formatting
-- **AND** SHALL support variable interpolation: `intl.formatMessage(messages.key, { var: value })`
+- **AND** SHALL call msg.format("key") for formatting
+- **AND** SHALL support variable interpolation: `msg.format("key, { var: value }")`
 
 ### Requirement: Provider Configuration
 The system SHALL provide IntlProvider configuration.

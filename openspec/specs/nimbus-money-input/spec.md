@@ -388,8 +388,8 @@ The component SHALL support i18n for all user-facing text.
 
 #### Scenario: Message formatting
 - **WHEN** displaying i18n text
-- **THEN** SHALL use useIntl hook
-- **AND** SHALL call intl.formatMessage(messages.key)
+- **THEN** SHALL use useLocalizedStringFormatter hook
+- **AND** SHALL call msg.format("key")
 - **AND** SHALL support all 5 Nimbus locales (en, de, es, fr-FR, pt-BR)
 
 ## Styling

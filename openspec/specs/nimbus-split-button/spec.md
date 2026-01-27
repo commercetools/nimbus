@@ -494,8 +494,8 @@ The component SHALL support internationalization for fallback messages.
 
 #### Scenario: Fallback message usage
 - **WHEN** no valid Menu.Items are available
-- **THEN** SHALL use useIntl hook to get localized message
-- **AND** SHALL call intl.formatMessage(messages.noActionsAvailable)
+- **THEN** SHALL use useLocalizedStringFormatter hook to get localized message
+- **AND** SHALL call msg.format("noActionsAvailable")
 - **AND** SHALL display localized "No actions available" text
 
 ### Requirement: Minimum Touch Target Size

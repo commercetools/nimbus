@@ -376,7 +376,7 @@ The component SHALL support internationalization per nimbus-core standards.
 - **WHEN** empty state renders with default message
 - **THEN** SHALL use message id "Nimbus.DraggableList.emptyMessage"
 - **AND** SHALL have defaultMessage: "drop items here"
-- **AND** SHALL format with useIntl hook
+- **AND** SHALL format with useLocalizedStringFormatter hook
 
 #### Scenario: Remove button label
 - **WHEN** remove button renders
