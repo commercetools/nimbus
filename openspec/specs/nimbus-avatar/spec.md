@@ -183,7 +183,7 @@ The component SHALL provide internationalized ARIA labels per nimbus-core standa
 #### Scenario: Automatic aria-label
 - **WHEN** component renders
 - **THEN** SHALL provide aria-label attribute on root element
-- **AND** SHALL use react-intl formatMessage with messages.avatarLabel
+- **AND** SHALL use plain TypeScript objects formatMessage with messages.avatarLabel
 - **AND** SHALL interpolate full name into message: "Avatar image for {fullName}"
 - **AND** SHALL support all Nimbus locales (en, de, es, fr-FR, pt-BR)
 
@@ -220,13 +220,13 @@ The component SHALL support message localization per nimbus-core standards.
 #### Scenario: Message definition
 - **WHEN** component defines translatable messages
 - **THEN** SHALL define messages in avatar.i18n.ts file
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** SHALL follow naming: `Nimbus.Avatar.{messageKey}`
 - **AND** message ID SHALL be "Nimbus.Avatar.avatarLabel"
 
 #### Scenario: Message usage
 - **WHEN** component renders with localized text
-- **THEN** SHALL use useIntl hook from react-intl
+- **THEN** SHALL use useLocalizedStringFormatter hook from @/hooks
 - **AND** SHALL call intl.formatMessage(messages.avatarLabel, { fullName })
 - **AND** SHALL support variable interpolation for fullName parameter
 

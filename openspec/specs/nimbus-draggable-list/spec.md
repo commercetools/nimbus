@@ -369,7 +369,7 @@ The component SHALL support internationalization per nimbus-core standards.
 #### Scenario: Message definition
 - **WHEN** component renders translatable text
 - **THEN** SHALL define messages in draggable-list.i18n.ts
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** messages SHALL follow naming: "Nimbus.DraggableList.{messageKey}"
 
 #### Scenario: Empty state message
