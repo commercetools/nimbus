@@ -29,7 +29,7 @@
   },
   "Nimbus.ComboBox.options": {
     "developer_comment": "aria-label for combobox menu options",
-    "string": "Options menu"
+    "string": "Optionsmenü"
   },
   "Nimbus.ComboBox.selectedValues": {
     "developer_comment": "aria-label for selected values tag group",
@@ -37,7 +37,7 @@
   },
   "Nimbus.ComboBox.toggleOptions": {
     "developer_comment": "aria-label for toggle button to open/close options",
-    "string": "Toggle options"
+    "string": "Optionen umschalten"
   },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
