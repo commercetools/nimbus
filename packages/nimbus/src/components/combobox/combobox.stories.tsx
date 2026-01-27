@@ -6052,3 +6052,67 @@ export const PortalPositioningInDialog: Story = {
     });
   },
 };
+
+/**
+ * Verifies that ComboBox displays the selected item's text value in the input field
+ * on initial render when selectedKeys is provided without explicit inputValue prop.
+ * This tests the fix for the initial value synchronization bug.
+ */
+export const InitialSelectedValue: Story = {
+  render: () => {
+    const fruits = [
+      { id: "apple", name: "Apple" },
+      { id: "banana", name: "Banana" },
+      { id: "orange", name: "Orange" },
+    ];
+    return (
+      <ComposedComboBox
+        items={fruits}
+        selectedKeys={["apple"]}
+        aria-label="ComboBox with initial selection"
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Verify input displays selected item's text
+    await waitFor(() => {
+      expect(input).toHaveValue("Apple");
+    });
+
+    // Verify clear button is visible
+    const clearButton = canvas.getByRole("button", { name: /clear/i });
+    expect(clearButton).toBeVisible();
+  },
+};
+
+/**
+ * Verifies that controlled inputValue prop takes precedence over automatic
+ * value resolution from selectedKeys. This ensures the fix doesn't break
+ * existing controlled behavior.
+ */
+export const ControlledInputWithSelection: Story = {
+  render: () => {
+    const fruits = [
+      { id: "apple", name: "Apple" },
+      { id: "banana", name: "Banana" },
+    ];
+    return (
+      <ComposedComboBox
+        items={fruits}
+        selectedKeys={["apple"]}
+        inputValue="Custom Value"
+        aria-label="Controlled input"
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+
+    // Verify controlled value is displayed, not selected item text
+    expect(input).toHaveValue("Custom Value");
+  },
+};

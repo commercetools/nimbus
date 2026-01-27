@@ -1154,6 +1154,7 @@ const ComboBoxRootInner = <T extends object>(
   // ============================================================
 
   const lastSelectedKeyRef = useRef<Key | null>(null);
+  const lastNodeFoundRef = useRef<boolean>(false);
 
   // Auto-focus input on mount (when autoFocus=true)
   useEffect(() => {
@@ -1178,14 +1179,25 @@ const ComboBoxRootInner = <T extends object>(
     const selectedKeys = Array.from(state.selectionManager.selectedKeys);
     const currentSelectedKey = selectedKeys.length > 0 ? selectedKeys[0] : null;
 
-    // Only update if selection changed
-    if (currentSelectedKey === lastSelectedKeyRef.current) return;
-    lastSelectedKeyRef.current = currentSelectedKey;
-
     const selectedNode =
       currentSelectedKey !== null
         ? state.collection.getItem(currentSelectedKey)
         : null;
+
+    const nodeFound = selectedNode !== null;
+
+    // Only skip if BOTH:
+    // 1. Selection key hasn't changed
+    // 2. AND we previously found the node (or there's no selection)
+    if (
+      currentSelectedKey === lastSelectedKeyRef.current &&
+      (lastNodeFoundRef.current || currentSelectedKey === null)
+    ) {
+      return;
+    }
+
+    lastSelectedKeyRef.current = currentSelectedKey;
+    lastNodeFoundRef.current = nodeFound;
 
     // If the selected item is not in the collection yet, it might be a newly created custom option
     // In that case, keep the current input value instead of clearing it
