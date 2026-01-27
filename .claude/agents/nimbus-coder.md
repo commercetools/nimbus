@@ -26,7 +26,7 @@ architecture.
    - Chakra UI v3 recipe-based styling system
    - TypeScript strict typing with comprehensive interfaces
    - Compound component patterns where appropriate
-   - Proper internationalization with react-intl
+   - Proper internationalization with @internationalized/string
    - Storybook stories with interaction testing
 
 3. **Implement Complete Features**: Create all necessary files for a feature
