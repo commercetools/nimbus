@@ -359,7 +359,7 @@ Message IDs follow the pattern `Nimbus.{ComponentName}.{messageKey}`:
 
 ```typescript
 // ✅ CORRECT
-defineMessages({
+{
   clearLabel: {
     id: "Nimbus.DatePicker.clearLabel",
     defaultMessage: "Clear date",
