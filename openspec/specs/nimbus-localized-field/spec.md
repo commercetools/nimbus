@@ -588,7 +588,7 @@ The component SHALL provide localized messages per nimbus-core standards.
 - **WHEN** toggle button renders
 - **THEN** SHALL use showLanguages/hideLanguages messages for text types
 - **AND** SHALL use showCurrencies/hideCurrencies messages for money type
-- **AND** messages SHALL be formatted via useIntl().formatMessage()
+- **AND** messages SHALL be formatted via msg.format()
 
 #### Scenario: Info box aria-label message
 - **WHEN** info button renders

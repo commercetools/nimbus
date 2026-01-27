@@ -346,7 +346,7 @@ The Drawer component handles most accessibility requirements internally through 
 
 - **Using aria-label** (when no visual title is needed):
 ```tsx
-<Drawer.Root aria-label={intl.formatMessage(drawerMessage)}>
+<Drawer.Root aria-label={msg.format(drawerMessage)}>
   <Drawer.Trigger>Open</Drawer.Trigger>
   <Drawer.Content>...</Drawer.Content>
 </Drawer.Root>

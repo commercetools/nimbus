@@ -224,10 +224,10 @@ The RadioInput handles most accessibility requirements internally via React Aria
 ```tsx
 <FormField.Root>
   <FormField.Label>
-    {intl.formatMessage(labelMessage)}
+    {msg.format(labelMessage)}
   </FormField.Label>
   <FormField.Input>
-    <RadioInput.Root name="example" aria-label={intl.formatMessage(labelMessage)}>
+    <RadioInput.Root name="example" aria-label={msg.format(labelMessage)}>
       <RadioInput.Option value="option1">Option 1</RadioInput.Option>
     </RadioInput.Root>
   </FormField.Input>
@@ -237,7 +237,7 @@ The RadioInput handles most accessibility requirements internally via React Aria
 - Associating a `<label>` element with the `RadioInput.Root` using `aria-labelledby`:
 ```tsx
 <label id="radio-label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <RadioInput.Root name="example" aria-labelledby="radio-label-id">
   <RadioInput.Option value="option1">Option 1</RadioInput.Option>
@@ -248,7 +248,7 @@ If your design requires that the label should not be visible, the label should b
 ```tsx
 <RadioInput.Root 
   name="example" 
-  aria-label={intl.formatMessage(labelMessage)}
+  aria-label={msg.format(labelMessage)}
 >
   <RadioInput.Option value="option1">Option 1</RadioInput.Option>
 </RadioInput.Root>

@@ -126,7 +126,7 @@ The component SHALL provide accessible label for screen readers per nimbus-core 
 
 #### Scenario: Default internationalized label
 - **WHEN** aria-label is not provided
-- **THEN** SHALL use useIntl hook to format default message
+- **THEN** SHALL use useLocalizedStringFormatter hook to format default message
 - **AND** SHALL read from messages.defaultLoadingMessage
 - **AND** message id SHALL be "Nimbus.LoadingSpinner.default"
 - **AND** defaultMessage SHALL be "Loading data"

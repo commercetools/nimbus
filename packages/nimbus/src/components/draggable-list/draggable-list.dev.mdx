@@ -318,7 +318,7 @@ The DraggableList handles most accessibility requirements internally through Rea
 
 ```tsx
 <DraggableList.Field
-  label={intl.formatMessage(labelMessage)}
+  label={msg.format(labelMessage)}
   items={items}
 />
 ```
@@ -327,7 +327,7 @@ The DraggableList handles most accessibility requirements internally through Rea
 
 ```tsx
 <label id="list-label">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <DraggableList.Root
   aria-labelledby="list-label"
@@ -339,7 +339,7 @@ The DraggableList handles most accessibility requirements internally through Rea
 
 ```tsx
 <DraggableList.Root
-  aria-label={intl.formatMessage(labelMessage)}
+  aria-label={msg.format(labelMessage)}
   items={items}
 />
 ```

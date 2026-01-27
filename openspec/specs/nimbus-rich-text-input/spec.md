@@ -675,7 +675,7 @@ The component SHALL support comprehensive i18n via plain TypeScript objects.
 
 #### Scenario: Toolbar messages
 - **WHEN** toolbar renders
-- **THEN** SHALL use intl.formatMessage for all labels
+- **THEN** SHALL use msg.format() for all labels
 - **AND** SHALL include: textFormatting, textStyleMenu, textStyle
 - **AND** SHALL include: bold, italic, underline
 - **AND** SHALL include: listFormatting, bulletedList, numberedList
@@ -683,13 +683,13 @@ The component SHALL support comprehensive i18n via plain TypeScript objects.
 
 #### Scenario: Formatting menu messages
 - **WHEN** formatting menu renders
-- **THEN** SHALL use intl.formatMessage for menu items
+- **THEN** SHALL use msg.format() for menu items
 - **AND** SHALL include: moreFormattingOptions, moreStyles
 - **AND** SHALL include: strikethrough, code, superscript, subscript
 
 #### Scenario: Text style labels
 - **WHEN** text style menu renders
-- **THEN** SHALL use intl.formatMessage for style labels
+- **THEN** SHALL use msg.format() for style labels
 - **AND** SHALL include: paragraph, headingOne, headingTwo, headingThree, headingFour, headingFive, quote
 - **AND** SHALL display localized labels in dropdown
 

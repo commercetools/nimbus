@@ -442,24 +442,24 @@ export const messages = {
 
 ```typescript
 // alert.dismiss-button.tsx
-import { messages } from "../alert.i18n";
+import { componentMessagesStrings } from "./component.messages";
 
 export const AlertDismissButton = () => {
-  const intl = useIntl();
+  const msg = useLocalizedStringFormatter(componentMessagesStrings);
   return (
-    <button aria-label={intl.formatMessage(messages.dismiss)}>
+    <button aria-label={msg.format("dismiss")}>
       <Icons.Close />
     </button>
   );
 };
 
 // alert.icon.tsx
-import { messages } from "../alert.i18n";
+import { componentMessagesStrings } from "./component.messages";
 
 export const AlertIcon = ({ severity }: AlertIconProps) => {
-  const intl = useIntl();
-  const label = intl.formatMessage(
-    severity === "info" ? messages.infoIcon : messages.warningIcon
+  const msg = useLocalizedStringFormatter(alertMessagesStrings);
+  const label = msg.format(
+    severity === "info" ? "infoIcon" : "warningIcon"
   );
   return <Icons.Info aria-label={label} />;
 };
@@ -540,15 +540,15 @@ export const messages = {
 
 ### Step 4: Update Component to Use Messages
 
-Replace hardcoded strings with `intl.formatMessage`:
+Replace hardcoded strings with `msg.format()`:
 
 ```typescript
 // Before
 <button aria-label="Dismiss">Close</button>
 
 // After
-const intl = useIntl();
-<button aria-label={intl.formatMessage(messages.dismiss)}>Close</button>
+const msg = useLocalizedStringFormatter(componentMessagesStrings);
+<button aria-label={msg.format("dismiss")}>Close</button>
 ```
 
 ## Update Mode
@@ -684,7 +684,7 @@ const message = isVisible
   ? messages.hide
   : messages.show;
 
-return <button aria-label={intl.formatMessage(message)} />;
+return <button aria-label={msg.format(message)} />;
 ```
 
 **Pluralization:**
@@ -699,7 +699,7 @@ defaultMessage: "{count, plural, one {# item} other {# items}}";
 defaultMessage: "Page {current} of {total}";
 
 // Usage
-intl.formatMessage(messages.pageInfo, { current: 1, total: 10 });
+msg.format("pageInfo, { current: 1, total: 10 }");
 ```
 
 ## Error Recovery

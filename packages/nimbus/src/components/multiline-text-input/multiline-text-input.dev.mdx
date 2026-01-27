@@ -271,7 +271,7 @@ The MultilineTextInput handles most accessibility requirements internally. Howev
 
 ```tsx
 <label id="description-label">
-  {intl.formatMessage(descriptionMessage)}
+  {msg.format(descriptionMessage)}
 </label>
 <MultilineTextInput aria-labelledby="description-label" />
 ```
@@ -280,7 +280,7 @@ The MultilineTextInput handles most accessibility requirements internally. Howev
 
 ```tsx
 <label htmlFor="description-textarea">
-  {intl.formatMessage(descriptionMessage)}
+  {msg.format(descriptionMessage)}
 </label>
 <MultilineTextInput id="description-textarea" />
 ```
@@ -288,7 +288,7 @@ The MultilineTextInput handles most accessibility requirements internally. Howev
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<MultilineTextInput aria-label={intl.formatMessage(descriptionMessage)} />
+<MultilineTextInput aria-label={msg.format(descriptionMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
