@@ -714,7 +714,7 @@ export const Component = (props: ComponentProps) => {
 
 ```typescript
 // Step 1: Create component.i18n.ts
-export const messages = defineMessages({
+export const messages = {
   closeLabel: {
     id: 'nimbus.component.closeLabel',
     defaultMessage: 'Close',
@@ -723,7 +723,6 @@ export const messages = defineMessages({
 });
 
 // Step 2: Update component
-import { useIntl } from 'react-intl';
 import { messages } from './component.i18n';
 
 export const Component = (props: ComponentProps) => {
@@ -1241,7 +1240,7 @@ flowchart TD
     Direct --> Example2[Example:<br/>import  Icon  from @/components/icon/icon<br/>import type  ButtonProps  from ../button/button.types]
     Barrel --> Example3[Example:<br/>import  extractStyleProps  from @/utils<br/>import  useDisclosure  from @/hooks]
     RaPrefix --> Example4[Example:<br/>import  Button as RaButton  from react-aria-components<br/>const props = useButton...]
-    Standard --> Example5[Example:<br/>import React from react<br/>import  defineMessages  from react-intl]
+    Standard --> Example5[Example:<br/>import React from react<br/>import plain message objects]
 ```
 
 **Import Strategy Summary:** | Location | Pattern | Reason |
