@@ -343,7 +343,7 @@ The Calendar handles most accessibility requirements internally. However, you mu
 
 ```tsx
 <label id="calendar-label">
-  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+  {msg.format("selectDate")}
 </label>
 <Calendar aria-labelledby="calendar-label" />
 ```
@@ -352,7 +352,7 @@ The Calendar handles most accessibility requirements internally. However, you mu
 
 ```tsx
 <label htmlFor="calendar-id">
-  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+  {msg.format("selectDate")}
 </label>
 <Calendar id="calendar-id" />
 ```
@@ -360,7 +360,7 @@ The Calendar handles most accessibility requirements internally. However, you mu
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<Calendar aria-label={intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })} />
+<Calendar aria-label={msg.format("selectDate")} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

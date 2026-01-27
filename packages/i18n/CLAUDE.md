@@ -9,9 +9,9 @@ The `@commercetools/nimbus-i18n` package is an **internal build tool** that:
 - Generates component-level message files directly in the Nimbus package
 - Eliminates runtime parsing overhead through pre-compilation
 
-**Important:** This package uses `react-intl` only as a dev dependency for
-message extraction from `.i18n.ts` files. At runtime, components use
-pre-compiled `LocalizedStringDictionary` from `@internationalized/string`.
+**Important:** This package uses a custom extraction script to extract messages
+from `.i18n.ts` files. At runtime, components use pre-compiled
+`LocalizedStringDictionary` from `@internationalized/string`.
 
 ## Build Process
 
@@ -107,24 +107,22 @@ This command:
 
 ### 2. Message Definition
 
-Define messages in component `.i18n.ts` files using `react-intl` for extraction:
+Define messages in component `.i18n.ts` files as plain TypeScript objects:
 
 ```typescript
 // packages/nimbus/src/components/alert/alert.i18n.ts
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   dismiss: {
     id: "Nimbus.Alert.dismiss",
     defaultMessage: "Dismiss",
     description: "aria-label for the dismiss button in an alert",
   },
-});
+};
 ```
 
-**Important:** `.i18n.ts` files are **only for extraction**. They use
-`react-intl`'s `defineMessages` to enable `@formatjs/cli` extraction, but are
-**not imported by components at runtime**.
+**Important:** `.i18n.ts` files are **only for extraction**. They are plain
+objects extracted by a custom script, and are **not imported by components at
+runtime**.
 
 ### 3. Transifex Integration
 
@@ -206,22 +204,22 @@ Examples:
 
 ```typescript
 // Simple message example
-export const messages = defineMessages({
+export const messages = {
   dismiss: {
     id: "Nimbus.Alert.dismiss",
     defaultMessage: "Dismiss", // Plain text
     description: "Dismiss button label",
   },
-});
+};
 
 // Variable message example
-export const messages = defineMessages({
+export const messages = {
   avatarLabel: {
     id: "Nimbus.Avatar.avatarLabel",
     defaultMessage: "Avatar image for {fullName}", // ICU syntax
     description: "Avatar accessibility label with user's full name",
   },
-});
+};
 ```
 
 ## Adding New Messages
@@ -230,15 +228,13 @@ export const messages = defineMessages({
 
    ```typescript
    // packages/nimbus/src/components/alert/alert.i18n.ts
-   import { defineMessages } from "react-intl";
-
-   export const messages = defineMessages({
+   export const messages = {
      dismiss: {
        id: "Nimbus.Alert.dismiss",
        defaultMessage: "Dismiss",
        description: "Aria label for dismiss button",
      },
-   });
+   };
    ```
 
 2. **Extract and compile messages from root**
@@ -296,8 +292,7 @@ To add a new locale:
 This package:
 
 - Uses `@internationalized/string-compiler` for message compilation
-- Uses `@formatjs/cli` for message extraction (dev dependency)
-- Uses `react-intl` for `.i18n.ts` extraction only (dev dependency, not runtime)
+- Uses custom extraction script for `.i18n.ts` files
 - Does not depend on other Nimbus packages
 - Is consumed by `@commercetools/nimbus` package
 
@@ -340,13 +335,13 @@ hook automatically retrieves the correct locale from React Aria's context.
 1. **Edit the `.i18n.ts` file** with new message text
 
    ```typescript
-   export const messages = defineMessages({
+   export const messages = {
      dismiss: {
        id: "Nimbus.Alert.dismiss",
        defaultMessage: "Close", // Updated from "Dismiss"
        description: "aria-label for the dismiss button",
      },
-   });
+   };
    ```
 
 2. **Extract and compile**
@@ -376,7 +371,7 @@ grep -o '"Nimbus\.Alert\.[^"]*"' packages/i18n/data/core.json
 
 If translations aren't working:
 
-1. **Check `.i18n.ts` file exists** with proper `defineMessages` structure
+1. **Check `.i18n.ts` file exists** with proper message object structure
 2. **Run extraction**: `pnpm extract-intl` to extract and compile
 3. **Verify extraction** in `packages/i18n/data/core.json`
 4. **Check generated files exist**:

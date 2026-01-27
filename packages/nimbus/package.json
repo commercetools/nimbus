@@ -89,7 +89,6 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "react-intl": "catalog:react",
     "rollup": "catalog:tooling",
     "rollup-plugin-tree-shakeable": "catalog:tooling",
     "slate": "^0.75.0",

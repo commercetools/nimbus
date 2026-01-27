@@ -569,7 +569,7 @@ The DatePicker handles most accessibility requirements internally through React 
 
 ```tsx
 <label id="label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <DatePicker aria-labelledby="label-id" />
 ```
@@ -577,7 +577,7 @@ The DatePicker handles most accessibility requirements internally through React 
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<DatePicker aria-label={intl.formatMessage(labelMessage)} />
+<DatePicker aria-label={msg.format(labelMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

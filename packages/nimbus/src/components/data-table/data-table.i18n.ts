@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   dataTable: {
     id: "Nimbus.DataTable.dataTable",
     description: "aria-label for the data table element",
@@ -185,4 +183,4 @@ export const messages = defineMessages({
       "aria-label for the settings tabs in the data table manager drawer",
     defaultMessage: "Settings tabs",
   },
-});
+};

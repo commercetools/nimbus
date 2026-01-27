@@ -219,14 +219,14 @@ Pagination SHALL support internationalization per nimbus-core standards.
 
 #### Scenario: i18n messages
 - **WHEN** component renders
-- **THEN** SHALL use react-intl useIntl hook
+- **THEN** SHALL use useLocalizedStringFormatter hook
 - **AND** SHALL format messages from pagination.i18n.ts
 - **AND** SHALL support message keys: pagination, itemsPerPage, itemsPerPageText, goToPreviousPage, currentPage, page, ofTotalPages, goToNextPage
 - **AND** SHALL format numbers with intl.formatNumber for totalPages
 
 #### Scenario: Message formatting
 - **WHEN** displaying "of {totalPages}" text
-- **THEN** SHALL use intl.formatMessage with ofTotalPages message
+- **THEN** SHALL use msg.format() with ofTotalPages message
 - **AND** SHALL pass totalPages as formatted number using intl.formatNumber
 - **AND** SHALL support locale-specific number formatting
 

@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   // Toolbar
   textFormatting: {
     id: "Nimbus.RichTextInput.textFormatting",
@@ -126,4 +124,4 @@ export const messages = defineMessages({
     description: "label for block quote text style",
     defaultMessage: "Quote",
   },
-});
+};

@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   selectLabel: {
     id: "Nimbus.ScopedSearchInput.selectLabel",
     description: "Default aria-label for select dropdown",
@@ -11,4 +9,4 @@ export const messages = defineMessages({
     description: "Default aria-label for search input",
     defaultMessage: "Search",
   },
-});
+};

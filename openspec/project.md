@@ -7,7 +7,7 @@ Nimbus is a comprehensive design system providing React UI components, design to
 - **Accessibility**: WCAG 2.1 AA compliance using React Aria patterns
 - **Consistency**: Token-based theming and standardized component APIs
 - **Developer Experience**: TypeScript-first with comprehensive documentation
-- **Internationalization**: Built-in i18n support with react-intl and Transifex integration
+- **Internationalization**: Built-in i18n support with plain TypeScript objects and Transifex integration
 - **Flexibility**: Compound component patterns for complex, composable UIs
 
 ## Tech Stack
@@ -27,7 +27,7 @@ Nimbus is a comprehensive design system providing React UI components, design to
 - **Playwright**: Browser automation for Storybook tests
 
 ### Internationalization
-- **react-intl**: Message formatting and localization
+- **plain TypeScript objects**: Message formatting and localization
 - **@formatjs/cli**: Translation file compilation
 - **Transifex**: Professional translation management
 
@@ -71,7 +71,7 @@ Nimbus is a comprehensive design system providing React UI components, design to
 
 - **@commercetools/nimbus-i18n**: Internationalization
   - Centralized translation messages
-  - react-intl integration
+  - plain TypeScript objects integration
   - Transifex sync support
   - Consumed by: nimbus, docs
 

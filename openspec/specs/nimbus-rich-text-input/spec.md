@@ -665,17 +665,17 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** recipe className SHALL be "nimbus-rich-text-input"
 
 ### Requirement: Internationalization Support
-The component SHALL support comprehensive i18n via react-intl.
+The component SHALL support comprehensive i18n via plain TypeScript objects.
 
 #### Scenario: Message definitions
 - **WHEN** component uses i18n messages
 - **THEN** SHALL define 24 messages in rich-text-input.i18n.ts
-- **AND** SHALL use react-intl's defineMessages API
+- **AND** SHALL use plain TypeScript objects's plain object API
 - **AND** message IDs SHALL follow pattern: Nimbus.RichTextInput.{messageKey}
 
 #### Scenario: Toolbar messages
 - **WHEN** toolbar renders
-- **THEN** SHALL use intl.formatMessage for all labels
+- **THEN** SHALL use msg.format() for all labels
 - **AND** SHALL include: textFormatting, textStyleMenu, textStyle
 - **AND** SHALL include: bold, italic, underline
 - **AND** SHALL include: listFormatting, bulletedList, numberedList
@@ -683,13 +683,13 @@ The component SHALL support comprehensive i18n via react-intl.
 
 #### Scenario: Formatting menu messages
 - **WHEN** formatting menu renders
-- **THEN** SHALL use intl.formatMessage for menu items
+- **THEN** SHALL use msg.format() for menu items
 - **AND** SHALL include: moreFormattingOptions, moreStyles
 - **AND** SHALL include: strikethrough, code, superscript, subscript
 
 #### Scenario: Text style labels
 - **WHEN** text style menu renders
-- **THEN** SHALL use intl.formatMessage for style labels
+- **THEN** SHALL use msg.format() for style labels
 - **AND** SHALL include: paragraph, headingOne, headingTwo, headingThree, headingFour, headingFive, quote
 - **AND** SHALL display localized labels in dropdown
 

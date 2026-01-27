@@ -406,14 +406,14 @@ All date values **must** use `@internationalized/date` types:
 The RangeCalendar handles most accessibility requirements internally. However, you must always associate an internationalized label with the component using the `aria-label` prop:
 
 ```tsx
-<RangeCalendar aria-label={intl.formatMessage(labelMessage)} />
+<RangeCalendar aria-label={msg.format(labelMessage)} />
 ```
 
 Alternatively, use `aria-labelledby` to reference a visible label:
 
 ```tsx
 <label id="calendar-label">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <RangeCalendar aria-labelledby="calendar-label" />
 ```

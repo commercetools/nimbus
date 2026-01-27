@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   clearInput: {
     id: "Nimbus.DatePicker.clearInput",
     description: "aria-label for clear input button in date picker",
@@ -31,4 +29,4 @@ export const messages = defineMessages({
     description: "Label for start time in date picker",
     defaultMessage: "Start time",
   },
-});
+};

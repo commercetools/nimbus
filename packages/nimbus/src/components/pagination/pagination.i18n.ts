@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   pagination: {
     id: "Nimbus.Pagination.pagination",
     description: "aria-label for the pagination navigation element",
@@ -41,4 +39,4 @@ export const messages = defineMessages({
     description: "aria-label for the next page button",
     defaultMessage: "Go to next page",
   },
-});
+};

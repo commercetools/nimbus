@@ -8,7 +8,7 @@ The `@commercetools/nimbus` package is the core component library providing:
 - React Aria Components integration for accessibility
 - Chakra UI v3 styling system with design tokens
 - Comprehensive Storybook documentation and testing
-- Internationalization support via react-intl
+- Internationalization support via @internationalized/string
 
 ## Development Commands
 
@@ -100,8 +100,8 @@ This project follows strict development standards detailed in the documentation:
   `./docs/file-type-guidelines/documentation.md`
 - **Accessibility**: WCAG 2.1 AA compliance using React Aria
   `./docs/file-type-guidelines/architecture-decisions.md`
-- **Internationalization**: react-intl integration for translatable UI text
-  `./docs/file-type-guidelines/i18n.md`
+- **Internationalization**: @internationalized/string integration for
+  translatable UI text `./docs/file-type-guidelines/i18n.md`
 
 ### File Review Protocol
 
