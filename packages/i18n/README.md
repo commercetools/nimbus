@@ -21,8 +21,7 @@ This is an **internal build tool package** that:
 - **Eliminates runtime parsing overhead** by pre-compiling all messages to
   JavaScript functions
 
-> **Note:** `react-intl` is used only as a dev dependency in the `nimbus`
-> package for `.i18n.ts` source file extraction. It is not a runtime dependency.
+> **Note:** Message extraction uses a custom script to parse `.i18n.ts` files.
 > Components use compiled `.messages.ts` dictionaries with
 > `LocalizedStringDictionary` from `@internationalized/string` at runtime.
 
@@ -262,13 +261,13 @@ files, not the object key. For example:
 
 ```typescript
 // .i18n.ts file
-export const messages = defineMessages({
+export const messages = {
   defaultLoadingMessage: {
     // ← Object key (not used in component)
     id: "Nimbus.LoadingSpinner.default", // ← ID (extracted to "default")
     defaultMessage: "Loading data",
   },
-});
+};
 
 // Component usage
 const msg = useLocalizedStringFormatter(loadingSpinnerMessagesStrings);
@@ -285,8 +284,8 @@ consumers do not need to install or use this package directly.
 
 ## Translation Workflow
 
-1. **Extraction**: Messages are extracted from `.i18n.ts` files using
-   `@formatjs/cli extract` → `data/core.json`
+1. **Extraction**: Messages are extracted from `.i18n.ts` files using custom
+   extraction script → `data/core.json`
 2. **Translation**: Files in `data/` are sent to Transifex for translation
 3. **Compilation**: Translated files are compiled using the build pipeline
 4. **Usage**: Components import and use compiled `*.messages.ts` files at
@@ -302,7 +301,7 @@ consumers do not need to install or use this package directly.
 │  Component      │
 │  .i18n.ts       │
 └────────┬────────┘
-         │ @formatjs/cli extract
+         │ Custom extraction script
          ▼
 ┌─────────────────┐
 │  🔍 Extraction   │
