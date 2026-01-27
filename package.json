@@ -14,7 +14,7 @@
     "openspec": "openspec",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",
-    "extract-intl": "pnpm dlx @formatjs/cli extract --format=transifex --out-file=./packages/i18n/data/core.json '{packages,src/components}/**/*.i18n.ts' && pnpm --filter @commercetools/nimbus-i18n build",
+    "extract-intl": "tsx packages/i18n/scripts/extract-messages.ts && pnpm --filter @commercetools/nimbus-i18n build",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",
     "typecheck": "pnpm -r --filter './packages/*' --bail=false typecheck || true",
