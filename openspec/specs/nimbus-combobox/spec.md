@@ -17,7 +17,8 @@ etc.)
 
 ### Requirement: Single Selection with Input
 
-The component SHALL combine text input with selection capability.
+The component SHALL combine text input with selection capability and synchronize
+input value with selected key on initial render.
 
 #### Scenario: Controlled mode
 
@@ -38,6 +39,27 @@ The component SHALL combine text input with selection capability.
 - **THEN** SHALL control input text independently from selection
 - **AND** SHALL call onInputChange on every keystroke
 - **AND** SHALL support free-form text entry
+
+#### Scenario: Pre-selected value on mount
+
+- **GIVEN** ComboBox is rendered with `selectedKeys={["apple"]}`
+- **AND** no `inputValue` prop is provided (uncontrolled input)
+- **AND** `selectionMode="single"` (default)
+- **WHEN** component mounts and collection is populated
+- **THEN** input field SHALL display the selected item's text value (e.g.,
+  "Apple")
+- **AND** clear button SHALL be visible
+- **AND** SHALL NOT require explicit `inputValue` prop for synchronization
+
+#### Scenario: Collection populates after initial render
+
+- **GIVEN** ComboBox is rendered with `selectedKeys={["apple"]}`
+- **AND** React Aria's CollectionBuilder is parsing children
+- **WHEN** collection transitions from unpopulated to populated state
+- **THEN** SHALL detect the transition
+- **AND** SHALL resolve selected item's text value from collection
+- **AND** SHALL update input value with resolved text
+- **AND** SHALL NOT cause multiple re-renders or flickering
 
 ### Requirement: Option Filtering
 
