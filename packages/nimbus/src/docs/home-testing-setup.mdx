@@ -1,0 +1,201 @@
+---
+id: Home-Testing-Setup
+title: Testing Setup
+description: Configure Jest or Vitest to test Nimbus components
+documentState: InitialDraft
+order: 1.6
+menu:
+  - Home
+  - Getting Started
+  - Testing Setup
+tags:
+  - guide
+  - testing
+  - jest
+  - vitest
+icon: Science
+---
+
+# Testing Setup
+
+Nimbus components require specific polyfills to work in JSDOM test environments (Jest, Vitest). This guide shows you how to configure your test runner to work with Nimbus.
+
+## Why JSDOM Polyfills?
+
+JSDOM is a headless browser environment used by Jest and Vitest. It doesn't include all browser APIs that Chakra UI and React Aria (which Nimbus is built on) depend on. Nimbus provides polyfills for these missing APIs.
+
+The polyfills include:
+- `structuredClone` - Required by Chakra UI for theme configuration
+- `window.matchMedia` - Required for responsive design and color mode
+- `ResizeObserver` - Required for responsive components
+- `IntersectionObserver` - Required for lazy loading and viewport tracking
+- `Element.prototype.scrollTo/scrollIntoView` - Required for focus management
+- `requestAnimationFrame` - Required for animations and transitions
+
+## Jest Setup
+
+### 1. Add Polyfills to Setup Files
+
+Add Nimbus polyfills to your Jest configuration's `setupFiles` array:
+
+```javascript
+// jest.config.js
+module.exports = {
+  setupFiles: [
+    '@commercetools/nimbus/setup-jsdom-polyfills'
+  ]
+};
+```
+
+### Complete Example
+
+```javascript
+// jest.config.js
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFiles: [
+    // Add Nimbus polyfills BEFORE other setup files
+    '@commercetools/nimbus/setup-jsdom-polyfills'
+  ],
+  setupFilesAfterEnv: [
+    '@testing-library/jest-dom',
+  ],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
+};
+```
+
+### 2. Write Tests
+
+With the polyfills configured, you can test Nimbus components:
+
+```typescript
+// button.test.tsx
+import { render, screen } from '@testing-library/react';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { Button } from '@commercetools/nimbus';
+
+describe('Button', () => {
+  it('renders button text', () => {
+    render(
+      <NimbusProvider>
+        <Button>Click me</Button>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+  });
+});
+```
+
+> [!IMPORTANT]  
+> Always wrap your components in `<NimbusProvider>` when testing, just like in your application.
+
+## Vitest Setup
+
+### 1. Add Polyfills to Setup Files
+
+Add Nimbus polyfills to your Vitest configuration:
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: [
+      '@commercetools/nimbus/setup-jsdom-polyfills'
+    ],
+  },
+});
+```
+
+### Complete Example
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: [
+      // Add Nimbus polyfills
+      '@commercetools/nimbus/setup-jsdom-polyfills',
+      // Add other setup files
+      './test/setup.ts',
+    ],
+    globals: true,
+  },
+});
+```
+
+### 2. Write Tests
+
+```typescript
+// button.test.tsx
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { Button } from '@commercetools/nimbus';
+
+describe('Button', () => {
+  it('renders button text', () => {
+    render(
+      <NimbusProvider>
+        <Button>Click me</Button>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+  });
+});
+```
+
+## Testing Best Practices
+
+### Always Use NimbusProvider
+
+Wrap your test components in `NimbusProvider`:
+
+```typescript
+// ✅ Correct
+render(
+  <NimbusProvider>
+    <YourComponent />
+  </NimbusProvider>
+);
+
+// ❌ Incorrect - will cause errors
+render(<YourComponent />);
+```
+
+### Create a Test Utility
+
+For convenience, create a custom render function:
+
+```typescript
+// test-utils.tsx
+import { render, RenderOptions } from '@testing-library/react';
+import { NimbusProvider } from '@commercetools/nimbus';
+import { ReactElement } from 'react';
+
+export function renderWithNimbus(
+  ui: ReactElement,
+  options?: RenderOptions
+) {
+  return render(ui, {
+    wrapper: ({ children }) => <NimbusProvider>{children}</NimbusProvider>,
+    ...options,
+  });
+}
+
+// Usage in tests
+import { renderWithNimbus } from './test-utils';
+
+renderWithNimbus(<Button>Click me</Button>);
+```
