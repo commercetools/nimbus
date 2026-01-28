@@ -403,42 +403,34 @@ const getAnnouncementForIndex = (index: number) => {
 | `End`     | Jump to last data point                           |
 | `Escape`  | Clear focus, hide tooltip                         |
 
-**ARIA attributes:**
+### Accessibility Implementation
 
 ```tsx
 <div
-  {...getContainerProps()}
-  role="img"
-  aria-label={formatMessage(
-    layout === "stacked"
-      ? areaChartMessages.chartLabelStacked
-      : areaChartMessages.chartLabel,
-    { description: getChartDescription() }
-  )}
-  aria-describedby={`${chartId}-desc`}
+  ref={containerRef}
+  role="figure"
+  aria-labelledby={titleId}
+  aria-describedby={descId}
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  className={styles.container}
 >
-  {/* Hidden description for screen readers */}
-  <VisuallyHidden id={`${chartId}-desc`}>
-    {formatMessage(areaChartMessages.navigationInstructions)}
+  <VisuallyHidden id={titleId}>{config.title || "Area chart"}</VisuallyHidden>
+  <VisuallyHidden id={descId}>
+    {generateAreaDescription(data, categories, config, layout)}
   </VisuallyHidden>
 
-  <svg role="presentation">
-    {/* Invisible hit areas for keyboard navigation */}
-    {data.map((d, index) => (
-      <rect
-        key={index}
-        {...getDataPointProps(index)}
-        x={xScale(getX(d)) - hitAreaWidth / 2}
-        y={0}
-        width={hitAreaWidth}
-        height={innerHeight}
-        fill="transparent"
-        role="listitem"
-        aria-label={getAnnouncementForIndex(index)}
-        tabIndex={focusedIndex === index ? 0 : -1}
-      />
-    ))}
+  <svg role="presentation" aria-hidden="true">
+    {/* Areas, gradients, axes - no ARIA roles */}
   </svg>
+
+  <ChartDataTable
+    data={data}
+    index={index}
+    categories={categories}
+    config={config}
+    showTotals={layout === "stacked" || layout === "percentStacked"}
+  />
 </div>
 ```
 
@@ -520,7 +512,7 @@ export const areaChartRecipe = sva({
       fontWeight: "500",
     },
     area: {
-      transition: "opacity 0.15s ease-out",
+      transition: "var(--nimbus-chart-transition)",
     },
     line: {
       fill: "none",

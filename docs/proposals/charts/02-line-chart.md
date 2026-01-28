@@ -223,11 +223,36 @@ announce(`${label}: ${formattedValues}`);
 // Example: "January 2024: Revenue $45,230, Orders 1,243"
 ```
 
-**ARIA attributes:**
+### Accessibility Implementation
 
-- Container: `role="img"`, `aria-label="Line chart showing {description}"`
-- Each data point group: `role="listitem"`, `tabindex="0"` on focused point
-- Hidden `<desc>` element with chart summary
+```tsx
+<div
+  ref={containerRef}
+  role="figure"
+  aria-labelledby={titleId}
+  aria-describedby={descId}
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  className={styles.container}
+>
+  <VisuallyHidden id={titleId}>{config.title || "Line chart"}</VisuallyHidden>
+  <VisuallyHidden id={descId}>
+    {generateDescription(data, categories, config)}
+  </VisuallyHidden>
+
+  <svg role="presentation" aria-hidden="true">
+    {/* All visual chart elements */}
+  </svg>
+
+  {/* Hidden data table for screen readers */}
+  <ChartDataTable
+    data={data}
+    index={index}
+    categories={categories}
+    config={config}
+  />
+</div>
+```
 
 **Focus indicators:**
 
@@ -265,7 +290,10 @@ export const lineChartRecipe = sva({
     axisLabel: { color: "chart.label", fontSize: "sm", fontWeight: "medium" },
     line: { fill: "none", strokeWidth: 2 },
     marker: { strokeWidth: 2, stroke: "bg.base" },
-    markerHighlight: { strokeWidth: 3, transition: "r 0.1s ease-out" },
+    markerHighlight: {
+      strokeWidth: 3,
+      transition: "var(--nimbus-chart-transition)",
+    },
     tooltip: { bg: "bg.overlay", shadow: "md", rounded: "md", p: 2 },
     legend: { display: "flex", gap: 4, flexWrap: "wrap" },
     legendItem: {

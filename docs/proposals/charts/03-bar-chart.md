@@ -360,14 +360,22 @@ const { getContainerProps, getDataPointProps, announce, focusedIndex } =
 
 **Keyboard navigation:**
 
-| Key       | Action                                                   |
-| --------- | -------------------------------------------------------- |
-| `<-`/`->` | Move focus between categories (vertical orientation)     |
-| `^`/`v`   | Move focus between categories (horizontal orientation)   |
-| `Tab`     | Move focus between series within same category (grouped) |
-| `Home`    | Jump to first bar                                        |
-| `End`     | Jump to last bar                                         |
-| `Escape`  | Clear focus, hide tooltip                                |
+| Key       | Action                                                    |
+| --------- | --------------------------------------------------------- |
+| `←` / `→` | Move between bars (vertical orientation)                  |
+| `↑` / `↓` | Move between bars (horizontal orientation)                |
+| `↑` / `↓` | Move between series within category (grouped, vertical)   |
+| `←` / `→` | Move between series within category (grouped, horizontal) |
+| `Home`    | Jump to first bar                                         |
+| `End`     | Jump to last bar                                          |
+| `Escape`  | Clear focus, hide tooltip                                 |
+
+**Navigation order for grouped bars:**
+
+- Primary axis (between categories): Arrow keys matching orientation
+- Secondary axis (between series): Arrow keys perpendicular to orientation
+- Example (vertical grouped): `←`/`→` moves between categories, `↑`/`↓` moves
+  between series within a category
 
 **Navigation order:**
 
@@ -401,38 +409,34 @@ const getFlattenedBars = () => {
 };
 ```
 
-**ARIA attributes:**
+### Accessibility Implementation
 
-```typescript
-// Container
+```tsx
 <div
-  {...getContainerProps()}
-  role="img"
-  aria-label={formatMessage(
-    layout === "stacked"
-      ? barChartMessages.chartLabelStacked
-      : barChartMessages.chartLabelGrouped,
-    { categories: categoryLabels, indexLabel }
-  )}
-  aria-describedby={`${chartId}-desc`}
+  ref={containerRef}
+  role="figure"
+  aria-labelledby={titleId}
+  aria-describedby={descId}
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  className={styles.container}
 >
-  {/* Hidden description for screen readers */}
-  <VisuallyHidden id={`${chartId}-desc`}>
-    {formatMessage(barChartMessages.navigationInstructions)}
+  <VisuallyHidden id={titleId}>{config.title || "Bar chart"}</VisuallyHidden>
+  <VisuallyHidden id={descId}>
+    {generateBarDescription(data, categories, config, layout)}
   </VisuallyHidden>
 
-  <svg role="presentation">
-    {/* Bars */}
-    {bars.map((bar, index) => (
-      <rect
-        key={bar.id}
-        {...getDataPointProps(index)}
-        role="listitem"
-        aria-label={getBarAnnouncement(bar)}
-        tabIndex={focusedIndex === index ? 0 : -1}
-      />
-    ))}
+  <svg role="presentation" aria-hidden="true">
+    {/* Bars, axes, grid - no ARIA roles on SVG elements */}
   </svg>
+
+  <ChartDataTable
+    data={data}
+    index={index}
+    categories={categories}
+    config={config}
+    layout={layout}
+  />
 </div>
 ```
 
@@ -518,7 +522,7 @@ export const barChartRecipe = sva({
       fontWeight: "500",
     },
     bar: {
-      transition: "filter 0.15s ease-out, opacity 0.15s ease-out",
+      transition: "var(--nimbus-chart-transition)",
       _hover: {
         filter: "brightness(1.1)",
       },
@@ -768,18 +772,18 @@ packages/nimbus-charts/src/components/bar-chart/
 
 ## Key Decisions
 
-| Aspect           | Decision                            | Rationale                                            |
-| ---------------- | ----------------------------------- | ---------------------------------------------------- |
-| **Orientation**  | Prop, not separate components       | Single component handles both, reduces API surface   |
-| **Layout**       | `grouped` / `stacked` prop          | Covers single series (grouped with 1 cat), multi     |
-| **100% stacked** | `stackOffset="expand"`              | Matches Visx API, clear intent for percentage charts |
-| **Bar radius**   | Token-based sizes (none/sm/md/full) | Consistent with Nimbus sizing patterns               |
-| **Bar labels**   | Optional, auto-position by default  | Most charts don't need labels; auto handles small    |
-| **Negative**     | Supported                           | Revenue changes, profit/loss charts need this        |
-| **Tooltip**      | Single bar focus, optional stack    | Simple default, opt-in complexity for stacked        |
-| **Legend**       | Rescales remaining bars             | Grouped expands widths, stacked fills space          |
-| **Keyboard**     | Linear by category                  | Consistent with Line Chart; Tab for series grouped   |
-| **Horizontal**   | Swapped scales, not rotated         | Proper implementation, not CSS rotation hack         |
+| Aspect           | Decision                            | Rationale                                              |
+| ---------------- | ----------------------------------- | ------------------------------------------------------ |
+| **Orientation**  | Prop, not separate components       | Single component handles both, reduces API surface     |
+| **Layout**       | `grouped` / `stacked` prop          | Covers single series (grouped with 1 cat), multi       |
+| **100% stacked** | `stackOffset="expand"`              | Matches Visx API, clear intent for percentage charts   |
+| **Bar radius**   | Token-based sizes (none/sm/md/full) | Consistent with Nimbus sizing patterns                 |
+| **Bar labels**   | Optional, auto-position by default  | Most charts don't need labels; auto handles small      |
+| **Negative**     | Supported                           | Revenue changes, profit/loss charts need this          |
+| **Tooltip**      | Single bar focus, optional stack    | Simple default, opt-in complexity for stacked          |
+| **Legend**       | Rescales remaining bars             | Grouped expands widths, stacked fills space            |
+| **Keyboard**     | Arrow keys by orientation           | Arrows for categories; perpendicular arrows for series |
+| **Horizontal**   | Swapped scales, not rotated         | Proper implementation, not CSS rotation hack           |
 
 ## Starting a Session
 

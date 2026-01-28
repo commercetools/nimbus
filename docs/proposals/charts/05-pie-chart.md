@@ -233,6 +233,10 @@ type PieChartTooltipProps = {
 | Hover segment           | Segment expands, tooltip appears                   |
 | Hover while highlighted | Hovered segment expands, highlight state unchanged |
 
+> **Note**: Pie chart legend uses highlight mode (dims other segments) rather
+> than toggle (hide/show). See Foundation § Legend Interaction Patterns for
+> rationale.
+
 **Legend item using React Aria ToggleButton:**
 
 ```tsx
@@ -335,34 +339,37 @@ announce(
 );
 ```
 
-**ARIA attributes:**
+### Accessibility Implementation
 
 ```tsx
-<Box
-  {...getContainerProps()}
-  role="img"
-  aria-label={formatMessage(pieChartMessages.chartLabel, {
-    description: getChartDescription(),
-  })}
-  aria-describedby={`${chartId}-desc`}
+<div
+  ref={containerRef}
+  role="figure"
+  aria-labelledby={titleId}
+  aria-describedby={descId}
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  className={styles.container}
 >
-  <VisuallyHidden id={`${chartId}-desc`}>
-    {formatMessage(pieChartMessages.navigationInstructions)}
+  <VisuallyHidden id={titleId}>{config.title || "Pie chart"}</VisuallyHidden>
+  <VisuallyHidden id={descId}>
+    {generatePieDescription(data, dataKey, nameKey, config)}
   </VisuallyHidden>
 
-  <svg role="presentation">
-    {pie.arcs.map((arc, index) => (
-      <Group key={arc.data[nameKey]}>
-        <Arc
-          {...getDataPointProps(index)}
-          role="listitem"
-          aria-label={`${config[arc.data[nameKey]].label}: ${getAnnouncementForSegment(arc.data)}`}
-          tabIndex={focusedIndex === index ? 0 : -1}
-        />
-      </Group>
-    ))}
+  <svg role="presentation" aria-hidden="true">
+    {/* Pie segments - no ARIA roles */}
   </svg>
-</Box>
+
+  {/* Pie uses simple list format, not table */}
+  <VisuallyHidden as="ul">
+    {data.map((item) => (
+      <li key={item[nameKey]}>
+        {item[nameKey]}: {valueFormatter(item[dataKey])},
+        {percentageFormatter(item[dataKey] / total)} of total
+      </li>
+    ))}
+  </VisuallyHidden>
+</div>
 ```
 
 ### Recipe & Slots
@@ -398,7 +405,7 @@ export const pieChartRecipe = sva({
       cursor: "pointer",
       outline: "none",
       transform: "translate(var(--expand-x, 0), var(--expand-y, 0))",
-      transition: "transform 0.15s ease-out, opacity 0.15s ease-out",
+      transition: "var(--nimbus-chart-transition)",
       _focusVisible: {
         outline: "2px solid",
         outlineColor: "chart.axis",

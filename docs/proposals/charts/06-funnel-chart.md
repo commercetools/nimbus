@@ -365,35 +365,39 @@ announce(`${label}: ${formattedValue}`);
 // Example: "Sessions: 10,000"
 ```
 
-**ARIA attributes:**
+### Accessibility Implementation
 
 ```tsx
-<Box
-  {...getContainerProps()}
-  role="img"
-  aria-label={formatMessage(funnelChartMessages.chartLabel, {
-    description: getChartDescription(),
-  })}
-  aria-describedby={`${chartId}-desc`}
+<div
+  ref={containerRef}
+  role="figure"
+  aria-labelledby={titleId}
+  aria-describedby={descId}
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  className={styles.container}
 >
-  <VisuallyHidden id={`${chartId}-desc`}>
-    {formatMessage(funnelChartMessages.navigationInstructions, {
-      direction: orientation === "vertical" ? "up and down" : "left and right",
-    })}
+  <VisuallyHidden id={titleId}>{config.title || "Funnel chart"}</VisuallyHidden>
+  <VisuallyHidden id={descId}>
+    {generateFunnelDescription(data, dataKey, nameKey)}
   </VisuallyHidden>
 
-  <svg role="presentation">
-    {stages.map((stage, index) => (
-      <path
-        key={stage.key}
-        {...getDataPointProps(index)}
-        role="listitem"
-        aria-label={`${config[stage.key].label}: ${getAnnouncementForStage(stage, index)}`}
-        tabIndex={focusedIndex === index ? 0 : -1}
-      />
-    ))}
+  <svg role="presentation" aria-hidden="true">
+    {/* Funnel stages - no ARIA roles */}
   </svg>
-</Box>
+
+  <VisuallyHidden as="ol">
+    {data.map((stage, i) => (
+      <li key={stage[nameKey]}>
+        {stage[nameKey]}: {valueFormatter(stage[dataKey])}
+        {i > 0 &&
+          `, ${percentageFormatter(stage[dataKey] / data[i - 1][dataKey])} conversion from previous`}
+        {i > 0 &&
+          `, ${percentageFormatter(stage[dataKey] / data[0][dataKey])} overall conversion`}
+      </li>
+    ))}
+  </VisuallyHidden>
+</div>
 ```
 
 ### Recipe & Slots
@@ -430,7 +434,7 @@ export const funnelChartRecipe = sva({
     stage: {
       cursor: "pointer",
       outline: "none",
-      transition: "filter 0.15s ease-out",
+      transition: "var(--nimbus-chart-transition)",
       _hovered: {
         filter: "brightness(1.1)",
       },

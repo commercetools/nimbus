@@ -171,20 +171,58 @@ children):
 ```typescript
 // kpi-card.i18n.ts
 export const kpiCardMessages = defineMessages({
-  trendIncreasedBy: {
-    id: "nimbus-charts.kpi-card.trend-increased-by",
-    defaultMessage: "increased by",
+  // Direction announcements
+  trendIncreased: {
+    id: "nimbus-charts.kpi-card.trend-increased",
+    defaultMessage: "increased by {value}",
   },
-  trendDecreasedBy: {
-    id: "nimbus-charts.kpi-card.trend-decreased-by",
-    defaultMessage: "decreased by",
+  trendDecreased: {
+    id: "nimbus-charts.kpi-card.trend-decreased",
+    defaultMessage: "decreased by {value}",
   },
-  trendUnchangedAt: {
-    id: "nimbus-charts.kpi-card.trend-unchanged-at",
-    defaultMessage: "unchanged at",
+  trendUnchanged: {
+    id: "nimbus-charts.kpi-card.trend-unchanged",
+    defaultMessage: "unchanged at {value}",
+  },
+
+  // Sentiment qualifiers (appended to direction)
+  sentimentPositive: {
+    id: "nimbus-charts.kpi-card.sentiment-positive",
+    defaultMessage: ", which is positive",
+  },
+  sentimentNegative: {
+    id: "nimbus-charts.kpi-card.sentiment-negative",
+    defaultMessage: ", which is negative",
+  },
+  sentimentNeutral: {
+    id: "nimbus-charts.kpi-card.sentiment-neutral",
+    defaultMessage: "",
   },
 });
+
+// Usage in component:
+// "increased by +12.5%, which is negative" (for bounce rate going up)
+const announcement = useMemo(() => {
+  const directionMsg =
+    direction === "up"
+      ? formatMessage(messages.trendIncreased, { value: children })
+      : direction === "down"
+        ? formatMessage(messages.trendDecreased, { value: children })
+        : formatMessage(messages.trendUnchanged, { value: children });
+
+  const sentimentMsg =
+    sentiment === "positive"
+      ? formatMessage(messages.sentimentPositive)
+      : sentiment === "negative"
+        ? formatMessage(messages.sentimentNegative)
+        : "";
+
+  return `${directionMsg}${sentimentMsg}`;
+}, [direction, sentiment, children, formatMessage]);
 ```
+
+This ensures screen reader users hear both the direction AND the semantic
+meaning (is this change good or bad?).
 
 ### Files to Create
 
