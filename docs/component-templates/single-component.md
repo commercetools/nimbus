@@ -6,7 +6,7 @@ component-name, componentName
 ````tsx
 /**
  * Template for single component implementation
- * Replace: ComponentName, component-name, componentName
+ * Replace: ComponentName, component-name, componentName, componentMessagesStrings
  */
 
 import { useRef } from "react";
