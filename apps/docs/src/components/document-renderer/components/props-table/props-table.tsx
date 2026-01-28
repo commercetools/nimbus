@@ -22,9 +22,9 @@ interface ExportInfo {
 }
 
 export const PropsTable = ({ id }: { id: string }) => {
-  const [selectedComponent, setSelectedComponent] = useState<string | null>(
-    null
-  );
+  const [selectedComponent, setSelectedComponent] = useState<
+    string | undefined
+  >(undefined);
 
   // Get basic type information about the export
   const exportInfo = useMemo<ExportInfo>(() => {
@@ -54,25 +54,61 @@ export const PropsTable = ({ id }: { id: string }) => {
       ("$$typeof" in (exportItem as ReactComponentLike) ||
         "render" in (exportItem as ReactComponentLike));
 
-    // Compound component check: if it's an object without $$typeof or render, it's a compound component
-    const isCompoundComponent =
-      basicType === "object" &&
-      exportItem !== null &&
-      !isArray &&
-      !isObjectComponent &&
-      !isFunctionComponent;
-
-    // Whether it's a component (either function or object with $$typeof/render)
-    const isComponent = isFunctionComponent || isObjectComponent;
-
-    // For objects, gather all keys
+    // Gather all keys for objects OR functions (functions can have properties via Object.assign)
     const subKeys =
-      basicType === "object" && exportItem !== null
+      (basicType === "object" || basicType === "function") &&
+      exportItem !== null
         ? Object.keys(exportItem)
         : [];
 
-    // If it's a compound component, all keys are considered sub-components
-    const subComponents = isCompoundComponent ? subKeys : [];
+    // Filter out non-component exports (hooks, contexts, utilities)
+    const isComponentKey = (key: string): boolean => {
+      // Exclude hooks (start with "use")
+      if (key.startsWith("use")) return false;
+
+      // Exclude context objects (end with "Context" but not component wrappers)
+      if (key.endsWith("Context")) {
+        const value = (exportItem as Record<string, unknown>)[key];
+        // React contexts have a specific shape with Provider/Consumer
+        if (value && typeof value === "object" && "Provider" in value) {
+          return false;
+        }
+      }
+
+      // Include if it's a function (component) or object with $$typeof/render
+      const value = (exportItem as Record<string, unknown>)[key];
+      return (
+        typeof value === "function" ||
+        (typeof value === "object" &&
+          value !== null &&
+          ("$$typeof" in (value as ReactComponentLike) ||
+            "render" in (value as ReactComponentLike)))
+      );
+    };
+
+    // Filter subKeys to only include actual components
+    const componentKeys = subKeys.filter(isComponentKey);
+
+    // Compound component check:
+    // - Pure object without $$typeof or render (e.g., Alert)
+    // - OR function with sub-component keys (e.g., DataTable via Object.assign)
+    const hasSubComponents = componentKeys.length > 0;
+
+    const isCompoundComponent =
+      exportItem !== null &&
+      !isArray &&
+      !isObjectComponent &&
+      hasSubComponents &&
+      (basicType === "object" ||
+        (basicType === "function" && componentKeys.length > 0));
+
+    // Whether it's a component (either function or object with $$typeof/render)
+    // BUT NOT a compound component
+    const isComponent =
+      (isFunctionComponent || isObjectComponent) && !isCompoundComponent;
+
+    // If it's a compound component, use filtered component keys
+    const subComponents = isCompoundComponent ? componentKeys : [];
 
     // Create componentTypes by prepending parent export name to each subComponent
     const componentTypes = subComponents.map((key) => `${id}${key}`);
