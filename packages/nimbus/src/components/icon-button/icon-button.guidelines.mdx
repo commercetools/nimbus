@@ -1,0 +1,423 @@
+---
+title: IconButton
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Icon buttons are interactive elements that empower users to trigger actions and
+navigate within your product. They serve as clear calls to action, guiding users
+through key flows and enabling them to interact with content in meaningful ways.
+These guidelines ensure consistent styling and behavior for all buttons,
+contributing to a cohesive and predictable user experience.
+
+### Writing guidelines
+
+- Use
+  [Material Icons](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)
+  in outline style before adding a new custom icon.
+- Use standard icons.
+- Provide tooltips.
+- Combine with text when needed.
+- Be consistent.
+- Test with users.
+
+#### Preferred words
+
+| **Example**                                                | **Description**                                                                                                                                                                                 |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <Icon id="Edit" color="primary.11" boxSize="24px" />          | Use for "edit".                                                                                                                                                                                 |
+| <Icon id="FileUpload" color="primary.11" boxSize="24px" />    | Upload.                                                                                                                                                                                         |
+| <Icon id="FileDownload" color="primary.11" boxSize="24px" />  | Download.                                                                                                                                                                                       |
+| <Icon id="ViewColumn" color="primary.11" boxSize="24px" />    | "Table settings" Shows customizable elements for tables.                                                                                                                                        |
+| <Icon id="MoreVert" color="primary.11" boxSize="24px" />      | "More options" shows a list of other features or tools that are not primary or secondary actions. Usually paired with buttons in a button group. For consistency, use the vertical dot version. |
+| <Icon id="DragIndicator" color="primary.11" boxSize="24px" /> | "Drag" allows a user to drag elements to reorder.                                                                                                                                               |
+| <Icon id="Clear" color="primary.11" boxSize="24px" />         | Use for "remove". This removes the relationship but does **not** delete this item completely.                                                                                                   |
+| <Icon id="Delete" color="primary.11" boxSize="24px" />        | Use for "delete". This is a destructive action, removes item completely.                                                                                                                        |
+
+#### Avoid these words
+
+| **Avoid Icon/Concept**                                                                                                                                                                                                                                                                                                              | **Use this instead**                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <Icon id="Check" color="primary.11" boxSize="24px" /><Icon id="CheckCircle" color="primary.11" boxSize="24px" />                                                                                                                                                                                                                    | Use a button with "Save" instead of an icon button.                     |
+| <Icon id="MoreHoriz" color="primary.11" boxSize="24px" />                                                                                                                                                                                                                                                                            | Use the vertical dot version to show more options.                      |
+| <Icon id="HighlightOff" color="primary.11" boxSize="24px" /><Icon id="DeleteForever" color="primary.11" boxSize="24px" /><Icon id="DoNotDisturb" color="primary.11" boxSize="24px" />                                                                                                                                              | If using for the same function as "delete" use consistent icon above.   |
+| <Icon id="Upload" color="primary.11" boxSize="24px" /><Icon id="CloudUpload" color="primary.11" boxSize="24px" /><Icon id="Upgrade" color="primary.11" boxSize="24px" /><Icon id="DriveFolderUpload" color="primary.11" boxSize="24px" />                                                                                          | If using for the same function as "upload" use consistent icon above.   |
+| <Icon id="ArrowCircleDown" color="primary.11" boxSize="24px" /><Icon id="Download" color="primary.11" boxSize="24px" /><Icon id="SimCardDownload" color="primary.11" boxSize="24px" /><Icon id="CloudDownload" color="primary.11" boxSize="24px" />                                                                                | If using for the same function as "download" use consistent icon above. |
+
+### Usage
+
+#### Common & effective placements:
+
+- **Toolbars**: Icon buttons are perfect for toolbars due to their compact size.
+  They allow for many actions to be readily available without cluttering the
+  interface.
+- **Navigation** bars/headers: Often used for actions like search, settings, or
+  menu access. Placement here makes these key functions easily accessible
+  throughout the app.
+- **Within** lists/grids: Icon buttons can be placed next to list items or grid
+  elements to provide actions specific to that item (e.g., edit, delete, share).
+- **Contextual** menus: Icon buttons can be used within dropdown menus or
+  context menus to provide a visual representation of available actions.
+
+#### Placement considerations:
+
+- **Related to content**: Place icon buttons close to the content they affect.
+  For example, an edit button should be near the text it's used to edit.
+- **Consistency**: Maintain consistent placement of similar icon buttons. Users
+  expect to find common actions in the same place.
+- **Groupings**: If you have multiple related icon buttons, grouping them
+  together visually. Helps users understand the relationships between the
+  actions.
+- **Avoid clutter**: Don't overcrowd your UI with too many icon buttons.
+
+> [!TIP]\
+> When to use
+
+- Space is limited.
+- Actions are universally recognized.
+- Reinforcing meaning.
+- Adding visual appeal.
+- Supporting multiple languages.
+- Interfaces are simple and consistent.
+
+> [!CAUTION]\
+> When not to use
+
+- Actions are ambiguous.
+- Context is crucial.
+- Actions are critical.
+- Space is plentiful.
+- Interfaces are complex.
+- Testing reveals confusion.
+
+### Color palette and style usage
+
+Icons that are on the left are the best placement. Icons are used to lead the
+user to the right action quickly by scanning. Ok ways to break this rule are
+with drop downs and right pointing arrows.
+
+#### Most common: Ghost
+
+They are often seen next to tables, fields, and toolbars.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.ViewColumn />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.Clear />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+#### Solid and outline
+
+Solid icon buttons are most commonly seen in navigation. Outline buttons are
+most commonly seen in groups of two representing views that can be toggled.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="outline">
+        <Icons.Add />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+#### Critical color palette
+
+Reserved for destructive actions, such as deleting something or removing a
+connection.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" justifyContent="center">
+      <IconButton colorPalette="critical" variant="outline">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton colorPalette="critical" variant="solid">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton colorPalette="critical" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+### Icon placement
+
+The ideal placement of an icon button depends heavily on its function and the
+overall UI design. Think about the button's function, the content it relates to,
+and how users will expect to find it. Consistency and user testing are key to
+optimizing icon button placement.
+
+> [!TIP]\
+> **Do**
+>
+> - Tools are grouped together, and adhere to current common page pattern
+>   design.
+
+
+<img src="/images/icon-button/icon-placement-do.png" alt="icon placement do guideline" width="447px" />
+
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Navigation is higher hierarchy than icon button tools, this is not a common
+>   pattern.
+
+<img src="/images/icon-button/icon-placement-dont.png" alt="icon placement do guideline" width="447px" />
+
+### Button groupings
+
+Button groups are UI elements that organize multiple buttons together, often
+visually as a single unit. They serve to present users with a set of related
+choices or actions in a compact and organized way.
+
+> [!TIP]\
+> **Do**
+>
+> - If you use a stack of icon buttons for actions, use max 4 and hide the rest
+>   within a "more" icon.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="0">
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.PushPin />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.MoreVert />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid having all the options as solid primary filled buttons.
+> - Try not to have icon buttons sandwiched between buttons.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal">
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.MoreVert />
+      </IconButton>
+      <Button colorPalette="primary" variant="solid">
+        Save changes
+      </Button>
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.ManageSearch />
+      </IconButton>
+      <Button colorPalette="primary" variant="solid">
+        <Icons.Undo />
+        Revert
+      </Button>
+    </Stack>
+  )
+}
+```
+
+> [!TIP]\
+> **Do**
+>
+> - When offering a toggle experience, connect these icon buttons
+> - Include a tooltip explaining the options.
+> - Selected option is using the "Solid" state.
+
+```jsx-live
+const App = () => {
+  return (
+    <ToggleButtonGroup.Root colorPalette="primary" selectedKeys={["left"]}>
+      <ToggleButtonGroup.Button id="left">
+        <Icons.AccountTree />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">
+        <Icons.Search />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - If offering a toggle like option view, do not show options as separate
+> - Does not include tooltips or labels, makes it confusing to users to
+>   understand this is a either/or choice.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.AccountTree />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="outline">
+        <Icons.Search />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!TIP]\
+> **Do**
+>
+> - When pairing icon buttons together, use the ghost style.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Avoid having two primary solid icon buttons in the same area.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack direction="horizontal" gap="100">
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton colorPalette="primary" variant="solid">
+        <Icons.Delete />
+      </IconButton>
+    </Stack>
+  )
+}
+```
+
+### Tooltips
+
+Make sure to place tooltips in areas where they will be seen easily.
+
+> [!TIP]\
+> **Do**
+>
+> - Place tooltips so that it makes information easy to read.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack width="185px">
+      <Tooltip.Root delay={0} closeDelay={0} isOpen>
+        <IconButton variant="ghost" colorPalette="primary" alignSelf="end">
+          <Icons.ViewColumn />
+        </IconButton>
+        <Tooltip.Content placement="top" offset={-37} crossOffset={-100}>
+          Table settings
+        </Tooltip.Content>
+      </Tooltip.Root>
+      <Select.Root
+        aria-label="Select a category"
+        selectedKey=""
+      >
+        <Select.Options>
+          <Select.Option id="productColumns" value="productColumns">
+            Product columns
+          </Select.Option>
+          <Select.Option id="variantColumns" value="variantColumns">
+            Variant columns
+          </Select.Option>
+          <Select.Option id="layoutSettings" value="layoutSettings">
+            Layout settings
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  )
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Be aware of overlap of element placements.
+> - Place tooltips so that it makes information easy to read.
+> - Don't use tooltips to cover the icon button.
+
+```jsx-live
+const App = () => {
+  return (
+    <Stack width="144px">
+      <Tooltip.Root delay={0} closeDelay={0} isOpen>
+        <IconButton variant="ghost" colorPalette="primary" alignSelf="end">
+          <Icons.ViewColumn />
+        </IconButton>
+        <Tooltip.Content placement="top" offset={-70} crossOffset={-40}>
+          Table settings
+        </Tooltip.Content>
+      </Tooltip.Root>
+      <Select.Root
+        aria-label="Select a category"
+        selectedKey=""
+      >
+        <Select.Options>
+          <Select.Option id="productColumns" value="productColumns">
+            Product columns
+          </Select.Option>
+          <Select.Option id="variantColumns" value="variantColumns">
+            Variant columns
+          </Select.Option>
+          <Select.Option id="layoutSettings" value="layoutSettings">
+            Layout settings
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Box>
+        <Tooltip.Root delay={0} closeDelay={0} isOpen>
+          <IconButton variant="ghost" colorPalette="primary">
+            <Icons.ViewColumn />
+          </IconButton>
+          <Tooltip.Content placement="bottom" crossOffset={50} offset={-25}>
+            Table settings
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Box>
+    </Stack>
+  )
+}
+```

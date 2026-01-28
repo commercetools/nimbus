@@ -147,56 +147,6 @@ const App = () => {
 };
 ```
 
-## Guidelines
-
-Localized field guidelines ensure the consistent design, accessibility, and efficient management of content that requires simultaneous input and storage across multiple defined language versions.
-
-### Best practices
-
-- **Prioritize default locale:** Always ensure the primary or default locale is easily accessible and the first field a user sees.
-- **Use clear flags/labels:** The language switcher controls must clearly and concisely indicate the active locale to prevent accidental input into the wrong language version.
-- **Maintain content consistency:** The underlying input component chosen for renderItem must remain the same for every single locale instance to ensure data integrity and predictable behavior.
-- **Handle text expansion:** Design the surrounding layout and container with enough horizontal space to accommodate text expansion in wordier languages like German or French.
-- **Provide contextual tools:** If the underlying input is complex (like a rich text editor), ensure localization features (like spellcheck based on the active locale) are supported.
-
-### Usage
-
-A localized field's usage is to efficiently capture and manage content that must be translated and stored for multiple language versions within a single form.
-
-> [!TIP]\
-> When to use
-
-- **Product descriptions/titles:** For any field that must be translated for customer-facing display (e.g., product titles, category names, SEO keywords).
-- **Multiple language input:** When a user (typically a content manager or merchant) is responsible for entering content for all supported markets from one interface.
-- **Structured metadata:** For input fields that hold localized metadata (e.g., unique localized pricing tiers, currency symbols, SEO, or tax explanations).
-
-> [!CAUTION]\
-> When not to use
-
-- **Non-translatable data:** When capturing internal IDs, SKUs, inventory counts, or purely numerical data that does not change by language. Use a standard Text Input or Number Input instead.
-- **Single-language input:** If the application supports only one language, or if the user is only ever responsible for one market's content.
-- **Large, multi-page content:** For entire pages or long-form documentation that would require a complex translation workflow; use a dedicated content management system instead.
-
-
-### Do’s and don’ts for the localized field
-
-
-
-> [!TIP]\
-> **Do**
->
-> - Ensure switching languages preserves the content of the input field currently being edited, allowing easy comparison.
-> - If needed, you can include a visual indicator with a country or language code on the active input field for clarity.
-
-
-> [!CAUTION]\
-> **Don't**
->
-> - Don't hide the language switcher interface completely unless an external system (like a global header) explicitly manages it.
-> - Don't allow the underlying input component to change across locales (e.g., using a text input for English and a text area for French).
-> - Don't allow users to input data into a locale that is not defined in the component's locales variable.
-
-
 ## Accessibility
 
 Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.

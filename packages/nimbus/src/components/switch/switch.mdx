@@ -67,56 +67,7 @@ a label for the user.
 const App = () => <Switch aria-label="I still need an aria-label for a11y purposes" />;
 ```
 
-## Guidelines
-
-Switch guidelines focus on providing a clear, accessible, and visually consistent
-binary toggle for on/off states, ensuring discoverability, ease of interaction,
-and proper communication of the current setting.
-
-### Best practices
-
-- **Labels & feedback**: Use clear labels and provide instant visual feedback on
-  state changes.
-- **Functionality**: Employ switches solely for binary on/off actions, avoiding
-  overuse.
-- **Accessibility**: Ensure keyboard navigation and proper ARIA for screen
-  readers.
-
-### Usage
-
-- **Simple on/off settings**: When users need to toggle a single feature or
-  preference between two states (e.g., "Notifications: On/Off," "Dark Mode:
-  On/Off").
-- **Immediate, direct control**: When users want to quickly and directly change a
-  setting without navigating through menus or dialogs.
-- **Visual clarity of state**: When it's important to visually represent the
-  current state of a setting at a glance.
-- **User preferences**: When users are setting personal preferences that are
-  binary.
-- **Feature toggles**: When users want to enable or disable features of an
-  application.
-
-### Mixed interaction states
-
-Switches should represent binary options, without mixing states. Avoid use cases
-that will need to represent summaries when options are mixed. Try using
-checkboxes if you have many settings that are selectable.
-
-> [!TIP]\
-> **Do**
-> - Keep switches to binary options, simplifying for the user. 
-
-![Do](/images/switch/mixed-state-do.png)
-
-> [!CAUTION]\
-> **Don't**
-> - There is not an indeterminate state for switches. Do not design experiences
->   where a switch is being used to summarize mixed settings.
-> - Do not excessively use switches, other options like checkboxes are available.
-
-![Dont](/images/switch/mixed-state-dont.png)
-
-### Accessibility
+## Accessibility
 
 #### 1. Perceivable:
 - **1.3.1 Info and Relationships (Level A)**:

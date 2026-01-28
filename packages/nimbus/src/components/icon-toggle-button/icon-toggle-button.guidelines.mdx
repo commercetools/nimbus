@@ -1,0 +1,102 @@
+---
+title: IconToggleButton
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Icon toggle button guidelines aim to provide clear and consistent visual
+feedback to users for compact binary states.
+
+### Best practices
+
+- **Avoid setting a default toggle as active:** Instead, let users choose their
+  preference. If one option is selected more frequently, make it the default,
+  while still allowing users to switch to the less popular choice.
+- **Intuitive icons:** Use icons that are universally recognized for the action
+  they represent. Consider adding a tooltip on hover to provide a text label to
+  help a user understand what is being chosen.
+- **Maintain visual consistency:** The icon's style (line weight, color, fill)
+  should be consistent with the rest of the icons in the design system to ensure
+  a cohesive look and feel.
+- **Provide immediate feedback:** The button should visually respond instantly
+  when a user clicks or taps it, providing reassurance that the action was
+  successful.
+- **Communicate meaningful changes:** If a toggle button makes a significant
+  change (ex: updating default payment) pair this toggled action with a toast
+  message to better communicate the change when needed.
+
+##### Toggle Groups (Segmented Controls)
+
+- **Enforce mutual exclusivity:** Use toggle groups (segmented controls) when
+  the user must select only one option from a small, defined set, similar to
+  radio button behavior (e.g., alignment controls, viewing modes).
+- **Limit options:** Keep the number of options within a group small (ideally 3
+  to 5) to prevent overcrowding and ensure each button is easily tappable.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Compact binary states:** Use them for on/off settings in toolbars or
+  space-limited areas (e.g., toggling bold text, muting).
+- **Clear, universal actions:** Use them for actions whose icon is immediately
+  understood without a text label (e.g., Pin, Star).
+- **Quick filtering:** Use them for providing quick, visual controls for
+  filtering items or selecting a mode.
+- **Frequent interactions:** Use them when an action is performed often to save
+  time and screen space.
+- **Instant application:** When the action takes effect immediately without
+  requiring the user to press a separate "Save" or "Submit" button.
+
+> [!CAUTION]\
+> When not to use
+
+- **Ambiguous actions:** Do not use them when the icon's meaning is unclear or
+  requires the user to guess; use a text label or tooltip.
+- **Complex or multi-state processes:** Avoid using them for actions that
+  require more than two states or sequential steps; use a segmented button or
+  switch.
+- **Critical, permanent actions:** Do not use them for destructive or major
+  actions; use a full text button with confirmation.
+- **Core navigation:** Avoid making primary navigation items toggle-able unless
+  they explicitly switch between two main views.
+- **Multi-select options:** If the user can select multiple items from a list,
+  use checkboxes instead.
+- **Multi-state options:** If the user needs to select one option from three or
+  more choices, use radio buttons or a segmented control instead.
+- **Actions requiring confirmation:** Do not use for actions that are
+  destructive, irreversible, or require confirmation (e.g., deleting an account,
+  submitting a payment). Use a standard button that triggers a confirmation
+  dialog.
+- **Complex settings:** Avoid using a toggle if the result of the action isn't
+  clear or if the setting requires additional input fields to be configured.
+- **Triggers for new pages:** Do not use a toggle to navigate to a new section
+  or page; use a link or standard button for navigation.
+- **Long-running processes:** For actions that take time to complete (e.g.,
+  "Start Backup"), a standard button that displays a loading spinner upon press
+  is more appropriate.
+
+### Icon toggle buttons in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do use icon toggle buttons for a simple binary choice (on/off).
+> - Do place them in toolbars or areas where space is limited.
+> - Do ensure the "on" state is clearly distinct from the "off" state.
+> - Do connect buttons that toggle one active state among a small selection of
+>   options.
+
+![Do](/images/icon-toggle-button/icon-toggle-button-do.png)
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use them for multi-step processes or complex selections.
+> - Don't use an ambiguous icon without a tooltip or a text label.
+> - Don't use an icon toggle button, when you should use an icon button instead.
+
+![Don't](/images/icon-toggle-button/icon-toggle-button-dont.png)

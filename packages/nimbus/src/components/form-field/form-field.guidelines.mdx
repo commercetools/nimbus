@@ -1,0 +1,334 @@
+---
+title: FormField
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+Related guidelines [text-fields](#).
+
+### Best practices
+
+- **Clarity and simplicity:**
+  - Minimize the number of fields. Only ask for essential information.
+  - Use clear, concise labels that accurately describe the required input.
+  - Choose what position (top or left) the labels will be and make it consistent
+    in the area to help with scanning.
+- **Labels:**
+  - Place labels above or to the left of input fields.
+  - Keep labels short and descriptive.
+  - Avoid using placeholders as labels.
+- **Error handling:**
+  - Display error messages clearly and prominently.
+  - Use specific and helpful error messages and provide suggestions for
+    correcting errors.
+
+#### Labels
+
+For label text, use a short, catch-all description (1-3 words) of the
+information that a user needs to provide. Label text that gets too long can be
+overwhelming and distracting, especially in complex interactions and long forms.
+Supplementary information or requirements about what to input can be shown in
+help text below the field, or in a tooltip.
+
+- **Use sentence case:** This follows our consistent style, unless statement
+  contains words that are branded proper nouns.
+- **Don’t add a colon (:) at the end of a field label:** The design of the
+  component already communicates the relationship between the label and the
+  input field.
+- **Use clear and concise language:** Try to keep labels to 1-3 words. Avoid
+  jargon or technical terms that the user might not understand.
+- **Be specific, brief, and descriptive:** Ensure labels are easily scannable
+  and reflect the function of the element. If you need instructional text, use a
+  helper label beneath.
+- **Avoid ambiguity:** Labels should leave no room for misinterpretation.
+- **Internalization friendly:** Be aware that translation lengthens by 20% on
+  average, but also avoid creating a sentence using the label combined with the
+  response from a user. (e.g., Label: My favorite color is... Response...Green.
+  Sentence structures between languages vary greatly.)
+
+### Helper text vs info icon
+
+Use the right informative tool to aid your user to understand what is needed.
+See [info button](#) for more guidelines.
+
+- **Info Button:**
+  - **Complex or lengthy information:** When you need to provide more than a
+    short sentence or two of explanation. By default the info button will open a
+    dialog overlay. It can be used to show a tooltip on hover, but the amount of
+    information a popover and a help text can contain is similar. If there is a
+    want to simplify the UI, this can be used, but test to make sure that this
+    information needs to be shown without interaction from a user.
+  - **Progressive disclosure:** To avoid cluttering the form with too much text
+    upfront, revealing details only when the user actively seeks them.
+  - **Contextual help:** When the help information is very specific to a
+    particular field or a user's current state within the form.  
+- **Help Text:**
+  - **Short, concise explanations:** For simple clarifications or hints about
+    the expected input. Try to keep helper text below 150 characters.
+  - **Formatting guidance:** To provide examples of the required format (e.g.,
+    date formats, phone number patterns).
+  - **Input requirements:** To specify character limits, password rules, or
+    other constraints.
+  - **Immediate visibility:** When it's crucial for the user to see the guidance
+    without any extra action like a click or a hover to display.
+
+### Usage
+
+Be sure to give enough information to the user to understand the form without
+being overwhelmed. Prioritize clarity and function over personality and over
+explanation. To increase understanding, test your forms with users to understand
+where confusion might occur.
+
+### Formatting
+
+Be consistent with your use of form fields label placements and size.
+
+> [!TIP]\
+> **Do**
+>
+> - Have one placement for labels in the same form, and consistently choose one
+>   size for the entire form.
+> - Help text is used to show the user what the accepted formatting will be.
+>   Placeholder text can be used when needed but help text is preferred for
+>   accessibility.
+> - OK to capitalize proper nouns in labels instead of using sentence case.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <FormField.Root isRequired>
+      <FormField.Label>First name</FormField.Label>
+      <FormField.Input>
+        <TextInput width="9600" />
+      </FormField.Input>
+    </FormField.Root>
+    <FormField.Root isRequired>
+      <FormField.Label>Social Security Number</FormField.Label>
+      <FormField.Input>
+        <TextInput width="9600" />
+      </FormField.Input>
+      <FormField.Description>
+        Format: XXX-XX-XXXX
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Use sentence case for labels. Do not capitalize every word.
+> - Do not combine top and side labels within the form.
+> - Only use description text and helper icons when it is needed.
+> - Placeholder text should give hints to the user about what is expected, not
+>   be used for quirky brand copy.
+> - Do not mix form sizes.
+
+```jsx-live
+const App = () => (
+  <Stack gap="400">
+    <FormField.Root size="md" isRequired>
+      <FormField.Label>First Name</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="What should we call you?" width="9600" />
+      </FormField.Input>
+    </FormField.Root>
+    <FormField.Root direction="row" size="sm" isRequired>
+      <FormField.Label>Last name</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="What's in a name?" width="8000" />
+      </FormField.Input>
+    </FormField.Root>
+  </Stack>
+)
+```
+
+### Validation
+
+Communicate clearly with users about how to correct form validation issues.
+
+> [!TIP]\
+> **Do**
+>
+> - Have succinct reasons why the error happened for the user to correct.
+> - Keep previously entered information so a user can check their work to spot
+>   mistakes easier.
+
+```jsx-live
+const App = () => (
+  <Stack>
+    <FormField.Root isRequired isInvalid>
+      <FormField.Label>Social Security Number (SSN)</FormField.Label>
+      <FormField.Input>
+        <TextInput value="555-55-5555" width="9600" />
+      </FormField.Input>
+      <FormField.Error>
+        This information does not match
+      </FormField.Error>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don’t forget to use error messaging. Convey clearly how a user can make
+>   corrections to move forward through the form.
+> - Don’t clear the previously input information if applicable, to help the user
+>   understand the mistake, and provide the best user experience.
+
+```jsx-live
+const App = () => (
+  <Stack>
+    <FormField.Root isRequired isInvalid>
+      <FormField.Label>Social Security Number (SSN)</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="XXX-XX-XXXX" width="9600" />
+      </FormField.Input>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  </Stack>
+)
+```
+
+### Labels
+
+Clear labels are essential for a smooth user experience. They reduce confusion,
+improve accessibility for everyone, and build user confidence by making
+interfaces intuitive and easy to navigate. Simply put, clear labels mean happy
+users.
+
+> [!TIP]\
+> **Do**
+>
+> - Label is concise and clear.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isRequired>
+    <FormField.Label>First name</FormField.Label>
+    <FormField.Input>
+      <TextInput width="9600" placeholder="John" />
+    </FormField.Input>
+    <FormField.InfoBox>
+      Info box content.
+    </FormField.InfoBox>
+  </FormField.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Navigation is higher hierarchy than icon button tools, this is not a common
+>   pattern.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isRequired>
+    <FormField.Label>What do we call you?</FormField.Label>
+    <FormField.Input>
+      <TextInput width="9600" placeholder="John or Johnny or Jon?" />
+    </FormField.Input>
+    <FormField.InfoBox>
+      Info box content.
+    </FormField.InfoBox>
+  </FormField.Root>
+)
+```
+
+### Helper text and info button
+
+Use the right informative tool to aid your user to understand what is needed.
+Help text should be short and is preferred when crucial information is needed.
+Use info button when supplemental information is too long for a help text,
+tooltips will by default open a dialog overlay, and can contain more detailed
+information, content types and formatting. See [dialog](#) for more guidelines
+concerning the content inside the modal.
+
+> [!TIP]\
+> **Do**
+>
+> - Maximum of 1-2 short sentences, around 20-30 words. Keep helper text below
+>   150 characters.
+> - If a long explanation is needed to explain anything related to this field,
+>   use the tooltip instead of the helper text.
+> - A good example of balanced information. Helper text is being used to inform
+>   all users without interaction. The info button contains supplementary
+>   information.
+
+```jsx-live
+const App = () => (
+  <Stack>
+    <FormField.Root isRequired>
+      <FormField.Label>Product discount rank</FormField.Label>
+      <FormField.Input>
+        <TextInput  width="9600" />
+      </FormField.Input>
+      <FormField.Description>
+        Sort order values can only be a value between 1 and 2,147,483,647.
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not overload help text and do not use bullet points. Keep help text below
+>   150 characters.
+> - If information is important for users, use the help text to show to users
+>   without interaction.
+> - Do not duplicate information in the help text and inside the info button.
+
+```jsx-live
+const App = () => (
+  <Stack>
+    <FormField.Root isRequired>
+      <FormField.Label>Product discount rank</FormField.Label>
+      <FormField.Input>
+        <TextInput  width="9600" />
+      </FormField.Input>
+      <FormField.Description>
+        Only one Product discount can be applied per product. The Sort order
+        determines which Product discount applies to your product. Discounts
+        with a Sort order value closer to 1 are considered first. Sort order
+        values can only be a value between 0 and 1.
+        <br/><br/>
+        <Text fontWeight="700">For example:</Text>
+        <br/>
+        <Text>• Product discount 1 has a Sort order value: 0.05</Text>
+        <Text>• Product discount 2 has a Sort order value: 0.07</Text>
+        <Text>• Both Product discounts are active and apply to the same
+        product.</Text>
+        <Text>• Product discount 2 will apply and Product discount 1 will not
+        because 0.07 is closer to 1 than 0.05.</Text>
+
+      </FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  </Stack>
+)
+```

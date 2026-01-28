@@ -1,0 +1,102 @@
+---
+title: TimeInput
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Number input guidelines focus on clear labels, suitable ranges, easy interaction
+via keyboard and buttons, and strong error handling, all while following WCAG
+accessibility rules.
+
+### Best practices
+
+- **Labels:** Always include a concise and clear label using sentence case.
+  Labels should not be hidden. In the rare case where context is sufficient and
+  label can be absent, review the design with an accessibility expert.
+- **Default values:** Provide a clear and logical default time when possible
+  (e.g., current time, a common start time like 9:00 AM). Avoid leaving the
+  input blank.
+- **Helper text:** Use helper text to indicate the expected time format (e.g.,
+  "HH:MM AM/PM", "24-hour format") or other constraints like valid time ranges.
+  It is optional and is replaced by error messages during validation.
+- **Validation:**
+  - Provide clear and concise error messages below the input field, replacing
+    any helper text.
+  - Highlight errors visually, for example, with a red border and an error icon.
+  - Validate the entered time against any defined constraints (e.g., valid time
+    format, time within allowed range).
+
+## Usage
+
+A time input enables users to enter or select a specific time, offering
+flexibility while maintaining precision.
+
+> [!TIP]\
+> When to use
+
+- Inputting a specific time of day (e.g., appointment times, event schedules).
+- When time is a discrete data point rather than a duration.
+- When users need to select from a predefined set of time slots.
+
+> [!CAUTION]\
+> When not to use
+
+- For durations (e.g., "5 hours 30 minutes"); use a separate duration input or a
+  set of number inputs.
+- When a broad range of continuous times is needed and exact entry is less
+  critical; a simple text input with a time format mask might suffice.
+- When users need to select a time zone along with the time; use a dedicated
+  time and time zone selector.
+
+## Keeping interactions simple
+
+Time inputs should be straightforward and require minimal effort from the user.
+This includes clear labeling and error states, and aiding the user with
+defaults.
+
+> [!TIP]\
+> **Do**
+>
+> - Always include a label.
+> - Set a clear default time when relevant.
+> - Provide helper text for format or range constraints.
+> - Offer clear error messages and visual indicators.
+
+```jsx-live
+const App = () => (
+  <FormField.Root isInvalid>
+    <FormField.Label>Start time</FormField.Label>
+    <FormField.Input>
+      <TimeInput
+        size="md"
+        hourCycle={24}
+        defaultValue={new Time(20, 15)}
+        width="50%"
+      />
+    </FormField.Input>
+     <FormField.Error>
+      Start time can only be :30, :45, or :00.
+    </FormField.Error>
+  </FormField.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - You cannot use a time input for durations, instead use a date range input.
+> - Do not rely solely on color to indicate errors.
+> - Never hide labels.
+
+```jsx-live
+const App = () => (
+  <TimeInput
+    size="md"
+    hourCycle={24}
+    defaultValue={new Time(20, 15)}
+    width="50%"
+  />
+);
+```

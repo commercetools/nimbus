@@ -1,0 +1,230 @@
+---
+title: Alert
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+Alert guidelines focus on delivering important and timely messages to users in a
+clear, noticeable, and accessible way, ensuring they understand the significance
+of the information and any required actions, while minimizing disruption to
+their workflow.
+
+### Writing guidelines
+
+- **Clarity and urgency:** Use clear, short messages with titles that match the
+  alert's urgency, and use visuals to reinforce it.
+- **User experience:** Place alerts strategically, allow dismissal when
+  available, provide actionable content, and avoid overuse to prevent alert
+  fatigue. Excessive and poorly designed alerts can lead to alert fatigue, a
+  state of desensitization where individuals disregard or fail to act upon
+  critical notifications due to overexposure, often stemming from alerts that
+  are too frequent, irrelevant to the user's context, or lacking in actionable
+  information.
+  - **Flat styled:** Use inline in forms and within popovers when needed. These
+    can be used inside forms to signal validation status.
+  - **Outlined styled:** Be mindful of how many alerts occur on one page. These
+    are best used for page or product wide information. They are not meant to be
+    used as toasts.
+- **Accessibility and design:** Maintain consistent styling, use color and icons
+  effectively, and ensure alerts are accessible to all users. For example, do
+  not use the information colorPalette to communicate a critical error.
+
+### Usage
+
+Correct usage guides for alerts are important for we do not want to fatigue
+users to a point where alert messages are ignored.
+
+> [!TIP]\
+> When to use
+
+- **Do use alerts for important information:** Reserve alerts for critical,
+  urgent, or highly relevant messages that require user attention.
+- **Do choose the right alert type:** Match the alert's colorPalette and visual style to
+  the severity of the message (positive, informational, warning, critical).
+- **Do provide clear and concise messages:** Write messages that are easy to
+  understand and avoid jargon.
+- **Do include actionable items:** If necessary, provide clear calls to action
+  (buttons, links) to help users resolve the issue.
+- **Do allow users to dismiss alerts:** Give users the option to dismiss alerts
+  when they are no longer relevant.
+- **Do place alerts strategically:** Position alerts where they are easily
+  noticed but don't disrupt the user's workflow.
+- **Do maintain consistency:** Use consistent styling and behavior for alerts
+  across your application or website.
+
+> [!CAUTION]\
+> When not to use
+
+- **Don't overuse alerts:** Avoid using alerts for minor or non-essential
+  information. Try to keep to one alert per view for most interactions. Overuse
+  leads to alert fatigue.
+- **Don't use alerts for regular updates:** Use other UI elements (e.g., toasts,
+  confirmation, and error states) for non-urgent updates.
+- **Don't obscure critical content:** Avoid placing alerts in a way that blocks
+  important information or functionality.
+- **Don't use confusing or ambiguous language:** Ensure alert messages are clear
+  and easy to understand.
+- **Don't create unnecessary interruptions:** Avoid using alerts that abruptly
+  interrupt the user's workflow without a valid reason.
+- **Don't make them too hard to dismiss:** Ensure that the user can easily close
+  an alert.
+
+### Use the correct colorPalette
+
+Ensure that you choose the correct colorPalette that will suit your message best. If you
+choose the wrong type, it will confuse users.
+
+> [!TIP]\
+> **Do**
+>
+> - This message correctly aligns message with the colorPalette needed to let the user
+>   know the information should be taken seriously.
+> - There is enough detailed information for the user to understand the issue
+>   and how to perform next steps to correct it.
+> - Utilizing actionable buttons to guide the user faster to the area that needs
+>   to be addressed is useful and convenient.
+
+```jsx-live
+const App = () => (
+  <Alert.Root colorPalette="critical" variant="outlined">
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Description>
+      A payment processing error occurred for order #12345. Please <Link>verify your
+      payment gateway settings</Link> immediately to prevent further issues.
+    </Alert.Description>
+    <Alert.Actions>
+      <Button variant="outline">Go to settings</Button>
+    </Alert.Actions>
+  </Alert.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - This message does not align with the correct colorPalette needed.
+> - There isn’t enough information for the user to understand how to fix the
+>   issue, or what went wrong. Provide more detailed information and advice to
+>   clear the error.
+> - This type of message is critical, rethink about allowing the user to clear
+>   the message instead of fixing the issue.
+> - You do not need to use both a close icon and a dismiss button.
+
+```jsx-live
+const App = () => (
+  <Alert.Root colorPalette="positive" variant="outlined">
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Actions>
+      <Button variant="outline">Dismiss</Button>
+    </Alert.Actions>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```
+
+### Placements
+
+Alerts are very flexible and can be placed in line or within pages, but be
+mindful not to use alert placement to cover or mask features that a user means
+to use. Judge if this message is permanent, or if it would be okay to allow the
+user to dismiss the alert to clean up their experience once digesting the
+information provided in the alert.
+
+Alerts should not hover or lay on top of other elements.
+
+> [!TIP]\
+> **Do**
+>
+> - Place inline where the information makes sense and is needed most without
+>   covering access to surrounding elements.
+> - Allow for the user to clear messages when applicable to keep their UI clean,
+>   and if they find non-critical information distracting.
+> - If information is needed permanently in the UI, try using another component
+>   like the info icon paired with the tooltip or popover.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" width="8000">
+    <Alert.Root colorPalette="critical" variant="outlined">
+      <Alert.Title>Account needs validation</Alert.Title>
+      <Alert.Description>
+        To edit these fields you must first validate your account. Please check your email.
+      </Alert.Description>
+    </Alert.Root>
+    <Text fontWeight="500">Product price mode</Text>
+    <TextInput isInvalid />
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use alerts for form errors, instead use error helper text that
+>   populates below the field.
+> - Do not cover other elements on the page with the alert.
+> - Do not restrict the user from clearing messages when applicable. (Critical
+>   and warning messages are more likely to be persistent. Judge if the content
+>   needs to persist.)
+
+```jsx-live
+const App = () => (
+  <Box>
+    <Stack direction="column">
+      <Text fontWeight="500">Product price mode</Text>
+      <TextInput isInvalid />
+    </Stack>
+
+   <Alert.Root colorPalette="critical" variant="outlined" width="9600" position="relative" top="-500" left="500">
+      <Alert.Title>Product price mode error</Alert.Title>
+      <Alert.Description>
+        This price mode has not been defined.
+      </Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline">Define price mode</Button>
+      </Alert.Actions>
+    </Alert.Root>
+  </Box>
+);
+```
+
+> [!TIP]\
+> **Do**
+>
+> - With form specific validation alerts, use the flat styled alerts. Keep
+>   warnings short in these locations, and if needed, include links for users.
+> - When there is more information needed, you can use flat-styled alerts within
+>   popovers.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column">
+    <Text fontWeight="500">Customer group</Text>
+    <TextInput isDisabled />
+    <Alert.Root colorPalette="warning" variant="flat">
+      <Alert.Description>You do not have access to edit this field</Alert.Description>
+    </Alert.Root>
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not put error messages within info popovers, use error or alert messaging
+>   that is shown to the user instead of hiding them in areas that require
+>   interaction.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column">
+    <Text fontWeight="500">Customer group</Text>
+    <TextInput isInvalid />
+    <Alert.Root colorPalette="critical" variant="flat" position="relative" top="-1000" width="8000">
+      <Alert.Description>This customer group does not exist or may have been deleted. Try again.</Alert.Description>
+    </Alert.Root>
+  </Stack>
+);
+```

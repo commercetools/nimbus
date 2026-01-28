@@ -1,0 +1,56 @@
+---
+title: Pagination
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+Pagination guidelines aim to support similar and consistent experiences for users seeking to navigate their data or processes. 
+
+### Best practices
+
+ - **Provide clear feedback:** always highlight the current active page clearly.
+ - **Keep navigation minimal:** limit the visible page numbers shown to a manageable amount (e.g., show 5-7 pages).
+ - **Show total context:** display the total number of items or total pages available (e.g., "Showing 1-20 of 150 results").
+ - **Disable end controls:** clearly disable the "Previous" button on the first page and the "Next" button on the last page.
+
+
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Control is essential:** When the user needs control over where they are and how many items they see.
+- **Predictable data sets:** For data tables, structured search results, or catalogs where items have a known order and consistent size.
+- **User needs to bookmark/reference:** When users need to easily save or share a specific page number, or refer back to a particular screen of results.
+
+> [!CAUTION]\
+> When not to use
+
+- **Unstructured or image-heavy content:** For image galleries or highly dynamic, unstructured content where infinite scrolling provides a smoother, faster visual experience.
+- **Mobile experience:** Infinite scroll is often preferred on mobile devices to reduce the effort of tapping small pagination controls
+
+
+
+
+### Pagination in use
+
+> [!TIP]\
+> **Do**
+>
+> - Do allow direct input to jump to a specific page number (if the set is very large).
+> - Do place pagination controls consistently at the top, bottom, or both, of the content being paginated.
+
+
+![pagination in use - do](/images/pagination/pagination-in-use-do.png)
+
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't reset the pagination every time a filter or sort option is applied; try to maintain the user's current page if possible.
+> - Don't overload the component with too many page numbers that visually clutter the interface.
+> - Don't hide or neglect to disable the 'Previous' or 'Next' buttons when they are no longer functional.
+
+![pagination in use - dont](/images/pagination/pagination-in-use-dont.png)

@@ -1,0 +1,50 @@
+---
+title: List
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+List guidelines aim to provide users the best experience when understanding information that is being conveyed through the interface.
+
+### Best practices
+- **Consistency in content:** Ensure all items within a single list adhere to the same content structure (e.g., if one item has an icon and metadata, all items should).
+- **Clear hierarchy:** Use typography, indentation, and visual separators to establish a clear hierarchy between list items and their sub-elements.
+- **Easy scanning:** Prioritize short, primary information at the beginning of each list item to enable quick scanning.
+- **Interactivity:** Clearly distinguish interactive list items (tappable/clickable) from static, informational ones using visual cues like hover states and pointers.
+- **State management:** Define consistent visual states for list items, including default, hover, focused, selected, and disabled.
+- **Grouping:** Use dividers, headers, or subtle visual spacing to group related items within a long list (e.g., grouping customers by status or date).
+- **Limited information:** Avoid cramming too much detail into a single list item; use secondary detail panels, cards, or dedicated pages for complex information.
+
+
+### Usage
+
+Lists are fundamental UI components used to display a series of related items, allowing users to quickly scan, organize, and interact with structured data or options.
+
+> [!TIP]\
+> When to use
+ - **Navigation menus:** For primary or secondary menus where items are primarily text links.
+ - **Short metadata/tasks:** For displaying a history log, task list, or brief metadata where the vertical format is optimal for chronological or simple item tracking.
+ - **Structured options:** To present settings, filters, or menu choices where hierarchy and text are the main content.
+
+> [!CAUTION]\
+> When not to use
+ - **Image-heavy content:** For displaying a collection where the visual preview (e.g., product image) is the most critical element. 
+ - **Wide data sets:** When the content requires many columns of data that won't fit on a single line, even on a large screen.
+ - **Complex data comparison:** When the user needs to compare many different data points across items, use a data table instead. 
+
+### Do's and don'ts for implementing a list
+
+> [!TIP]\
+> **Do**
+> - Ensure adequate padding and spacing to clearly separate each list item.
+> - Provide clear feedback when an item is selected or activated.
+> - Use semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies.
+> - Allow content within the list item to truncate gracefully, revealing the full text via a tooltip or expansion interactive.
+
+> [!CAUTION]\
+> **Don't**
+> - Don't use generic links like "Click here"; make the entire interactive item text descriptive.
+> - Don't mix vastly different content structures or types of items in one list.
+> - Don't neglect a strategy for empty states (what happens when the list has no items?).
+> - Don't use low-contrast text for critical list item details.

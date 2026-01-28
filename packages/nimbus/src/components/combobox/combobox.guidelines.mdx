@@ -1,0 +1,64 @@
+---
+title: ComboBox
+tab-title: Guidelines
+tab-order: 4
+---
+
+## Guidelines
+
+A combobox combines a text input with a dropdown list, allowing users to type a value or select from predefined options.
+
+### Best practices
+
+- **Provide Instant Feedback:** Filter results in real-time as users type.
+- **Handle No Results Graciously:** Display a clear message when no matching options are found.
+- **Optimize for Keyboard Navigation:** Ensure full functionality using only the keyboard.
+- **Consider Performance:** For very long lists, implement virtualization or lazy loading to prevent performance issues.
+- **Offer Clear/Reset Option:** Provide a way for users to clear their selection if needed.
+- **Match Input to Options:** If the user types a value that exactly matches an option, automatically select it.
+
+### Usage
+
+Users interact with a combobox by typing to filter options or by selecting from the dropdown list, expecting the component to dynamically narrow choices and allow either a selection or custom entry.
+
+> [!TIP]\
+> When to use
+
+- Allowing custom input alongside predefined options.
+- Filtering long lists.
+- Providing suggestions as a user types.
+
+> [!CAUTION]\
+> When not to use
+
+- Only predefined options are allowed.
+- The list of options is very short (e.g., 2-5 options).
+- Multi-selection is the primary goal without typing.
+- Real-time validation of complex custom input is difficult.
+
+### Intuitive interactions
+
+A well-designed combobox enhances user efficiency and accuracy by offering flexible input methods with clear, dynamic feedback.
+
+> [!TIP]\
+> **Do**
+>
+> - Provide a clear and concise label.
+> - Filter options dynamically as the user types.
+> - Support both keyboard and mouse interactions.
+> - Offer clear feedback for all states (focus, hover, active, disabled, invalid).
+> - Ensure accessibility with appropriate ARIA attributes.
+> - Pre-populate with common values if applicable.
+
+<img src="/images/combobox/combobox-do.png" alt="combobox do guideline" width="316px" />
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Use for simple dropdowns where no custom input is needed (use a select component instead).
+> - Neglect to provide feedback when no options match the input.
+> - Force users to type an exact match if a selection from the list is expected.
+> - Rely solely on visual cues; provide ARIA attributes for screen readers.
+> - Display an overwhelming number of options without filtering or pagination.
+
+<img src="/images/combobox/combobox-dont.png" alt="combobox do guideline" width="316px" />
