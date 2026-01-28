@@ -165,7 +165,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     option: {
       focusRing: "outside",
-      cursor: "menuitem",
+      cursor: "pointer",
       color: "neutral.12",
       textStyle: "sm",
       padding: "200",
@@ -178,6 +178,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         bg: "primary.3",
       },
       '&[data-focused="true"]': {
+        bg: "primary.2",
+      },
+      "&:hover:not([data-disabled='true'])": {
         bg: "primary.2",
       },
       '& [slot="label"]': {
