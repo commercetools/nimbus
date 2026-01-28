@@ -195,7 +195,7 @@ guideline references.
 - [ ] **Compound ref**: For compound Root components, ref forwarding implemented
       if needed
 
-#### Category 4: Props Management (7 items)
+#### Category 4: Props Management (8 items)
 
 - [ ] **Props destructuring**: Props destructured appropriately at component
       entry
@@ -214,6 +214,9 @@ guideline references.
       combining multiple prop sources
 - [ ] **Context props**: If using React Aria contexts, props consumed via
       `useContextProps(props, ref, Context)`
+- [ ] **DOM prop filtering**: Component-specific handlers (e.g.,
+      `onValueChange`, `onTextChange`) are component abstractions, not DOM
+      events. Destructure them before spreading props to DOM elements
 
 #### Category 5: React Aria Integration (8 items)
 
@@ -330,7 +333,7 @@ guideline references.
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`
 
-### Total Validation Items: 62 across 10 categories
+### Total Validation Items: 63 across 10 categories
 
 ---
 

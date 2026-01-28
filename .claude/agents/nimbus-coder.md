@@ -81,6 +81,16 @@ is to orchestrate these skills, not replace them.
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
 
+### Test Categories
+
+- **Story Tests** (`.stories.tsx`): Internal component behavior testing
+- **Internal Unit Tests** (`.spec.tsx`): Utility and hook testing
+- **Consumer Implementation Tests** (`.docs.spec.tsx`): Documentation examples
+  for consumer apps
+
+See
+[Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
+
 ### Orchestration Pattern
 
 **CRITICAL:** You orchestrate file creation in dependency order:

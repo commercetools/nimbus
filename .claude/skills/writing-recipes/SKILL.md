@@ -294,6 +294,8 @@ You MUST validate against these requirements:
 - [ ] Variant names SHOULD follow conventions (lowercase)
 - [ ] Size variant SHOULD include: `sm`, `md`, `lg`
 - [ ] Default size MUST be `md`
+- [ ] MUST use `:first-of-type`/`:last-of-type` instead of
+      `:first-child`/`:last-child` (ensures SSR hydration consistency)
 
 #### Registration (CRITICAL)
 
