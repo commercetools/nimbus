@@ -1,5 +1,18 @@
 # @commercetools/nimbus
 
+## 2.3.2
+
+### Patch Changes
+
+- [#942](https://github.com/commercetools/nimbus/pull/942)
+  [`2759847`](https://github.com/commercetools/nimbus/commit/27598479f500335dc7046b235eec304850be8031)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix(DateRangePicker):
+  restore ghost variant styling
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.3.2
+  - @commercetools/nimbus-icons@2.3.2
+
 ## 2.3.1
 
 ### Patch Changes
