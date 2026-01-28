@@ -189,3 +189,7 @@ dist
 # Playwright MCP screenshots
 .playwright-mcp/
 
+# Generated i18n files (regenerate with: pnpm build or pnpm extract-intl)
+packages/nimbus/src/components/**/intl/
+packages/nimbus/src/components/**/*.messages.ts
+

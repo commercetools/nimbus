@@ -12,6 +12,12 @@ To build:
 pnpm run build
 ```
 
+> **Important:** This package includes generated i18n files (`*.messages.ts` and
+> `intl/*.ts`) that are **not tracked in git**. After cloning or switching
+> branches, you must run `pnpm build` or `pnpm extract-intl` from the repository
+> root to generate these files. Without them, TypeScript compilation and
+> Storybook will fail.
+
 ## Internationalization (i18n) Development
 
 ### Workflow
@@ -87,6 +93,9 @@ pnpm run build
 
 **Troubleshooting:**
 
+- **Module not found errors after clone/branch switch?** Generated i18n files
+  are not tracked in git. Run `pnpm build` or `pnpm extract-intl` from the
+  repository root to regenerate them.
 - **Empty string returned?** Check that message key matches the ID (not the
   object key from `.i18n.ts`)
   - Example: `id: "Nimbus.Alert.dismiss"` → use `msg.format("dismiss")`, not the
