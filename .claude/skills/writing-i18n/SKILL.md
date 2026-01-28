@@ -334,7 +334,7 @@ export const messages = {
 
 ```typescript
 import { useLocalizedStringFormatter } from "@/hooks";
-import { componentMessagesStrings } from "./{component}.messages";
+import { {componentName}MessagesStrings } from "./{component-name}.messages";
 ```
 
 ### Usage in Components
@@ -343,7 +343,7 @@ import { componentMessagesStrings } from "./{component}.messages";
 
 ```typescript
 export const Component = (props: ComponentProps) => {
-  const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
 
   return (
     <button aria-label={msg.format("dismiss")}>
@@ -357,7 +357,7 @@ export const Component = (props: ComponentProps) => {
 
 ```typescript
 export const Component = (props: ComponentProps) => {
-  const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
 
   const label = msg.format("itemsSelected", {
     count: selectedItems.length,
@@ -442,10 +442,10 @@ export const messages = {
 
 ```typescript
 // alert.dismiss-button.tsx
-import { componentMessagesStrings } from "./component.messages";
+import { alertMessagesStrings } from "./alert.messages";
 
 export const AlertDismissButton = () => {
-  const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  const msg = useLocalizedStringFormatter(alertMessagesStrings);
   return (
     <button aria-label={msg.format("dismiss")}>
       <Icons.Close />
@@ -454,7 +454,7 @@ export const AlertDismissButton = () => {
 };
 
 // alert.icon.tsx
-import { componentMessagesStrings } from "./component.messages";
+import { alertMessagesStrings } from "./alert.messages";
 
 export const AlertIcon = ({ severity }: AlertIconProps) => {
   const msg = useLocalizedStringFormatter(alertMessagesStrings);
@@ -547,7 +547,8 @@ Replace hardcoded strings with `msg.format()`:
 <button aria-label="Dismiss">Close</button>
 
 // After
-const msg = useLocalizedStringFormatter(componentMessagesStrings);
+import { {componentName}MessagesStrings } from "./{component-name}.messages";
+const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
 <button aria-label={msg.format("dismiss")}>Close</button>
 ```
 

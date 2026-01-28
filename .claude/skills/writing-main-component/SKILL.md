@@ -723,10 +723,11 @@ export const messages = {
 });
 
 // Step 2: Update component
-import { messages } from './component.i18n';
+import { useLocalizedStringFormatter } from '@/hooks';
+import { {componentName}MessagesStrings } from './{component-name}.messages';
 
 export const Component = (props: ComponentProps) => {
-  const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
   const closeLabel = msg.format("closeLabel");
 
   return (
