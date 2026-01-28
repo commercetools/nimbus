@@ -29,7 +29,7 @@ pnpm run build
    - Import the compiled message strings and the hook:
      ```typescript
      import { useLocalizedStringFormatter } from "@/hooks";
-     import { {componentName}MessagesStrings } from "./{component-name}.messages"; // e.g., alertMessagesStrings
+     import { {componentName}MessagesStrings } from "./{component-name}.messages";
      ```
    - Use the hook in your component:
      ```typescript
