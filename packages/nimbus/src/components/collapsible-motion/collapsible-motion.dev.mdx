@@ -266,39 +266,6 @@ const App = () => {
 
 ## Component requirements
 
-## Accessibility
-
-The CollapsibleMotion component handles most accessibility requirements internally through React Aria integration. The component automatically provides:
-
-- Proper ARIA attributes (`aria-expanded`, `aria-controls`, `aria-hidden`)
-- Keyboard navigation support
-- Focus management
-- Screen reader announcements
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-collapsible-motion";
-
-export const Example = () => (
-  <CollapsibleMotion.Root id={PERSISTENT_ID} defaultExpanded={false}>
-    <CollapsibleMotion.Trigger asChild>
-      <Button>Toggle</Button>
-    </CollapsibleMotion.Trigger>
-    <CollapsibleMotion.Content>
-      <Text>Content here</Text>
-    </CollapsibleMotion.Content>
-  </CollapsibleMotion.Root>
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab` / `Shift+Tab`: Move focus to/from the trigger button
-- `Enter` / `Space`: Toggle the expanded/collapsed state when trigger is focused
-- `Escape`: No default behavior (can be customized in your implementation)
-
 ## API reference
 
 <PropsTable id="CollapsibleMotion" />

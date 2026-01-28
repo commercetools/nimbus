@@ -283,50 +283,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-FormField implements comprehensive accessibility features through React Aria's `useField` hook, automatically managing ARIA attributes for all child components.
-
-#### Role
-
-- The root container uses appropriate semantic HTML structure
-- Input elements receive proper roles from their respective components
-- Label associations are automatic via React Aria
-
-#### Labeling
-
-- **Automatic label association**: `FormField.Label` automatically links to the input via `aria-labelledby`
-- **Required indicator**: Visual asterisk and `aria-required="true"` when `isRequired={true}`
-- **Description linking**: `FormField.Description` automatically links via `aria-describedby`
-- **Error linking**: `FormField.Error` automatically links via `aria-errormessage` when `isInvalid={true}`
-- **InfoBox accessibility**: InfoBox trigger has appropriate `aria-label` and popover role
-
-#### Keyboard navigation
-
-FormField itself doesn't handle keyboard interaction - navigation is managed by the input components it contains. The InfoBox trigger supports standard button keyboard interaction:
-
-| Key | Action |
-|-----|--------|
-| `Tab` | Move focus to/from InfoBox trigger |
-| `Enter` / `Space` | Open InfoBox popover |
-| `Escape` | Close InfoBox popover (when open) |
-
-Standard keyboard navigation for input elements applies based on the input type used within `FormField.Input`.
-
-#### Persistent ID
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** `id` to the component:
-
-```tsx
-<FormField.Root id="user-email-field">
-  <FormField.Label>Email Address</FormField.Label>
-  <FormField.Input>
-    <TextInput />
-  </FormField.Input>
-</FormField.Root>
-```
-
-The `id` is used by React Aria to generate consistent IDs for all child elements, ensuring proper accessibility attribute relationships.
 
 ## API reference
 

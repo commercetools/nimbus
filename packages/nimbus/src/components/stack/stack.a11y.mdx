@@ -2,3 +2,20 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+Stack is a layout component with no inherent accessibility requirements. However:
+
+- Ensure child elements have appropriate accessibility attributes
+- Use semantic HTML elements within Stack when appropriate
+- Consider reading order when using `row-reverse` or `column-reverse`
+- Test keyboard navigation flows through stacked elements
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Stack id="main-navigation-stack">
+  {/* children */}
+</Stack>
+```

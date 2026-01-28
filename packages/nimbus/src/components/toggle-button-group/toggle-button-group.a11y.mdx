@@ -2,3 +2,60 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The ToggleButtonGroup component follows WCAG 2.1 AA guidelines and uses React Aria for robust accessibility support.
+
+#### Role
+
+- **Single-selection mode (default)**:
+  - Root element has `role="radiogroup"`
+  - Each button has `role="radio"`
+- **Multi-selection mode**:
+  - Root element has `role="toolbar"`
+  - Each button has `role="button"` with `aria-pressed` attribute
+
+#### Labeling
+
+- **Group label required**: Always provide an `aria-label` or `aria-labelledby` on the Root component
+- **Button labels**: Each button must have accessible text content or an `aria-label`
+- **Icon-only buttons**: Must include an `aria-label` on each button
+
+```jsx-live-dev
+const App = () => (
+  <ToggleButtonGroup.Root aria-label="Text formatting options">
+    <ToggleButtonGroup.Button id="bold" aria-label="Toggle bold">
+      <Icons.FormatBold />
+    </ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="italic" aria-label="Toggle italic">
+      <Icons.FormatItalic />
+    </ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+)
+```
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus into/out of the button group |
+| `Arrow Left/Up` | Move focus to the previous button |
+| `Arrow Right/Down` | Move focus to the next button |
+| `Space` | Toggle the focused button's selection state |
+| `Home` | Move focus to the first button |
+| `End` | Move focus to the last button |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "text-alignment-toggle-group";
+
+export const Example = () => (
+  <ToggleButtonGroup.Root id={PERSISTENT_ID} aria-label="Text alignment">
+    <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+);
+```

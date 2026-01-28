@@ -229,47 +229,6 @@ const App = () => {
 };
 ```
 
-## Accessibility
-
-**Role**: InlineSvg renders with `role="presentation"` by default, treating the SVG as decorative.
-
-**Labeling**: For meaningful icons, provide accessible labels using surrounding context or ARIA attributes:
-
-```tsx
-<Button>
-  <InlineSvg data={saveSvg} size="sm" />
-  Save Document
-</Button>
-```
-
-**Standalone icons**: If the InlineSvg is the only content, ensure proper labeling:
-
-```tsx
-<button aria-label="Save document">
-  <InlineSvg data={saveSvg} size="md" />
-</button>
-```
-
-### Persistent ID
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "feature-icon";
-
-export const FeatureIcon = () => {
-  const svgData = `<svg viewBox="0 0 24 24">...</svg>`;
-  
-  return (
-    <InlineSvg 
-      id={PERSISTENT_ID} 
-      data={svgData} 
-      size="lg" 
-      color="primary.9" 
-    />
-  );
-};
-```
 
 ## API reference
 

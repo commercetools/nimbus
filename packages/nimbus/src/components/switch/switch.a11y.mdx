@@ -2,3 +2,45 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The Switch component follows the [WAI-ARIA Switch pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/) and meets accessibility standards:
+
+#### Role
+
+- The switch uses a checkbox input with `type="checkbox"` and `role="switch"` semantics
+- The component properly communicates its state through ARIA attributes
+
+#### Labeling
+
+**With visible label:**
+```tsx
+<Switch>Enable dark mode</Switch>
+```
+
+**Without visible label (using aria-label):**
+```tsx
+<Switch aria-label="Enable dark mode" />
+```
+
+**With external label (using aria-labelledby):**
+```tsx
+<>
+  <span id="dark-mode-label">Enable dark mode</span>
+  <Switch aria-labelledby="dark-mode-label" />
+</>
+```
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| <kbd>Tab</kbd> | Moves focus to/from the switch |
+| <kbd>Space</kbd> | Toggles the switch between on and off states |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Switch id="notification-toggle">Enable notifications</Switch>
+```

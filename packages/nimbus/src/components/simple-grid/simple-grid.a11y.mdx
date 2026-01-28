@@ -2,3 +2,45 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+SimpleGrid is a layout component that doesn't add semantic meaning by itself. Ensure accessible markup:
+
+#### Semantic Structure
+
+- Wrap related content in appropriate semantic elements (`<article>`, `<section>`, `<nav>`)
+- Use proper heading hierarchy within grid items
+- Ensure grid items have meaningful content structure
+
+```tsx
+<SimpleGrid columns={3} gap="400" as="section" aria-labelledby="products-heading">
+  <h2 id="products-heading" className="sr-only">Available Products</h2>
+  {products.map(product => (
+    <article key={product.id}>
+      <h3>{product.name}</h3>
+      <p>{product.description}</p>
+    </article>
+  ))}
+</SimpleGrid>
+```
+
+#### Keyboard navigation
+
+- Grid layout doesn't affect keyboard navigation
+- Ensure interactive elements within grid items are keyboard accessible
+- Maintain logical tab order
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-grid";
+
+export const ProductGrid = () => (
+  <SimpleGrid id={PERSISTENT_ID} columns={3} gap="400">
+    <Box>Product 1</Box>
+    <Box>Product 2</Box>
+    <Box>Product 3</Box>
+  </SimpleGrid>
+);
+```

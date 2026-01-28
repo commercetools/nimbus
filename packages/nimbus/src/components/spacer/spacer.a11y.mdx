@@ -2,3 +2,19 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The Spacer component is a layout utility and has no accessibility requirements. It's purely visual and doesn't contain interactive content or convey information to users.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "navigation-spacer";
+
+export const Navigation = () => (
+  <Stack direction="row">
+    <Button>Home</Button>
+    <Spacer id={PERSISTENT_ID} />
+    <Button>Profile</Button>
+  </Stack>
+);
+```

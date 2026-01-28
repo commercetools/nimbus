@@ -262,36 +262,6 @@ const App = () => (
 
 **Grid.Item wrapper**: Always wrap child elements in `Grid.Item` components to ensure proper grid behavior and enable spanning props.
 
-## Accessibility
-
-**Role**: Grid renders as a `<div>` with `display: grid`. It has no implicit ARIA role.
-
-**Labeling**: For grids that represent data tables or require context, use `aria-label` or `aria-labelledby`:
-
-```tsx
-<Grid aria-label="Product catalog">
-  {/* Grid items */}
-</Grid>
-```
-
-**Keyboard navigation**: Grid itself doesn't provide keyboard navigation. If your grid contains interactive elements, ensure they maintain logical tab order.
-
-### Persistent ID
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "product-grid";
-
-export const ProductGrid = () => (
-  <Grid id={PERSISTENT_ID} templateColumns="repeat(3, 1fr)" gap="400">
-    <Grid.Item>
-      <ProductCard />
-    </Grid.Item>
-    {/* More items */}
-  </Grid>
-);
-```
 
 ## API reference
 

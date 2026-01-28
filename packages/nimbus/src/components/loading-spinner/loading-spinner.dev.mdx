@@ -58,30 +58,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The LoadingSpinner uses `role="progressbar"` and an indeterminate state by default.
-
-You **must** ensure the spinner has an accessible label. The component provides a default localized label ("Loading"), but you should provide a more specific label when possible using `aria-label` or `aria-labelledby`.
-
-```tsx
-// Recommended: Specific label describing what is loading
-<LoadingSpinner aria-label="Loading order details" />
-
-// Using aria-labelledby
-<h3 id="loading-heading">Loading Users</h3>
-<LoadingSpinner aria-labelledby="loading-heading" />
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "user-list-loading-spinner";
-
-export const UserList = () => (
-  <LoadingSpinner id={PERSISTENT_ID} />
-);
-```
 
 ## API reference
 

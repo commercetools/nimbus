@@ -213,54 +213,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-RichTextInput is built with accessibility in mind and follows WCAG 2.1 AA guidelines.
-
-#### Role
-
-The editor exposes a `textbox` role with `contenteditable` for keyboard and screen reader accessibility.
-
-#### Labeling
-
-When using RichTextInput in forms, provide a visible label using FormField or a custom label element:
-
-```jsx-live-dev
-const App = () => (
-  <FormField.Root>
-    <FormField.Label>Article Content</FormField.Label>
-    <FormField.Input>
-      <RichTextInput placeholder="Write your article..." />
-    </FormField.Input>
-    <FormField.Description>
-      Use the toolbar to format your content
-    </FormField.Description>
-  </FormField.Root>
-)
-```
-
-#### Keyboard shortcuts
-
-RichTextInput supports standard keyboard shortcuts for formatting:
-
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + B` | Toggle bold |
-| `Cmd/Ctrl + I` | Toggle italic |
-| `Cmd/Ctrl + U` | Toggle underline |
-| `Cmd/Ctrl + K` | Insert/edit link |
-| `Cmd/Ctrl + Z` | Undo |
-| `Cmd/Ctrl + Shift + Z` | Redo |
-| `Tab` | Navigate between toolbar buttons |
-| `Enter` | Activate focused toolbar button |
-
-#### Persistent ID
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-<RichTextInput id="article-content-editor" />
-```
 
 ## API reference
 

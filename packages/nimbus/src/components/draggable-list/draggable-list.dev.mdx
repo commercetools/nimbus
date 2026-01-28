@@ -310,63 +310,6 @@ const App = () => {
 
 ## Component requirements
 
-## Accessibility
-
-The DraggableList handles most accessibility requirements internally through React Aria's GridList component. However, you must always provide an accessible label using one of these methods:
-
-**Using DraggableList.Field (recommended):**
-
-```tsx
-<DraggableList.Field
-  label={intl.formatMessage(labelMessage)}
-  items={items}
-/>
-```
-
-**Using aria-labelledby:**
-
-```tsx
-<label id="list-label">
-  {intl.formatMessage(labelMessage)}
-</label>
-<DraggableList.Root
-  aria-labelledby="list-label"
-  items={items}
-/>
-```
-
-**Using aria-label:**
-
-```tsx
-<DraggableList.Root
-  aria-label={intl.formatMessage(labelMessage)}
-  items={items}
-/>
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-draggable-list";
-
-export const Example = () => (
-  <DraggableList.Root
-    id={PERSISTENT_ID}
-    aria-label="Task list"
-    items={items}
-  />
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab` / `Shift+Tab`: Move focus between items and drag handles
-- `Arrow keys`: Navigate between items in the list
-- `Enter` / `Space`: Activate drag mode for the focused item
-- `Arrow keys` (during drag): Move the item up or down in the list
-- `Enter` / `Space` (during drag): Drop the item at the current position
-- `Escape` (during drag): Cancel the drag operation
 
 ## API reference
 

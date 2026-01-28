@@ -2,3 +2,53 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The TextInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `TextInputField` pattern component (recommended)
+- Associating a `<label>` element with the `TextInput` using `aria-labelledby`:
+
+```tsx
+<label id="email-label">
+  {intl.formatMessage(emailMessage)}
+</label>
+<TextInput aria-labelledby="email-label" />
+```
+
+- Associating a `<label>` element with the `TextInput` using `htmlFor`:
+
+```tsx
+<label htmlFor="email-input">
+  {intl.formatMessage(emailMessage)}
+</label>
+<TextInput id="email-input" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<TextInput aria-label={intl.formatMessage(emailMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-email-input";
+
+export const EmailField = () => (
+  <TextInput id={PERSISTENT_ID} placeholder="Email" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the input field
+- `Arrow keys`: Move cursor within the text (Left/Right), no vertical navigation
+- `Home` / `End`: Move cursor to start/end of text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the input container (including leading/trailing elements area) will focus the input field, providing a larger interactive target for better usability.

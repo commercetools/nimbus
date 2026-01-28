@@ -2,3 +2,41 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+**Role**: The component renders as a `<div>` or `<span>` with CSS that hides it visually while keeping it accessible to screen readers.
+
+**Labeling**: The content inside VisuallyHidden is read by screen readers:
+
+```tsx
+<Button>
+  <Icon name="delete" />
+  <VisuallyHidden>Delete item</VisuallyHidden>
+</Button>
+```
+
+**Keyboard navigation**: 
+- By default, hidden content cannot receive keyboard focus
+- With `isFocusable={true}`, the first focusable element inside becomes visible when focused
+- Essential for skip navigation patterns
+
+**ARIA attributes**: You can add ARIA attributes for live regions and status announcements:
+
+```tsx
+<VisuallyHidden role="status" aria-live="polite">
+  Loading complete
+</VisuallyHidden>
+```
+
+### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "skip-navigation-link";
+
+export const SkipLink = () => (
+  <VisuallyHidden id={PERSISTENT_ID} isFocusable>
+    <Button>Skip to main content</Button>
+  </VisuallyHidden>
+);
+```

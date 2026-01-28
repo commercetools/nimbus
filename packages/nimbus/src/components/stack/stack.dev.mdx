@@ -255,24 +255,6 @@ Stack should be used when you need to:
 
 For more complex grid-based layouts, consider using the `Grid` component. For simple flex containers with more control over individual item properties, consider using `Flex` or `Box`.
 
-## Accessibility
-
-Stack is a layout component with no inherent accessibility requirements. However:
-
-- Ensure child elements have appropriate accessibility attributes
-- Use semantic HTML elements within Stack when appropriate
-- Consider reading order when using `row-reverse` or `column-reverse`
-- Test keyboard navigation flows through stacked elements
-
-#### Persistent ID
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-<Stack id="main-navigation-stack">
-  {/* children */}
-</Stack>
-```
 
 ## API reference
 

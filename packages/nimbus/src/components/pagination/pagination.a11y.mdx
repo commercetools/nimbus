@@ -2,3 +2,47 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The Pagination component follows WCAG 2.1 AA guidelines and provides comprehensive keyboard navigation and screen reader support.
+
+#### Role
+
+- Navigation element uses `role="navigation"` with descriptive `aria-label`
+
+#### Labeling
+
+- Previous/next buttons have clear `aria-label` attributes
+- Page input field has `aria-label` and `aria-current="page"` attributes
+- Page size selector has descriptive `aria-label`
+- All labels are internationalized via react-intl
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between pagination controls |
+| `Enter` / `Space` | Activate focused button (previous/next) |
+| `Arrow Up` / `Arrow Down` | Increment/decrement page number in input field |
+| Type number | Directly enter page number in input field |
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-list-pagination";
+
+export const ProductList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  return (
+    <Pagination
+      id={PERSISTENT_ID}
+      totalItems={500}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```

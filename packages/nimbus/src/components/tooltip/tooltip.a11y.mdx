@@ -2,3 +2,75 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The Tooltip component is built with React Aria Components and provides accessible tooltip behavior by default. The component:
+
+- Automatically associates tooltip content with the trigger using `aria-describedby`
+- Assigns the `tooltip` ARIA role to the content
+- Shows on both hover and keyboard focus
+- Hides when focus leaves or `Escape` is pressed
+
+**Important:** Ensure the trigger element has an accessible label. For icon-only buttons, always provide an `aria-label`:
+
+```tsx
+<Tooltip.Root>
+  <IconButton aria-label="Delete item">
+    <Icons.Delete />
+  </IconButton>
+  <Tooltip.Content>Delete this item</Tooltip.Content>
+</Tooltip.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the trigger element:
+
+```tsx
+const PERSISTENT_ID = "delete-button-tooltip";
+
+export const Example = () => (
+  <Tooltip.Root>
+    <IconButton id={PERSISTENT_ID} aria-label="Delete">
+      <Icons.Delete />
+    </IconButton>
+    <Tooltip.Content>Delete item</Tooltip.Content>
+  </Tooltip.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab` / `Shift+Tab`: Move focus to/from the trigger element
+- Tooltip appears automatically when trigger receives focus
+- `Escape`: Dismisses the tooltip (if shown)
+- Tooltip disappears automatically when focus leaves the trigger
+
+### Trigger element requirements
+
+The first child of `Tooltip.Root` must be a focusable element:
+
+- Use buttons, links, or other interactive elements (recommended)
+- For non-interactive elements like Text or div, wrap with `MakeElementFocusable`
+- Avoid wrapping non-focusable elements without proper handling
+
+```tsx
+// ✅ Good - button is natively focusable
+<Tooltip.Root>
+  <Button>Trigger</Button>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+
+// ✅ Good - non-interactive element with MakeElementFocusable
+<Tooltip.Root>
+  <MakeElementFocusable>
+    <Text as="span">Trigger</Text>
+  </MakeElementFocusable>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+
+// ❌ Bad - Text with tabIndex won't work properly
+<Tooltip.Root>
+  <Text as="span" tabIndex={0}>Trigger</Text>
+  <Tooltip.Content>Content</Tooltip.Content>
+</Tooltip.Root>
+```

@@ -2,3 +2,52 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+The Tabs component follows WCAG 2.1 AA guidelines and implements the WAI-ARIA tabs pattern.
+
+#### Role
+
+- `Tabs.Root` contains the tablist and tabpanels
+- `Tabs.List` has `role="tablist"`
+- `Tabs.Tab` has `role="tab"` with `aria-selected` indicating active state
+- `Tabs.Panel` has `role="tabpanel"` and is associated with its tab via `aria-labelledby`
+
+#### Labeling
+
+- Each tab must have an `id` prop that matches its corresponding panel
+- Tab content should be descriptive and concise
+- Complex tab labels can include icons and text
+- When using the `tabs` prop API, provide `tabListAriaLabel` to label the tab list for screen readers
+- When using the compound API, apply `aria-label` directly to `Tabs.List`
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus into and out of the tab list |
+| `ArrowRight` / `ArrowDown` | Move focus to the next tab (horizontal/vertical) |
+| `ArrowLeft` / `ArrowUp` | Move focus to the previous tab (horizontal/vertical) |
+| `Home` | Move focus to the first tab |
+| `End` | Move focus to the last tab |
+| `Enter` / `Space` | Activate the focused tab (when `keyboardActivation="manual"`) |
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "user-settings-tabs";
+
+export const SettingsTabs = () => (
+  <Tabs.Root id={PERSISTENT_ID}>
+    <Tabs.List>
+      <Tabs.Tab id="profile">Profile</Tabs.Tab>
+      <Tabs.Tab id="security">Security</Tabs.Tab>
+    </Tabs.List>
+    <Tabs.Panels>
+      <Tabs.Panel id="profile">Profile content</Tabs.Panel>
+      <Tabs.Panel id="security">Security content</Tabs.Panel>
+    </Tabs.Panels>
+  </Tabs.Root>
+);
+```
