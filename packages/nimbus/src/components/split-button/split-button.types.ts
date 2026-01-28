@@ -4,24 +4,13 @@ import type {
   MenuProps as RaMenuProps,
 } from "react-aria-components";
 import type { ButtonProps } from "../button/button.types";
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-  ConditionalValue,
-} from "@chakra-ui/react";
-import type { SplitButtonVariant } from "./split-button.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type SplitButtonRecipeProps = {
-  /**
-   * Visual style variant
-   * @default "solid"
-   */
-  variant?: ConditionalValue<SplitButtonVariant | undefined>;
-};
+type SplitButtonRecipeProps = SlotRecipeProps<"splitButton">;
 
 // ============================================================
 // SLOT PROPS

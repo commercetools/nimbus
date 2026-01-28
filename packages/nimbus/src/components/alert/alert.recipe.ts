@@ -1,20 +1,4 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
-
-const alertVariants = {
-  variant: {
-    flat: {},
-    outlined: {
-      root: {
-        border: "solid-25",
-        borderColor: "colorPalette.5",
-        backgroundColor: "colorPalette.2",
-        padding: "200",
-        borderRadius: "200",
-      },
-    },
-  },
-} as const;
-
 /**
  * Recipe configuration for the Alert component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -63,7 +47,18 @@ export const alertRecipe = defineSlotRecipe({
     },
   },
 
-  variants: alertVariants,
+  variants: {
+    variant: {
+      flat: {},
+      outlined: {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.5",
+          backgroundColor: "colorPalette.2",
+          padding: "200",
+          borderRadius: "200",
+        },
+      },
+    },
+  },
 });
-
-export type AlertVariant = keyof typeof alertVariants.variant;

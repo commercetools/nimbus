@@ -1,11 +1,10 @@
 import type { AriaButtonProps as RaButtonProps } from "react-aria";
 import type {
   HTMLChakraProps,
-  ConditionalValue,
+  RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
 import type { SemanticPalettesOnly } from "@/type-utils";
-import type { ButtonSize, ButtonVariant } from "./button.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,12 +15,12 @@ type ButtonRecipeProps = {
    * Size variant of the button
    * @default "md"
    */
-  size?: ConditionalValue<ButtonSize>;
+  size?: RecipeProps<"button">["size"];
   /**
    * Visual style variant of the button
    * @default "subtle"
    */
-  variant?: ConditionalValue<ButtonVariant>;
+  variant?: RecipeProps<"button">["variant"];
 } & UnstyledProp;
 
 // ============================================================

@@ -1,13 +1,5 @@
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
-const avatarVariants = {
-  size: {
-    md: { width: 1000, height: 1000, textStyle: "sm" },
-    xs: { width: 800, height: 800, textStyle: "xs" },
-    "2xs": { width: 600, height: 600, textStyle: "xs" },
-  },
-} as const;
-
 export const avatarRecipe = defineRecipe({
   className: "nimbus-avatar",
   base: {
@@ -31,10 +23,14 @@ export const avatarRecipe = defineRecipe({
       layerStyle: "disabled",
     },
   },
-  variants: avatarVariants,
+  variants: {
+    size: {
+      md: { width: 1000, height: 1000, textStyle: "sm" },
+      xs: { width: 800, height: 800, textStyle: "xs" },
+      "2xs": { width: 600, height: 600, textStyle: "xs" },
+    },
+  },
   defaultVariants: {
     size: "md",
   },
 });
-
-export type AvatarSize = keyof typeof avatarVariants.size;

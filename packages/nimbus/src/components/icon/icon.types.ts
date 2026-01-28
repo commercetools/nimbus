@@ -1,17 +1,14 @@
 import type {
   HTMLChakraProps,
-  ConditionalValue,
+  RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { IconSize } from "./icon.recipe";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type IconRecipeProps = {
-  size?: ConditionalValue<IconSize | undefined>;
-} & UnstyledProp;
+type IconRecipeProps = RecipeProps<"icon"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

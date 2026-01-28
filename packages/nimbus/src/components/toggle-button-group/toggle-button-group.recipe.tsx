@@ -1,32 +1,6 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 import { buttonRecipe } from "../button/button.recipe";
 
-const toggleButtonGroupVariants = {
-  size: {
-    xs: {
-      button: buttonRecipe.variants?.size.xs,
-    },
-    md: {
-      button: buttonRecipe.variants?.size.md,
-    },
-  },
-  colorPalette: {
-    primary: {
-      button: { colorPalette: "primary" },
-    },
-    critical: {
-      button: { colorPalette: "critical" },
-    },
-    neutral: {
-      button: { colorPalette: "neutral" },
-    },
-  },
-} as const;
-
-export type ToggleButtonGroupSize = keyof typeof toggleButtonGroupVariants.size;
-export type ToggleButtonGroupColorPalette =
-  keyof typeof toggleButtonGroupVariants.colorPalette;
-
 /**
  * Recipe configuration for the ToggleButtonGroup component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -62,8 +36,26 @@ export const buttonGroupRecipe = defineSlotRecipe({
   },
 
   variants: {
-    size: toggleButtonGroupVariants.size,
-    colorPalette: toggleButtonGroupVariants.colorPalette,
+    size: {
+      xs: {
+        button: buttonRecipe.variants?.size.xs,
+      },
+      md: {
+        button: buttonRecipe.variants?.size.md,
+      },
+    },
+
+    colorPalette: {
+      primary: {
+        button: { colorPalette: "primary" },
+      },
+      critical: {
+        button: { colorPalette: "critical" },
+      },
+      neutral: {
+        button: { colorPalette: "neutral" },
+      },
+    },
   },
 
   defaultVariants: {

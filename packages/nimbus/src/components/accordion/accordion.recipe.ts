@@ -1,38 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const accordionVariants = {
-  size: {
-    md: {
-      trigger: {
-        "--accordion-font-size": "fontSizes.500",
-        "& svg": {
-          "--accordion-width": "sizes.600",
-          "--accordion-height": "sizes.600",
-        },
-      },
-      panel: {
-        "--accordion-padding-top": "spacing.600",
-        "--accordion-padding-bottom": "spacing.800",
-        "--accordion-padding-left": "spacing.800",
-      },
-    },
-    sm: {
-      trigger: {
-        "--accordion-font-size": "fontSizes.400",
-        "& svg": {
-          "--accordion-width": "sizes.500",
-          "--accordion-height": "sizes.500",
-        },
-      },
-      panel: {
-        "--accordion-padding-top": "spacing.400",
-        "--accordion-padding-bottom": "spacing.600",
-        "--accordion-padding-left": "spacing.700",
-      },
-    },
-  },
-} as const;
-
 /**
  * Recipe configuration for the Accordion component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -92,11 +59,40 @@ export const accordionSlotRecipe = defineSlotRecipe({
     },
   },
 
-  variants: accordionVariants,
+  variants: {
+    size: {
+      md: {
+        trigger: {
+          "--accordion-font-size": "fontSizes.500",
+          "& svg": {
+            "--accordion-width": "sizes.600",
+            "--accordion-height": "sizes.600",
+          },
+        },
+        panel: {
+          "--accordion-padding-top": "spacing.600",
+          "--accordion-padding-bottom": "spacing.800",
+          "--accordion-padding-left": "spacing.800",
+        },
+      },
+      sm: {
+        trigger: {
+          "--accordion-font-size": "fontSizes.400",
+          "& svg": {
+            "--accordion-width": "sizes.500",
+            "--accordion-height": "sizes.500",
+          },
+        },
+        panel: {
+          "--accordion-padding-top": "spacing.400",
+          "--accordion-padding-bottom": "spacing.600",
+          "--accordion-padding-left": "spacing.700",
+        },
+      },
+    },
+  },
 
   defaultVariants: {
     size: "md",
   },
 });
-
-export type AccordionSize = keyof typeof accordionVariants.size;

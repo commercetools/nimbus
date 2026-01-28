@@ -141,14 +141,3 @@ export const multilineTextInputRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
-
-// ============================================================
-// EXPORTED VARIANT TYPES
-// ============================================================
-
-const multilineTextInputVariants = multilineTextInputRecipe.variants!;
-
-export type MultilineTextInputSize =
-  keyof typeof multilineTextInputVariants.size;
-export type MultilineTextInputVariant =
-  keyof typeof multilineTextInputVariants.variant;

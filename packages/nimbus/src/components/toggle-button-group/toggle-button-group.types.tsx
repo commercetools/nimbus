@@ -1,7 +1,6 @@
 import type {
   HTMLChakraProps,
   RecipeProps,
-  ConditionalValue,
 } from "@chakra-ui/react/styled-system";
 import type {
   AriaToggleButtonGroupProps,
@@ -12,10 +11,6 @@ import {
   ToggleButtonGroup as RaToggleButtonGroup,
 } from "react-aria-components";
 import type { SemanticPalettesOnly } from "@/type-utils";
-import type {
-  ToggleButtonGroupSize,
-  ToggleButtonGroupColorPalette,
-} from "./toggle-button-group.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -26,11 +21,7 @@ type ToggleButtonGroupRecipeVariantProps = {
    * Size variant
    * @default "md"
    */
-  size?: ConditionalValue<ToggleButtonGroupSize | undefined>;
-  /**
-   * Color palette for the button group
-   */
-  colorPalette?: ConditionalValue<ToggleButtonGroupColorPalette | undefined>;
+  size?: "xs" | "md";
 };
 
 // ============================================================
@@ -40,7 +31,12 @@ type ToggleButtonGroupRecipeVariantProps = {
 type ToggleButtonGroupRootSlotProps = Omit<
   HTMLChakraProps<"div", RecipeProps<"div">>,
   "colorPalette"
->;
+> & {
+  /**
+   * Color palette for the button group
+   */
+  colorPalette?: SemanticPalettesOnly;
+};
 
 type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
   "button",
@@ -59,7 +55,7 @@ type ToggleButtonGroupRootCombinedProps = ToggleButtonGroupRootSlotProps &
 // ============================================================
 
 export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
-  Omit<ToggleButtonGroupRootCombinedProps, "size" | "colorPalette"> & {
+  Omit<ToggleButtonGroupRootCombinedProps, "size"> & {
     ref?: React.Ref<typeof RaToggleButtonGroup>;
   };
 

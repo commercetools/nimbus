@@ -1,12 +1,11 @@
 import type { ReactNode, Ref } from "react";
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { FormFieldProps } from "@/components";
 import type {
   GridListProps as RaGridListProps,
   GridListItemProps as RaGridListItemProps,
   Key,
 } from "react-aria-components";
-import type { DraggableListSize } from "./draggable-list.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -17,7 +16,7 @@ type DraggableListRecipeProps = {
    * Size variant of the draggable list
    * @default "md"
    */
-  size?: ConditionalValue<DraggableListSize | undefined>;
+  size?: SlotRecipeProps<"draggableList">["size"];
 };
 
 // ============================================================
@@ -84,7 +83,7 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
   "autoFocus" | "className" | "style" | "translate" | "renderEmptyState"
 > &
   Omit<
-    HTMLChakraProps<"div", DraggableListRecipeProps>,
+    HTMLChakraProps<"div", SlotRecipeProps<"draggableList">>,
     "children" | "slot"
   > & {
     /**

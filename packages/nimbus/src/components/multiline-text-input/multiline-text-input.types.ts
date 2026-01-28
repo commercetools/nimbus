@@ -1,14 +1,10 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
+  SlotRecipeProps,
   UnstyledProp,
-  ConditionalValue,
 } from "@chakra-ui/react";
 import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
-import type {
-  MultilineTextInputSize,
-  MultilineTextInputVariant,
-} from "./multiline-text-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -19,12 +15,12 @@ export type MultilineTextInputRecipeProps = {
    * Size variant of the multiline text input
    * @default "md"
    */
-  size?: ConditionalValue<MultilineTextInputSize | undefined>;
+  size?: SlotRecipeProps<"multilineTextInput">["size"];
   /**
    * Visual style variant of the multiline text input
    * @default "solid"
    */
-  variant?: ConditionalValue<MultilineTextInputVariant | undefined>;
+  variant?: SlotRecipeProps<"multilineTextInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

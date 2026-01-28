@@ -50,12 +50,3 @@ export const linkRecipe = defineRecipe({
     },
   },
 });
-
-// ============================================================
-// EXPORTED VARIANT TYPES
-// ============================================================
-
-const linkVariants = linkRecipe.variants!;
-
-export type LinkSize = keyof typeof linkVariants.size;
-export type LinkFontColor = keyof typeof linkVariants.fontColor;

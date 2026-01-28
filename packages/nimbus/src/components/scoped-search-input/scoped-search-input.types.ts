@@ -1,6 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
-import type { ScopedSearchInputSize } from "./scoped-search-input.recipe";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
@@ -10,7 +9,7 @@ type ScopedSearchInputRecipeProps = {
   /**
    * Size variant of the scoped search input
    */
-  size?: ConditionalValue<ScopedSearchInputSize | undefined>;
+  size?: SlotRecipeProps<"scopedSearchInput">["size"];
 };
 
 // ============================================================

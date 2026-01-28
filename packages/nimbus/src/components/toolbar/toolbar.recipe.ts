@@ -55,13 +55,3 @@ export const toolbarRecipe = defineRecipe({
     variant: "plain",
   },
 });
-
-// ============================================================
-// EXPORTED VARIANT TYPES
-// ============================================================
-
-const toolbarVariants = toolbarRecipe.variants!;
-
-export type ToolbarSize = keyof typeof toolbarVariants.size;
-export type ToolbarOrientation = keyof typeof toolbarVariants.orientation;
-export type ToolbarVariant = keyof typeof toolbarVariants.variant;

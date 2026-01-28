@@ -1,15 +1,10 @@
 import type { FC, Ref } from "react";
 import type {
   HTMLChakraProps,
+  RecipeProps,
   UnstyledProp,
-  ConditionalValue,
 } from "@chakra-ui/react";
 import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
-import type {
-  ToolbarSize,
-  ToolbarOrientation,
-  ToolbarVariant,
-} from "./toolbar.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -17,11 +12,11 @@ import type {
 
 type ToolbarRecipeProps = {
   /** Size variant of the toolbar */
-  size?: ConditionalValue<ToolbarSize | undefined>;
+  size?: RecipeProps<"toolbar">["size"];
   /** Layout orientation of the toolbar */
-  orientation?: ConditionalValue<ToolbarOrientation | undefined>;
+  orientation?: RecipeProps<"toolbar">["orientation"];
   /** Visual style variant of the toolbar */
-  variant?: ConditionalValue<ToolbarVariant | undefined>;
+  variant?: RecipeProps<"toolbar">["variant"];
 } & UnstyledProp;
 
 // ============================================================

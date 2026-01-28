@@ -1,56 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const dialogVariants = {
-  placement: {
-    center: {
-      modal: {
-        alignItems: "center",
-      },
-      content: {
-        "--dialog-base-margin": "auto",
-        mx: "auto",
-      },
-    },
-    top: {
-      modal: {
-        alignItems: "flex-start",
-      },
-      content: {
-        "--dialog-base-margin": "spacing.1600",
-        mx: "auto",
-      },
-    },
-    bottom: {
-      modal: {
-        alignItems: "flex-end",
-      },
-      content: {
-        "--dialog-base-margin": "spacing.1600",
-        mx: "auto",
-      },
-    },
-  },
-  scrollBehavior: {
-    inside: {
-      modal: {
-        overflow: "hidden",
-      },
-      content: {
-        maxH: "calc(100% - 7.5rem)",
-      },
-      body: {
-        overflow: "auto",
-        focusVisibleRing: "outside",
-      },
-    },
-    outside: {
-      modal: {
-        overflow: "auto",
-      },
-    },
-  },
-} as const;
-
 /**
  * Dialog recipe - styling for Dialog component overlays
  * Supports center positioning, various sizes, and motion presets for accessible dialog experiences
@@ -159,12 +108,58 @@ export const dialogSlotRecipe = defineSlotRecipe({
       zIndex: 1,
     },
   },
-  variants: dialogVariants,
+  variants: {
+    placement: {
+      center: {
+        modal: {
+          alignItems: "center",
+        },
+        content: {
+          "--dialog-base-margin": "auto",
+          mx: "auto",
+        },
+      },
+      top: {
+        modal: {
+          alignItems: "flex-start",
+        },
+        content: {
+          "--dialog-base-margin": "spacing.1600",
+          mx: "auto",
+        },
+      },
+      bottom: {
+        modal: {
+          alignItems: "flex-end",
+        },
+        content: {
+          "--dialog-base-margin": "spacing.1600",
+          mx: "auto",
+        },
+      },
+    },
+    scrollBehavior: {
+      inside: {
+        modal: {
+          overflow: "hidden",
+        },
+        content: {
+          maxH: "calc(100% - 7.5rem)",
+        },
+        body: {
+          overflow: "auto",
+          focusVisibleRing: "outside",
+        },
+      },
+      outside: {
+        modal: {
+          overflow: "auto",
+        },
+      },
+    },
+  },
   defaultVariants: {
     scrollBehavior: "outside",
     placement: "center",
   },
 });
-
-export type DialogPlacement = keyof typeof dialogVariants.placement;
-export type DialogScrollBehavior = keyof typeof dialogVariants.scrollBehavior;

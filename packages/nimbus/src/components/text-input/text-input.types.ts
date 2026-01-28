@@ -1,10 +1,9 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type {
   TextFieldProps as RaTextFieldProps,
   InputProps as RaInputProps,
 } from "react-aria-components";
-import type { TextInputSize, TextInputVariant } from "./text-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -15,12 +14,12 @@ type TextInputRecipeProps = {
    * Size variant of the text input
    * @default "md"
    */
-  size?: ConditionalValue<TextInputSize | undefined>;
+  size?: SlotRecipeProps<"textInput">["size"];
   /**
    * Visual style variant of the text input
    * @default "solid"
    */
-  variant?: ConditionalValue<TextInputVariant | undefined>;
+  variant?: SlotRecipeProps<"textInput">["variant"];
 };
 
 // ============================================================

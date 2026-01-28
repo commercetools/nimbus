@@ -1,11 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import { type HTMLChakraProps, type ConditionalValue } from "@chakra-ui/react";
-import type {
-  TabsVariant,
-  TabsOrientation,
-  TabsPlacement,
-  TabsSize,
-} from "./tabs.recipe";
+import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,22 +10,22 @@ type TabsRecipeProps = {
    * Visual style variant of the tabs
    * @default "line"
    */
-  variant?: ConditionalValue<TabsVariant | undefined>;
+  variant?: SlotRecipeProps<"tabs">["variant"];
   /**
    * Layout orientation of the tabs
    * @default "horizontal"
    */
-  orientation?: ConditionalValue<TabsOrientation | undefined>;
+  orientation?: SlotRecipeProps<"tabs">["orientation"];
   /**
    * Placement of the tab list relative to panels
    * @default "start"
    */
-  placement?: ConditionalValue<TabsPlacement | undefined>;
+  placement?: SlotRecipeProps<"tabs">["placement"];
   /**
    * Size variant of the tabs
    * @default "md"
    */
-  size?: ConditionalValue<TabsSize | undefined>;
+  size?: SlotRecipeProps<"tabs">["size"];
 };
 
 // ============================================================
@@ -74,11 +68,17 @@ export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps> & {
   isDisabled?: boolean;
 };
 
-export type TabsPanelsSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
+export type TabsPanelsSlotProps = HTMLChakraProps<
+  "div",
+  SlotRecipeProps<"tabs">
+> & {
   children?: React.ReactNode;
 };
 
-export type TabsPanelSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
+export type TabsPanelSlotProps = HTMLChakraProps<
+  "div",
+  SlotRecipeProps<"tabs">
+> & {
   id?: string;
 };
 
@@ -86,7 +86,7 @@ export type TabsPanelSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
 // HELPER TYPES
 // ============================================================
 
-type TabsVariantProps = TabsRecipeProps & {
+type TabsVariantProps = SlotRecipeProps<"tabs"> & {
   [key: `data-${string}`]: unknown;
 };
 

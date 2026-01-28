@@ -1,9 +1,8 @@
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { TextProps } from "../text/text";
 import type { ButtonProps } from "../button/button.types";
 import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { AlertVariant } from "./alert.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -11,7 +10,7 @@ import type { AlertVariant } from "./alert.recipe";
 
 type AlertRecipeProps = {
   /** Visual style variant of the alert */
-  variant?: ConditionalValue<AlertVariant>;
+  variant?: SlotRecipeProps<"alert">["variant"];
 };
 
 // ============================================================

@@ -4,12 +4,8 @@ import type {
   CustomEvent,
   CurrencyCode,
 } from "../money-input/money-input.types";
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type {
-  LocalizedFieldSize,
-  LocalizedFieldType,
-} from "./localized-field.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -17,9 +13,9 @@ import type {
 
 type LocalizedFieldRecipeProps = {
   /** Size variant of the localized field */
-  size?: ConditionalValue<LocalizedFieldSize>;
+  size?: SlotRecipeProps<"localizedField">["size"];
   /** Input type variant (text, multiLine, richText, money) */
-  type?: ConditionalValue<LocalizedFieldType>;
+  type?: SlotRecipeProps<"localizedField">["type"];
 };
 
 // ============================================================
@@ -53,6 +49,10 @@ export type LocalizedFieldLocaleFieldInputSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 // HELPER TYPES
 // ============================================================
+
+type LocalizedFieldRecipeVariantProps = {
+  size?: "md" | "sm";
+};
 
 /**
  * Object that contains the translation of a string for each locale.
@@ -104,7 +104,7 @@ export type LocalizedFieldChangeEvent = {
 // MAIN PROPS
 // ============================================================
 
-export type LocalizedFieldProps = LocalizedFieldRecipeProps &
+export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
   OmitInternalProps<
     LocalizedFieldRootSlotProps,
     "onChange" | "onBlur" | "onFocus" | "size"
@@ -233,7 +233,7 @@ export type MergedLocaleFieldData = {
   autoFocus?: boolean;
 };
 
-export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeProps &
+export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeVariantProps &
   MergedLocaleFieldData &
   Pick<
     LocalizedFieldProps,

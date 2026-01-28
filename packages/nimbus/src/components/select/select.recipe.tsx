@@ -1,72 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const selectVariants = {
-  size: {
-    sm: {
-      root: {},
-      trigger: {
-        px: "300",
-        gap: "100",
-        h: "800",
-        textStyle: "sm",
-      },
-      leadingElement: {
-        "& > svg": {
-          boxSize: "400",
-        },
-      },
-    },
-    md: {
-      root: {},
-      trigger: {
-        h: "1000",
-        px: "400",
-        gap: "200",
-        textStyle: "md",
-      },
-      leadingElement: {
-        "& > svg": {
-          boxSize: "500",
-        },
-      },
-    }, // Medium
-  },
-  variant: {
-    outline: {
-      root: {
-        bg: "primary.1",
-        "&:hover": {
-          bg: "primary.2",
-        },
-      },
-      trigger: {
-        "--border-width": "sizes.25",
-        "--border-color": "colors.neutral.7",
-      },
-    },
-    ghost: {
-      root: {
-        bg: "transparent",
-        "&:hover": {
-          bg: "primaryAlpha.2",
-        },
-      },
-      trigger: {
-        "--border-width": "sizes.25",
-        "--border-color": "transparent",
-      },
-    },
-  },
-  isClearable: {
-    true: {},
-    false: {
-      triggerLabel: {
-        "--button-safespace": "sizes.1000",
-      },
-    },
-  },
-} as const;
-
 /**
  * Recipe configuration for the Select component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -214,7 +147,75 @@ export const selectSlotRecipe = defineSlotRecipe({
   },
 
   // Available variants for customizing the component's appearance
-  variants: selectVariants,
+  variants: {
+    // Size variants from smallest to largest
+    size: {
+      sm: {
+        root: {},
+        trigger: {
+          px: "300",
+          gap: "100",
+          h: "800",
+          textStyle: "sm",
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
+      },
+      md: {
+        root: {},
+        trigger: {
+          h: "1000",
+          px: "400",
+          gap: "200",
+          textStyle: "md",
+        },
+        leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+      }, // Medium
+    },
+
+    // Visual style variants
+    variant: {
+      outline: {
+        root: {
+          bg: "primary.1",
+          "&:hover": {
+            bg: "primary.2",
+          },
+        },
+        trigger: {
+          "--border-width": "sizes.25",
+          "--border-color": "colors.neutral.7",
+        },
+      },
+      ghost: {
+        root: {
+          bg: "transparent",
+          "&:hover": {
+            bg: "primaryAlpha.2",
+          },
+        },
+        trigger: {
+          "--border-width": "sizes.25",
+          "--border-color": "transparent",
+        },
+      },
+    },
+
+    isClearable: {
+      false: {
+        triggerLabel: {
+          "--button-safespace": "sizes.1000",
+        },
+      },
+    },
+  },
 
   // Default variant values when not explicitly specified
   defaultVariants: {
@@ -222,7 +223,3 @@ export const selectSlotRecipe = defineSlotRecipe({
     variant: "outline",
   },
 });
-
-export type SelectSize = keyof typeof selectVariants.size;
-export type SelectVariant = keyof typeof selectVariants.variant;
-export type SelectIsClearable = boolean;

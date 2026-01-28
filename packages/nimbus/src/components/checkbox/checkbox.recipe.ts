@@ -1,29 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const checkboxVariants = {
-  size: {
-    md: {
-      label: {
-        fontSize: "350",
-        fontWeight: "400",
-        lineHeight: "400",
-      },
-      indicator: {
-        w: "400",
-        h: "400",
-        zIndex: 1,
-        _after: {
-          position: "absolute",
-          content: "''",
-          width: "600",
-          height: "600",
-          zIndex: 0,
-        },
-      },
-    },
-  },
-} as const;
-
 /**
  * Recipe configuration for the Checkbox component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -111,10 +87,30 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  variants: checkboxVariants,
+  variants: {
+    size: {
+      md: {
+        label: {
+          fontSize: "350",
+          fontWeight: "400",
+          lineHeight: "400",
+        },
+        indicator: {
+          w: "400",
+          h: "400",
+          zIndex: 1,
+          _after: {
+            position: "absolute",
+            content: "''",
+            width: "600",
+            height: "600",
+            zIndex: 0,
+          },
+        },
+      },
+    },
+  },
   defaultVariants: {
     size: "md",
   },
 });
-
-export type CheckboxSize = keyof typeof checkboxVariants.size;

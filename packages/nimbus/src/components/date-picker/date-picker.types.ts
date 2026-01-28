@@ -3,11 +3,10 @@ import type { DatePickerStateOptions } from "react-stately";
 import type { DateValue } from "react-aria";
 import type {
   HTMLChakraProps,
+  SlotRecipeProps,
   UnstyledProp,
-  ConditionalValue,
 } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { DatePickerSize, DatePickerVariant } from "./date-picker.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -18,9 +17,9 @@ type DatePickerRecipeProps = {
    * Size variant of the date picker
    * @default "md"
    */
-  size?: ConditionalValue<DatePickerSize | undefined>;
+  size?: SlotRecipeProps<"datePicker">["size"];
   /** Visual style variant of the date picker */
-  variant?: ConditionalValue<DatePickerVariant | undefined>;
+  variant?: SlotRecipeProps<"datePicker">["variant"];
 } & UnstyledProp;
 
 // ============================================================

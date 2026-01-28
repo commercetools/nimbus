@@ -1,10 +1,6 @@
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-components";
 import type { SemanticPalettesOnly } from "@/type-utils";
-import type {
-  ToggleButtonSize,
-  ToggleButtonVariant,
-} from "./toggle-button.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -15,12 +11,12 @@ type ToggleButtonRecipeProps = {
    * Size variant of the toggle button
    * @default "md"
    */
-  size?: ConditionalValue<ToggleButtonSize | undefined>;
+  size?: RecipeProps<"toggleButton">["size"];
   /**
    * Visual style variant of the toggle button
    * @default "outline"
    */
-  variant?: ConditionalValue<ToggleButtonVariant | undefined>;
+  variant?: RecipeProps<"toggleButton">["variant"];
 };
 
 // ============================================================

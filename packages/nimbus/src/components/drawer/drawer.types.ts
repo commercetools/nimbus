@@ -1,8 +1,7 @@
 import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button/icon-button.types";
-import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { DrawerPlacement, DrawerShowBackdrop } from "./drawer.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -10,9 +9,9 @@ import type { DrawerPlacement, DrawerShowBackdrop } from "./drawer.recipe";
 
 type DrawerRecipeProps = {
   /** Placement of the drawer in the viewport */
-  placement?: ConditionalValue<DrawerPlacement>;
+  placement?: SlotRecipeProps<"drawer">["placement"];
   /** Whether to show backdrop overlay */
-  showBackdrop?: boolean;
+  showBackdrop?: SlotRecipeProps<"drawer">["showBackdrop"];
 };
 
 // ============================================================

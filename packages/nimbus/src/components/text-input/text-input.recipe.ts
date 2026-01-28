@@ -121,12 +121,3 @@ export const textInputSlotRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
-
-// ============================================================
-// EXPORTED VARIANT TYPES
-// ============================================================
-
-const textInputVariants = textInputSlotRecipe.variants!;
-
-export type TextInputSize = keyof typeof textInputVariants.size;
-export type TextInputVariant = keyof typeof textInputVariants.variant;

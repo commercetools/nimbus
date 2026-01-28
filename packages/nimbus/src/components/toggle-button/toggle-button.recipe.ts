@@ -64,12 +64,3 @@ export const toggleButtonRecipe = defineRecipe({
     variant: "outline",
   },
 });
-
-// ============================================================
-// EXPORTED VARIANT TYPES
-// ============================================================
-
-const toggleButtonVariants = toggleButtonRecipe.variants!;
-
-export type ToggleButtonSize = keyof typeof toggleButtonVariants.size;
-export type ToggleButtonVariant = keyof typeof toggleButtonVariants.variant;

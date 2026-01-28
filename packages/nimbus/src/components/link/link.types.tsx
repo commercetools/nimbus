@@ -1,10 +1,9 @@
 import type {
   HTMLChakraProps,
+  RecipeProps,
   UnstyledProp,
-  ConditionalValue,
 } from "@chakra-ui/react";
 import type { AriaLinkOptions } from "react-aria";
-import type { LinkSize, LinkFontColor } from "./link.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -14,11 +13,11 @@ type LinkRecipeProps = {
   /**
    * Size variant of the link
    */
-  size?: ConditionalValue<LinkSize | undefined>;
+  size?: RecipeProps<"link">["size"];
   /**
    * Font color variant of the link
    */
-  fontColor?: ConditionalValue<LinkFontColor | undefined>;
+  fontColor?: RecipeProps<"link">["fontColor"];
 } & UnstyledProp;
 
 // ============================================================

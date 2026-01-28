@@ -8,15 +8,14 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { HTMLChakraProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-// Menu has no recipe variants, using empty object type
-type MenuRecipeProps = {};
+type MenuRecipeProps = SlotRecipeProps<"menu">;
 
 // ============================================================
 // SLOT PROPS

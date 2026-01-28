@@ -1,70 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const tabsVariants = {
-  variant: {
-    line: {},
-    pills: {
-      tab: {
-        borderRadius: "full",
-        _selected: {
-          backgroundColor: "primary.3",
-        },
-      },
-    },
-  },
-  orientation: {
-    horizontal: {
-      root: {
-        flexDirection: "column",
-      },
-    },
-    vertical: {
-      root: {
-        flexDirection: "row",
-      },
-      list: {
-        flexDirection: "column",
-      },
-      tab: {
-        justifyContent: "flex-start",
-      },
-    },
-  },
-  placement: {
-    start: {},
-    end: {},
-  },
-  size: {
-    sm: {
-      tab: {
-        "--tabs-font-size": "fontSizes.300",
-        "--tabs-padding-top": "spacing.100",
-        "--tabs-padding-right": "spacing.300",
-        "--tabs-padding-bottom": "spacing.100",
-        "--tabs-padding-left": "spacing.300",
-      },
-    },
-    md: {
-      tab: {
-        "--tabs-font-size": "fontSizes.350",
-        "--tabs-padding-top": "spacing.200",
-        "--tabs-padding-right": "spacing.400",
-        "--tabs-padding-bottom": "spacing.200",
-        "--tabs-padding-left": "spacing.400",
-      },
-    },
-    lg: {
-      tab: {
-        "--tabs-font-size": "fontSizes.400",
-        "--tabs-padding-top": "spacing.300",
-        "--tabs-padding-right": "spacing.600",
-        "--tabs-padding-bottom": "spacing.300",
-        "--tabs-padding-left": "spacing.600",
-      },
-    },
-  },
-} as const;
-
 /**
  * Recipe configuration for the Tabs component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -127,7 +62,70 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
   },
 
-  variants: tabsVariants,
+  variants: {
+    variant: {
+      line: {},
+      pills: {
+        tab: {
+          borderRadius: "full",
+          _selected: {
+            backgroundColor: "primary.3",
+          },
+        },
+      },
+    },
+    orientation: {
+      horizontal: {
+        root: {
+          flexDirection: "column",
+        },
+      },
+      vertical: {
+        root: {
+          flexDirection: "row",
+        },
+        list: {
+          flexDirection: "column",
+        },
+        tab: {
+          justifyContent: "flex-start",
+        },
+      },
+    },
+    placement: {
+      start: {},
+      end: {},
+    },
+    size: {
+      sm: {
+        tab: {
+          "--tabs-font-size": "fontSizes.300",
+          "--tabs-padding-top": "spacing.100",
+          "--tabs-padding-right": "spacing.300",
+          "--tabs-padding-bottom": "spacing.100",
+          "--tabs-padding-left": "spacing.300",
+        },
+      },
+      md: {
+        tab: {
+          "--tabs-font-size": "fontSizes.350",
+          "--tabs-padding-top": "spacing.200",
+          "--tabs-padding-right": "spacing.400",
+          "--tabs-padding-bottom": "spacing.200",
+          "--tabs-padding-left": "spacing.400",
+        },
+      },
+      lg: {
+        tab: {
+          "--tabs-font-size": "fontSizes.400",
+          "--tabs-padding-top": "spacing.300",
+          "--tabs-padding-right": "spacing.600",
+          "--tabs-padding-bottom": "spacing.300",
+          "--tabs-padding-left": "spacing.600",
+        },
+      },
+    },
+  },
 
   // Compound variants for different variant/orientation/placement combinations
   compoundVariants: [
@@ -251,8 +249,3 @@ export const tabsSlotRecipe = defineSlotRecipe({
     size: "md",
   },
 });
-
-export type TabsVariant = keyof typeof tabsVariants.variant;
-export type TabsOrientation = keyof typeof tabsVariants.orientation;
-export type TabsPlacement = keyof typeof tabsVariants.placement;
-export type TabsSize = keyof typeof tabsVariants.size;

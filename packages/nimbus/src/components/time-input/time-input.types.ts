@@ -2,10 +2,9 @@ import type { TimeFieldProps as RaTimeFieldProps } from "react-aria-components";
 import type { TimeValue } from "react-aria";
 import type {
   HTMLChakraProps,
+  SlotRecipeProps,
   UnstyledProp,
-  ConditionalValue,
 } from "@chakra-ui/react";
-import type { TimeInputSize, TimeInputVariant } from "./time-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -13,9 +12,9 @@ import type { TimeInputSize, TimeInputVariant } from "./time-input.recipe";
 
 type TimeInputRecipeProps = {
   /** Size variant of the time input */
-  size?: ConditionalValue<TimeInputSize | undefined>;
+  size?: SlotRecipeProps<"timeInput">["size"];
   /** Visual style variant of the time input */
-  variant?: ConditionalValue<TimeInputVariant | undefined>;
+  variant?: SlotRecipeProps<"timeInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

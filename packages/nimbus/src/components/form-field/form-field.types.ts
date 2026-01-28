@@ -1,10 +1,9 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
-  ConditionalValue,
+  SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { FormFieldSize, FormFieldDirection } from "./form-field.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -15,12 +14,12 @@ type FormFieldRecipeProps = {
    * Size variant of the form field
    * @default "md"
    */
-  size?: ConditionalValue<FormFieldSize>;
+  size?: SlotRecipeProps<"formField">["size"];
   /**
    * Layout direction for label and input positioning
    * @default "column"
    */
-  direction?: ConditionalValue<FormFieldDirection>;
+  direction?: SlotRecipeProps<"formField">["direction"];
 };
 
 // ============================================================

@@ -1,100 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const drawerVariants = {
-  showBackdrop: {
-    true: {
-      modalOverlay: {
-        bg: {
-          _dark: "bg/20",
-          _light: "fg/20",
-        },
-        backdropFilter: "blur({sizes.100})",
-      },
-    },
-    false: {
-      modalOverlay: {
-        bg: "transparent",
-      },
-    },
-  },
-  placement: {
-    left: {
-      modal: {
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        "&[data-entering]": {
-          animationName: "slide-from-left-full",
-        },
-        "&[data-exiting]": {
-          animationName: "slide-to-left-full",
-        },
-      },
-      content: {
-        "--drawer-base-margin": 0,
-        mx: 0,
-        height: "100vh",
-        maxH: "100vh",
-        borderRadius: 0,
-      },
-    },
-    right: {
-      modal: {
-        justifyContent: "flex-end",
-        alignItems: "stretch",
-        "&[data-entering]": {
-          animationName: "slide-from-right-full",
-        },
-        "&[data-exiting]": {
-          animationName: "slide-to-right-full",
-        },
-      },
-      content: {
-        "--drawer-base-margin": 0,
-        mx: 0,
-        height: "100vh",
-        maxH: "100vh",
-        borderRadius: 0,
-      },
-    },
-    top: {
-      modal: {
-        alignItems: "flex-start",
-        justifyContent: "stretch",
-        "&[data-entering]": {
-          animationName: "slide-from-top-full",
-        },
-        "&[data-exiting]": {
-          animationName: "slide-to-top-full",
-        },
-      },
-      content: {
-        "--drawer-base-margin": 0,
-        mx: 0,
-        width: "100vw",
-        borderRadius: 0,
-      },
-    },
-    bottom: {
-      modal: {
-        alignItems: "flex-end",
-        justifyContent: "stretch",
-        "&[data-entering]": {
-          animationName: "slide-from-bottom-full",
-        },
-        "&[data-exiting]": {
-          animationName: "slide-to-bottom-full",
-        },
-      },
-      content: {
-        "--drawer-base-margin": 0,
-        mx: 0,
-        width: "100vw",
-        borderRadius: 0,
-      },
-    },
-  },
-} as const;
-
 /**
  * Drawer recipe - styling for Drawer component overlays
  * Supports center positioning, various sizes, and motion presets for accessible drawer experiences
@@ -205,12 +110,102 @@ export const drawerSlotRecipe = defineSlotRecipe({
       zIndex: 1,
     },
   },
-  variants: drawerVariants,
+  variants: {
+    showBackdrop: {
+      true: {
+        modalOverlay: {
+          bg: {
+            _dark: "bg/20",
+            _light: "fg/20",
+          },
+          backdropFilter: "blur({sizes.100})",
+        },
+      },
+      false: {
+        modalOverlay: {
+          bg: "transparent",
+        },
+      },
+    },
+    placement: {
+      left: {
+        modal: {
+          justifyContent: "flex-start",
+          alignItems: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-left-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-left-full",
+          },
+        },
+        content: {
+          "--drawer-base-margin": 0,
+          mx: 0,
+          height: "100vh",
+          maxH: "100vh",
+          borderRadius: 0,
+        },
+      },
+      right: {
+        modal: {
+          justifyContent: "flex-end",
+          alignItems: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-right-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-right-full",
+          },
+        },
+        content: {
+          "--drawer-base-margin": 0,
+          mx: 0,
+          height: "100vh",
+          maxH: "100vh",
+          borderRadius: 0,
+        },
+      },
+      top: {
+        modal: {
+          alignItems: "flex-start",
+          justifyContent: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-top-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-top-full",
+          },
+        },
+        content: {
+          "--drawer-base-margin": 0,
+          mx: 0,
+          width: "100vw",
+          borderRadius: 0,
+        },
+      },
+      bottom: {
+        modal: {
+          alignItems: "flex-end",
+          justifyContent: "stretch",
+          "&[data-entering]": {
+            animationName: "slide-from-bottom-full",
+          },
+          "&[data-exiting]": {
+            animationName: "slide-to-bottom-full",
+          },
+        },
+        content: {
+          "--drawer-base-margin": 0,
+          mx: 0,
+          width: "100vw",
+          borderRadius: 0,
+        },
+      },
+    },
+  },
   defaultVariants: {
     placement: "right",
     showBackdrop: true,
   },
 });
-
-export type DrawerShowBackdrop = boolean;
-export type DrawerPlacement = keyof typeof drawerVariants.placement;
