@@ -707,7 +707,7 @@ export const Component = (props: ComponentProps) => {
 
 1. Create i18n file if not exists: `/writing-i18n create ComponentName`
 2. Import useLocalizedStringFormatter and message strings in component
-3. Replace hardcoded strings with formatMessage calls
+3. Replace hardcoded strings with msg.format() calls
 4. Update aria-labels to use i18n
 
 **Example:**
