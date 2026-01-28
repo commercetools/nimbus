@@ -2,7 +2,7 @@ import { createRecipeContext } from "@chakra-ui/react";
 import type { SlotComponent } from "@/type-utils";
 import type { IconRootSlotProps } from "./icon.types";
 
-const { withContext } = createRecipeContext({ key: "icon" });
+const { withContext } = createRecipeContext({ key: "nimbusIcon" });
 
 /**
  * Root component that provides the styling context for the Icon component.

@@ -9,9 +9,9 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type DialogRecipeProps = {
   /** Placement of the dialog in the viewport */
-  placement?: SlotRecipeProps<"dialog">["placement"];
+  placement?: SlotRecipeProps<"nimbusDialog">["placement"];
   /** How scrolling behavior is handled when content overflows */
-  scrollBehavior?: SlotRecipeProps<"dialog">["scrollBehavior"];
+  scrollBehavior?: SlotRecipeProps<"nimbusDialog">["scrollBehavior"];
 };
 
 // ============================================================

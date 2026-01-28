@@ -13,7 +13,7 @@ import { extractStyleProps } from "@/utils";
  */
 export const AccordionRoot = (props: AccordionRootProps) => {
   const { ref, ...restProps } = props;
-  const recipe = useSlotRecipe({ key: "accordion" });
+  const recipe = useSlotRecipe({ key: "nimbusAccordion" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
   const [styleProps, raProps] = extractStyleProps(restRecipeProps);
 

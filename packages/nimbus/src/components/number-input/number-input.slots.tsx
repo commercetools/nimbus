@@ -10,7 +10,7 @@ import type {
 } from "./number-input.types";
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  key: "numberInput",
+  key: "nimbusNumberInput",
 });
 
 /**

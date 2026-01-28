@@ -113,7 +113,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   } = props;
 
   // Standard pattern: split recipe variants, then extract style props
-  const recipe = useSlotRecipe({ key: "combobox" });
+  const recipe = useSlotRecipe({ key: "nimbusCombobox" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 

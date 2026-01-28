@@ -6,6 +6,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  */
 export const drawerSlotRecipe = defineSlotRecipe({
   slots: [
+    "root",
     "trigger",
     "modalOverlay",
     "modal",
@@ -18,6 +19,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
   ],
   className: "nimbus-drawer",
   base: {
+    root: {},
     trigger: {
       focusRing: "outside",
     },

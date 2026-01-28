@@ -21,7 +21,7 @@ export const CardContext = createContext<CardContextValue | undefined>(
  */
 export const CardRoot = ({ ref, children, ...props }: CardProps) => {
   // Standard pattern: First split recipe variants
-  const recipe = useSlotRecipe({ key: "card" });
+  const recipe = useSlotRecipe({ key: "nimbusCard" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
   // Standard pattern: Second extract style props from remaining

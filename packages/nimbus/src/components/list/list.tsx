@@ -3,12 +3,17 @@ import { ListRoot, ListItem, ListIndicator } from "./components";
 /**
  * # List
  *
- * displays a list
+ * The List component is used to display a list of items.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/typography/list}
- * @experimental This component is experimental and may change or be removed in future versions.
+ * @supportsStyleProps
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/data-display/list}
  */
-export const List = {
+export const List: {
+  Root: typeof ListRoot;
+  Item: typeof ListItem;
+  Indicator: typeof ListIndicator;
+} = {
   Root: ListRoot,
   Item: ListItem,
   Indicator: ListIndicator,

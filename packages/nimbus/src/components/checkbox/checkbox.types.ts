@@ -16,7 +16,7 @@ type CheckboxRecipeProps = {
    * Size variant of the checkbox
    * @default "md"
    */
-  size?: SlotRecipeProps<"checkbox">["size"];
+  size?: SlotRecipeProps<"nimbusCheckbox">["size"];
 } & UnstyledProp;
 
 // ============================================================
