@@ -318,7 +318,7 @@ nimbus-core standards.
 
 - **WHEN** component is authored
 - **THEN** SHALL define messages in field-errors.i18n.ts
-- **AND** SHALL use plain TypeScript objects's plain object API
+- **AND** SHALL define messages as plain TypeScript objects
 - **AND** message IDs SHALL follow format: Nimbus.FieldErrors.{messageKey}
 - **AND** SHALL include description for each message
 
