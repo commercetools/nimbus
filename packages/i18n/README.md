@@ -98,6 +98,10 @@ packages/nimbus/src/components/alert/
     └── pt-BR.ts
 ```
 
+> **Note:** These generated files are **not tracked in git** (see `.gitignore`).
+> They must be regenerated after cloning or switching branches by running
+> `pnpm build` or `pnpm extract-intl` from the repository root.
+
 These files are consumed directly by Nimbus components using the
 `useLocalizedStringFormatter` hook, which internally uses
 `LocalizedStringDictionary` from `@internationalized/string`.
