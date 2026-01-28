@@ -1,5 +1,23 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const radioInputVariants = {
+  orientation: {
+    horizontal: {
+      root: {
+        flexDirection: "row",
+        gap: "600",
+      },
+    },
+    vertical: {
+      root: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "400",
+      },
+    },
+  },
+} as const;
+
 /**
  * Recipe configuration for the RadioInput component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -58,24 +76,10 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  variants: {
-    orientation: {
-      horizontal: {
-        root: {
-          flexDirection: "row",
-          gap: "600",
-        },
-      },
-      vertical: {
-        root: {
-          flexDirection: "column",
-          alignItems: "flex-start",
-          gap: "400",
-        },
-      },
-    },
-  },
+  variants: radioInputVariants,
   defaultVariants: {
     orientation: "vertical",
   },
 });
+
+export type RadioInputOrientation = keyof typeof radioInputVariants.orientation;

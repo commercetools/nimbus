@@ -1,4 +1,4 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type {
   DisclosureGroupProps as RaDisclosureGroupProps,
@@ -8,12 +8,16 @@ import type {
 } from "react-aria-components";
 // TODO: this needs to be an @/ import
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type { AccordionSize } from "./accordion.recipe";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type AccordionRecipeProps = SlotRecipeProps<"accordion">;
+type AccordionRecipeProps = {
+  /** Size variant of the accordion */
+  size?: ConditionalValue<AccordionSize | undefined>;
+};
 
 // ============================================================
 // SLOT PROPS

@@ -22,7 +22,7 @@ import { separatorRecipe } from "./separator.recipe";
 
 export const Separator = ({
   ref: forwardedRef,
-  orientation = "horizontal",
+  orientation,
   ...props
 }: SeparatorProps) => {
   const recipe = useRecipe({ recipe: separatorRecipe });

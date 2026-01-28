@@ -59,3 +59,12 @@ export const datePickerSlotRecipe = defineSlotRecipe({
     size: "md",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const datePickerVariants = datePickerSlotRecipe.variants!;
+
+export type DatePickerSize = keyof typeof datePickerVariants.size;
+export type DatePickerVariant = keyof typeof datePickerVariants.variant;

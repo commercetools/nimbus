@@ -1,6 +1,11 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  ConditionalValue,
+} from "@chakra-ui/react";
 import type { MoneyInputValue, CurrencyCode } from "./utils";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type { MoneyInputSize } from "./money-input.recipe";
 
 export type { MoneyInputValue, CurrencyCode, MoneyValue } from "./utils";
 
@@ -13,7 +18,7 @@ type MoneyInputRecipeProps = {
    * Size variant of the money input
    * @default "md"
    */
-  size?: SlotRecipeProps<"moneyInput">["size"];
+  size?: ConditionalValue<MoneyInputSize | undefined>;
 };
 
 // ============================================================

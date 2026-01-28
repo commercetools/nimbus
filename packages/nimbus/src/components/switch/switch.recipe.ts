@@ -1,5 +1,34 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const switchVariants = {
+  size: {
+    sm: {
+      track: {
+        "--switch-track-height": "sizes.400",
+        "--switch-track-width": "sizes.700",
+      },
+      thumb: {
+        "--switch-thumb-size": "sizes.400",
+      },
+      label: {
+        "--switch-label-font-size": "fontSizes.350",
+      },
+    },
+    md: {
+      track: {
+        "--switch-track-height": "sizes.600",
+        "--switch-track-width": "sizes.1100",
+      },
+      thumb: {
+        "--switch-thumb-size": "sizes.600",
+      },
+      label: {
+        "--switch-label-font-size": "fontSizes.400",
+      },
+    },
+  },
+} as const;
+
 /**
  * Recipe configuration for the Switch component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -74,35 +103,10 @@ export const switchSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  variants: {
-    size: {
-      sm: {
-        track: {
-          "--switch-track-height": "sizes.400",
-          "--switch-track-width": "sizes.700",
-        },
-        thumb: {
-          "--switch-thumb-size": "sizes.400",
-        },
-        label: {
-          "--switch-label-font-size": "fontSizes.350",
-        },
-      },
-      md: {
-        track: {
-          "--switch-track-height": "sizes.600",
-          "--switch-track-width": "sizes.1100",
-        },
-        thumb: {
-          "--switch-thumb-size": "sizes.600",
-        },
-        label: {
-          "--switch-label-font-size": "fontSizes.400",
-        },
-      },
-    },
-  },
+  variants: switchVariants,
   defaultVariants: {
     size: "md",
   },
 });
+
+export type SwitchSize = keyof typeof switchVariants.size;

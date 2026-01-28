@@ -11,6 +11,7 @@ import type {
 import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
 import type { UPDATE_ACTIONS } from "./constants";
 import type { OmitInternalProps } from "../../type-utils";
+import type { DataTableTruncated, DataTableDensity } from "./data-table.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -18,9 +19,9 @@ import type { OmitInternalProps } from "../../type-utils";
 
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
-  truncated?: boolean;
+  truncated?: DataTableTruncated;
   /** Density variant controlling row height and padding */
-  density?: "default" | "condensed";
+  density?: DataTableDensity;
 } & UnstyledProp;
 
 // ============================================================
@@ -84,7 +85,6 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
   [key: string]: unknown;
 };
 
-export type DataTableDensity = "default" | "condensed";
 
 export type DataTableCustomSettings = {
   icon?: ReactNode;

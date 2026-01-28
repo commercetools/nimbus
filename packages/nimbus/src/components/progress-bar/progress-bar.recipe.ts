@@ -170,3 +170,15 @@ export const progressBarSlotRecipe = defineSlotRecipe({
     },
   ],
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const progressBarVariants = progressBarSlotRecipe.variants!;
+
+export type ProgressBarSize = keyof typeof progressBarVariants.size;
+export type ProgressBarIsDynamic = boolean;
+export type ProgressBarIsIndeterminate = boolean;
+export type ProgressBarVariant = keyof typeof progressBarVariants.variant;
+export type ProgressBarLayout = keyof typeof progressBarVariants.layout;

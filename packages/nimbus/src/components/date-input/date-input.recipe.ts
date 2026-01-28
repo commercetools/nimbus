@@ -170,3 +170,12 @@ export const dateInputSlotRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const dateInputVariants = dateInputSlotRecipe.variants!;
+
+export type DateInputSize = keyof typeof dateInputVariants.size;
+export type DateInputVariant = keyof typeof dateInputVariants.variant;

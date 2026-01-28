@@ -1,10 +1,14 @@
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
   UnstyledProp,
+  ConditionalValue,
 } from "@chakra-ui/react";
 import type { DateValue } from "react-aria";
 import type { DateRangePickerProps as RaDateRangePickerProps } from "react-aria-components";
+import type {
+  DateRangePickerSize,
+  DateRangePickerVariant,
+} from "./date-range-picker.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -15,12 +19,12 @@ type DateRangePickerRecipeProps = {
    * Size variant of the date range picker
    * @default "md"
    */
-  size?: SlotRecipeProps<"dateRangePicker">["size"];
+  size?: ConditionalValue<DateRangePickerSize | undefined>;
   /**
    * Visual style variant of the date range picker
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"dateRangePicker">["variant"];
+  variant?: ConditionalValue<DateRangePickerVariant | undefined>;
 } & UnstyledProp;
 
 // ============================================================

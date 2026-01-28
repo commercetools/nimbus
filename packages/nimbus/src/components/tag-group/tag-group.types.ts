@@ -2,7 +2,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   RecipeProps,
-  SlotRecipeProps,
+  ConditionalValue,
 } from "@chakra-ui/react";
 import type { FC, Ref } from "react";
 import {
@@ -12,24 +12,25 @@ import {
   Tag as RaTag,
   type TagProps as RaTagProps,
 } from "react-aria-components";
+import type { TagGroupSize } from "./tag-group.recipe";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type TagGroupRecipeVariantProps = {
+type TagGroupRecipeProps = {
   /**
    * Size variant of the tag group
    * @default "lg"
    */
-  size?: SlotRecipeProps<"taggroup">["size"];
+  size?: ConditionalValue<TagGroupSize | undefined>;
 };
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-type TagGroupRootSlotProps = HTMLChakraProps<"div", TagGroupRecipeVariantProps>;
+type TagGroupRootSlotProps = HTMLChakraProps<"div", TagGroupRecipeProps>;
 
 type TagGroupTagListSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 
@@ -40,7 +41,7 @@ type TagGroupTagSlotProps = HTMLChakraProps<"div", RecipeProps<"div">>;
 // ============================================================
 
 type TagGroupRootProps = TagGroupRootSlotProps & RaTagGroupProps;
-export type TagGroupProps = TagGroupRecipeVariantProps &
+export type TagGroupProps = TagGroupRecipeProps &
   OmitInternalProps<TagGroupRootProps, "size"> & {
     ref?: Ref<typeof RaTagGroup>;
   };

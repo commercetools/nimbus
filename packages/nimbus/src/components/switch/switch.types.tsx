@@ -1,12 +1,16 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { AriaCheckboxProps } from "react-aria";
+import type { SwitchSize } from "./switch.recipe";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type SwitchRecipeProps = SlotRecipeProps<"switch">;
+type SwitchRecipeProps = {
+  /** Size variant of the switch */
+  size?: ConditionalValue<SwitchSize | undefined>;
+};
 
 // ============================================================
 // SLOT PROPS

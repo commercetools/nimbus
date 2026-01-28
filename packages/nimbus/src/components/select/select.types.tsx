@@ -5,8 +5,13 @@ import {
   type ListBoxItemProps as RaListBoxItemProps,
   type ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  SelectSize,
+  SelectVariant,
+  SelectIsClearable,
+} from "./select.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,11 +21,15 @@ type SelectRecipeProps = {
   /**
    * Size variant of the select
    */
-  size?: SlotRecipeProps<"select">["size"];
+  size?: ConditionalValue<SelectSize | undefined>;
   /**
    * Visual style variant of the select
    */
-  variant?: SlotRecipeProps<"select">["variant"];
+  variant?: ConditionalValue<SelectVariant | undefined>;
+  /**
+   * Whether the select is clearable
+   */
+  isClearable?: ConditionalValue<SelectIsClearable | undefined>;
 };
 
 // ============================================================

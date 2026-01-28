@@ -1,9 +1,15 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
+  ConditionalValue,
   UnstyledProp,
 } from "@chakra-ui/react";
+import type {
+  CardPadding,
+  CardBorderStyle,
+  CardElevation,
+  CardBackgroundStyle,
+} from "./card.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -11,13 +17,13 @@ import type {
 
 type CardRecipeProps = {
   /** Internal padding variant for the card content */
-  cardPadding?: SlotRecipeProps<"card">["cardPadding"];
+  cardPadding?: ConditionalValue<CardPadding | undefined>;
   /** Border style variant (outline, none, etc.) */
-  borderStyle?: SlotRecipeProps<"card">["borderStyle"];
+  borderStyle?: ConditionalValue<CardBorderStyle | undefined>;
   /** Elevation shadow level for the card */
-  elevation?: SlotRecipeProps<"card">["elevation"];
+  elevation?: ConditionalValue<CardElevation | undefined>;
   /** Background style variant (white, gray, etc.) */
-  backgroundStyle?: SlotRecipeProps<"card">["backgroundStyle"];
+  backgroundStyle?: ConditionalValue<CardBackgroundStyle | undefined>;
 } & UnstyledProp;
 
 // ============================================================

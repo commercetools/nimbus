@@ -1,8 +1,12 @@
 import type {
   HTMLChakraProps,
-  RecipeProps,
   UnstyledProp,
+  ConditionalValue,
 } from "@chakra-ui/react";
+import type {
+  LoadingSpinnerSize,
+  LoadingSpinnerColorPalette,
+} from "./loading-spinner.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -13,7 +17,7 @@ type LoadingSpinnerRecipeProps = {
    * Size variant of the loading spinner
    * @default "sm"
    */
-  size?: RecipeProps<"loadingSpinner">["size"];
+  size?: ConditionalValue<LoadingSpinnerSize | undefined>;
 } & UnstyledProp;
 
 // ============================================================

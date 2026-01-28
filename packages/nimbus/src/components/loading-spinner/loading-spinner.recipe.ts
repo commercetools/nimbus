@@ -67,3 +67,13 @@ export const loadingSpinnerRecipe = defineRecipe({
     size: "sm",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const loadingSpinnerVariants = loadingSpinnerRecipe.variants!;
+
+export type LoadingSpinnerSize = keyof typeof loadingSpinnerVariants.size;
+export type LoadingSpinnerColorPalette =
+  keyof typeof loadingSpinnerVariants.colorPalette;

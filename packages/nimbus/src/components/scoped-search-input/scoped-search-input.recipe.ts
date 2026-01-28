@@ -50,3 +50,11 @@ export const scopedSearchInputSlotRecipe = defineSlotRecipe({
     size: "md",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const scopedSearchInputVariants = scopedSearchInputSlotRecipe.variants!;
+
+export type ScopedSearchInputSize = keyof typeof scopedSearchInputVariants.size;

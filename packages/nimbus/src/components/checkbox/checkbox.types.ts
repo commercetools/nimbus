@@ -1,11 +1,12 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
+  ConditionalValue,
   UnstyledProp,
 } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
+import type { CheckboxSize } from "./checkbox.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -16,7 +17,7 @@ type CheckboxRecipeProps = {
    * Size variant of the checkbox
    * @default "md"
    */
-  size?: SlotRecipeProps<"checkbox">["size"];
+  size?: ConditionalValue<CheckboxSize | undefined>;
 } & UnstyledProp;
 
 // ============================================================

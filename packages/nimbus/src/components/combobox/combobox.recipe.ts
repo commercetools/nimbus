@@ -365,3 +365,13 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     selectionMode: "single",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const comboBoxVariants = comboBoxSlotRecipe.variants!;
+
+export type ComboBoxSize = keyof typeof comboBoxVariants.size;
+export type ComboBoxVariant = keyof typeof comboBoxVariants.variant;
+export type ComboBoxSelectionMode = keyof typeof comboBoxVariants.selectionMode;

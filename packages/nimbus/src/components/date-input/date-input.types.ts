@@ -1,10 +1,11 @@
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
   UnstyledProp,
+  ConditionalValue,
 } from "@chakra-ui/react";
 import type { DateValue } from "react-aria";
 import type { DateFieldProps as RaDateFieldProps } from "react-aria-components";
+import type { DateInputSize, DateInputVariant } from "./date-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -12,9 +13,9 @@ import type { DateFieldProps as RaDateFieldProps } from "react-aria-components";
 
 type DateInputRecipeProps = {
   /** Size variant of the date input */
-  size?: SlotRecipeProps<"dateInput">["size"];
+  size?: ConditionalValue<DateInputSize | undefined>;
   /** Visual style variant of the date input */
-  variant?: SlotRecipeProps<"dateInput">["variant"];
+  variant?: ConditionalValue<DateInputVariant | undefined>;
 } & UnstyledProp;
 
 // ============================================================

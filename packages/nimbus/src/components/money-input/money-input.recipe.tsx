@@ -1,5 +1,44 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
+const moneyInputVariants = {
+  size: {
+    sm: {
+      root: {
+        fontSize: "fontSize.20",
+        minWidth: "280px",
+      },
+      currencySelect: {
+        padding: "0 spacing.20",
+      },
+      amountInput: {
+        paddingRight: "spacing.30",
+      },
+      currencyLabel: {
+        fontSize: "300",
+        lineHeight: "450",
+      },
+    },
+    md: {
+      root: {
+        fontSize: "fontSize.30",
+        minWidth: "360px",
+      },
+      currencySelect: {
+        padding: "0 spacing.25",
+      },
+      amountInput: {
+        paddingRight: "spacing.40",
+      },
+      currencyLabel: {
+        fontSize: "350",
+        lineHeight: "500",
+      },
+    },
+  },
+} as const;
+
+export type MoneyInputSize = keyof typeof moneyInputVariants.size;
+
 export const moneyInputRecipe = defineSlotRecipe({
   slots: [
     "root",
@@ -83,40 +122,7 @@ export const moneyInputRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    size: {
-      sm: {
-        root: {
-          fontSize: "fontSize.20",
-          minWidth: "280px",
-        },
-        currencySelect: {
-          padding: "0 spacing.20",
-        },
-        amountInput: {
-          paddingRight: "spacing.30",
-        },
-        currencyLabel: {
-          fontSize: "300",
-          lineHeight: "450",
-        },
-      },
-      md: {
-        root: {
-          fontSize: "fontSize.30",
-          minWidth: "360px",
-        },
-        currencySelect: {
-          padding: "0 spacing.25",
-        },
-        amountInput: {
-          paddingRight: "spacing.40",
-        },
-        currencyLabel: {
-          fontSize: "350",
-          lineHeight: "500",
-        },
-      },
-    },
+    size: moneyInputVariants.size,
   },
   defaultVariants: {
     size: "md",

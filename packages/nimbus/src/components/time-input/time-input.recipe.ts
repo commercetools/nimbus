@@ -172,3 +172,12 @@ export const timeInputRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const timeInputVariants = timeInputRecipe.variants!;
+
+export type TimeInputSize = keyof typeof timeInputVariants.size;
+export type TimeInputVariant = keyof typeof timeInputVariants.variant;

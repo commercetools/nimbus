@@ -114,3 +114,12 @@ export const searchInputSlotRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const searchInputVariants = searchInputSlotRecipe.variants!;
+
+export type SearchInputSize = keyof typeof searchInputVariants.size;
+export type SearchInputVariant = keyof typeof searchInputVariants.variant;

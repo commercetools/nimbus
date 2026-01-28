@@ -9,12 +9,17 @@ import type {
 } from "react-aria-components";
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
   UnstyledProp,
+  ConditionalValue,
 } from "@chakra-ui/react";
 import type { TagGroupProps as NimbusTagGroupProps } from "../tag-group/tag-group.types";
 import type { PopoverProps as NimbusPopoverProps } from "../popover/popover.types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  ComboBoxSize,
+  ComboBoxVariant,
+  ComboBoxSelectionMode,
+} from "./combobox.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -25,12 +30,12 @@ type ComboBoxRecipeProps = {
    * Size variant of combobox
    * @default "md"
    */
-  size?: SlotRecipeProps<"combobox">["size"];
+  size?: ConditionalValue<ComboBoxSize | undefined>;
   /**
    * Variant of combobox
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"combobox">["variant"];
+  variant?: ConditionalValue<ComboBoxVariant | undefined>;
 } & UnstyledProp;
 
 // ============================================================
@@ -151,7 +156,7 @@ export type ComboBoxRootContextValue<T> = {
   selectionMode: "single" | "multiple";
 
   /** variant size */
-  size?: SlotRecipeProps<"combobox">["size"];
+  size?: ConditionalValue<ComboBoxSize | undefined>;
 
   /** Extract key from item for TagGroup */
   getKey: (item: T) => Key;

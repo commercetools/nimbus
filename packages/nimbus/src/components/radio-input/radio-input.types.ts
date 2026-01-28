@@ -1,9 +1,10 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type {
   RadioGroupProps as RaRadioGroupProps,
   RadioProps as RaRadioProps,
 } from "react-aria-components";
+import type { RadioInputOrientation } from "./radio-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -14,7 +15,7 @@ type RadioInputRecipeProps = {
    * Layout orientation for radio options
    * @default "vertical"
    */
-  orientation?: RecipeProps<"radioInput">["orientation"];
+  orientation?: ConditionalValue<RadioInputOrientation | undefined>;
 };
 
 // ============================================================
@@ -26,10 +27,7 @@ export type RadioInputRootSlotProps = HTMLChakraProps<
   RadioInputRecipeProps
 >;
 
-export type RadioInputOptionSlotProps = HTMLChakraProps<
-  "span",
-  RecipeProps<"option">
->;
+export type RadioInputOptionSlotProps = HTMLChakraProps<"span">;
 
 // ============================================================
 // HELPER TYPES

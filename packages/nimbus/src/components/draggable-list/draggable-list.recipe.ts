@@ -84,3 +84,11 @@ export const draggableListSlotRecipe = defineSlotRecipe({
     size: "md",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const draggableListVariants = draggableListSlotRecipe.variants!;
+
+export type DraggableListSize = keyof typeof draggableListVariants.size;

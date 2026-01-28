@@ -1,10 +1,11 @@
 import type { HTMLAttributes } from "react";
 import type {
   HTMLChakraProps,
-  RecipeProps,
+  ConditionalValue,
   UnstyledProp,
 } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type { AvatarSize } from "./avatar.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -15,7 +16,7 @@ type AvatarRecipeProps = {
    * Size variant of the avatar
    * @default "md"
    */
-  size?: RecipeProps<"avatar">["size"];
+  size?: ConditionalValue<AvatarSize>;
 } & UnstyledProp;
 
 // ============================================================

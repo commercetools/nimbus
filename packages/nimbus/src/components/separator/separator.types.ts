@@ -1,15 +1,18 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
-  RecipeProps,
+  ConditionalValue,
   UnstyledProp,
   HTMLChakraProps,
 } from "@chakra-ui/react";
+import type { SeparatorOrientation } from "./separator.recipe";
 
 // ============================================================
 // RECIPE PROPS
 // ============================================================
 
-type SeparatorRecipeProps = RecipeProps<"separator"> & UnstyledProp;
+type SeparatorRecipeProps = {
+  orientation?: ConditionalValue<SeparatorOrientation | undefined>;
+} & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

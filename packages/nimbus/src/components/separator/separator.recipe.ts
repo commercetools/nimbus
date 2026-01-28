@@ -1,5 +1,18 @@
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
+const separatorVariants = {
+  orientation: {
+    horizontal: {
+      width: "100%",
+      height: "25",
+    },
+    vertical: {
+      width: "25",
+      height: "100%",
+    },
+  },
+} as const;
+
 /**
  * Recipe configuration for the Separator component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -16,21 +29,12 @@ export const separatorRecipe = defineRecipe({
   },
 
   // Available variants for customizing the component's appearance
-  variants: {
-    orientation: {
-      horizontal: {
-        width: "100%",
-        height: "25",
-      },
-      vertical: {
-        width: "25",
-        height: "100%",
-      },
-    },
-  },
+  variants: separatorVariants,
 
   // Default variant values when not explicitly specified
   defaultVariants: {
     orientation: "horizontal",
   },
 });
+
+export type SeparatorOrientation = keyof typeof separatorVariants.orientation;

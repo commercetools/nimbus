@@ -4,8 +4,12 @@ import type {
   CustomEvent,
   CurrencyCode,
 } from "../money-input/money-input.types";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  LocalizedFieldSize,
+  LocalizedFieldType,
+} from "./localized-field.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -13,9 +17,9 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type LocalizedFieldRecipeProps = {
   /** Size variant of the localized field */
-  size?: SlotRecipeProps<"localizedField">["size"];
+  size?: ConditionalValue<LocalizedFieldSize>;
   /** Input type variant (text, multiLine, richText, money) */
-  type?: SlotRecipeProps<"localizedField">["type"];
+  type?: ConditionalValue<LocalizedFieldType>;
 };
 
 // ============================================================
@@ -49,10 +53,6 @@ export type LocalizedFieldLocaleFieldInputSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 // HELPER TYPES
 // ============================================================
-
-type LocalizedFieldRecipeVariantProps = {
-  size?: "md" | "sm";
-};
 
 /**
  * Object that contains the translation of a string for each locale.
@@ -104,7 +104,7 @@ export type LocalizedFieldChangeEvent = {
 // MAIN PROPS
 // ============================================================
 
-export type LocalizedFieldProps = LocalizedFieldRecipeVariantProps &
+export type LocalizedFieldProps = LocalizedFieldRecipeProps &
   OmitInternalProps<
     LocalizedFieldRootSlotProps,
     "onChange" | "onBlur" | "onFocus" | "size"
@@ -233,7 +233,7 @@ export type MergedLocaleFieldData = {
   autoFocus?: boolean;
 };
 
-export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeVariantProps &
+export type LocalizedFieldLocaleFieldProps = LocalizedFieldRecipeProps &
   MergedLocaleFieldData &
   Pick<
     LocalizedFieldProps,

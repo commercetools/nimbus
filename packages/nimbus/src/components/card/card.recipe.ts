@@ -1,5 +1,55 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const cardVariants = {
+  cardPadding: {
+    sm: {
+      root: {
+        padding: "200",
+      },
+    },
+    md: {
+      root: {
+        padding: "400",
+      },
+    },
+    lg: {
+      root: {
+        padding: "600",
+      },
+    },
+  },
+
+  borderStyle: {
+    none: {},
+    outlined: {
+      root: {
+        border: "solid-25",
+        borderColor: "colorPalette.3",
+      },
+    },
+  },
+  elevation: {
+    none: {},
+    elevated: {
+      root: {
+        shadow: "1",
+      },
+    },
+  },
+  backgroundStyle: {
+    default: {
+      root: {
+        backgroundColor: "bg",
+      },
+    },
+    muted: {
+      root: {
+        backgroundColor: "colorPalette.2",
+      },
+    },
+  },
+} as const;
+
 /**
  * Recipe configuration for the Card component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -19,55 +69,7 @@ export const cardRecipe = defineSlotRecipe({
     },
   },
 
-  variants: {
-    cardPadding: {
-      sm: {
-        root: {
-          padding: "200",
-        },
-      },
-      md: {
-        root: {
-          padding: "400",
-        },
-      },
-      lg: {
-        root: {
-          padding: "600",
-        },
-      },
-    },
-
-    borderStyle: {
-      none: {},
-      outlined: {
-        root: {
-          border: "solid-25",
-          borderColor: "colorPalette.3",
-        },
-      },
-    },
-    elevation: {
-      none: {},
-      elevated: {
-        root: {
-          shadow: "1",
-        },
-      },
-    },
-    backgroundStyle: {
-      default: {
-        root: {
-          backgroundColor: "bg",
-        },
-      },
-      muted: {
-        root: {
-          backgroundColor: "colorPalette.2",
-        },
-      },
-    },
-  },
+  variants: cardVariants,
 
   defaultVariants: {
     cardPadding: "md",
@@ -76,3 +78,8 @@ export const cardRecipe = defineSlotRecipe({
     backgroundStyle: "default",
   },
 });
+
+export type CardPadding = keyof typeof cardVariants.cardPadding;
+export type CardBorderStyle = keyof typeof cardVariants.borderStyle;
+export type CardElevation = keyof typeof cardVariants.elevation;
+export type CardBackgroundStyle = keyof typeof cardVariants.backgroundStyle;

@@ -1,7 +1,8 @@
 import { type ModalOverlayProps as RaModalOverlayProps } from "react-aria-components";
 import type { IconButtonProps } from "../icon-button/icon-button.types";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type { DialogPlacement, DialogScrollBehavior } from "./dialog.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -9,9 +10,9 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type DialogRecipeProps = {
   /** Placement of the dialog in the viewport */
-  placement?: SlotRecipeProps<"dialog">["placement"];
+  placement?: ConditionalValue<DialogPlacement | undefined>;
   /** How scrolling behavior is handled when content overflows */
-  scrollBehavior?: SlotRecipeProps<"dialog">["scrollBehavior"];
+  scrollBehavior?: ConditionalValue<DialogScrollBehavior | undefined>;
 };
 
 // ============================================================
@@ -37,15 +38,6 @@ export type DialogFooterSlotProps = HTMLChakraProps<"footer">;
 export type DialogTitleSlotProps = HTMLChakraProps<"h2">;
 
 export type DialogCloseTriggerSlotProps = HTMLChakraProps<"div">;
-
-// ============================================================
-// HELPER TYPES
-// ============================================================
-
-/**
- * Scroll behavior variants for the dialog
- */
-export type DialogScrollBehavior = "inside" | "outside";
 
 // ============================================================
 // MAIN PROPS

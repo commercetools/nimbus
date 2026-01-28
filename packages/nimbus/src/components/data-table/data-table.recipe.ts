@@ -1,5 +1,34 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
+const dataTableVariants = {
+  truncated: {
+    true: {
+      root: {
+        "& .truncated-cell": {
+          maxWidth: "200px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        },
+      },
+    },
+  },
+  density: {
+    default: {
+      cell: {
+        paddingTop: "400",
+        paddingBottom: "400",
+      },
+    },
+    condensed: {
+      cell: {
+        paddingTop: "300",
+        paddingBottom: "300",
+      },
+    },
+  },
+} as const;
+
 /**
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
@@ -416,32 +445,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     },
   },
   // Variants for different states
-  variants: {
-    truncated: {
-      true: {
-        root: {
-          "& .truncated-cell": {
-            maxWidth: "200px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          },
-        },
-      },
-    },
-    density: {
-      default: {
-        cell: {
-          paddingTop: "400",
-          paddingBottom: "400",
-        },
-      },
-      condensed: {
-        cell: {
-          paddingTop: "300",
-          paddingBottom: "300",
-        },
-      },
-    },
-  },
+  variants: dataTableVariants,
 });
+
+export type DataTableTruncated = boolean;
+export type DataTableDensity = keyof typeof dataTableVariants.density;

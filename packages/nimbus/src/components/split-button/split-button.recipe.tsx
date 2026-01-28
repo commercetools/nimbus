@@ -1,5 +1,25 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
+const splitButtonVariants = {
+  variant: {
+    solid: {
+      dropdownTrigger: {
+        borderLeftColor: "colorPalette.contrast", // White delimiter
+      },
+    },
+    ghost: {
+      dropdownTrigger: {
+        borderLeftColor: "colorPalette.7", // Theme-aware border
+      },
+    },
+    outline: {},
+    subtle: {},
+    link: {},
+  },
+} as const;
+
+export type SplitButtonVariant = keyof typeof splitButtonVariants.variant;
+
 /**
  * Recipe configuration for the SplitButton component.
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
@@ -46,21 +66,7 @@ export const splitButtonSlotRecipe = defineSlotRecipe({
   },
 
   variants: {
-    variant: {
-      solid: {
-        dropdownTrigger: {
-          borderLeftColor: "colorPalette.contrast", // White delimiter
-        },
-      },
-      ghost: {
-        dropdownTrigger: {
-          borderLeftColor: "colorPalette.7", // Theme-aware border
-        },
-      },
-      outline: {},
-      subtle: {},
-      link: {},
-    },
+    variant: splitButtonVariants.variant,
   },
   defaultVariants: {
     variant: "solid", // Match component default

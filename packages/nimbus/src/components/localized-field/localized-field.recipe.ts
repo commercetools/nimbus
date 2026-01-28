@@ -15,6 +15,22 @@ const localeFieldGrid = `
 "error error"
 `;
 
+const localizedFieldVariants = {
+  size: {
+    md: {},
+    sm: {},
+  },
+  type: {
+    text: {},
+    multiLine: {},
+    money: {},
+    richText: {},
+  },
+} as const;
+
+export type LocalizedFieldSize = keyof typeof localizedFieldVariants.size;
+export type LocalizedFieldType = keyof typeof localizedFieldVariants.type;
+
 export const localizedFieldSlotRecipe = defineSlotRecipe({
   slots: [
     // Group / Fieldset slots
@@ -133,25 +149,27 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    size: {
-      md: {
+    size: localizedFieldVariants.size,
+    type: localizedFieldVariants.type,
+  },
+  compoundVariants: [
+    {
+      size: "md",
+      css: {
         root: {
           "--localized-field-font-size": "fontSizes.350",
           "--localized-field-line-height": "lineHeights.500",
         },
       },
-      sm: {
+    },
+    {
+      size: "sm",
+      css: {
         root: {
           "--localized-field-font-size": "fontSizes.300",
           "--localized-field-line-height": "lineHeights.450",
         },
       },
     },
-    type: {
-      text: {},
-      multiLine: {},
-      money: {},
-      richText: {},
-    },
-  },
+  ],
 });

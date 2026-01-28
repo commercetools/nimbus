@@ -1,5 +1,15 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const tagGroupVariants = {
+  size: {
+    sm: {},
+    md: {},
+    lg: {},
+  },
+} as const;
+
+export type TagGroupSize = keyof typeof tagGroupVariants.size;
+
 /**
  * Recipe configuration for the TagGroup component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -54,30 +64,41 @@ export const tagGroupSlotRecipe = defineSlotRecipe({
   // Available variants for customizing the component's appearance
   variants: {
     // Size variants from smallest to largest
-    size: {
-      sm: {
+    size: tagGroupVariants.size,
+  },
+
+  compoundVariants: [
+    {
+      size: "sm",
+      css: {
         tag: {
           minH: "600",
           paddingX: "200",
           fontSize: "350",
           lineHeight: "400",
         },
-      }, // Small
-      md: {
+      },
+    },
+    {
+      size: "md",
+      css: {
         tag: {
           minH: "800",
           paddingX: "200",
           paddingY: "100",
         },
-      }, // Medium
-      lg: {
+      },
+    },
+    {
+      size: "lg",
+      css: {
         tag: {
           minH: "1000",
           padding: "200",
         },
-      }, // Large
+      },
     },
-  },
+  ],
 
   // Default variant values when not explicitly specified
   defaultVariants: {

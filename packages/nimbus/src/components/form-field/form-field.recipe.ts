@@ -12,6 +12,52 @@ const rowLayout = `
 "label error"
 `;
 
+const formFieldVariants = {
+  size: {
+    md: {
+      root: {
+        "--form-field-font-size": "fontSizes.350",
+        "--form-field-line-height": "lineHeights.500",
+      },
+    },
+    sm: {
+      root: {
+        "--form-field-font-size": "fontSizes.300",
+        "--form-field-line-height": "lineHeights.450",
+      },
+    },
+  },
+  direction: {
+    column: {
+      root: {
+        gridTemplateAreas: columnLayout,
+      },
+      input: {
+        mt: "var(--grid-gap)",
+      },
+      description: {
+        mt: "var(--grid-gap)",
+      },
+      error: {
+        mt: "var(--grid-gap)",
+      },
+    },
+    row: {
+      root: {
+        gridTemplateAreas: rowLayout,
+        gridTemplateColumns: "auto 1fr",
+        gridColumnGap: "200",
+      },
+      description: {
+        mt: "var(--grid-gap)",
+      },
+      error: {
+        mt: "var(--grid-gap)",
+      },
+    },
+  },
+} as const;
+
 /**
  * Recipe configuration for the FormField component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -76,51 +122,7 @@ export const formFieldRecipe = defineSlotRecipe({
     },
   },
 
-  variants: {
-    size: {
-      md: {
-        root: {
-          "--form-field-font-size": "fontSizes.350",
-          "--form-field-line-height": "lineHeights.500",
-        },
-      },
-      sm: {
-        root: {
-          "--form-field-font-size": "fontSizes.300",
-          "--form-field-line-height": "lineHeights.450",
-        },
-      },
-    },
-    direction: {
-      column: {
-        root: {
-          gridTemplateAreas: columnLayout,
-        },
-        input: {
-          mt: "var(--grid-gap)",
-        },
-        description: {
-          mt: "var(--grid-gap)",
-        },
-        error: {
-          mt: "var(--grid-gap)",
-        },
-      },
-      row: {
-        root: {
-          gridTemplateAreas: rowLayout,
-          gridTemplateColumns: "auto 1fr",
-          gridColumnGap: "200",
-        },
-        description: {
-          mt: "var(--grid-gap)",
-        },
-        error: {
-          mt: "var(--grid-gap)",
-        },
-      },
-    },
-  },
+  variants: formFieldVariants,
 
   // Default variant values when not explicitly specified
   defaultVariants: {
@@ -128,3 +130,6 @@ export const formFieldRecipe = defineSlotRecipe({
     size: "md",
   },
 });
+
+export type FormFieldSize = keyof typeof formFieldVariants.size;
+export type FormFieldDirection = keyof typeof formFieldVariants.direction;

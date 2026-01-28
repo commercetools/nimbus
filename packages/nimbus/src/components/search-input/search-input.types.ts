@@ -1,6 +1,10 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, ConditionalValue } from "@chakra-ui/react";
 import type { SearchFieldProps as RaSearchFieldProps } from "react-aria-components";
+import type {
+  SearchInputSize,
+  SearchInputVariant,
+} from "./search-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -11,12 +15,12 @@ type SearchInputRecipeProps = {
    * Size variant of the search input
    * @default "md"
    */
-  size?: SlotRecipeProps<"searchInput">["size"];
+  size?: ConditionalValue<SearchInputSize | undefined>;
   /**
    * Visual style variant of the search input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"searchInput">["variant"];
+  variant?: ConditionalValue<SearchInputVariant | undefined>;
 };
 
 // ============================================================

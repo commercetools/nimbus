@@ -239,3 +239,12 @@ export const numberInputRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const numberInputVariants = numberInputRecipe.variants!;
+
+export type NumberInputSize = keyof typeof numberInputVariants.size;
+export type NumberInputVariant = keyof typeof numberInputVariants.variant;

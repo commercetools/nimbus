@@ -1,7 +1,7 @@
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
   UnstyledProp,
+  ConditionalValue,
 } from "@chakra-ui/react";
 import { type InputProps as RaInputProps } from "react-aria-components";
 import type {
@@ -9,6 +9,10 @@ import type {
   AriaNumberFieldProps as RaNumberFieldProps,
 } from "react-aria";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  NumberInputSize,
+  NumberInputVariant,
+} from "./number-input.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -19,12 +23,12 @@ export type NumberInputRecipeProps = {
    * Size variant of the number input
    * @default "md"
    */
-  size?: SlotRecipeProps<"numberInput">["size"];
+  size?: ConditionalValue<NumberInputSize | undefined>;
   /**
    * Visual style variant of the number input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"numberInput">["variant"];
+  variant?: ConditionalValue<NumberInputVariant | undefined>;
 } & UnstyledProp;
 
 // ============================================================

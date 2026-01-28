@@ -118,3 +118,13 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
     variant: "solid",
   },
 });
+
+// ============================================================
+// EXPORTED VARIANT TYPES
+// ============================================================
+
+const dateRangePickerVariants = dateRangePickerSlotRecipe.variants!;
+
+export type DateRangePickerSize = keyof typeof dateRangePickerVariants.size;
+export type DateRangePickerVariant =
+  keyof typeof dateRangePickerVariants.variant;

@@ -1,9 +1,10 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
-  RecipeProps,
+  ConditionalValue,
   UnstyledProp,
   HTMLChakraProps,
 } from "@chakra-ui/react";
+import type { BadgeSize } from "./badge.recipe";
 
 // ============================================================
 // RECIPE PROPS
@@ -14,7 +15,7 @@ type BadgeRecipeProps = {
    * Size variant of the badge
    * @default "md"
    */
-  size?: RecipeProps<"badge">["size"];
+  size?: ConditionalValue<BadgeSize>;
 } & UnstyledProp;
 
 // ============================================================
