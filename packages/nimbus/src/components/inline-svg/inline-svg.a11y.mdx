@@ -1,0 +1,26 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+The SVG is rendered with `role="presentation"` as it's intended for decorative
+use. If you need accessible SVGs, include `<title>` and `<desc>` elements
+directly in your SVG markup - they will be preserved during sanitization.
+
+## Security considerations
+
+The component provides comprehensive XSS protection:
+
+### What gets removed
+
+- All JavaScript execution vectors (`<script>`, event handlers)
+- Style injection attempts (`<style>` tags, style attributes)
+- Dangerous protocols in URLs (`javascript:`, `data:`, etc.)
+- Potentially dangerous elements (`<iframe>`, `<embed>`, etc.)
+
+### What gets preserved
+
+- SVG structure elements (`<g>`, `<path>`, `<circle>`, etc.)
+- Visual attributes (fill, stroke, transform, etc.)
+- Accessibility elements (`<title>`, `<desc>`)
+- Safe URLs (http:, https:, relative paths, fragments)

@@ -1,0 +1,23 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
+```
+
+### Accessibility standards
+
+- **Semantic Meaning:** The `<kbd>` element provides clear semantic meaning to
+  screen readers, indicating that the enclosed text represents keyboard input.
+- **Reading Flow:** Ensure the KBD component doesn't interrupt the natural
+  reading flow of the surrounding sentence.
+- **Contrast:** The key's background color and the text color must adhere to
+  WCAG contrast guidelines for legibility.
+- **Focus (N/A):** Note that the KBD component itself is generally
+  non-interactive and therefore should not be focusable via the keyboard.

@@ -1,0 +1,64 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+A dropdown popover is a temporary, compact list of options or actions that
+appears on user interaction, designed for quick selections and efficient
+navigation.
+
+```jsx-live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="solid" colorPalette="primary">
+        <Icons.FolderOpen />
+        File Menu
+      </Button>
+    </Menu.Trigger>
+   <Menu.Content>
+      <Menu.Item id="duplicate">
+        <Icon slot="icon"><Icons.ContentCopy /></Icon>
+        <Text slot="label">Duplicate</Text>
+        <Kbd slot="keyboard">⌘T</Kbd>
+      </Menu.Item>
+      <Menu.Item id="rename">
+        <Icon slot="icon"><Icons.Create /></Icon>
+        <Text slot="label">Rename</Text>
+        <Kbd slot="keyboard">⌘R</Kbd>
+      </Menu.Item>
+      <Menu.Item id="share">
+        <Icon slot="icon"><Icons.IosShare /></Icon>
+        <Text slot="label">Share</Text>
+        <Kbd slot="keyboard">⌘W</Kbd>
+      </Menu.Item>
+      <Menu.Item id="pin">
+        <Icon slot="icon"><Icons.PushPin /></Icon>
+        <Text slot="label">Pin</Text>
+        <Kbd slot="keyboard">⌘P</Kbd>
+      </Menu.Item>
+      <Separator />
+      <Menu.Item id="delete" isCritical>
+        <Icon slot="icon"><Icons.Delete /></Icon>
+        <Text slot="label">Delete</Text>
+        <Kbd slot="keyboard">⌘D</Kbd>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
+
+## Accessibility standards
+
+**Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select
+(Enter/Space), and close (Esc) the menu using only the keyboard.
+
+**ARIA Roles & States:** Properly apply ARIA roles (e.g., role="menu",
+role="menuitem", aria-haspopup") and states (e.g., aria-expanded, aria-checked)
+to convey semantic meaning.
+
+**Focus Management:** Confirm focus correctly moves into the menu when opened,
+cycles within it, and returns to the trigger when closed.
+
+**Contrast & Visibility:** Verify sufficient color contrast for menu items and a
+clear visual focus indicator for selected/hovered items.

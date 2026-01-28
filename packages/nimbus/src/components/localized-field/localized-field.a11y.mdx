@@ -1,0 +1,44 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });
+
+  return (
+
+      <LocalizedField
+        size="md"
+        defaultLocaleOrCurrency="en"
+        valuesByLocaleOrCurrency={values}
+        onChange={(e) => {
+          setValues({
+            ...values,
+            [e.target.locale]: e.target.value
+          });
+        }}
+      />
+
+  );
+};
+```
+
+## Accessibility standards
+
+- **Focus management:** Ensure the Tab order moves logically between the active
+  input field and the language switching controls. When the language is
+  switched, focus should return to the newly visible input field.
+- **Keyboard operability:** The language switching controls (tabs, buttons) must
+  be fully navigable and operable via the keyboard.
+- **ARIA roles:** Ensure the active input field correctly inherits all necessary
+  ARIA attributes (e.g., aria-required, aria-invalid) from the FormField
+  component.
+- **Screen reader communication:** Ensure screen readers announce the change of
+  language context when the user activates a different locale input, often by
+  announcing the new tab or language code.

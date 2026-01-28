@@ -1,0 +1,31 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Flex renders a `div` by default but can be changed to any other HTML element
+using the `as` prop to ensure proper semantic structure:
+
+```jsx-live
+const App = () => (
+  <Flex as="nav" gap="400" p="400">
+    <Box as="a" href="#" p="200">
+      Home
+    </Box>
+    <Box as="a" href="#" p="200">
+      About
+    </Box>
+    <Box as="a" href="#" p="200">
+      Contact
+    </Box>
+  </Flex>
+);
+```
+
+### Best practices
+
+- **Use semantic HTML**: Choose appropriate HTML elements with the `as` prop
+- **Maintain reading order**: Ensure visual order matches DOM order for screen
+  readers
+- **Avoid layout-only divs**: When possible, apply flex styles to semantic
+  elements

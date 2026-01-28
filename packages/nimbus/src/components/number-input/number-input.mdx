@@ -1,7 +1,9 @@
 ---
 id: Components-NumberInput
 title: NumberInput
-description: A number input allows users to enter numerical values and adjust them incrementally.
+description:
+  A number input allows users to enter numerical values and adjust them
+  incrementally.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -15,18 +17,24 @@ tags:
 
 # Number input
 
-A number input allows users to enter numerical values and adjust them incrementally.
+A number input allows users to enter numerical values and adjust them
+incrementally.
 
 ## Overview
 
-A number input allows users to enter a numeric value and adjust it using stepper buttons. It provides a quick and precise way to modify values within defined parameters, especially for small incremental changes.
-
+A number input allows users to enter a numeric value and adjust it using stepper
+buttons. It provides a quick and precise way to modify values within defined
+parameters, especially for small incremental changes.
 
 ### Key features
 
-- **Value Clamping:** If a user types a value outside the defined min or max range, the value will snap to the nearest valid step or the min/max value on blur.
+- **Value Clamping:** If a user types a value outside the defined min or max
+  range, the value will snap to the nearest valid step or the min/max value on
+  blur.
 - **Decimals:** Supports decimal values and step sizes.
-- **Percentages:** Can be configured to display values as percentages, automatically multiplying input by 100 for display and dividing by 100 for output.
+- **Percentages:** Can be configured to display values as percentages,
+  automatically multiplying input by 100 for display and dividing by 100 for
+  output.
 
 ### Resources
 
@@ -41,6 +49,7 @@ Get familiar with the features.
 ### Visual options
 
 #### Size
+
 Medium is the default size, with a small size for compact needs.
 
 ```jsx-live
@@ -53,6 +62,7 @@ const App = () => (
 ```
 
 #### Appearance
+
 Medium is the default size, with a small size for compact needs.
 
 ```jsx-live
@@ -63,34 +73,3 @@ const App = () => (
   </Stack>
 )
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <NumberInput 
-    defaultValue={10}
-    aria-label="Quantity"
-    min={1}
-    max={100}
-    step={1}
-  />
-)
-```
-
-### Accessibility standards
-
-- Always provide a visible label for the input.
-- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.
-- Ensure sufficient color contrast for all elements (text, borders, icons).
-- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
-- Clearly indicate the focused state.
-- Support keyboard navigation with arrow keys, scroll wheel, and modifier keys.
-- Provide clear feedback for value changes and constraints.
-
-### Resources
-
-- [React Spectrum NumberField](https://react-spectrum.adobe.com/react-spectrum/NumberField.html)
-- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) (Search for "spinbutton" or "number input" patterns)

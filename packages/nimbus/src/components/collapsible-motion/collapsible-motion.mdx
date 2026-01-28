@@ -1,28 +1,45 @@
 ---
 id: Components-CollapsibleMotion
 title: CollapsibleMotion
-description: A compound component for creating smooth collapsible content with accessibility support
+description:
+  A compound component for creating smooth collapsible content with
+  accessibility support
 lifecycleState: Stable
 order: 999
 menu:
   - Components
   - Navigation
   - CollapsibleMotion
-tags: ["component", "collapsible", "accordion", "disclosure", "animation", "accessibility"]
+tags:
+  [
+    "component",
+    "collapsible",
+    "accordion",
+    "disclosure",
+    "animation",
+    "accessibility",
+  ]
 ---
 
 # CollapsibleMotion
 
-A modern, accessible implementation of collapsible content with smooth height animations. Built with React Aria for accessibility and Chakra UI for consistent theming.
+A modern, accessible implementation of collapsible content with smooth height
+animations. Built with React Aria for accessibility and Chakra UI for consistent
+theming.
 
 ## Overview
 
-CollapsibleMotion is a compound component that provides smooth, accessible collapsible content with height animations. It combines React Aria's accessibility features with Chakra UI's theming system to deliver a robust foundation for disclosure patterns, accordions, and expandable content sections.
+CollapsibleMotion is a compound component that provides smooth, accessible
+collapsible content with height animations. It combines React Aria's
+accessibility features with Chakra UI's theming system to deliver a robust
+foundation for disclosure patterns, accordions, and expandable content sections.
 
 ### Key features
 
-- **Smooth height animations**: Customizable duration with automatic content measurement
-- **Full accessibility support**: Proper ARIA attributes and screen reader compatibility
+- **Smooth height animations**: Customizable duration with automatic content
+  measurement
+- **Full accessibility support**: Proper ARIA attributes and screen reader
+  compatibility
 - **Controlled and uncontrolled modes**: Flexible state management options
 - **Focus management**: Content visibility handled properly for screen readers
 - **Responsive design**: Works seamlessly across all screen sizes
@@ -39,7 +56,8 @@ Deep dive into implementation details and access the Nimbus design library.
 
 ### Basic Usage
 
-The simplest way to use CollapsibleMotion is in uncontrolled mode with default settings:
+The simplest way to use CollapsibleMotion is in uncontrolled mode with default
+settings:
 
 ```jsx-live
 const App = () => {
@@ -61,7 +79,8 @@ const App = () => {
 
 ### Controlled Mode
 
-For more complex scenarios, you can control the expanded state from a parent component:
+For more complex scenarios, you can control the expanded state from a parent
+component:
 
 ```jsx-live
 const App = () => {
@@ -171,12 +190,14 @@ const App = () => {
 
 ## Accessibility
 
-CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets WCAG 2.1 AA standards.
+CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets
+WCAG 2.1 AA standards.
 
 ### Screen reader support
 
 
-- Automatically applies proper ARIA attributes (`aria-expanded`, `aria-controls`)
+- Automatically applies proper ARIA attributes (`aria-expanded`,
+  `aria-controls`)
 - Content is not focusable when collapsed, improving screen reader experience
 - Announces state changes when expanding or collapsing
 - Proper semantic markup for assistive technologies
@@ -185,7 +206,8 @@ CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets W
 
 #### 2. Operable
 
-- **2.1.1 Keyboard**: Full keyboard navigation support through standard button interactions
+- **2.1.1 Keyboard**: Full keyboard navigation support through standard button
+  interactions
 - **2.4.7 Focus Visible**: Clear focus indicators on trigger elements
 
 #### 3. Understandable
@@ -194,7 +216,8 @@ CollapsibleMotion follows WAI-ARIA guidelines for disclosure widgets and meets W
 
 #### 4. Robust
 
-- **4.1.2 Name, Role, Value**: Proper ARIA attributes (`aria-expanded`, `aria-controls`) communicate state and relationships
+- **4.1.2 Name, Role, Value**: Proper ARIA attributes (`aria-expanded`,
+  `aria-controls`) communicate state and relationships
 
 ```jsx-live
 const App = () => {
@@ -223,7 +246,8 @@ const App = () => {
 
 ## Integration with Other Components
 
-CollapsibleMotion works well with other Nimbus components to create rich interactive experiences:
+CollapsibleMotion works well with other Nimbus components to create rich
+interactive experiences:
 
 ```jsx-live
 const App = () => {
@@ -278,22 +302,22 @@ const App = () => {
 
 ### Performance
 
-- **Content Measurement**: The component automatically measures content height, but avoid deeply nested or complex layouts within collapsible content when possible
-- **Animation Duration**: Use reasonable animation durations (100-500ms) to balance smoothness with perceived performance
-- **Dynamic Content**: The component handles content changes efficiently, but minimize frequent content updates during animations
-
-## Accessibility
-
-- **Trigger Elements**: Always provide clear, descriptive trigger buttons or elements
-- **Content Structure**: Use semantic HTML within collapsible content
-- **Focus Indicators**: Ensure trigger elements have clear focus indicators
-- **Screen Reader Testing**: Test with actual screen readers to verify the experience
+- **Content Measurement**: The component automatically measures content height,
+  but avoid deeply nested or complex layouts within collapsible content when
+  possible
+- **Animation Duration**: Use reasonable animation durations (100-500ms) to
+  balance smoothness with perceived performance
+- **Dynamic Content**: The component handles content changes efficiently, but
+  minimize frequent content updates during animations
 
 ### Styling
 
-- **Consistent Animations**: Use consistent animation durations across your application
-- **Visual Feedback**: Provide clear visual feedback for expanded/collapsed states
-- **Responsive Design**: Consider how collapsible content behaves on different screen sizes
+- **Consistent Animations**: Use consistent animation durations across your
+  application
+- **Visual Feedback**: Provide clear visual feedback for expanded/collapsed
+  states
+- **Responsive Design**: Consider how collapsible content behaves on different
+  screen sizes
 
 ## Related Components
 

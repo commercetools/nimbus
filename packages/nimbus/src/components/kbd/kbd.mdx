@@ -1,7 +1,9 @@
 ---
 id: Components-Kbd
 title: Kbd
-description: The KBD component visually renders a keystroke or key combination to highlight it within textual instructions.
+description:
+  The KBD component visually renders a keystroke or key combination to highlight
+  it within textual instructions.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -17,37 +19,27 @@ tags:
 
 # KBD
 
-The KBD component visually renders a keystroke or key combination to highlight it within textual instructions.
+The KBD component visually renders a keystroke or key combination to highlight
+it within textual instructions.
 
 ## Overview
 
-The keyboard key component provides semantic and visual representation for keyboard input, such as a shortcut, key press, or command line input, ensuring clarity and consistency when providing user instructions.
+The keyboard key component provides semantic and visual representation for
+keyboard input, such as a shortcut, key press, or command line input, ensuring
+clarity and consistency when providing user instructions.
 
 ## Variables
 
-Get familiar with the features. 
+Get familiar with the features.
 
 ### Basic
+
 ```jsx-live
 const App = () => <Kbd>Ctrl</Kbd>
 ```
 
 ### Key combinations
-```jsx-live
-const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
-```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
 ```
-
-### Accessibility standards
-
-- **Semantic Meaning:** The `<kbd>` element provides clear semantic meaning to screen readers, indicating that the enclosed text represents keyboard input.
-- **Reading Flow:** Ensure the KBD component doesn't interrupt the natural reading flow of the surrounding sentence.
-- **Contrast:** The key's background color and the text color must adhere to WCAG contrast guidelines for legibility.
-- **Focus (N/A):** Note that the KBD component itself is generally non-interactive and therefore should not be focusable via the keyboard.
