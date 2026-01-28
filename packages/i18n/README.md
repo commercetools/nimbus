@@ -285,80 +285,105 @@ consumers do not need to install or use this package directly.
 ## Translation Workflow
 
 1. **Extraction**: Messages are extracted from `.i18n.ts` files using custom
-   extraction script → `data/core.json`
-2. **Translation**: Files in `data/` are sent to Transifex for translation
-3. **Compilation**: Translated files are compiled using the build pipeline
-4. **Usage**: Components import and use compiled `*.messages.ts` files at
-   runtime
+   extraction script and added to `data/core.json`
+2. **Commit & Merge**: Changes to `data/core.json` are committed and merged to
+   the `main` branch
+3. **GitHub-Transifex Integration**: The `transifex.yml` configuration file
+   enables automated synchronization with Transifex, detecting new or updated
+   translation keys
+4. **Localization Manager Coordination**: A ticket must be created for the
+   localization manager to initiate professional translation of new or updated
+   keys
+5. **Translation Management**: Localization manager coordinates translation work
+   through the Transifex platform
+6. **Automated PR Creation**: Once translations are complete, Transifex
+   automatically creates a pull request with updated translation files
+7. **Compilation**: Translated files are compiled using the build pipeline
+8. **Runtime Usage**: Components import and use compiled `*.messages.ts` files
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           TRANSLATION WORKFLOW                            │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Start["📝 Source Component<br/>.i18n.ts files"]
+    Extract["🔍 Extraction<br/>data/core.json"]
+    MergeMain["🔀 Merge to Main<br/>(triggers GitHub integration)"]
+    Transifex["🌐 Transifex Platform<br/>(Translation Management)"]
+    LocTicket["📋 Localization Manager<br/>(Manual ticket creation<br/>for new/updated keys)"]
+    GitHubIntegration["⚙️ GitHub-Transifex Integration<br/>(Automated via transifex.yml)"]
+    AutoPR["🤖 Automated PR<br/>(Created by Transifex<br/>when translations ready)"]
+    TranslatedData["📦 Translated Data<br/>data/en.json<br/>data/de.json<br/>data/es.json<br/>data/fr-FR.json<br/>data/pt-BR.json"]
 
-┌─────────────────┐
-│  📝 Source      │
-│  Component      │
-│  .i18n.ts       │
-└────────┬────────┘
-         │ Custom extraction script
-         ▼
-┌─────────────────┐
-│  🔍 Extraction   │
-│  data/core.json  │
-└────────┬────────┘
-         │ Upload
-         ▼
-┌─────────────────┐
-│  🌐 Transifex    │
-│  (Translation)   │
-└────────┬────────┘
-         │ Download
-         ▼
-┌─────────────────────────────────────┐
-│  📦 Translated Data                  │
-│  data/en.json                        │
-│  data/de.json                        │
-│  data/es.json                        │
-│  data/fr-FR.json                     │
-│  data/pt-BR.json                     │
-└────────┬────────────────────────────┘
-         │
-         │ ═══════════════════════════════════════
-         │         BUILD PIPELINE
-         │ ═══════════════════════════════════════
-         │
-         ├─ build:split ────────────────────────┐
-         │  (Transform & Split in memory)       │
-         │                                      ▼
-         │                    ┌──────────────────────────────────────────┐
-         │                    │  .temp/by-component/                     │
-         │                    │  {Component}/{locale}.json               │
-         │                    │  (messages grouped by component)        │
-         │                    └───────────┬──────────────────────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────────────────┐
-         │                    │  build:compile-strings                │
-         │                    └───────────┬──────────────────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────────────────┐
-         │                    │  packages/nimbus/src/components/       │
-         │                    │  {component}/intl/{locale}.ts         │
-         │                    └───────────┬──────────────────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────────────────┐
-         │                    │  build:dictionaries                    │
-         │                    └───────────┬──────────────────────────┘
-         │                                │
-         │                    ┌────────────▼──────────────────────────┐
-         │                    │  {component}.messages.ts                │
-         │                    └───────────┬──────────────────────────┘
-         │                                │
-         └────────────────────────────────┘
-                                          │ Import & use
-                                          ▼
-                              ┌──────────────────────────┐
-                              │  🎯 Nimbus Components     │
-                              │  (Runtime Usage)          │
-                              └──────────────────────────┘
+    Start -->|"Custom extraction script<br/>(pnpm extract-intl)"| Extract
+    Extract -->|"Commit & merge"| MergeMain
+    MergeMain -->|"Automatic sync"| GitHubIntegration
+    GitHubIntegration -->|"Detects changes"| Transifex
+
+    Transifex -.->|"Required for<br/>new/updated keys"| LocTicket
+    LocTicket -.->|"Coordinates<br/>translation"| Transifex
+
+    Transifex -->|"Translations complete"| AutoPR
+    AutoPR -->|"Merge PR"| TranslatedData
+
+    TranslatedData --> BuildPipeline
+
+    subgraph BuildPipeline["═══════ BUILD PIPELINE ═══════"]
+        Split["build:split<br/>(Transform & Split in memory)"]
+        TempFiles[".temp/by-component/<br/>{Component}/{locale}.json<br/>(messages grouped by component)"]
+        CompileStrings["build:compile-strings<br/>(@internationalized/string-compiler)"]
+        IntlFiles["packages/nimbus/src/components/<br/>{component}/intl/{locale}.ts<br/>(compiled message functions)"]
+        Dictionaries["build:dictionaries<br/>(generate LocalizedStringDictionary)"]
+        MessagesFiles["{component}.messages.ts<br/>(message dictionaries)"]
+
+        Split --> TempFiles
+        TempFiles --> CompileStrings
+        CompileStrings --> IntlFiles
+        IntlFiles --> Dictionaries
+        Dictionaries --> MessagesFiles
+    end
+
+    MessagesFiles -->|"Import & use with<br/>useLocalizedStringFormatter"| Runtime["🎯 Nimbus Components<br/>(Runtime Usage)"]
+
+    style Start fill:#e3f2fd,color:#000000
+    style Extract fill:#fff3e0,color:#000000
+    style MergeMain fill:#c8e6c9,color:#000000
+    style GitHubIntegration fill:#b2dfdb,color:#000000
+    style Transifex fill:#f3e5f5,color:#000000
+    style LocTicket fill:#ffe0b2,color:#000000
+    style AutoPR fill:#c5cae9,color:#000000
+    style TranslatedData fill:#e8f5e9,color:#000000
+    style BuildPipeline fill:#fafafa,color:#000000
+    style Runtime fill:#e1f5fe,color:#000000
 ```
+
+### Transifex Integration Details
+
+**Automated Process:**
+
+- **GitHub Integration**: The repository uses `transifex.yml` to configure
+  automated synchronization with the Transifex platform. When changes to
+  `packages/i18n/data/core.json` are merged to the `main` branch, the
+  GitHub-Transifex integration automatically detects new or updated translation
+  keys and syncs them to the Transifex project.
+- **Pull Request Creation**: Once professional translators complete translations
+  in Transifex, the platform automatically creates a pull request with the
+  updated translation files (`data/*.json`), streamlining the integration of
+  translated content back into the codebase.
+
+**Manual Coordination:**
+
+- **Localization Manager Notification**: For any new or updated translation
+  keys, a ticket must be created to notify the localization manager. This
+  initiates the professional translation coordination process and ensures proper
+  review, context provision, and quality assurance for all translatable content.
+
+**Complete Workflow:**
+
+1. Developer adds new messages to `.i18n.ts` files
+2. Run `pnpm extract-intl` to extract messages and add them to `data/core.json`
+3. Commit and merge changes to `main` branch
+4. GitHub-Transifex integration (via `transifex.yml`) automatically syncs
+   changes to Transifex
+5. **Create ticket** for localization manager to coordinate translation work
+6. Localization manager coordinates professional translation through Transifex
+7. Transifex automatically creates a pull request when translations are complete
+8. Merge PR to integrate translated files into the codebase
+9. Run build pipeline to compile messages for component usage
