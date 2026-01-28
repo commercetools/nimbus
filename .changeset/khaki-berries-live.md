@@ -1,5 +1,5 @@
 ---
-"@commercetools/nimbus": patch
+"@commercetools/nimbus": minor
 ---
 
 Prefixed 22 Nimbus recipe keys with nimbus to avoid collisions with Chakra's
