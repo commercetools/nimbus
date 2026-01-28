@@ -18,7 +18,7 @@ import { ComponentNameSlot } from "./component-name.slots";
 import type { ComponentNameProps } from "./component-name.types";
 // Uncomment if component needs i18n
 // import { useLocalizedStringFormatter } from "@/hooks";
-// import { componentMessagesStrings } from "./component-name.messages";
+// import { {componentName}MessagesStrings } from "./{component-name}.messages";
 
 /**
  * ComponentName
@@ -48,7 +48,7 @@ export const ComponentName = (props: ComponentNameProps) => {
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
   // Uncomment if using i18n
-  // const msg = useLocalizedStringFormatter(componentMessagesStrings);
+  // const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
   // const ariaLabel = msg.format("defaultLabel");
 
   // Component logic here

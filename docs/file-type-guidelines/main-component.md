@@ -935,7 +935,7 @@ Components need i18n when they contain:
 
 ```typescript
 import { useLocalizedStringFormatter } from "@/hooks";
-import { componentMessagesStrings } from "./component-name.messages";
+import { {componentName}MessagesStrings } from "./{component-name}.messages";
 ```
 
 ### Usage in Component
