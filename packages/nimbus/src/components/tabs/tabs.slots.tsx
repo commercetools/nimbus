@@ -9,7 +9,7 @@ import type {
 } from "./tabs.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "tabs",
+  key: "nimbusTabs",
 });
 
 /**

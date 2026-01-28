@@ -25,12 +25,12 @@ type ComboBoxRecipeProps = {
    * Size variant of combobox
    * @default "md"
    */
-  size?: SlotRecipeProps<"combobox">["size"];
+  size?: SlotRecipeProps<"nimbusCombobox">["size"];
   /**
    * Variant of combobox
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"combobox">["variant"];
+  variant?: SlotRecipeProps<"nimbusCombobox">["variant"];
 } & UnstyledProp;
 
 // ============================================================
@@ -151,7 +151,7 @@ export type ComboBoxRootContextValue<T> = {
   selectionMode: "single" | "multiple";
 
   /** variant size */
-  size?: SlotRecipeProps<"combobox">["size"];
+  size?: SlotRecipeProps<"nimbusCombobox">["size"];
 
   /** Extract key from item for TagGroup */
   getKey: (item: T) => Key;

@@ -10,7 +10,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type AlertRecipeProps = {
   /** Visual style variant of the alert */
-  variant?: SlotRecipeProps<"alert">["variant"];
+  variant?: SlotRecipeProps<"nimbusAlert">["variant"];
 };
 
 // ============================================================

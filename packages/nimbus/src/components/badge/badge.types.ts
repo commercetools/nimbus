@@ -14,7 +14,7 @@ type BadgeRecipeProps = {
    * Size variant of the badge
    * @default "md"
    */
-  size?: RecipeProps<"badge">["size"];
+  size?: RecipeProps<"nimbusBadge">["size"];
 } & UnstyledProp;
 
 // ============================================================

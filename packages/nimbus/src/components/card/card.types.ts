@@ -11,13 +11,13 @@ import type {
 
 type CardRecipeProps = {
   /** Internal padding variant for the card content */
-  cardPadding?: SlotRecipeProps<"card">["cardPadding"];
+  cardPadding?: SlotRecipeProps<"nimbusCard">["cardPadding"];
   /** Border style variant (outline, none, etc.) */
-  borderStyle?: SlotRecipeProps<"card">["borderStyle"];
+  borderStyle?: SlotRecipeProps<"nimbusCard">["borderStyle"];
   /** Elevation shadow level for the card */
-  elevation?: SlotRecipeProps<"card">["elevation"];
+  elevation?: SlotRecipeProps<"nimbusCard">["elevation"];
   /** Background style variant (white, gray, etc.) */
-  backgroundStyle?: SlotRecipeProps<"card">["backgroundStyle"];
+  backgroundStyle?: SlotRecipeProps<"nimbusCard">["backgroundStyle"];
 } & UnstyledProp;
 
 // ============================================================

@@ -16,11 +16,11 @@ type SelectRecipeProps = {
   /**
    * Size variant of the select
    */
-  size?: SlotRecipeProps<"select">["size"];
+  size?: SlotRecipeProps<"nimbusSelect">["size"];
   /**
    * Visual style variant of the select
    */
-  variant?: SlotRecipeProps<"select">["variant"];
+  variant?: SlotRecipeProps<"nimbusSelect">["variant"];
 };
 
 // ============================================================

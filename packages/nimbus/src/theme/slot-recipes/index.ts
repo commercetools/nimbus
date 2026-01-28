@@ -48,8 +48,6 @@ import { buttonGroupRecipe } from "@/components/toggle-button-group/toggle-butto
  * Silent failure results in there being no generated types for slot recipes, and causes all kinds of
  * false typescript errors that are really hard to debug. */
 export const slotRecipes = {
-  accordion: accordionSlotRecipe,
-  alert: alertRecipe,
   calendar: calendarSlotRecipe,
   rangeCalendar: rangeCalendarSlotRecipe,
   dateInput: dateInputSlotRecipe,
@@ -57,32 +55,40 @@ export const slotRecipes = {
   datePicker: datePickerSlotRecipe,
   dataTable: dataTableSlotRecipe,
   radioInput: radioInputSlotRecipe,
-  combobox: comboBoxSlotRecipe,
   progressBar: progressBarSlotRecipe,
-  menu: menuSlotRecipe,
   textInput: textInputSlotRecipe,
   splitButton: splitButtonSlotRecipe,
-  drawer: drawerSlotRecipe,
-  tabs: tabsSlotRecipe,
   localizedField: localizedFieldSlotRecipe,
-  card: cardRecipe,
-  checkbox: checkboxSlotRecipe,
   collapsibleMotion: collapsibleMotionSlotRecipe,
-  dialog: dialogSlotRecipe,
   fieldErrors: fieldErrorsRecipe,
   formField: formFieldRecipe,
-  list: listSlotRecipe,
   moneyInput: moneyInputRecipe,
   multilineTextInput: multilineTextInputRecipe,
-  numberInput: numberInputRecipe,
   richTextInput: richTextInputRecipe,
   scopedSearchInput: scopedSearchInputSlotRecipe,
   draggableList: draggableListSlotRecipe,
   searchInput: searchInputSlotRecipe,
-  select: selectSlotRecipe,
-  switch: switchSlotRecipe,
-  table: tableSlotRecipe,
   taggroup: tagGroupSlotRecipe,
   timeInput: timeInputRecipe,
   toggleButtonGroup: buttonGroupRecipe,
+  /**
+   * These recipe keys are prefixed with `nimbus` to avoid collisions with Chakra's built-in recipe names.
+   *
+   * Without this prefix, the generated TypeScript interfaces (e.g. `DrawerVariant`) would collide with
+   * Chakra's default interfaces, causing incorrect type inference in consumer applications.
+   * */
+  nimbusAccordion: accordionSlotRecipe,
+  nimbusAlert: alertRecipe,
+  nimbusCard: cardRecipe,
+  nimbusCheckbox: checkboxSlotRecipe,
+  nimbusCombobox: comboBoxSlotRecipe,
+  nimbusDialog: dialogSlotRecipe,
+  nimbusDrawer: drawerSlotRecipe,
+  nimbusList: listSlotRecipe,
+  nimbusMenu: menuSlotRecipe,
+  nimbusNumberInput: numberInputRecipe,
+  nimbusSelect: selectSlotRecipe,
+  nimbusSwitch: switchSlotRecipe,
+  nimbusTable: tableSlotRecipe,
+  nimbusTabs: tabsSlotRecipe,
 };

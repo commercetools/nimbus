@@ -9,9 +9,9 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type DrawerRecipeProps = {
   /** Placement of the drawer in the viewport */
-  placement?: SlotRecipeProps<"drawer">["placement"];
+  placement?: SlotRecipeProps<"nimbusDrawer">["placement"];
   /** Whether to show backdrop overlay */
-  showBackdrop?: SlotRecipeProps<"drawer">["showBackdrop"];
+  showBackdrop?: SlotRecipeProps<"nimbusDrawer">["showBackdrop"];
 };
 
 // ============================================================

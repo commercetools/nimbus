@@ -13,11 +13,11 @@ type LinkRecipeProps = {
   /**
    * Size variant of the link
    */
-  size?: RecipeProps<"link">["size"];
+  size?: RecipeProps<"nimbusLink">["size"];
   /**
    * Font color variant of the link
    */
-  fontColor?: RecipeProps<"link">["fontColor"];
+  fontColor?: RecipeProps<"nimbusLink">["fontColor"];
 } & UnstyledProp;
 
 // ============================================================

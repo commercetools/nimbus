@@ -8,7 +8,7 @@ import type {
 } from "./checkbox.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "checkbox",
+  key: "nimbusCheckbox",
 });
 
 export const CheckboxRoot: SlotComponent<

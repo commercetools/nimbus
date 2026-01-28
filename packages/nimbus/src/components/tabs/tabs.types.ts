@@ -10,22 +10,22 @@ type TabsRecipeProps = {
    * Visual style variant of the tabs
    * @default "line"
    */
-  variant?: SlotRecipeProps<"tabs">["variant"];
+  variant?: SlotRecipeProps<"nimbusTabs">["variant"];
   /**
    * Layout orientation of the tabs
    * @default "horizontal"
    */
-  orientation?: SlotRecipeProps<"tabs">["orientation"];
+  orientation?: SlotRecipeProps<"nimbusTabs">["orientation"];
   /**
    * Placement of the tab list relative to panels
    * @default "start"
    */
-  placement?: SlotRecipeProps<"tabs">["placement"];
+  placement?: SlotRecipeProps<"nimbusTabs">["placement"];
   /**
    * Size variant of the tabs
    * @default "md"
    */
-  size?: SlotRecipeProps<"tabs">["size"];
+  size?: SlotRecipeProps<"nimbusTabs">["size"];
 };
 
 // ============================================================
@@ -70,14 +70,14 @@ export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps> & {
 
 export type TabsPanelsSlotProps = HTMLChakraProps<
   "div",
-  SlotRecipeProps<"tabs">
+  SlotRecipeProps<"nimbusTabs">
 > & {
   children?: React.ReactNode;
 };
 
 export type TabsPanelSlotProps = HTMLChakraProps<
   "div",
-  SlotRecipeProps<"tabs">
+  SlotRecipeProps<"nimbusTabs">
 > & {
   id?: string;
 };
@@ -86,7 +86,7 @@ export type TabsPanelSlotProps = HTMLChakraProps<
 // HELPER TYPES
 // ============================================================
 
-type TabsVariantProps = SlotRecipeProps<"tabs"> & {
+type TabsVariantProps = SlotRecipeProps<"nimbusTabs"> & {
   [key: `data-${string}`]: unknown;
 };
 

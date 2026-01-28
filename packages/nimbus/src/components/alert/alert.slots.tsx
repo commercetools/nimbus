@@ -9,7 +9,7 @@ import type {
 } from "./alert.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "alert",
+  key: "nimbusAlert",
 });
 
 export const AlertRoot = withProvider<HTMLDivElement, AlertRootSlotProps>(

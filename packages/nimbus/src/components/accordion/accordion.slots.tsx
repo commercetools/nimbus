@@ -6,7 +6,7 @@ import type { SlotComponent } from "@/type-utils";
 import type { AccordionRootSlotProps } from "./accordion.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "accordion",
+  key: "nimbusAccordion",
 });
 
 export const AccordionRootSlot: SlotComponent<

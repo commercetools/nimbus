@@ -11,7 +11,7 @@ import { DialogProvider } from "./dialog.context";
  * @supportsStyleProps
  */
 export const DialogRoot = (props: DialogRootProps) => {
-  const recipe = useSlotRecipe({ key: "dialog" });
+  const recipe = useSlotRecipe({ key: "nimbusDialog" });
   // Extract recipe props
   const [recipeProps] = recipe.splitVariantProps(props);
   // Extract props that are usable on RaDialogTrigger

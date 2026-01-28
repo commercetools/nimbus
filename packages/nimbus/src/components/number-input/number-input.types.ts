@@ -19,12 +19,12 @@ export type NumberInputRecipeProps = {
    * Size variant of the number input
    * @default "md"
    */
-  size?: SlotRecipeProps<"numberInput">["size"];
+  size?: SlotRecipeProps<"nimbusNumberInput">["size"];
   /**
    * Visual style variant of the number input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"numberInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusNumberInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

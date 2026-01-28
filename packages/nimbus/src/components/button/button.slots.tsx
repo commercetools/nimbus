@@ -1,5 +1,4 @@
 import { createRecipeContext } from "@chakra-ui/react";
-import { buttonRecipe } from "./button.recipe";
 import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";
 import type { ButtonRootSlotProps } from "./button.types";
@@ -34,7 +33,7 @@ const isReactAriaEventProp = (prop: string): boolean =>
   REACT_ARIA_EVENT_PROPS.some((ariaProp) => prop.includes(ariaProp));
 
 const { withContext } = createRecipeContext({
-  recipe: buttonRecipe,
+  key: "nimbusButton",
 });
 
 /**

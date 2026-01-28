@@ -16,15 +16,7 @@ import { toolbarRecipe } from "@/components/toolbar/toolbar.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
 
 export const recipes = {
-  avatar: avatarRecipe,
-  badge: badgeRecipe,
-  button: buttonRecipe,
-  code: codeRecipe,
   group: groupRecipe,
-  heading: headingRecipe,
-  icon: iconRecipe,
-  kbd: kbdRecipe,
-  link: linkRecipe,
   loadingSpinner: loadingSpinnerRecipe,
   popover: popoverRecipe,
   radioInput: radioInputSlotRecipe,
@@ -32,4 +24,18 @@ export const recipes = {
   toggleButton: toggleButtonRecipe,
   toolbar: toolbarRecipe,
   tooltip: tooltipRecipe,
+  /**
+   * These recipe keys are prefixed with `nimbus` to avoid collisions with Chakra's built-in recipe names.
+   *
+   * Without this prefix, the generated TypeScript interfaces (e.g. `DrawerVariant`) would collide with
+   * Chakra's default interfaces, causing incorrect type inference in consumer applications.
+   * */
+  nimbusAvatar: avatarRecipe,
+  nimbusBadge: badgeRecipe,
+  nimbusButton: buttonRecipe,
+  nimbusCode: codeRecipe,
+  nimbusHeading: headingRecipe,
+  nimbusIcon: iconRecipe,
+  nimbusKbd: kbdRecipe,
+  nimbusLink: linkRecipe,
 };

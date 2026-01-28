@@ -8,7 +8,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type IconRecipeProps = RecipeProps<"icon"> & UnstyledProp;
+type IconRecipeProps = RecipeProps<"nimbusIcon"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

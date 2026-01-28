@@ -11,7 +11,7 @@ import { extractStyleProps } from "@/utils";
  * @supportsStyleProps
  */
 export const MenuRoot = (props: MenuRootProps) => {
-  const recipe = useSlotRecipe({ key: "menu" });
+  const recipe = useSlotRecipe({ key: "nimbusMenu" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
   // Separate MenuTrigger props and functional props from style props

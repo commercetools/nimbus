@@ -19,7 +19,7 @@ import {
 export const Checkbox = (props: CheckboxProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 
-  const recipe = useSlotRecipe({ key: "checkbox" });
+  const recipe = useSlotRecipe({ key: "nimbusCheckbox" });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);

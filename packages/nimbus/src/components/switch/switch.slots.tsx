@@ -8,7 +8,7 @@ import type {
 } from "./switch.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "switch",
+  key: "nimbusSwitch",
 });
 
 export const SwitchRootSlot: SlotComponent<

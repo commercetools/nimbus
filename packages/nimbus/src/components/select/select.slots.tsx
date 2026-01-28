@@ -12,7 +12,7 @@ import type {
 } from "./select.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "select",
+  key: "nimbusSelect",
 });
 
 // Select
