@@ -1,0 +1,60 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+The ScopedSearchInput is built with React Aria Components and follows WCAG 2.1 AA guidelines.
+
+#### Role
+
+Both the select dropdown and search input maintain their respective semantic roles:
+- Select trigger: `role="button"` with appropriate ARIA attributes
+- Search input: `role="searchbox"`
+
+#### Labeling
+
+Provide accessible labels for both parts using `selectAriaLabel` and `searchAriaLabel`:
+
+```tsx
+<ScopedSearchInput
+  selectAriaLabel="Filter search by field"
+  searchAriaLabel="Search term"
+  // ... other props
+/>
+```
+
+When using FormField, the field label automatically associates with both inputs via `aria-labelledby`.
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between select dropdown and search input |
+| `Enter` (in select) | Open dropdown menu |
+| `Arrow Up/Down` (in select) | Navigate options |
+| `Enter` (in search) | Submit search |
+| `Escape` | Close dropdown (when open) |
+
+#### ARIA attributes
+
+The component automatically manages:
+- `aria-controls`: Links select to search input
+- `aria-labelledby`: Associates with FormField label
+- `aria-describedby`: Associates with FormField description and errors
+- `aria-invalid`: Indicates validation state
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<ScopedSearchInput
+  id="product-search"
+  value={value}
+  onValueChange={setValue}
+  onSubmit={handleSearch}
+  options={options}
+/>
+```
+
+This ensures consistent tracking across sessions and makes it easier to target specific instances for analytics or testing.

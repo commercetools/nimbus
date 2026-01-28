@@ -1,0 +1,53 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+The TagGroup component is built on React Aria's TagGroup, which provides comprehensive accessibility support. However, you must always provide an accessible label:
+
+**Provide a label** using one of these methods:
+
+- Using a visible label with `aria-labelledby`:
+
+```tsx
+<Text id="tag-label">Categories</Text>
+<TagGroup.Root aria-labelledby="tag-label">
+  <TagGroup.TagList>
+    <TagGroup.Tag>Electronics</TagGroup.Tag>
+  </TagGroup.TagList>
+</TagGroup.Root>
+```
+
+- Using `aria-label` for a non-visible label:
+
+```tsx
+<TagGroup.Root aria-label="Product categories">
+  <TagGroup.TagList>
+    <TagGroup.Tag>Electronics</TagGroup.Tag>
+  </TagGroup.TagList>
+</TagGroup.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-tag-group";
+
+export const Example = () => (
+  <TagGroup.Root id={PERSISTENT_ID} aria-label="Categories">
+    <TagGroup.TagList>
+      <TagGroup.Tag>Electronics</TagGroup.Tag>
+    </TagGroup.TagList>
+  </TagGroup.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab`: Moves focus into and out of the tag group
+- `Arrow Left` / `Arrow Right`: Navigates between tags within the group
+- `Enter` / `Space`: Selects the focused tag (when selection mode is enabled)
+- `Backspace` / `Delete`: Removes the focused tag (when `onRemove` is provided)
+- Focus wraps from the last tag to the first and vice versa

@@ -1,0 +1,40 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState({
+    amount: "20.00",
+    currencyCode: "EUR"
+  });
+
+  return (
+    <MoneyInput
+      value={value}
+      onValueChange={setValue}
+      currencies={["EUR", "USD", "GBP"]}
+    />
+  );
+}
+```
+
+## Accessibility standards
+
+- **Keyboard operability:** Ensure the user can navigate seamlessly between the
+  currency selector and the number input using the tab key.
+- **ARIA roles:** The currency selector should function as an accessible
+  dropdown/select menu, while the number input should use the appropriate number
+  input type.
+- **Error communication:** Validation errors must be announced to screen
+  readers. The invalid state should use `aria-invalid="true"` on the input field
+  and link to the error message via `aria-describedby`.
+- **Contrast:** Ensure sufficient color contrast for all text, borders, and
+  icons, especially in the `invalid` and `disabled` states.
+- **Focus indication:** Maintain a strong, clear focus ring around both the
+  currency menu and the number input when active.

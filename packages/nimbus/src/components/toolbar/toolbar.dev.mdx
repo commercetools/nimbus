@@ -252,52 +252,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The Toolbar component handles most accessibility requirements internally, including:
-- Setting the `role="toolbar"` attribute
-- Managing keyboard navigation with arrow keys
-- Setting proper `aria-orientation` based on the `orientation` prop
-
-However, you should always provide an accessible label for the toolbar. This can be done by:
-
-- Using `aria-label` for a direct label:
-
-```tsx
-<Toolbar aria-label="Text formatting controls">
-  {/* toolbar controls */}
-</Toolbar>
-```
-
-- Using `aria-labelledby` to reference a visible label:
-
-```tsx
-<Text id="toolbar-label">Text Formatting</Text>
-<Toolbar aria-labelledby="toolbar-label">
-  {/* toolbar controls */}
-</Toolbar>
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-toolbar";
-
-export const Example = () => (
-  <Toolbar id={PERSISTENT_ID} aria-label="Main toolbar">
-    {/* toolbar controls */}
-  </Toolbar>
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab` / `Shift+Tab`: Move focus into and out of the toolbar
-- `Arrow Left` / `Arrow Right`: Navigate between controls in horizontal toolbars
-- `Arrow Up` / `Arrow Down`: Navigate between controls in vertical toolbars
-- `Home`: Focus first control in the toolbar
-- `End`: Focus last control in the toolbar
 
 ## API reference
 

@@ -152,29 +152,6 @@ const App = () => {
 
 ## Component requirements
 
-## Accessibility
-
-The Button component handles most accessibility requirements internally via React Aria.
-
-- **Labeling**: Ensure the button has a visible label (children) or an `aria-label` if it contains only an icon.
-- **Role**: Renders as `button` by default, or `link` (a tag) when using `as="a"`.
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "submit-order-button";
-
-export const Example = () => (
-  <Button id={PERSISTENT_ID}>Submit</Button>
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab`: Focuses the button.
-- `Enter` or `Space`: Activates the button (triggers `onPress`).
-
 ## API reference
 
 <PropsTable id="Button" />

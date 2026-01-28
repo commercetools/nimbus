@@ -1,0 +1,32 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+The Text component provides semantic HTML text rendering. Use appropriate elements via the `as` prop to maintain document structure.
+
+**Semantic HTML best practices:**
+- Use `<p>` (default) for paragraphs
+- Use `<span>` for inline text
+- Use `<label>` for form field labels with `htmlFor` attribute
+- Use `<strong>` or `<em>` for emphasis
+- Avoid using `<div>` for text unless necessary for layout
+
+**Contrast requirements:**
+When using colored text, always use step 11 of the color scale (e.g., `primary.11`, `critical.11`) to ensure WCAG AA contrast ratios (4.5:1 minimum) against light backgrounds.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-description-text";
+
+export const ProductDescription = () => (
+  <Text id={PERSISTENT_ID} textStyle="md">
+    Product details and specifications
+  </Text>
+);
+```
+
+#### Keyboard navigation
+
+As a non-interactive display component, Text does not require keyboard interaction.

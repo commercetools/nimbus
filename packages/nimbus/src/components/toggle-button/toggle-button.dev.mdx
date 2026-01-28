@@ -205,41 +205,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The ToggleButton component is built on React Aria's ToggleButton, which provides robust accessibility features out of the box.
-
-**Role**: The component uses the `button` role with `aria-pressed` attribute to communicate toggle state.
-
-**Labeling**: The button's label is determined by its children content. For icon-only buttons, provide an `aria-label`:
-
-```tsx
-<ToggleButton aria-label="Add to favorites">
-  <Icons.Star />
-</ToggleButton>
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "like-button-toggle";
-
-export const LikeButton = () => (
-  <ToggleButton
-    id={PERSISTENT_ID}
-    aria-label="Like this post"
-    onChange={handleLikeToggle}
-  >
-    <Icons.ThumbUp />
-  </ToggleButton>
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab`: Move focus to/from the toggle button
-- `Enter` or `Space`: Toggle the selected state
 
 ## API reference
 

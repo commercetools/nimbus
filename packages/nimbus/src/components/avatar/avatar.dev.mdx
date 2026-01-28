@@ -126,41 +126,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The Avatar component handles most accessibility requirements internally,
-including automatic labeling with the user's full name.
-
-- **Labeling**: The component automatically generates an internationalized
-  accessible label from the `firstName` and `lastName` props. When providing an
-  image via the `src` prop, always include an `alt` attribute for screen
-  readers.
-- **Role**: Renders as a `<figure>` element with an `aria-label` that includes
-  the full name (e.g., "Avatar image for John Doe").
-
-If your use case requires tracking and analytics for this component, it is good
-practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-avatar";
-
-export const Example = () => (
-  <Avatar id={PERSISTENT_ID} firstName="John" lastName="Doe" />
-);
-```
-
-#### Keyboard navigation
-
-Avatars are non-interactive elements and do not receive focus or support
-keyboard interaction by default. If you need to make an avatar interactive
-(e.g., clickable), wrap it in a button or interactive element:
-
-```tsx
-<button onClick={handleClick} aria-label="View profile">
-  <Avatar firstName="John" lastName="Doe" />
-</button>
-```
-
 ## API reference
 
 <PropsTable id="Avatar" />

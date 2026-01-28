@@ -1,0 +1,71 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Alert.Root colorPalette="critical" variant="outlined">
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Description>
+      A payment processing error occurred for order #12345. Please <Link>verify your
+      payment gateway settings</Link> immediately to prevent further issues.
+    </Alert.Description>
+    <Alert.Actions>
+      <Button variant="outline">View changes</Button>
+    </Alert.Actions>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```
+
+### Accessibility standards
+
+#### 1. Perceivable:
+
+- **1.3.1 Info and Relationships (Level A):**
+- Ensure the alert's content and purpose are programmatically determinable. Use
+  `ARIA` attributes like `aria-live` and `aria-atomic` to announce dynamic
+  content changes to assistive technologies.
+- If the alert contains non-text content (e.g., icons), provide text
+  alternatives (e.g., alt text for images).
+- **1.4.3 Contrast (Minimum) (Level AA):**
+- Ensure sufficient color contrast between the alert's text and background.
+- **1.4.1 Use of Color (Level A):**
+- Don't rely solely on color to convey the alert's meaning. Use additional
+  visual cues like icons or text.
+
+#### 2. Operable:
+
+- **2.1.1 Keyboard (Level A):**
+- If the alert contains interactive elements (e.g., buttons), ensure they are
+  keyboard operable.
+- If the alert requires dismissal, ensure it can be dismissed using the keyboard
+  (e.g., Esc key).
+- **2.4.7 Focus Visible (Level AA):**
+- If the alert contains interactive elements, provide a clear visual focus
+  indicator.
+
+#### 3. Understandable:
+
+- **3.2.1 On Focus (Level A):**
+- Ensure that the alert doesn't cause unexpected changes to the page or context.
+- **3.3.1 Error Identification (Level A):**
+- If the alert indicates an error, clearly identify and describe the error in
+  text.
+- **3.3.2 Labels or Instructions (Level A):**
+- Provide clear and concise messages that are easy to understand.
+
+#### 4. Robust:
+
+- **4.1.2 Name, Role, Value (Level A):**
+- Use appropriate semantic `HTML` and `ARIA` attributes to define the alert's
+  role, name, and value. This ensures compatibility with assistive technologies.
+- Use `role="alert"` or `role="alertdialog"` to define the alert.
+- **4.1.3 Status Messages (Level AA):**
+- For status messages that don't interrupt the user, use `role="status"` instead
+  of `role="alert"`.

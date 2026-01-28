@@ -408,52 +408,6 @@ const App = () => {
 
 ## Component requirements
 
-## Accessibility
-
-The Menu handles most accessibility requirements internally through React Aria. However, you must ensure proper labeling:
-
-- **For default triggers**: The trigger text serves as the accessible name
-- **For icon-only triggers**: Always provide `aria-label`:
-
-```tsx
-<Menu.Trigger asChild>
-  <IconButton aria-label="More options">
-    <Icons.MoreVert />
-  </IconButton>
-</Menu.Trigger>
-```
-
-- **For custom triggers**: Ensure the trigger element has an accessible name
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-menu";
-
-export const Example = () => (
-  <Menu.Root id={PERSISTENT_ID}>
-    <Menu.Trigger>Actions</Menu.Trigger>
-    <Menu.Content>
-      <Menu.Item id="edit">Edit</Menu.Item>
-    </Menu.Content>
-  </Menu.Root>
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-
-- `Tab` / `Shift+Tab`: Navigate to/from the menu trigger
-- `Enter` / `Space`: Open the menu when trigger is focused
-- `Arrow Down` / `Arrow Up`: Navigate through menu items
-- `Arrow Right`: Open submenu (when focused on submenu trigger)
-- `Arrow Left`: Close submenu and return to parent menu
-- `Enter`: Select the focused item
-- `Space`: Toggle selection in selection modes
-- `Escape`: Close the menu
-- `Home` / `End`: Jump to first/last item
-- Type to search: Type characters to jump to matching items
 
 ## API reference
 

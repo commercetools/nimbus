@@ -171,30 +171,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The ProgressBar handles most accessibility requirements internally using `role="progressbar"`. However, you must always ensure the component has an accessible label.
-
-- **Visual Label**: Use the `label` prop. This automatically associates the label with the progress bar.
-- **Hidden Label**: If using `layout="minimal"` or hiding the label, use `aria-label` to describe the progress bar.
-
-```tsx
-// ✅ Accessible with visible label
-<ProgressBar value={50} label="Loading files" />
-
-// ✅ Accessible with hidden label
-<ProgressBar value={50} layout="minimal" aria-label="Loading files" />
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "upload-progress-bar";
-
-export const Example = () => (
-  <ProgressBar id={PERSISTENT_ID} value={45} label="Upload" />
-);
-```
 
 ## API reference
 

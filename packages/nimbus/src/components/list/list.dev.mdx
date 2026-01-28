@@ -223,56 +223,6 @@ List should be used when you need to:
 
 For image-heavy content or complex data comparison, consider using other components like Card or DataTable instead.
 
-## Accessibility
-
-The List component uses semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies. By default, `List.Root` renders as `<ul>` and `List.Item` renders as `<li>`. Use the `as="ol"` prop when you need an ordered list:
-
-```tsx
-// ✅ Default - renders as <ul>
-<List.Root>
-  <List.Item>Item 1</List.Item>
-</List.Root>
-
-// ✅ Ordered list - use as="ol"
-<List.Root as="ol">
-  <List.Item>Item 1</List.Item>
-</List.Root>
-```
-
-For custom indicators, ensure they have appropriate accessibility attributes:
-
-```tsx
-<List.Root variant="plain">
-  <List.Item>
-    <List.Indicator>
-      <Icon aria-label="Completed" color="positive.9">
-        <Icons.Check />
-      </Icon>
-    </List.Indicator>
-    Task completed
-  </List.Item>
-</List.Root>
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-list";
-
-export const Example = () => (
-  <List.Root id={PERSISTENT_ID}>
-    <List.Item>Item 1</List.Item>
-  </List.Root>
-);
-```
-
-#### Keyboard navigation
-
-The List component itself doesn't handle keyboard interactions, as it's a presentational component. However, when list items are interactive (e.g., clickable), ensure they are keyboard accessible:
-
-- `Tab` / `Shift+Tab`: Navigate between interactive list items
-- `Enter` / `Space`: Activate the focused list item
-- Ensure interactive items have proper focus indicators
 
 ## API reference
 

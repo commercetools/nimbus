@@ -1,0 +1,60 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+The RadioInput handles most accessibility requirements internally via React Aria Components. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `FormField` pattern component (recommended):
+```tsx
+<FormField.Root>
+  <FormField.Label>
+    {intl.formatMessage(labelMessage)}
+  </FormField.Label>
+  <FormField.Input>
+    <RadioInput.Root name="example" aria-label={intl.formatMessage(labelMessage)}>
+      <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+    </RadioInput.Root>
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Associating a `<label>` element with the `RadioInput.Root` using `aria-labelledby`:
+```tsx
+<label id="radio-label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<RadioInput.Root name="example" aria-labelledby="radio-label-id">
+  <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+</RadioInput.Root>
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+```tsx
+<RadioInput.Root 
+  name="example" 
+  aria-label={intl.formatMessage(labelMessage)}
+>
+  <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+</RadioInput.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-radio-input";
+
+export const Example = () => (
+  <RadioInput.Root id={PERSISTENT_ID} name="example">
+    <RadioInput.Option value="option1">Option 1</RadioInput.Option>
+  </RadioInput.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate into and out of the radio group
+- `Arrow keys` (Up/Down or Left/Right): Navigate between radio options within the group
+- `Space`: Select the focused radio option
+- `Enter`: Does not trigger selection (use Space instead)
