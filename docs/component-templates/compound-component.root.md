@@ -6,7 +6,7 @@ component-name, componentName Location: components/component-name.root.tsx
 ```tsx
 /**
  * Template for compound component root implementation
- * Replace: ComponentName, component-name, componentName
+ * Replace: ComponentName, component-name, componentName, componentMessagesStrings
  * Location: components/component-name.root.tsx
  */
 
