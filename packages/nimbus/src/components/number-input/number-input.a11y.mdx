@@ -1,0 +1,38 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <NumberInput
+    defaultValue={10}
+    aria-label="Quantity"
+    min={1}
+    max={100}
+    step={1}
+  />
+)
+```
+
+## Accessibility standards
+
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an `aria-label` or `aria-labelledby`
+  for screen readers.
+- Ensure sufficient color contrast for all elements (text, borders, icons).
+- Communicate errors clearly, using both visual cues (e.g., color) and
+  descriptive error messages.
+- Clearly indicate the focused state.
+- Support keyboard navigation with arrow keys, scroll wheel, and modifier keys.
+- Provide clear feedback for value changes and constraints.
+
+## Resources
+
+- [React Spectrum NumberField](https://react-spectrum.adobe.com/react-spectrum/NumberField.html)
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/)
+(Search for "spinbutton" or "number input" patterns)

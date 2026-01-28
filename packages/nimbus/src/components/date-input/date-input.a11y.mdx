@@ -1,0 +1,34 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <DateInput aria-label="Enter a date" />
+);
+```
+
+### Accessibility standards
+
+- Ensure the input field has a clear, descriptive label that is programmatically
+  associated with the input element.
+- The component should be fully operable using a keyboard.
+- The focus order must be logical and predictable.
+- The component should be compatible with screen readers, announcing its
+  purpose, state, and any validation errors.
+- Error messages should be clearly linked to the input field they refer to and
+  be announced by screen readers.
+- Maintain sufficient color contrast for text and other visual elements to
+  ensure readability.
+- The input field and any interactive elements should have large enough touch
+  targets for mobile users.
+- The date format should align with the user's regional settings and be easily
+  understandable.
+- Use appropriate autocomplete attributes, such as birthday, to assist users and
+  improve form-filling.
+

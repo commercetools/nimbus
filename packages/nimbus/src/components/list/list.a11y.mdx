@@ -1,0 +1,42 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <List.Root>
+    <List.Item>
+      Password requirements:
+      <List.Root pl="400">
+        <List.Item>8 characters and 3 numbers</List.Item>
+        <List.Item>One special character (!@#$%^&*)</List.Item>
+      </List.Root>
+    </List.Item>
+    <List.Item>
+      Name and email requirements
+      <List.Root pl="400">
+        <List.Item>Validation process</List.Item>
+      </List.Root>
+    </List.Item>
+  </List.Root>
+)
+```
+
+### Accessibility standards
+
+- **Keyboard navigation:** Ensure all interactive list items are navigable using
+  the Tab key and fully operable using the Enter or Spacebar keys.
+- **ARIA roles:** Use semantic HTML (`<ul>`, `<ol>`) when possible. For custom
+  interactive lists, use appropriate ARIA roles (e.g., `role="listbox"`,
+  `role="option"`) to define the component's structure.
+- **Focus indicators:** Provide a strong, clear visual focus indicator on the
+  entire list item when it is being accessed via the keyboard.
+- **Text alternatives:** Ensure any icons or custom elements within the list
+  item have appropriate aria-label or descriptive text.
+- **Reading order:** The programmatic reading order must logically match the
+  visual vertical order.
