@@ -87,6 +87,11 @@ const getSeriesColor = (index: number, totalSeries: number): string => {
 
 Config colors take precedence over cycling defaults.
 
+> **TODO**: The 7-color limit is arbitrary—we have 20+ color scales available.
+> Before implementation, we need to determine the optimal color sequence to
+> maximize accessibility (sufficient contrast between adjacent colors, works for
+> common forms of color blindness). This requires design input.
+
 ### 0.3 Shared Infrastructure
 
 #### Hooks
