@@ -15,7 +15,7 @@ import type {
 } from "./tag-group.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "taggroup",
+  key: "nimbusTagGroup",
 });
 
 export const TagGroupRootSlot: SlotComponent<typeof RaTagGroup, TagGroupProps> =

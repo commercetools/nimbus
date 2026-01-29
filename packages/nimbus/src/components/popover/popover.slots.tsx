@@ -3,7 +3,7 @@ import { Popover as RaPopover } from "react-aria-components";
 import type { PopoverProps, PopoverComponent } from "./popover.types";
 
 const { withContext } = createRecipeContext({
-  key: "popover",
+  key: "nimbusPopover",
 });
 
 export const PopoverRootSlot: PopoverComponent = withContext<

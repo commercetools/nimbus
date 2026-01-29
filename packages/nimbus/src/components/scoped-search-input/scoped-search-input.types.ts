@@ -9,7 +9,7 @@ type ScopedSearchInputRecipeProps = {
   /**
    * Size variant of the scoped search input
    */
-  size?: SlotRecipeProps<"scopedSearchInput">["size"];
+  size?: SlotRecipeProps<"nimbusScopedSearchInput">["size"];
 };
 
 // ============================================================

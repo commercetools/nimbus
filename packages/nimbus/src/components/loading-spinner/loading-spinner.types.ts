@@ -13,7 +13,7 @@ type LoadingSpinnerRecipeProps = {
    * Size variant of the loading spinner
    * @default "sm"
    */
-  size?: RecipeProps<"loadingSpinner">["size"];
+  size?: RecipeProps<"nimbusLoadingSpinner">["size"];
 } & UnstyledProp;
 
 // ============================================================

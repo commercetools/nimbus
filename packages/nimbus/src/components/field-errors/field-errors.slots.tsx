@@ -6,7 +6,7 @@ import type {
 } from "./field-errors.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "fieldErrors",
+  key: "nimbusFieldErrors",
 });
 
 export const FieldErrorsRoot: SlotComponent<

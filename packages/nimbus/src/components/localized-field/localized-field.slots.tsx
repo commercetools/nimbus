@@ -13,7 +13,7 @@ import type {
 } from "./localized-field.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "localizedField",
+  key: "nimbusLocalizedField",
 });
 
 // Root Slot

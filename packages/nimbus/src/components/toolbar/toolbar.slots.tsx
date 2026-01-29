@@ -2,7 +2,7 @@ import { createRecipeContext } from "@chakra-ui/react";
 import type { ToolbarRootSlotProps } from "./toolbar.types";
 
 const { withContext } = createRecipeContext({
-  key: "toolbar",
+  key: "nimbusToolbar",
 });
 
 /**

@@ -1,26 +1,24 @@
-import { List as ChakraList } from "@chakra-ui/react/list";
+import { ListRootSlot } from "../list.slots";
+import type { ListRootProps } from "../list.types";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { extractStyleProps } from "@/utils";
 
 /**
- * # ListRoot
+ * List.Root
  *
- * The root container for list items. Renders as `<ul>` by default.
- * Use the `as="ol"` prop to render as an ordered list.
+ * Provides context and configuration for all list items.
  *
  * @supportsStyleProps
- *
- * @example
- * ```tsx
- * // Unordered list (default)
- * <ListRoot>
- *   <ListItem>First item</ListItem>
- *   <ListItem>Second item</ListItem>
- * </ListRoot>
- *
- * // Ordered list
- * <ListRoot as="ol">
- *   <ListItem>First item</ListItem>
- *   <ListItem>Second item</ListItem>
- * </ListRoot>
- * ```
  */
-export const ListRoot = ChakraList.Root;
+export const ListRoot = (props: ListRootProps) => {
+  const { ref, ...restProps } = props;
+  const recipe = useSlotRecipe({ key: "nimbusList" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
+  const [styleProps, htmlProps] = extractStyleProps(restRecipeProps);
+
+  return (
+    <ListRootSlot ref={ref} {...recipeProps} {...styleProps} {...htmlProps} />
+  );
+};
+
+ListRoot.displayName = "List.Root";

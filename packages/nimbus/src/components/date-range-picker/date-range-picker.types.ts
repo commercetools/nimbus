@@ -15,12 +15,12 @@ type DateRangePickerRecipeProps = {
    * Size variant of the date range picker
    * @default "md"
    */
-  size?: SlotRecipeProps<"dateRangePicker">["size"];
+  size?: SlotRecipeProps<"nimbusDateRangePicker">["size"];
   /**
    * Visual style variant of the date range picker
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"dateRangePicker">["variant"];
+  variant?: SlotRecipeProps<"nimbusDateRangePicker">["variant"];
 } & UnstyledProp;
 
 // ============================================================

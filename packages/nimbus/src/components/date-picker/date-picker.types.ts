@@ -17,9 +17,9 @@ type DatePickerRecipeProps = {
    * Size variant of the date picker
    * @default "md"
    */
-  size?: SlotRecipeProps<"datePicker">["size"];
+  size?: SlotRecipeProps<"nimbusDatePicker">["size"];
   /** Visual style variant of the date picker */
-  variant?: SlotRecipeProps<"datePicker">["variant"];
+  variant?: SlotRecipeProps<"nimbusDatePicker">["variant"];
 } & UnstyledProp;
 
 // ============================================================

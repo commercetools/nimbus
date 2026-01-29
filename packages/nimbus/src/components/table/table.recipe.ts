@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 export const tableSlotRecipe = defineSlotRecipe({
-  className: "chakra-table",
+  className: "nimbus-table",
   slots: [
     "root",
     "header",

@@ -6,7 +6,7 @@ import type { DateInputRootSlotProps } from "./date-input.types";
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "dateInput",
+  key: "nimbusDateInput",
 });
 
 /**

@@ -11,29 +11,29 @@ type ProgressBarRecipeProps = {
    * Size variant of the progress bar
    * @default "md"
    */
-  size?: SlotRecipeProps<"progressBar">["size"];
+  size?: SlotRecipeProps<"nimbusProgressBar">["size"];
   /**
    * Whether the progress bar represents an active, ongoing process.
    * Set to `true` for dynamic progress (e.g., file uploads, downloads).
    * Set to `false` for static progress indicators (e.g., step 3 of 5 in a wizard).
    * @default true
    */
-  isDynamic?: SlotRecipeProps<"progressBar">["isDynamic"];
+  isDynamic?: SlotRecipeProps<"nimbusProgressBar">["isDynamic"];
   /**
    * Whether the progress is indeterminate (unknown duration)
    * @default false
    */
-  isIndeterminate?: SlotRecipeProps<"progressBar">["isIndeterminate"];
+  isIndeterminate?: SlotRecipeProps<"nimbusProgressBar">["isIndeterminate"];
   /**
    * Visual style variant of the progress bar
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"progressBar">["variant"];
+  variant?: SlotRecipeProps<"nimbusProgressBar">["variant"];
   /**
    * Layout configuration for label and value positioning
    * @default "stacked"
    */
-  layout?: SlotRecipeProps<"progressBar">["layout"];
+  layout?: SlotRecipeProps<"nimbusProgressBar">["layout"];
 };
 
 // ============================================================

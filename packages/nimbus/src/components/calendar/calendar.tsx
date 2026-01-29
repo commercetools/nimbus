@@ -20,7 +20,7 @@ import { extractStyleProps } from "@/utils";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/calendar}
  */
 export const Calendar = (props: CalendarProps<DateValue>) => {
-  const recipe = useSlotRecipe({ key: "calendar" });
+  const recipe = useSlotRecipe({ key: "nimbusCalendar" });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 

@@ -13,7 +13,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-type AccordionRecipeProps = SlotRecipeProps<"accordion">;
+type AccordionRecipeProps = SlotRecipeProps<"nimbusAccordion">;
 
 // ============================================================
 // SLOT PROPS

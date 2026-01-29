@@ -6,7 +6,7 @@ import type { DatePickerRootSlotProps } from "./date-picker.types";
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "datePicker",
+  key: "nimbusDatePicker",
 });
 
 /**

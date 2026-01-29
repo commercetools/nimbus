@@ -6,7 +6,7 @@ import type {
 } from "./multiline-text-input.types";
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  key: "multilineTextInput",
+  key: "nimbusMultilineTextInput",
 });
 
 /**

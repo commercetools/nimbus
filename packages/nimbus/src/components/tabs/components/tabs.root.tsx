@@ -24,7 +24,7 @@ export const TabsRoot = ({
 }: TabsProps) => {
   const sysCtx = useChakraContext();
   // Standard pattern: Split recipe variants
-  const recipe = useSlotRecipe({ key: "tabs" });
+  const recipe = useSlotRecipe({ key: "nimbusTabs" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
   // Standard pattern: Extract style props

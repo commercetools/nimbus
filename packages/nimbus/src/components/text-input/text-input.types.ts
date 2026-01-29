@@ -14,12 +14,12 @@ type TextInputRecipeProps = {
    * Size variant of the text input
    * @default "md"
    */
-  size?: SlotRecipeProps<"textInput">["size"];
+  size?: SlotRecipeProps<"nimbusTextInput">["size"];
   /**
    * Visual style variant of the text input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"textInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusTextInput">["variant"];
 };
 
 // ============================================================

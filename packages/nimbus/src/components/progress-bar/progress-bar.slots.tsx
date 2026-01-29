@@ -8,7 +8,7 @@ import type {
 } from "./progress-bar.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "progressBar",
+  key: "nimbusProgressBar",
 });
 
 // ProgressBar Root - Main container

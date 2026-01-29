@@ -12,11 +12,11 @@ import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
 
 type ToolbarRecipeProps = {
   /** Size variant of the toolbar */
-  size?: RecipeProps<"toolbar">["size"];
+  size?: RecipeProps<"nimbusToolbar">["size"];
   /** Layout orientation of the toolbar */
-  orientation?: RecipeProps<"toolbar">["orientation"];
+  orientation?: RecipeProps<"nimbusToolbar">["orientation"];
   /** Visual style variant of the toolbar */
-  variant?: RecipeProps<"toolbar">["variant"];
+  variant?: RecipeProps<"nimbusToolbar">["variant"];
 } & UnstyledProp;
 
 // ============================================================

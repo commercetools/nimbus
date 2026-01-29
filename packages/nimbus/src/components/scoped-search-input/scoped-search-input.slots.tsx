@@ -8,7 +8,7 @@ import type {
 } from "./scoped-search-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "scopedSearchInput",
+  key: "nimbusScopedSearchInput",
 });
 
 export const ScopedSearchInputRootSlot: SlotComponent<

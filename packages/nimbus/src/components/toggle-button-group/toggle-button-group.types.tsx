@@ -1,6 +1,7 @@
 import type {
   HTMLChakraProps,
   RecipeProps,
+  SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
 import type {
   AriaToggleButtonGroupProps,
@@ -21,7 +22,7 @@ type ToggleButtonGroupRecipeVariantProps = {
    * Size variant
    * @default "md"
    */
-  size?: "xs" | "md";
+  size?: SlotRecipeProps<"nimbusToggleButtonGroup">["size"];
 };
 
 // ============================================================

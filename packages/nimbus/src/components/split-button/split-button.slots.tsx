@@ -8,7 +8,7 @@ import type {
 } from "./split-button.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "splitButton",
+  key: "nimbusSplitButton",
 });
 
 // Root Container

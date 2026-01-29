@@ -14,7 +14,7 @@ type RadioInputRecipeProps = {
    * Layout orientation for radio options
    * @default "vertical"
    */
-  orientation?: RecipeProps<"radioInput">["orientation"];
+  orientation?: RecipeProps<"nimbusRadioInput">["orientation"];
 };
 
 // ============================================================

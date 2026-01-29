@@ -12,7 +12,7 @@ import type {
 } from "./menu.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "menu",
+  key: "nimbusMenu",
 });
 
 // Menu Root

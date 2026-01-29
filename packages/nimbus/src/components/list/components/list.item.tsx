@@ -1,4 +1,5 @@
-import { List as ChakraList } from "@chakra-ui/react/list";
+import { ListItemSlot } from "../list.slots";
+import type { ListItemProps } from "../list.types";
 
 /**
  * # ListItem
@@ -13,4 +14,8 @@ import { List as ChakraList } from "@chakra-ui/react/list";
  * <ListItem>List item content</ListItem>
  * ```
  */
-export const ListItem = ChakraList.Item;
+export const ListItem = (props: ListItemProps) => {
+  return <ListItemSlot {...props} />;
+};
+
+ListItem.displayName = "List.Item";

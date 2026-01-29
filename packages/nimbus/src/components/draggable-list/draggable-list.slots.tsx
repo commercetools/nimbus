@@ -5,7 +5,7 @@ import type {
 } from "./draggable-list.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "draggableList",
+  key: "nimbusDraggableList",
 });
 
 // Root slot - provides recipe context + config to all child components

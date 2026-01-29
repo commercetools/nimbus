@@ -10,7 +10,7 @@ import type {
 
 // Correctly destructure from createSlotRecipeContext based on project examples
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "timeInput",
+  key: "nimbusTimeInput",
 });
 
 /**

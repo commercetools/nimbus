@@ -13,7 +13,7 @@ import type {
 } from "./range-calendar.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "rangeCalendar",
+  key: "nimbusRangeCalendar",
 });
 
 export const RangeCalendarRootSlot: SlotComponent<

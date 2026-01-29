@@ -10,7 +10,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 /**
  * Recipe props for Calendar styling variants
  */
-type CalendarRecipeProps = SlotRecipeProps<"calendar">;
+type CalendarRecipeProps = SlotRecipeProps<"nimbusCalendar">;
 
 // ============================================================
 // SLOT PROPS

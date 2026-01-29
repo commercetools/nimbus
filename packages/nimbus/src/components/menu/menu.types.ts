@@ -15,7 +15,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-type MenuRecipeProps = SlotRecipeProps<"menu">;
+type MenuRecipeProps = SlotRecipeProps<"nimbusMenu">;
 
 // ============================================================
 // SLOT PROPS

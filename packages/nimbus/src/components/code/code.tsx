@@ -1,4 +1,4 @@
-import { Code as ChakraCode } from "@chakra-ui/react/code";
+import { CodeRoot } from "./code.slots";
 
 /**
  * # Code
@@ -9,4 +9,4 @@ import { Code as ChakraCode } from "@chakra-ui/react/code";
  *
  * @experimental This component is experimental and may change or be removed in future versions.
  */
-export const Code = ChakraCode;
+export const Code: typeof CodeRoot = CodeRoot;
