@@ -34,7 +34,8 @@ interfaces. The system prioritizes:
 ### Internationalization
 
 - **@internationalized/string**: Message formatting and localization
-- **@formatjs/cli**: Translation file compilation
+- **@internationalized/string-compiler**: Translation file compilation
+- **Custom extraction script**: Message extraction from .i18n.ts files
 - **Transifex**: Professional translation management
 
 ### Documentation

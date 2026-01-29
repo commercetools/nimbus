@@ -34,8 +34,11 @@ The system SHALL provide both source and compiled translation formats.
 #### Scenario: Compiled format
 
 - **WHEN** translations are consumed at runtime
-- **THEN** SHALL store compiled AST format in compiled-data/ directory
-- **AND** SHALL optimize for runtime formatMessage performance
+- **THEN** SHALL generate compiled message functions in
+  packages/nimbus/src/components/{component}/intl/{locale}.ts
+- **AND** SHALL generate message dictionaries in
+  packages/nimbus/src/components/{component}/{component}.messages.ts
+- **AND** SHALL optimize for runtime performance with LocalizedStringDictionary
 - **AND** SHALL reduce bundle size after minification
 
 ### Requirement: Message ID Convention
@@ -93,9 +96,20 @@ The system SHALL extract messages from component source files.
 
 - **WHEN** `pnpm extract-intl` runs
 - **THEN** SHALL scan all `*.i18n.ts` files in packages
-- **AND** SHALL use @formatjs/cli to extract messages
+- **AND** SHALL use custom extraction script to extract messages
 - **AND** SHALL output to packages/i18n/data/core.json in Transifex format
-- **AND** SHALL automatically compile to AST format in compiled-data/
+- **AND** SHALL trigger compilation to generate component-specific message files
+
+#### Scenario: Custom extraction implementation
+
+- **WHEN** extraction script processes .i18n.ts files
+- **THEN** SHALL use dynamic import() to load TypeScript files directly
+- **AND** SHALL read exported messages object from module.messages
+- **AND** SHALL NOT use CLI parsing or AST manipulation
+- **AND** SHALL iterate over message descriptors and convert to Transifex format
+- **AND** SHALL validate required fields (id, description, defaultMessage)
+- **AND** SHALL sort output alphabetically for consistent git diffs
+- **AND** SHALL provide clear error messages for invalid message definitions
 
 #### Scenario: Message definition
 
@@ -111,8 +125,10 @@ The system SHALL compile messages to optimized AST format.
 #### Scenario: Compilation process
 
 - **WHEN** `pnpm build` runs in i18n package
-- **THEN** SHALL compile data/ files to compiled-data/ using @formatjs/cli
-- **AND** SHALL convert to AST with type codes (0=literal, 1=variable)
+- **THEN** SHALL compile data/ files to component-specific directories using
+  @internationalized/string-compiler
+- **AND** SHALL generate intl/{locale}.ts files with compiled message functions
+- **AND** SHALL generate {component}.messages.ts with LocalizedStringDictionary
 - **AND** SHALL support variable interpolation placeholders
 
 #### Scenario: Interpolation support
@@ -191,10 +207,11 @@ The system SHALL publish translation data to NPM registry.
 #### Scenario: Published files
 
 - **WHEN** package is published
-- **THEN** SHALL include data/ directory (source translations)
-- **AND** SHALL include compiled-data/ directory (runtime AST format)
-- **AND** SHALL not include TypeScript/JavaScript code
-- **AND** SHALL be consumable by direct JSON imports
+- **THEN** SHALL include data/ directory (source translations in i18n package)
+- **AND** SHALL include compiled message files in nimbus package
+  (components/{component}/intl/\*.ts and {component}.messages.ts)
+- **AND** SHALL not include .i18n.ts source files (gitignored)
+- **AND** SHALL be consumable via component imports
 
 ### Requirement: Consumer Integration
 
@@ -214,9 +231,11 @@ The system SHALL maintain clear file organization.
 #### Scenario: Directory structure
 
 - **WHEN** accessing translation files
-- **THEN** data/ SHALL contain source Transifex format (6 files: core.json + 5
-  locales)
-- **AND** compiled-data/ SHALL contain compiled AST format (6 files: core.json +
-  5 locales)
-- **AND** each file SHALL be ~550 lines for locale translations
-- **AND** file sizes SHALL be ~15KB (source) and ~21KB (compiled)
+- **THEN** packages/i18n/data/ SHALL contain source Transifex format (6 files:
+  core.json + 5 locales)
+- **AND** packages/nimbus/src/components/{component}/intl/ SHALL contain
+  compiled message functions per locale (5 files: en.ts, de.ts, es.ts, fr-FR.ts,
+  pt-BR.ts)
+- **AND** packages/nimbus/src/components/{component}/ SHALL contain
+  {component}.messages.ts with LocalizedStringDictionary
+- **AND** generated files SHALL be excluded from git via .gitignore

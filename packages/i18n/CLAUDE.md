@@ -101,7 +101,12 @@ pnpm extract-intl
 This command:
 
 1. Scans all `.i18n.ts` files in packages and components
-2. Extracts messages using `@formatjs/cli`
+2. Extracts messages using custom extraction script
+   (`packages/i18n/scripts/extract-messages.ts`)
+   - Uses dynamic `import()` to load TypeScript files directly
+   - Reads exported `messages` object without CLI parsing or AST manipulation
+   - Validates required fields (id, description, defaultMessage)
+   - Converts to Transifex JSON format
 3. Outputs to `packages/i18n/data/core.json`
 4. Automatically compiles translations
 

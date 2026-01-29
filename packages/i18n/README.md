@@ -21,9 +21,12 @@ This is an **internal build tool package** that:
 - **Eliminates runtime parsing overhead** by pre-compiling all messages to
   JavaScript functions
 
-> **Note:** Message extraction uses a custom script to parse `.i18n.ts` files.
-> Components use compiled `.messages.ts` dictionaries with
-> `LocalizedStringDictionary` from `@internationalized/string` at runtime.
+> **Note:** Message extraction uses a custom script
+> (`packages/i18n/scripts/extract-messages.ts`) that dynamically imports
+> `.i18n.ts` files and reads the exported `messages` object directly, without
+> CLI parsing or AST manipulation. Components use compiled `.messages.ts`
+> dictionaries with `LocalizedStringDictionary` from `@internationalized/string`
+> at runtime.
 
 ## Architecture
 
