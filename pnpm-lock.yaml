@@ -105,8 +105,8 @@ catalogs:
       specifier: ^4.0.18
       version: 4.0.18
     '@vueless/storybook-dark-mode':
-      specifier: ^10.0.6
-      version: 10.0.6
+      specifier: ^10.0.7
+      version: 10.0.7
     eslint:
       specifier: ^9.39.2
       version: 9.39.2
@@ -631,7 +631,7 @@ importers:
         version: 4.0.18(@vitest/browser@4.0.18(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))(vitest@4.0.18))(vitest@4.0.18)
       '@vueless/storybook-dark-mode':
         specifier: catalog:tooling
-        version: 10.0.6(storybook@10.2.0(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 10.0.7(storybook@10.2.0(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       apca-w3:
         specifier: ^0.1.9
         version: 0.1.9
@@ -3372,8 +3372,8 @@ packages:
   '@vue/shared@3.5.22':
     resolution: {integrity: sha512-F4yc6palwq3TT0u+FYf0Ns4Tfl9GRFURDN2gWG7L1ecIaS/4fCIuFOjMTnCyjsu/OK6vaDKLCrGAa+KvvH+h4w==}
 
-  '@vueless/storybook-dark-mode@10.0.6':
-    resolution: {integrity: sha512-n8Lfk1x25Gc7Q4Ip46S+GV3kgKo4i7K0dVxB6MwvINWc3BWRqcxj+n8rDRxnb6BsyriPRNi5m6QKOGukyLisiA==}
+  '@vueless/storybook-dark-mode@10.0.7':
+    resolution: {integrity: sha512-mI+tqHykUMlhdwu7PlZ6/wvq1aZqn4DWoUbO4GMhJxLnrDSJn4zKaeEtGXp4KTO5Myv/T6k2iteIe7MSTAZVDQ==}
     engines: {node: '>=20'}
     peerDependencies:
       storybook: ^10.0.0
@@ -5199,8 +5199,8 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+  lodash-es@4.17.23:
+    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -10492,10 +10492,10 @@ snapshots:
 
   '@vue/shared@3.5.22': {}
 
-  '@vueless/storybook-dark-mode@10.0.6(storybook@10.2.0(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+  '@vueless/storybook-dark-mode@10.0.7(storybook@10.2.0(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
       '@storybook/global': 5.0.0
-      lodash-es: 4.17.21
+      lodash-es: 4.17.23
       storybook: 10.2.0(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   '@xobotyi/scrollbar-width@1.9.5': {}
@@ -12686,7 +12686,7 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash-es@4.17.21: {}
+  lodash-es@4.17.23: {}
 
   lodash.merge@4.6.2: {}
 
