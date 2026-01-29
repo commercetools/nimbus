@@ -3,9 +3,9 @@
 ## Overview
 
 The @commercetools/nimbus-i18n package is a pure data package providing
-centralized internationalization support for Nimbus components. It contains 137
-translation messages across 5 supported locales with Transifex-ready format and
-runtime-optimized AST compilation.
+centralized internationalization support for Nimbus components. It contains
+multiple translation messages across 5 supported locales with Transifex-ready
+format and runtime-optimized AST compilation.
 
 **Package:** `@commercetools/nimbus-i18n` **Version:** 2.1.0 **Type:** Data-only
 package (no code exports) **Locales:** 5 (en, de, es, fr-FR, pt-BR)
