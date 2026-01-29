@@ -700,7 +700,7 @@ defaultMessage: "{count, plural, one {# item} other {# items}}";
 defaultMessage: "Page {current} of {total}";
 
 // Usage
-msg.format("pageInfo, { current: 1, total: 10 }");
+msg.format("pageInfo", { current: 1, total: 10 });
 ```
 
 ## Error Recovery
