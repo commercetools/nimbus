@@ -1,5 +1,27 @@
 # @commercetools/nimbus
 
+## 2.4.0
+
+### Minor Changes
+
+- [#982](https://github.com/commercetools/nimbus/pull/982)
+  [`bb6189a`](https://github.com/commercetools/nimbus/commit/bb6189a8c03bc0c49ab74816be52ef3c4711ed6d)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Prefixed 22 Nimbus recipe
+  keys with nimbus to avoid collisions with Chakra's built-in recipe names,
+  ensuring consumer apps see Nimbus's custom type values instead of Chakra's
+  defaults.
+
+### Patch Changes
+
+- [#942](https://github.com/commercetools/nimbus/pull/942)
+  [`2759847`](https://github.com/commercetools/nimbus/commit/27598479f500335dc7046b235eec304850be8031)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix(DateRangePicker):
+  restore ghost variant styling
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.4.0
+  - @commercetools/nimbus-icons@2.4.0
+
 ## 2.3.1
 
 ### Patch Changes
