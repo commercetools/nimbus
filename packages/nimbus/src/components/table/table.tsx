@@ -21,9 +21,9 @@ import type {
   TableColumnGroupProps,
   TableColumnProps,
 } from "./table.types";
-import { Table as ChakraTable } from "@chakra-ui/react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
+import { Box } from "../box";
 
 /**
  * # Table
@@ -108,20 +108,17 @@ export const TableCell = (props: TableCellProps) => {
 TableCell.displayName = "Table.Cell";
 
 export const TableScrollArea = (props: TableScrollAreaProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.ScrollArea ref={ref} {...restProps} />;
+  return <Box as="div" overflow="auto" {...props} />;
 };
 TableScrollArea.displayName = "Table.ScrollArea";
 
 export const TableColumnGroup = (props: TableColumnGroupProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.ColumnGroup ref={ref} {...restProps} />;
+  return <Box as="colgroup" {...props} />;
 };
 TableColumnGroup.displayName = "Table.ColumnGroup";
 
 export const TableColumn = (props: TableColumnProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Column ref={ref} {...restProps} />;
+  return <Box as="col" {...props} />;
 };
 TableColumn.displayName = "Table.Column";
 
