@@ -9,7 +9,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type RichTextInputRecipeProps = SlotRecipeProps<"richTextInput">;
+type RichTextInputRecipeProps = SlotRecipeProps<"nimbusRichTextInput">;
 
 // ============================================================
 // SLOT PROPS

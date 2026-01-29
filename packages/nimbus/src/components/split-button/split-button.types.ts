@@ -10,7 +10,7 @@ import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 // RECIPE PROPS
 // ============================================================
 
-type SplitButtonRecipeProps = SlotRecipeProps<"splitButton">;
+type SplitButtonRecipeProps = SlotRecipeProps<"nimbusSplitButton">;
 
 // ============================================================
 // SLOT PROPS

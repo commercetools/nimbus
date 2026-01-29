@@ -11,7 +11,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-type TooltipRecipeProps = RecipeProps<"tooltip"> & UnstyledProp;
+type TooltipRecipeProps = RecipeProps<"nimbusTooltip"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

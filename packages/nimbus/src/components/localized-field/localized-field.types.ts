@@ -13,9 +13,9 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 type LocalizedFieldRecipeProps = {
   /** Size variant of the localized field */
-  size?: SlotRecipeProps<"localizedField">["size"];
+  size?: SlotRecipeProps<"nimbusLocalizedField">["size"];
   /** Input type variant (text, multiLine, richText, money) */
-  type?: SlotRecipeProps<"localizedField">["type"];
+  type?: SlotRecipeProps<"nimbusLocalizedField">["type"];
 };
 
 // ============================================================

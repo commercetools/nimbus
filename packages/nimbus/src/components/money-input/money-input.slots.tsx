@@ -10,7 +10,7 @@ import type {
 } from "./money-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "moneyInput",
+  key: "nimbusMoneyInput",
 });
 
 export const MoneyInputRootSlot = withProvider<

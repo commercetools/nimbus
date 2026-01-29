@@ -50,7 +50,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
     ...rest
   } = props;
 
-  const recipe = useSlotRecipe({ key: "progressBar" });
+  const recipe = useSlotRecipe({ key: "nimbusProgressBar" });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
     variant,
     colorPalette,

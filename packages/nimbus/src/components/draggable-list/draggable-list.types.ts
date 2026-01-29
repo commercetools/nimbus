@@ -16,7 +16,7 @@ type DraggableListRecipeProps = {
    * Size variant of the draggable list
    * @default "md"
    */
-  size?: SlotRecipeProps<"draggableList">["size"];
+  size?: SlotRecipeProps<"nimbusDraggableList">["size"];
 };
 
 // ============================================================
@@ -83,7 +83,7 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
   "autoFocus" | "className" | "style" | "translate" | "renderEmptyState"
 > &
   Omit<
-    HTMLChakraProps<"div", SlotRecipeProps<"draggableList">>,
+    HTMLChakraProps<"div", SlotRecipeProps<"nimbusDraggableList">>,
     "children" | "slot"
   > & {
     /**

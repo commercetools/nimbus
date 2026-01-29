@@ -22,7 +22,7 @@ type TagGroupRecipeVariantProps = {
    * Size variant of the tag group
    * @default "lg"
    */
-  size?: SlotRecipeProps<"taggroup">["size"];
+  size?: SlotRecipeProps<"nimbusTagGroup">["size"];
 };
 
 // ============================================================

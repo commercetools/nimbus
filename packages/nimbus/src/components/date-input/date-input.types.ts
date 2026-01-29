@@ -12,9 +12,9 @@ import type { DateFieldProps as RaDateFieldProps } from "react-aria-components";
 
 type DateInputRecipeProps = {
   /** Size variant of the date input */
-  size?: SlotRecipeProps<"dateInput">["size"];
+  size?: SlotRecipeProps<"nimbusDateInput">["size"];
   /** Visual style variant of the date input */
-  variant?: SlotRecipeProps<"dateInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusDateInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

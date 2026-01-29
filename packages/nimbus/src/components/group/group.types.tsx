@@ -13,7 +13,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type GroupRecipeProps = RecipeProps<"group"> & UnstyledProp;
+type GroupRecipeProps = RecipeProps<"nimbusGroup"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

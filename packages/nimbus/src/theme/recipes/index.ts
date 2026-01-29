@@ -15,27 +15,38 @@ import { toggleButtonRecipe } from "@/components/toggle-button/toggle-button.rec
 import { toolbarRecipe } from "@/components/toolbar/toolbar.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
 
+/**
+ * Recipes for Nimbus Components
+ *
+ * IMPORTANT: All recipe keys are prefixed with `nimbus` to avoid naming collisions
+ * with Chakra UI's built-in recipes. This ensures that Nimbus's custom variant types
+ * are correctly generated and don't conflict with Chakra's default types.
+ *
+ * Without this prefix, generated TypeScript interfaces (e.g., `ButtonVariant`) would
+ * collide with Chakra's defaults, causing incorrect type inference in consumer applications.
+ *
+ * @example
+ * // Correct: Use nimbus prefix
+ * nimbusButton: buttonRecipe
+ *
+ * // Wrong: No prefix causes collision
+ * button: buttonRecipe  // ❌ Collides with Chakra's button
+ */
 export const recipes = {
-  group: groupRecipe,
-  loadingSpinner: loadingSpinnerRecipe,
-  popover: popoverRecipe,
-  radioInput: radioInputSlotRecipe,
-  separator: separatorRecipe,
-  toggleButton: toggleButtonRecipe,
-  toolbar: toolbarRecipe,
-  tooltip: tooltipRecipe,
-  /**
-   * These recipe keys are prefixed with `nimbus` to avoid collisions with Chakra's built-in recipe names.
-   *
-   * Without this prefix, the generated TypeScript interfaces (e.g. `DrawerVariant`) would collide with
-   * Chakra's default interfaces, causing incorrect type inference in consumer applications.
-   * */
   nimbusAvatar: avatarRecipe,
   nimbusBadge: badgeRecipe,
   nimbusButton: buttonRecipe,
   nimbusCode: codeRecipe,
+  nimbusGroup: groupRecipe,
   nimbusHeading: headingRecipe,
   nimbusIcon: iconRecipe,
   nimbusKbd: kbdRecipe,
   nimbusLink: linkRecipe,
+  nimbusLoadingSpinner: loadingSpinnerRecipe,
+  nimbusPopover: popoverRecipe,
+  nimbusRadioInput: radioInputSlotRecipe,
+  nimbusSeparator: separatorRecipe,
+  nimbusToggleButton: toggleButtonRecipe,
+  nimbusToolbar: toolbarRecipe,
+  nimbusTooltip: tooltipRecipe,
 };

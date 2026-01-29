@@ -11,12 +11,12 @@ type ToggleButtonRecipeProps = {
    * Size variant of the toggle button
    * @default "md"
    */
-  size?: RecipeProps<"toggleButton">["size"];
+  size?: RecipeProps<"nimbusToggleButton">["size"];
   /**
    * Visual style variant of the toggle button
    * @default "outline"
    */
-  variant?: RecipeProps<"toggleButton">["variant"];
+  variant?: RecipeProps<"nimbusToggleButton">["variant"];
 };
 
 // ============================================================

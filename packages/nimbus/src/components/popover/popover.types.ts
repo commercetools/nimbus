@@ -11,7 +11,7 @@ import type { FC } from "react";
 // RECIPE PROPS
 // ============================================================
 
-type PopoverRecipeProps = RecipeProps<"popover"> & UnstyledProp;
+type PopoverRecipeProps = RecipeProps<"nimbusPopover"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

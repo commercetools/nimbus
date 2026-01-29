@@ -11,12 +11,12 @@ type SearchInputRecipeProps = {
    * Size variant of the search input
    * @default "md"
    */
-  size?: SlotRecipeProps<"searchInput">["size"];
+  size?: SlotRecipeProps<"nimbusSearchInput">["size"];
   /**
    * Visual style variant of the search input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"searchInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusSearchInput">["variant"];
 };
 
 // ============================================================

@@ -14,12 +14,12 @@ type FormFieldRecipeProps = {
    * Size variant of the form field
    * @default "md"
    */
-  size?: SlotRecipeProps<"formField">["size"];
+  size?: SlotRecipeProps<"nimbusFormField">["size"];
   /**
    * Layout direction for label and input positioning
    * @default "column"
    */
-  direction?: SlotRecipeProps<"formField">["direction"];
+  direction?: SlotRecipeProps<"nimbusFormField">["direction"];
 };
 
 // ============================================================

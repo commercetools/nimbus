@@ -15,12 +15,12 @@ export type MultilineTextInputRecipeProps = {
    * Size variant of the multiline text input
    * @default "md"
    */
-  size?: SlotRecipeProps<"multilineTextInput">["size"];
+  size?: SlotRecipeProps<"nimbusMultilineTextInput">["size"];
   /**
    * Visual style variant of the multiline text input
    * @default "solid"
    */
-  variant?: SlotRecipeProps<"multilineTextInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusMultilineTextInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

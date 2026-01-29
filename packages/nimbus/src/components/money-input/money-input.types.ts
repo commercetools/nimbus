@@ -13,7 +13,7 @@ type MoneyInputRecipeProps = {
    * Size variant of the money input
    * @default "md"
    */
-  size?: SlotRecipeProps<"moneyInput">["size"];
+  size?: SlotRecipeProps<"nimbusMoneyInput">["size"];
 };
 
 // ============================================================

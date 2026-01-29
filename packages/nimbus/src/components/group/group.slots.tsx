@@ -4,7 +4,7 @@ import type { SlotComponent } from "@/type-utils";
 import type { GroupRootSlotProps } from "./group.types";
 
 const { withContext } = createRecipeContext({
-  key: "group",
+  key: "nimbusGroup",
 });
 
 /**
