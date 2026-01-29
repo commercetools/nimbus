@@ -524,8 +524,8 @@ The component SHALL provide comprehensive MDX documentation.
 
 - **WHEN** documentation renders
 - **THEN** SHALL explain component purpose for React Aria I18n
-- **AND** SHALL clarify it's for React Aria components (not plain TypeScript
-  objects text translation)
+- **AND** SHALL clarify it's for React Aria components (for date/number
+  formatting, not UI text translation)
 - **AND** SHALL list key features: locale-aware formatting, React Aria
   integration, BCP47 codes
 
