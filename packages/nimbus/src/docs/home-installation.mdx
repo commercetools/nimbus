@@ -76,7 +76,30 @@ yarn add slate slate-history slate-hyperscript slate-react
 ### TypeScript Support
 
 TypeScript types for component variants, sizes, and design tokens are generated
-automatically during installation. No additional setup required.
+via a postinstall hook. Modern package managers (pnpm v8+, yarn v2+) block
+postinstall scripts by default. To enable automatic type generation:
+
+#### pnpm
+
+Add to your `package.json`:
+
+```json
+{
+  "pnpm": {
+    "onlyBuiltDependencies": ["@commercetools/nimbus"]
+  }
+}
+```
+
+Or run `pnpm approve-builds` after installation.
+
+#### Manual generation
+
+If the postinstall doesn't run, generate types manually:
+
+```bash
+npx @chakra-ui/cli typegen node_modules/@commercetools/nimbus/dist/index.es.js
+```
 
 ## 2. Set up NimbusProvider
 
@@ -168,13 +191,10 @@ For complete testing setup instructions, see the **[Testing Setup](/home/getting
 
 ### TypeScript types not working
 
-If props like `variant` or `size` show as `any`, regenerate types manually:
+If props like `variant` or `size` show as `any`:
 
-```bash
-npx @chakra-ui/cli typegen node_modules/@commercetools/nimbus/dist/index.es.js
-```
-
-Then restart your TypeScript server.
+1. Run the manual type generation command (see TypeScript Support section above)
+2. Restart your TypeScript server (VS Code: `Cmd+Shift+P` → "TypeScript: Restart TS Server")
 
 ## Next steps
 
