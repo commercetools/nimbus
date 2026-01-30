@@ -59,7 +59,7 @@ const GENERATED_FILES = {
 /**
  * Transform a generated .d.ts file into module augmentation format
  */
-function transformToModuleAugmentation(content, _filename) {
+function transformToModuleAugmentation(content) {
   // Remove all import statements - we'll add consolidated imports at the top
   const withoutImports = content
     .split("\n")
