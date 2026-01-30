@@ -8,6 +8,7 @@
  * This ensures consumers get proper TypeScript autocomplete for Nimbus's
  * custom recipes, tokens, and conditions without running typegen themselves.
  */
+/* global console, process */
 
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
@@ -187,7 +188,9 @@ async function main() {
     // Add empty export to make this a proper ES module.
     // This allows it to be imported/re-exported from theme/index.ts,
     // ensuring the module augmentation is included in the build chain.
-    outputParts.push(`// Empty export makes this a module (required for augmentation to work)\n`);
+    outputParts.push(
+      `// Empty export makes this a module (required for augmentation to work)\n`
+    );
     outputParts.push(`export {};\n`);
 
     // Write the output file
