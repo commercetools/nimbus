@@ -530,7 +530,7 @@ The TimeInput handles most accessibility requirements internally. However, you m
 
 ```tsx
 <label id="time-label">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <TimeInput aria-labelledby="time-label" />
 ```
@@ -539,7 +539,7 @@ The TimeInput handles most accessibility requirements internally. However, you m
 
 ```tsx
 <label htmlFor="time-input-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <TimeInput id="time-input-id" />
 ```
@@ -547,7 +547,7 @@ The TimeInput handles most accessibility requirements internally. However, you m
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<TimeInput aria-label={intl.formatMessage(labelMessage)} />
+<TimeInput aria-label={msg.format(labelMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

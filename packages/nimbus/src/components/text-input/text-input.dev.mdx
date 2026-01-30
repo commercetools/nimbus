@@ -238,7 +238,7 @@ The TextInput handles most accessibility requirements internally. However, you m
 
 ```tsx
 <label id="email-label">
-  {intl.formatMessage(emailMessage)}
+  {msg.format(emailMessage)}
 </label>
 <TextInput aria-labelledby="email-label" />
 ```
@@ -247,7 +247,7 @@ The TextInput handles most accessibility requirements internally. However, you m
 
 ```tsx
 <label htmlFor="email-input">
-  {intl.formatMessage(emailMessage)}
+  {msg.format(emailMessage)}
 </label>
 <TextInput id="email-input" />
 ```
@@ -255,7 +255,7 @@ The TextInput handles most accessibility requirements internally. However, you m
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<TextInput aria-label={intl.formatMessage(emailMessage)} />
+<TextInput aria-label={msg.format(emailMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

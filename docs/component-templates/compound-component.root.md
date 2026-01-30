@@ -6,7 +6,7 @@ component-name, componentName Location: components/component-name.root.tsx
 ```tsx
 /**
  * Template for compound component root implementation
- * Replace: ComponentName, component-name, componentName
+ * Replace: ComponentName, component-name, componentName, componentMessagesStrings
  * Location: components/component-name.root.tsx
  */
 
@@ -21,7 +21,7 @@ import type { ComponentNameRootProps } from "../component-name.types";
 // import { ComponentNameProvider } from '../component-name-context';
 // Uncomment if component needs i18n
 // import { useLocalizedStringFormatter } from "@/hooks";
-// import { componentMessagesStrings } from "../component-name.messages";
+// import { {componentName}MessagesStrings } from "../{component-name}.messages";
 
 /**
  * Root component that provides configuration and context

@@ -568,7 +568,7 @@ The component SHALL maintain backwards compatibility with UI-Kit MoneyField per 
 
 #### Scenario: Localized error messages
 - **WHEN** errors are displayed
-- **THEN** FieldErrors SHALL use react-intl for localized messages
+- **THEN** FieldErrors SHALL use plain TypeScript objects for localized messages
 - **AND** SHALL support standard error types: missing, invalid, format, etc.
 - **AND** SHALL match UI-Kit error message text for compatibility
 

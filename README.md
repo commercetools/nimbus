@@ -85,10 +85,15 @@ All commands should be run from the repository root.
    pnpm nimbus:init
    ```
 
-> [!TIP]  
-> It is advisable to run the `repo:init` command after every branch-switch. The
-> command gets rid of all `node_modules`- & `dist`-folders, reinstalls
-> dependencies and rebuilds all packages.
+> [!TIP] It is advisable to run the `nimbus:init` command after every
+> branch-switch. The command gets rid of all `node_modules`- & `dist`-folders,
+> reinstalls dependencies and rebuilds all packages (including generated i18n
+> files).
+
+> [!IMPORTANT] **Generated i18n files are not tracked in git.** After cloning or
+> switching branches, you must run `pnpm nimbus:init` or `pnpm build` to
+> generate the required `*.messages.ts` and `intl/*.ts` files. Without these
+> files, TypeScript compilation and Storybook will fail.
 
 ## 💻 Development Workflow
 
@@ -242,6 +247,7 @@ The system automatically detects test mode via:
 - `VITEST=true` - Manual override for forcing test mode
 
 **Manual Override Example:**
+
 ```bash
 # Force test mode (use built bundle) even in development
 VITEST=true pnpm start:storybook
@@ -250,13 +256,17 @@ VITEST=true pnpm start:storybook
 pnpm start:storybook
 ```
 
-When test mode is detected, Storybook uses the built bundle instead of source files.
+When test mode is detected, Storybook uses the built bundle instead of source
+files.
 
 **Developer Visibility:**
 
 Storybook logs which mode is active on startup:
-- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` - Development mode with live reload
-- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or production mode
+
+- `[Storybook] Running in DEVELOPMENT (HMR enabled, using source files)` -
+  Development mode with live reload
+- `[Storybook] Running in PRODUCTION/TEST (using built bundle)` - Testing or
+  production mode
 
 This helps confirm whether your changes require a build before testing.
 
@@ -408,11 +418,12 @@ Please follow our coding standards and commit message conventions.
 
 ## ❓ Troubleshooting
 
-| Problem                                       | Solution                                                        |
-| --------------------------------------------- | --------------------------------------------------------------- |
-| Component styles not updating                 | Make sure you've rebuilt the tokens with `pnpm build:tokens`    |
-| Documentation site not showing latest changes | Restart the development server with `pnpm start`                |
-| Build errors after pulling latest changes     | Try running `pnpm nimbus:init` to reset, reinstall, and rebuild |
+| Problem                                       | Solution                                                                             |
+| --------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Missing module errors / Storybook won't start | Generated i18n files are not tracked in git. Run `pnpm build` or `pnpm extract-intl` |
+| Component styles not updating                 | Make sure you've rebuilt the tokens with `pnpm build:tokens`                         |
+| Documentation site not showing latest changes | Restart the development server with `pnpm start`                                     |
+| Build errors after pulling latest changes     | Try running `pnpm nimbus:init` to reset, reinstall, and rebuild                      |
 
 For additional help, please contact the Nimbus team or submit an issue in our
 repository.

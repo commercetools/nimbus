@@ -1,6 +1,4 @@
-import { defineMessages } from "react-intl";
-
-export const messages = defineMessages({
+export const messages = {
   nextMonth: {
     id: "Nimbus.RangeCalendar.nextMonth",
     description: "aria-label for next month navigation button",
@@ -21,4 +19,4 @@ export const messages = defineMessages({
     description: "aria-label for previous year navigation button",
     defaultMessage: "Previous year",
   },
-});
+};

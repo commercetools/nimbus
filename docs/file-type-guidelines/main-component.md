@@ -935,7 +935,7 @@ Components need i18n when they contain:
 
 ```typescript
 import { useLocalizedStringFormatter } from "@/hooks";
-import { componentMessagesStrings } from "./component-name.messages";
+import { {componentName}MessagesStrings } from "./{component-name}.messages";
 ```
 
 ### Usage in Component
@@ -1113,7 +1113,7 @@ export const CustomButton = (props: CustomButtonProps) => {
 - [ ] React Aria imports use `Ra` prefix
 - [ ] Types re-exported appropriately
 - [ ] i18n messages imported if component has user-facing text
-- [ ] All aria-labels use intl.formatMessage
+- [ ] All aria-labels use msg.format()
 
 ### JSDoc Documentation
 
