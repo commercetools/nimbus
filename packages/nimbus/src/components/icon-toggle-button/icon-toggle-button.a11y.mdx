@@ -1,0 +1,46 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The IconToggleButton component requires explicit accessibility labeling since it contains only an icon without visible text.
+
+- **Labeling (REQUIRED)**: Always provide an `aria-label` that describes the button's action. The label should be descriptive enough to convey the button's purpose without visual context.
+- **Role**: Automatically assigned `role="button"` with `aria-pressed` to indicate toggle state.
+- **State announcements**: Screen readers announce the pressed/unpressed state when toggled.
+
+```tsx
+// Good - Clear, action-oriented label
+<IconToggleButton aria-label="Like this post">
+  <Icons.ThumbUp />
+</IconToggleButton>
+
+// Good - Context-specific label
+<IconToggleButton aria-label="Add to favorites">
+  <Icons.Star />
+</IconToggleButton>
+
+// Bad - Too generic
+<IconToggleButton aria-label="Icon">
+  <Icons.ThumbUp />
+</IconToggleButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "post-like-toggle";
+
+export const Example = () => (
+  <IconToggleButton id={PERSISTENT_ID} aria-label="Like">
+    <Icons.ThumbUp />
+  </IconToggleButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Focuses the button
+- `Enter` or `Space`: Toggles the button state (triggers `onChange`)

@@ -1,0 +1,41 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The `Dialog` component is built with React Aria Components and follows WCAG 2.1 AA guidelines:
+
+- **Role**: The dialog content has `role="dialog"` and is properly labeled using either `Dialog.Title` or an `aria-label` prop on `Dialog.Root`.
+- **Focus Management**: When opened, focus moves to the first focusable element inside the dialog. When closed, focus returns to the trigger element.
+- **Keyboard Navigation**:
+  - `Escape` - Closes the dialog (unless `isKeyboardDismissDisabled` is true)
+  - `Tab` - Moves focus through interactive elements within the dialog
+  - Focus is trapped within the dialog while open
+- **Labeling**: The `Dialog.Title` component automatically provides the accessible name. If you don't use `Dialog.Title`, provide an `aria-label` on `Dialog.Root`.
+- **Backdrop**: Clicking outside the dialog closes it by default (controlled by `isDismissable`).
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "confirm-delete-dialog";
+
+export const DeleteConfirmation = () => (
+  <Dialog.Root id={PERSISTENT_ID}>
+    <Dialog.Trigger>Delete Item</Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Title>Confirm Deletion</Dialog.Title>
+    </Dialog.Content>
+  </Dialog.Root>
+);
+```
+
+### Composition constraints
+
+The `Dialog` component uses specific layout slots for proper rendering:
+
+- Keep sub-components (`Header`, `Body`, `Footer`, `Title`, `CloseTrigger`) as direct children of `Dialog.Content`.
+- `Dialog.Title` should be placed inside `Dialog.Header` for proper layout.
+- `Dialog.CloseTrigger` can be placed anywhere but is typically in `Dialog.Header`.
+- You can use layout components *inside* `Dialog.Body` or `Dialog.Footer` to organize content within those sections.
+- The `Dialog.Content` is portaled to the document body by React Aria, so it renders outside your component tree.

@@ -1,0 +1,33 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+This component ensures locale-appropriate formatting for screen reader users.
+
+### Locale codes
+
+Accepts any valid BCP47 language tag, including but not limited to:
+
+- `en-US` - English (United States)
+- `en-GB` - English (United Kingdom)
+- `de-DE` - German (Germany)
+- `es-ES` - Spanish (Spain)
+- `fr-FR` - French (France)
+- `ja-JP` - Japanese (Japan)
+- `zh-CN` - Chinese (Simplified, China)
+- `pt-BR` - Portuguese (Brazil)
+
+### Best practices
+
+- Always provide a valid BCP47 locale code
+- Use region-specific codes when formatting differs (e.g., date order, decimal
+separators)
+- Test with actual screen readers to verify proper pronunciation
+
+
+### Screen reader support
+
+- Dates and numbers are announced in locale-appropriate formats
+- Screen readers use the specified locale for pronunciation
+- Ensures ARIA labels reflect locale conventions

@@ -1,0 +1,50 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Group component follows WCAG 2.1 AA guidelines and implements proper semantic grouping:
+
+#### Role
+
+- Automatically applies `role="group"` to identify related elements
+- Groups should have a descriptive `aria-label` or `aria-labelledby` to provide context
+
+#### Labeling
+
+Always provide an accessible name for groups:
+
+```tsx
+// Using aria-label
+<Group aria-label="Text formatting controls">
+  {/* controls */}
+</Group>
+
+// Using aria-labelledby
+<>
+  <Heading id="toolbar-heading">Editing Tools</Heading>
+  <Group aria-labelledby="toolbar-heading">
+    {/* tools */}
+  </Group>
+</>
+```
+
+#### Keyboard navigation
+
+Group is a semantic container that does not interfere with keyboard navigation. Each child element maintains its own keyboard interaction patterns.
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "primary-action-group";
+
+export const ActionToolbar = () => (
+  <Group id={PERSISTENT_ID} aria-label="Primary actions">
+    <Button>Save</Button>
+    <Button>Cancel</Button>
+  </Group>
+);
+```

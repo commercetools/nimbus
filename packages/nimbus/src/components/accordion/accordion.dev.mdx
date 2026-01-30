@@ -425,47 +425,6 @@ const App = () => {
 
 ## Component requirements
 
-## Accessibility
-
-The Accordion component is built with React Aria and follows the WAI-ARIA
-Accordion pattern. It provides:
-
-**Role:**
-
-- Each accordion item has `role="group"`
-- Headers are implemented as `button` elements
-
-**Labeling:**
-
-- Headers use `aria-expanded` to indicate their state (true/false)
-- Content panels are properly associated with their headers
-- Each item should have a unique `value` prop for proper identification
-
-**Keyboard navigation:**
-
-- `Space` or `Enter` - Toggle the focused accordion item
-- `Tab` - Move focus to the next focusable element
-- `Shift + Tab` - Move focus to the previous focusable element
-- Arrow keys - Navigate between accordion headers (when focus is on a header)
-
-If your use case requires tracking and analytics for this component, it is good
-practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "user-settings-accordion";
-
-export const SettingsAccordion = () => (
-  <Accordion.Root id={PERSISTENT_ID}>
-    <Accordion.Item value="profile">
-      <Accordion.Header>Profile Settings</Accordion.Header>
-      <Accordion.Content>
-        <Text>Edit your profile information</Text>
-      </Accordion.Content>
-    </Accordion.Item>
-  </Accordion.Root>
-);
-```
-
 ## API reference
 
 <PropsTable id="Accordion" />

@@ -1,0 +1,47 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+IconButton requires a **mandatory `aria-label` prop** since icon-only buttons lack visible text for screen readers. This label should:
+- Clearly describe the button's action
+- Be concise but descriptive
+
+**Setting the aria-label:**
+
+```tsx
+<IconButton aria-label="Open menu">
+  <Icons.Menu />
+</IconButton>
+```
+
+For icon buttons with visible tooltips, the `aria-label` is still required for screen reader users who may not trigger the tooltip:
+
+```tsx
+<Tooltip.Root>
+  <IconButton aria-label="Settings">
+    <Icons.Settings />
+  </IconButton>
+  <Tooltip.Content>Settings</Tooltip.Content>
+</Tooltip.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-icon-button";
+
+export const Example = () => (
+  <IconButton id={PERSISTENT_ID} aria-label="Open settings">
+    <Icons.Settings />
+  </IconButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus to/from the button
+- `Enter` / `Space`: Activate the button
+- `Escape`: Remove focus (when focused)

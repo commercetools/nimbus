@@ -1,0 +1,27 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The `Card` component handles most accessibility requirements internally, rendering semantic `div` elements by default. It acts as a generic container.
+
+- **Headings**: Ensure the content within `Card.Header` follows your page's heading hierarchy (e.g., use `Heading` component or `h3`, `h4` tags).
+- **Interactive Cards**: If a card is interactive (clickable), do not attach `onClick` directly to the card div if possible. Instead, wrap the card in a link or button, or ensure proper ARIA roles (`role="button"`) and keyboard handling (`tabIndex={0}`, Enter/Space key listeners) are implemented.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "project-summary-card";
+
+export const Example = () => (
+  <Card.Root id={PERSISTENT_ID}>
+    <Card.Header>Summary</Card.Header>
+    <Card.Content>...</Card.Content>
+  </Card.Root>
+);
+```
+
+#### Keyboard navigation
+
+Standard Cards are not focusable. Interactive content inside the card (buttons, links) follows the default focus order.

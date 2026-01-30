@@ -90,29 +90,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The Heading component provides semantic HTML heading elements for proper document structure. Screen readers use heading levels to navigate content and understand page hierarchy.
-
-**Heading level best practices:**
-- Use heading levels sequentially (don't skip levels)
-- Typically one h1 per page (the main title)
-- Use h2-h6 to create logical content hierarchy
-- Visual size (size prop) can differ from semantic level (as prop)
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "example-heading-id";
-
-export const Example = () => (
-  <Heading id={PERSISTENT_ID}>Analytics-Tracked Heading</Heading>
-);
-```
-
-#### Keyboard navigation
-
-As a non-interactive display component, Heading does not require keyboard interaction. However, screen reader users can navigate between headings using keyboard shortcuts (typically H key) to quickly scan page structure.
 
 ## API reference
 

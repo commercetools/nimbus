@@ -1,0 +1,51 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Calendar handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Associating a `<label>` element with the Calendar using `aria-labelledby`:
+
+```tsx
+<label id="calendar-label">
+  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+</label>
+<Calendar aria-labelledby="calendar-label" />
+```
+
+- Associating a `<label>` element with the Calendar using `htmlFor`:
+
+```tsx
+<label htmlFor="calendar-id">
+  {intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })}
+</label>
+<Calendar id="calendar-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<Calendar aria-label={intl.formatMessage({ id: 'selectDate', defaultMessage: 'Select date' })} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "booking-calendar";
+
+export const BookingForm = () => (
+  <Calendar id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus into and out of the calendar
+- `Arrow keys`: Navigate between dates within the grid
+- `Page Up` / `Page Down`: Navigate to the previous/next month
+- `Shift + Page Up` / `Shift + Page Down`: Navigate to the previous/next year
+- `Home` / `End`: Navigate to the start/end of the current week
+- `Enter` / `Space`: Select the focused date

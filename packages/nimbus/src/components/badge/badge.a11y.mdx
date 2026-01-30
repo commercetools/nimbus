@@ -1,0 +1,24 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Badge component handles most accessibility requirements internally. However, you should ensure that the badge content is accessible.
+
+- **Color Contrast**: The default color mappings (shade 3 for background, shade 11 for text) are designed to meet WCAG contrast requirements.
+- **Screen Readers**: The badge text is read normally by screen readers. If the badge conveys status (like "Error"), ensure the text or a visually hidden label clarifies this context if it's not obvious from the surrounding content.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-badge";
+
+export const Example = () => (
+  <Badge id={PERSISTENT_ID}>Status</Badge>
+);
+```
+
+#### Keyboard navigation
+
+Badges are non-interactive elements and do not receive focus or support keyboard interaction.

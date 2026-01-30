@@ -1,0 +1,46 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The `MoneyInput` handles accessibility requirements for its internal input and select components. However, you must always associate a label with the component.
+
+Using `aria-label`:
+
+```tsx
+<MoneyInput
+  aria-label="Product Price"
+  value={value}
+  // ...
+/>
+```
+
+Using `aria-labelledby`:
+
+```tsx
+<label id="price-label">Product Price</label>
+<MoneyInput
+  aria-labelledby="price-label"
+  value={value}
+  // ...
+/>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-price-input";
+
+export const Example = () => (
+  <MoneyInput id={PERSISTENT_ID} value={value} />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab`: Moves focus between the currency dropdown and the amount input.
+- `Arrow Keys` (in Dropdown): Navigates between currency options.
+- `Enter` / `Space` (in Dropdown): Selects the currency.
+- `Arrow Keys` (in Input): Adjusts the cursor position.

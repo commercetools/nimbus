@@ -1,0 +1,48 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+Links must have accessible labels that clearly describe their destination or purpose:
+
+- Use descriptive link text that makes sense out of context
+- Avoid generic text like "click here" or "read more"
+- For icon-only links, provide an `aria-label`
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="400">
+      <Link href="/articles/new-feature" aria-label="Read article about new feature">
+        <Icons.Article />
+      </Link>
+      <Text>
+        Learn more about our <Link href="/features">product features</Link>.
+      </Text>
+    </Stack>
+  );
+};
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "header-dashboard-link";
+
+export const Example = () => (
+  <Link id={PERSISTENT_ID} href="/dashboard">
+    Dashboard
+  </Link>
+);
+```
+
+### Keyboard navigation
+
+The Link component supports standard keyboard interactions:
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus to/from the link |
+| `Enter` | Activate the link |
+| `Shift + Tab` | Move focus to previous focusable element |

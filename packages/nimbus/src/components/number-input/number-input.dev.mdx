@@ -454,64 +454,6 @@ const App = () => (
 
 ## Component requirements
 
-## Accessibility
-
-The NumberInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
-
-- Using the `NumberInputField` pattern component (recommended)
-- Associating a `<label>` element with the `NumberInput` using `aria-labelledby`:
-
-```tsx
-<label id="quantity-label">
-  {intl.formatMessage(quantityMessage)}
-</label>
-<NumberInput aria-labelledby="quantity-label" />
-```
-
-- Associating a `<label>` element with the `NumberInput` using `htmlFor`:
-
-```tsx
-<label htmlFor="quantity-input">
-  {intl.formatMessage(quantityMessage)}
-</label>
-<NumberInput id="quantity-input" />
-```
-
-If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
-
-```tsx
-<NumberInput aria-label={intl.formatMessage(quantityMessage)} />
-```
-
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
-
-```tsx
-const PERSISTENT_ID = "product-quantity-input";
-
-export const QuantityField = () => (
-  <NumberInput id={PERSISTENT_ID} placeholder="Quantity" />
-);
-```
-
-#### Keyboard navigation
-
-The component supports full keyboard interaction:
-- `Tab` / `Shift+Tab`: Navigate to/from the input field
-- `Arrow Up` / `Arrow Down`: Increment/decrement the value by `step` amount
-- `Page Up` / `Page Down`: Increment/decrement by larger amounts (10x step)
-- `Home`: Set to minimum value (if `minValue` is defined)
-- `End`: Set to maximum value (if `maxValue` is defined)
-- `Enter`: Submit form (if inside a form)
-- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
-
-**Increment/Decrement buttons:**
-- Click on increment (up arrow) or decrement (down arrow) buttons to adjust value
-- Buttons are automatically disabled when reaching `minValue` or `maxValue`
-- Buttons have localized aria-labels for screen readers
-
-#### Click-to-focus behavior
-
-Clicking anywhere within the input container (including leading/trailing elements area) will focus the input field, providing a larger interactive target for better usability.
 
 ## API reference
 

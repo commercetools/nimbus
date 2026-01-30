@@ -1,0 +1,66 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The DatePicker handles most accessibility requirements internally through React Aria's DatePicker. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Wrapping the DatePicker in a FormField (recommended for forms):
+
+```tsx
+<FormField.Root>
+  <FormField.Label>Birth Date</FormField.Label>
+  <FormField.Input>
+    <DatePicker />
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Associating a `<label>` element with the DatePicker using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DatePicker aria-labelledby="label-id" />
+```
+
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
+
+```tsx
+<DatePicker aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-date-picker";
+
+export const Example = () => (
+  <DatePicker id={PERSISTENT_ID} aria-label="Enter date" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction for navigating and editing date segments, as well as calendar navigation:
+
+**Date input segments:**
+- `Tab` / `Shift+Tab`: Move between date segments (day, month, year, hour, etc.)
+- `Arrow Up` / `Arrow Down`: Increment or decrement the focused segment
+- `Page Up` / `Page Down`: Increment or decrement the focused segment by larger steps
+- `Home` / `End`: Set segment to minimum or maximum value
+- `0-9`: Type digits to set segment value
+- `Backspace`: Clear the focused segment
+
+**Calendar button:**
+- `Enter` / `Space`: Open the calendar popover
+
+**Calendar navigation:**
+- `Arrow keys`: Navigate between dates
+- `Enter` / `Space`: Select the focused date
+- `Page Up` / `Page Down`: Navigate by month
+- `Shift + Page Up` / `Shift + Page Down`: Navigate by year
+- `Home` / `End`: Navigate to start/end of row
+- `Escape`: Close the calendar popover

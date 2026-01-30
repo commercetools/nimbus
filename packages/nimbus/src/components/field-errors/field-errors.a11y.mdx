@@ -1,0 +1,53 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The FieldErrors component includes `role="alert"` by default to announce errors to screen readers. When integrating with form fields:
+
+**Visibility timing:**
+- Only show errors after user interaction (blur/submit)
+- Use the `touched` state pattern to control `isVisible`
+- Don't show errors on initial render or while typing
+
+**ARIA relationships:**
+
+Associate error messages with form fields using `aria-describedby`:
+
+```tsx
+<FormField.Root isInvalid={hasErrors && touched}>
+  <FormField.Label>Field Label</FormField.Label>
+  <FormField.Input>
+    <TextInput
+      aria-describedby="field-errors"
+    />
+  </FormField.Input>
+  <FormField.Error>
+    <FieldErrors
+      id="field-errors"
+      errors={errors}
+      isVisible={touched}
+    />
+  </FormField.Error>
+</FormField.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-field-errors";
+
+export const Example = () => (
+  <FieldErrors
+    id={PERSISTENT_ID}
+    errors={errors}
+  />
+);
+```
+
+#### Keyboard navigation
+
+FieldErrors is a static display component with no keyboard interactions. Users navigate to form fields using standard keyboard controls:
+- `Tab` / `Shift+Tab`: Move focus between form fields
+- Error messages are announced by screen readers when fields receive focus or when errors change

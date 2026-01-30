@@ -1,0 +1,39 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+Icon is a visual element that requires proper accessibility considerations:
+
+#### ARIA Attributes
+
+- Use `aria-label` for standalone icons that convey meaning
+- Use `aria-hidden="true"` for decorative icons next to text labels
+- Ensure sufficient color contrast (avoid relying solely on color)
+
+```tsx
+{/* Standalone icon - needs label */}
+<IconButton aria-label="Delete item" icon={Icons.Delete} />
+
+{/* Decorative icon with text - hide from screen readers */}
+<Button>
+  <Icon as={Icons.Save} aria-hidden="true" />
+  Save Document
+</Button>
+```
+
+#### Keyboard navigation
+
+Icons themselves are not interactive. When icons need to be clickable:
+- Wrap them in Button or IconButton components
+- Ensure the parent element is keyboard accessible
+- Provide appropriate focus indicators
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+<Icon id="status-icon-success" as={Icons.CheckCircle} />
+```

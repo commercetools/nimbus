@@ -1,0 +1,39 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Table component follows semantic HTML table structure and WCAG 2.1 AA guidelines.
+
+**Role**: The component uses native HTML table elements (`<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`) which have implicit ARIA roles.
+
+**Labeling**:
+- Use `Table.ColumnHeader` for header cells (renders `<th>`) to provide column labels
+- Consider adding `aria-label` or `aria-labelledby` to `Table.Root` for complex tables
+- Use `Table.Caption` to provide a descriptive title for the table
+
+**Keyboard Navigation**:
+- Tables are not interactive by default
+- If making rows clickable, ensure they are keyboard accessible
+- For interactive tables, consider adding `tabIndex={0}` to focusable elements
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-inventory-table";
+
+export const InventoryTable = () => (
+  <Table.Root id={PERSISTENT_ID}>
+    <Table.Header>
+      <Table.Row>
+        <Table.ColumnHeader>Product</Table.ColumnHeader>
+        <Table.ColumnHeader>Stock</Table.ColumnHeader>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
+      {/* table rows */}
+    </Table.Body>
+  </Table.Root>
+);
+```

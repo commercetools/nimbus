@@ -1,0 +1,68 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Select handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Associating a `<label>` element with the `Select.Root` using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<Select.Root aria-labelledby="label-id">
+  <Select.Options>
+    <Select.Option id="1">Option 1</Select.Option>
+  </Select.Options>
+</Select.Root>
+```
+
+- Associating a `<label>` element with the `Select.Root` using `htmlFor`:
+
+```tsx
+<label htmlFor="select-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<Select.Root id="select-id">
+  <Select.Options>
+    <Select.Option id="1">Option 1</Select.Option>
+  </Select.Options>
+</Select.Root>
+```
+
+For hidden labels, use `aria-label`:
+
+```tsx
+<Select.Root aria-label={intl.formatMessage(labelMessage)}>
+  <Select.Options>
+    <Select.Option id="1">Option 1</Select.Option>
+  </Select.Options>
+</Select.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-select";
+
+export const Example = () => (
+  <Select.Root id={PERSISTENT_ID} aria-label="Select an option">
+    <Select.Options>
+      <Select.Option id="1">Option 1</Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the select
+- `Enter` / `Space`: Open the dropdown
+- `Arrow keys`: Navigate through options when open
+- `Enter`: Select the focused option
+- `Escape`: Close the dropdown
+- `Home` / `End`: Jump to first/last option
+- Type to search: Type characters to jump to matching options

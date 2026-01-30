@@ -1,0 +1,31 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The `Alert` component has built-in accessibility features:
+
+- **Role**: The root element automatically has `role="alert"`. This informs screen readers that the content is important and time-sensitive. Because of `role="alert"`'s intrusive nature, the `Alert` component should be used sparingly and only in situations where the user's immediate attention is required.
+- **Icons**: Decorative icons are automatically hidden from screen readers to avoid redundancy.
+- **Dismiss Button**: The `Alert.DismissButton` comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-alert";
+
+export const Example = () => (
+  <Alert.Root id={PERSISTENT_ID}>
+    <Alert.Title>Notification</Alert.Title>
+  </Alert.Root>
+);
+```
+
+### Composition constraints
+
+The `Alert` component manages its own layout grid. To ensure correct placement:
+
+- Keep sub-components (`Title`, `Description`, `Actions`, `DismissButton`) as direct children of `Alert.Root`.
+- Do not wrap sub-components in other elements (like `div` or `Stack`), as these wrappers will be rendered as part of the layout and may break the visual structure.
+- You *can* use layout components *inside* `Alert.Actions` or `Alert.Description` to organize content within those slots.

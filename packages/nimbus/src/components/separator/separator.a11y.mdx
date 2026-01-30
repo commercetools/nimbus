@@ -1,0 +1,25 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Separator component handles accessibility requirements internally using React Aria:
+
+- Automatically applies `role="separator"` for screen readers
+- Sets `aria-orientation` when orientation is `"vertical"` (horizontal is the default and doesn't require explicit ARIA)
+- Non-focusable by default (separators are presentational elements)
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-separator";
+
+export const Example = () => (
+  <Separator id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+The Separator component is a presentational element and does not support keyboard interaction. It exists solely to provide visual division between content sections.

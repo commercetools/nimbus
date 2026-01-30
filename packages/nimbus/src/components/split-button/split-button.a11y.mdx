@@ -1,0 +1,44 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The SplitButton handles most accessibility requirements internally. However, you must provide an `aria-label` for the dropdown trigger button:
+
+```tsx
+<SplitButton
+  aria-label="More save options"
+  onAction={handleAction}
+>
+  <Menu.Item id="save">Save</Menu.Item>
+  <Menu.Item id="export">Export</Menu.Item>
+</SplitButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "document-actions-split-button";
+
+export const DocumentActions = () => (
+  <SplitButton
+    id={PERSISTENT_ID}
+    aria-label="Document actions"
+    onAction={handleAction}
+  >
+    <Menu.Item id="save">Save</Menu.Item>
+    <Menu.Item id="export">Export</Menu.Item>
+  </SplitButton>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Move focus between the primary button and dropdown trigger
+- `Enter` / `Space` (on primary button): Execute the primary action
+- `Enter` / `Space` (on dropdown trigger): Open/close the menu
+- `Arrow Up` / `Arrow Down`: Navigate menu items when menu is open
+- `Enter` (on menu item): Execute the selected action and close menu
+- `Escape`: Close the menu

@@ -1,0 +1,65 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Image component provides accessibility through proper HTML image semantics and ARIA support.
+
+#### Mandatory alt text
+
+Every image must have an `alt` attribute. The alt text should:
+- Describe the image content and context for screen reader users
+- Be empty (`alt=""`) for purely decorative images
+- Describe the action if the image is interactive (e.g., part of a link or button)
+- Provide meaningful information, not just "image" or the file name
+
+```jsx-live-dev
+const App = () => (
+  <Stack gap="400">
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Informative image</Text>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+        alt="Snow-capped mountain peaks at sunrise with pink and orange sky"
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="semibold" marginBottom="200">Decorative image (empty alt)</Text>
+      <Image
+        src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop"
+        alt=""
+        rounded="md"
+        maxWidth="400px"
+      />
+    </Box>
+  </Stack>
+)
+```
+
+### Accessibility standards
+
+- **Role**: The Image component renders as an `<img>` element with implicit `img` role
+- **Labeling**: Always provide descriptive `alt` text. For complex images (charts, diagrams), consider providing additional context through captions or aria-describedby
+
+#### Keyboard navigation
+
+Images are not focusable by default. Keyboard navigation only applies when images are wrapped in interactive elements such as buttons or links. In those cases, ensure the wrapping element has proper focus indicators and keyboard event handlers.
+
+#### Persistent ID tracking
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-hero-image";
+
+export const Example = () => (
+  <Image 
+    id={PERSISTENT_ID}
+    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&fit=crop"
+    alt="Featured product image"
+  />
+);
+```

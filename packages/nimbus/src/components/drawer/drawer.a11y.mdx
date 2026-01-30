@@ -1,0 +1,52 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+
+The Drawer component handles most accessibility requirements internally through React Aria Components. However, you must provide an accessible label for the drawer using one of these approaches:
+
+- **Using Drawer.Title** (recommended):
+```tsx
+<Drawer.Content>
+  <Drawer.Header>
+    <Drawer.Title>Drawer Title</Drawer.Title>
+  </Drawer.Header>
+  <Drawer.Body>...</Drawer.Body>
+</Drawer.Content>
+```
+
+- **Using aria-label** (when no visual title is needed):
+```tsx
+<Drawer.Root aria-label={intl.formatMessage(drawerMessage)}>
+  <Drawer.Trigger>Open</Drawer.Trigger>
+  <Drawer.Content>...</Drawer.Content>
+</Drawer.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-drawer";
+
+export const Example = () => (
+  <Drawer.Root id={PERSISTENT_ID}>
+    <Drawer.Trigger>Open</Drawer.Trigger>
+    <Drawer.Content>...</Drawer.Content>
+  </Drawer.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate between focusable elements inside the drawer
+- `Escape`: Close the drawer (unless `isKeyboardDismissDisabled` is true)
+- Focus is automatically trapped within the drawer when open
+- Focus is restored to the trigger element when the drawer closes
+
+#### ARIA attributes
+
+- `role="dialog"`: Applied to the drawer content
+- `aria-label` or `aria-labelledby`: Associates the drawer with its title
+- `aria-modal="true"`: Indicates the drawer is modal (blocks interaction with background)
