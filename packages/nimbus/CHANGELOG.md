@@ -1,5 +1,20 @@
 # @commercetools/nimbus
 
+## 2.5.0
+
+### Minor Changes
+
+- [#987](https://github.com/commercetools/nimbus/pull/987)
+  [`53b01dc`](https://github.com/commercetools/nimbus/commit/53b01dcda7f82503a716ef5ddac4e298924972de)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Remove react-intl
+  dev dependency and replace with custom message extraction script.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.5.0
+  - @commercetools/nimbus-icons@2.5.0
+
 ## 2.4.0
 
 ### Minor Changes
