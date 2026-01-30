@@ -99,8 +99,7 @@
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
     "vite-tsconfig-paths": "catalog:tooling",
-    "vitest": "catalog:tooling",
-    "tsx": "catalog:tooling"
+    "vitest": "catalog:tooling"
   },
   "peerDependencies": {
     "@chakra-ui/react": "catalog:react",
@@ -118,7 +117,7 @@
     "dev": "vite build --watch",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
-    "build-theme-typings": "tsx scripts/generate-chakra-types.ts",
+    "build-theme-typings": "node scripts/generate-chakra-types.mjs",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
