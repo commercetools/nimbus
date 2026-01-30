@@ -5,50 +5,37 @@
 
 ## Purpose
 
-Unit test files (`{utility-name}.spec.ts` or `{hook-name}.spec.ts`) provide fast, isolated testing of **utility functions and React hooks** using JSDOM. Unit tests are exclusively for non-component logic.
+Unit test files (`{utility-name}.spec.ts` or `{hook-name}.spec.ts`) provide
+fast, isolated testing of **utility functions and React hooks** using JSDOM.
+Unit tests are exclusively for non-component logic.
 
-**IMPORTANT**: All component behavior, interactions, and visual states are tested in Storybook stories with play functions. Unit tests are reserved for utilities and hooks only.
+**IMPORTANT**: All component behavior, interactions, and visual states are
+tested in Storybook stories with play functions. Unit tests are reserved for
+utilities and hooks only.
 
 ## When to Use
 
 Unit tests are used for:
 
-- **Utility functions and helpers** - Pure functions, formatters, validators, data transformers
+- **Utility functions and helpers** - Pure functions, formatters, validators,
+  data transformers
 - **React hooks** - Custom hooks tested in isolation with `renderHook`
 - **Business logic** - Calculations, algorithms, data processing
 - **Validation functions** - Input validators, schema validators
 - **Helper modules** - String manipulation, date formatting, number formatting
-- **Documentation examples** - Consumer-facing test patterns (in `.docs.spec.tsx` files)
+- **Documentation examples** - Consumer-facing test patterns (in
+  `.docs.spec.tsx` files)
 
-**For component behavior testing**: Use Storybook stories with play functions to test all component interactions, visual states, and accessibility.
+**For component behavior testing**: Use Storybook stories with play functions to
+test all component interactions, visual states, and accessibility.
 
-### Documentation Tests (`.docs.spec.tsx`)
+### Consumer Implementation Tests (`.docs.spec.tsx`)
 
-A special category of unit tests used for engineering documentation:
+Consumer Implementation Tests are **working code examples** that consumers can
+copy to test Nimbus components in their applications. They are automatically
+injected into engineering documentation at build time.
 
-- **Purpose**: Provide real, working test examples for consumers
-- **Location**: Colocated with components (e.g., `text-input.docs.spec.tsx`)
-- **Integration**: Automatically injected into `.dev.mdx` documentation at build time
-- **Workflow**: Write once, used in both test suite AND documentation
-
-See [Engineering Documentation Test Integration](../engineering-docs-validation.md) for complete details.
-
-### Unit Tests vs Storybook Tests vs Documentation Tests
-
-| Aspect | Unit Tests | Storybook Tests | Documentation Tests |
-|--------|------------|-----------------|---------------------|
-| **Environment** | JSDOM (fast, simulated) | Real browser (accurate) | JSDOM (consumer-friendly) |
-| **Purpose** | Utility/hook logic verification | Component behavior & interactions | Consumer test examples |
-| **Speed** | Very fast (~ms per test) | Slower (~seconds per story) | Very fast (~ms per test) |
-| **Focus** | Pure functions, hooks | UI, user flows, visual states, a11y | Integration patterns, public API |
-| **Use For** | Utilities, hooks | ALL components | Documentation examples |
-| **File Pattern** | `*.spec.{ts,tsx}` | `*.stories.tsx` | `*.docs.spec.tsx` |
-| **Audience** | Internal developers | Internal developers | External consumers |
-
-**Testing Strategy**:
-- **Nimbus internal testing**: Storybook stories test all component behavior
-- **Consumer documentation**: `.docs.spec.tsx` tests demonstrate integration patterns
-- **Utility testing**: Standard `.spec.ts` files test helper functions and hooks
+See [Testing Strategy Guide](./testing-strategy.md) for detailed rules.
 
 ## Testing Infrastructure
 
@@ -61,8 +48,8 @@ The project uses **Vitest** with two separate test projects:
 export default defineConfig({
   test: {
     projects: [
-      "./vitest.storybook.config.ts",  // Browser-based Storybook tests
-      "./vitest.unit.config.ts",        // JSDOM-based unit tests
+      "./vitest.storybook.config.ts", // Browser-based Storybook tests
+      "./vitest.unit.config.ts", // JSDOM-based unit tests
     ],
   },
 });
@@ -75,11 +62,11 @@ export default defineConfig({
 export default defineConfig({
   test: {
     name: "unit",
-    environment: "jsdom",                                    // Use JSDOM instead of real browser
-    include: ["src/**/*.spec.{ts,tsx}"],                    // Test file patterns
+    environment: "jsdom", // Use JSDOM instead of real browser
+    include: ["src/**/*.spec.{ts,tsx}"], // Test file patterns
     exclude: ["src/**/*.stories.{ts,tsx}", "node_modules"], // Exclude Storybook tests
-    globals: true,                                          // Enable global test APIs
-    setupFiles: ["./src/test/unit-test-setup.ts"],         // Setup file runs before tests
+    globals: true, // Enable global test APIs
+    setupFiles: ["./src/test/unit-test-setup.ts"], // Setup file runs before tests
   },
 });
 ```
@@ -88,7 +75,7 @@ export default defineConfig({
 
 ```typescript
 // src/test/unit-test-setup.ts
-import "./setup-jsdom-polyfills";  // JSDOM polyfills for Chakra UI
+import "./setup-jsdom-polyfills"; // JSDOM polyfills for Chakra UI
 import "@testing-library/jest-dom"; // Custom matchers (toBeInTheDocument, etc.)
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
@@ -101,7 +88,8 @@ afterEach(() => {
 
 ### JSDOM Polyfills
 
-The `setup-jsdom-polyfills.ts` file provides essential browser APIs missing in JSDOM:
+The `setup-jsdom-polyfills.ts` file provides essential browser APIs missing in
+JSDOM:
 
 - `structuredClone` - Required by Chakra UI for theme configuration
 - `window.matchMedia` - Required for responsive design and color mode
@@ -110,19 +98,20 @@ The `setup-jsdom-polyfills.ts` file provides essential browser APIs missing in J
 - `Element.prototype.scrollTo/scrollIntoView` - Required for focus management
 - `requestAnimationFrame` - Required for animations and transitions
 
-**Consumer Usage**: These polyfills are exported for use in consuming applications:
+**Consumer Usage**: These polyfills are exported for use in consuming
+applications:
 
 ```typescript
 // jest.config.js
 module.exports = {
-  setupFiles: ['@commercetools/nimbus/setup-jsdom-polyfills']
+  setupFiles: ["@commercetools/nimbus/setup-jsdom-polyfills"],
 };
 
 // vitest.config.ts
 export default defineConfig({
   test: {
-    setupFiles: ['@commercetools/nimbus/setup-jsdom-polyfills']
-  }
+    setupFiles: ["@commercetools/nimbus/setup-jsdom-polyfills"],
+  },
 });
 ```
 
@@ -509,7 +498,6 @@ describe("validateEmail", () => {
 });
 ```
 
-
 ## Async Testing
 
 ### When to Use `waitFor`
@@ -609,11 +597,58 @@ describe("debounce", () => {
 });
 ```
 
+## Clean Testing Patterns (JSDOM)
+
+These patterns address JSDOM-specific behaviors in unit tests.
+
+### Controlled Component Initialization
+
+Controlled inputs must have defined initial values. An `undefined` value creates
+an uncontrolled input, which cannot later become controlled:
+
+```typescript
+const [value, setValue] = useState({ amount: "", currencyCode: "EUR" });
+```
+
+### Testing Expected Warning Behavior
+
+When testing edge cases that intentionally trigger warnings, capture and verify
+them as part of the test contract:
+
+```typescript
+it("warns on invalid input", () => {
+  const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+  // ... test code that triggers warning ...
+
+  expect(consoleSpy).toHaveBeenCalledWith(
+    expect.stringContaining("expected message")
+  );
+  consoleSpy.mockRestore();
+});
+```
+
+### Router Context for Navigation Tests
+
+Link components require router context to handle navigation. JSDOM doesn't
+implement browser navigation, so provide a mock router:
+
+```typescript
+const mockRouter = { navigate: vi.fn() };
+
+render(
+  <NimbusProvider router={mockRouter}>
+    <Link href="/page">Click me</Link>
+  </NimbusProvider>
+);
+```
+
 ## Best Practices
 
 ### Test Structure
 
-- **Use descriptive test names** - Test names should clearly state what is being tested
+- **Use descriptive test names** - Test names should clearly state what is being
+  tested
 - **One assertion per test** - Keep tests focused on a single behavior
 - **Arrange-Act-Assert pattern** - Structure tests clearly:
   1. Arrange: Set up test data and dependencies
@@ -734,7 +769,8 @@ Unit tests should cover these areas for utilities and hooks:
 - **Return values** - All possible return types and states
 - **Hook lifecycle** - Mounting, updating, unmounting behavior
 
-**Scope**: Unit tests are for utility functions and React hooks. Component behavior is tested in Storybook stories with play functions.
+**Scope**: Unit tests are for utility functions and React hooks. Component
+behavior is tested in Storybook stories with play functions.
 
 ## Related Guidelines
 

@@ -35,11 +35,17 @@ detailed guidelines:
 
 ### Testing Files
 
+- **[Testing Strategy Guide](./file-type-guidelines/testing-strategy.md)** -
+  Decision guide for choosing between Story Tests, Unit Tests, and Consumer
+  Tests
 - **[Unit Tests ({utility}.spec.ts)](./file-type-guidelines/unit-testing.md)** -
   Fast, isolated tests for utilities, hooks, and documentation examples
-- **[Documentation Tests ({component}.docs.spec.tsx)](../engineering-docs-validation.md)** -
+- **[Consumer Tests ({component}.docs.spec.tsx)](./engineering-docs-validation.md)** -
   Consumer-facing test examples automatically injected into `.dev.mdx`
   documentation
+
+**Note**: For understanding which tests go where, see the
+[Testing Strategy Guide](./file-type-guidelines/testing-strategy.md).
 
 ### Styling System Files (When Needed)
 

@@ -555,6 +555,8 @@ export const menuSlotRecipe = defineSlotRecipe({
 - [ ] State modifiers properly defined
 - [ ] Dark mode styles included (if needed)
 - [ ] Responsive styles (if needed)
+- [ ] **Uses `:first-of-type`/`:last-of-type` instead of
+      `:first-child`/`:last-child`** (ensures SSR hydration consistency)
 
 ---
 
