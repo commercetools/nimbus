@@ -97,6 +97,7 @@
     "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.75.0",
     "storybook": "catalog:tooling",
+    "tsx": "catalog:tooling",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
     "vite-tsconfig-paths": "catalog:tooling",
@@ -113,12 +114,14 @@
     "slate-react": "^0.75.0"
   },
   "scripts": {
-    "build": "pnpm run build-theme-typings && pnpm run build:lib",
+    "build": "pnpm run build-theme-typings && pnpm run generate-augmentation && pnpm run build:lib && pnpm run copy-augmentation",
     "build:lib": "vite build",
+    "copy-augmentation": "mkdir -p dist/types && cp src/types/chakra-augmentation.d.ts dist/types/chakra-augmentation.d.ts",
     "dev": "vite build --watch",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
-    "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
+    "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts --outdir ./generated-types",
+    "generate-augmentation": "tsx scripts/generate-chakra-augmentation.ts",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

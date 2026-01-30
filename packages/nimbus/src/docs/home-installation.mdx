@@ -99,9 +99,38 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 > Checkout the [NimbusProvider documentation](/components/utilities/nimbusprovider)
 > for more details on how to set up **i18n** and **routing**.
 
-## 3. Use Nimbus Components
+## 3. Generate TypeScript Types
 
-Once the provider is set up, you can start using Nimbus components in your
+For proper TypeScript autocomplete and type checking, generate types for Nimbus's custom recipes:
+
+```bash
+# Create a theme export file
+echo 'export { system } from "@commercetools/nimbus"' > src/theme.ts
+
+# Generate TypeScript types
+pnpm dlx @chakra-ui/cli typegen ./src/theme.ts
+```
+
+This command reads Nimbus's theme configuration and generates TypeScript definitions for custom component recipes (Drawer, Alert, Card, etc.).
+
+> [!IMPORTANT]
+> Every developer on your team needs to run the typegen command after installing Nimbus. The generated types are written to `node_modules/` and are not committed to version control.
+
+### Optional: Automate with Postinstall
+
+You can add this as a postinstall script to run automatically:
+
+```json
+{
+  "scripts": {
+    "postinstall": "chakra-ui typegen ./src/theme.ts"
+  }
+}
+```
+
+## 4. Use Nimbus Components
+
+Once the provider is set up and types are generated, you can start using Nimbus components in your
 application.
 
 ```jsx
@@ -131,7 +160,7 @@ export default App;
 That's it! You've successfully installed and set up Nimbus in your project. You
 can now explore and use the wide range of components offered by the library.
 
-## 4. Set up Testing (Optional)
+## 5. Set up Testing (Optional)
 
 If you're using Jest or Vitest to test your application, you'll need to add Nimbus polyfills to your test configuration:
 

@@ -167,6 +167,17 @@ export default defineConfig(async () => {
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
         exclude: ["src/**/*.stories.*", "src/**/*.spec.*", "src/test/**/*"],
+        // Add triple-slash reference to ROOT index.d.ts only for Chakra augmentation
+        beforeWriteFile: (filePath, content) => {
+          // Only add reference to the root dist/index.d.ts (not nested component/pattern index files)
+          // Match paths like "dist/index.d.ts" or "/some/path/dist/index.d.ts"
+          if (filePath.match(/\/dist\/index\.d\.ts$/)) {
+            return {
+              filePath,
+              content: `/// <reference path="./types/chakra-augmentation.d.ts" />\n\n${content}`,
+            };
+          }
+        },
       })
     );
     // Run analyzer if the ANALYZE_BUNDLE env var is present
