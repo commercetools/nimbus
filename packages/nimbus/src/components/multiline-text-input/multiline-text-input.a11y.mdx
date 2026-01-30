@@ -3,33 +3,55 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
 
-```jsx-live
-const App = () => (
-  <MultilineTextInput
-        size="md"
-        placeholder="well described placeholder"
-        aria-label="lorem ipsum text"
-        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-        rows={5}
-    />
-)
+The MultilineTextInput handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `MultilineTextInputField` pattern component (recommended)
+- Associating a `<label>` element with the `MultilineTextInput` using `aria-labelledby`:
+
+```tsx
+<label id="description-label">
+  {intl.formatMessage(descriptionMessage)}
+</label>
+<MultilineTextInput aria-labelledby="description-label" />
 ```
 
-### Accessibility standards
+- Associating a `<label>` element with the `MultilineTextInput` using `htmlFor`:
 
-- Always provide a visible label for the input.
-- If a visible label is not used, provide an aria-label or aria-labelledby for
-  screen readers.
-- Ensure sufficient color contrast for all elements (text, borders).
-- Communicate errors clearly, using both visual cues (e.g., color) and
-  descriptive error messages.
-- Clearly indicate the focused state.
+```tsx
+<label htmlFor="description-textarea">
+  {intl.formatMessage(descriptionMessage)}
+</label>
+<MultilineTextInput id="description-textarea" />
+```
 
-### Resources
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
-- [Adobe Spectrum TextArea](https://www.google.com/search?q=https://spectrum.adobe.com/components/textarea/)
-- [React Spectrum TextArea](https://react-spectrum.adobe.com/react-spectrum/TextArea.html)
+```tsx
+<MultilineTextInput aria-label={intl.formatMessage(descriptionMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-description-textarea";
+
+export const DescriptionField = () => (
+  <MultilineTextInput id={PERSISTENT_ID} placeholder="Description" />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate to/from the textarea field
+- `Arrow keys`: Move cursor within the text (all directions for multi-line navigation)
+- `Home` / `End`: Move cursor to start/end of current line
+- `Ctrl+Home` / `Ctrl+End`: Move cursor to start/end of entire text
+- `Ctrl+A` / `Cmd+A`: Select all text
+- `Enter`: Insert new line
+- Standard text editing shortcuts: Cut, Copy, Paste, Undo, Redo
+
+#### Click-to-focus behavior
+
+Clicking anywhere within the textarea container (including leading element area) will focus the textarea field, providing a larger interactive target for better usability.

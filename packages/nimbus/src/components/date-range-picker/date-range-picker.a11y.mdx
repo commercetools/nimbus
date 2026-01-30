@@ -3,36 +3,48 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
 
-```jsx-live
-const App = () => <DateRangePicker aria-label="Enter date range" />
+The DateRangePicker handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:
+
+- Using the `DateRangePickerField` pattern component (recommended)
+- Associating a `<label>` element with the `DateRangePicker` using `aria-labelledby`:
+
+```tsx
+<label id="label-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DateRangePicker aria-labelledby="label-id" />
 ```
 
-### Accessibility Standards
+- Associating a `<label>` element with the `DateRangePicker` using `htmlFor`:
 
-- Always provide a visible label for the input.
-- Clearly associate the label with the input using the for attribute on the
-  `<label>` and a matching id on the input element.
-- Ensure sufficient color contrast for all elements (text, borders, icons, focus
-  indicators).
-- Clearly indicate the focused state.
-- Support keyboard navigation:
-- Use Tab to navigate to and from the date input.
-- Use Enter or Space to open/close the date picker (if applicable).
-- Use arrow keys to navigate within the calendar grid (if a date picker is
-  provided).
-- Allow users to select dates using Enter or Space.
-- Communicate errors clearly, using both visual cues (e.g., color) and
-  descriptive error messages.
-- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).
-- Ensure screen readers announce the selected date and any navigation changes
-  within a date picker.
-- Provide an accessible way to clear the date input.
+```tsx
+<label htmlFor="date-range-picker-id">
+  {intl.formatMessage(labelMessage)}
+</label>
+<DateRangePicker id="date-range-picker-id" />
+```
 
-### Resources
+If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
-- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DateRangePicker.html)
-- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)
+```tsx
+<DateRangePicker aria-label={intl.formatMessage(labelMessage)} />
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-date-range-picker";
+
+export const Example = () => (
+  <DateRangePicker id={PERSISTENT_ID} />
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+- `Tab` / `Shift+Tab`: Navigate between date segments and buttons
+- `Arrow keys`: Increment/decrement date segments and navigate calendar
+- `Enter` / `Space`: Open calendar, select dates
+- `Escape`: Close calendar popover

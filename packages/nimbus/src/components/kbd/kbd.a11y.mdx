@@ -3,21 +3,24 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
 
-```jsx-live
-const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
+The Kbd component renders semantic `<kbd>` HTML elements which are recognized by screen readers as keyboard input. This helps assistive technology users understand that the content represents keys to press.
+
+**Best practices:**
+- Always use Kbd within descriptive text that explains the action
+- Provide clear context about what the keyboard shortcut does
+- Use consistent patterns for key combinations (e.g., modifier + key)
+- Consider providing alternative methods for users who cannot use keyboards
+
+**Example with clear context:**
+```jsx-live-dev
+const App = () => (
+  <Text>
+    To save your changes, press <Kbd>Ctrl</Kbd> + <Kbd>S</Kbd> or use the Save button.
+  </Text>
+)
 ```
 
-### Accessibility standards
+#### Keyboard navigation
 
-- **Semantic Meaning:** The `<kbd>` element provides clear semantic meaning to
-  screen readers, indicating that the enclosed text represents keyboard input.
-- **Reading Flow:** Ensure the KBD component doesn't interrupt the natural
-  reading flow of the surrounding sentence.
-- **Contrast:** The key's background color and the text color must adhere to
-  WCAG contrast guidelines for legibility.
-- **Focus (N/A):** Note that the KBD component itself is generally
-  non-interactive and therefore should not be focusable via the keyboard.
+The Kbd component does not have interactive elements and does not require keyboard navigation. It is a display-only component used to visually represent keyboard keys.

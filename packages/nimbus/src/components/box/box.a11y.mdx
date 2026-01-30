@@ -3,13 +3,44 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Box renders a `div` by default but can be changed to any other HTML element
-using the `as` prop.
 
-```jsx-live
-const App = () => (
-  <Box as="section" p="100">
-    Section content
+The Box component is a layout primitive and renders as a `div` by default. For proper accessibility:
+
+- **Semantic HTML**: Use the `as` prop to render appropriate semantic elements (`section`, `article`, `nav`, `aside`, etc.) based on the content's purpose
+- **Landmarks**: When using Box as a landmark element (like `nav` or `main`), provide an `aria-label` for screen readers if multiple landmarks of the same type exist on the page
+- **Interactive elements**: When using `asChild` with interactive elements (buttons, links), ensure the child element has proper accessibility attributes
+
+```tsx
+// Semantic section
+<Box as="section" aria-labelledby="section-heading">
+  <h2 id="section-heading">Section Title</h2>
+</Box>
+
+// Navigation landmark
+<Box as="nav" aria-label="Main navigation">
+  {/* navigation items */}
+</Box>
+
+// Interactive element with asChild
+<Box asChild>
+  <button aria-label={intl.formatMessage(labelMessage)}>
+    {/* button content */}
+  </button>
+</Box>
+```
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-box";
+
+export const Example = () => (
+  <Box id={PERSISTENT_ID} p="100" bg="primary.3">
+    Content
   </Box>
 );
 ```
+
+#### Keyboard navigation
+
+Box is a non-interactive layout component and does not support keyboard navigation by default. However, when using the `asChild` prop with interactive elements, the child element's keyboard interactions are preserved.

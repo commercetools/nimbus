@@ -3,32 +3,25 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
 
-```jsx-live
-const App = () => (
-  <Stack direction="column" gap="400">
-    <Heading as="h1" size="4xl">Heading H1</Heading>
-    <Heading as="h2" size="3xl">Heading H2</Heading>
-    <Heading as="h3" size="2xl">Heading H3</Heading>
-    <Heading as="h4" size="xl">Heading H4</Heading>
-  </Stack>
-)
+The Heading component provides semantic HTML heading elements for proper document structure. Screen readers use heading levels to navigate content and understand page hierarchy.
+
+**Heading level best practices:**
+- Use heading levels sequentially (don't skip levels)
+- Typically one h1 per page (the main title)
+- Use h2-h6 to create logical content hierarchy
+- Visual size (size prop) can differ from semantic level (as prop)
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-heading-id";
+
+export const Example = () => (
+  <Heading id={PERSISTENT_ID}>Analytics-Tracked Heading</Heading>
+);
 ```
 
-## Accessibility standards
+#### Keyboard navigation
 
-- **Semantic markup:** Use the correct HTML heading tags (`<h1>` to `<h6>`) to
-  establish a document outline, rather than relying on font styling alone.
-- **Logical order:** Maintain the correct hierarchical order (e.g., `<h2>`
-  follows `<h1>`, not `<h4>`).
-- **Informative text:** Ensure the headline clearly describes the content that
-  immediately follows it for easy scanning.
-- **Contrast:** Maintain a high contrast ratio (`3:1` for large text, `4.5:1`
-  for smaller/regular text) between the text and background.
-- **Visual distinction:** Ensure the headline is visually distinct (size,
-  weight) from body text to aid quick visual scanning.
-- **Language attribute:** Use the lang attribute if the headline is in a
-  language different from the rest of the page.
+As a non-interactive display component, Heading does not require keyboard interaction. However, screen reader users can navigate between headings using keyboard shortcuts (typically H key) to quickly scan page structure.

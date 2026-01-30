@@ -3,29 +3,26 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Flex renders a `div` by default but can be changed to any other HTML element
-using the `as` prop to ensure proper semantic structure:
 
-```jsx-live
-const App = () => (
-  <Flex as="nav" gap="400" p="400">
-    <Box as="a" href="#" p="200">
-      Home
-    </Box>
-    <Box as="a" href="#" p="200">
-      About
-    </Box>
-    <Box as="a" href="#" p="200">
-      Contact
-    </Box>
+Flex is a layout component and does not have inherent accessibility requirements. However:
+
+- Ensure child elements have appropriate accessibility attributes
+- Use semantic HTML elements within Flex when appropriate
+- Consider reading order when using `row-reverse` or `column-reverse` directions
+- Test keyboard navigation flows through flex-arranged elements
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-flex";
+
+export const Example = () => (
+  <Flex id={PERSISTENT_ID} direction="row" gap="400">
+    {/* children */}
   </Flex>
 );
 ```
 
-### Best practices
+#### Keyboard navigation
 
-- **Use semantic HTML**: Choose appropriate HTML elements with the `as` prop
-- **Maintain reading order**: Ensure visual order matches DOM order for screen
-  readers
-- **Avoid layout-only divs**: When possible, apply flex styles to semantic
-  elements
+Flex is a non-interactive layout component and does not support keyboard navigation by default. Keyboard navigation is determined by the interactive child elements contained within the Flex.

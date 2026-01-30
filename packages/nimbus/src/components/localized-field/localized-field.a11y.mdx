@@ -3,42 +3,46 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
 
-```jsx-live
-const App = () => {
-  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });
+LocalizedField implements comprehensive accessibility features to ensure WCAG 2.1 AA compliance.
 
-  return (
+#### Role
 
-      <LocalizedField
-        size="md"
-        defaultLocaleOrCurrency="en"
-        valuesByLocaleOrCurrency={values}
-        onChange={(e) => {
-          setValues({
-            ...values,
-            [e.target.locale]: e.target.value
-          });
-        }}
-      />
+- `role="group"` - The fieldset groups related locale/currency fields
+- Each locale field has appropriate input roles (`textbox`, `spinbutton` for money)
 
-  );
-};
+#### Labeling
+
+- Group label via `<legend>` element (or `aria-label` if no visible label)
+- Each locale field labeled with its language/currency code
+- Required fields indicated with `aria-required="true"`
+- Invalid fields indicated with `aria-invalid="true"`
+- Error messages linked via `aria-describedby`
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between locale fields and controls |
+| `Shift + Tab` | Move focus backwards |
+| `Enter` / `Space` | Toggle expand/collapse when focused on language icon button |
+| `Escape` | Close info dialog (if open) |
+
+For individual input types, standard keyboard behavior applies:
+- Text/multiLine: Standard text input navigation
+- RichText: Rich text editor keyboard shortcuts
+- Money: Number input behavior with arrow keys for increment/decrement
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** `id` to the component:
+
+```tsx
+<LocalizedField
+  id="product-name-localized"
+  name="productName"
+  // ... other props
+/>
 ```
 
-## Accessibility standards
-
-- **Focus management:** Ensure the Tab order moves logically between the active
-  input field and the language switching controls. When the language is
-  switched, focus should return to the newly visible input field.
-- **Keyboard operability:** The language switching controls (tabs, buttons) must
-  be fully navigable and operable via the keyboard.
-- **ARIA roles:** Ensure the active input field correctly inherits all necessary
-  ARIA attributes (e.g., aria-required, aria-invalid) from the FormField
-  component.
-- **Screen reader communication:** Ensure screen readers announce the change of
-  language context when the user activates a different locale input, often by
-  announcing the new tab or language code.
+The component will automatically append locale/currency codes to create unique IDs for each field (e.g., `product-name-localized.en`, `product-name-localized.de`).
