@@ -517,6 +517,9 @@ importers:
 
   packages/nimbus:
     dependencies:
+      '@chakra-ui/cli':
+        specifier: catalog:react
+        version: 3.31.0(@chakra-ui/react@3.31.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.4.0
@@ -557,9 +560,6 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0(react@19.2.0)
     devDependencies:
-      '@chakra-ui/cli':
-        specifier: catalog:react
-        version: 3.31.0(@chakra-ui/react@3.31.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@chakra-ui/react':
         specifier: catalog:react
         version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)

@@ -73,6 +73,34 @@ yarn add slate slate-history slate-hyperscript slate-react
 > [!NOTE]  
 > Nimbus requires React 19.x. If you're on an earlier version, upgrade with `pnpm add react@19 react-dom@19`
 
+### TypeScript Support
+
+TypeScript types for component variants, sizes, and design tokens are generated
+via a postinstall hook. Modern package managers (pnpm v8+, yarn v2+) block
+postinstall scripts by default. To enable automatic type generation:
+
+#### pnpm
+
+Add to your `package.json`:
+
+```json
+{
+  "pnpm": {
+    "onlyBuiltDependencies": ["@commercetools/nimbus"]
+  }
+}
+```
+
+Or run `pnpm approve-builds` after installation.
+
+#### Manual generation
+
+If the postinstall doesn't run, generate types manually:
+
+```bash
+npx @chakra-ui/cli typegen node_modules/@commercetools/nimbus/dist/index.es.js
+```
+
 ## 2. Set up NimbusProvider
 
 Wrap your application with the `NimbusProvider` at the root level. This provider
@@ -158,6 +186,15 @@ export default defineConfig({
 ```
 
 For complete testing setup instructions, see the **[Testing Setup](/home/getting-started/testing-setup)** guide.
+
+## Troubleshooting
+
+### TypeScript types not working
+
+If props like `variant` or `size` show as `any`:
+
+1. Run the manual type generation command (see TypeScript Support section above)
+2. Restart your TypeScript server (VS Code: `Cmd+Shift+P` → "TypeScript: Restart TS Server")
 
 ## Next steps
 
