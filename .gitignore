@@ -189,7 +189,12 @@ dist
 # Playwright MCP screenshots
 .playwright-mcp/
 
+<<<<<<< HEAD
 # Generated i18n files (regenerate with: pnpm build or pnpm extract-intl)
 packages/nimbus/src/components/**/intl/
 packages/nimbus/src/components/**/*.messages.ts
 
+=======
+# Generated Chakra UI type augmentations
+packages/nimbus/src/theme/chakra-types.gen.d.ts
+>>>>>>> 771edda9 (feat(theme types): generate theme types and bundle into dist for consumption)

@@ -167,6 +167,13 @@ export default defineConfig(async () => {
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
         exclude: ["src/**/*.stories.*", "src/**/*.spec.*", "src/test/**/*"],
+        // Copy existing .d.ts files from src to dist.
+        // This is required to include the auto-generated Chakra UI type augmentations
+        // (src/theme/chakra-types.gen.d.ts) in the published package.
+        // These augmentations provide TypeScript support for Nimbus's custom recipes,
+        // tokens, and conditions to consumers without requiring them to run typegen.
+        // See scripts/generate-chakra-types.ts for the generation logic.
+        copyDtsFiles: true,
       })
     );
     // Run analyzer if the ANALYZE_BUNDLE env var is present

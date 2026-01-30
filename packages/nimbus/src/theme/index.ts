@@ -1,3 +1,5 @@
+/// <reference path="./chakra-types.gen.d.ts" />
+
 import {
   createSystem,
   defaultBaseConfig,
