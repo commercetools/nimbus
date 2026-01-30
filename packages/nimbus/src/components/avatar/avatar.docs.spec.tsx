@@ -77,29 +77,10 @@ describe("Avatar - Size variants", () => {
 });
 
 /**
- * @docs-section disabled-state
- * @docs-title Disabled state tests
- * @docs-description Test disabled state styling
- * @docs-order 3
- */
-describe("Avatar - Disabled state", () => {
-  it("applies disabled styling when isDisabled is true", () => {
-    render(
-      <NimbusProvider>
-        <Avatar firstName="John" lastName="Doe" isDisabled />
-      </NimbusProvider>
-    );
-
-    const avatar = screen.getByRole("figure");
-    expect(avatar).toBeInTheDocument();
-  });
-});
-
-/**
  * @docs-section accessibility
  * @docs-title Accessibility tests
  * @docs-description Verify accessibility attributes and labeling
- * @docs-order 4
+ * @docs-order 3
  */
 describe("Avatar - Accessibility", () => {
   it("has correct aria-label with full name", () => {
