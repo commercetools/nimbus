@@ -17,11 +17,14 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = path.resolve(__dirname, "..");
 const TEMP_DIR = path.join(PACKAGE_ROOT, ".chakra-typegen-temp");
+// Output as .ts (not .d.ts) so it can be imported and included in the build chain.
+// Module augmentation works in .ts files, and this ensures consumers get the types
+// without needing explicit triple-slash references.
 const OUTPUT_FILE = path.join(
   PACKAGE_ROOT,
   "src",
   "theme",
-  "chakra-types.gen.d.ts"
+  "chakra-types.gen.ts"
 );
 const THEME_FILE = path.join(PACKAGE_ROOT, "src", "theme", "index.ts");
 
@@ -103,6 +106,17 @@ async function main() {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
 
   try {
+    // Create a placeholder file if it doesn't exist.
+    // This is needed because theme/index.ts imports from chakra-types.gen,
+    // and chakra typegen will fail if the import target doesn't exist.
+    if (!fs.existsSync(OUTPUT_FILE)) {
+      console.log("📝 Creating placeholder file...");
+      fs.writeFileSync(
+        OUTPUT_FILE,
+        `// Placeholder - will be replaced by generate-chakra-types.ts\nexport {};\n`
+      );
+    }
+
     // Run chakra typegen to temp directory
     console.log("📦 Running chakra typegen...");
     execSync(`pnpm chakra typegen ${THEME_FILE} --outdir ${TEMP_DIR}`, {
@@ -172,6 +186,12 @@ async function main() {
 
     // Close module declaration
     outputParts.push(`}\n`);
+
+    // Add empty export to make this a proper ES module.
+    // This allows it to be imported/re-exported from theme/index.ts,
+    // ensuring the module augmentation is included in the build chain.
+    outputParts.push(`// Empty export makes this a module (required for augmentation to work)\n`);
+    outputParts.push(`export {};\n`);
 
     // Write the output file
     const output = outputParts.join("\n");

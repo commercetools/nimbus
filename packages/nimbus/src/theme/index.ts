@@ -1,5 +1,3 @@
-/// <reference path="./chakra-types.gen.d.ts" />
-
 import {
   createSystem,
   defaultBaseConfig,
@@ -37,3 +35,8 @@ const themeConfig = defineConfig({
 });
 
 export const system = createSystem(defaultBaseConfig, themeConfig);
+
+// Re-export Chakra UI type augmentations for Nimbus's custom theme.
+// This ensures the module augmentation is included in the build chain
+// and consumers get TypeScript support for Nimbus recipes, tokens, etc.
+export * from "./chakra-types.gen";
