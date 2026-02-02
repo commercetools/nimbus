@@ -1882,7 +1882,7 @@ export const ControlledMenu: Story = {
           </Menu.Content>
         </Menu.Root>
 
-        <Button onClick={() => setIsOpen(!isOpen)}>
+        <Button onPress={() => setIsOpen(!isOpen)}>
           {isOpen ? "Close" : "Open"} Menu
         </Button>
 

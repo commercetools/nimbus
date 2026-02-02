@@ -232,7 +232,7 @@ export const ComplexIconLayouts: Story = {
     const [dir, setDir] = useState<"ltr" | "rtl">("ltr");
     return (
       <>
-        <Button mb="800" onClick={() => setDir(dir === "ltr" ? "rtl" : "ltr")}>
+        <Button mb="800" onPress={() => setDir(dir === "ltr" ? "rtl" : "ltr")}>
           Change direction
         </Button>
         <Stack
