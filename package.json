@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
-    "@fission-ai/openspec": "^1.1.1",
+    "@fission-ai/openspec": "catalog:tooling",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.8",
     "@commercetools/nimbus": "workspace:^",

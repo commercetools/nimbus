@@ -49,15 +49,15 @@ you SHOULD check the error output and resolve any dependency issues.
 
 ### Step 4: Check OpenSpec Installed
 
-Read the required OpenSpec version from `@fission-ai/openspec` in `package.json`
-devDependencies. Then check the installed version:
+Read the required OpenSpec version from `@fission-ai/openspec` in the `tooling`
+catalog in `pnpm-workspace.yaml`. Then check the installed version:
 
 ```bash
 pnpm exec openspec --version
 ```
 
-**Requirement**: You MUST have OpenSpec >= the version specified in
-`package.json` devDependencies. If OpenSpec is missing, you SHOULD run
+**Requirement**: You MUST have OpenSpec >= the version specified in the
+`pnpm-workspace.yaml` catalog. If OpenSpec is missing, you SHOULD run
 `pnpm install` (openspec is a devDependency).
 
 ### Step 5: Check Playwright Chromium
@@ -89,8 +89,8 @@ their source files:
 
 - **Node.js**: Read from `.nvmrc`
 - **pnpm**: Read from `package.json` engines.pnpm field
-- **OpenSpec**: Read from `@fission-ai/openspec` in `package.json`
-  devDependencies
+- **OpenSpec**: Read from `@fission-ai/openspec` in `pnpm-workspace.yaml`
+  tooling catalog
 - **Playwright**: Read from `playwright` in `pnpm-workspace.yaml` tooling
   catalog
 
@@ -102,7 +102,7 @@ their source files:
 | Node.js >= {from .nvmrc}            | ✅ v24.12.0      |
 | pnpm >= {from package.json}         | ✅ v10.12.3      |
 | Dependencies                        | ✅               |
-| OpenSpec >= {from package.json}     | ✅ v0.16.0       |
+| OpenSpec >= {from pnpm-workspace}   | ✅ v0.16.0       |
 | Playwright >= {from pnpm-workspace} | ❌ Not installed |
 ```
 
