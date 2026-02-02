@@ -12,21 +12,28 @@ dependent checks.
 
 ### Step 1: Check Node.js Version
 
+First, read the required version from `.nvmrc` in the repo root. Then check the
+installed version:
+
 ```bash
 node --version
 ```
 
-**Requirement**: You MUST have Node.js >= 22.10 installed. If you need to
-install or update, use nvm: `nvm install 22` (installs v22.14.0+)
+**Requirement**: You MUST have Node.js >= the version specified in `.nvmrc`. If
+you need to install or update, use nvm: `nvm install` (reads from `.nvmrc`
+automatically)
 
 ### Step 2: Check pnpm Version
+
+Read the required pnpm version from the `engines.pnpm` field in `package.json`.
+Then check the installed version:
 
 ```bash
 pnpm --version
 ```
 
-**Requirement**: You MUST have pnpm >= 10 installed. If you need to install or
-update, run: `npm install -g pnpm@latest`
+**Requirement**: You MUST have pnpm >= the version specified in `package.json`
+engines. If you need to install or update, run: `npm install -g pnpm@latest`
 
 **Note**: If pnpm is not installed, you MUST skip Steps 3-5 (they depend on
 pnpm).
@@ -72,19 +79,25 @@ Chromium browser available in the list. If Chromium is missing, run:
 
 ## Output Format
 
-After running all checks, output a summary table:
+After running all checks, output a summary table. Read version requirements from
+their source files:
+
+- **Node.js**: Read from `.nvmrc`
+- **pnpm**: Read from `package.json` engines.pnpm field
 
 ```markdown
 ## 🏥 Nimbus Healthcheck
 
-| Check               | Status           |
-| ------------------- | ---------------- |
-| Node.js >= 22.10    | ✅ v22.14.0      |
-| pnpm >= 10          | ✅ v10.12.3      |
-| Dependencies        | ✅               |
-| OpenSpec            | ✅ v0.16.0       |
-| Playwright Chromium | ❌ Not installed |
+| Check                       | Status           |
+| --------------------------- | ---------------- |
+| Node.js >= {from .nvmrc}    | ✅ v24.12.0      |
+| pnpm >= {from package.json} | ✅ v10.12.3      |
+| Dependencies                | ✅               |
+| OpenSpec                    | ✅ v0.16.0       |
+| Playwright Chromium         | ❌ Not installed |
 ```
+
+(Replace `{from ...}` placeholders with actual versions read from those files)
 
 Where status is either:
 
