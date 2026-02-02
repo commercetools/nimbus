@@ -9,6 +9,7 @@ import {
   ComposedComboBox,
   type Pokemon,
   PokemonOption,
+  createMockAsyncLoad,
 } from "./utils/test-utils";
 
 // Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
@@ -347,24 +348,7 @@ export const AsyncLoading: Story = {
         isInvalid={!!error}
         selectionMode="multiple"
         async={{
-          load: async (filterText, signal) => {
-            // Pokemon API returns all pokemon, we filter client-side
-            const response = await fetch(
-              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-              { signal }
-            );
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            // Filter results client-side to match search
-            const filtered = data.results.filter((p: Pokemon) =>
-              p.name.toLowerCase().includes(filterText.toLowerCase())
-            );
-            return filtered.slice(0, 100); // Limit to 100 results for performance
-          },
+          load: createMockAsyncLoad(),
           debounce: 300,
           onError: (err) => {
             setError(err.message);
@@ -519,22 +503,7 @@ export const AsyncMultiSelectPersistence: Story = {
         getTextValue={getPokemonValue}
         selectionMode="multiple"
         async={{
-          load: async (filterText, signal) => {
-            const response = await fetch(
-              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-              { signal }
-            );
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const filtered = data.results.filter((p: Pokemon) =>
-              p.name.toLowerCase().includes(filterText.toLowerCase())
-            );
-            return filtered.slice(0, 50);
-          },
+          load: createMockAsyncLoad(),
           debounce: 300,
         }}
       >
@@ -684,22 +653,7 @@ export const AsyncMultiSelectCustomOptions: Story = {
                 setCreatedOptions((prev) => [...prev, newOption.name]);
               }}
               async={{
-                load: async (filterText, signal) => {
-                  const response = await fetch(
-                    `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-                    { signal }
-                  );
-
-                  if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                  }
-
-                  const data = await response.json();
-                  const filtered = data.results.filter((p: Pokemon) =>
-                    p.name.toLowerCase().includes(filterText.toLowerCase())
-                  );
-                  return filtered.slice(0, 50);
-                },
+                load: createMockAsyncLoad(),
                 debounce: 300,
               }}
             >
