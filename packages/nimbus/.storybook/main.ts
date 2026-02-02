@@ -18,6 +18,7 @@ function getAbsolutePackagePath(value: string): string {
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.tsx"],
+  staticDirs: ["../public"],
   addons: [
     getAbsolutePackagePath("@storybook/addon-a11y"),
     getAbsolutePackagePath("@vueless/storybook-dark-mode"),
