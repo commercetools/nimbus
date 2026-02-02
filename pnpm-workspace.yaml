@@ -9,7 +9,7 @@ catalogMode: strict
 
 catalogs:
   tooling:
-    globals: ^16.5.0
+    globals: ^17.3.0
     glob: ^11.0.3
     typescript: ~5.9.3
     typescript-eslint: ^8.54.0
