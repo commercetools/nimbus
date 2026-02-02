@@ -1,0 +1,402 @@
+---
+id: Components-Steps
+title: Steps
+description:
+  A display-only progress indicator for multi-step processes like forms,
+  wizards, and onboarding flows.
+documentState: InitialDraft
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Steps
+tags:
+  - component
+  - stepper
+  - progress
+  - wizard
+  - navigation
+---
+
+# Steps
+
+A display-only progress indicator that visually communicates the user's position
+within a multi-step process such as forms, wizards, and onboarding flows.
+
+## Overview
+
+The Steps component helps users understand where they are in a multi-step
+process. It provides clear visual feedback about completed, current, and
+upcoming steps, making complex workflows feel more manageable and predictable.
+
+### Key Features
+
+- **Three size variants**: Extra small (xs), small (sm), and medium (md) to fit
+  different interface densities
+- **Two orientations**: Horizontal for wide layouts and vertical for sidebar or
+  narrow contexts
+- **Flexible indicators**: Numeric step numbers with optional checkmarks, or
+  custom icons for semantic meaning
+- **Display-only**: Focuses purely on visual representation; navigation is
+  handled by the parent component
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+Three sizes are available to match your interface density.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="800">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Extra Small (xs) - 24px indicator</Text>
+      <Steps.Root step={1} count={3} size="xs">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Account</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={1}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Profile</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={2}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Review</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Small (sm, default) - 32px indicator</Text>
+      <Steps.Root step={1} count={3} size="sm">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Account</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={1}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Profile</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={2}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Review</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Medium (md) - 40px indicator</Text>
+      <Steps.Root step={1} count={3} size="md">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Account</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={1}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Profile</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={2}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Review</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+  </Stack>
+)
+```
+
+### Orientation
+
+Choose between horizontal and vertical layouts.
+
+#### Horizontal
+
+Default orientation, best for wide layouts and wizard headers.
+
+```jsx-live
+const App = () => (
+  <Steps.Root step={1} count={3} orientation="horizontal">
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Account</Steps.Label>
+          <Steps.Description>Create your account</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={1}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Profile</Steps.Label>
+          <Steps.Description>Complete your profile</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={2}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Review</Steps.Label>
+          <Steps.Description>Review and submit</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+#### Vertical
+
+Best for sidebars, narrow containers, or when steps need longer descriptions.
+
+```jsx-live
+const App = () => (
+  <Steps.Root step={1} count={3} orientation="vertical">
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Account Details</Steps.Label>
+          <Steps.Description>Set up your email and password</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={1}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Personal Information</Steps.Label>
+          <Steps.Description>Enter your name and contact details</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={2}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Confirmation</Steps.Label>
+          <Steps.Description>Review and complete your setup</Steps.Description>
+        </Steps.Content>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+### Indicator types
+
+#### Numeric
+
+Shows step numbers (1, 2, 3...) and displays a checkmark when complete.
+
+```jsx-live
+const App = () => (
+  <Steps.Root step={1} count={3}>
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Complete</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={1}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Current</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={2}>
+        <Steps.Indicator type="numeric" />
+        <Steps.Content>
+          <Steps.Label>Incomplete</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+#### Icon
+
+Displays custom icons for semantic meaning. Icons remain visible in all states
+with styling changes to indicate progress.
+
+```jsx-live
+const App = () => (
+  <Steps.Root step={1} count={3}>
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Indicator type="icon" icon={<Icons.Person />} />
+        <Steps.Content>
+          <Steps.Label>Account</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={1}>
+        <Steps.Indicator type="icon" icon={<Icons.Settings />} />
+        <Steps.Content>
+          <Steps.Label>Settings</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+      <Steps.Separator />
+      <Steps.Item index={2}>
+        <Steps.Indicator type="icon" icon={<Icons.Verified />} />
+        <Steps.Content>
+          <Steps.Label>Verify</Steps.Label>
+        </Steps.Content>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+### Step states
+
+Each step visually indicates its state based on the current progress.
+
+```jsx-live
+const App = () => {
+  const [currentStep, setCurrentStep] = React.useState(1);
+
+  return (
+    <Stack direction="column" gap="600">
+      <Steps.Root step={currentStep} count={4}>
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Step 1</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={1}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Step 2</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={2}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Step 3</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+          <Steps.Separator />
+          <Steps.Item index={3}>
+            <Steps.Indicator type="numeric" />
+            <Steps.Content>
+              <Steps.Label>Step 4</Steps.Label>
+            </Steps.Content>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+
+      <Stack direction="row" gap="400">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+          isDisabled={currentStep === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="solid"
+          size="sm"
+          onClick={() => setCurrentStep(Math.min(4, currentStep + 1))}
+          isDisabled={currentStep === 4}
+        >
+          Next
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+## Guidelines
+
+Use the Steps component strategically to enhance user workflow.
+
+### Best practices
+
+- **Keep labels concise**: Use short, clear step labels that describe the action
+  or content
+- **Limit step count**: Avoid more than 5-7 steps to prevent overwhelming users
+- **Provide descriptions**: Use descriptions for complex steps that need
+  additional context
+- **Maintain consistency**: Use the same indicator type throughout a flow
+
+> [!TIP]\
+> When to use
+>
+> - **Multi-step forms**: Registration, checkout, surveys
+> - **Wizards**: Setup flows, configuration, onboarding
+> - **Progress tracking**: Task completion, status indicators
+
+> [!CAUTION]\
+> When not to use
+>
+> - **Linear navigation**: Use tabs or pagination instead
+> - **Single actions**: Steps are meant for multi-step processes
+> - **Unknown step count**: Use progress bars for indeterminate progress
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Accessibility standards
+
+- **Semantic structure**: Uses list semantics (`role="list"` and
+  `role="listitem"`) for proper screen reader navigation
+- **Current step indication**: Uses `aria-current="step"` to announce the
+  active step
+- **Step labeling**: Each step includes an accessible label describing its
+  position and state (e.g., "Step 1 of 3: complete")
+- **Decorative elements hidden**: Separators and indicators are marked as
+  decorative (`aria-hidden="true"`) since their meaning is communicated through
+  accessible labels
+- **Color independence**: State is communicated through both color AND visual
+  indicators (checkmarks, styling) to support users with color vision deficiency

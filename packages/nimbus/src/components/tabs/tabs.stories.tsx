@@ -1017,11 +1017,11 @@ export const ControlledWithExternalState: Story = {
           >
             Switch to Overview
           </Button>
-          <Button onClick={() => setSelected("api")} data-testid="switch-api">
+          <Button onPress={() => setSelected("api")} data-testid="switch-api">
             Switch to API
           </Button>
           <Button
-            onClick={() => setSelected("examples")}
+            onPress={() => setSelected("examples")}
             data-testid="switch-examples"
           >
             Switch to Examples
