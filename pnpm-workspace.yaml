@@ -75,4 +75,4 @@ catalogs:
     dompurify: ^3.3.1
     lodash: ^4.17.23
     "@types/lodash": ^4.17.23
-    "@types/node": ^24.10.1
+    "@types/node": ^25.2.0
