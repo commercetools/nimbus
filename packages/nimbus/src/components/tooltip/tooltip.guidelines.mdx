@@ -1,27 +1,43 @@
 ---
 title: Tooltip
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
-Use tooltips to provide brief explanations, definitions, or instructions for interactive elements, enhancing the user experience.
 
+Use tooltips to provide brief explanations, definitions, or instructions for
+interactive elements, enhancing the user experience.
 
 ### Best practices
 
-- **Be concise:** Keep tooltip text short and to the point. Avoid lengthy explanations; if more detail is needed, consider a different approach like a modal or help documentation.
-- **Provide valuable context:** Tooltips should offer information that isn't immediately obvious from the UI element itself. They should add value, not just restate what's already visible.
-- **Use clear and simple language:** Avoid jargon, technical terms, or overly complex phrasing.  Tooltips should be easily understood by all users.
-- **Position tooltips appropriately:** Place tooltips so they don't obscure the element they're related to or other important UI elements. Consider the user's mouse path and avoid accidental triggers.
-- **Maintain accessibility:** Includes keyboard navigation and screen reader compatibility. Use ARIA attributes like `aria-describedby`to link the tooltip to its target element.
-- **Avoid overuse:** Don't use tooltips for every single UI element. Overuse can make the interface feel cluttered.
-- **Don't rely on tooltips for essential information:**  Crucial information (like error states) should never be exclusively conveyed through tooltips, as they are not always discoverable or accessible to all users. Use tooltips for supplementary or secondary details.
-
+- **Be concise:** Keep tooltip text short and to the point. Avoid lengthy
+  explanations; if more detail is needed, consider a different approach like a
+  modal or help documentation.
+- **Provide valuable context:** Tooltips should offer information that isn't
+  immediately obvious from the UI element itself. They should add value, not
+  just restate what's already visible.
+- **Use clear and simple language:** Avoid jargon, technical terms, or overly
+  complex phrasing. Tooltips should be easily understood by all users.
+- **Position tooltips appropriately:** Place tooltips so they don't obscure the
+  element they're related to or other important UI elements. Consider the user's
+  mouse path and avoid accidental triggers.
+- **Maintain accessibility:** Includes keyboard navigation and screen reader
+  compatibility. Use ARIA attributes like `aria-describedby`to link the tooltip
+  to its target element.
+- **Avoid overuse:** Don't use tooltips for every single UI element. Overuse can
+  make the interface feel cluttered.
+- **Don't rely on tooltips for essential information:** Crucial information
+  (like error states) should never be exclusively conveyed through tooltips, as
+  they are not always discoverable or accessible to all users. Use tooltips for
+  supplementary or secondary details.
 
 ## Usage
 
-Tooltips are a valuable tool for providing concise, contextual information, but they should be used strategically and not as a replacement for clear and accessible design. Think carefully about the type of information you're presenting and choose the most appropriate UI element for the job.
+Tooltips are a valuable tool for providing concise, contextual information, but
+they should be used strategically and not as a replacement for clear and
+accessible design. Think carefully about the type of information you're
+presenting and choose the most appropriate UI element for the job.
 
 ### Basic usage
 
@@ -40,12 +56,14 @@ const App = () => (
 
 ### Using tooltips for icons buttons
 
-Icons often rely on shared universal understanding. A tooltip provides a text label that removes any ambiguity and ensures users understand the button's function. This is especially important for less common or custom icons.
+Icons often rely on shared universal understanding. A tooltip provides a text
+label that removes any ambiguity and ensures users understand the button's
+function. This is especially important for less common or custom icons.
 
 > [!TIP]\
 > **Do**
 >
-> - Describe the icon's action quickly and concisely.  
+> - Describe the icon's action quickly and concisely.
 
 ```jsx-live
 const App = () => (
@@ -71,9 +89,9 @@ const App = () => (
 const App = () => (
   <Stack direction="horizontal" alignItems="center" gap="100" marginLeft="800" padding="800">
     <Tooltip.Root>
-      <IconButton 
-        colorPalette="primary" 
-        variant="ghost" 
+      <IconButton
+        colorPalette="primary"
+        variant="ghost"
         size="md"
       >
         <Icons.Edit/>

@@ -1,27 +1,37 @@
 ---
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
 
-These guidelines provide comprehensive direction for designing and developing data tables within Nimbus.
+These guidelines provide comprehensive direction for designing and developing
+data tables within Nimbus.
 
 #### Best practices
 
-- **Display relevant data:** Only include columns and data necessary for the user's current task. Avoid overwhelming users with excessive information.
+- **Display relevant data:** Only include columns and data necessary for the
+  user's current task. Avoid overwhelming users with excessive information.
 
-- **Allow for customization:** Allow users to organize and display important information in a way that suits their preferences, whether that means viewing more data on a single screen or having a table manager to add or reorder columns.
-The more customizable the workspace, the more effective users will be in completing their tasks.
+- **Allow for customization:** Allow users to organize and display important
+  information in a way that suits their preferences, whether that means viewing
+  more data on a single screen or having a table manager to add or reorder
+  columns. The more customizable the workspace, the more effective users will be
+  in completing their tasks.
 
-- **Keep column headers concise:** Use clear, brief labels for column headers to ensure quick understanding.
+- **Keep column headers concise:** Use clear, brief labels for column headers to
+  ensure quick understanding.
 
-- **Use sticky column headers:** Keep headers visible when users scroll vertically through a long table.
-Offer sorting and filtering: Include mechanisms to sort data by any column and filter the dataset to help users find specific information.
+- **Use sticky column headers:** Keep headers visible when users scroll
+  vertically through a long table. Offer sorting and filtering: Include
+  mechanisms to sort data by any column and filter the dataset to help users
+  find specific information.
 
 #### Usage
 
-Data tables are great for displaying large sets of information that can have different statuses or data that needs to be compared. Users can click through for more information held in modals or further detail pages. 
+Data tables are great for displaying large sets of information that can have
+different statuses or data that needs to be compared. Users can click through
+for more information held in modals or further detail pages.
 
 > [!TIP]\
 > When to use
@@ -29,24 +39,30 @@ Data tables are great for displaying large sets of information that can have dif
 - Presenting complex, structured data.
 - Comparing different attributes of multiple items.
 - Allowing users to analyze and manipulate large datasets.
-- Where bulk actions are being made, it can make sense to have users make selections from a data table.
+- Where bulk actions are being made, it can make sense to have users make
+  selections from a data table.
 
 > [!CAUTION]\
 > When not to use
 
 - Presenting simple lists of items.
 - Displaying content with complex, varying layouts (use card or a grid layout).
-- Presenting an action-focused list where the primary interaction is on the whole item.
-- Within a small space where a user will need to scroll multiple directions in a frustrating way to understand the information presented.
-- To display information that is not meant to be read in the format of a data table like long blocks of text.
+- Presenting an action-focused list where the primary interaction is on the
+  whole item.
+- Within a small space where a user will need to scroll multiple directions in a
+  frustrating way to understand the information presented.
+- To display information that is not meant to be read in the format of a data
+  table like long blocks of text.
 
-#### Tags and tag group in use 
+#### Tags and tag group in use
 
 > [!TIP]\
 > **Do**
+>
 > - Do keep the table design simple and focused on data.
 > - Do provide clear visual feedback on the currently sorted column.
-> - Do ensure all interactive elements within the table are accessible (e.g., buttons, links).
+> - Do ensure all interactive elements within the table are accessible (e.g.,
+>   buttons, links).
 > - Do allow users to select one or multiple rows where needed.
 
 ```jsx-live
@@ -56,16 +72,16 @@ const App = () => {
     { id: 2, name: 'Product B', modified: '2023-10-26', status: "Modified" },
   ];
   const columns = [
-    { 
+    {
       id: 'name',
       header: "Name",
-      accessor: (row) => row.name, 
+      accessor: (row) => row.name,
       isSortable: true,
     },
-    { 
+    {
       id: 'modified',
       header: "Date Modified",
-      accessor: (row) => row.modified, 
+      accessor: (row) => row.modified,
       isSortable: true,
     },
     {
@@ -97,15 +113,18 @@ const App = () => {
   return <DataTable
     rows={data}
     columns={columns}
-    selectionMode={"multiple"} 
+    selectionMode={"multiple"}
   />;
 }
 ```
 
 > [!CAUTION]\
 > **Don't**
-> - Don’t overcomplicate the layout with too many visual elements or unnecessary actions.
-> - Don’t force horizontal scrolling on the user unless absolutely necessary for the data.
+>
+> - Don’t overcomplicate the layout with too many visual elements or unnecessary
+>   actions.
+> - Don’t force horizontal scrolling on the user unless absolutely necessary for
+>   the data.
 > - Don’t use tables only for layout purposes; they are for data only.
 
 ```jsx-live
@@ -125,10 +144,10 @@ const App = () => {
   },
 ];
   const columns = [
-    { 
+    {
       id: 'blogTitle',
       header: "Blog title",
-      accessor: (row) => row.blogTitle, 
+      accessor: (row) => row.blogTitle,
       render: ({value}) => {
          return (
           <Box fontWeight="800">
@@ -136,19 +155,19 @@ const App = () => {
           </Box>
         );
       },
-      isResizable: true, 
+      isResizable: true,
     },
-    { 
+    {
       id: 'readBlog',
       header: "Read blog",
-      accessor: (row) => row.readBlog, 
+      accessor: (row) => row.readBlog,
       isResizable: true,
     },
   ];
-  return <DataTable 
-    rows={data} 
-    columns={columns} 
-    selectionMode={"multiple"} 
+  return <DataTable
+    rows={data}
+    columns={columns}
+    selectionMode={"multiple"}
   />;
 }
 ```

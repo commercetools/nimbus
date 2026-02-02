@@ -2,3 +2,27 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Spacer is a presentational component with no accessibility concerns as it
+contains no interactive elements or semantic meaning.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="solid">Left</Button>
+    <Spacer />
+    <Button variant="outline">Right</Button>
+  </Stack>
+)
+```
+
+### Accessbility standards
+
+- **Semantic Structure**: Spacer should not affect document semantics or screen
+  reader navigation
+- **Visual Only**: The spacing created by Spacer is purely visual and should not
+  convey meaning
+- **Alternative Approaches**: If spacing conveys important information, consider
+  using semantic HTML elements with appropriate ARIA attributes

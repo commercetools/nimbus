@@ -2,3 +2,45 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <TimeInput
+    size="md"
+    hourCycle={24}
+    defaultValue={new Time(10, 10)}
+    width="50%"
+  />
+);
+```
+
+### Accessibility standards
+
+- **Provide clear labeling:** Use a `<label>` element that is programmatically
+  associated with the input field.
+- **Indicate required fields:** Visually mark required fields (e.g., with an
+  asterisk) and programmatically denote them using `aria-required="true"`.
+- **Set an appropriate input type:** Use `type="time"` for native browser
+  accessibility features and keyboard support.
+- **Include helpful instructions:** Offer clear instructions or formatting
+  guidance for the expected time format.
+- **Enable keyboard navigation:** Ensure users can tab through the input and
+  select times using only a keyboard.
+- **Support screen reader announcements:** Verify that screen readers announce
+  the input's purpose, current value, and any validation errors.
+- **Manage focus:** Maintain logical focus order when users interact with the
+  time input, especially with custom pickers.
+- **Provide accessible error messages:** Display validation errors clearly and
+  associate them with the input using `aria-describedby`.
+- **Use sufficient color contrast:** Ensure all text and interactive elements
+  have adequate color contrast against their background.
+- **Design for different input methods:** Consider touch targets for mobile
+  users and ensure compatibility with assistive technologies.
+- **Test with assistive technologies:** Validate accessibility with screen
+  readers and keyboard-only navigation.

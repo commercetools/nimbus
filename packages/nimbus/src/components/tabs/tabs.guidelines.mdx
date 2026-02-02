@@ -1,49 +1,76 @@
 ---
 title: Tabs
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
 
-Provides a structured, predictable pattern for displaying multiple panes of related content in the same area. It minimizes screen clutter by allowing content sections to be easily hidden and revealed, typically used for navigation within a product or configuration panel.
+Provides a structured, predictable pattern for displaying multiple panes of
+related content in the same area. It minimizes screen clutter by allowing
+content sections to be easily hidden and revealed, typically used for navigation
+within a product or configuration panel.
 
 ### Best practices
 
-- **Consistency and context:** Ensure all content within the tab panels is closely related to the parent context (e.g., all tabs relate to "User Settings" or "Product Details").
-- **Concise labels:** Keep tab labels short (one or two words is ideal) and descriptive, clearly indicating the content of the corresponding panel.
-- **Maintain visibility:** Ensure the current active tab is clearly distinguishable from inactive tabs using strong visual cues (e.g., accent color, bold text, contrasting underline).
-- **Maintain content position:** Do not use tabs to reorganize or filter the content of a single continuous list. The content associated with each tab should be unique and distinct.
-- **Limit number of tabs:** Avoid creating a large number of tabs (ideally 3–7 visible tabs) to prevent horizontal scrolling or overcrowding, which harms usability. Use a dropdown menu or alternative navigation pattern for overflow.
-- **Avoid sub-navigation:** Do not place secondary navigation elements (like another row of tabs) directly inside the tab panel unless absolutely necessary.
+- **Consistency and context:** Ensure all content within the tab panels is
+  closely related to the parent context (e.g., all tabs relate to "User
+  Settings" or "Product Details").
+- **Concise labels:** Keep tab labels short (one or two words is ideal) and
+  descriptive, clearly indicating the content of the corresponding panel.
+- **Maintain visibility:** Ensure the current active tab is clearly
+  distinguishable from inactive tabs using strong visual cues (e.g., accent
+  color, bold text, contrasting underline).
+- **Maintain content position:** Do not use tabs to reorganize or filter the
+  content of a single continuous list. The content associated with each tab
+  should be unique and distinct.
+- **Limit number of tabs:** Avoid creating a large number of tabs (ideally 3–7
+  visible tabs) to prevent horizontal scrolling or overcrowding, which harms
+  usability. Use a dropdown menu or alternative navigation pattern for overflow.
+- **Avoid sub-navigation:** Do not place secondary navigation elements (like
+  another row of tabs) directly inside the tab panel unless absolutely
+  necessary.
 
 ### Usage
 
-Tabs are used to organize related content into distinct, switchable sections, allowing users to efficiently access different views within the same area without leaving the context of the main page.
+Tabs are used to organize related content into distinct, switchable sections,
+allowing users to efficiently access different views within the same area
+without leaving the context of the main page.
 
 > [!TIP]\
 > When to use
 
-- **Organizing related views:** To switch between different views of the same object (e.g., "Details," "Inventory," "History" tabs on a Product page).
-- **Configuration settings:** For grouping diverse settings categories (e.g., "General," "Billing," "Security" sections within a settings page).
-- **Conserving vertical space:** To maximize vertical screen space by presenting options horizontally.
+- **Organizing related views:** To switch between different views of the same
+  object (e.g., "Details," "Inventory," "History" tabs on a Product page).
+- **Configuration settings:** For grouping diverse settings categories (e.g.,
+  "General," "Billing," "Security" sections within a settings page).
+- **Conserving vertical space:** To maximize vertical screen space by presenting
+  options horizontally.
 
 > [!CAUTION]\
 > When not to use
 
-- **Primary site navigation:** Do not use tabs for navigating between major, top-level sections of an application (use main navigation menus or links instead).
-- **Too many options:** If the number of tabs causes horizontal scrolling or requires hiding options in an overflow menu on desktop.
-- **Linear workflows:** Avoid using tabs to guide users through a mandatory, step-by-step process.
+- **Primary site navigation:** Do not use tabs for navigating between major,
+  top-level sections of an application (use main navigation menus or links
+  instead).
+- **Too many options:** If the number of tabs causes horizontal scrolling or
+  requires hiding options in an overflow menu on desktop.
+- **Linear workflows:** Avoid using tabs to guide users through a mandatory,
+  step-by-step process.
 
 ### Tab labeling
 
 > [!TIP]\
 > **Do**
 >
-> - Choose concise, descriptive labels (1-2 words) that accurately preview the content within the panel to aid quick visual scanning.
-> - Ensure all tab content is closely related to the parent screen's context, maintaining a single-page feel.
-> - Implement an overflow strategy (like a "More" menu) if the tab count exceeds 7, rather than allowing horizontal scrolling, which is poor usability.
-> - Verify that content inside the hidden tab panels remains available to screen readers, aligning with accessibility best practices.
+> - Choose concise, descriptive labels (1-2 words) that accurately preview the
+>   content within the panel to aid quick visual scanning.
+> - Ensure all tab content is closely related to the parent screen's context,
+>   maintaining a single-page feel.
+> - Implement an overflow strategy (like a "More" menu) if the tab count exceeds
+>   7, rather than allowing horizontal scrolling, which is poor usability.
+> - Verify that content inside the hidden tab panels remains available to screen
+>   readers, aligning with accessibility best practices.
 
 ```jsx-live
 const App = () => (
@@ -86,10 +113,14 @@ const App = () => (
 > [!CAUTION]\
 > **Don't**
 >
-> - Don't use tabs for site-wide or primary application navigation; reserve them for internal to pages, contextual navigation.
-> - Don't place tabs on the screen if they cause the content area below them to feel disconnected or unrelated.
-> - Don't use tabs to reorganize the content of a single continuous list; the content under each tab should be unique and distinct.
-> - Don't use overly long, descriptive sentences as tab labels, as they clutter the interface and harm quick visual scanning.
+> - Don't use tabs for site-wide or primary application navigation; reserve them
+>   for internal to pages, contextual navigation.
+> - Don't place tabs on the screen if they cause the content area below them to
+>   feel disconnected or unrelated.
+> - Don't use tabs to reorganize the content of a single continuous list; the
+>   content under each tab should be unique and distinct.
+> - Don't use overly long, descriptive sentences as tab labels, as they clutter
+>   the interface and harm quick visual scanning.
 
 ```jsx-live
 const App = () => (

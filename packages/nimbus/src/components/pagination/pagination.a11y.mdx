@@ -2,3 +2,39 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(20);
+
+  return (
+    <Pagination
+      totalItems={150}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
+
+### Accessibility standards
+
+- **ARIA Roles:** Use `role="navigation"` to identify the component as a
+  navigation block. Use `aria-current="page"` on the active page link/button to
+  signal the user's location to screen readers.
+- **Keyboard Navigation:** Ensure the entire component is navigable using the
+  Tab key and that all links/buttons are operable with the Enter key.
+- **Descriptive Text:** Use `aria-label` on the navigation buttons ("Previous
+  page," "Next page") to provide screen readers with unambiguous information,
+  even if the visual text is just an arrow.
+- **Focus Indication:** Provide a strong, clear focus indicator on the currently
+  active navigation item when using keyboard control.

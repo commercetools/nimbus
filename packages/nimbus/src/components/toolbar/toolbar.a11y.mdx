@@ -2,3 +2,55 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Toolbar orientation="horizontal">
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatBold />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatItalic />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatUnderlined />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.MoreHoriz />
+      </IconButton>
+    </Group>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListBulleted />
+      </IconButton>
+      <IconButton size="xs" variant="ghost">
+        <Icons.FormatListNumbered />
+      </IconButton>
+    </Group>
+  </Toolbar>
+)
+```
+
+### Accessibility standards
+
+- **Keyboard Navigation:** Ensure all interactive elements within the toolbar
+  are navigable using the tab key in a logical order, following the order of
+  items.
+- **ARIA Roles:** Apply the ARIA role toolbar to the container element.
+- **Labeling:** Provide descriptive, concise aria-labels for the toolbar
+  container and for all icon buttons to ensure screen reader users understand
+  the component's purpose and the action it performs.
+- **Provide clear status:**
+- Use the disabled state for actions that are temporarily unavailable. Do not
+  hide actions that are simply disabled, as this can cause shifting layouts and
+  confuse users.
+- Clearly communicate the reason an action is disabled via tooltips or other
+  contextual help.

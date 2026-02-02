@@ -2,3 +2,39 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const vegetableOptions = [
+  { id: "tomato", name: "Tomato" },
+  { id: "zucchini", name: "Zucchini" },
+  { id: "peppers", name: "Peppers" },
+  ];
+
+  return (
+    <TagGroup.Root onRemove={() => {}}>
+      <TagGroup.TagList items={vegetableOptions}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  );
+}
+```
+
+### Accessibility standards
+
+- **Keyboard focus:** Ensure the user can navigate to and between individual
+  tags (if interactive/removable) using the Tab key.
+- **ARIA labels for removal:** For removable tags, the close button/icon must
+  have a clear `aria-label` (e.g., "Remove filter: [Tag Label]") to inform
+  screen readers exactly what is being dismissed.
+- **Contrast:** Verify that the text contrast ratio against the tag's background
+  color meets WCAG AA standards (4.5:1).
+- **Logical reading order:** The order in which the tags are read by a screen
+  reader must logically align with the visual order.

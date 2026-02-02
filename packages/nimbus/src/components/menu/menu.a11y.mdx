@@ -3,6 +3,8 @@ tab-title: Accessibility
 tab-order: 4
 ---
 
+## Accessibility
+
 A dropdown popover is a temporary, compact list of options or actions that
 appears on user interaction, designed for quick selections and efficient
 navigation.
@@ -48,17 +50,14 @@ const App = () => (
 );
 ```
 
-## Accessibility standards
+### Accessibility standards
 
-**Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select
-(Enter/Space), and close (Esc) the menu using only the keyboard.
-
-**ARIA Roles & States:** Properly apply ARIA roles (e.g., role="menu",
-role="menuitem", aria-haspopup") and states (e.g., aria-expanded, aria-checked)
-to convey semantic meaning.
-
-**Focus Management:** Confirm focus correctly moves into the menu when opened,
-cycles within it, and returns to the trigger when closed.
-
-**Contrast & Visibility:** Verify sufficient color contrast for menu items and a
-clear visual focus indicator for selected/hovered items.
+- **Keyboard Navigation:** Ensure users can open, navigate (arrow keys), select
+  (Enter/Space), and close (Esc) the menu using only the keyboard.
+- **ARIA Roles & States:** Properly apply ARIA roles (e.g., `role="menu"`,
+  `role="menuitem"`, `aria-haspopup`) and states (e.g., `aria-expanded`,
+  `aria-checked`) to convey semantic meaning.
+- **Focus Management:** Confirm focus correctly moves into the menu when opened,
+  cycles within it, and returns to the trigger when closed.
+- **Contrast & Visibility:** Verify sufficient color contrast for menu items and
+  a clear visual focus indicator for selected/hovered items.

@@ -1,47 +1,64 @@
 ---
 title: TextInput
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
 
-Text input guidelines focus on creating clear, accessible, and user-friendly fields for data entry by emphasizing proper labeling, providing helpful cues and validation, ensuring keyboard navigation, and offering clear feedback on input status.
+Text input guidelines focus on creating clear, accessible, and user-friendly
+fields for data entry by emphasizing proper labeling, providing helpful cues and
+validation, ensuring keyboard navigation, and offering clear feedback on input
+status.
 
 ### Best practices
 
 - **Keyboard Navigation:**
-    - Ensure that text inputs are fully keyboard accessible (using the Tab key to navigate).
+  - Ensure that text inputs are fully keyboard accessible (using the Tab key to
+    navigate).
 - **Error Handling:**
-    - Provide clear and specific error messages when invalid input is entered.
-    - Display error messages close to the input field.
+  - Provide clear and specific error messages when invalid input is entered.
+  - Display error messages close to the input field.
 - **Placeholder text:**
-    - Avoid relying solely on placeholder text, as it disappears when the user starts typing.
-    - Make use of clear labels and helper text if clarifying information is needed.
+  - Avoid relying solely on placeholder text, as it disappears when the user
+    starts typing.
+  - Make use of clear labels and helper text if clarifying information is
+    needed.
 
 ### Placeholder text
 
-Good placeholder text informs the user what to expect and can easily understand the difference between placeholder and pre-filled content.
+Good placeholder text informs the user what to expect and can easily understand
+the difference between placeholder and pre-filled content.
 
 > [!TIP]\
 > When to use
 
-- **Provide hints:** Use placeholder text to give users a brief hint or example of the expected input format.
-- **Keep it concise:** Placeholder text should be short and to the point. Avoid long sentences or paragraphs.
-- **Use a subtle visual style:** Visually differentiate placeholder text from actual input text by using the placeholder text styling. This helps users understand that it's a suggestion, not a pre-filled value.  
+- **Provide hints:** Use placeholder text to give users a brief hint or example
+  of the expected input format.
+- **Keep it concise:** Placeholder text should be short and to the point. Avoid
+  long sentences or paragraphs.
+- **Use a subtle visual style:** Visually differentiate placeholder text from
+  actual input text by using the placeholder text styling. This helps users
+  understand that it's a suggestion, not a pre-filled value.  
 
 > [!CAUTION]\
 > When not to use
 
-- **Don't use as labels:** Placeholder text should never replace proper labels. Labels provide persistent context, while placeholder text disappears when the user starts typing.  
-- **Don't include critical information:** Avoid putting essential instructions or information solely in the placeholder, as it will be hidden once the user interacts with the field.  
-- **Don't overuse:** Too much placeholder text can clutter the interface and make it harder for users to focus.
+- **Don't use as labels:** Placeholder text should never replace proper labels.
+  Labels provide persistent context, while placeholder text disappears when the
+  user starts typing.  
+- **Don't include critical information:** Avoid putting essential instructions
+  or information solely in the placeholder, as it will be hidden once the user
+  interacts with the field.  
+- **Don't overuse:** Too much placeholder text can clutter the interface and
+  make it harder for users to focus.
 
 > [!TIP]\
 > **Do**
 >
-> - Give the user a hint on what is expected, in a concise way. 
-> - If this information is important to always keep visible, use helper text instead.
+> - Give the user a hint on what is expected, in a concise way.
+> - If this information is important to always keep visible, use helper text
+>   instead.
 
 ```jsx-live
 const App = () => <TextInput placeholder="MM/DD/YYYY"/>
@@ -50,7 +67,8 @@ const App = () => <TextInput placeholder="MM/DD/YYYY"/>
 > [!CAUTION]\
 > **Don't**
 >
-> - This placeholder text looks like it has been prefilled for the user which is more likely to confuse the user. 
+> - This placeholder text looks like it has been prefilled for the user which is
+>   more likely to confuse the user.
 
 ```jsx-live
 const App = () => <TextInput placeholder="01/21/1970"/>
@@ -58,12 +76,15 @@ const App = () => <TextInput placeholder="01/21/1970"/>
 
 ### Size
 
-Allow for enough width for the user to read and add in their information. Avoid truncation if possible especially if the user will be referring back or needing to make sure there isn’t inaccurate information.  
+Allow for enough width for the user to read and add in their information. Avoid
+truncation if possible especially if the user will be referring back or needing
+to make sure there isn’t inaccurate information.
 
 > [!TIP]\
 > When to use
-> 
-> - There is enough space that the user can easily consume and correct this information if needed.
+>
+> - There is enough space that the user can easily consume and correct this
+>   information if needed.
 
 ```jsx-live
 const App = () => <TextInput placeholder="01/21/1970" value="805 St Cloud Road"/>
@@ -72,7 +93,8 @@ const App = () => <TextInput placeholder="01/21/1970" value="805 St Cloud Road"/
 > [!CAUTION]\
 > **Don't**
 >
-> - The user’s information is too long for this field to be able to read the details completely.
+> - The user’s information is too long for this field to be able to read the
+>   details completely.
 
 ```jsx-live
 const App = () => <TextInput value="805 St Cloud Road, Bel Air, Los Angeles, CA" />

@@ -2,3 +2,44 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = useState({ text: '', option: 'all' });
+
+  const options = [
+    { label: 'All fields', value: 'all' },
+    { label: 'Name', value: 'name' },
+    { label: 'Email', value: 'email' },
+  ];
+
+  return (
+    <ScopedSearchInput
+      value={value}
+      onValueChange={setValue}
+      onSubmit={(val) => console.log('Search:', val)}
+      options={options}
+      searchPlaceholder="Search..."
+    />
+  );
+};
+```
+
+### Accessibility standards
+
+- **Keyboard flow**: Ensure the Tab order moves logically between the scope
+  selector and the text input field.
+- **ARIA roles**: The scope selector (if a dropdown) must use the appropriate
+  ARIA roles (role="combobox", aria-expanded).
+- **Labeling**: Provide clear programmatic labels for both the search input
+  (`aria-label` or visible `<label>`) and the scope selector to explain their
+  function to screen readers.
+- **State communication**: Use aria-live regions if search results appear
+  dynamically, to announce the updated results count after a scope change or
+  query submission.

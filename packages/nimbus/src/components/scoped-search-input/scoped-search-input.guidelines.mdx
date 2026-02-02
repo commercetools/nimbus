@@ -1,48 +1,77 @@
 ---
 title: ScopedSearchInput
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
 
-Scoped search guidelines establish how the component is used to manage multi-domain data, ensuring consistency and accessibility in defining the search context.
+Scoped search guidelines establish how the component is used to manage
+multi-domain data, ensuring consistency and accessibility in defining the search
+context.
 
 ### Best practices
 
-- **Set a smart default**: Choose the default scope that will be used by the vast majority of users. This saves the user an extra click most of the time.
-- **Instant application of scope**: When the user changes the scope (e.g., switches from "All" to "Orders"), that choice should be applied immediately without requiring the user to re-type the search query.
-- **Default scope clarity**: Always define a clear, logical default scope (e.g., "All" or the most common category) and clearly display it before the user interacts with the component.
-- **Persistent scope**: Ensure the scope selector remains visible and accessible next to the input field, clearly communicating the current search context at all times.
-- **Intuitive scope options**: Keep scope options concise and meaningful to the area that they are being placed in.
-- **Display results contextually**: When the search results page loads, reiterate the search parameters clearly: "Showing 15 results for 'Jackets' within the 'Products' scope."
-- **Handle zero results gracefully**: If the user selects a very narrow scope and gets zero results, suggest alternative, broader scopes they can try without leaving the current page.
-- **Clear iconography**: If the scope selector uses icons, ensure they are universally understood and directly relate to the content they filter.
+- **Set a smart default**: Choose the default scope that will be used by the
+  vast majority of users. This saves the user an extra click most of the time.
+- **Instant application of scope**: When the user changes the scope (e.g.,
+  switches from "All" to "Orders"), that choice should be applied immediately
+  without requiring the user to re-type the search query.
+- **Default scope clarity**: Always define a clear, logical default scope (e.g.,
+  "All" or the most common category) and clearly display it before the user
+  interacts with the component.
+- **Persistent scope**: Ensure the scope selector remains visible and accessible
+  next to the input field, clearly communicating the current search context at
+  all times.
+- **Intuitive scope options**: Keep scope options concise and meaningful to the
+  area that they are being placed in.
+- **Display results contextually**: When the search results page loads,
+  reiterate the search parameters clearly: "Showing 15 results for 'Jackets'
+  within the 'Products' scope."
+- **Handle zero results gracefully**: If the user selects a very narrow scope
+  and gets zero results, suggest alternative, broader scopes they can try
+  without leaving the current page.
+- **Clear iconography**: If the scope selector uses icons, ensure they are
+  universally understood and directly relate to the content they filter.
 
 ### Usage
 
-The scoped search component is used to enable users to perform precise searches by filtering the query to a specific, predefined domain or content area, leading to more relevant results.
+The scoped search component is used to enable users to perform precise searches
+by filtering the query to a specific, predefined domain or content area, leading
+to more relevant results.
 
 > [!TIP]\
 > When to use
 
-- **Multi-domain data**: When the application contains large, distinct data types that users often need to query separately (e.g., searching for "Jackets" within Products vs. searching for "Jackets" within Customers).
-- **Precision is key**: When users require highly precise results and filtering the search domain reduces irrelevant noise (common in back-office solutions).
-- **Restricted permissions**: To restrict searches based on user permissions (e.g., a manager can search "All Teams," but a team member can only search "My Team").
+- **Multi-domain data**: When the application contains large, distinct data
+  types that users often need to query separately (e.g., searching for "Jackets"
+  within Products vs. searching for "Jackets" within Customers).
+- **Precision is key**: When users require highly precise results and filtering
+  the search domain reduces irrelevant noise (common in back-office solutions).
+- **Restricted permissions**: To restrict searches based on user permissions
+  (e.g., a manager can search "All Teams," but a team member can only search "My
+  Team").
 
 > [!CAUTION]\
 > When not to use
 
-- **Homogeneous data**: When all data belongs to a single, unified domain and scoping would offer minimal benefit (e.g., searching within a simple, short blog archive).
-- **Global search default**: If the vast majority of users always search "everything," avoid forcing them to define a scope. A single global search with filters applied after the results load is often better.
-- **Limited screen space**: If screen real estate is minimal, avoid the dual-component structure of scoped search; consider a single input with filtering options revealed on search results page.
+- **Homogeneous data**: When all data belongs to a single, unified domain and
+  scoping would offer minimal benefit (e.g., searching within a simple, short
+  blog archive).
+- **Global search default**: If the vast majority of users always search
+  "everything," avoid forcing them to define a scope. A single global search
+  with filters applied after the results load is often better.
+- **Limited screen space**: If screen real estate is minimal, avoid the
+  dual-component structure of scoped search; consider a single input with
+  filtering options revealed on search results page.
 
 ### Scoped search do's and don'ts
 
 > [!TIP]\
 > **Do**
 >
-> - Ensure the scope selector is accessible and its current state is conveyed via ARIA.
+> - Ensure the scope selector is accessible and its current state is conveyed
+>   via ARIA.
 > - Use concise labels for scope options, the short and descriptive is best.
 > - Do set a smart default for scopes.
 
@@ -72,11 +101,14 @@ const App = () => {
 > **Don't**
 >
 > - Don't use confusing or abstract icons for scopes
-> - Don't reset the scope back to the default after every search or page refresh.
+> - Don't reset the scope back to the default after every search or page
+>   refresh.
 > - Don't mix global and scoped results.
 > - Don't offer too many scopes.
-> - Don't force users to select a scope, determine a reasonable default for users.
-> - Don't use highly technical or internal terms for scope labels (e.g., "Database Table A" instead of "Products").
+> - Don't force users to select a scope, determine a reasonable default for
+>   users.
+> - Don't use highly technical or internal terms for scope labels (e.g.,
+>   "Database Table A" instead of "Products").
 
 ```jsx-live
 const App = () => {

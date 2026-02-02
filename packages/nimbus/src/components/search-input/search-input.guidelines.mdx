@@ -1,23 +1,38 @@
 ---
 title: SearchInput
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
 
-SearchInput guidelines focus on creating clear, accessible, and user-friendly search experiences by emphasizing proper placeholder text, clear visual feedback, and keyboard accessibility.
+SearchInput guidelines focus on creating clear, accessible, and user-friendly
+search experiences by emphasizing proper placeholder text, clear visual
+feedback, and keyboard accessibility.
 
 ### Best practices
 
-- **Provide clear placeholder text:** Use brief, descriptive text inside the field (e.g., "Search products," "Find a customer") to indicate what can be searched.
-- **Offer suggestions:** Implement type-ahead or autocomplete to offer relevant suggestions as the user types, improving speed and accuracy.
-- **Include a clear button:** Provide a control, often an "X" icon, to quickly clear the search query. This is typically placed on the right side of the field.
-- **Maintain consistency:** Place the search input in a predictable, easy-to-find location, such as the primary navigation bar or near the content being searched.
-- **Support keyboard interaction:** Ensure the input field and its associated suggestions are fully navigable using the keyboard (e.g., Tab, Enter, Arrow keys).
-- **Live Search:** The core function should be to trigger search or filtering logic on every value change (onChange), enabling an instantaneous search experience (live-search or auto-complete).
-- **Loading states:** Consider showing loading indicators when search is in progress.
-- **Immediate feedback:** Show search results as users type (debounced) or on submission.
+- **Provide clear placeholder text:** Use brief, descriptive text inside the
+  field (e.g., "Search products," "Find a customer") to indicate what can be
+  searched.
+- **Offer suggestions:** Implement type-ahead or autocomplete to offer relevant
+  suggestions as the user types, improving speed and accuracy.
+- **Include a clear button:** Provide a control, often an "X" icon, to quickly
+  clear the search query. This is typically placed on the right side of the
+  field.
+- **Maintain consistency:** Place the search input in a predictable,
+  easy-to-find location, such as the primary navigation bar or near the content
+  being searched.
+- **Support keyboard interaction:** Ensure the input field and its associated
+  suggestions are fully navigable using the keyboard (e.g., Tab, Enter, Arrow
+  keys).
+- **Live Search:** The core function should be to trigger search or filtering
+  logic on every value change (onChange), enabling an instantaneous search
+  experience (live-search or auto-complete).
+- **Loading states:** Consider showing loading indicators when search is in
+  progress.
+- **Immediate feedback:** Show search results as users type (debounced) or on
+  submission.
 - **Error handling:** Display clear error messages when searches fail.
 
 ### Usage
@@ -25,22 +40,31 @@ SearchInput guidelines focus on creating clear, accessible, and user-friendly se
 > [!TIP]\
 > When to use
 
-- **Live search:** You need to narrow down a visible list, table, or grid of items instantly as the user types. The search results update in real-time on the same screen.
-- **Autocomplete/Suggestions:** You need to provide a set of contextual suggestions that appear in a dropdown while the user is typing, leading to a final selection or submission.
-- **Global/Site-wide search:** The input serves as the primary entry point for finding content across the entire application or website.
+- **Live search:** You need to narrow down a visible list, table, or grid of
+  items instantly as the user types. The search results update in real-time on
+  the same screen.
+- **Autocomplete/Suggestions:** You need to provide a set of contextual
+  suggestions that appear in a dropdown while the user is typing, leading to a
+  final selection or submission.
+- **Global/Site-wide search:** The input serves as the primary entry point for
+  finding content across the entire application or website.
 
 > [!CAUTION]\
 > When not to use
 
-- **Simple filtering**: If filtering is better handled by dropdowns or checkboxes.
-- **Form submission**: Don't use for general text inputs that aren't search-related.
-- **Complex queries**: When users need advanced search features like boolean operators or multiple fields.
+- **Simple filtering**: If filtering is better handled by dropdowns or
+  checkboxes.
+- **Form submission**: Don't use for general text inputs that aren't
+  search-related.
+- **Complex queries**: When users need advanced search features like boolean
+  operators or multiple fields.
 
 ### Do's and Don'ts
 
 > [!TIP]\
 > **Do**
->- Provide clear placeholder text
+>
+> - Provide clear placeholder text
 
 ```jsx-live
 const App = () => (
@@ -50,7 +74,8 @@ const App = () => (
 
 > [!CAUTION]\
 > **Don't**
->- Avoid long descriptive placeholders
+>
+> - Avoid long descriptive placeholders
 
 ```jsx-live
 const App = () => (

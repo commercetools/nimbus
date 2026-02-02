@@ -140,31 +140,3 @@ const App = () => (
   </Stack>
 );
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <ToggleButton>
-    <Icons.PushPin />
-    Product categories
-  </ToggleButton>
-)
-```
-
-### Accessibility standards
-
-- **Use aria-pressed:** The most crucial accessibility attribute for a toggle
-  button is `aria-pressed`. When the button is "on," set `aria-pressed="true"`.
-  When it's "off," set `aria-pressed="false"`. This tells screen readers that
-  the button's function is to toggle.
-- **Provide a Clear aria-label:** Since the button lacks visible text, provide a
-  descriptive `aria-label` (e.g., `aria-label="Toggle Bold"` or
-  `aria-label="Show Advanced Settings"`). This is what a screen reader will
-  announce to the user.
-- **Ensure Keyboard Operability:** Users must be able to navigate to the button
-  using the Tab key and toggle its state using the Enter or Spacebar keys.

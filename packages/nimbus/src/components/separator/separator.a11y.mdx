@@ -2,3 +2,27 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Box width="1600">
+    <Separator />
+  </Box>
+)
+```
+
+### Accessibility standards
+
+- **Role attribute:** The component applies `role="separator"` to define it as a
+  non-focusable, decorative divider.
+- **Semantic separation:** Ensure separators genuinely aid in content
+  organization for all users, including those relying on assistive technologies.
+- **Visual contrast:** While decorative, ensure the separator has sufficient
+  contrast against its background to be perceivable by users with low vision,
+  aligning with WCAG 2.1 1.4.11 for non-text contrast (3:1 contrast ratio).
