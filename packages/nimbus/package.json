@@ -117,7 +117,7 @@
     "dev": "vite build --watch",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
-    "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
+    "build-theme-typings": "node scripts/generate-chakra-types.mjs",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

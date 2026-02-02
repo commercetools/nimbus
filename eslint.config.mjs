@@ -41,7 +41,12 @@ export default tseslint.config(
    * Global ignores for common build and dependency directories
    */
   {
-    ignores: ["**/node_modules/**", "**/dist/**", "**/storybook-static/**"],
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/storybook-static/**",
+      "**/packages/nimbus/src/theme/chakra-types.gen.ts",
+    ],
   },
   /**
    * Base ESLint recommended rules
