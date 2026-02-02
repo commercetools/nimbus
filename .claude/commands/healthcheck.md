@@ -49,16 +49,21 @@ you SHOULD check the error output and resolve any dependency issues.
 
 ### Step 4: Check OpenSpec Installed
 
+Read the required OpenSpec version from `@fission-ai/openspec` in `package.json`
+devDependencies. Then check the installed version:
+
 ```bash
 pnpm exec openspec --version
 ```
 
-**Requirement**: This command MUST return a version number. If OpenSpec is
-missing, you SHOULD run `pnpm install` (openspec is a devDependency).
+**Requirement**: You MUST have OpenSpec >= the version specified in
+`package.json` devDependencies. If OpenSpec is missing, you SHOULD run
+`pnpm install` (openspec is a devDependency).
 
 ### Step 5: Check Playwright Chromium
 
-First, check Playwright is installed:
+Read the required Playwright version from the `tooling` catalog in
+`pnpm-workspace.yaml`. Then check the installed version:
 
 ```bash
 pnpm exec playwright --version
@@ -73,9 +78,9 @@ pnpm exec playwright install --list
 Look for a line containing `chromium-` in the Browsers section. If it's missing,
 you MUST install the browser.
 
-**Requirement**: You MUST have both the Playwright package installed AND
-Chromium browser available in the list. If Chromium is missing, run:
-`pnpm playwright:install`
+**Requirement**: You MUST have Playwright >= the version specified in the
+`pnpm-workspace.yaml` catalog AND Chromium browser available in the list. If
+Chromium is missing, run: `pnpm playwright:install`
 
 ## Output Format
 
@@ -84,17 +89,21 @@ their source files:
 
 - **Node.js**: Read from `.nvmrc`
 - **pnpm**: Read from `package.json` engines.pnpm field
+- **OpenSpec**: Read from `@fission-ai/openspec` in `package.json`
+  devDependencies
+- **Playwright**: Read from `playwright` in `pnpm-workspace.yaml` tooling
+  catalog
 
 ```markdown
 ## 🏥 Nimbus Healthcheck
 
-| Check                       | Status           |
-| --------------------------- | ---------------- |
-| Node.js >= {from .nvmrc}    | ✅ v24.12.0      |
-| pnpm >= {from package.json} | ✅ v10.12.3      |
-| Dependencies                | ✅               |
-| OpenSpec                    | ✅ v0.16.0       |
-| Playwright Chromium         | ❌ Not installed |
+| Check                               | Status           |
+| ----------------------------------- | ---------------- |
+| Node.js >= {from .nvmrc}            | ✅ v24.12.0      |
+| pnpm >= {from package.json}         | ✅ v10.12.3      |
+| Dependencies                        | ✅               |
+| OpenSpec >= {from package.json}     | ✅ v0.16.0       |
+| Playwright >= {from pnpm-workspace} | ❌ Not installed |
 ```
 
 (Replace `{from ...}` placeholders with actual versions read from those files)
