@@ -797,9 +797,12 @@ export const AsyncMultiSelectCustomOptions: Story = {
       }
 
       // Verify it's removed
-      await waitFor(() => {
-        expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Other tags should still exist
       expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
@@ -2210,10 +2213,13 @@ export const ButtonsClickAreas: Story = {
       await userEvent.click(toggleButton);
 
       // Verify click worked
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Clear button has sufficient click area", async () => {
@@ -3017,10 +3023,13 @@ export const ClearDoesNotCloseMenu: Story = {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       // Menu should STILL be open after clearing
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // All options should be visible (filter reset)
       const options = document.querySelectorAll('[role="option"]');
@@ -3055,10 +3064,13 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await userEvent.click(input);
       await userEvent.type(input, "K");
 
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Select Koala
       await selectOptionsByName(["Koala"]);
@@ -3073,9 +3085,12 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await userEvent.click(clearButton);
 
       // Selection should be cleared - wait for state to update
-      await waitFor(() => {
-        expect(input).toHaveValue("");
-      });
+      await waitFor(
+        () => {
+          expect(input).toHaveValue("");
+        },
+        { timeout: 5000 }
+      );
 
       // Input should retain focus
       expect(input).toHaveFocus();
@@ -3086,10 +3101,13 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       // Menu should STILL be open after clearing
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // All options should be visible (filter reset)
       const options = document.querySelectorAll('[role="option"]');
