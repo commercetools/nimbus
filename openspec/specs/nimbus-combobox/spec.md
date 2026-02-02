@@ -17,7 +17,8 @@ etc.)
 
 ### Requirement: Single Selection with Input
 
-The component SHALL combine text input with selection capability.
+The component SHALL combine text input with selection capability and synchronize
+input value with selected key on initial render.
 
 #### Scenario: Controlled mode
 
@@ -38,6 +39,27 @@ The component SHALL combine text input with selection capability.
 - **THEN** SHALL control input text independently from selection
 - **AND** SHALL call onInputChange on every keystroke
 - **AND** SHALL support free-form text entry
+
+#### Scenario: Pre-selected value on mount
+
+- **GIVEN** ComboBox is rendered with `selectedKeys={["apple"]}`
+- **AND** no `inputValue` prop is provided (uncontrolled input)
+- **AND** `selectionMode="single"` (default)
+- **WHEN** component mounts and collection is populated
+- **THEN** input field SHALL display the selected item's text value (e.g.,
+  "Apple")
+- **AND** clear button SHALL be visible
+- **AND** SHALL NOT require explicit `inputValue` prop for synchronization
+
+#### Scenario: Collection populates after initial render
+
+- **GIVEN** ComboBox is rendered with `selectedKeys={["apple"]}`
+- **AND** React Aria's CollectionBuilder is parsing children
+- **WHEN** collection transitions from unpopulated to populated state
+- **THEN** SHALL detect the transition
+- **AND** SHALL resolve selected item's text value from collection
+- **AND** SHALL update input value with resolved text
+- **AND** SHALL NOT cause multiple re-renders or flickering
 
 ### Requirement: Option Filtering
 
@@ -89,6 +111,13 @@ The component SHALL control dropdown visibility intelligently.
 - **AND** button SHALL show chevron icon
 - **AND** SHALL use i18n aria-label "Toggle options"
 
+#### Scenario: Close on scroll
+
+- **WHEN** dropdown is open and user scrolls the page
+- **THEN** SHALL close the dropdown
+- **AND** SHALL preserve current selection state
+- **AND** SHALL allow user to reopen dropdown after scrolling
+
 ### Requirement: Keyboard Interaction
 
 The component SHALL support comprehensive keyboard navigation per nimbus-core
@@ -130,15 +159,61 @@ standards.
 
 The component SHALL provide input clearing capability.
 
-#### Scenario: Clear button
+#### Scenario: Clear button visibility
 
-- **WHEN** input has value and isClearable={true}
+- **WHEN** input has value or selection exists
 - **THEN** SHALL show clear button
-- **AND** clicking SHALL clear input and selection
-- **AND** SHALL focus input after clearing
-- **AND** SHALL call onInputChange with empty string
-- **AND** SHALL call onSelectionChange with null
-- **AND** clear button SHALL use i18n aria-label "Clear input value"
+- **AND** SHALL hide clear button when no value or selection
+
+#### Scenario: Clear button in multi-select mode
+
+- **WHEN** user clicks clear button in multi-select mode
+- **THEN** SHALL clear all selected items
+- **AND** SHALL clear input text
+- **AND** SHALL keep dropdown/menu OPEN
+- **AND** SHALL maintain focus on input field
+- **AND** SHALL reset filter (show all available options)
+- **AND** SHALL allow user to continue selecting without reopening menu
+
+#### Scenario: Clear button in single-select mode
+
+- **WHEN** user clicks clear button in single-select mode
+- **THEN** SHALL clear selected item
+- **AND** SHALL clear input text
+- **AND** SHALL keep dropdown/menu OPEN if input is focused
+- **AND** SHALL maintain focus on input field
+- **AND** SHALL show all available options
+
+#### Scenario: Clear button callback behavior
+
+- **WHEN** clear button is clicked
+- **THEN** SHALL call onInputChange with empty string
+- **AND** SHALL call onSelectionChange with appropriate empty value:
+  - Multi-select: empty array `[]`
+  - Single-select: `null`
+
+#### Scenario: Clear button accessibility
+
+- **WHEN** component renders with value/selection
+- **THEN** clear button SHALL use i18n aria-label "Clear selection"
+- **AND** SHALL be keyboard accessible
+- **AND** SHALL not trigger blur event on input when clicked
+- **AND** SHALL not cause menu to close
+
+#### Scenario: Clear button focus management
+
+- **WHEN** clear button is clicked
+- **THEN** SHALL maintain input focus (not transfer focus to button)
+- **AND** SHALL ensure blur handler does not interpret click as focus loss
+- **AND** SHALL keep menu open by preventing blur-triggered closure
+
+#### Scenario: Keyboard-based clearing
+
+- **WHEN** input is empty and user presses Backspace
+- **THEN** SHALL clear last selected item (multi-select) or selection
+  (single-select)
+- **AND** SHALL keep menu open if menu was already open
+- **AND** SHALL maintain input focus
 
 ### Requirement: Option Collection
 
@@ -210,6 +285,15 @@ standards.
 - **AND** SHALL prevent dropdown opening
 - **AND** SHALL set aria-readonly="true"
 
+#### Scenario: Option hover feedback
+
+- **WHEN** user hovers mouse over an option in the dropdown
+- **THEN** SHALL apply hover background styling (`primary.2`)
+- **AND** SHALL display pointer cursor to indicate interactivity (per WAI-APG)
+- **AND** hover styling SHALL be independent of keyboard focus state
+- **AND** SHALL NOT apply hover styling to disabled options
+- **AND** SHALL apply consistently across single-select and multi-select modes
+
 ### Requirement: Async Data Loading
 
 The component SHALL support async option loading.
@@ -221,16 +305,6 @@ The component SHALL support async option loading.
 - **AND** SHALL show loading message
 - **AND** SHALL use i18n message "Loading suggestions"
 - **AND** SHALL disable option selection while loading
-
-#### Scenario: Mock data in stories
-
-- **WHEN** Storybook stories demonstrate async loading
-- **THEN** SHALL use createMockAsyncLoad() helper for data
-- **AND** SHALL not make external HTTP requests
-- **AND** AsyncLoading story SHALL use mock data
-- **AND** AsyncMultiSelectPersistence story SHALL use mock data
-- **AND** AsyncMultiSelectCustomOptions story SHALL use mock data
-- **AND** AsyncLoadingWithError story SHALL continue using mock error simulation
 
 ### Requirement: Size Options
 
@@ -303,71 +377,3 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL include selected value in form data
 - **AND** SHALL use name prop as field name
 - **AND** SHALL submit input value if allowsCustomValue={true}
-
-### Requirement: Mock Data for Async Testing
-
-The component test utilities SHALL provide mock data structures for testing
-async functionality without external dependencies.
-
-#### Scenario: Mock Pokemon data
-
-- **WHEN** tests require async data loading examples
-- **THEN** SHALL provide MOCK_POKEMON array with sample Pokemon objects
-- **AND** SHALL include name and mock URL properties
-- **AND** SHALL provide sufficient variety for filtering tests (minimum 8 items)
-
-#### Scenario: Mock Pokemon details
-
-- **WHEN** tests require detailed option rendering
-- **THEN** SHALL provide MOCK_POKEMON_DETAILS object with Pokemon details
-- **AND** SHALL include id, name, sprites, types, height, weight,
-  base_experience
-- **AND** SHALL support PokemonOption component rendering without HTTP requests
-
-### Requirement: Mock Async Load Function
-
-The component test utilities SHALL provide helper function for simulating async
-data loading.
-
-#### Scenario: createMockAsyncLoad helper
-
-- **WHEN** tests require async loading behavior
-- **THEN** SHALL provide createMockAsyncLoad(data?, delay?) function
-- **AND** SHALL return async function with (filterText, signal) signature
-- **AND** SHALL simulate network latency using setTimeout with configurable
-  delay (default 100ms)
-- **AND** SHALL respect AbortSignal for request cancellation
-- **AND** SHALL filter data based on filterText using case-insensitive matching
-- **AND** SHALL throw error when signal is aborted
-
-#### Scenario: Configurable delay
-
-- **WHEN** createMockAsyncLoad is called with delay parameter
-- **THEN** SHALL use specified delay in milliseconds
-- **WHEN** no delay parameter is provided
-- **THEN** SHALL use default 100ms delay
-
-#### Scenario: Abort signal handling
-
-- **WHEN** AbortSignal is aborted during simulated delay
-- **THEN** SHALL throw "AbortError" error
-- **AND** SHALL not return filtered results
-
-### Requirement: Mock URL Handling in PokemonOption
-
-The PokemonOption component SHALL handle mock URLs gracefully without making
-HTTP requests.
-
-#### Scenario: Non-HTTP URLs
-
-- **WHEN** pokemon.url does not start with "http"
-- **THEN** SHALL check MOCK_POKEMON_DETAILS for details
-- **AND** SHALL use mock details if available
-- **AND** SHALL not make HTTP fetch request
-- **AND** SHALL render option with mock data
-
-#### Scenario: HTTP URLs
-
-- **WHEN** pokemon.url starts with "http"
-- **THEN** SHALL make HTTP fetch request
-- **AND** SHALL handle response as before
