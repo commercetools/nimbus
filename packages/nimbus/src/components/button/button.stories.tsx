@@ -19,7 +19,7 @@ const sizes: ButtonProps["size"][] = [
   //"xl",
   //"lg",
   "md",
-  //"sm",
+  "sm",
   "xs",
   "2xs",
 ];
