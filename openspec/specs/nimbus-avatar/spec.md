@@ -6,6 +6,10 @@ The Avatar component displays user profile images or initials in a visually
 distinct, circular or square container. It provides automatic fallback from
 image to initials, supports multiple sizes, and integrates with the Nimbus
 design token system for consistent styling across the design system.
+The Avatar component displays user profile images or initials in a visually
+distinct, circular or square container. It provides automatic fallback from
+image to initials, supports multiple sizes, and integrates with the Nimbus
+design token system for consistent styling across the design system.
 
 **Component:** `Avatar` **Package:** `@commercetools/nimbus` **Type:**
 Single-slot component (Tier 1) **React Aria:** Not used (non-interactive display
@@ -235,6 +239,7 @@ standards.
 
 #### Scenario: Custom aria-label override
 
+
 - **WHEN** aria-label prop is explicitly provided
 - **THEN** SHALL use provided aria-label value
 - **AND** SHALL override default internationalized label
@@ -345,25 +350,6 @@ The component SHALL prevent unintended text selection.
 - **THEN** SHALL prevent text selection (user-select: none)
 - **AND** SHALL maintain visual polish
 - **AND** SHALL not interfere with surrounding text selection
-
-### Requirement: Disabled State Support
-
-The component SHALL support disabled visual state.
-
-#### Scenario: Disabled styling
-
-- **WHEN** isDisabled prop is set to true
-- **THEN** SHALL apply layerStyle "disabled" from theme
-- **AND** SHALL reduce opacity and visual prominence
-- **AND** SHALL indicate non-interactive state
-- **AND** SHALL apply to both image and initials display
-
-#### Scenario: Button context
-
-- **WHEN** avatar is wrapped in button element
-- **THEN** SHALL apply cursor "button" style
-- **AND** recipe rule `"button&"` SHALL add button cursor
-- **AND** SHALL indicate interactive capability
 
 ### Requirement: Focus Styling
 
@@ -546,30 +532,7 @@ The component SHALL accept data attributes per nimbus-core standards.
 The component SHALL provide comprehensive TypeScript types per nimbus-core
 standards.
 
-#### Scenario: Props interface
-
-- **WHEN** component is imported
-- **THEN** SHALL export AvatarProps interface from avatar.types.ts
-- **AND** SHALL include JSDoc comments for all props
-- **AND** SHALL extend OmitInternalProps<AvatarRootSlotProps>
-- **AND** SHALL include HTMLAttributes<HTMLDivElement>
-
-#### Scenario: Recipe props
-
-- **WHEN** component uses recipe
-- **THEN** SHALL define AvatarRecipeProps type
-- **AND** SHALL include size variant with autocomplete
-  (RecipeProps<"avatar">["size"])
-- **AND** SHALL include UnstyledProp for unstyled variant support
-
-#### Scenario: Slot props
-
-- **WHEN** component defines slots
-- **THEN** SHALL export AvatarRootSlotProps type
-- **AND** SHALL be defined as HTMLChakraProps<"div", AvatarRecipeProps>
-- **AND** SHALL provide type safety for slot component
-
-#### Scenario: Required vs optional props
+#### Scenario: Required vs optional props (MODIFIED)
 
 - **WHEN** defining component props
 - **THEN** firstName SHALL be required string
@@ -577,7 +540,9 @@ standards.
 - **AND** src SHALL be optional string
 - **AND** alt SHALL be optional string
 - **AND** size SHALL be optional with type from recipe
-- **AND** isDisabled SHALL be optional boolean with default false
+- ~~**AND** isDisabled SHALL be optional boolean with default false~~
+
+**Change:** Removed `isDisabled` prop from type definition.
 
 ### Requirement: Theme Registration
 
