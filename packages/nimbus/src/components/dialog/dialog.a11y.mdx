@@ -10,33 +10,27 @@ everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Button onPress={() => setIsOpen(true)}>Open Dialog</Button>
-      <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>Dialog Title</Dialog.Title>
-          </Dialog.Header>
-          <Dialog.Body>
-            <Text>Dialog content goes here.</Text>
-          </Dialog.Body>
-          <Dialog.Footer>
-            <Button variant="outline" onPress={() => setIsOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="solid" onPress={() => setIsOpen(false)}>
-              Confirm
-            </Button>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
-    </>
-  );
-};
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>
+      <Button>Open dialog</Button>
+    </Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Dialog Title</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+          This is a basic dialog with default settings. It includes a backdrop,
+          title, description, and close button for a complete experience.
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button>Save</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
 ```
 
 ### Accessibility standards
@@ -67,4 +61,3 @@ const App = () => {
 ### Resources
 
 - [W3C ARIA Authoring Practices Guide (APG) - Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
-- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

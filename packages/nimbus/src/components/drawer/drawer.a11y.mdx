@@ -10,33 +10,27 @@ everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Button onPress={() => setIsOpen(true)}>Open Drawer</Button>
-      <Drawer.Root open={isOpen} onOpenChange={setIsOpen}>
-        <Drawer.Content>
-          <Drawer.Header>
-            <Drawer.Title>Drawer Title</Drawer.Title>
-          </Drawer.Header>
-          <Drawer.Body>
-            <Text>Drawer content goes here.</Text>
-          </Drawer.Body>
-          <Drawer.Footer>
-            <Button variant="outline" onPress={() => setIsOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="solid" onPress={() => setIsOpen(false)}>
-              Confirm
-            </Button>
-          </Drawer.Footer>
-        </Drawer.Content>
-      </Drawer.Root>
-    </>
-  );
-};
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>
+      <Button>Open drawer</Button>
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Drawer Title</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+          This is a basic drawer with default settings. It includes a backdrop overlay
+          (enabled by default), title, and close button for a complete experience.
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button>Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
 ```
 
 ### Accessibility standards

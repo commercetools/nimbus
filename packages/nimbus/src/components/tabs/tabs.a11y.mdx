@@ -53,10 +53,10 @@ const App = () => (
   The Left/Right Arrow keys must be used to navigate between tabs once the tab
   list is focused. Enter or Space selects the focused tab.
 - **ARIA roles and states:**
-- The container must use `role="tablist"`.
-- Individual tabs must use `role="tab"` and `aria-selected="true/false"`.
-- The content area must use `role="tabpanel"` and be linked to its respective
-  tab via `aria-labelledby`.
+  - The container must use `role="tablist"`.
+  - Individual tabs must use `role="tab"` and `aria-selected="true/false"`.
+  - The content area must use `role="tabpanel"` and be linked to its respective
+    tab via `aria-labelledby`.
 - **Focus management:** Ensure that when a tab is activated, focus moves
   logically to the associated tab panel or the first interactive element within
   it.

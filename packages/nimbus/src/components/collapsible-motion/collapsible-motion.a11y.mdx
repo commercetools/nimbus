@@ -10,22 +10,18 @@ everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div>
-      <Button onPress={() => setIsOpen(!isOpen)}>
-        {isOpen ? 'Collapse' : 'Expand'} Content
-      </Button>
-      <CollapsibleMotion isOpen={isOpen}>
-        <Box p="400">
-          <Text>Collapsible content with smooth animation</Text>
-        </Box>
-      </CollapsibleMotion>
-    </div>
-  );
-};
+const App = () => (
+  <CollapsibleMotion.Root defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button>Toggle Content</Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content>
+      <Box p="400" bg="neutral.2" borderRadius="200">
+        <Text>This content expands and collapses</Text>
+      </Box>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+)
 ```
 
 ### Accessibility standards
@@ -40,3 +36,8 @@ const App = () => {
   expanded/collapsed state to screen readers.
 - **Animation considerations:** Animations respect `prefers-reduced-motion` user
   preferences for users with vestibular disorders.
+
+### Resources
+
+- [React ARIA Disclosure Docs](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+- [ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)

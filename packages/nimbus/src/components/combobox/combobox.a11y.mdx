@@ -10,13 +10,32 @@ everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => (
-  <ComboBox aria-label="Select a fruit">
-    <ComboBox.Item>Apple</ComboBox.Item>
-    <ComboBox.Item>Banana</ComboBox.Item>
-    <ComboBox.Item>Orange</ComboBox.Item>
-  </ComboBox>
-);
+const App = () => {
+  const options = [
+    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
+    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
+    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
+    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
+  ];
+
+  return (
+    <ComboBox.Root size="md" items={options} placeholder="Search...">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id} textValue={item.name}>
+              <Stack gap="100">
+                <Text textStyle="sm">{item.name}</Text>
+                <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+              </Stack>
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  )
+}
 ```
 
 ### Accessibility standards

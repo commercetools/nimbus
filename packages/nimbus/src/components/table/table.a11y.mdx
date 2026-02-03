@@ -10,25 +10,36 @@ everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
 ```jsx-live
-const App = () => (
-  <Table.Root>
-    <Table.Caption>Product inventory summary</Table.Caption>
-    <Table.Head>
-      <Table.Row>
-        <Table.Header>Product</Table.Header>
-        <Table.Header>Price</Table.Header>
-        <Table.Header>Stock</Table.Header>
-      </Table.Row>
-    </Table.Head>
-    <Table.Body>
-      <Table.Row>
-        <Table.Cell>Widget A</Table.Cell>
-        <Table.Cell>$19.99</Table.Cell>
-        <Table.Cell>150</Table.Cell>
-      </Table.Row>
-    </Table.Body>
-  </Table.Root>
-);
+const App = () => {
+  const products = [
+    { id: '1', name: 'Laptop Pro', category: 'Electronics', price: '$1,299', stock: 'In Stock' },
+    { id: '2', name: 'Wireless Mouse', category: 'Accessories', price: '$29', stock: 'Low Stock' },
+    { id: '3', name: 'USB-C Cable', category: 'Accessories', price: '$15', stock: 'In Stock' },
+  ];
+
+  return (
+    <Table.Root>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Product</Table.ColumnHeader>
+          <Table.ColumnHeader>Category</Table.ColumnHeader>
+          <Table.ColumnHeader>Price</Table.ColumnHeader>
+          <Table.ColumnHeader>Status</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {products.map((product) => (
+          <Table.Row key={product.id}>
+            <Table.Cell>{product.name}</Table.Cell>
+            <Table.Cell>{product.category}</Table.Cell>
+            <Table.Cell>{product.price}</Table.Cell>
+            <Table.Cell>{product.stock}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
 ```
 
 ### Accessibility standards

@@ -11,19 +11,23 @@ cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => {
+  const data = [
+    { id: 1, name: 'Product A', modified: '2023-10-27' },
+    { id: 2, name: 'Product B', modified: '2023-10-26' },
+  ];
   const columns = [
-    { id: 'name', header: 'Name', accessor: (row) => row.name },
-    { id: 'email', header: 'Email', accessor: (row) => row.email },
-    { id: 'role', header: 'Role', accessor: (row) => row.role },
+    {
+      id: 'name',
+      header: "Name",
+      accessor: (row) => row.name,
+    },
+    {
+      id: 'modified',
+      header: "Date Modified",
+      accessor: (row) => row.modified,
+    },
   ];
-
-  const rows = [
-    { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
-    { id: '2', name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
-    { id: '3', name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' },
-  ];
-
-  return <DataTable columns={columns} rows={rows} />;
+  return <DataTable rows={data} columns={columns} />;
 }
 ```
 
@@ -31,12 +35,11 @@ const App = () => {
 
 - **Ensure proper semantic structure:** Use the `<table>`, `<th>`, and `<tr>`
   HTML elements correctly for screen reader compatibility.
-- **Associate data with headers:** Map table data cells <td> to the
-  corresponding header cells <th> using appropriate ARIA attributes if the
+- **Associate data with headers:** Map table data cells `<td>` to the
+  corresponding header cells `<th>` using appropriate ARIA attributes if the
   native structure is insufficient for complex tables.
-- **Provide clear context:**
-  - Use a table caption `<caption>` to give a concise overview of the table's
-    content. Include descriptive column header text.
+- **Provide clear context:** Use a table caption `<caption>` to give a concise
+  overview of the table's content. Include descriptive column header text.
 - **Manage keyboard focus:** Ensure all interactive elements within the table
   (sort buttons, links, etc.) are reachable and operable via the keyboard.
 - **Maintain sufficient contrast:** Ensure text and background colors meet WCAG
