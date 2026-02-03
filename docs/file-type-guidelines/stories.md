@@ -555,11 +555,90 @@ export const MenuInteraction: Story = {
 };
 ```
 
+## Clean Testing Patterns (Storybook)
+
+These patterns ensure reliable play function behavior in Storybook's browser
+environment.
+
+### Key Props for Mapped Elements
+
+React requires unique `key` props when rendering lists. Story render functions
+commonly map over variants:
+
+```typescript
+render: (args) => (
+  <Stack direction="row" gap="400">
+    {variants.map((variant) => (
+      <Button key={variant} {...args} variant={variant} />
+    ))}
+  </Stack>
+);
+```
+
+### Focus Management with userEvent
+
+`userEvent.tab()` properly simulates user behavior and triggers React's event
+system. Direct `element.focus()` bypasses React's state reconciliation:
+
+```typescript
+await step("Test keyboard focus", async () => {
+  await userEvent.tab();
+  await expect(element).toHaveFocus();
+});
+```
+
+### Awaiting step() Calls
+
+All `step()` calls must be awaited, including nested ones. Missing `await`
+causes assertions to run before state updates complete:
+
+```typescript
+await step("Parent step", async () => {
+  await step("Nested step", async () => {
+    await expect(something).toBeTruthy();
+  });
+});
+```
+
+### React Aria Keyboard Sequences
+
+React Aria's state machines process events asynchronously. Sequential keyboard
+operations in drag-and-drop or complex interactions need timing:
+
+```typescript
+const wait = (ms = 50) => new Promise((r) => setTimeout(r, ms));
+
+await userEvent.keyboard("{Enter}");
+await wait();
+await userEvent.keyboard("{Tab}");
+await wait();
+await userEvent.keyboard("{Enter}");
+```
+
+### Accessible Component Labeling
+
+Interactive components in tests require accessible names. Provide `aria-label`
+when no visible label exists:
+
+```typescript
+<Calendar aria-label="Select date" />
+<TextInput aria-label="Search query" />
+```
+
+### Controlled Component Initialization
+
+Controlled inputs in stories must have defined initial values:
+
+```typescript
+const [value, setValue] = useState({ amount: "", currencyCode: "EUR" });
+```
+
 ## Related Guidelines
 
 - [Main Component](./main-component.md) - Component to test
 - [Documentation](./documentation.md) - MDX documentation
 - [Compound Components](./compound-components.md) - Testing compound components
+- [Unit Testing](./unit-testing.md) - JSDOM-specific test patterns
 
 ## Validation Checklist
 
@@ -575,6 +654,10 @@ export const MenuInteraction: Story = {
 - [ ] Async operations properly handled
 - [ ] Accessibility tested (roles, labels)
 - [ ] No console errors during tests
+- [ ] Uses `userEvent.tab()` instead of `element.focus()` for focus tests
+- [ ] All `step()` calls properly awaited
+- [ ] Key props added when mapping arrays to JSX elements
+- [ ] Timing delays added for React Aria keyboard operations
 
 ---
 
