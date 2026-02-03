@@ -5,45 +5,64 @@ tab-order: 4
 
 ## Accessibility
 
-The Drawer component follows WCAG 2.1 AA guidelines and implements proper modal
-dialog patterns.
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
 
-### Screen reader support
+```jsx-live
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-- **Role identification**: Drawer has `dialog` role with proper labeling
-- **Focus management**: Focus moves to drawer on open, returns to trigger on
-  close
-- **Focus containment**: Tab navigation stays within drawer boundaries
-- **Accessible names**: Title and description properly associate with drawer
-- **State announcements**: Screen readers announce when drawer opens/closes
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open Drawer</Button>
+      <Drawer.Root open={isOpen} onOpenChange={setIsOpen}>
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Drawer Title</Drawer.Title>
+          </Drawer.Header>
+          <Drawer.Body>
+            <Text>Drawer content goes here.</Text>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button variant="outline" onPress={() => setIsOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="solid" onPress={() => setIsOpen(false)}>
+              Confirm
+            </Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    </>
+  );
+};
+```
 
-### WCAG Compliance
+### Accessibility standards
 
-#### 1. Perceivable
+- **Role identification:** Drawer has `dialog` role with proper labeling.
+- **Focus management:** Focus moves to drawer on open and returns to trigger on
+  close.
+- **Focus containment:** Tab navigation stays within drawer boundaries.
+- **Accessible names:** Title and description properly associate with drawer.
+- **State announcements:** Screen readers announce when drawer opens/closes.
+- **Info and relationships:** Proper semantic structure with header, body, and
+  footer.
+- **Contrast:** All text meets minimum contrast requirements.
+- **Non-text contrast:** Focus indicators and UI components meet contrast
+  standards.
+- **Keyboard navigation:** Full keyboard navigation support.
+- **No keyboard trap:** Focus contained but escapable via Escape key.
+- **Focus order:** Logical focus progression through drawer elements.
+- **Focus visible:** Clear focus indicators on all interactive elements.
+- **On focus:** No unexpected context changes when focusing elements.
+- **On input:** Predictable behavior for all user interactions.
+- **Labels or instructions:** Clear labeling and instructions where needed.
+- **Name, role, value:** Proper semantic markup and ARIA attributes.
+- **Status messages:** Appropriate announcements for state changes.
 
-- **1.3.1 Info and Relationships**: Proper semantic structure with header, body,
-  footer
-- **1.4.3 Contrast**: All text meets minimum contrast requirements
-- **1.4.11 Non-text Contrast**: Focus indicators and UI components meet contrast
-  standards
+### Resources
 
-#### 2. Operable
-
-- **2.1.1 Keyboard**: Full keyboard navigation support
-- **2.1.2 No Keyboard Trap**: Focus contained but escapable via Escape key
-- **2.4.3 Focus Order**: Logical focus progression through dialog elements
-- **2.4.7 Focus Visible**: Clear focus indicators on all interactive elements
-
-#### 3. Understandable
-
-- **3.2.1 On Focus**: No unexpected context changes when focusing elements
-- **3.2.2 On Input**: Predictable behavior for all user interactions
-- **3.3.2 Labels or Instructions**: Clear labeling and instructions where needed
-
-#### 4. Robust
-
-- **4.1.2 Name, Role, Value**: Proper semantic markup and ARIA attributes
-- **4.1.3 Status Messages**: Appropriate announcements for state changes
-
-The Drawer component ensures that all users, regardless of their abilities or
-assistive technologies, can effectively interact with drawer content.
+- [W3C ARIA Authoring Practices Guide (APG) - Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

@@ -19,34 +19,24 @@ const App = () => (
 
 ### Accessibility standards
 
-#### 1. Perceivable:
-
-- **1.1.1 Non-text Content:** Provide descriptive alternative text (alt
-  attribute) for images within cards.
-- **1.3.1 Info and Relationships:** Use semantic HTML to structure the card
-  content logically (e.g., headings, lists).
-- **1.4.3 Contrast (Minimum):** Ensure sufficient color contrast between text
-  and background within the card.
-
-#### 2. Operable:
-
-- **2.1.1 Keyboard:** Ensure the entire card or its primary interactive elements
-  are focusable and operable using only a keyboard.
-- **2.4.7 Focus Visible:** Provide a clear visual focus indicator when the card
-  or its interactive elements are focused.
-- **2.5.8 Target Size (Level AAA in WCAG 2.2):** If the card is interactive,
-  ensure touch target sizes are adequate.
-
-#### 3. Understandable:
-
-- **1.3.2 Meaningful Sequence:** Ensure the content within the card is presented
-  in a logical order.
-- **3.3.2 Labels or Instructions:** Provide clear labels or instructions for
-  form elements within cards.
-
-#### 4. Robust:
-
-- Use semantic HTML to ensure compatibility with assistive technologies.
-- Avoid making the entire card a single interactive element if it contains
-  multiple distinct actions, to ensure proper interaction for assistive
-  technology users.
+- **Non-text content:** Provide descriptive alternative text (`alt` attribute)
+  for images within cards.
+- **Info and relationships:** Use semantic HTML to structure the card content
+  logically (e.g., headings, lists).
+- **Color contrast:** Ensure sufficient color contrast between text and
+  background within the card.
+- **Keyboard accessibility:** Ensure the entire card or its primary interactive
+  elements are focusable and operable using only a keyboard.
+- **Focus visible:** Provide a clear visual focus indicator when the card or its
+  interactive elements are focused.
+- **Target size:** If the card is interactive, ensure touch target sizes are
+  adequate.
+- **Meaningful sequence:** Ensure the content within the card is presented in a
+  logical order.
+- **Labels or instructions:** Provide clear labels or instructions for form
+  elements within cards.
+- **Semantic HTML:** Use semantic HTML to ensure compatibility with assistive
+  technologies.
+- **Avoid complex interactive cards:** Avoid making the entire card a single
+  interactive element if it contains multiple distinct actions, to ensure proper
+  interaction for assistive technology users.

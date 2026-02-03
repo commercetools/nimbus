@@ -5,6 +5,10 @@ tab-order: 4
 
 ## Accessibility
 
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
 The Button component uses `onPress\*` props to handle all user
 interactions—mouse clicks, touch taps, and keyboard presses—consistently. These
 props (`onPress`, `onPressStart`, `onPressEnd`, etc.) ensure a smooth and
@@ -18,53 +22,36 @@ const App = () => (
 )
 ```
 
-### Accessibility Standards
+### Accessibility standards
 
-#### 1. Perceivable
-
-- **Sufficient Color Contrast:**
-  - **Text on Button:** The contrast ratio between the button text and the
-    button background should be at least 4.5:1 for normal text and 3:1 for large
-    text.
-  - **Button to Background:** The contrast ratio between the button's background
-    color and the surrounding page background should be at least 3:1.
-- **Visual Cues:** Don't rely solely on color to convey information. Use
+- **Color contrast for text:** The contrast ratio between the button text and
+  the button background should be at least 4.5:1 for normal text and 3:1 for
+  large text.
+- **Color contrast for button:** The contrast ratio between the button's
+  background color and the surrounding page background should be at least 3:1.
+- **Visual cues:** Don't rely solely on color to convey information. Use
   additional visual cues like shapes, patterns, or text labels to ensure the
   button's meaning is clear to everyone, including people with color blindness.
-- **Focus Indicator:** Provide a clear visual indicator when the button receives
+- **Focus indicator:** Provide a clear visual indicator when the button receives
   keyboard focus. This helps users understand which element is currently active.
-  - **WCAG 2.2 has specific criteria for focus indicators:**
-    - **2.4.11 Focus Not Obscured (Minimum) (Level AA):** The focus indicator
-      must not be hidden by other content on the page.
-    - **2.4.13 Focus Appearance (Minimum) (Level AA):** The focus indicator must
-      meet certain visibility requirements to be easily seen.
-
-#### 2. Operable
-
-- **Keyboard Accessibility:** Buttons must be operable using a keyboard. Users
+  The focus indicator must not be hidden by other content on the page and must
+  meet certain visibility requirements to be easily seen.
+- **Keyboard accessibility:** Buttons must be operable using a keyboard. Users
   should be able to navigate to the button using the Tab key and activate it
   using the Enter or Space key.
-- **Target Size:** Ensure that the button is large enough to be easily
+- **Target size:** Ensure that the button is large enough to be easily
   clickable, especially on touchscreens. WCAG recommends a minimum target size
   of 24x24 CSS pixels.
-- **Dragging Movements (2.5.7 Level AA):** If a button's function relies on
-  dragging, an alternative method should be provided that doesn't require
-  dragging.
-
-#### 3. Understandable
-
-- **Clear Labels:** The button's text label should clearly describe its
+- **Dragging movements:** If a button's function relies on dragging, an
+  alternative method should be provided that doesn't require dragging.
+- **Clear labels:** The button's text label should clearly describe its
   function.
-- **Consistent Design:** Use buttons consistently throughout your website. This
+- **Consistent design:** Use buttons consistently throughout your website. This
   helps users learn the meaning of each button and makes it easier for them to
   navigate your site.
-- **Findable Help (3.2.6 Level A):** If users might need help understanding how
-  to use a button or what it does, provide clear and easily findable help
-  resources.
-
-#### 4. Robust
-
-- **Assistive Technology Compatibility:** Ensure that buttons are compatible
+- **Findable help:** If users might need help understanding how to use a button
+  or what it does, provide clear and easily findable help resources.
+- **Assistive technology compatibility:** Ensure that buttons are compatible
   with assistive technologies like screen readers. This often involves using
   proper HTML markup and ARIA attributes to provide semantic information about
   the button.

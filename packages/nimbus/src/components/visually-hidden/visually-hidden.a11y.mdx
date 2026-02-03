@@ -2,3 +2,43 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Button>
+    <Icons.Delete />
+    <VisuallyHidden>Delete item</VisuallyHidden>
+  </Button>
+);
+```
+
+### Accessibility standards
+
+- **Provide text alternatives for icons:** Use VisuallyHidden to add descriptive
+  text for icon-only buttons or links that is accessible to screen readers but
+  visually hidden.
+- **Don't hide important content:** Only use VisuallyHidden for supplementary
+  text that provides context for assistive technologies, not for essential
+  information that all users need.
+- **Skip links:** Use VisuallyHidden to create skip navigation links that allow
+  keyboard users to bypass repetitive content.
+- **Form labels:** Use for additional context in form labels when visual design
+  already makes the purpose clear.
+- **Accessible names:** Provide accessible names for interactive elements that
+  rely on visual cues (icons, colors, shapes).
+- **Maintain focus visibility:** When VisuallyHidden contains focusable elements
+  (like skip links), ensure they become visible when focused.
+- **Screen reader only instructions:** Use for providing specific instructions
+  that screen reader users need but sighted users don't.
+
+### Resources
+
+- [WebAIM - CSS in Action: Invisible Content](https://webaim.org/techniques/css/invisiblecontent/)
+- [A11y Project - How to hide content](https://www.a11yproject.com/posts/how-to-hide-content/)
+- [WCAG 2.4.1 Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html)

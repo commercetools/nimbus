@@ -5,4 +5,27 @@ tab-order: 4
 
 ## Accessibility
 
-This component follows WCAG 2.1 AA guidelines.
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Group gap="200">
+    <Button variant="solid">First</Button>
+    <Button variant="outline">Second</Button>
+    <Button variant="ghost">Third</Button>
+  </Group>
+);
+```
+
+### Accessibility standards
+
+- **Use semantic grouping:** Group related elements together to provide context
+  for assistive technologies.
+- **Maintain logical focus order:** Ensure elements within the group follow a
+  logical tab order.
+- **Provide clear visual separation:** Use sufficient spacing to visually
+  distinguish grouped elements.
+- **Consider ARIA labeling:** For complex groups, use `aria-label` or
+  `aria-labelledby` to provide descriptive names for screen readers.

@@ -5,9 +5,38 @@ tab-order: 4
 
 ## Accessibility
 
-- **Trigger Elements**: Always provide clear, descriptive trigger buttons or
-  elements
-- **Content Structure**: Use semantic HTML within collapsible content
-- **Focus Indicators**: Ensure trigger elements have clear focus indicators
-- **Screen Reader Testing**: Test with actual screen readers to verify the
-  experience
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div>
+      <Button onPress={() => setIsOpen(!isOpen)}>
+        {isOpen ? 'Collapse' : 'Expand'} Content
+      </Button>
+      <CollapsibleMotion isOpen={isOpen}>
+        <Box p="400">
+          <Text>Collapsible content with smooth animation</Text>
+        </Box>
+      </CollapsibleMotion>
+    </div>
+  );
+};
+```
+
+### Accessibility standards
+
+- **Clear trigger elements:** Always provide clear, descriptive trigger buttons
+  or elements that indicate their purpose.
+- **Semantic HTML structure:** Use semantic HTML within collapsible content to
+  ensure proper document structure.
+- **Clear focus indicators:** Ensure trigger elements have clear, visible focus
+  indicators for keyboard navigation.
+- **State communication:** Use appropriate ARIA attributes to communicate the
+  expanded/collapsed state to screen readers.
+- **Animation considerations:** Animations respect `prefers-reduced-motion` user
+  preferences for users with vestibular disorders.

@@ -2,3 +2,40 @@
 tab-title: Accessibility
 tab-order: 4
 ---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <SearchInput
+    placeholder="Search products..."
+    aria-label="Search"
+  />
+);
+```
+
+### Accessibility standards
+
+- Always provide a visible label or clear `aria-label` for the search input.
+- Use `type="search"` or `role="search"` to identify the search functionality to
+  assistive technologies.
+- Ensure sufficient color contrast for all elements (text, borders, icons, focus
+  indicators).
+- Clearly indicate the focused state with visible focus indicators.
+- Support keyboard navigation using Tab to focus and Enter to submit search.
+- Provide clear feedback when search results are loading or no results are
+  found.
+- Announce search results and status changes to screen readers using ARIA live
+  regions.
+- Include a clear button to reset or clear the search input.
+- If search suggestions appear, ensure they are keyboard accessible and properly
+  announced.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Search](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/search.html)
+- [Adobe Spectrum Design System](https://spectrum.adobe.com/page/search/)

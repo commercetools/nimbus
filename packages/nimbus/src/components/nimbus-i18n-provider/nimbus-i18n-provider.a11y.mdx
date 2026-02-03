@@ -5,30 +5,35 @@ tab-order: 4
 
 ## Accessibility
 
-This component ensures locale-appropriate formatting for screen reader users.
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
 
-### Locale codes
+```jsx-live
+const App = () => (
+  <NimbusI18nProvider locale="en-US">
+    <Text>Content with proper locale formatting</Text>
+  </NimbusI18nProvider>
+);
+```
 
-Accepts any valid BCP47 language tag, including but not limited to:
+### Accessibility standards
 
-- `en-US` - English (United States)
-- `en-GB` - English (United Kingdom)
-- `de-DE` - German (Germany)
-- `es-ES` - Spanish (Spain)
-- `fr-FR` - French (France)
-- `ja-JP` - Japanese (Japan)
-- `zh-CN` - Chinese (Simplified, China)
-- `pt-BR` - Portuguese (Brazil)
+- **Provide valid locale codes:** Always provide a valid BCP47 language tag
+  (e.g., `en-US`, `de-DE`, `fr-FR`) to ensure proper formatting and
+  pronunciation.
+- **Use region-specific codes:** Use region-specific codes when formatting
+  differs (e.g., date order, decimal separators, number formatting).
+- **Locale-appropriate formatting:** Dates, numbers, and currency are announced
+  in locale-appropriate formats by screen readers.
+- **Proper pronunciation:** Screen readers use the specified locale for correct
+  pronunciation of content.
+- **ARIA labels reflect locale conventions:** Ensures ARIA labels and
+  announcements follow locale conventions.
+- **Test with screen readers:** Always test with actual screen readers to verify
+  proper pronunciation and formatting.
 
-### Best practices
+## Resources
 
-- Always provide a valid BCP47 locale code
-- Use region-specific codes when formatting differs (e.g., date order, decimal
-  separators)
-- Test with actual screen readers to verify proper pronunciation
-
-### Screen reader support
-
-- Dates and numbers are announced in locale-appropriate formats
-- Screen readers use the specified locale for pronunciation
-- Ensures ARIA labels reflect locale conventions
+- [BCP47 Language Tags](https://www.w3.org/International/articles/language-tags/)
+- [WCAG 3.1.2 Language of Parts](https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts.html)

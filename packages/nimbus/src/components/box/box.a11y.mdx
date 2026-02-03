@@ -5,8 +5,9 @@ tab-order: 4
 
 ## Accessibility
 
-Box renders a `div` by default but can be changed to any other HTML element
-using the `as` prop.
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
 
 ```jsx-live
 const App = () => (
@@ -15,3 +16,13 @@ const App = () => (
   </Box>
 );
 ```
+
+### Accessibility standards
+
+- **Use semantic HTML:** Box renders a `div` by default but can be changed to
+  any other HTML element using the `as` prop. Choose appropriate semantic
+  elements (e.g., `section`, `article`, `nav`) to provide meaningful structure.
+- **Maintain proper document structure:** Ensure the chosen element maintains
+  logical document hierarchy and semantic meaning.
+- **Avoid layout-only divs when possible:** When the Box has semantic meaning,
+  use the `as` prop to render the appropriate HTML element.

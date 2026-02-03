@@ -5,7 +5,21 @@ tab-order: 4
 
 ## Accessibility
 
-### Accessibility Standards
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <ComboBox aria-label="Select a fruit">
+    <ComboBox.Item>Apple</ComboBox.Item>
+    <ComboBox.Item>Banana</ComboBox.Item>
+    <ComboBox.Item>Orange</ComboBox.Item>
+  </ComboBox>
+);
+```
+
+### Accessibility standards
 
 - Always provide a visible label for the input.
 - If a visible label is not used, provide an `aria-label` or `aria-labelledby`
