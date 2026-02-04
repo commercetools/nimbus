@@ -11,6 +11,8 @@ import { StepsDescriptionSlot } from "../steps.slots";
  * ```tsx
  * <Steps.Description>Create your account to get started</Steps.Description>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsDescription = (props: StepsDescriptionProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;

@@ -19,6 +19,8 @@ import { useStepsContext, StepsItemContext } from "./steps.context";
  *   </Steps.Content>
  * </Steps.Item>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsItem = (props: StepsItemProps) => {
   const { ref: forwardedRef, index, children, ...restProps } = props;

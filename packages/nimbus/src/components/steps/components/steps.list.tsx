@@ -15,6 +15,8 @@ import { StepsListSlot } from "../steps.slots";
  *   <Steps.Item index={1}>...</Steps.Item>
  * </Steps.List>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsList = (props: StepsListProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;

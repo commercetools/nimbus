@@ -17,6 +17,8 @@ import { StepsContext } from "./steps.context";
  *   </Steps.List>
  * </Steps.Root>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsRoot = (props: StepsRootProps) => {
   const {
