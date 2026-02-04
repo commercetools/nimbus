@@ -35,7 +35,7 @@ jobs:
       # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "24.12"
           registry-url: "https://registry.npmjs.org"
 
       # Ensure npm 11.5.1 or later is installed for OIDC support
@@ -54,7 +54,7 @@ jobs:
       - name: Setup npm registry for publishing
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24.12"
           registry-url: "https://registry.npmjs.org"
 
       - name: Storing release version for changeset

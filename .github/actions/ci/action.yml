@@ -14,7 +14,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: 22
+        node-version: "24.12"
         cache: pnpm
 
     - name: Update npm to latest

@@ -9,6 +9,7 @@ catalogMode: strict
 
 catalogs:
   tooling:
+    "@fission-ai/openspec": ^1.1.1
     globals: ^17.3.0
     glob: ^11.0.3
     typescript: ~5.9.3
