@@ -23,7 +23,8 @@ export const useSearch = () => {
       minMatchCharLength: 1,
       threshold: 0.4, // More lenient for better fuzzy matching
       keys: [
-        { name: "title", weight: 3 }, // Title is most important
+        { name: "exportName", weight: 4 }, // Highest priority for exact component names
+        { name: "title", weight: 3 },
         { name: "description", weight: 2 },
         { name: "content", weight: 1 },
         { name: "tags", weight: 1.5 },

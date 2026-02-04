@@ -3,6 +3,7 @@ import { atom } from "jotai";
 export type SearchableDocItem = {
   id: string;
   title: string;
+  exportName?: string;
   description: string;
   tags: string[];
   route: string;

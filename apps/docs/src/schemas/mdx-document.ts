@@ -39,6 +39,8 @@ export const mdxDocumentSchema = z.object({
     id: z.string(),
     /** the title of the document*/
     title: z.string(),
+    /** the exact export name of the component (e.g., "CollapsibleMotion", "ComboBox") */
+    exportName: z.string().optional(),
     /** a one sentence descirption of the file-contents */
     description: z.string(),
     /** the lifecycle state of the component/feature */

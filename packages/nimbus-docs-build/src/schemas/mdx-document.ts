@@ -42,6 +42,8 @@ export const mdxDocumentSchema = z.object({
     id: z.string(),
     /** the title of the document*/
     title: z.string(),
+    /** the exact export name of the component (e.g., "CollapsibleMotion", "ComboBox") */
+    exportName: z.string().optional(),
     /** a one sentence description of the file-contents */
     description: z.string(),
     /** the lifecycle state of the component/feature */
@@ -94,6 +96,7 @@ export const routeInfoSchema = z.object({
   path: z.string(),
   id: z.string(),
   title: z.string(),
+  exportName: z.string().optional(),
   description: z.string(),
   lifecycleState: z.enum(lifecycleStates).optional(),
   category: z.string(),
