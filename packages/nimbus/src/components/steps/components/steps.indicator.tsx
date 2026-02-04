@@ -19,6 +19,8 @@ import { useStepsItemContext } from "./steps.context";
  * // Custom icon indicator
  * <Steps.Indicator type="icon" icon={<UserIcon />} />
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsIndicator = (props: StepsIndicatorProps) => {
   const {

@@ -11,6 +11,8 @@ import { StepsLabelSlot } from "../steps.slots";
  * ```tsx
  * <Steps.Label>Account Setup</Steps.Label>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsLabel = (props: StepsLabelProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;

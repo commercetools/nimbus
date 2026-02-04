@@ -14,6 +14,8 @@ import { StepsContentSlot } from "../steps.slots";
  *   <Steps.Description>Optional description</Steps.Description>
  * </Steps.Content>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsContent = (props: StepsContentProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;

@@ -15,6 +15,8 @@ import { useStepsContext } from "./steps.context";
  * <Steps.Separator />
  * <Steps.Item index={1}>...</Steps.Item>
  * ```
+ *
+ * @supportsStyleProps
  */
 export const StepsSeparator = (props: StepsSeparatorProps) => {
   const { ref: forwardedRef, ...restProps } = props;
