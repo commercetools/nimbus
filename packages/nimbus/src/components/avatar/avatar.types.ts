@@ -15,7 +15,7 @@ type AvatarRecipeProps = {
    * Size variant of the avatar
    * @default "md"
    */
-  size?: RecipeProps<"avatar">["size"];
+  size?: RecipeProps<"nimbusAvatar">["size"];
 } & UnstyledProp;
 
 // ============================================================
@@ -46,11 +46,6 @@ export type AvatarProps = OmitInternalProps<AvatarRootSlotProps> &
      * Alternative text for the avatar image
      */
     alt?: string;
-    /**
-     * Whether the avatar is disabled
-     * @default false
-     */
-    isDisabled?: boolean;
     /**
      * Custom content to override default avatar rendering
      */

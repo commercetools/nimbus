@@ -17,7 +17,7 @@ export const ToggleButton = ({
   ref: forwardedRef,
   ...props
 }: ToggleButtonProps) => {
-  const recipe = useRecipe({ key: "toggleButton" });
+  const recipe = useRecipe({ key: "nimbusToggleButton" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 

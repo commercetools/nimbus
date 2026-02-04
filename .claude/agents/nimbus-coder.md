@@ -26,7 +26,7 @@ architecture.
    - Chakra UI v3 recipe-based styling system
    - TypeScript strict typing with comprehensive interfaces
    - Compound component patterns where appropriate
-   - Proper internationalization with react-intl
+   - Proper internationalization with @internationalized/string
    - Storybook stories with interaction testing
 
 3. **Implement Complete Features**: Create all necessary files for a feature
@@ -80,6 +80,16 @@ is to orchestrate these skills, not replace them.
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
+
+### Test Categories
+
+- **Story Tests** (`.stories.tsx`): Internal component behavior testing
+- **Internal Unit Tests** (`.spec.tsx`): Utility and hook testing
+- **Consumer Implementation Tests** (`.docs.spec.tsx`): Documentation examples
+  for consumer apps
+
+See
+[Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
 
 ### Orchestration Pattern
 

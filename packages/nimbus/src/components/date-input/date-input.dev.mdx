@@ -595,7 +595,7 @@ The DateInput handles most accessibility requirements internally through React A
 
 ```tsx
 <label id="label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <DateInput aria-labelledby="label-id" />
 ```
@@ -603,7 +603,7 @@ The DateInput handles most accessibility requirements internally through React A
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<DateInput aria-label={intl.formatMessage(labelMessage)} />
+<DateInput aria-label={msg.format(labelMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

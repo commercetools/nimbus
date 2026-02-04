@@ -2,7 +2,7 @@ import { createRecipeContext } from "@chakra-ui/react";
 import type { SlotComponent } from "@/type-utils";
 import type { TooltipRootSlotProps } from "./tooltip.types";
 
-const { withContext } = createRecipeContext({ key: "tooltip" });
+const { withContext } = createRecipeContext({ key: "nimbusTooltip" });
 
 /**
  * Root component that provides the styling context for the Tooltip component.

@@ -76,6 +76,19 @@ docs/
 6. **Internationalization** - Translatable UI text via compile-time message
    compilation (`@internationalized/string` with `LocalizedStringDictionary`)
 
+## 🧪 Testing Strategy
+
+Nimbus uses 3 distinct test categories:
+
+| Category                          | File Pattern      | Purpose                                  |
+| --------------------------------- | ----------------- | ---------------------------------------- |
+| **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      |
+| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        |
+| **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps |
+
+See [Testing Strategy Guide](./file-type-guidelines/testing-strategy.md) for
+details.
+
 ## 🛠 Development Workflow
 
 1. **Plan** - Determine architecture and patterns needed

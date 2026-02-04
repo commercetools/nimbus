@@ -1,4 +1,13 @@
-import { Table as ChakraTable } from "@chakra-ui/react/table";
+import {
+  TableRootSlot,
+  TableCaptionSlot,
+  TableHeaderSlot,
+  TableBodySlot,
+  TableFooterSlot,
+  TableRowSlot,
+  TableColumnHeaderSlot,
+  TableCellSlot,
+} from "./table.slots";
 import type {
   TableRootProps,
   TableCaptionProps,
@@ -12,6 +21,9 @@ import type {
   TableColumnGroupProps,
   TableColumnProps,
 } from "./table.types";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { extractStyleProps } from "@/utils";
+import { Box } from "../box";
 
 /**
  * # Table
@@ -41,76 +53,91 @@ import type {
  * ```
  */
 
-const TableRoot = (props: TableRootProps) => {
+/**
+ * Table.Root
+ *
+ * The root table container that provides context for all table slots.
+ *
+ * @supportsStyleProps
+ */
+export const TableRoot = (props: TableRootProps) => {
   const { ref, ...restProps } = props;
-  return <ChakraTable.Root ref={ref} {...restProps} />;
+  const recipe = useSlotRecipe({ key: "nimbusTable" });
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
+  const [styleProps, htmlProps] = extractStyleProps(restRecipeProps);
+
+  return (
+    <TableRootSlot ref={ref} {...recipeProps} {...styleProps} {...htmlProps} />
+  );
 };
 TableRoot.displayName = "Table.Root";
 
-const TableCaption = (props: TableCaptionProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Caption ref={ref} {...restProps} />;
+export const TableCaption = (props: TableCaptionProps) => {
+  return <TableCaptionSlot {...props} />;
 };
 TableCaption.displayName = "Table.Caption";
 
-const TableHeader = (props: TableHeaderProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Header ref={ref} {...restProps} />;
+export const TableHeader = (props: TableHeaderProps) => {
+  return <TableHeaderSlot {...props} />;
 };
 TableHeader.displayName = "Table.Header";
 
-const TableBody = (props: TableBodyProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Body ref={ref} {...restProps} />;
+export const TableBody = (props: TableBodyProps) => {
+  return <TableBodySlot {...props} />;
 };
 TableBody.displayName = "Table.Body";
 
-const TableFooter = (props: TableFooterProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Footer ref={ref} {...restProps} />;
+export const TableFooter = (props: TableFooterProps) => {
+  return <TableFooterSlot {...props} />;
 };
 TableFooter.displayName = "Table.Footer";
 
-const TableRow = (props: TableRowProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Row ref={ref} {...restProps} />;
+export const TableRow = (props: TableRowProps) => {
+  return <TableRowSlot {...props} />;
 };
 TableRow.displayName = "Table.Row";
 
-const TableColumnHeader = (props: TableColumnHeaderProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.ColumnHeader ref={ref} {...restProps} />;
+export const TableColumnHeader = (props: TableColumnHeaderProps) => {
+  return <TableColumnHeaderSlot {...props} />;
 };
 TableColumnHeader.displayName = "Table.ColumnHeader";
 
-const TableCell = (props: TableCellProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Cell ref={ref} {...restProps} />;
+export const TableCell = (props: TableCellProps) => {
+  return <TableCellSlot {...props} />;
 };
 TableCell.displayName = "Table.Cell";
 
-const TableScrollArea = (props: TableScrollAreaProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.ScrollArea ref={ref} {...restProps} />;
+export const TableScrollArea = (props: TableScrollAreaProps) => {
+  return <Box as="div" overflow="auto" {...props} />;
 };
 TableScrollArea.displayName = "Table.ScrollArea";
 
-const TableColumnGroup = (props: TableColumnGroupProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.ColumnGroup ref={ref} {...restProps} />;
+export const TableColumnGroup = (props: TableColumnGroupProps) => {
+  return <Box as="colgroup" {...props} />;
 };
 TableColumnGroup.displayName = "Table.ColumnGroup";
 
-const TableColumn = (props: TableColumnProps) => {
-  const { ref, ...restProps } = props;
-  return <ChakraTable.Column ref={ref} {...restProps} />;
+export const TableColumn = (props: TableColumnProps) => {
+  return <Box as="col" {...props} />;
 };
 TableColumn.displayName = "Table.Column";
 
 /**
  * Export Table with all sub-components as a compound component
  */
-export const Table = {
+export const Table: {
+  Root: typeof TableRoot;
+  Caption: typeof TableCaption;
+  Header: typeof TableHeader;
+  Body: typeof TableBody;
+  Footer: typeof TableFooter;
+  Row: typeof TableRow;
+  ColumnHeader: typeof TableColumnHeader;
+  Cell: typeof TableCell;
+  ScrollArea: typeof TableScrollArea;
+  ColumnGroup: typeof TableColumnGroup;
+  Column: typeof TableColumn;
+} = {
   Root: TableRoot,
   Caption: TableCaption,
   Header: TableHeader,
@@ -122,4 +149,18 @@ export const Table = {
   ScrollArea: TableScrollArea,
   ColumnGroup: TableColumnGroup,
   Column: TableColumn,
+};
+
+export type {
+  TableRootProps,
+  TableCaptionProps,
+  TableHeaderProps,
+  TableBodyProps,
+  TableFooterProps,
+  TableRowProps,
+  TableColumnHeaderProps,
+  TableCellProps,
+  TableScrollAreaProps,
+  TableColumnGroupProps,
+  TableColumnProps,
 };

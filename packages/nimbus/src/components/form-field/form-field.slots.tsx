@@ -9,7 +9,7 @@ import type {
 } from "./form-field.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "formField",
+  key: "nimbusFormField",
 });
 
 // Root slot

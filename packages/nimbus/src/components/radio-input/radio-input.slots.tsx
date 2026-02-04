@@ -5,7 +5,7 @@ import type {
 } from "./radio-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "radioInput",
+  key: "nimbusRadioInput",
 });
 
 export const RadioInputRootSlot = withProvider<

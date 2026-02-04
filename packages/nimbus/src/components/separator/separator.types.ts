@@ -9,7 +9,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type SeparatorRecipeProps = RecipeProps<"separator"> & UnstyledProp;
+type SeparatorRecipeProps = RecipeProps<"nimbusSeparator"> & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

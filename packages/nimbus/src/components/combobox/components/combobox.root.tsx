@@ -113,7 +113,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
   } = props;
 
   // Standard pattern: split recipe variants, then extract style props
-  const recipe = useSlotRecipe({ key: "combobox" });
+  const recipe = useSlotRecipe({ key: "nimbusCombobox" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
@@ -1405,9 +1405,12 @@ const ComboBoxRootInner = <T extends object>(
       PopoverContext,
       {
         isOpen: isOpen,
-        // No-op onOpenChange: We control state internally, prevent React Aria from managing its own state
-        onOpenChange: () => {
-          // Intentionally empty - we manage open state via toggleOpen/setIsOpen
+        // Allow React Aria to close the popover (e.g., on scroll, click outside)
+        // but we still control opening via toggleOpen/setIsOpen
+        onOpenChange: (open: boolean) => {
+          if (!open) {
+            setIsOpen(false);
+          }
         },
         ref: popoverRef,
         triggerRef: triggerRef, // Popover positions relative to this element

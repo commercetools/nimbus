@@ -8,7 +8,7 @@ import type {
 } from "./text-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "textInput",
+  key: "nimbusTextInput",
 });
 
 export const TextInputRootSlot: SlotComponent<

@@ -204,7 +204,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     );
   }
 
-  const recipe = useSlotRecipe({ key: "draggableList" });
+  const recipe = useSlotRecipe({ key: "nimbusDraggableList" });
   // Extract recipe props
   const [recipeProps] = recipe.splitVariantProps(restProps);
   const [styleProps, functionalProps] = extractStyleProps(restProps);

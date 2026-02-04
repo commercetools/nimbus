@@ -12,9 +12,9 @@ import type {
 
 type TimeInputRecipeProps = {
   /** Size variant of the time input */
-  size?: SlotRecipeProps<"timeInput">["size"];
+  size?: SlotRecipeProps<"nimbusTimeInput">["size"];
   /** Visual style variant of the time input */
-  variant?: SlotRecipeProps<"timeInput">["variant"];
+  variant?: SlotRecipeProps<"nimbusTimeInput">["variant"];
 } & UnstyledProp;
 
 // ============================================================

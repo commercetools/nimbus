@@ -16,7 +16,7 @@ import type {
 } from "./combobox.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "combobox",
+  key: "nimbusCombobox",
 });
 
 // Root slot - container for entire combobox (provides recipe context)

@@ -6,7 +6,7 @@ import type { AriaCheckboxProps } from "react-aria";
 // RECIPE PROPS
 // ============================================================
 
-type SwitchRecipeProps = SlotRecipeProps<"switch">;
+type SwitchRecipeProps = SlotRecipeProps<"nimbusSwitch">;
 
 // ============================================================
 // SLOT PROPS

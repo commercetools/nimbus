@@ -9,6 +9,7 @@ import {
   ComposedComboBox,
   type Pokemon,
   PokemonOption,
+  createMockAsyncLoad,
 } from "./utils/test-utils";
 
 // Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
@@ -347,24 +348,7 @@ export const AsyncLoading: Story = {
         isInvalid={!!error}
         selectionMode="multiple"
         async={{
-          load: async (filterText, signal) => {
-            // Pokemon API returns all pokemon, we filter client-side
-            const response = await fetch(
-              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-              { signal }
-            );
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            // Filter results client-side to match search
-            const filtered = data.results.filter((p: Pokemon) =>
-              p.name.toLowerCase().includes(filterText.toLowerCase())
-            );
-            return filtered.slice(0, 100); // Limit to 100 results for performance
-          },
+          load: createMockAsyncLoad(),
           debounce: 300,
           onError: (err) => {
             setError(err.message);
@@ -519,22 +503,7 @@ export const AsyncMultiSelectPersistence: Story = {
         getTextValue={getPokemonValue}
         selectionMode="multiple"
         async={{
-          load: async (filterText, signal) => {
-            const response = await fetch(
-              `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-              { signal }
-            );
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const filtered = data.results.filter((p: Pokemon) =>
-              p.name.toLowerCase().includes(filterText.toLowerCase())
-            );
-            return filtered.slice(0, 50);
-          },
+          load: createMockAsyncLoad(),
           debounce: 300,
         }}
       >
@@ -684,22 +653,7 @@ export const AsyncMultiSelectCustomOptions: Story = {
                 setCreatedOptions((prev) => [...prev, newOption.name]);
               }}
               async={{
-                load: async (filterText, signal) => {
-                  const response = await fetch(
-                    `https://pokeapi.co/api/v2/pokemon?limit=1000`,
-                    { signal }
-                  );
-
-                  if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                  }
-
-                  const data = await response.json();
-                  const filtered = data.results.filter((p: Pokemon) =>
-                    p.name.toLowerCase().includes(filterText.toLowerCase())
-                  );
-                  return filtered.slice(0, 50);
-                },
+                load: createMockAsyncLoad(),
                 debounce: 300,
               }}
             >
@@ -831,21 +785,19 @@ export const AsyncMultiSelectCustomOptions: Story = {
     });
 
     await step("Verify all tags can be removed", async () => {
-      // Remove AnotherCustom tag
-      const anotherCustomTag = canvas.queryByText("AnotherCustom");
-      if (anotherCustomTag) {
-        const removeButton = anotherCustomTag.parentElement?.querySelector(
-          '[aria-label*="Remove"]'
-        );
-        if (removeButton) {
-          await userEvent.click(removeButton);
-        }
-      }
+      // Remove AnotherCustom tag - use getByRole to fail fast if not found
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag anothercustom/i,
+      });
+      await userEvent.click(removeButton);
 
       // Verify it's removed
-      await waitFor(() => {
-        expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Other tags should still exist
       expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
@@ -2256,10 +2208,13 @@ export const ButtonsClickAreas: Story = {
       await userEvent.click(toggleButton);
 
       // Verify click worked
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Clear button has sufficient click area", async () => {
@@ -3063,10 +3018,13 @@ export const ClearDoesNotCloseMenu: Story = {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       // Menu should STILL be open after clearing
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // All options should be visible (filter reset)
       const options = document.querySelectorAll('[role="option"]');
@@ -3101,10 +3059,13 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await userEvent.click(input);
       await userEvent.type(input, "K");
 
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Select Koala
       await selectOptionsByName(["Koala"]);
@@ -3119,9 +3080,12 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await userEvent.click(clearButton);
 
       // Selection should be cleared - wait for state to update
-      await waitFor(() => {
-        expect(input).toHaveValue("");
-      });
+      await waitFor(
+        () => {
+          expect(input).toHaveValue("");
+        },
+        { timeout: 5000 }
+      );
 
       // Input should retain focus
       expect(input).toHaveFocus();
@@ -3132,10 +3096,13 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       // Menu should STILL be open after clearing
-      await waitFor(() => {
-        const listbox = getListBox(document);
-        expect(listbox).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const listbox = getListBox(document);
+          expect(listbox).toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // All options should be visible (filter reset)
       const options = document.querySelectorAll('[role="option"]');

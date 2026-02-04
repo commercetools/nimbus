@@ -6,7 +6,7 @@ import type { SlotComponent } from "@/type-utils";
 import type { CollapsibleMotionRootSlotProps } from "./collapsible-motion.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "collapsibleMotion",
+  key: "nimbusCollapsibleMotion",
 });
 
 export const CollapsibleMotionRootSlot: SlotComponent<

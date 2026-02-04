@@ -7,7 +7,7 @@ import type {
 } from "./card.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "card",
+  key: "nimbusCard",
 });
 
 /**

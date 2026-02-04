@@ -2,10 +2,9 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { drawerSlotRecipe } from "./drawer.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: drawerSlotRecipe,
+  key: "nimbusDrawer",
 });
 
 // Root slot - provides recipe context + config to all child components

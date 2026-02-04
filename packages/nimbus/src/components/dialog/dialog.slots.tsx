@@ -13,7 +13,7 @@ import type {
 } from "./dialog.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "dialog",
+  key: "nimbusDialog",
 });
 
 // Root slot - provides recipe context + config to all child components

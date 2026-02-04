@@ -126,7 +126,7 @@ The component SHALL provide accessible label for screen readers per nimbus-core 
 
 #### Scenario: Default internationalized label
 - **WHEN** aria-label is not provided
-- **THEN** SHALL use useIntl hook to format default message
+- **THEN** SHALL use useLocalizedStringFormatter hook to format default message
 - **AND** SHALL read from messages.defaultLoadingMessage
 - **AND** message id SHALL be "Nimbus.LoadingSpinner.default"
 - **AND** defaultMessage SHALL be "Loading data"
@@ -356,7 +356,7 @@ The component SHALL define translatable messages per nimbus-core standards.
 #### Scenario: Message definition file
 - **WHEN** i18n messages are defined
 - **THEN** SHALL create loading-spinner.i18n.ts file
-- **AND** SHALL use defineMessages from react-intl
+- **AND** SHALL use plain object from plain TypeScript objects
 - **AND** SHALL export messages object
 
 #### Scenario: Default loading message structure

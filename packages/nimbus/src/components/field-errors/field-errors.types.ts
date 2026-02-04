@@ -10,7 +10,8 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-type FieldErrorsRecipeProps = SlotRecipeProps<"fieldErrors"> & UnstyledProp;
+type FieldErrorsRecipeProps = SlotRecipeProps<"nimbusFieldErrors"> &
+  UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

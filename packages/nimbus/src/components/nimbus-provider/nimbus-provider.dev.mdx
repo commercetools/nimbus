@@ -57,13 +57,14 @@ export default function App() {
 }
 ```
 
-**Supported locales:**
+**Nimbus i18n supported locales:**
 - `en` - English (default)
-- `de-DE` - German
-- `fr-FR` - French
-- `es-ES` - Spanish
-- `pt-PT` - Portuguese
-- And more (see `@commercetools/nimbus-i18n` package)
+- `de` - German
+- `es` - Spanish
+- `fr-FR` - French (France)
+- `pt-BR` - Portuguese (Brazil)
+
+> **Note:** These are the locales supported by Nimbus component translations (compiled message dictionaries). React Aria components support many more BCP47 locale codes for date/number formatting.
 
 **Fallback behavior:**
 If no locale is provided, NimbusProvider uses `navigator.language`. If the detected locale is not available, it falls back to English.
@@ -561,17 +562,23 @@ function DebugRouter() {
 
 ### Locale not applying
 
-**Issue:** Components still show English text despite setting locale.
+**Issue:** Nimbus components still show English text despite setting locale.
 
 **Solution:**
-1. Ensure the locale is a valid BCP47 tag (e.g., `"de-DE"` not `"de"` for German)
-2. Verify the locale is supported by `@commercetools/nimbus-i18n`
-3. Check that translation files are included in your build
+1. Verify the locale is supported by Nimbus i18n: `en`, `de`, `es`, `fr-FR`, or `pt-BR`
+2. Note that the `useLocalizedStringFormatter` hook automatically normalizes locale codes (e.g., `"en-US"` → `"en"`, `"de-DE"` → `"de"`)
+3. Check that compiled message dictionaries are included in your build
+4. React Aria components (DatePicker, NumberInput) support any BCP47 locale, but Nimbus component translations (buttons, labels) only support the locales listed above
 
 ```tsx
-// Check available locales
-import { SUPPORTED_LOCALES } from '@commercetools/nimbus-i18n';
-console.log('Supported locales:', SUPPORTED_LOCALES);
+// Debug: Check current locale from React Aria context
+import { useLocale } from 'react-aria-components';
+
+function DebugLocale() {
+  const { locale } = useLocale();
+  console.log('Current locale:', locale);
+  return null;
+}
 ```
 
 ### Hydration mismatch with color mode

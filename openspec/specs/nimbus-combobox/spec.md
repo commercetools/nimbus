@@ -111,6 +111,13 @@ The component SHALL control dropdown visibility intelligently.
 - **AND** button SHALL show chevron icon
 - **AND** SHALL use i18n aria-label "Toggle options"
 
+#### Scenario: Close on scroll
+
+- **WHEN** dropdown is open and user scrolls the page
+- **THEN** SHALL close the dropdown
+- **AND** SHALL preserve current selection state
+- **AND** SHALL allow user to reopen dropdown after scrolling
+
 ### Requirement: Keyboard Interaction
 
 The component SHALL support comprehensive keyboard navigation per nimbus-core
@@ -277,6 +284,15 @@ standards.
 - **AND** SHALL prevent input editing
 - **AND** SHALL prevent dropdown opening
 - **AND** SHALL set aria-readonly="true"
+
+#### Scenario: Option hover feedback
+
+- **WHEN** user hovers mouse over an option in the dropdown
+- **THEN** SHALL apply hover background styling (`primary.2`)
+- **AND** SHALL display pointer cursor to indicate interactivity (per WAI-APG)
+- **AND** hover styling SHALL be independent of keyboard focus state
+- **AND** SHALL NOT apply hover styling to disabled options
+- **AND** SHALL apply consistently across single-select and multi-select modes
 
 ### Requirement: Async Data Loading
 

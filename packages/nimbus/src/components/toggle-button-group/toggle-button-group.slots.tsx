@@ -1,5 +1,4 @@
 import { createSlotRecipeContext } from "@chakra-ui/react";
-import { buttonGroupRecipe } from "./toggle-button-group.recipe";
 import type {
   ToggleButtonGroupButtonProps,
   ToggleButtonGroupProps,
@@ -11,7 +10,7 @@ import {
 } from "react-aria-components";
 
 const { withContext, withProvider } = createSlotRecipeContext({
-  recipe: buttonGroupRecipe,
+  key: "nimbusToggleButtonGroup",
 });
 
 export const ToggleButtonGroupRoot = withProvider<

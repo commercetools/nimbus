@@ -7,7 +7,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-type RangeCalendarRecipeProps = SlotRecipeProps<"rangeCalendar">;
+type RangeCalendarRecipeProps = SlotRecipeProps<"nimbusRangeCalendar">;
 
 // ============================================================
 // SLOT PROPS
@@ -54,4 +54,4 @@ export type RangeCalendarProps<T extends DateValue> = OmitInternalProps<
   keyof RaRangeCalendarProps<DateValue> | ExcludedProps
 > &
   Omit<RaRangeCalendarProps<T>, ExcludedProps> &
-  SlotRecipeProps<"rangeCalendar">;
+  SlotRecipeProps<"nimbusRangeCalendar">;

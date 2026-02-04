@@ -4,7 +4,7 @@ import { system } from "@/theme";
 import type { ToggleButtonRootSlotProps } from "./toggle-button.types";
 
 const { withContext } = createRecipeContext({
-  key: "toggleButton",
+  key: "nimbusToggleButton",
 });
 
 /**

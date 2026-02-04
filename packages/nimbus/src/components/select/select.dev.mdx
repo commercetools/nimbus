@@ -333,7 +333,7 @@ The Select handles most accessibility requirements internally. However, you must
 
 ```tsx
 <label id="label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <Select.Root aria-labelledby="label-id">
   <Select.Options>
@@ -346,7 +346,7 @@ The Select handles most accessibility requirements internally. However, you must
 
 ```tsx
 <label htmlFor="select-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <Select.Root id="select-id">
   <Select.Options>
@@ -358,7 +358,7 @@ The Select handles most accessibility requirements internally. However, you must
 For hidden labels, use `aria-label`:
 
 ```tsx
-<Select.Root aria-label={intl.formatMessage(labelMessage)}>
+<Select.Root aria-label={msg.format(labelMessage)}>
   <Select.Options>
     <Select.Option id="1">Option 1</Select.Option>
   </Select.Options>

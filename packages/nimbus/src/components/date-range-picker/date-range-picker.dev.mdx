@@ -241,7 +241,7 @@ The DateRangePicker handles most accessibility requirements internally. However,
 
 ```tsx
 <label id="label-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <DateRangePicker aria-labelledby="label-id" />
 ```
@@ -250,7 +250,7 @@ The DateRangePicker handles most accessibility requirements internally. However,
 
 ```tsx
 <label htmlFor="date-range-picker-id">
-  {intl.formatMessage(labelMessage)}
+  {msg.format(labelMessage)}
 </label>
 <DateRangePicker id="date-range-picker-id" />
 ```
@@ -258,7 +258,7 @@ The DateRangePicker handles most accessibility requirements internally. However,
 If your design requires that the label should not be visible, the label should be set using the `aria-label` prop:
 
 ```tsx
-<DateRangePicker aria-label={intl.formatMessage(labelMessage)} />
+<DateRangePicker aria-label={msg.format(labelMessage)} />
 ```
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

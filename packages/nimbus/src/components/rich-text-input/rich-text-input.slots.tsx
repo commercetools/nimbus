@@ -7,7 +7,7 @@ import type {
 } from "./rich-text-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  key: "richTextInput",
+  key: "nimbusRichTextInput",
 });
 
 // Root slot

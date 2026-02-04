@@ -7,7 +7,8 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-export type CollapsibleMotionRecipeProps = SlotRecipeProps<"collapsibleMotion">;
+export type CollapsibleMotionRecipeProps =
+  SlotRecipeProps<"nimbusCollapsibleMotion">;
 
 // ============================================================
 // SLOT PROPS

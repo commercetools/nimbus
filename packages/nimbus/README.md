@@ -12,6 +12,12 @@ To build:
 pnpm run build
 ```
 
+> **Important:** This package includes generated i18n files (`*.messages.ts` and
+> `intl/*.ts`) that are **not tracked in git**. After cloning or switching
+> branches, you must run `pnpm build` or `pnpm extract-intl` from the repository
+> root to generate these files. Without them, TypeScript compilation and
+> Storybook will fail.
+
 ## Internationalization (i18n) Development
 
 ### Workflow
@@ -29,11 +35,11 @@ pnpm run build
    - Import the compiled message strings and the hook:
      ```typescript
      import { useLocalizedStringFormatter } from "@/hooks";
-     import { componentMessagesStrings } from "./component.messages";
+     import { {componentName}MessagesStrings } from "./{component-name}.messages";
      ```
    - Use the hook in your component:
      ```typescript
-     const msg = useLocalizedStringFormatter(componentMessagesStrings);
+     const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
      ```
    - Call `msg.format("key")` for simple strings
    - Call `msg.format("key", { variableName: value })` for variable messages
@@ -56,17 +62,13 @@ pnpm run build
 
 ### Dependencies
 
-**`react-intl` is a dev dependency only** - it is not required at runtime:
+**Message extraction and runtime:**
 
-- **In `devDependencies`**: Needed for `.i18n.ts` source files which use
-  `defineMessages` from `react-intl`. The `@formatjs/cli extract` tool expects
-  this format to extract messages.
-- **Not in `peerDependencies`**: Consumers do not need to install `react-intl`.
-  Components use compiled `.messages.ts` dictionaries at runtime, not the
-  `.i18n.ts` source files.
-- **Runtime**: Components use `LocalizedStringDictionary` from
-  `@internationalized/string` and `react-aria-components` for message retrieval,
-  not `react-intl`.
+- **Extraction**: `.i18n.ts` source files are plain TypeScript objects extracted
+  by a custom script (`packages/i18n/scripts/extract-messages.ts`).
+- **Runtime**: Components use compiled `.messages.ts` dictionaries with
+  `LocalizedStringDictionary` from `@internationalized/string` and
+  `react-aria-components` for message retrieval.
 
 ### Quick Reference
 
@@ -91,6 +93,9 @@ pnpm run build
 
 **Troubleshooting:**
 
+- **Module not found errors after clone/branch switch?** Generated i18n files
+  are not tracked in git. Run `pnpm build` or `pnpm extract-intl` from the
+  repository root to regenerate them.
 - **Empty string returned?** Check that message key matches the ID (not the
   object key from `.i18n.ts`)
   - Example: `id: "Nimbus.Alert.dismiss"` → use `msg.format("dismiss")`, not the

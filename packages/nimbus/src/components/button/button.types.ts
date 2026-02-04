@@ -15,12 +15,12 @@ type ButtonRecipeProps = {
    * Size variant of the button
    * @default "md"
    */
-  size?: RecipeProps<"button">["size"];
+  size?: RecipeProps<"nimbusButton">["size"];
   /**
    * Visual style variant of the button
    * @default "subtle"
    */
-  variant?: RecipeProps<"button">["variant"];
+  variant?: RecipeProps<"nimbusButton">["variant"];
 } & UnstyledProp;
 
 // ============================================================
