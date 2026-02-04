@@ -6,7 +6,15 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
-export type StepsRecipeProps = SlotRecipeProps<"nimbusSteps">;
+type StepsRecipeProps = {
+  /** Size variant of the steps */
+  size?: SlotRecipeProps<"nimbusSteps">["size"];
+  /** Orientation of the steps layout */
+  orientation?: SlotRecipeProps<"nimbusSteps">["orientation"];
+};
+
+export type StepsSize = "xs" | "sm" | "md";
+export type StepsOrientation = "horizontal" | "vertical";
 
 // ============================================================
 // CONTEXT VALUE
@@ -21,9 +29,9 @@ export type StepsContextValue = {
   /** Total number of steps */
   count: number;
   /** Size variant */
-  size: "xs" | "sm" | "md";
+  size: StepsSize;
   /** Orientation of the steps */
-  orientation: "horizontal" | "vertical";
+  orientation: StepsOrientation;
 };
 
 /**
@@ -78,7 +86,7 @@ export type StepsRootProps = OmitInternalProps<StepsRootSlotProps> & {
    * - md: 40px indicator, larger text
    * @default "sm"
    */
-  size?: "xs" | "sm" | "md";
+  size?: StepsRecipeProps["size"];
 
   /**
    * Orientation of the steps layout.
@@ -86,7 +94,7 @@ export type StepsRootProps = OmitInternalProps<StepsRootSlotProps> & {
    * - vertical: Steps arranged in a column
    * @default "horizontal"
    */
-  orientation?: "horizontal" | "vertical";
+  orientation?: StepsRecipeProps["orientation"];
 
   /** Child components (Steps.List) */
   children: ReactNode;

@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Stack,
-  Steps,
-  Text,
-  type StepsRootProps,
-} from "@commercetools/nimbus";
+import { Box, Button, Flex, Stack, Steps, Text } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 import {
   Home,
@@ -19,11 +11,8 @@ import {
   LocalShipping,
 } from "@commercetools/nimbus-icons";
 
-const sizes: StepsRootProps["size"][] = ["xs", "sm", "md"];
-const orientations: StepsRootProps["orientation"][] = [
-  "horizontal",
-  "vertical",
-];
+const sizes = ["xs", "sm", "md"] as const;
+const orientations = ["horizontal", "vertical"] as const;
 
 /**
  * Storybook metadata configuration
@@ -136,7 +125,15 @@ export const Sizes: Story = {
             <Text textStyle="md" fontWeight="600">
               Size: {size}
             </Text>
-            <Steps.Root step={1} count={3} size={size}>
+            <Steps.Root
+              step={1}
+              count={3}
+              size={size}
+              orientation={{
+                base: "vertical",
+                md: "horizontal",
+              }}
+            >
               <Steps.List>
                 <Steps.Item index={0}>
                   <Steps.Indicator type="numeric" />
