@@ -902,12 +902,11 @@ export const PlaceholderValue: Story = {
         // Focus the first segment
         await userEvent.click(segments[0]);
 
-        // Invisible
-        await waitFor(async () => {
-          await expect(segments[0]).toHaveAttribute("aria-valuenow", "6");
-        });
+        // Placeholder values don't set aria-valuenow until user interacts
+        // Use ArrowUp to start editing - this activates the segment with the placeholder value
         await userEvent.keyboard("{ArrowUp}");
-        // Now visible
+
+        // After first interaction, month segment shows the placeholder value (June = 6)
         await waitFor(async () => {
           await expect(segments[0]).toHaveAttribute(
             "aria-valuetext",
@@ -917,22 +916,14 @@ export const PlaceholderValue: Story = {
 
         // Continue editing to create a complete date
         await userEvent.tab(); // Move to day segment
-        // Invisible
-        await waitFor(async () => {
-          await expect(segments[1]).toHaveAttribute("aria-valuenow", "15");
-        });
         await userEvent.keyboard("{ArrowDown}");
-        // Now visible
+        // After editing, day segment should show the value from placeholder
         await waitFor(async () => {
           await expect(segments[1]).toHaveAttribute("aria-valuetext", "15");
         });
 
         // Continue editing to create a complete date
         await userEvent.tab(); // Move to year segment
-        // Invisible
-        await waitFor(async () => {
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
-        });
 
         // Wait for focus to actually land on the year segment
         await waitFor(async () => {
@@ -941,7 +932,7 @@ export const PlaceholderValue: Story = {
 
         await userEvent.keyboard("{ArrowDown}");
 
-        // Now visible
+        // After editing, year segment should show the placeholder value
         await waitFor(async () => {
           await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
         });
