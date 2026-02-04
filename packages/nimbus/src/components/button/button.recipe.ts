@@ -58,17 +58,18 @@ export const buttonRecipe = defineRecipe({
           height: "500",
         },
       },
-      /* sm: {
+      sm: {
         h: "900",
         minW: "900",
         px: "350",
-        textStyle: "sm",
+        fontSize: "350",
+        lineHeight: "400",
         gap: "200",
         _icon: {
-          width: "400",
-          height: "400",
+          width: "500",
+          height: "500",
         },
-      }, */
+      },
       md: {
         h: "1000",
         minW: "1000",
