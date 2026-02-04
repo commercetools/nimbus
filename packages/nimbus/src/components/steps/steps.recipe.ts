@@ -31,6 +31,8 @@ export const stepsSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       width: "100%",
+      // CSS variable for separator width - used in calc for vertical centering
+      "--separator-width": "spacing.50", // 2px
     },
     list: {
       display: "flex",
@@ -46,8 +48,7 @@ export const stepsSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "full",
-      borderWidth: "2px",
-      borderStyle: "solid",
+      border: "solid-50",
       flexShrink: 0,
       fontWeight: "medium",
       // Default state (incomplete)
@@ -86,12 +87,15 @@ export const stepsSlotRecipe = defineSlotRecipe({
   variants: {
     size: {
       xs: {
+        root: {
+          "--indicator-size": "sizes.600", // 24px
+        },
         item: {
           gap: "200", // 8px
         },
         indicator: {
-          width: "600", // 24px
-          height: "600",
+          width: "var(--indicator-size)",
+          height: "var(--indicator-size)",
           fontSize: "300", // 12px
           lineHeight: "350", // 14px
         },
@@ -109,12 +113,15 @@ export const stepsSlotRecipe = defineSlotRecipe({
         },
       },
       sm: {
+        root: {
+          "--indicator-size": "sizes.800", // 32px
+        },
         item: {
           gap: "300", // 12px
         },
         indicator: {
-          width: "800", // 32px
-          height: "800",
+          width: "var(--indicator-size)",
+          height: "var(--indicator-size)",
           fontSize: "350", // 14px
           lineHeight: "400", // 16px
         },
@@ -132,12 +139,15 @@ export const stepsSlotRecipe = defineSlotRecipe({
         },
       },
       md: {
+        root: {
+          "--indicator-size": "sizes.1000", // 40px
+        },
         item: {
           gap: "400", // 16px
         },
         indicator: {
-          width: "1000", // 40px
-          height: "1000",
+          width: "var(--indicator-size)",
+          height: "var(--indicator-size)",
           fontSize: "400", // 16px
           lineHeight: "500", // 20px
         },
@@ -162,9 +172,9 @@ export const stepsSlotRecipe = defineSlotRecipe({
           gap: "300", // 12px
         },
         separator: {
-          height: "2px",
+          height: "var(--separator-width)",
           flex: "1",
-          minWidth: "40px",
+          minWidth: "spacing.1000",
         },
       },
       vertical: {
@@ -177,44 +187,16 @@ export const stepsSlotRecipe = defineSlotRecipe({
           alignItems: "flex-start",
         },
         separator: {
-          width: "2px",
+          width: "var(--separator-width)",
           flex: "1",
-          minHeight: "40px",
+          minHeight: "spacing.1000",
+          // Center separator under indicator: (indicator / 2) - (separator / 2)
+          marginLeft:
+            "calc(var(--indicator-size) / 2 - var(--separator-width) / 2)",
         },
       },
     },
   },
-
-  // Compound variants for vertical separator positioning
-  compoundVariants: [
-    {
-      orientation: "vertical",
-      size: "xs",
-      css: {
-        separator: {
-          marginLeft: "calc(12px - 1px)", // half of 24px indicator - half of 2px width
-        },
-      },
-    },
-    {
-      orientation: "vertical",
-      size: "sm",
-      css: {
-        separator: {
-          marginLeft: "calc(16px - 1px)", // half of 32px indicator - half of 2px width
-        },
-      },
-    },
-    {
-      orientation: "vertical",
-      size: "md",
-      css: {
-        separator: {
-          marginLeft: "calc(20px - 1px)", // half of 40px indicator - half of 2px width
-        },
-      },
-    },
-  ],
 
   defaultVariants: {
     size: "sm",
