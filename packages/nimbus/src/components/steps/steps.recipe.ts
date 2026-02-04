@@ -174,7 +174,7 @@ export const stepsSlotRecipe = defineSlotRecipe({
         separator: {
           height: "var(--separator-width)",
           flex: "1",
-          minWidth: "spacing.1000",
+          minWidth: "40px",
         },
       },
       vertical: {
@@ -189,7 +189,7 @@ export const stepsSlotRecipe = defineSlotRecipe({
         separator: {
           width: "var(--separator-width)",
           flex: "1",
-          minHeight: "spacing.1000",
+          minHeight: "40px",
           // Center separator under indicator: (indicator / 2) - (separator / 2)
           marginLeft:
             "calc(var(--indicator-size) / 2 - var(--separator-width) / 2)",

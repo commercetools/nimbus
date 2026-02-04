@@ -1,4 +1,8 @@
-import { useSlotRecipe } from "@chakra-ui/react";
+import {
+  useBreakpointValue,
+  useChakraContext,
+  useSlotRecipe,
+} from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsRootProps, StepsContextValue } from "../steps.types";
 import { StepsRootSlot } from "../steps.slots";
@@ -53,11 +57,19 @@ export const StepsRoot = (props: StepsRootProps) => {
 
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);
 
+  const sysCtx = useChakraContext();
+  const normalizedSize = sysCtx.normalizeValue(size);
+  const normalizedOrientation = sysCtx.normalizeValue(orientation);
+
+  const computedSize = useBreakpointValue(normalizedSize) ?? "sm";
+  const computedOrientation =
+    useBreakpointValue(normalizedOrientation) ?? "horizontal";
+
   const contextValue: StepsContextValue = {
     step,
     count,
-    size,
-    orientation,
+    size: computedSize,
+    orientation: computedOrientation,
   };
 
   return (
