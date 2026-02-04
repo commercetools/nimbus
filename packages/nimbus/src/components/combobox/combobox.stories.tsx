@@ -785,16 +785,11 @@ export const AsyncMultiSelectCustomOptions: Story = {
     });
 
     await step("Verify all tags can be removed", async () => {
-      // Remove AnotherCustom tag
-      const anotherCustomTag = canvas.queryByText("AnotherCustom");
-      if (anotherCustomTag) {
-        const removeButton = anotherCustomTag.parentElement?.querySelector(
-          '[aria-label*="Remove"]'
-        );
-        if (removeButton) {
-          await userEvent.click(removeButton);
-        }
-      }
+      // Remove AnotherCustom tag - use getByRole to fail fast if not found
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag anothercustom/i,
+      });
+      await userEvent.click(removeButton);
 
       // Verify it's removed
       await waitFor(
