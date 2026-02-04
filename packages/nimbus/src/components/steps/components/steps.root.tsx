@@ -61,9 +61,12 @@ export const StepsRoot = (props: StepsRootProps) => {
   const normalizedSize = sysCtx.normalizeValue(size);
   const normalizedOrientation = sysCtx.normalizeValue(orientation);
 
-  const computedSize = useBreakpointValue(normalizedSize) ?? "sm";
+  const computedSize =
+    useBreakpointValue(normalizedSize) ??
+    (typeof size === "string" ? size : "sm");
   const computedOrientation =
-    useBreakpointValue(normalizedOrientation) ?? "horizontal";
+    useBreakpointValue(normalizedOrientation) ??
+    (typeof orientation === "string" ? orientation : "horizontal");
 
   const contextValue: StepsContextValue = {
     step,
