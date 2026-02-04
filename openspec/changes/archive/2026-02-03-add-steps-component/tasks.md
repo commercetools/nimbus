@@ -4,13 +4,13 @@
 
 ### Phase 1: Component Scaffolding (Day 1)
 
-- [ ] **Task 1.1: Create component directory structure**
+- [x] **Task 1.1: Create component directory structure**
   - Create `/packages/nimbus/src/components/steps/` directory
   - Create shell files: `index.ts`, `steps.tsx`, `steps.types.ts`,
     `steps.recipe.ts`, `steps.slots.tsx`, `steps.stories.tsx`
   - Validation: Directory structure matches Nimbus conventions
 
-- [ ] **Task 1.2: Define TypeScript types**
+- [x] **Task 1.2: Define TypeScript types**
   - Implement four-layer type architecture in `steps.types.ts`
   - Define recipe props (size, orientation, state variants)
   - Define slot props for all 8 slots (root, list, item, indicator, separator,
@@ -19,7 +19,7 @@
   - Export all types
   - Validation: `pnpm --filter @commercetools/nimbus typecheck` passes
 
-- [ ] **Task 1.3: Create Chakra UI v3 slot recipe**
+- [x] **Task 1.3: Create Chakra UI v3 slot recipe**
   - Implement recipe in `steps.recipe.ts` with all 8 slots
   - Define base styles for each slot
   - Implement size variants (xs, sm, md) with correct token values
@@ -31,14 +31,14 @@
 
 ### Phase 2: Core Implementation (Day 2)
 
-- [ ] **Task 2.1: Implement slot components**
+- [x] **Task 2.1: Implement slot components**
   - Create slot components in `steps.slots.tsx`
   - Implement: StepsRootSlot, StepsListSlot, StepsItemSlot, StepsIndicatorSlot,
     StepsSeparatorSlot, StepsContentSlot, StepsLabelSlot, StepsDescriptionSlot
   - Apply `createSlotRecipeContext` pattern
   - Validation: All slots render without errors
 
-- [ ] **Task 2.2: Implement context and core components**
+- [x] **Task 2.2: Implement context and core components**
   - Create StepsContext with step, count, size, orientation
   - Implement useStepsContext hook with error handling
   - Implement Steps.Root with context provider
@@ -48,39 +48,39 @@
   - Implement Steps.Separator with orientation-aware rendering
   - Validation: Components render and context flows correctly
 
-- [ ] **Task 2.3: Implement content components**
+- [x] **Task 2.3: Implement content components**
   - Implement Steps.Content wrapper
   - Implement Steps.Label with typography
   - Implement Steps.Description with conditional rendering
   - Validation: Content components render with correct styling
 
-- [ ] **Task 2.4: Implement compound component namespace**
+- [x] **Task 2.4: Implement compound component namespace**
   - Export namespace object in `steps.tsx`
   - Ensure Root is first property
   - Add displayName to all components
   - Validation: Import and usage works:
     `<Steps.Root><Steps.List>...</Steps.List></Steps.Root>`
 
-- [ ] **Task 2.5: Register recipe in theme config**
+- [x] **Task 2.5: Register recipe in theme config**
   - Add recipe to `/packages/nimbus/src/theme/slot-recipes/index.ts`
   - Export as "nimbusSteps"
   - Validation: `pnpm --filter @commercetools/nimbus build-theme-typings`
     succeeds
 
-- [ ] **Task 2.6: Export from package**
+- [x] **Task 2.6: Export from package**
   - Add Steps export to `/packages/nimbus/src/components/index.ts`
   - Validation: Can import Steps from `@commercetools/nimbus`
 
 ### Phase 3: Testing Implementation (Day 3)
 
-- [ ] **Task 3.1: Create basic Storybook stories**
+- [x] **Task 3.1: Create basic Storybook stories**
   - Create `steps.stories.tsx` with Default story
   - Implement stories for all size variants (xs, sm, md)
   - Implement stories for both orientations
   - Implement stories for both indicator types (numeric, icon)
   - Validation: Stories render in Storybook
 
-- [ ] **Task 3.2: Implement play functions for interaction testing**
+- [x] **Task 3.2: Implement play functions for interaction testing**
   - Add play function to Default story testing:
     - List has role="list"
     - Items have role="listitem"
@@ -90,14 +90,14 @@
   - Add play function testing state updates
   - Validation: Play functions pass in Storybook
 
-- [ ] **Task 3.3: Implement variant coverage stories**
+- [x] **Task 3.3: Implement variant coverage stories**
   - Create AllSizes story displaying xs, sm, md side by side
   - Create BothOrientations story displaying horizontal and vertical
   - Create NumericVsIcon story comparing both indicator types
   - Create CompactNoDescription story (labels only)
   - Validation: All variants display correctly
 
-- [ ] **Task 3.4: Implement accessibility tests**
+- [x] **Task 3.4: Implement accessibility tests**
   - Create AccessibilityCompliance story
   - Add play function with axe accessibility tests
   - Test semantic HTML structure
@@ -105,7 +105,7 @@
   - Test keyboard navigation (if applicable)
   - Validation: No accessibility violations
 
-- [ ] **Task 3.5: Build and run tests**
+- [x] **Task 3.5: Build and run tests**
   - Run `pnpm --filter @commercetools/nimbus build`
   - Run `pnpm test:storybook` for Steps stories
   - Fix any test failures
@@ -113,7 +113,7 @@
 
 ### Phase 4: Documentation (Day 4)
 
-- [ ] **Task 4.1: Create developer documentation**
+- [x] **Task 4.1: Create developer documentation**
   - Create `steps.dev.mdx` file
   - Document component purpose and features
   - Include basic usage example
@@ -123,7 +123,7 @@
   - Include API reference section (auto-generated from JSDoc)
   - Validation: Documentation renders in docs site
 
-- [ ] **Task 4.2: Create designer guidelines**
+- [x] **Task 4.2: Create designer guidelines**
   - Create `steps.guidelines.mdx` file
   - Document "When to Use" and "When NOT to Use"
   - Provide size selection guidance
@@ -133,7 +133,7 @@
   - Include visual examples
   - Validation: Guidelines render in docs site
 
-- [ ] **Task 4.3: Verify JSDoc completeness**
+- [x] **Task 4.3: Verify JSDoc completeness**
   - Review all prop types have JSDoc descriptions
   - Ensure all components have JSDoc summaries
   - Add @example blocks to main components
@@ -142,14 +142,14 @@
 
 ### Phase 5: Final Validation (Day 5)
 
-- [ ] **Task 5.1: Run full test suite**
+- [x] **Task 5.1: Run full test suite**
   - Run `pnpm build` (full monorepo build)
   - Run `pnpm test` (all tests)
   - Run `pnpm lint`
   - Run `pnpm typecheck:strict`
   - Validation: All checks pass
 
-- [ ] **Task 5.2: Manual testing**
+- [x] **Task 5.2: Manual testing**
   - Test in Storybook with different content lengths
   - Test with long labels and descriptions
   - Test edge cases (single step, all complete)
@@ -157,12 +157,12 @@
   - Test responsive behavior
   - Validation: Component behaves correctly in all scenarios
 
-- [ ] **Task 5.3: OpenSpec validation**
+- [x] **Task 5.3: OpenSpec validation**
   - Run `pnpm openspec validate add-steps-component --strict`
   - Fix any validation errors
   - Validation: OpenSpec validation passes
 
-- [ ] **Task 5.4: Documentation review**
+- [x] **Task 5.4: Documentation review**
   - Build docs site: `pnpm build:docs`
   - Start docs site: `pnpm start:docs`
   - Review Steps documentation pages
