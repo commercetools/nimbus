@@ -1,7 +1,9 @@
 ---
 id: Components-Badge
 title: Badge
-description: Briefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.
+description:
+  Briefly highlights or categorizes associated UI elements with concise visual
+  cues for status or metadata.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -15,11 +17,15 @@ tags:
 
 # Badge
 
-Briefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.
+Briefly highlights or categorizes associated UI elements with concise visual
+cues for status or metadata.
 
 ## Overview
 
-Badges are small, visually distinct labels used to highlight status, category, or counts associated with other UI elements. They feature concise text and customizable styling for clear communication without overwhelming the primary content.
+Badges are small, visually distinct labels used to highlight status, category,
+or counts associated with other UI elements. They feature concise text and
+customizable styling for clear communication without overwhelming the primary
+content.
 
 ### Resources
 
@@ -34,6 +40,7 @@ Get familiar with the features.
 ### Size
 
 #### Medium
+
 This is the default size.
 
 ```jsx-live
@@ -47,6 +54,7 @@ const App = () => (
 ```
 
 #### X-small
+
 For uses where several badges will be shown at one time.
 
 ```jsx-live
@@ -60,7 +68,9 @@ const App = () => (
 ```
 
 #### 2X-small
-Use these when there are a more than a few badges at one time, or to be less distracting to let the user focus on other parts of the surrounding page.
+
+Use these when there are a more than a few badges at one time, or to be less
+distracting to let the user focus on other parts of the surrounding page.
 
 ```jsx-live
 const App = () => (
@@ -74,15 +84,19 @@ const App = () => (
 
 ### Visual options
 
-Badges can be set to use either the semantic color palette or any other radix color. When pairing new radix colors, the formula uses the 3rd color shade for the background and the 11th for text to maintain text accessibility.
+Badges can be set to use either the semantic color palette or any other radix
+color. When pairing new radix colors, the formula uses the 3rd color shade for
+the background and the 11th for text to maintain text accessibility.
 
 #### Semantic colors
-When a badge is supposed to convey a specific and consistent meaning, use these predefined color options.
+
+When a badge is supposed to convey a specific and consistent meaning, use these
+predefined color options.
 
 ```jsx-live
 const App = () => {
   const semanticColors = ['info', 'primary', 'positive', 'critical', 'warning', 'neutral'];
-  
+
   return (
     <Stack direction="horizontal" gap="400" alignItems="center" flexWrap="wrap">
       {semanticColors.map(color => (
@@ -94,12 +108,15 @@ const App = () => {
 ```
 
 #### Custom colors
-When the color of the badge serves a purely aesthetic purpose, or the semantic color palette does not offer enough options, use any of these available options from our color palette.
+
+When the color of the badge serves a purely aesthetic purpose, or the semantic
+color palette does not offer enough options, use any of these available options
+from our color palette.
 
 ```jsx-live
 const App = () => {
   const customColors = ['teal', 'pink', 'mint'];
-  
+
   return (
     <Stack direction="horizontal" gap="400" alignItems="center" flexWrap="wrap">
       {customColors.map(color => (
@@ -109,37 +126,3 @@ const App = () => {
   )
 }
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <Badge 
-    data-testid="status-badge" 
-    aria-label="Status: Active"
-    colorPalette="primary"
-  >
-    <Icons.StarOutline />
-    I am a badge
-  </Badge>
-)
-```
-
-### Accessibility standards
-
-- Always provide a meaningful label. If a visible label is not used, provide an aria-label for screen readers.
-- Ensure sufficient color contrast for all elements (text and background).
-- Avoid relying on color alone to convey information.
-- Clearly indicate keyboard focus when interactive.
-- Support keyboard navigation (e.g., `Tab`, `Space`, `Enter`).
-- Manage text overflow (wrap text or truncate with a tooltip).
-- Use descriptive `aria-describedby` if attached to an interactive element.
-- Include a tooltip for icon-only badges.
-
-#### Resources
-
-- [Adobe Spectrum Design System](https://spectrum.adobe.com/page/badge/)
-- [React Spectrum](https://react-spectrum.adobe.com/react-aria/useBadge.html)
-- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/badge/) (Search for "Badge" patterns or general guidance on status indicators)

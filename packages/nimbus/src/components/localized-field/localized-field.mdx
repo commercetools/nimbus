@@ -1,7 +1,9 @@
 ---
 id: Components-LocalizedField
 title: LocalizedField
-description: A field that allows inputting translations for a given string in multiple locales or currencies.
+description:
+  A field that allows inputting translations for a given string in multiple
+  locales or currencies.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -19,11 +21,17 @@ tags:
 
 # Localized field
 
-A localized field is a single component that enables users to input and manage content for multiple language versions of a piece of data within one unified form area.
+A localized field is a single component that enables users to input and manage
+content for multiple language versions of a piece of data within one unified
+form area.
 
 ## Overview
 
-The localized field component serves as a container that displays and manages content across various defined locales. It minimizes clutter by allowing users to toggle between language versions using a control while ensuring that the data for each specified locale is correctly captured, validated, and stored in the application.
+The localized field component serves as a container that displays and manages
+content across various defined locales. It minimizes clutter by allowing users
+to toggle between language versions using a control while ensuring that the data
+for each specified locale is correctly captured, validated, and stored in the
+application.
 
 ### Resources
 
@@ -36,12 +44,10 @@ Deep dive into implementation details and access the Nimbus design library.
 
 Get familiar with the features.
 
-
-
 ### Size
 
-There are two supported sizes for localized fields, the default (md) and a smaller version for more compact needs (sm).
-
+There are two supported sizes for localized fields, the default (md) and a
+smaller version for more compact needs (sm).
 
 ```jsx-live
 const App = () => {
@@ -79,8 +85,8 @@ const App = () => {
 
 ### Expand and hide
 
-Allow users to be able to expand and minimize localized fields to simplify a page, or expand to see everything when needed.
-
+Allow users to be able to expand and minimize localized fields to simplify a
+page, or expand to see everything when needed.
 
 ```jsx-live
 const App = () => {
@@ -103,11 +109,10 @@ const App = () => {
 };
 ```
 
-
 ### Localized field combinations
 
-Combine with rich text, text, multiline text, richttext, and moneyinput to give users more availability for localized input details.
-
+Combine with rich text, text, multiline text, richttext, and moneyinput to give
+users more availability for localized input details.
 
 ```jsx-live
 const App = () => {
@@ -147,36 +152,3 @@ const App = () => {
   );
 };
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => {
-  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });
-
-  return (
-   
-      <LocalizedField
-        size="md"
-        defaultLocaleOrCurrency="en"
-        valuesByLocaleOrCurrency={values}
-        onChange={(e) => {
-          setValues({
-            ...values,
-            [e.target.locale]: e.target.value
-          });
-        }}
-      />
-     
-  );
-};
-```
-
-### Accessibility standards
-
- - **Focus management:** Ensure the Tab order moves logically between the active input field and the language switching controls. When the language is switched, focus should return to the newly visible input field.
- - **Keyboard operability:** The language switching controls (tabs, buttons) must be fully navigable and operable via the keyboard.
- - **ARIA roles:** Ensure the active input field correctly inherits all necessary ARIA attributes (e.g., aria-required, aria-invalid) from the FormField component.
- - **Screen reader communication:** Ensure screen readers announce the change of language context when the user activates a different locale input, often by announcing the new tab or language code.

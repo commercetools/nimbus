@@ -1,0 +1,38 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <Switch size="md">Label</Switch>;
+```
+
+### Accessibility standards
+
+- **Info and relationships:** Ensure the switch's state and purpose are
+  programmatically determinable. Use ARIA attributes like `aria-checked` to
+  convey the on/off state to assistive technologies. Associate a clear label
+  with the switch using the `<label>` element or `aria-label`.
+- **Use of color:** Don't rely solely on color to indicate the switch's state.
+  Use other visual cues like position or icons.
+- **Color contrast:** Ensure sufficient color contrast between the switch's
+  elements (background, toggle, label) and surrounding content.
+- **Keyboard accessibility:** Make the switch fully operable via keyboard. Users
+  should be able to focus on the switch using the Tab key and toggle it using
+  the Spacebar or Enter key.
+- **Focus visible:** Provide a clear visual focus indicator when the switch
+  receives keyboard focus.
+- **On focus:** Ensure that focusing on the switch doesn't trigger unexpected
+  changes or actions.
+- **Labels or instructions:** Provide clear and concise labels that accurately
+  describe the switch's function.
+- **Name, role, value:** Use appropriate semantic HTML and ARIA attributes to
+  define the switch's role, name, and value. This ensures compatibility with
+  assistive technologies. `aria-checked` must accurately reflect the on/off
+  state.

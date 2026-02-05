@@ -1,0 +1,79 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [val, setVal] = useState('Input value');
+
+  return (
+    <FormField.Root isRequired>
+      <FormField.Label>Label</FormField.Label>
+      <FormField.Input>
+        <TextInput width="full" value={val} onChange={(v)=>setVal(v)} placeholder="Enter something..." />
+      </FormField.Input>
+      <FormField.Description>Help Text</FormField.Description>
+      <FormField.InfoBox>
+        Info box content.
+      </FormField.InfoBox>
+    </FormField.Root>
+  )
+}
+```
+
+### Accessibility standards
+
+- **Non-text content:** Provide text alternatives for any non-text content
+  within or associated with form fields (e.g., icons, images). Use alt text for
+  images and provide text equivalents for other non-text content.
+- **Info and relationships:** Use the `<label>` element to programmatically
+  associate labels with form fields. Ensure that assistive technologies can
+  determine the relationship between labels and their corresponding inputs.
+- **Group related fields:** Group related form fields using `<fieldset>` and
+  provide a `<legend>` to create logical sections.
+- **ARIA attributes:** Use ARIA attributes (e.g., `aria-describedby`,
+  `aria-labelledby`) to establish relationships between form fields and related
+  elements.
+- **Use of color:** Avoid relying solely on color to convey information or
+  indicate the state of form fields (e.g., required fields, error states).
+  Provide redundant visual cues, such as icons, text, or patterns, to supplement
+  color-based indicators.
+- **Color contrast:** Ensure sufficient color contrast between form field
+  labels, input fields, borders, and background colors. Use a contrast checking
+  tool to verify that the contrast ratio meets the minimum requirements.
+- **Keyboard accessibility:** Make all form field functionality operable using
+  the keyboard. Enable users to navigate between form fields using the Tab key.
+  Allow users to activate form field controls (e.g., buttons, checkboxes, radio
+  buttons) using the Spacebar or Enter key. Ensure that keyboard focus is not
+  trapped within form fields.
+- **Focus visible:** Provide a clear and visible focus indicator for form fields
+  when they receive keyboard focus. Visually distinguish the focus state from
+  the default state using outlines, highlights, or other visual cues. Avoid
+  relying solely on color changes to indicate focus.
+- **On focus:** Prevent form fields from unexpectedly changing the context of
+  the page when they receive focus. Ensure that any context changes are
+  initiated by user actions, such as submitting the form.
+- **Error identification:** Identify and describe input errors in text when they
+  are automatically detected. Display clear and concise error messages near the
+  corresponding form fields.
+- **Labels or instructions:** Provide clear, concise, and descriptive labels or
+  instructions for all form fields. Write labels that accurately reflect the
+  purpose of the form fields. Provide instructions about the expected input
+  format or requirements. Avoid using placeholder text as a replacement for
+  visible labels.
+- **Error suggestion:** If an input error is automatically detected and
+  suggestions for correction are known, provide the suggestions to the user,
+  unless it would jeopardize the security or purpose of the content.
+- **Name, role, value:** Use semantic HTML elements (e.g., `<input>`,
+  `<textarea>`, `<select>`) to define the role, name, and value of form fields.
+  Ensure that assistive technologies can correctly interpret form fields and
+  their attributes. Use ARIA attributes when necessary to provide additional
+  information to assistive technologies, especially for complex or custom form
+  fields.

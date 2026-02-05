@@ -1,0 +1,40 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <DatePicker aria-label="Enter a date" />
+```
+
+### Accessibility standards
+
+- Always provide a visible label for the input.
+- Clearly associate the label with the input using the for attribute on the
+  `<label>` and a matching id on the input element.
+- Ensure sufficient color contrast for all elements (text, borders, icons, focus
+  indicators).
+- Clearly indicate the focused state.
+- Support keyboard navigation:
+- Use Tab to navigate to and from the date input.
+- Use Enter or Space to open/close the date picker (if applicable).
+- Use arrow keys to navigate within the calendar grid (if a date picker is
+  provided).
+- Allow users to select dates using Enter or Space.
+- Communicate errors clearly, using both visual cues (e.g., color) and
+  descriptive error messages.
+- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).
+- Ensure screen readers announce the selected date and any navigation changes
+  within a date picker.
+- Provide an accessible way to clear the date input.
+
+### Resources
+
+- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DatePicker.html)
+- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)

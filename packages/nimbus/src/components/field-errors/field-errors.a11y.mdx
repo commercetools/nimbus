@@ -1,0 +1,47 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <FieldErrors
+    errors={{ critical: true }}
+    isVisible={true}
+    renderError={(key) => {
+      if (key === "critical") {
+        return "Provide your name to continue.";
+      }
+      return null;
+    }}
+  />
+);
+```
+
+### Accessibility standards
+
+- **Instant announcement:** The root container uses `role="alert"` to trigger
+  screen readers to immediately announce error messages when they become
+  visible, providing critical, instant feedback to the user.
+- **WCAG contrast:** The default critical color palette provides sufficient
+  contrast for the error text to meet WCAG AA standards. This must be maintained
+  when using custom colors.
+- **Actionable messaging:** Error messages should use clear, plain language that
+  focuses on what the user needs to do to fix the problem, not just what went
+  wrong (e.g., "Password must be at least 8 characters" instead of "Length
+  validation failed").
+- **Association:** When integrated with the FormField component, errors are
+  automatically associated with their input fields via ARIA, helping screen
+  readers clearly link the error message to the field that caused it.
+- **Color is supplemental:** Color (red tones) is used as a supplemental
+  indicator; the text content itself provides the error information, meeting
+  WCAG requirements for users with color vision deficiencies.
+- **Visibility control:** Always tie `isVisible` to the field's interaction
+  state (touched or blurred) to prevent users from hearing confusing
+  announcements before they've had a chance to input data.

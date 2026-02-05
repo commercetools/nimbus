@@ -1,0 +1,72 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Accordion.Root>
+    <Accordion.Item>
+      <Accordion.Header>
+        Headline
+        <Accordion.HeaderRightContent>
+          <IconButton colorPalette="primary" variant="ghost">
+            <Icons.Edit />
+          </IconButton>
+          <IconButton colorPalette="primary" variant="ghost">
+            <Icons.PushPin />
+          </IconButton>
+          <IconButton colorPalette="primary" variant="ghost">
+            <Icons.FileCopy />
+          </IconButton>
+          <IconButton colorPalette="critical" variant="ghost">
+            <Icons.Delete />
+          </IconButton>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>Content goes here</Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
+
+### Accessibility standards
+
+- **Use appropriate HTML elements:** Use `<button>` for headers controlling
+  panels. Employ separate elements for content panels. Establish clear
+  relationships between triggers and content programmatically.
+- **Headings:** Utilize heading elements (`<h3>`, `<h2>`, etc.) for accordion
+  headers. Provide semantic structure for navigation by assistive technologies.
+- **ARIA Roles:** Apply `role="region"` to content panels for landmark
+  identification.
+- **aria-expanded:** Dynamically update on the `<button>` controlling the panel.
+  `aria-expanded="true"` for visible panels. `aria-expanded="false"` for hidden
+  panels.
+- **aria-controls:** Set on the `<button>` to reference the id of its controlled
+  content panel. Explicitly link the button to the content.
+- **aria-labelledby:** Apply to the content panel (with `role="region"`).
+  Reference the id of the accordion's header button.
+- **Keyboard navigation:** Ensure full keyboard operability. Allow focus to
+  reach each accordion header (`<button>`) using Tab. Enable toggling panel
+  visibility using Space or Enter on focused headers. Consider arrow key
+  navigation between headers (enhancement).
+- **Focus visible:** Provide a clear visual focus indicator for focused
+  accordion headers (`<button>`). Assist keyboard users in identifying the
+  selected element.
+- **Content visibility for assistive technologies:** Ensure content of collapsed
+  panels is not focusable via keyboard and hidden from screen readers (e.g.,
+  `aria-hidden="true"`, `display: none`).
+- **Color contrast:** Maintain sufficient color contrast for text within headers
+  and content panels. Ensure readability against background colors.
+- **Clear indicators:** Provide visual cues for expanded/collapsed states (e.g.,
+  arrows, +/-). Hide decorative indicators from screen readers
+  (`aria-hidden="true"`).
+- **Avoid less accessible methods:** Avoid relying solely on `<details>` and
+  `<summary>` for complex accordions. ARIA attributes offer more reliable and
+  controllable accessibility.

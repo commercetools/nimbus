@@ -1,0 +1,39 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <NimbusI18nProvider locale="en-US">
+    <Text>Content with proper locale formatting</Text>
+  </NimbusI18nProvider>
+);
+```
+
+### Accessibility standards
+
+- **Provide valid locale codes:** Always provide a valid BCP47 language tag
+  (e.g., `en-US`, `de-DE`, `fr-FR`) to ensure proper formatting and
+  pronunciation.
+- **Use region-specific codes:** Use region-specific codes when formatting
+  differs (e.g., date order, decimal separators, number formatting).
+- **Locale-appropriate formatting:** Dates, numbers, and currency are announced
+  in locale-appropriate formats by screen readers.
+- **Proper pronunciation:** Screen readers use the specified locale for correct
+  pronunciation of content.
+- **ARIA labels reflect locale conventions:** Ensures ARIA labels and
+  announcements follow locale conventions.
+- **Test with screen readers:** Always test with actual screen readers to verify
+  proper pronunciation and formatting.
+
+## Resources
+
+- [BCP47 Language Tags](https://www.w3.org/International/articles/language-tags/)
+- [WCAG 3.1.2 Language of Parts](https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts.html)

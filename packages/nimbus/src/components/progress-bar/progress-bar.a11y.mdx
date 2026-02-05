@@ -1,0 +1,30 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <ProgressBar value={40} label="Loading..." />
+)
+```
+
+### Accessibility standards
+
+- **Use ARIA attributes:** Use `aria-valuenow`, `aria-valuemin`, and
+  `aria-valuemax` to specify the current value, minimum value, and maximum value
+  of a determinate progress bar.
+- **Provide an accessible label:** Use `aria-label` or `aria-labelledby` to give
+  the progress bar a descriptive name.
+- **Announce changes:** Use aria-live regions to announce changes in progress to
+  screen reader users.
+- **Provide clear status:** Use text to indicate the current state (e.g.,
+  'uploading', 'complete') for users who cannot see the visual component.
+- **Do not rely on color alone:** Use icons or text labels to indicate status,
+  such as an error state, for users with color vision deficiency.

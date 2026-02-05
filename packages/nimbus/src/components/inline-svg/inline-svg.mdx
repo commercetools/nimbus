@@ -18,27 +18,31 @@ tags:
 
 # InlineSvg
 
-The `InlineSvg` component allows you to render arbitrary SVG markup as an icon with built-in XSS protection. It sanitizes the provided SVG string to remove potentially dangerous elements and attributes before rendering.
+The `InlineSvg` component allows you to render arbitrary SVG markup as an icon
+with built-in XSS protection. It sanitizes the provided SVG string to remove
+potentially dangerous elements and attributes before rendering.
 
 ## Key features
 
-- **Security First**: Automatic sanitization of SVG content to prevent XSS attacks
+- **Security First**: Automatic sanitization of SVG content to prevent XSS
+  attacks
 - **API Compatible**: Drop-in replacement for existing InlineSvg implementations
 - **Accessibility**: Support for title and description elements
 - **Consistent Styling**: Uses the same recipe system as the Icon component
 - **Performance**: Memoized sanitization for optimal re-renders
-- **Zero External Dependencies**: Uses native browser APIs for parsing and sanitization
+- **Zero External Dependencies**: Uses native browser APIs for parsing and
+  sanitization
 
 ## Basic usage
 
 ```jsx-live
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
-  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0
   3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
   </svg>`;
-  
+
   return (
     <InlineSvg data={svgData} size="md" />
   );
@@ -54,11 +58,11 @@ The component supports all standard icon sizes through the `size` prop:
 ```jsx-live
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
-  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0
   3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
   </svg>`;
-  
+
   return (
     <Flex gap="400" align="center">
       <InlineSvg data={svgData} size="2xs" />
@@ -74,16 +78,17 @@ const App = () => {
 
 ### Custom sizes
 
-For custom sizing, you can use the `boxSize`, `width`, or `height` props with any valid CSS value or design token:
+For custom sizing, you can use the `boxSize`, `width`, or `height` props with
+any valid CSS value or design token:
 
 ```jsx-live
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
-  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0
   3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
   </svg>`;
-  
+
   return (
     <Flex gap="400" align="center">
       <InlineSvg data={svgData} boxSize="800"/>
@@ -101,11 +106,11 @@ Apply colors using design tokens:
 ```jsx-live
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 
-  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5
+  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0
   3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
   </svg>`;
-  
+
   return (
     <Flex gap="400" align="center">
       <InlineSvg data={svgData} size="lg" color="primary.9" />
@@ -121,7 +126,8 @@ const App = () => {
 
 ## Complex SVG
 
-The component preserves complex SVG structures including groups, multiple paths, and transformations:
+The component preserves complex SVG structures including groups, multiple paths,
+and transformations:
 
 ```jsx-live
 const App = () => {
@@ -133,7 +139,7 @@ const App = () => {
   <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
   <line x1="12" x2="12" y1="22.08" y2="12"/>
 </svg>`;
-  
+
   return (
     <InlineSvg data={svgData} size="xl" color="primary.9" />
   );
@@ -151,7 +157,7 @@ const App = () => {
   <circle cx="12" cy="12" r="5" fill="#10b981"/>
   <path d="M12 9v6M9 12h6" stroke="white" stroke-width="2"/>
 </svg>`;
-  
+
   return (
     <InlineSvg data={svgData} size="xl" />
   );
@@ -181,7 +187,7 @@ const App = () => {
   <style>body { display: none; }</style>
   <script>alert('XSS3')</script>
 </svg>`;
-  
+
   return (
     <Stack gap="400">
       <Text>The following SVG has malicious content that gets sanitized:</Text>
@@ -193,28 +199,6 @@ const App = () => {
   );
 };
 ```
-
-## Accessibility
-
-The SVG is rendered with `role="presentation"` as it's intended for decorative use. If you need accessible SVGs, include `<title>` and `<desc>` elements directly in your SVG markup - they will be preserved during sanitization.
-
-## Security considerations
-
-The component provides comprehensive XSS protection:
-
-### What gets removed
-
-- All JavaScript execution vectors (`<script>`, event handlers)
-- Style injection attempts (`<style>` tags, style attributes)
-- Dangerous protocols in URLs (`javascript:`, `data:`, etc.)
-- Potentially dangerous elements (`<iframe>`, `<embed>`, etc.)
-
-### What gets preserved
-
-- SVG structure elements (`<g>`, `<path>`, `<circle>`, etc.)
-- Visual attributes (fill, stroke, transform, etc.)
-- Accessibility elements (`<title>`, `<desc>`)
-- Safe URLs (http:, https:, relative paths, fragments)
 
 ## Best practices
 

@@ -1,0 +1,33 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <LoadingSpinner aria-label="Loading data" />;
+```
+
+### Accessibility standards
+
+- **Use an accessible label to provide context:** Always provide an `aria-label`
+  to describe what is loading.
+- **Hide the spinner from assistive technologies when it's not visible or in
+  use:** Use appropriate ARIA attributes to manage visibility.
+- **Announce a change in state to screen readers:** Update users on the loading
+  progress using live regions.
+- **Ensure the contrast ratio is at least 3:1 against the background:** Verify
+  color contrast meets accessibility standards.
+- **Use aria-label to describe the spinner:** Provide clear, concise
+  descriptions like "Loading data" or "Processing request".
+- **Do not rely on color alone to communicate information:** Use additional
+  visual cues beyond color.
+- **Provide a clear indication of what is loading or the action being
+  performed:** Be specific in your aria-label.
+- **Ensure the spinner has a valid HTML structure and role:** The component uses
+  `role="progressbar"` by default.

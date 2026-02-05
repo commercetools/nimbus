@@ -1,0 +1,55 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Alert.Root colorPalette="critical" variant="outlined">
+    <Alert.Title>Payment Processing Error</Alert.Title>
+    <Alert.Description>
+      A payment processing error occurred for order #12345. Please <Link>verify your
+      payment gateway settings</Link> immediately to prevent further issues.
+    </Alert.Description>
+    <Alert.Actions>
+      <Button variant="outline">View changes</Button>
+    </Alert.Actions>
+    <Alert.DismissButton />
+  </Alert.Root>
+);
+```
+
+### Accessibility standards
+
+- **Info and relationships:** Ensure the alert's content and purpose are
+  programmatically determinable. Use `ARIA` attributes like `aria-live` and
+  `aria-atomic` to announce dynamic content changes to assistive technologies.
+- **Non-text content:** If the alert contains non-text content (e.g., icons),
+  provide text alternatives (e.g., alt text for images).
+- **Color contrast:** Ensure sufficient color contrast between the alert's text
+  and background.
+- **Use of color:** Don't rely solely on color to convey the alert's meaning.
+  Use additional visual cues like icons or text.
+- **Keyboard accessibility:** If the alert contains interactive elements (e.g.,
+  buttons), ensure they are keyboard operable. If the alert requires dismissal,
+  ensure it can be dismissed using the keyboard (e.g., Esc key).
+- **Focus visible:** If the alert contains interactive elements, provide a clear
+  visual focus indicator.
+- **On focus:** Ensure that the alert doesn't cause unexpected changes to the
+  page or context.
+- **Error identification:** If the alert indicates an error, clearly identify
+  and describe the error in text.
+- **Labels or instructions:** Provide clear and concise messages that are easy
+  to understand.
+- **Name, role, value:** Use appropriate semantic `HTML` and `ARIA` attributes
+  to define the alert's role, name, and value. This ensures compatibility with
+  assistive technologies. Use `role="alert"` or `role="alertdialog"` to define
+  the alert.
+- **Status messages:** For status messages that don't interrupt the user, use
+  `role="status"` instead of `role="alert"`.

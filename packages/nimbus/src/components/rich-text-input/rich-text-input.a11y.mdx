@@ -1,0 +1,33 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const [value, setValue] = React.useState("");
+
+  return (
+    <RichTextInput
+      value={value}
+      onChange={setValue}
+      placeholder="Start typing..."
+    />
+  );
+};
+```
+
+### Accessibility standards
+
+- **Semantic markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,
+  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.
+- **Keyboard access:** Ensure all toolbar controls are accessible via the tab
+  key. Users must be able to navigate and apply formatting without a mouse.
+- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,
+  such as `aria-label` for toggle icon buttons.

@@ -1,7 +1,10 @@
 ---
 id: Components-Image
 title: Image
-description: An image component is used to display visual content like photographs, illustrations, or graphics within the UI to support, illustrate, or enhance textual information.
+description:
+  An image component is used to display visual content like photographs,
+  illustrations, or graphics within the UI to support, illustrate, or enhance
+  textual information.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -18,11 +21,14 @@ tags:
 
 # Image
 
-An image component is used to display visual content like photographs, illustrations, or graphics within the UI to support, illustrate, or enhance textual information.
+An image component is used to display visual content like photographs,
+illustrations, or graphics within the UI to support, illustrate, or enhance
+textual information.
 
 ## Overview
 
-The image component offers core features designed for optimal performance, accessibility, and responsiveness when displaying visual content.
+The image component offers core features designed for optimal performance,
+accessibility, and responsiveness when displaying visual content.
 
 ## Basic functions
 
@@ -37,31 +43,20 @@ const App = () => (
 )
 ```
 
-- **Source set (`srcSet`) and sizes:** This allows the component to define multiple image sources at different resolutions, enabling the browser to automatically select the most appropriate, performant image based on the user's viewport size.
-- **Alternative text (`alt`):** It mandates the inclusion of descriptive alternative text, which is crucial for accessibility, ensuring screen readers convey the image's meaning.
-- **Lazy loading:** The component supports native lazy loading, which delays the loading of images outside the user's viewport, significantly improving initial page load performance.
-- **Loading behavior:** Allows control over the image loading strategy (e.g., eager vs. lazy) to prioritize critical visuals first seen.
-- **Aspect ratio and fill:** The component can maintain a specific aspect ratio or fill its container, ensuring consistent sizing and preventing layout shift during loading.
-- **Decoding:** It allows specification of the image decoding strategy (sync, async, or auto) to optimize rendering performance.
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <Image
-    src="/images/image/image-sample.png"
-    alt="luxury metallic green handbag with floral handle. Mangosteen accessory hangs off the bag, and sitting on the table with the bag are small accessories, a pen, lipstick, and small notebook."
-    width="4000"
-  />
-)
-```
-
-### Accessibility standards
-
-- **Alt text is mandatory:** Every image must have an `alt` attribute. If the image is decorative, use a null/empty attribute (`alt=""`). If it conveys meaning, the alt text must be descriptive and functional.
-- **Complex images:** For charts, graphs, or infographics, the text alternative must go beyond the title to describe the key information conveyed by the image.
-- **Performance:** Optimize images to ensure they load quickly. Slow loading can significantly impair the experience for users on poor connections.
-- **No conveyance of action:** If an image is a link or button, its text alternative must describe the action of the link/button, not just the image itself (e.g., `alt="View product details"`).
-- **Contrast for text in images:** If the image contains critical text, ensure that the text meets WCAG contrast standards within the image itself.
+- **Source set (`srcSet`) and sizes:** This allows the component to define
+  multiple image sources at different resolutions, enabling the browser to
+  automatically select the most appropriate, performant image based on the
+  user's viewport size.
+- **Alternative text (`alt`):** It mandates the inclusion of descriptive
+  alternative text, which is crucial for accessibility, ensuring screen readers
+  convey the image's meaning.
+- **Lazy loading:** The component supports native lazy loading, which delays the
+  loading of images outside the user's viewport, significantly improving initial
+  page load performance.
+- **Loading behavior:** Allows control over the image loading strategy (e.g.,
+  eager vs. lazy) to prioritize critical visuals first seen.
+- **Aspect ratio and fill:** The component can maintain a specific aspect ratio
+  or fill its container, ensuring consistent sizing and preventing layout shift
+  during loading.
+- **Decoding:** It allows specification of the image decoding strategy (sync,
+  async, or auto) to optimize rendering performance.

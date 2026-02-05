@@ -2,7 +2,8 @@
 id: Components-FieldErrors
 title: FieldErrors
 description:
-  Renders error messages based on error object configuration for form validation feedback
+  Renders error messages based on error object configuration for form validation
+  feedback
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -23,7 +24,10 @@ Context specific, localized error messages for individual form fields.
 
 ## Overview
 
-The field errors component is a vital utility for user-friendly form validation, responsible for displaying context-specific, localized error messages for individual form fields. It ensures users receive clear, immediate feedback on validation issues, maintaining a consistent and accessible experience.
+The field errors component is a vital utility for user-friendly form validation,
+responsible for displaying context-specific, localized error messages for
+individual form fields. It ensures users receive clear, immediate feedback on
+validation issues, maintaining a consistent and accessible experience.
 
 ### Resources
 
@@ -32,16 +36,19 @@ Deep dive into implementation details and access the Nimbus design library.
 [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15877)
 [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-fielderrors--docs)
 
-
 ## Variables
 
 Get familiar with the features.
 
 ### Visual elements
-**Color:** Default critical red color is typical for field errors, and a yellow warning color for issues that are less critical. Custom colors can be added, but make sure that there is a reason to use something different from known error best practices.
 
-**Placement:** Field errors are located below the field that it is associated with.
+**Color:** Default critical red color is typical for field errors, and a yellow
+warning color for issues that are less critical. Custom colors can be added, but
+make sure that there is a reason to use something different from known error
+best practices.
 
+**Placement:** Field errors are located below the field that it is associated
+with.
 
 ```jsx-live
 const App = () => (
@@ -71,9 +78,11 @@ const App = () => (
 );
 ```
 
-
 ## Built-in error types
-These error types are included for `aboveMax`, `belowMin`, `blocked`, `duplicate`, `empty`, `format`, `fractions`, `invalid`, `invalidFromServer`, `max`, `min`, `missing`, `negative`, `notFound`, `outOfRange`.
+
+These error types are included for `aboveMax`, `belowMin`, `blocked`,
+`duplicate`, `empty`, `format`, `fractions`, `invalid`, `invalidFromServer`,
+`max`, `min`, `missing`, `negative`, `notFound`, `outOfRange`.
 
 ```jsx-live
 const App = () => (
@@ -101,8 +110,9 @@ const App = () => (
 ```
 
 ### With custom errors
-You may use custom error text, read best practices with custom text recommendations within the guideline section. 
 
+You may use custom error text, read best practices with custom text
+recommendations within the guideline section.
 
 ```jsx-live
 const App = () => (
@@ -161,32 +171,3 @@ const App = () => (
   </Box>
 );
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-
-```jsx-live
-const App = () => (
-  <FieldErrors
-    errors={{ critical: true }}
-    isVisible={true}
-    renderError={(key) => {
-      if (key === "critical") {
-        return "Provide your name to continue.";
-      }
-      return null;
-    }}
-  />
-);
-```
-
-### Accessibility standards
-
- - **Instant announcement:** The root container uses `role="alert"` to trigger screen readers to immediately announce error messages when they become visible, providing critical, instant feedback to the user.
- - **WCAG contrast:** The default critical color palette provides sufficient contrast for the error text to meet WCAG AA standards. This must be maintained when using custom colors.
- - **Actionable messaging:** Error messages should use clear, plain language that focuses on what the user needs to do to fix the problem, not just what went wrong (e.g., "Password must be at least 8 characters" instead of "Length validation failed").
- - **Association:** When integrated with the FormField component, errors are automatically associated with their input fields via ARIA, helping screen readers clearly link the error message to the field that caused it.
- - **Color is supplemental:** Color (red tones) is used as a supplemental indicator; the text content itself provides the error information, meeting WCAG requirements for users with color vision deficiencies.
- - **Visibility control:** Always tie `isVisible` to the field's interaction state (touched or blurred) to prevent users from hearing confusing announcements before they've had a chance to input data.

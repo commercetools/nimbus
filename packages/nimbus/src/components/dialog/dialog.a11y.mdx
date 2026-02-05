@@ -1,0 +1,63 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Dialog.Root>
+    <Dialog.Trigger>
+      <Button>Open dialog</Button>
+    </Dialog.Trigger>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Dialog Title</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Dialog.Body>
+          This is a basic dialog with default settings. It includes a backdrop,
+          title, description, and close button for a complete experience.
+      </Dialog.Body>
+      <Dialog.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button>Save</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+)
+```
+
+### Accessibility standards
+
+- **Keyboard navigation:** Tab moves focus to next focusable element within
+  dialog, Shift + Tab moves to previous element, Escape closes the dialog
+  (unless disabled), Enter/Space activates focused button or trigger.
+- **Role identification:** Dialog has `dialog` role with proper labeling.
+- **Focus management:** Focus moves to dialog on open and returns to trigger on
+  close.
+- **Focus containment:** Tab navigation stays within dialog boundaries.
+- **Accessible names:** Title and description properly associate with dialog.
+- **State announcements:** Screen readers announce when dialog opens/closes.
+- **Info and relationships:** Proper semantic structure with header, body, and
+  footer.
+- **Contrast:** All text meets minimum contrast requirements.
+- **Non-text contrast:** Focus indicators and UI components meet contrast
+  standards.
+- **No keyboard trap:** Focus contained but escapable via Escape key.
+- **Focus order:** Logical focus progression through dialog elements.
+- **Focus visible:** Clear focus indicators on all interactive elements.
+- **On focus:** No unexpected context changes when focusing elements.
+- **On input:** Predictable behavior for all user interactions.
+- **Labels or instructions:** Clear labeling and instructions where needed.
+- **Name, role, value:** Proper semantic markup and ARIA attributes.
+- **Status messages:** Appropriate announcements for state changes.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)

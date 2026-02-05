@@ -18,14 +18,15 @@ figmaLink: >-
 ---
 
 # Select input
+
 A select input is a form field that presents users with a dropdown menu of
 options to choose from.
 
 ## Overview
-Select inputs have two main appearances, two sizes, and several states that will
-respond to validation status. **Currently, this is a single value selector,
-this will be reworked to bring in multi-select in the future.**
 
+Select inputs have two main appearances, two sizes, and several states that will
+respond to validation status. **Currently, this is a single value selector, this
+will be reworked to bring in multi-select in the future.**
 
 ### Resources
 
@@ -35,11 +36,12 @@ this will be reworked to bring in multi-select in the future.**
 
 ## Variables
 
- Get familiar with the features. 
+Get familiar with the features.
 
 ### Height options
 
 #### Medium
+
 This is the default size for the select input.
 
 ```jsx-live
@@ -51,11 +53,12 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 #### Small
+
 For use in areas that require more condensed styling.
 
 ```jsx-live
@@ -67,13 +70,14 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 ### Fixed width
 
 #### Solid-styled
+
 Max width when not in a page wide form should be 268px. If the solid-styled
 select input field is inline a page wide form match popover width to match the
 size of the form fields.
@@ -87,15 +91,16 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 #### Ghost-styled
-Hug the select-input field, this styling needs closer placement to the drop
-down icon than a solid-styled version. The popover width has two options with
-this placement based on content. Short content should match the hug width of
-the field. Longer content should have a max width of 268px. 
+
+Hug the select-input field, this styling needs closer placement to the drop down
+icon than a solid-styled version. The popover width has two options with this
+placement based on content. Short content should match the hug width of the
+field. Longer content should have a max width of 268px.
 
 ```jsx-live
 const App = () => (
@@ -106,19 +111,21 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 ### Text wrapping
 
 #### Text wrapping within popover
+
 Please encourage short text when possible. When applicable, wrap text onto
 another line when needed.
 
 ![](/images/select/text-wrapping-within-popover.png)
 
 #### Truncate when long line item is selected
+
 If selected, truncate text so it does not overlap over the icons in the select
 input field.
 
@@ -127,6 +134,7 @@ input field.
 ### Validation
 
 #### Default
+
 A select input's prompting the user to make a choice without implying a specific
 selection.
 
@@ -139,11 +147,12 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 #### Invalid
+
 Use to immediately communicate the error to the user. Utilize error text when
 needed.
 
@@ -156,12 +165,13 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 #### Disabled
-This is the disabled state. 
+
+This is the disabled state.
 
 ```jsx-live
 const App = () => (
@@ -172,11 +182,12 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
 
 #### Placeholder
+
 The purpose of placeholder text is to provide a clear prompt or instruction,
 guiding the user on what action is expected.
 
@@ -189,54 +200,6 @@ const App = () => (
       <Select.Option>Oranges</Select.Option>
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
-  </Select.Root>  
+  </Select.Root>
 )
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by
-everyone, including people with disabilities, by addressing visual, auditory,
-cognitive, and physical limitations.
-
-TODO: Image
-
-### Accessibility standards
-
-#### 1. Perceivable:
-- **1.3.1 Info and Relationships (Level A):**
-  - Use the `<label>` element to programmatically associate a clear, descriptive label with the select input.
-  - Ensure that assistive technologies can determine the relationship between the label and the select input.
-  - Group related select inputs within a `<fieldset>` and provide a `<legend>` to give context to the group.
-- **1.4.1 Use of Color (Level A):**
-  - Avoid relying solely on color to convey information or the state of the select input.
-  - Ensure that other visual cues, such as the select input's appearance or a surrounding indicator, convey the necessary information.
-- **1.4.3 Contrast (Minimum) (Level AA):**
-  - Ensure sufficient color contrast exists between the select input's text, background, and border.
-  - Use a contrast checking tool to verify that the contrast ratio meets the minimum requirements.
-#### 2. Operable:
-- **2.1.1 Keyboard (Level A):**
-  - Make the select input fully operable using the keyboard.
-  - Allow users to navigate to the select input using the Tab key.
-  - Enable users to open and close the dropdown menu using the Spacebar or Enter key.
-  - Allow users to navigate through the options using the arrow keys.
-  - Enable users to select an option using the Enter key.
-- **2.4.7 Focus Visible (Level AA):**
-  - Provide a clear and visible focus indicator for the select input when it receives keyboard focus.
-  - Visually distinguish the focus state from the default state.
-  - Avoid relying solely on color changes to indicate focus.
-#### 3. Understandable:
-- **3.2.1 On Focus (Level A):**
-  - Prevent the select input from unexpectedly changing the context of the page when it receives focus.
-  - Ensure that any changes in context are initiated by the user's selection and not simply by focusing on the input.
-- **3.3.2 Labels or Instructions (Level A):**
-  - Provide clear and concise labels or instructions for the select input.
-  - Write labels that accurately reflect the purpose of the select input.
-  - Provide instructions about what kind of input is expected.
-- **3.3.3 Error Suggestion (Level AA):**
-  - If an input error is automatically detected and suggestions for correction are known, then provide the suggestions to the user, unless it would jeopardize the security or purpose of the content.  
-#### 4. Robust:
-- **4.1.2 Name, Role, Value (Level A):**
-  - Use semantic HTML elements (e.g., `<select>`, `<option>`) to define the role, name, and value of the select input.
-  - Ensure that assistive technologies can correctly interpret the select input and its options.
-  - Use ARIA attributes when necessary to provide additional information to assistive technologies, especially for complex select inputs or custom implementations.

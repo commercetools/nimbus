@@ -1,38 +1,58 @@
 ---
 title: DateInput
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
-Date input guidelines establish a standardized approach for creating intuitive and accessible date input components, ensuring consistency in presentation and interaction for selecting dates across all applications.
+
+Date input guidelines establish a standardized approach for creating intuitive
+and accessible date input components, ensuring consistency in presentation and
+interaction for selecting dates across all applications.
 
 ### Best practices
 
-- **Use a clear placeholder.** Provide a placeholder in a conventional date format to guide the user (e.g., mm/dd/yyyy).
-- **Provide clear validation.** Offer clear, concise error messages for incorrect or invalid input.
-- **Format automatically.** Format the date as the user types to reduce errors and improve usability.
-- **Use for specific dates.** Use this component when a user needs to enter a known date. Avoid using it for date ranges or when a calendar view would be more beneficial.
-- **Ensure accessibility.** The input field will have a clear accessible label and be compatible with screen readers.
+- **Use a clear placeholder.** Provide a placeholder in a conventional date
+  format to guide the user (e.g., mm/dd/yyyy).
+- **Provide clear validation.** Offer clear, concise error messages for
+  incorrect or invalid input.
+- **Format automatically.** Format the date as the user types to reduce errors
+  and improve usability.
+- **Use for specific dates.** Use this component when a user needs to enter a
+  known date. Avoid using it for date ranges or when a calendar view would be
+  more beneficial.
+- **Ensure accessibility.** The input field will have a clear accessible label
+  and be compatible with screen readers.
 
 ### Usage
-A date input component allows users to enter a specific date. The component provides a single input field for manual entry. Use this component when a calendar selection is unnecessary or when a user is likely to know the specific date they need to enter.
+
+A date input component allows users to enter a specific date. The component
+provides a single input field for manual entry. Use this component when a
+calendar selection is unnecessary or when a user is likely to know the specific
+date they need to enter.
 
 > [!TIP]\
 > When to use
 
-- **Entering a known date.** Use when the user knows the specific date, such as a birth date, an expiration date, or a past event.
-- **A calendar is not necessary.** Use when a calendar popover would be an unnecessary step for the user, simplifying the user experience.
+- **Entering a known date.** Use when the user knows the specific date, such as
+  a birth date, an expiration date, or a past event.
+- **A calendar is not necessary.** Use when a calendar popover would be an
+  unnecessary step for the user, simplifying the user experience.
 
 > [!CAUTION]\
 > When not to use
 
-- **Selecting a date range.** Do not use a single date input to select a start and end date. Use a date range picker instead.
-- **Choosing an unknown date.** Avoid using this component when the user needs to browse or select a date they don't already know, such as setting a date for promotion or setting a range for expecting for a shipment. In these cases, a calendar popover is more effective.
+- **Selecting a date range.** Do not use a single date input to select a start
+  and end date. Use a date range picker instead.
+- **Choosing an unknown date.** Avoid using this component when the user needs
+  to browse or select a date they don't already know, such as setting a date for
+  promotion or setting a range for expecting for a shipment. In these cases, a
+  calendar popover is more effective.
 
 ### Basic interactions
 
-Clear labels and concise messaging are crucial for a date input to ensure users understand what date information is required and how to provide it correctly.
+Clear labels and concise messaging are crucial for a date input to ensure users
+understand what date information is required and how to provide it correctly.
 
 > [!TIP]\
 > **Do**
@@ -55,9 +75,11 @@ const App = () => (
 
 > [!CAUTION]\
 > **Don't**
+>
 > - Don't use a generic placeholder like "enter date."
 > - Don't require the user to manually enter separators like "/" or "-".
 > - Don't allow invalid dates to be submitted without feedback.
-> - Don't use this component when a calendar selection would be more helpful or when selecting a date range.
+> - Don't use this component when a calendar selection would be more helpful or
+>   when selecting a date range.
 
 ![](/images/date-input/date-input-dont.png)

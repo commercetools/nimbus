@@ -1,0 +1,46 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const data = [
+    { id: 1, name: 'Product A', modified: '2023-10-27' },
+    { id: 2, name: 'Product B', modified: '2023-10-26' },
+  ];
+  const columns = [
+    {
+      id: 'name',
+      header: "Name",
+      accessor: (row) => row.name,
+    },
+    {
+      id: 'modified',
+      header: "Date Modified",
+      accessor: (row) => row.modified,
+    },
+  ];
+  return <DataTable rows={data} columns={columns} />;
+}
+```
+
+### Accessibility standards
+
+- **Ensure proper semantic structure:** Use the `<table>`, `<th>`, and `<tr>`
+  HTML elements correctly for screen reader compatibility.
+- **Associate data with headers:** Map table data cells `<td>` to the
+  corresponding header cells `<th>` using appropriate ARIA attributes if the
+  native structure is insufficient for complex tables.
+- **Provide clear context:** Use a table caption `<caption>` to give a concise
+  overview of the table's content. Include descriptive column header text.
+- **Manage keyboard focus:** Ensure all interactive elements within the table
+  (sort buttons, links, etc.) are reachable and operable via the keyboard.
+- **Maintain sufficient contrast:** Ensure text and background colors meet WCAG
+  AA contrast standards for readability.

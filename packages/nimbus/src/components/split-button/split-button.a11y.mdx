@@ -1,0 +1,41 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  return (
+    <SplitButton
+      variant="solid"
+      tone="primary"
+      onAction={(actionId) => alert(`Action: ${actionId}`)}
+      aria-label="More publish options"
+    >
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
+      <Menu.Item id="save">Save as draft</Menu.Item>
+    </SplitButton>
+  );
+}
+```
+
+### Accessibility standards
+
+- **Keyboard navigation:** The component must be fully keyboard accessible. The
+  Tab key should focus on the primary button first.
+- **Dual focus:** The primary action and the dropdown trigger must be treated as
+  two distinct focusable elements or as a single component where the arrow key
+  can be used to open the menu once the button is focused.
+- **ARIA roles:** The primary button uses role="button". The dropdown trigger
+  should use role="button" combined with aria-haspopup="true" to indicate that
+  it controls a pop-up menu.
+- **Labeling:** Provide clear, unique aria-label text for both the primary
+  action and the dropdown trigger to ensure screen readers convey the intended
+  function of each segment.

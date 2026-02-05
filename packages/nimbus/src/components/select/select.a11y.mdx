@@ -1,0 +1,57 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Select.Root size="md" aria-label="Select a fruit">
+    <Select.Options>
+      <Select.Option>Apples</Select.Option>
+      <Select.Option>Bananas</Select.Option>
+      <Select.Option>Oranges</Select.Option>
+      <Select.Option>Cherries</Select.Option>
+    </Select.Options>
+  </Select.Root>
+)
+```
+
+### Accessibility standards
+
+- **Provide clear labels:** Use the `<label>` element to programmatically
+  associate a clear, descriptive label with the select input.
+- **Group related inputs:** Group related select inputs within a `<fieldset>`
+  and provide a `<legend>` to give context to the group.
+- **Don't rely on color alone:** Avoid relying solely on color to convey
+  information or the state of the select input. Ensure other visual cues convey
+  the necessary information.
+- **Ensure sufficient contrast:** Ensure sufficient color contrast exists
+  between the select input's text, background, and border. Use a contrast
+  checking tool to verify contrast ratios meet minimum requirements.
+- **Keyboard navigation:** Make the select input fully operable using the
+  keyboard. Allow users to navigate using Tab, open/close dropdown with Spacebar
+  or Enter, navigate options with arrow keys, and select with Enter.
+- **Focus visible:** Provide a clear and visible focus indicator for the select
+  input when it receives keyboard focus.
+- **No unexpected changes:** Prevent the select input from unexpectedly changing
+  the context of the page when it receives focus. Ensure changes are initiated
+  by user selection.
+- **Clear instructions:** Provide clear and concise labels or instructions for
+  the select input that accurately reflect its purpose.
+- **Error suggestions:** If an input error is automatically detected and
+  suggestions for correction are known, provide the suggestions to the user.
+- **Use semantic HTML:** Use semantic HTML elements (`<select>`, `<option>`) to
+  define the role, name, and value of the select input.
+- **ARIA attributes:** Use ARIA attributes when necessary to provide additional
+  information to assistive technologies, especially for complex or custom
+  implementations.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Listbox](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/)
