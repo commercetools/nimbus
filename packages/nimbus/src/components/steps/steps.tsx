@@ -208,5 +208,3 @@ export {
   StepsNextTrigger as _StepsNextTrigger,
   StepsStatus as _StepsStatus,
 };
-
-export { StepsContext, StepsItemContext } from "./components";

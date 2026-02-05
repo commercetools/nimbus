@@ -12,4 +12,3 @@ export { StepsCompletedContent } from "./steps.completed-content";
 export { StepsPrevTrigger } from "./steps.prev-trigger";
 export { StepsNextTrigger } from "./steps.next-trigger";
 export { StepsStatus } from "./steps.status";
-export { StepsContext, StepsItemContext } from "./steps.context";
