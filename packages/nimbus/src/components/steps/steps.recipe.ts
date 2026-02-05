@@ -235,6 +235,9 @@ export const stepsSlotRecipe = defineSlotRecipe({
           flexDirection: "row",
           gap: "300", // 12px
         },
+        item: {
+          flex: "1", // Allow items to grow so separators can fill available space
+        },
         separator: {
           height: "var(--separator-width)",
           flex: "1",
