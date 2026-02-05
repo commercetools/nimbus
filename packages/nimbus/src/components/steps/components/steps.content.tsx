@@ -1,3 +1,4 @@
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsContentProps } from "../steps.types";
 import { StepsContentSlot } from "../steps.slots";
@@ -5,20 +6,23 @@ import { StepsContentSlot } from "../steps.slots";
 /**
  * # Steps.Content
  *
- * Container for step label and optional description.
+ * Content container that auto-shows/hides based on current step.
+ * Wraps Chakra UI's Steps.Content with Nimbus styling.
  *
  * @example
  * ```tsx
- * <Steps.Content>
- *   <Steps.Label>Step Title</Steps.Label>
- *   <Steps.Description>Optional description</Steps.Description>
+ * <Steps.Content index={0}>
+ *   <AccountForm />
+ * </Steps.Content>
+ * <Steps.Content index={1}>
+ *   <ProfileForm />
  * </Steps.Content>
  * ```
  *
  * @supportsStyleProps
  */
 export const StepsContent = (props: StepsContentProps) => {
-  const { ref: forwardedRef, children, ...restProps } = props;
+  const { ref: forwardedRef, index, children, ...restProps } = props;
 
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
@@ -27,9 +31,11 @@ export const StepsContent = (props: StepsContentProps) => {
       ref={forwardedRef}
       data-slot="content"
       {...styleProps}
-      {...functionalProps}
+      asChild
     >
-      {children}
+      <ChakraSteps.Content index={index} {...functionalProps}>
+        {children}
+      </ChakraSteps.Content>
     </StepsContentSlot>
   );
 };

@@ -22,10 +22,30 @@ export const StepsItemSlot = withContext<
   HTMLChakraProps<"div">
 >("div", "item");
 
+export const StepsTriggerSlot = withContext<
+  HTMLButtonElement,
+  HTMLChakraProps<"button">
+>("button", "trigger");
+
 export const StepsIndicatorSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("div", "indicator");
+
+export const StepsNumberSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "number");
+
+export const StepsTitleSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "title");
+
+export const StepsDescriptionSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "description");
 
 export const StepsSeparatorSlot = withContext<
   HTMLDivElement,
@@ -37,12 +57,17 @@ export const StepsContentSlot = withContext<
   HTMLChakraProps<"div">
 >("div", "content");
 
-export const StepsLabelSlot = withContext<
+export const StepsCompletedContentSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
->("div", "label");
+>("div", "completedContent");
 
-export const StepsDescriptionSlot = withContext<
-  HTMLDivElement,
-  HTMLChakraProps<"div">
->("div", "description");
+export const StepsPrevTriggerSlot = withContext<
+  HTMLButtonElement,
+  HTMLChakraProps<"button">
+>("button", "prevTrigger");
+
+export const StepsNextTriggerSlot = withContext<
+  HTMLButtonElement,
+  HTMLChakraProps<"button">
+>("button", "nextTrigger");

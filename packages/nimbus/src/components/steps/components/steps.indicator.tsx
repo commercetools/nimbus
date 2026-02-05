@@ -1,65 +1,42 @@
-import { Check } from "@commercetools/nimbus-icons";
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsIndicatorProps } from "../steps.types";
 import { StepsIndicatorSlot } from "../steps.slots";
-import { useStepsItemContext } from "./steps.context";
 
 /**
  * # Steps.Indicator
  *
- * Visual indicator showing step number or icon.
- * When type="numeric", displays step number (1, 2, 3...) and shows checkmark when complete.
- * When type="icon", displays the provided icon with state-based styling.
+ * Visual marker showing step status (number, icon, or custom content).
+ * Wraps Chakra UI's Steps.Indicator with Nimbus styling.
  *
  * @example
  * ```tsx
- * // Numeric indicator
- * <Steps.Indicator type="numeric" />
+ * // Default indicator (shows number and checkmark when complete)
+ * <Steps.Indicator />
  *
- * // Custom icon indicator
- * <Steps.Indicator type="icon" icon={<UserIcon />} />
+ * // Custom content
+ * <Steps.Indicator>
+ *   <MyCustomIcon />
+ * </Steps.Indicator>
  * ```
  *
  * @supportsStyleProps
  */
 export const StepsIndicator = (props: StepsIndicatorProps) => {
-  const {
-    ref: forwardedRef,
-    type = "numeric",
-    icon,
-    showCompleteIcon = true,
-    ...restProps
-  } = props;
-
-  const { index, state } = useStepsItemContext();
+  const { ref: forwardedRef, children, ...restProps } = props;
 
   const [styleProps, functionalProps] = extractStyleProps(restProps);
-
-  const isComplete = state === "complete";
-
-  // Determine what to render
-  let content: React.ReactNode;
-  if (type === "numeric") {
-    if (isComplete && showCompleteIcon) {
-      content = <Check />;
-    } else {
-      content = index + 1;
-    }
-  } else {
-    // type === "icon"
-    content = icon;
-  }
 
   return (
     <StepsIndicatorSlot
       ref={forwardedRef}
       data-slot="indicator"
-      data-state={state}
-      aria-hidden="true"
       {...styleProps}
-      {...functionalProps}
+      asChild
     >
-      {content}
+      <ChakraSteps.Indicator {...functionalProps}>
+        {children}
+      </ChakraSteps.Indicator>
     </StepsIndicatorSlot>
   );
 };

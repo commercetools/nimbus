@@ -1,19 +1,20 @@
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsSeparatorProps } from "../steps.types";
 import { StepsSeparatorSlot } from "../steps.slots";
-import { useStepsContext } from "./steps.context";
 
 /**
  * # Steps.Separator
  *
  * Visual line connecting step indicators.
- * Orientation and size are automatically determined from context.
+ * Wraps Chakra UI's Steps.Separator with Nimbus styling.
  *
  * @example
  * ```tsx
- * <Steps.Item index={0}>...</Steps.Item>
- * <Steps.Separator />
- * <Steps.Item index={1}>...</Steps.Item>
+ * <Steps.Item index={0}>
+ *   <Steps.Trigger>...</Steps.Trigger>
+ *   <Steps.Separator />
+ * </Steps.Item>
  * ```
  *
  * @supportsStyleProps
@@ -21,19 +22,17 @@ import { useStepsContext } from "./steps.context";
 export const StepsSeparator = (props: StepsSeparatorProps) => {
   const { ref: forwardedRef, ...restProps } = props;
 
-  const { orientation } = useStepsContext();
-
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
     <StepsSeparatorSlot
       ref={forwardedRef}
       data-slot="separator"
-      data-orientation={orientation}
-      aria-hidden="true"
       {...styleProps}
-      {...functionalProps}
-    />
+      asChild
+    >
+      <ChakraSteps.Separator {...functionalProps} />
+    </StepsSeparatorSlot>
   );
 };
 StepsSeparator.displayName = "Steps.Separator";

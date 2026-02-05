@@ -1,3 +1,4 @@
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsDescriptionProps } from "../steps.types";
 import { StepsDescriptionSlot } from "../steps.slots";
@@ -5,11 +6,18 @@ import { StepsDescriptionSlot } from "../steps.slots";
 /**
  * # Steps.Description
  *
- * Displays optional hint text below the label.
+ * Displays optional hint text below the title.
+ * Wraps Chakra UI's Steps.Description with Nimbus styling.
  *
  * @example
  * ```tsx
- * <Steps.Description>Create your account to get started</Steps.Description>
+ * <Steps.Trigger>
+ *   <Steps.Indicator />
+ *   <Box>
+ *     <Steps.Title>Account</Steps.Title>
+ *     <Steps.Description>Create your account</Steps.Description>
+ *   </Box>
+ * </Steps.Trigger>
  * ```
  *
  * @supportsStyleProps
@@ -24,9 +32,11 @@ export const StepsDescription = (props: StepsDescriptionProps) => {
       ref={forwardedRef}
       data-slot="description"
       {...styleProps}
-      {...functionalProps}
+      asChild
     >
-      {children}
+      <ChakraSteps.Description {...functionalProps}>
+        {children}
+      </ChakraSteps.Description>
     </StepsDescriptionSlot>
   );
 };
