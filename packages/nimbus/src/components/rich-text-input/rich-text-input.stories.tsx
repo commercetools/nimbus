@@ -775,6 +775,14 @@ export const UndoRedo: Story = {
     await userEvent.click(boldButton);
     await userEvent.type(editor, " bold text");
 
+    // Wait for the editor state to stabilize before performing undo
+    await waitFor(
+      () => {
+        expect(editor).toHaveTextContent("bold text");
+      },
+      { timeout: 3000 }
+    );
+
     // Test undo
     await userEvent.click(undoButton);
     await waitFor(
