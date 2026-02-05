@@ -3,6 +3,7 @@ import {
   useSlotRecipe,
   useBreakpointValue,
   useChakraContext,
+  type SlotRecipeProps,
 } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsRootProps } from "../steps.types";
@@ -61,17 +62,23 @@ export const StepsRoot = (props: StepsRootProps) => {
 
   // useBreakpointValue returns undefined on initial render or when the value
   // is not responsive. We need to handle both cases properly.
-  const breakpointOrientation = useBreakpointValue(normalizedOrientation);
+  const breakpointOrientation = useBreakpointValue<"horizontal" | "vertical">(
+    normalizedOrientation
+  );
   const computedOrientation =
     breakpointOrientation ??
     (typeof orientation === "string" ? orientation : "horizontal");
 
   // Remove responsive orientation from recipeProps and use computed value instead.
-  // This prevents the responsive object from being passed as [object Object]
-  // to Ark's internal components while still applying the correct recipe variant.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { orientation: _recipeOrientation, ...recipePropsWithoutOrientation } =
-    recipeProps as typeof recipeProps & { orientation?: unknown };
+  // This prevents the responsive object (e.g., { base: "vertical", md: "horizontal" })
+  // from being passed as [object Object] to internal components.
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    orientation: _responsiveOrientation,
+    ...recipePropsWithoutOrientation
+  } = recipeProps as typeof recipeProps & {
+    orientation?: SlotRecipeProps<"nimbusSteps">["orientation"];
+  };
 
   return (
     <StepsRootSlot
