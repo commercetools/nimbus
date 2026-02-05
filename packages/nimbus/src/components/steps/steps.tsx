@@ -183,8 +183,6 @@ export type {
   StepsNextTriggerProps,
   StepsStatusProps,
   StepsChangeDetails,
-  StepsSize,
-  StepsOrientation,
 } from "./steps.types";
 
 /**

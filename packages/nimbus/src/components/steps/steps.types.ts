@@ -22,12 +22,6 @@ type StepsRecipeProps = {
   orientation?: SlotRecipeProps<"nimbusSteps">["orientation"];
 } & UnstyledProp;
 
-/** Size options for the Steps component */
-export type StepsSize = "xs" | "sm" | "md";
-
-/** Orientation options for the Steps component */
-export type StepsOrientation = "horizontal" | "vertical";
-
 // ============================================================
 // CHAKRA STEPS RE-EXPORTS
 // ============================================================
