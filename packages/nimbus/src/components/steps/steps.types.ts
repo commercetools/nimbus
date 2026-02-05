@@ -1,4 +1,9 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+  UnstyledProp,
+} from "@chakra-ui/react";
+import type { Steps as ChakraSteps } from "@chakra-ui/react";
 import type { ReactNode, Ref } from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
@@ -6,43 +11,29 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // RECIPE PROPS
 // ============================================================
 
+/**
+ * Recipe props for the Steps component.
+ * Inferred from the slot recipe to enable responsive values.
+ */
 type StepsRecipeProps = {
   /** Size variant of the steps */
   size?: SlotRecipeProps<"nimbusSteps">["size"];
   /** Orientation of the steps layout */
   orientation?: SlotRecipeProps<"nimbusSteps">["orientation"];
-};
+} & UnstyledProp;
 
+/** Size options for the Steps component */
 export type StepsSize = "xs" | "sm" | "md";
+
+/** Orientation options for the Steps component */
 export type StepsOrientation = "horizontal" | "vertical";
 
 // ============================================================
-// CONTEXT VALUE
+// CHAKRA STEPS RE-EXPORTS
 // ============================================================
 
-/**
- * Context value provided by Steps.Root to all child components.
- */
-export type StepsContextValue = {
-  /** Current active step index (0-based) */
-  step: number;
-  /** Total number of steps */
-  count: number;
-  /** Size variant */
-  size: StepsSize;
-  /** Orientation of the steps */
-  orientation: StepsOrientation;
-};
-
-/**
- * Context value provided by Steps.Item to its children.
- */
-export type StepsItemContextValue = {
-  /** Index of this step (0-based) */
-  index: number;
-  /** Current state of this step */
-  state: "incomplete" | "current" | "complete";
-};
+/** Details provided when step changes */
+export type StepsChangeDetails = ChakraSteps.ChangeDetails;
 
 // ============================================================
 // SLOT PROPS
@@ -51,11 +42,16 @@ export type StepsItemContextValue = {
 export type StepsRootSlotProps = HTMLChakraProps<"div", StepsRecipeProps>;
 export type StepsListSlotProps = HTMLChakraProps<"div">;
 export type StepsItemSlotProps = HTMLChakraProps<"div">;
+export type StepsTriggerSlotProps = HTMLChakraProps<"button">;
 export type StepsIndicatorSlotProps = HTMLChakraProps<"div">;
 export type StepsSeparatorSlotProps = HTMLChakraProps<"div">;
 export type StepsContentSlotProps = HTMLChakraProps<"div">;
-export type StepsLabelSlotProps = HTMLChakraProps<"div">;
+export type StepsTitleSlotProps = HTMLChakraProps<"div">;
 export type StepsDescriptionSlotProps = HTMLChakraProps<"div">;
+export type StepsCompletedContentSlotProps = HTMLChakraProps<"div">;
+export type StepsPrevTriggerSlotProps = HTMLChakraProps<"button">;
+export type StepsNextTriggerSlotProps = HTMLChakraProps<"button">;
+export type StepsNumberSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
@@ -64,20 +60,59 @@ export type StepsDescriptionSlotProps = HTMLChakraProps<"div">;
 /**
  * Props for the Steps.Root component.
  * Container component that manages step state and provides context to child components.
+ *
+ * @example
+ * ```tsx
+ * // Uncontrolled usage
+ * <Steps.Root defaultStep={0} count={3}>
+ *   <Steps.List>...</Steps.List>
+ *   <Steps.Content index={0}>Step 1 content</Steps.Content>
+ * </Steps.Root>
+ *
+ * // Controlled usage
+ * <Steps.Root step={currentStep} onStepChange={handleStepChange} count={3}>
+ *   ...
+ * </Steps.Root>
+ * ```
  */
 export type StepsRootProps = OmitInternalProps<StepsRootSlotProps> & {
-  /**
-   * Current active step index (0-based).
-   * Steps with index < step are "complete".
-   * Step with index === step is "current".
-   * Steps with index > step are "incomplete".
-   */
-  step: number;
-
   /**
    * Total number of steps.
    */
   count: number;
+
+  /**
+   * Initial step index for uncontrolled usage (0-based).
+   * Use this when you don't need to control the step state externally.
+   * @default 0
+   */
+  defaultStep?: number;
+
+  /**
+   * Current step index for controlled usage (0-based).
+   * When provided, the component becomes controlled and you must
+   * handle step changes via onStepChange.
+   */
+  step?: number;
+
+  /**
+   * Callback fired when the step changes.
+   * Required for controlled usage.
+   */
+  onStepChange?: (details: StepsChangeDetails) => void;
+
+  /**
+   * Callback fired when a step is completed.
+   */
+  onStepComplete?: () => void;
+
+  /**
+   * If true, restricts navigation to sequential progress only.
+   * Users can only navigate forward to the next incomplete step,
+   * or back to completed steps.
+   * @default false
+   */
+  linear?: boolean;
 
   /**
    * Size variant of the steps.
@@ -96,7 +131,7 @@ export type StepsRootProps = OmitInternalProps<StepsRootSlotProps> & {
    */
   orientation?: StepsRecipeProps["orientation"];
 
-  /** Child components (Steps.List) */
+  /** Child components */
   children: ReactNode;
 
   /** Ref to the root element */
@@ -105,10 +140,10 @@ export type StepsRootProps = OmitInternalProps<StepsRootSlotProps> & {
 
 /**
  * Props for the Steps.List component.
- * Flex container that wraps all step items.
+ * Container for grouping step items.
  */
 export type StepsListProps = OmitInternalProps<StepsListSlotProps> & {
-  /** Child components (Steps.Item and Steps.Separator) */
+  /** Child components (Steps.Item) */
   children: ReactNode;
 
   /** Ref to the list element */
@@ -117,16 +152,17 @@ export type StepsListProps = OmitInternalProps<StepsListSlotProps> & {
 
 /**
  * Props for the Steps.Item component.
- * Container for a single step (indicator + content).
+ * Container for a single step (trigger + separator).
+ * Items are automatically indexed based on render order.
  */
 export type StepsItemProps = OmitInternalProps<StepsItemSlotProps> & {
   /**
    * Index of this step (0-based).
-   * Used to derive the step state relative to the current step.
+   * Required by Chakra Steps to identify the step.
    */
   index: number;
 
-  /** Child components (Indicator, Content) */
+  /** Child components (Trigger, Separator) */
   children: ReactNode;
 
   /** Ref to the item element */
@@ -134,34 +170,62 @@ export type StepsItemProps = OmitInternalProps<StepsItemSlotProps> & {
 };
 
 /**
+ * Props for the Steps.Trigger component.
+ * Clickable element within each step for direct navigation.
+ */
+export type StepsTriggerProps = OmitInternalProps<StepsTriggerSlotProps> & {
+  /** Trigger content (typically Indicator + Title/Description) */
+  children: ReactNode;
+
+  /** Ref to the trigger element */
+  ref?: Ref<HTMLButtonElement>;
+};
+
+/**
  * Props for the Steps.Indicator component.
- * Displays the step number or custom icon.
+ * Visual marker showing step status (number, icon, or custom content).
  */
 export type StepsIndicatorProps = OmitInternalProps<StepsIndicatorSlotProps> & {
-  /**
-   * Type of indicator content.
-   * - numeric: Displays step number (1, 2, 3...), shows checkmark when complete
-   * - icon: Displays custom icon, applies state styling only
-   * @default "numeric"
-   */
-  type?: "numeric" | "icon";
-
-  /**
-   * Custom icon to display (required when type="icon").
-   */
-  icon?: ReactNode;
-
-  /**
-   * Whether to show checkmark icon when step is complete.
-   * Only applies when type="numeric".
-   * When type="icon", the icon remains and only styling changes.
-   * @default true
-   */
-  showCompleteIcon?: boolean;
+  /** Custom content to display in the indicator */
+  children?: ReactNode;
 
   /** Ref to the indicator element */
   ref?: Ref<HTMLDivElement>;
 };
+
+/**
+ * Props for the Steps.Number component.
+ * Displays the step number (1-indexed).
+ */
+export type StepsNumberProps = OmitInternalProps<StepsNumberSlotProps> & {
+  /** Ref to the number element */
+  ref?: Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for the Steps.Title component.
+ * Displays the step title.
+ */
+export type StepsTitleProps = OmitInternalProps<StepsTitleSlotProps> & {
+  /** Title text content */
+  children: ReactNode;
+
+  /** Ref to the title element */
+  ref?: Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for the Steps.Description component.
+ * Displays optional hint text below the title.
+ */
+export type StepsDescriptionProps =
+  OmitInternalProps<StepsDescriptionSlotProps> & {
+    /** Description text content */
+    children: ReactNode;
+
+    /** Ref to the description element */
+    ref?: Ref<HTMLDivElement>;
+  };
 
 /**
  * Props for the Steps.Separator component.
@@ -174,10 +238,15 @@ export type StepsSeparatorProps = OmitInternalProps<StepsSeparatorSlotProps> & {
 
 /**
  * Props for the Steps.Content component.
- * Container for step label and description.
+ * Content container that auto-shows/hides based on current step.
  */
 export type StepsContentProps = OmitInternalProps<StepsContentSlotProps> & {
-  /** Child components (Label, Description) */
+  /**
+   * Index of the step this content belongs to (0-based).
+   */
+  index: number;
+
+  /** Content to display for this step */
   children: ReactNode;
 
   /** Ref to the content element */
@@ -185,26 +254,65 @@ export type StepsContentProps = OmitInternalProps<StepsContentSlotProps> & {
 };
 
 /**
- * Props for the Steps.Label component.
- * Displays the step title.
+ * Props for the Steps.CompletedContent component.
+ * Content displayed when all steps are complete.
  */
-export type StepsLabelProps = OmitInternalProps<StepsLabelSlotProps> & {
-  /** Label text content */
-  children: ReactNode;
-
-  /** Ref to the label element */
-  ref?: Ref<HTMLDivElement>;
-};
-
-/**
- * Props for the Steps.Description component.
- * Displays optional hint text below the label.
- */
-export type StepsDescriptionProps =
-  OmitInternalProps<StepsDescriptionSlotProps> & {
-    /** Description text content */
+export type StepsCompletedContentProps =
+  OmitInternalProps<StepsCompletedContentSlotProps> & {
+    /** Content to display when all steps are complete */
     children: ReactNode;
 
-    /** Ref to the description element */
+    /** Ref to the completed content element */
     ref?: Ref<HTMLDivElement>;
   };
+
+/**
+ * Props for the Steps.PrevTrigger component.
+ * Navigation button to go to previous step.
+ */
+export type StepsPrevTriggerProps =
+  OmitInternalProps<StepsPrevTriggerSlotProps> & {
+    /** Button content */
+    children: ReactNode;
+
+    /**
+     * If true, render the trigger as a child element.
+     * Useful for composing with custom button components.
+     */
+    asChild?: boolean;
+
+    /** Ref to the prev trigger element */
+    ref?: Ref<HTMLButtonElement>;
+  };
+
+/**
+ * Props for the Steps.NextTrigger component.
+ * Navigation button to go to next step.
+ */
+export type StepsNextTriggerProps =
+  OmitInternalProps<StepsNextTriggerSlotProps> & {
+    /** Button content */
+    children: ReactNode;
+
+    /**
+     * If true, render the trigger as a child element.
+     * Useful for composing with custom button components.
+     */
+    asChild?: boolean;
+
+    /** Ref to the next trigger element */
+    ref?: Ref<HTMLButtonElement>;
+  };
+
+/**
+ * Props for the Steps.Status component.
+ * Renders different content based on step state.
+ */
+export type StepsStatusProps = {
+  /** Content to show when step is complete */
+  complete: ReactNode;
+  /** Content to show when step is incomplete */
+  incomplete: ReactNode;
+  /** Content to show when step is current (defaults to incomplete if not provided) */
+  current?: ReactNode;
+};

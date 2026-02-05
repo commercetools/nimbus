@@ -2,52 +2,67 @@ import {
   StepsRoot,
   StepsList,
   StepsItem,
+  StepsTrigger,
   StepsIndicator,
+  StepsNumber,
+  StepsTitle,
+  StepsDescription,
   StepsSeparator,
   StepsContent,
-  StepsLabel,
-  StepsDescription,
+  StepsCompletedContent,
+  StepsPrevTrigger,
+  StepsNextTrigger,
+  StepsStatus,
 } from "./components";
 
 /**
  * # Steps
  *
- * A display-only progress indicator for multi-step processes like forms, wizards, and onboarding flows.
- * Supports horizontal and vertical orientations, three size variants, and numeric or icon indicators.
+ * A multi-step workflow component with built-in state management, content visibility,
+ * and navigation triggers. Wraps Chakra UI's Steps component with Nimbus styling.
+ *
+ * Supports both controlled and uncontrolled usage patterns.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/steps}
  *
  * @example
  * ```tsx
- * <Steps.Root step={1} count={3}>
+ * // Uncontrolled usage (component manages state internally)
+ * <Steps.Root defaultStep={0} count={3}>
  *   <Steps.List>
  *     <Steps.Item index={0}>
- *       <Steps.Indicator type="numeric" />
- *       <Steps.Content>
- *         <Steps.Label>Account</Steps.Label>
- *         <Steps.Description>Create your account</Steps.Description>
- *       </Steps.Content>
+ *       <Steps.Trigger>
+ *         <Steps.Indicator />
+ *         Account
+ *       </Steps.Trigger>
+ *       <Steps.Separator />
  *     </Steps.Item>
- *
- *     <Steps.Separator />
- *
  *     <Steps.Item index={1}>
- *       <Steps.Indicator type="numeric" />
- *       <Steps.Content>
- *         <Steps.Label>Profile</Steps.Label>
- *         <Steps.Description>Complete your profile</Steps.Description>
- *       </Steps.Content>
+ *       <Steps.Trigger>
+ *         <Steps.Indicator />
+ *         Profile
+ *       </Steps.Trigger>
+ *       <Steps.Separator />
  *     </Steps.Item>
- *
- *     <Steps.Separator />
- *
  *     <Steps.Item index={2}>
- *       <Steps.Indicator type="numeric" />
- *       <Steps.Content>
- *         <Steps.Label>Review</Steps.Label>
- *       </Steps.Content>
+ *       <Steps.Trigger>
+ *         <Steps.Indicator />
+ *         Review
+ *       </Steps.Trigger>
  *     </Steps.Item>
  *   </Steps.List>
+ *
+ *   <Steps.Content index={0}>Account form content</Steps.Content>
+ *   <Steps.Content index={1}>Profile form content</Steps.Content>
+ *   <Steps.Content index={2}>Review content</Steps.Content>
+ *   <Steps.CompletedContent>All steps complete!</Steps.CompletedContent>
+ *
+ *   <Steps.PrevTrigger asChild>
+ *     <Button>Back</Button>
+ *   </Steps.PrevTrigger>
+ *   <Steps.NextTrigger asChild>
+ *     <Button>Next</Button>
+ *   </Steps.NextTrigger>
  * </Steps.Root>
  * ```
  */
@@ -56,29 +71,58 @@ export const Steps = {
    * # Steps.Root
    *
    * Container component that manages step state and provides context to child components.
+   * Supports both controlled (step/onStepChange) and uncontrolled (defaultStep) modes.
    */
   Root: StepsRoot,
 
   /**
    * # Steps.List
    *
-   * Flex container that wraps all step items and separators.
+   * Container for grouping step items.
    */
   List: StepsList,
 
   /**
    * # Steps.Item
    *
-   * Container for a single step. Automatically derives state from its index.
+   * Container for a single step (trigger + separator).
    */
   Item: StepsItem,
 
   /**
+   * # Steps.Trigger
+   *
+   * Clickable element within each step for direct navigation.
+   */
+  Trigger: StepsTrigger,
+
+  /**
    * # Steps.Indicator
    *
-   * Visual indicator showing step number or icon.
+   * Visual marker showing step status (number, icon, or custom content).
    */
   Indicator: StepsIndicator,
+
+  /**
+   * # Steps.Number
+   *
+   * Displays the step number (1-indexed).
+   */
+  Number: StepsNumber,
+
+  /**
+   * # Steps.Title
+   *
+   * Displays the step title.
+   */
+  Title: StepsTitle,
+
+  /**
+   * # Steps.Description
+   *
+   * Displays optional hint text below the title.
+   */
+  Description: StepsDescription,
 
   /**
    * # Steps.Separator
@@ -90,34 +134,57 @@ export const Steps = {
   /**
    * # Steps.Content
    *
-   * Container for step label and optional description.
+   * Content container that auto-shows/hides based on current step.
    */
   Content: StepsContent,
 
   /**
-   * # Steps.Label
+   * # Steps.CompletedContent
    *
-   * Displays the step title.
+   * Content displayed when all steps are complete.
    */
-  Label: StepsLabel,
+  CompletedContent: StepsCompletedContent,
 
   /**
-   * # Steps.Description
+   * # Steps.PrevTrigger
    *
-   * Displays optional hint text below the label.
+   * Navigation button to go to previous step.
    */
-  Description: StepsDescription,
+  PrevTrigger: StepsPrevTrigger,
+
+  /**
+   * # Steps.NextTrigger
+   *
+   * Navigation button to go to next step.
+   */
+  NextTrigger: StepsNextTrigger,
+
+  /**
+   * # Steps.Status
+   *
+   * Renders different content based on step state.
+   */
+  Status: StepsStatus,
 };
 
 export type {
   StepsRootProps,
   StepsListProps,
   StepsItemProps,
+  StepsTriggerProps,
   StepsIndicatorProps,
+  StepsNumberProps,
+  StepsTitleProps,
+  StepsDescriptionProps,
   StepsSeparatorProps,
   StepsContentProps,
-  StepsLabelProps,
-  StepsDescriptionProps,
+  StepsCompletedContentProps,
+  StepsPrevTriggerProps,
+  StepsNextTriggerProps,
+  StepsStatusProps,
+  StepsChangeDetails,
+  StepsSize,
+  StepsOrientation,
 } from "./steps.types";
 
 /**
@@ -129,11 +196,17 @@ export {
   StepsRoot as _StepsRoot,
   StepsList as _StepsList,
   StepsItem as _StepsItem,
+  StepsTrigger as _StepsTrigger,
   StepsIndicator as _StepsIndicator,
+  StepsNumber as _StepsNumber,
+  StepsTitle as _StepsTitle,
+  StepsDescription as _StepsDescription,
   StepsSeparator as _StepsSeparator,
   StepsContent as _StepsContent,
-  StepsLabel as _StepsLabel,
-  StepsDescription as _StepsDescription,
+  StepsCompletedContent as _StepsCompletedContent,
+  StepsPrevTrigger as _StepsPrevTrigger,
+  StepsNextTrigger as _StepsNextTrigger,
+  StepsStatus as _StepsStatus,
 };
 
-export { useStepsContext, useStepsItemContext } from "./components";
+export { StepsContext, StepsItemContext } from "./components";

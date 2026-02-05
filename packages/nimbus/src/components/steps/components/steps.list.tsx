@@ -1,3 +1,4 @@
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
 import type { StepsListProps } from "../steps.types";
 import { StepsListSlot } from "../steps.slots";
@@ -5,13 +6,13 @@ import { StepsListSlot } from "../steps.slots";
 /**
  * # Steps.List
  *
- * Flex container that wraps all step items and separators.
+ * Container for grouping step items. Wraps Chakra UI's Steps.List
+ * with Nimbus styling.
  *
  * @example
  * ```tsx
  * <Steps.List>
  *   <Steps.Item index={0}>...</Steps.Item>
- *   <Steps.Separator />
  *   <Steps.Item index={1}>...</Steps.Item>
  * </Steps.List>
  * ```
@@ -24,15 +25,8 @@ export const StepsList = (props: StepsListProps) => {
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
-    <StepsListSlot
-      ref={forwardedRef}
-      data-slot="list"
-      role="list"
-      aria-label="Progress steps"
-      {...styleProps}
-      {...functionalProps}
-    >
-      {children}
+    <StepsListSlot ref={forwardedRef} data-slot="list" {...styleProps} asChild>
+      <ChakraSteps.List {...functionalProps}>{children}</ChakraSteps.List>
     </StepsListSlot>
   );
 };

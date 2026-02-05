@@ -1,24 +1,30 @@
 import {
+  Steps as ChakraSteps,
+  useSlotRecipe,
   useBreakpointValue,
   useChakraContext,
-  useSlotRecipe,
 } from "@chakra-ui/react";
 import { extractStyleProps } from "@/utils";
-import type { StepsRootProps, StepsContextValue } from "../steps.types";
+import type { StepsRootProps } from "../steps.types";
 import { StepsRootSlot } from "../steps.slots";
-import { StepsContext } from "./steps.context";
 
 /**
  * # Steps.Root
  *
  * Container component that manages step state and provides context to child components.
+ * Wraps Chakra UI's Steps.Root component with Nimbus styling.
  *
  * @example
  * ```tsx
- * <Steps.Root step={1} count={3} size="sm" orientation="horizontal">
- *   <Steps.List>
- *     {/* Step items *\/}
- *   </Steps.List>
+ * // Uncontrolled usage
+ * <Steps.Root defaultStep={0} count={3}>
+ *   <Steps.List>...</Steps.List>
+ *   <Steps.Content index={0}>Step 1 content</Steps.Content>
+ * </Steps.Root>
+ *
+ * // Controlled usage
+ * <Steps.Root step={currentStep} onStepChange={handleStepChange} count={3}>
+ *   ...
  * </Steps.Root>
  * ```
  *
@@ -27,26 +33,17 @@ import { StepsContext } from "./steps.context";
 export const StepsRoot = (props: StepsRootProps) => {
   const {
     ref: forwardedRef,
-    step,
     count,
+    defaultStep,
+    step,
+    onStepChange,
+    onStepComplete,
+    linear,
     size = "sm",
     orientation = "horizontal",
     children,
     ...restProps
   } = props;
-
-  // Development-only validation
-  if (process.env.NODE_ENV === "development") {
-    if (step < 0 || step > count) {
-      console.warn(
-        `[Steps] step prop (${step}) is out of bounds. ` +
-          `Expected value between 0 and ${count}.`
-      );
-    }
-    if (count < 1) {
-      console.warn(`[Steps] count prop (${count}) must be at least 1.`);
-    }
-  }
 
   const recipe = useSlotRecipe({ key: "nimbusSteps" });
   const [recipeProps, remainingProps] = recipe.splitVariantProps({
@@ -57,36 +54,49 @@ export const StepsRoot = (props: StepsRootProps) => {
 
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);
 
+  // Normalize responsive values to compute current breakpoint values
+  // This is needed for Chakra's Steps.Root which needs the resolved orientation
   const sysCtx = useChakraContext();
-  const normalizedSize = sysCtx.normalizeValue(size);
   const normalizedOrientation = sysCtx.normalizeValue(orientation);
 
-  const computedSize =
-    useBreakpointValue(normalizedSize) ??
-    (typeof size === "string" ? size : "sm");
+  // useBreakpointValue returns undefined on initial render or when the value
+  // is not responsive. We need to handle both cases properly.
+  const breakpointOrientation = useBreakpointValue(normalizedOrientation);
   const computedOrientation =
-    useBreakpointValue(normalizedOrientation) ??
+    breakpointOrientation ??
     (typeof orientation === "string" ? orientation : "horizontal");
 
-  const contextValue: StepsContextValue = {
-    step,
-    count,
-    size: computedSize,
-    orientation: computedOrientation,
-  };
+  // Remove responsive orientation from recipeProps and use computed value instead.
+  // This prevents the responsive object from being passed as [object Object]
+  // to Ark's internal components while still applying the correct recipe variant.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { orientation: _recipeOrientation, ...recipePropsWithoutOrientation } =
+    recipeProps as typeof recipeProps & { orientation?: unknown };
 
   return (
-    <StepsContext.Provider value={contextValue}>
-      <StepsRootSlot
-        ref={forwardedRef}
-        data-slot="root"
-        {...recipeProps}
-        {...styleProps}
+    <StepsRootSlot
+      ref={forwardedRef}
+      data-slot="root"
+      {...recipePropsWithoutOrientation}
+      // Pass computed orientation for recipe variant styling
+      orientation={computedOrientation as "horizontal" | "vertical"}
+      {...styleProps}
+      asChild
+    >
+      <ChakraSteps.Root
+        count={count}
+        defaultStep={defaultStep}
+        step={step}
+        onStepChange={onStepChange}
+        onStepComplete={onStepComplete}
+        linear={linear}
+        orientation={computedOrientation}
+        unstyled
         {...functionalProps}
       >
         {children}
-      </StepsRootSlot>
-    </StepsContext.Provider>
+      </ChakraSteps.Root>
+    </StepsRootSlot>
   );
 };
 StepsRoot.displayName = "Steps.Root";

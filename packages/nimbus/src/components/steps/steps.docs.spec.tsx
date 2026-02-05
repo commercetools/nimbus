@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { Check } from "@commercetools/nimbus-icons";
 import { Steps, NimbusProvider } from "@commercetools/nimbus";
 
 const renderSteps = (
@@ -10,29 +11,51 @@ const renderSteps = (
       <Steps.Root step={1} count={3} {...props}>
         <Steps.List>
           <Steps.Item index={0}>
-            <Steps.Indicator type="numeric" showCompleteIcon={false} />
-            <Steps.Content>
-              <Steps.Label>Account</Steps.Label>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Check data-testid="complete-icon" />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Account</Steps.Title>
               <Steps.Description>Set up account</Steps.Description>
-            </Steps.Content>
+            </Steps.Trigger>
+            <Steps.Separator />
           </Steps.Item>
-          <Steps.Separator />
+
           <Steps.Item index={1}>
-            <Steps.Indicator type="numeric" />
-            <Steps.Content>
-              <Steps.Label>Profile</Steps.Label>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Check />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Profile</Steps.Title>
               <Steps.Description>Complete profile</Steps.Description>
-            </Steps.Content>
+            </Steps.Trigger>
+            <Steps.Separator />
           </Steps.Item>
-          <Steps.Separator />
+
           <Steps.Item index={2}>
-            <Steps.Indicator type="numeric" />
-            <Steps.Content>
-              <Steps.Label>Review</Steps.Label>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Check />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Review</Steps.Title>
               <Steps.Description>Confirm details</Steps.Description>
-            </Steps.Content>
+            </Steps.Trigger>
           </Steps.Item>
         </Steps.List>
+
+        <Steps.Content index={0}>Account content</Steps.Content>
+        <Steps.Content index={1}>Profile content</Steps.Content>
+        <Steps.Content index={2}>Review content</Steps.Content>
+        <Steps.CompletedContent>All done!</Steps.CompletedContent>
       </Steps.Root>
     </NimbusProvider>
   );
@@ -40,34 +63,32 @@ const renderSteps = (
 /**
  * @docs-section basic-rendering
  * @docs-title Basic Rendering Tests
- * @docs-description Verify the component renders list semantics and current step
+ * @docs-description Verify the component renders with correct structure
  * @docs-order 1
  */
 describe("Steps - Basic rendering", () => {
-  it("renders a list with labeled list items", () => {
+  it("renders a tablist with tab items", () => {
     renderSteps();
 
-    expect(
-      screen.getByRole("list", { name: "Progress steps" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("listitem", { name: "Step 1 of 3: complete" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("listitem", { name: "Step 2 of 3: current" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("listitem", { name: "Step 3 of 3: incomplete" })
-    ).toBeInTheDocument();
+    // Chakra/Ark Steps uses tablist pattern
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
+    expect(screen.getAllByRole("tab")).toHaveLength(3);
   });
 
-  it("marks the current step with aria-current", () => {
+  it("renders step titles", () => {
     renderSteps();
 
-    const currentStep = screen.getByRole("listitem", {
-      name: "Step 2 of 3: current",
-    });
-    expect(currentStep).toHaveAttribute("aria-current", "step");
+    expect(screen.getByText("Account")).toBeInTheDocument();
+    expect(screen.getByText("Profile")).toBeInTheDocument();
+    expect(screen.getByText("Review")).toBeInTheDocument();
+  });
+
+  it("renders step descriptions", () => {
+    renderSteps();
+
+    expect(screen.getByText("Set up account")).toBeInTheDocument();
+    expect(screen.getByText("Complete profile")).toBeInTheDocument();
+    expect(screen.getByText("Confirm details")).toBeInTheDocument();
   });
 });
 
@@ -79,71 +100,109 @@ describe("Steps - Basic rendering", () => {
  */
 describe("Steps - Step states", () => {
   it("assigns data-state based on step index", () => {
+    const { container } = renderSteps();
+
+    // Query triggers which have the data-state attribute
+    // In Ark Steps: "open" = current step, "closed" = non-current steps
+    // Completed steps are identified by data-complete attribute
+    const triggers = container.querySelectorAll('[data-part="trigger"]');
+    expect(triggers[0]).toHaveAttribute("data-state", "closed"); // past (completed) step
+    expect(triggers[0]).toHaveAttribute("data-complete", ""); // marked as complete
+    expect(triggers[1]).toHaveAttribute("data-state", "open"); // current step
+    expect(triggers[2]).toHaveAttribute("data-state", "closed"); // future (incomplete) step
+    expect(triggers[2]).not.toHaveAttribute("data-complete"); // not complete
+  });
+
+  it("shows current step content via tabpanel", () => {
     renderSteps();
 
-    const items = screen.getAllByRole("listitem");
-    expect(items[0]).toHaveAttribute("data-state", "complete");
-    expect(items[1]).toHaveAttribute("data-state", "current");
-    expect(items[2]).toHaveAttribute("data-state", "incomplete");
+    // Step 1 (index 1) is current, so its content should be visible
+    expect(screen.getByText("Profile content")).toBeInTheDocument();
+    // Other content should not be visible (Ark handles this)
   });
 });
 
 /**
- * @docs-section indicator-types
- * @docs-title Indicator Type Tests
- * @docs-description Validate numeric and icon indicators
+ * @docs-section indicator-content
+ * @docs-title Indicator Content Tests
+ * @docs-description Validate indicator content based on step state
  * @docs-order 3
  */
-describe("Steps - Indicator types", () => {
-  it("renders numeric indicators for steps", () => {
+describe("Steps - Indicator content", () => {
+  it("renders step numbers for incomplete steps", () => {
     renderSteps();
 
-    expect(screen.getByText("1")).toBeInTheDocument();
+    // Step 2 (index 1 - current) should show "2"
     expect(screen.getByText("2")).toBeInTheDocument();
+    // Step 3 (index 2 - incomplete) should show "3"
     expect(screen.getByText("3")).toBeInTheDocument();
   });
 
-  it("renders custom icons when type is icon", () => {
+  it("renders complete icon for completed steps", () => {
+    renderSteps();
+
+    // Step 1 (index 0) is complete, should show check icon
+    expect(screen.getByTestId("complete-icon")).toBeInTheDocument();
+  });
+
+  it("renders custom icons when provided", () => {
     render(
       <NimbusProvider>
         <Steps.Root step={0} count={2}>
           <Steps.List>
             <Steps.Item index={0}>
-              <Steps.Indicator type="icon" icon={<span data-testid="icon" />} />
-              <Steps.Content>
-                <Steps.Label>Account</Steps.Label>
-              </Steps.Content>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <span data-testid="custom-icon">*</span>
+                </Steps.Indicator>
+                <Steps.Title>Account</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
             </Steps.Item>
-            <Steps.Separator />
+
             <Steps.Item index={1}>
-              <Steps.Indicator type="numeric" />
-              <Steps.Content>
-                <Steps.Label>Review</Steps.Label>
-              </Steps.Content>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Number />
+                </Steps.Indicator>
+                <Steps.Title>Review</Steps.Title>
+              </Steps.Trigger>
             </Steps.Item>
           </Steps.List>
         </Steps.Root>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("icon")).toBeInTheDocument();
+    expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
   });
 });
 
 /**
  * @docs-section orientation
  * @docs-title Orientation Tests
- * @docs-description Verify separators reflect orientation
+ * @docs-description Verify orientation attribute propagates correctly
  * @docs-order 4
  */
 describe("Steps - Orientation", () => {
-  it("passes orientation to separators", () => {
+  it("passes orientation to component elements", () => {
     const { container } = renderSteps({ orientation: "vertical" });
 
+    // Check that the tablist has vertical orientation
+    const tablist = screen.getByRole("tablist");
+    expect(tablist).toHaveAttribute("aria-orientation", "vertical");
+
+    // Separators should also have vertical orientation
     const separators = container.querySelectorAll('[data-slot="separator"]');
     expect(separators.length).toBe(2);
     separators.forEach((separator) => {
       expect(separator).toHaveAttribute("data-orientation", "vertical");
     });
+  });
+
+  it("defaults to horizontal orientation", () => {
+    renderSteps();
+
+    const tablist = screen.getByRole("tablist");
+    expect(tablist).toHaveAttribute("aria-orientation", "horizontal");
   });
 });

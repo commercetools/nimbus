@@ -1,42 +1,30 @@
-import { createContext, useContext } from "react";
-import type { StepsContextValue, StepsItemContextValue } from "../steps.types";
-
-export const StepsContext = createContext<StepsContextValue | null>(null);
-
-/**
- * Hook to access the Steps context.
- * Must be used within a Steps.Root component.
- *
- * @throws Error if used outside of Steps.Root
- */
-export const useStepsContext = (): StepsContextValue => {
-  const context = useContext(StepsContext);
-  if (!context) {
-    throw new Error(
-      "Steps.* components must be used within Steps.Root. " +
-        "Wrap your Steps.Item, Steps.Indicator, etc. in a Steps.Root component."
-    );
-  }
-  return context;
-};
-
-export const StepsItemContext = createContext<StepsItemContextValue | null>(
-  null
-);
+// Re-export Chakra Steps contexts
+// These are provided by Chakra UI's Steps component
+import { Steps as ChakraSteps } from "@chakra-ui/react";
 
 /**
- * Hook to access the StepsItem context.
- * Must be used within a Steps.Item component.
+ * Context for accessing the Steps state.
+ * Provided by Chakra UI's Steps.Root component.
  *
- * @throws Error if used outside of Steps.Item
+ * @example
+ * ```tsx
+ * <Steps.Context>
+ *   {({ step }) => <div>Current step: {step}</div>}
+ * </Steps.Context>
+ * ```
  */
-export const useStepsItemContext = (): StepsItemContextValue => {
-  const context = useContext(StepsItemContext);
-  if (!context) {
-    throw new Error(
-      "Steps.Indicator must be used within Steps.Item. " +
-        "Wrap your Steps.Indicator in a Steps.Item component."
-    );
-  }
-  return context;
-};
+export const StepsContext: typeof ChakraSteps.Context = ChakraSteps.Context;
+
+/**
+ * Context for accessing the current StepsItem state.
+ * Provided by Chakra UI's Steps.Item component.
+ *
+ * @example
+ * ```tsx
+ * <Steps.ItemContext>
+ *   {({ index }) => <div>Step index: {index}</div>}
+ * </Steps.ItemContext>
+ * ```
+ */
+export const StepsItemContext: typeof ChakraSteps.ItemContext =
+  ChakraSteps.ItemContext;
