@@ -250,6 +250,7 @@ export const stepsSlotRecipe = defineSlotRecipe({
         item: {
           flexDirection: "column", // Stack trigger and separator vertically
           alignItems: "flex-start",
+          gap: "0", // Override size variant gap - separator margins control spacing
         },
         separator: {
           width: "var(--separator-width)",
