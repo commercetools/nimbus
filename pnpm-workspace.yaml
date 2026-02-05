@@ -48,7 +48,7 @@ catalogs:
     storybook: ^10.2.5
     eslint-plugin-storybook: ^10.2.5
     "@storybook/addon-a11y": ^10.2.5
-    "@storybook/addon-docs": ^10.2.5
+    "@storybook/addon-docs": ^10.2.6
     "@storybook/addon-vitest": ^10.2.5
     "@storybook/react-vite": ^10.2.5
     "@vueless/storybook-dark-mode": ^10.0.7
