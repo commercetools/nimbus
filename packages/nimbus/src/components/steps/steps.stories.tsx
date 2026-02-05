@@ -27,6 +27,7 @@ const meta: Meta<typeof Steps.Root> = {
     a11y: {
       config: {
         rules: [
+          // TODO: evaluate these
           {
             // Disable aria-required-children rule for Steps component.
             // This is an upstream issue in Chakra/Ark UI where the Steps.List
@@ -42,17 +43,6 @@ const meta: Meta<typeof Steps.Root> = {
             // content panel IDs even when no Steps.Content is rendered for
             // that index. This causes axe to report invalid aria-controls.
             id: "aria-valid-attr-value",
-            enabled: false,
-          },
-          {
-            // Disable color-contrast rule for Steps component.
-            // The NextTrigger/PrevTrigger components inherit disabled state
-            // from Chakra/Ark internals which affects button styling. When
-            // on the last step, NextTrigger becomes disabled with lower
-            // contrast (3.36:1 vs required 4.5:1). This is expected behavior
-            // for disabled elements but axe may not detect the disabled state
-            // correctly when using the asChild pattern.
-            id: "color-contrast",
             enabled: false,
           },
         ],
@@ -281,7 +271,12 @@ export const Sizes: Story = {
     return (
       <Stack direction="column" gap="800" alignItems="stretch" width="100%">
         {sizes.map((size) => (
-          <Flex key={size} direction="column" gap="200">
+          <Flex
+            key={size}
+            direction="column"
+            gap="200"
+            data-testid={`size-${size}`}
+          >
             <Text textStyle="md" fontWeight="600">
               Size: {size}
             </Text>
@@ -342,6 +337,30 @@ export const Sizes: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All three sizes are rendered", async () => {
+      const xsSize = canvas.getByTestId("size-xs");
+      const smSize = canvas.getByTestId("size-sm");
+      const mdSize = canvas.getByTestId("size-md");
+
+      await expect(xsSize).toBeInTheDocument();
+      await expect(smSize).toBeInTheDocument();
+      await expect(mdSize).toBeInTheDocument();
+    });
+
+    await step("Each size has three steps with titles", async () => {
+      // Each size variant should have Account, Profile, Review titles
+      const accountTitles = canvas.getAllByText("Account");
+      const profileTitles = canvas.getAllByText("Profile");
+      const reviewTitles = canvas.getAllByText("Review");
+
+      await expect(accountTitles).toHaveLength(3);
+      await expect(profileTitles).toHaveLength(3);
+      await expect(reviewTitles).toHaveLength(3);
+    });
+  },
 };
 
 /**
@@ -353,7 +372,11 @@ export const Orientations: Story = {
     return (
       <Stack direction="row" gap="800" alignItems="flex-start" width="100%">
         {orientations.map((orientation) => (
-          <Box key={orientation} flex="1">
+          <Box
+            key={orientation}
+            flex="1"
+            data-testid={`orientation-${orientation}`}
+          >
             <Text textStyle="md" fontWeight="600" mb="400">
               {orientation}
             </Text>
@@ -362,6 +385,7 @@ export const Orientations: Story = {
               count={3}
               size="sm"
               orientation={orientation}
+              data-testid={`steps-${orientation}`}
             >
               <Steps.List>
                 <Steps.Item index={0}>
@@ -419,6 +443,36 @@ export const Orientations: Story = {
       </Stack>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Both orientations are rendered", async () => {
+      const horizontal = canvas.getByTestId("orientation-horizontal");
+      const vertical = canvas.getByTestId("orientation-vertical");
+
+      await expect(horizontal).toBeInTheDocument();
+      await expect(vertical).toBeInTheDocument();
+    });
+
+    await step(
+      "Horizontal steps has correct orientation attribute",
+      async () => {
+        const horizontalSteps = canvas.getByTestId("steps-horizontal");
+        await expect(horizontalSteps).toHaveAttribute(
+          "data-orientation",
+          "horizontal"
+        );
+      }
+    );
+
+    await step("Vertical steps has correct orientation attribute", async () => {
+      const verticalSteps = canvas.getByTestId("steps-vertical");
+      await expect(verticalSteps).toHaveAttribute(
+        "data-orientation",
+        "vertical"
+      );
+    });
+  },
 };
 
 /**
@@ -428,11 +482,16 @@ export const Orientations: Story = {
 export const WithIcons: Story = {
   render: () => {
     return (
-      <Steps.Root defaultStep={1} count={3} size="sm">
+      <Steps.Root
+        defaultStep={1}
+        count={3}
+        size="sm"
+        data-testid="steps-with-icons"
+      >
         <Steps.List>
           <Steps.Item index={0}>
             <Steps.Trigger>
-              <Steps.Indicator>
+              <Steps.Indicator data-testid="indicator-0">
                 <Steps.Status complete={<Check />} incomplete={<Home />} />
               </Steps.Indicator>
               <Box>
@@ -445,7 +504,7 @@ export const WithIcons: Story = {
 
           <Steps.Item index={1}>
             <Steps.Trigger>
-              <Steps.Indicator>
+              <Steps.Indicator data-testid="indicator-1">
                 <Steps.Status complete={<Check />} incomplete={<Person />} />
               </Steps.Indicator>
               <Box>
@@ -458,7 +517,7 @@ export const WithIcons: Story = {
 
           <Steps.Item index={2}>
             <Steps.Trigger>
-              <Steps.Indicator>
+              <Steps.Indicator data-testid="indicator-2">
                 <Steps.Status complete={<Check />} incomplete={<Settings />} />
               </Steps.Indicator>
               <Box>
@@ -469,6 +528,42 @@ export const WithIcons: Story = {
           </Steps.Item>
         </Steps.List>
       </Steps.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Steps component renders with icons", async () => {
+      const stepsRoot = canvas.getByTestId("steps-with-icons");
+      await expect(stepsRoot).toBeInTheDocument();
+    });
+
+    await step("All three indicators are present", async () => {
+      const indicator0 = canvas.getByTestId("indicator-0");
+      const indicator1 = canvas.getByTestId("indicator-1");
+      const indicator2 = canvas.getByTestId("indicator-2");
+
+      await expect(indicator0).toBeInTheDocument();
+      await expect(indicator1).toBeInTheDocument();
+      await expect(indicator2).toBeInTheDocument();
+    });
+
+    await step(
+      "Completed step indicator has data-complete attribute",
+      async () => {
+        // Step 0 is complete (defaultStep=1), so its indicator should have data-complete
+        const indicator0 = canvas.getByTestId("indicator-0");
+        await expect(indicator0).toHaveAttribute("data-complete");
+      }
+    );
+
+    await step(
+      "Incomplete step indicator does not have data-complete",
+      async () => {
+        // Step 2 is incomplete, so its indicator should NOT have data-complete
+        const indicator2 = canvas.getByTestId("indicator-2");
+        await expect(indicator2).not.toHaveAttribute("data-complete");
+      }
     );
   },
 };
@@ -810,10 +905,16 @@ export const VerticalWithIcons: Story = {
 export const LinearMode: Story = {
   render: () => {
     return (
-      <Steps.Root defaultStep={0} count={3} size="sm" linear>
+      <Steps.Root
+        defaultStep={0}
+        count={3}
+        size="sm"
+        linear
+        data-testid="linear-steps"
+      >
         <Steps.List>
           <Steps.Item index={0}>
-            <Steps.Trigger>
+            <Steps.Trigger data-testid="trigger-0">
               <Steps.Indicator>
                 <Steps.Status
                   complete={<Check />}
@@ -826,7 +927,7 @@ export const LinearMode: Story = {
           </Steps.Item>
 
           <Steps.Item index={1}>
-            <Steps.Trigger>
+            <Steps.Trigger data-testid="trigger-1">
               <Steps.Indicator>
                 <Steps.Status
                   complete={<Check />}
@@ -839,7 +940,7 @@ export const LinearMode: Story = {
           </Steps.Item>
 
           <Steps.Item index={2}>
-            <Steps.Trigger>
+            <Steps.Trigger data-testid="trigger-2">
               <Steps.Indicator>
                 <Steps.Status
                   complete={<Check />}
@@ -870,14 +971,50 @@ export const LinearMode: Story = {
 
         <Flex gap="400" mt="400">
           <Steps.PrevTrigger asChild>
-            <Button variant="outline">Back</Button>
+            <Button variant="outline" data-testid="back-button">
+              Back
+            </Button>
           </Steps.PrevTrigger>
           <Steps.NextTrigger asChild>
-            <Button variant="solid">Next</Button>
+            <Button variant="solid" data-testid="next-button">
+              Next
+            </Button>
           </Steps.NextTrigger>
         </Flex>
       </Steps.Root>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    await step("Linear mode starts at step 0", async () => {
+      const content = canvas.getByText("Complete this step before proceeding.");
+      await expect(content).toBeInTheDocument();
+    });
+
+    await step("Back button is disabled on first step", async () => {
+      const backButton = canvas.getByTestId("back-button");
+      await expect(backButton).toBeDisabled();
+    });
+
+    await step("Can navigate forward with Next button", async () => {
+      const nextButton = canvas.getByTestId("next-button");
+      await user.click(nextButton);
+
+      const content = canvas.getByText(
+        "You can only go forward or back to completed steps."
+      );
+      await expect(content).toBeInTheDocument();
+    });
+
+    await step("Can navigate back to completed step", async () => {
+      const backButton = canvas.getByTestId("back-button");
+      await user.click(backButton);
+
+      const content = canvas.getByText("Complete this step before proceeding.");
+      await expect(content).toBeInTheDocument();
+    });
   },
 };
 
@@ -886,13 +1023,6 @@ export const LinearMode: Story = {
  * Changes from vertical on mobile to horizontal on larger screens
  */
 export const ResponsiveOrientation: Story = {
-  parameters: {
-    // Disable a11y checks for this story because responsive orientation values
-    // have timing issues in test environments. The useBreakpointValue hook
-    // requires media query evaluation which may not resolve correctly during
-    // automated tests, causing [object Object] to appear in orientation attributes.
-    a11y: { disable: true },
-  },
   render: () => {
     return (
       <Steps.Root
