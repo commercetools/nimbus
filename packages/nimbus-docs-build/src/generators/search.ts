@@ -34,6 +34,7 @@ export async function generateSearchIndex(
     .map((doc) => ({
       id: doc.meta.id,
       title: doc.meta.title,
+      exportName: doc.meta.exportName,
       description: doc.meta.description || "",
       tags: doc.meta.tags || [],
       route: doc.meta.route,

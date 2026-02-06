@@ -36,6 +36,7 @@ export async function generateRouteManifest(
       path: routePath,
       id: meta.id,
       title: meta.title,
+      exportName: meta.exportName,
       description: meta.description || "",
       lifecycleState: meta.lifecycleState,
       category,

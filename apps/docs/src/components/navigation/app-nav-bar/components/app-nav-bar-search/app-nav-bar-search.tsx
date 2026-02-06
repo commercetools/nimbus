@@ -75,6 +75,7 @@ export const AppNavBarSearch = () => {
               inputValue={query}
               onInputChange={setQuery}
               onSelectionChange={handleSelectionChange}
+              defaultFilter={() => true} // Disable built-in filtering to allow custom filtering mostly for the Fuse.js search
               allowsCustomValue
             >
               <Flex alignItems="center" width="100%" py="400" pb="600">
