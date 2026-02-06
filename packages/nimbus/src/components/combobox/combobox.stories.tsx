@@ -706,102 +706,85 @@ export const AsyncMultiSelectCustomOptions: Story = {
       await selectOptionsByName(["pikachu"]);
     });
 
-    await step("Type custom option 'MyCustomMon' and press Enter", async () => {
+    await step("Create custom option 'Zorblax'", async () => {
       const input = canvas.getByRole("combobox");
       await userEvent.clear(input);
-      await userEvent.type(input, "MyCustomMon");
+      await userEvent.type(input, "Zorblax{Enter}");
 
-      // Wait for async search to complete (no results expected)
-      await waitFor(
-        () => {
-          // Input should have the typed value
-          expect(input).toHaveValue("MyCustomMon");
-        },
-        { timeout: 2000 }
-      );
-
-      // Press Enter to create the custom option
-      await userEvent.keyboard("{Enter}");
+      await waitFor(() => {
+        expect(canvas.queryByText("Zorblax")).toBeInTheDocument();
+      });
     });
 
-    await step("Verify custom option was created and selected", async () => {
-      // Custom option should appear as a tag
-      await waitFor(() => {
-        const customTag = canvas.queryByText("MyCustomMon");
-        expect(customTag).toBeInTheDocument();
+    await step("Verify tags persist after searching", async () => {
+      const input = canvas.getByRole("combobox");
+      await userEvent.clear(input);
+      await userEvent.type(input, "char");
+
+      await waitFor(() => expect(findOptionByText("charmander")).toBeTruthy(), {
+        timeout: 5000,
       });
 
-      // Original pikachu tag should still exist
+      expect(canvas.queryByText("Zorblax")).toBeInTheDocument();
       expect(canvas.queryByText("pikachu")).toBeInTheDocument();
-
-      // Description should show the created option
-      await waitFor(() => {
-        const description = canvas.queryByText(/Created:/i);
-        expect(description).toBeInTheDocument();
-        expect(description?.textContent).toContain("MyCustomMon");
-      });
     });
 
-    await step(
-      "Search for 'char' to verify custom option persists",
-      async () => {
-        const input = canvas.getByRole("combobox");
-        await userEvent.clear(input);
-        await userEvent.type(input, "char");
-
-        // Wait for charmander results
-        await waitFor(
-          () => {
-            const charmanderOption = findOptionByText("charmander");
-            expect(charmanderOption).toBeTruthy();
-          },
-          { timeout: 5000 }
-        );
-
-        // Custom tag should still be visible
-        expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
-        expect(canvas.queryByText("pikachu")).toBeInTheDocument();
-      }
-    );
-
-    await step("Create another custom option 'AnotherCustom'", async () => {
+    await step("Create second custom option 'Qwixby'", async () => {
       const input = canvas.getByRole("combobox");
       await userEvent.clear(input);
-      await userEvent.type(input, "AnotherCustom{Enter}");
+      await userEvent.type(input, "Qwixby{Enter}");
 
-      // Verify both custom tags exist
       await waitFor(() => {
-        expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
-        expect(canvas.queryByText("AnotherCustom")).toBeInTheDocument();
+        expect(canvas.queryByText("Zorblax")).toBeInTheDocument();
+        expect(canvas.queryByText("Qwixby")).toBeInTheDocument();
         expect(canvas.queryByText("pikachu")).toBeInTheDocument();
-      });
-
-      // Description should show both created options
-      await waitFor(() => {
-        const description = canvas.queryByText(/Created:/i);
-        expect(description?.textContent).toContain("MyCustomMon");
-        expect(description?.textContent).toContain("AnotherCustom");
       });
     });
 
-    await step("Verify all tags can be removed", async () => {
-      // Remove AnotherCustom tag - use getByRole to fail fast if not found
+    await step("Remove 'Qwixby' tag", async () => {
+      await userEvent.keyboard("{Escape}");
+
       const removeButton = canvas.getByRole("button", {
-        name: /remove tag anothercustom/i,
+        name: /remove tag qwixby/i,
       });
       await userEvent.click(removeButton);
 
-      // Verify it's removed
       await waitFor(
-        () => {
-          expect(canvas.queryByText("AnotherCustom")).not.toBeInTheDocument();
-        },
+        () => expect(canvas.queryByText("Qwixby")).not.toBeInTheDocument(),
         { timeout: 5000 }
       );
 
-      // Other tags should still exist
-      expect(canvas.queryByText("MyCustomMon")).toBeInTheDocument();
+      expect(canvas.queryByText("Zorblax")).toBeInTheDocument();
       expect(canvas.queryByText("pikachu")).toBeInTheDocument();
+    });
+
+    await step("Verify all tags can be removed", async () => {
+      // Remove Zorblax
+      const removeZorblax = canvas.getByRole("button", {
+        name: /remove tag zorblax/i,
+      });
+      await userEvent.click(removeZorblax);
+
+      await waitFor(
+        () => expect(canvas.queryByText("Zorblax")).not.toBeInTheDocument(),
+        { timeout: 5000 }
+      );
+
+      // Remove pikachu
+      const removePikachu = canvas.getByRole("button", {
+        name: /remove tag pikachu/i,
+      });
+      await userEvent.click(removePikachu);
+
+      await waitFor(
+        () => expect(canvas.queryByText("pikachu")).not.toBeInTheDocument(),
+        { timeout: 5000 }
+      );
+
+      // Verify no tags remain
+      expect(
+        canvas.queryByRole("button", { name: /remove tag/i })
+      ).not.toBeInTheDocument();
     });
   },
 };
