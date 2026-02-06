@@ -1,4 +1,4 @@
-import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
+import { Box, Flex, Grid } from "@commercetools/nimbus";
 import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
@@ -55,18 +55,45 @@ export const components: MDXComponents = {
   ol: OlList,
   li: ListItem,
   img: Image,
-  table: (props) => {
-    return (
-      <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
-        <Table.Root variant="outline" {...props} />
-      </Table.ScrollArea>
-    );
-  },
-  thead: Table.Header,
-  th: Table.ColumnHeader,
-  tbody: Table.Body,
-  td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
-  tr: Table.Row,
+  table: (props) => (
+    <Box overflowX="auto" my="600">
+      <Box
+        as="table"
+        width="full"
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="md"
+        overflow="hidden"
+        {...props}
+      />
+    </Box>
+  ),
+  thead: (props) => <Box as="thead" bg="neutral.2" {...props} />,
+  th: (props) => (
+    <Box
+      as="th"
+      px="400"
+      py="300"
+      textAlign="left"
+      fontWeight="semibold"
+      borderBottomWidth="1px"
+      borderColor="neutral.6"
+      {...props}
+    />
+  ),
+  tbody: (props) => <Box as="tbody" {...props} />,
+  td: (props) => (
+    <Box
+      as="td"
+      px="400"
+      py="300"
+      borderBottomWidth="1px"
+      borderColor="neutral.6"
+      whiteSpace="normal"
+      {...props}
+    />
+  ),
+  tr: (props) => <Box as="tr" {...props} />,
   /** layout components */
   Box: (props) => <Box {...props} />,
   Flex: (props) => <Flex {...props} />,

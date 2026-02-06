@@ -1,4 +1,4 @@
-import { Box, Code, system, Table, Text } from "@commercetools/nimbus";
+import { Box, Code, system, DataTable, Text } from "@commercetools/nimbus";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { preferPxAtom } from "@/atoms/prefer-px-atom";
@@ -134,6 +134,7 @@ export const GenericTokenTableDemo = ({
     if (!data) return [];
 
     return Array.from(data, ([name, value]) => ({
+      id: name,
       name,
       value,
     }));
@@ -157,38 +158,44 @@ export const GenericTokenTableDemo = ({
     }
   };
 
+  const columns = [
+    {
+      id: "name",
+      header: "Token-Name",
+      accessor: (row: (typeof data)[0]) => row.name,
+      width: 200,
+      render: ({ value }: { value: string }) => (
+        <Code variant="subtle">{value}</Code>
+      ),
+    },
+    {
+      id: "value",
+      header: "Value",
+      accessor: (row: (typeof data)[0]) => row.value.value,
+      width: 250,
+      render: ({ value }: { value: string }) => (
+        <Box maxW="20ch">
+          <Text truncate>{formatterFn(value)}</Text>
+        </Box>
+      ),
+    },
+    ...(demoProperty
+      ? [
+          {
+            id: "demo",
+            header: "Demo",
+            accessor: (row: (typeof data)[0]) => row.name,
+            render: ({ value }: { value: string }) => (
+              <DemoComponent {...{ [demoProperty]: value }} />
+            ),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div>
-      <Table.Root>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader width="16ch">Token-Name</Table.ColumnHeader>
-            <Table.ColumnHeader width="24ch">Value</Table.ColumnHeader>
-            {demoProperty && <Table.ColumnHeader>Demo</Table.ColumnHeader>}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {data.map((item) => {
-            return (
-              <Table.Row key={item.name}>
-                <Table.Cell>
-                  <Code variant="subtle">{item.name}</Code>
-                </Table.Cell>
-                <Table.Cell>
-                  <Box maxW="20ch">
-                    <Text truncate>{formatterFn(item.value.value)}</Text>
-                  </Box>
-                </Table.Cell>
-                {demoProperty && (
-                  <Table.Cell>
-                    <DemoComponent {...{ [demoProperty]: item.name }} />
-                  </Table.Cell>
-                )}
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table.Root>
+      <DataTable columns={columns} rows={data} />
     </div>
   );
 };

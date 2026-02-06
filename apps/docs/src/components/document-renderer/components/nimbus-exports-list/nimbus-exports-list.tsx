@@ -2,13 +2,14 @@ import {
   Box,
   Heading,
   Stack,
-  Table,
+  DataTable,
   TagGroup,
   Button,
   Icon,
   Badge,
   Text,
   Link,
+  Code,
 } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -79,112 +80,151 @@ export const NimbusExportsList: React.FC<NimbusExportsListProps> = ({
 
   return (
     <Stack gap="600">
-      {Object.entries(groupedExports).map(([type, items]) => (
-        <Box key={type}>
-          <Heading
-            size="lg"
-            marginBottom="400"
-            style={{ textTransform: "capitalize" }}
-          >
-            {type}s
-          </Heading>
-          <Table.Root variant="outline">
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader>Name</Table.ColumnHeader>
-                <Table.ColumnHeader>Type</Table.ColumnHeader>
-                <Table.ColumnHeader>Lifecycle</Table.ColumnHeader>
-                <Table.ColumnHeader>Docs</Table.ColumnHeader>
-                {type === "component" && (
-                  <Table.ColumnHeader>Actions</Table.ColumnHeader>
-                )}
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {items.map((item) => {
-                const doc = findDocForExport(item.name);
-                const lifecycleState = doc?.lifecycleState;
-                const lifecycleInfo = lifecycleState
-                  ? lifecycleStateDescriptions[lifecycleState]
-                  : null;
+      {Object.entries(groupedExports).map(([type, items]) => {
+        const itemsWithIds = items.map((item) => ({
+          ...item,
+          id: item.name,
+        }));
 
-                return (
-                  <React.Fragment key={item.name}>
-                    <Table.Row>
-                      <Table.Cell>
-                        {doc ? (
-                          <Link href={doc.path}>
-                            <code>{item.name}</code>
-                          </Link>
-                        ) : (
-                          <code>{item.name}</code>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <TagGroup.Root>
-                          <TagGroup.TagList>
-                            <TagGroup.Tag colorPalette={getTagColor(item.type)}>
-                              {item.type}
-                            </TagGroup.Tag>
-                          </TagGroup.TagList>
-                        </TagGroup.Root>
-                      </Table.Cell>
-                      <Table.Cell>
-                        {lifecycleInfo ? (
-                          <Badge
-                            size="xs"
-                            colorPalette={lifecycleInfo.colorPalette}
-                          >
-                            {lifecycleInfo.label}
-                          </Badge>
-                        ) : (
-                          <Text fontSize="xs" color="neutral.10">
-                            -
-                          </Text>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {doc ? (
-                          <Icon size="2xs" color="positive.9">
-                            <CheckCircle />
-                          </Icon>
-                        ) : (
-                          <Icon size="2xs" color="critical.9">
-                            <HighlightOff />
-                          </Icon>
-                        )}
-                      </Table.Cell>
-                      {type === "component" && (
-                        <Table.Cell>
-                          <Button
-                            size="xs"
-                            variant="ghost"
-                            onPress={() => toggleExpanded(item.name)}
-                          >
-                            {expandedComponents.includes(item.name)
-                              ? "Hide props"
-                              : "Show props"}
-                          </Button>
-                        </Table.Cell>
-                      )}
-                    </Table.Row>
-                    {type === "component" &&
-                      expandedComponents.includes(item.name) && (
-                        <Table.Row>
-                          <Table.Cell colSpan={5}>
-                            <Box py="m" px="s">
-                              <PropsTable id={item.name} />
-                            </Box>
-                          </Table.Cell>
-                        </Table.Row>
-                      )}
-                  </React.Fragment>
-                );
-              })}
-            </Table.Body>
-          </Table.Root>
-        </Box>
-      ))}
+        const columns = [
+          {
+            id: "name",
+            header: "Name",
+            accessor: (row: (typeof items)[0]) => row.name,
+            width: 250,
+            render: ({ row }: { row: (typeof items)[0]; value: string }) => {
+              const doc = findDocForExport(row.name);
+              return doc ? (
+                <Link href={doc.path}>
+                  <Code>{row.name}</Code>
+                </Link>
+              ) : (
+                <Code>{row.name}</Code>
+              );
+            },
+          },
+          {
+            id: "type",
+            header: "Type",
+            accessor: (row: (typeof items)[0]) => row.type,
+            width: 150,
+            render: ({ row }: { row: (typeof items)[0]; value: string }) => (
+              <TagGroup.Root>
+                <TagGroup.TagList>
+                  <TagGroup.Tag colorPalette={getTagColor(row.type)}>
+                    {row.type}
+                  </TagGroup.Tag>
+                </TagGroup.TagList>
+              </TagGroup.Root>
+            ),
+          },
+          {
+            id: "lifecycle",
+            header: "Lifecycle",
+            accessor: (row: (typeof items)[0]) => {
+              const doc = findDocForExport(row.name);
+              return doc?.lifecycleState || "";
+            },
+            width: 150,
+            render: ({ row }: { row: (typeof items)[0]; value: string }) => {
+              const doc = findDocForExport(row.name);
+              const lifecycleState = doc?.lifecycleState;
+              const lifecycleInfo = lifecycleState
+                ? lifecycleStateDescriptions[lifecycleState]
+                : null;
+
+              return lifecycleInfo ? (
+                <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
+                  {lifecycleInfo.label}
+                </Badge>
+              ) : (
+                <Text fontSize="xs" color="neutral.10">
+                  -
+                </Text>
+              );
+            },
+          },
+          {
+            id: "docs",
+            header: "Docs",
+            accessor: (row: (typeof items)[0]) => {
+              const doc = findDocForExport(row.name);
+              return doc ? "yes" : "no";
+            },
+            width: 100,
+            render: ({ row }: { row: (typeof items)[0]; value: string }) => {
+              const doc = findDocForExport(row.name);
+              return doc ? (
+                <Icon size="2xs" color="positive.9">
+                  <CheckCircle />
+                </Icon>
+              ) : (
+                <Icon size="2xs" color="critical.9">
+                  <HighlightOff />
+                </Icon>
+              );
+            },
+          },
+          ...(type === "component"
+            ? [
+                {
+                  id: "actions",
+                  header: "Actions",
+                  accessor: (row: (typeof items)[0]) => row.name,
+                  width: 150,
+                  render: ({
+                    row,
+                  }: {
+                    row: (typeof items)[0];
+                    value: string;
+                  }) => (
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      onPress={() => toggleExpanded(row.name)}
+                    >
+                      {expandedComponents.includes(row.name)
+                        ? "Hide props"
+                        : "Show props"}
+                    </Button>
+                  ),
+                },
+              ]
+            : []),
+        ];
+
+        return (
+          <Box key={type}>
+            <Heading
+              size="lg"
+              marginBottom="400"
+              style={{ textTransform: "capitalize" }}
+            >
+              {type}s
+            </Heading>
+            <DataTable
+              columns={columns}
+              rows={itemsWithIds}
+              variant="outline"
+            />
+            {type === "component" &&
+              items
+                .filter((item) => expandedComponents.includes(item.name))
+                .map((item) => (
+                  <Box
+                    key={item.name}
+                    py="m"
+                    px="s"
+                    borderWidth="1px"
+                    borderColor="neutral.6"
+                    mt="-1px"
+                  >
+                    <PropsTable id={item.name} />
+                  </Box>
+                ))}
+          </Box>
+        );
+      })}
     </Stack>
   );
 };

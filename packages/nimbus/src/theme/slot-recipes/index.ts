@@ -95,7 +95,6 @@ export const slotRecipes = {
   nimbusSelect: selectSlotRecipe,
   nimbusSplitButton: splitButtonSlotRecipe,
   nimbusSwitch: switchSlotRecipe,
-  nimbusTable: tableSlotRecipe,
   nimbusTabs: tabsSlotRecipe,
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
