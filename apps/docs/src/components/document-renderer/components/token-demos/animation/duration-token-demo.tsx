@@ -1,4 +1,4 @@
-import { Box, Button, Code, Table } from "@commercetools/nimbus";
+import { Box, Button, Code, DataTable } from "@commercetools/nimbus";
 
 import { atom, useAtomValue } from "jotai";
 import { system } from "@commercetools/nimbus";
@@ -24,51 +24,48 @@ export const DurationTokenDemo = () => {
   const [seed, setSeed] = useState(0);
   const items = useAtomValue(durationTokensAtom);
 
+  const columns = [
+    {
+      id: "name",
+      header: "Token-Name",
+      accessor: (row: (typeof items)[0]) => row.label,
+      width: 200,
+      render: ({ value }: { value: string }) => (
+        <Code variant="subtle">{value}</Code>
+      ),
+    },
+    {
+      id: "value",
+      header: "Value",
+      accessor: (row: (typeof items)[0]) => row.value.originalValue,
+      width: 250,
+    },
+    {
+      id: "demo",
+      header: (
+        <>
+          Demo
+          <Button
+            size="2xs"
+            float="right"
+            onPress={() => setSeed(seed + 1)}
+            colorPalette="primary"
+            variant="solid"
+          >
+            <PlayArrow /> Trigger animations
+          </Button>
+        </>
+      ),
+      accessor: (row: (typeof items)[0]) => row.value.originalValue,
+      render: ({ value }: { value: string }) => (
+        <AnimationDemo key={seed} size="80px" emoji="🐎" duration={value} />
+      ),
+    },
+  ];
+
   return (
     <Box mb="1200" mt="600">
-      <Table.Root width="full" maxWidth="full">
-        <Table.ColumnGroup>
-          <Table.Column width="18ch" />
-          <Table.Column width="3600" />
-          <Table.Column />
-        </Table.ColumnGroup>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Token-Name</Table.ColumnHeader>
-            <Table.ColumnHeader>Value</Table.ColumnHeader>
-            <Table.ColumnHeader>
-              Demo
-              <Button
-                size="2xs"
-                float="right"
-                onPress={() => setSeed(seed + 1)}
-                colorPalette="primary"
-                variant="solid"
-              >
-                <PlayArrow /> Trigger animations
-              </Button>
-            </Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {items.map((item) => (
-            <Table.Row key={item.id} id={item.id}>
-              <Table.Cell>
-                <Code variant="subtle">{item.label}</Code>
-              </Table.Cell>
-              <Table.Cell>{item.value.originalValue}</Table.Cell>
-              <Table.Cell>
-                <AnimationDemo
-                  key={seed}
-                  size="80px"
-                  emoji="🐎"
-                  duration={item.value.originalValue}
-                />
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+      <DataTable columns={columns} rows={items} />
     </Box>
   );
 };

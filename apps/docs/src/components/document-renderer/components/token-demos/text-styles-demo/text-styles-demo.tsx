@@ -1,35 +1,35 @@
-import { Code, system, Table, Text } from "@commercetools/nimbus";
+import { Code, system, DataTable, Text } from "@commercetools/nimbus";
 export const TextStylesDemo = () => {
   const obj = system._config.theme?.textStyles || [];
-  const items = Object.entries(obj).map(([name, value]) => ({ name, value }));
+  const items = Object.entries(obj).map(([name, value]) => ({
+    id: name,
+    name,
+    value,
+  }));
+
+  const columns = [
+    {
+      id: "name",
+      header: "Token-Name",
+      accessor: (row: { name: string }) => row.name,
+      width: 200,
+      render: ({ value }: { value: string }) => (
+        <Code variant="subtle">{value}</Code>
+      ),
+    },
+    {
+      id: "demo",
+      header: "Demo",
+      accessor: (row: { name: string }) => row.name,
+      render: ({ value }: { value: string }) => (
+        <Text textStyle={value}>Demo Text</Text>
+      ),
+    },
+  ];
 
   return (
     <div>
-      <Table.Root>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader width="16ch">Token-Name</Table.ColumnHeader>
-            <Table.ColumnHeader>Demo</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {items &&
-            items.map((item) => {
-              const { name } = item;
-
-              return (
-                <Table.Row key={name}>
-                  <Table.Cell>
-                    <Code variant="subtle">{name}</Code>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Text textStyle={name}>Demo Text</Text>
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
-        </Table.Body>
-      </Table.Root>
+      <DataTable columns={columns} rows={items} />
     </div>
   );
 };

@@ -17,7 +17,6 @@ export * from "./link";
 export * from "./list";
 export * from "./draggable-list";
 export * from "./simple-grid";
-export * from "./table";
 export * from "./text";
 export * from "./tooltip";
 export * from "./nimbus-provider";
