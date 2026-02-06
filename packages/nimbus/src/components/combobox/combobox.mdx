@@ -161,7 +161,7 @@ Single and multi-select is supported by comboboxes.
 const App = () => {
   const options = [
     { id: "surprise-me", name: "Surprise me", description: "A mix of delights" },
-    { id: "toys-only", name: "Toys only", description: "Balls, stuffies, and tug toys" },
+    { id: "toys-only", name: "Toys only", description: "Balls, plush toys, and tug toys" },
     { id: "treats-only", name: "Treats only", description: "Chews, bites, and crunchy snacks" },
     { id: "heavy-chewers", name: "Heavy chewers", description: "Only difficult to destroy toys" }
   ];
@@ -224,6 +224,8 @@ features.
 ```jsx-live
 const App = () => {
   const [error, setError] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [isPending, setIsPending] = useState(false);
   const minSearchLength = 2;
 
   // Manage async data loading with useAsyncList
@@ -258,13 +260,24 @@ const App = () => {
     }
   });
 
-  // Add debouncing to reduce API calls while typing
+  // Debounce only the API call, not the input update
   const debouncedSetFilterText = useDebouncedCallback(
     (value) => {
+      setIsPending(false);
       list.setFilterText(value);
     },
     300
   );
+
+  // Handle input changes: update immediately for responsive typing, debounce API calls
+  const handleInputChange = (value) => {
+    setInputValue(value);
+    setIsPending(true);
+    debouncedSetFilterText(value);
+  };
+
+  // Compute combined loading state
+  const isLoading = isPending || list.loadingState === "loading";
 
   return (
     <FormField.Root invalid={!!error}>
@@ -272,14 +285,19 @@ const App = () => {
         label="Search Star Wars Characters"
         placeholder="Type to search (min 2 characters)..."
         items={list.items}
-        inputValue={list.filterText}
-        onInputChange={debouncedSetFilterText}
-        isLoading={list.loadingState === "loading"}
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        isLoading={isLoading}
+        getKey={(character) => character.name}
+        // Disable client-side filtering since server already filters results
+        filter={(nodes) => nodes}
+        // Keep menu open during async loading to show loading/empty states
+        allowsEmptyMenu={true}
         renderEmptyState={({ isLoading }) => {
           if (isLoading) {
             return <Text padding="300">Loading...</Text>;
           }
-          if (!list.filterText || list.filterText.length < minSearchLength) {
+          if (!inputValue || inputValue.length < minSearchLength) {
             return <Text padding="300">Type at least {minSearchLength} characters to search</Text>;
           }
           return <Text padding="300">No results found</Text>;
