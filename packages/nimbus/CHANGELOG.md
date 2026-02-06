@@ -1,5 +1,20 @@
 # @commercetools/nimbus
 
+## 2.6.0
+
+### Minor Changes
+
+- [#965](https://github.com/commercetools/nimbus/pull/965)
+  [`d582980`](https://github.com/commercetools/nimbus/commit/d5829808d61cec1ba62ce2da81dbeb139a9e2b40)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Remove disabled state
+  from Avatar component
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.6.0
+  - @commercetools/nimbus-icons@2.6.0
+
 ## 2.5.0
 
 ### Minor Changes
