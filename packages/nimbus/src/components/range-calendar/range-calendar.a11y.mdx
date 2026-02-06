@@ -1,0 +1,37 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <RangeCalendar aria-label="Enter dates" />
+```
+
+### Accessibility standards
+
+- Ensure the calendar is navigable using a keyboard.
+- Use Tab to move focus to and from the calendar component.
+- Use Enter or Space to activate controls (e.g., to open/close the calendar,
+  select a date, or navigate months/years).
+- Use arrow keys to navigate between days within the calendar grid.
+- Ensure focus is clearly visible on the currently selected day or navigated
+  day.
+- Clearly indicate the current month and year.
+- Provide accessible controls for navigating to previous and next months/years.
+  These controls should have clear `aria-label` attributes if they are
+  icon-only.
+- Ensure selected dates are clearly distinguished visually and announced by
+  screen readers.
+- Communicate invalid or unavailable dates (e.g., past dates, blackout dates) to
+  screen readers.
+- Provide a mechanism for users to select a specific date (e.g., clicking a day,
+  or typing a date into an associated input field).
+- Announce changes in month or year to screen readers.
+- Ensure sufficient color contrast for all calendar elements (text, borders,
+  icons, selected states, hover states).

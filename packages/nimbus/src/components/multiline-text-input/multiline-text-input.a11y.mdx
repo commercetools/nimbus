@@ -1,0 +1,37 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <MultilineTextInput
+        size="md"
+        placeholder="well described placeholder"
+        aria-label="lorem ipsum text"
+        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        rows={5}
+    />
+)
+```
+
+### Accessibility standards
+
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an aria-label or aria-labelledby for
+  screen readers.
+- Ensure sufficient color contrast for all elements (text, borders).
+- Communicate errors clearly, using both visual cues (e.g., color) and
+  descriptive error messages.
+- Clearly indicate the focused state.
+
+### Resources
+
+- [Adobe Spectrum TextArea](https://www.google.com/search?q=https://spectrum.adobe.com/components/textarea/)
+- [React Spectrum TextArea](https://react-spectrum.adobe.com/react-spectrum/TextArea.html)

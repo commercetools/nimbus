@@ -1,0 +1,36 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Text as="h2" fontSize="600" fontWeight="700">Header text</Text>
+    <Text>Body text</Text>
+    <Text textTransform="uppercase" letterSpacing="1px" fontSize="350">CAPTIONS</Text>
+  </Stack>
+)
+```
+
+### Accessibility standards
+
+- **Contrast:** The explicit rule of using color step 11 for colored text
+  ensures that colored text meets or exceeds minimum WCAG contrast ratios
+  against light backgrounds.
+- **Semantic HTML:** Ensure that text styles map correctly to semantic HTML tags
+  (e.g., Headlines should use `<h1>` through `<h6>`).
+- **Truncation:** For long body copy or component-specific labels, define clear
+  rules for truncation (using ellipses) and ensure a tooltip reveals the full
+  text on hover/focus.
+- **Avoid overlap:** Never overlap text elements or place complex colored
+  backgrounds behind text, as this voids the consistent contrast guaranteed by
+  the defined color scale.
+- **Scale usage:** Only use component-specific styles (e.g., button md) for
+  their intended purpose; do not use them to style arbitrary body text.

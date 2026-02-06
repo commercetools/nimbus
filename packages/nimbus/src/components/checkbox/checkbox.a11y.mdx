@@ -1,0 +1,40 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => <Checkbox>Test me</Checkbox>
+```
+
+### Accessibility standards
+
+- **Info and relationships:** Programmatically determine or provide information
+  and relationships conveyed through presentation in text. Use the `<label>`
+  element and the `for` attribute to associate every checkbox with a clear,
+  descriptive label. Ensure screen readers can access and interpret the checkbox
+  label.
+- **Group related checkboxes:** Group related checkboxes using `<fieldset>` and
+  `<legend>` to provide context. Label the checkbox group using `<legend>`.
+- **Use of color:** Avoid relying solely on color to convey information or
+  checkbox state. Ensure the checked/unchecked state is programmatically
+  determinable and conveyed through visual appearance (e.g., the checkbox's
+  state).
+- **Keyboard accessibility:** Make all checkbox functionality operable through a
+  keyboard interface. Enable users to navigate to the checkbox using the Tab
+  key. Allow users to change the checkbox state using the Spacebar or Enter key.
+- **Clear purpose:** Make the purpose of the checkbox clear from the surrounding
+  context or its label. Avoid generic labels like "Option" or "Select." Provide
+  specific and descriptive labels.
+- **Focus visible:** Provide a visible keyboard focus indicator for checkboxes.
+  Visually indicate when a checkbox has focus (e.g., highlight, outline, change
+  in appearance). Avoid relying solely on color change for focus indication.
+- **Labels or instructions:** Provide clear labels or instructions for
+  checkboxes. Reinforce the information provided by the `<label>` element. Aid
+  users with cognitive disabilities by providing clear instructions.

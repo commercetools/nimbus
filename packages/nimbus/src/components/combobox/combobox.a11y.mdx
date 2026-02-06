@@ -1,0 +1,57 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => {
+  const options = [
+    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
+    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
+    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
+    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
+  ];
+
+  return (
+    <ComboBox.Root size="md" items={options} placeholder="Search...">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id} textValue={item.name}>
+              <Stack gap="100">
+                <Text textStyle="sm">{item.name}</Text>
+                <Text textStyle="xs" color="neutral.11">{item.description}</Text>
+              </Stack>
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  )
+}
+```
+
+### Accessibility standards
+
+- Always provide a visible label for the input.
+- If a visible label is not used, provide an `aria-label` or `aria-labelledby`
+  for screen readers.
+- Ensure proper ARIA roles (`combobox`, `listbox`, `option`) and attributes
+  (`aria-expanded`, `aria-autocomplete`, `aria-activedescendant`) are used.
+- Ensure sufficient color contrast for all elements (text, borders, icons).
+- Communicate errors clearly, using both visual cues (e.g., color) and
+  descriptive error messages.
+- Clearly indicate the focused and selected states.
+
+### Resources
+
+- [Adobe Spectrum ComboBox](https://spectrum.adobe.com/page/combo-box/)
+- [React Spectrum ComboBox](https://react-spectrum.adobe.com/react-spectrum/ComboBox.html)
+- [W3C ARIA Authoring Practices Guide (APG) - Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)

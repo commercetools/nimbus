@@ -1,7 +1,7 @@
 ---
 title: Spacer
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
@@ -10,17 +10,22 @@ Use this component strategically to create flexible layouts.
 
 ### Best practices
 
-- **Use in Flex Containers**: Spacer only works within flex or grid layouts (Stack, HStack, VStack, etc.)
-- **Semantic HTML**: Spacer renders a `<div>` element, so use it appropriately in your document structure
-- **Multiple Spacers**: When using multiple spacers, they will divide the available space equally
-- **Custom Styling**: You can pass any Box props to customize appearance when needed
+- **Use in Flex Containers**: Spacer only works within flex or grid layouts
+  (Stack, HStack, VStack, etc.)
+- **Semantic HTML**: Spacer renders a `<div>` element, so use it appropriately
+  in your document structure
+- **Multiple Spacers**: When using multiple spacers, they will divide the
+  available space equally
+- **Custom Styling**: You can pass any Box props to customize appearance when
+  needed
 
 ### When to use
 
 > [!TIP]\
 > When to use
 
-- **Navigation Bars**: Separate logo from menu items or push actions to the right
+- **Navigation Bars**: Separate logo from menu items or push actions to the
+  right
 - **Toolbars**: Group related tools with flexible spacing between groups
 - **Card Footers**: Push action buttons to opposite ends
 - **Forms**: Create space between form sections or buttons
@@ -29,7 +34,9 @@ Use this component strategically to create flexible layouts.
 > [!CAUTION]\
 > When not to use
 
-- **Fixed Spacing**: Use Stack's `gap` prop or Box's `margin` for consistent, fixed spacing
+- **Fixed Spacing**: Use Stack's `gap` prop or Box's `margin` for consistent,
+  fixed spacing
 - **Non-Flex Layouts**: Spacer requires a flex or grid parent to work
 - **Complex Grids**: Use CSS Grid for two-dimensional layouts instead
-- **Content Spacing**: Don't use for spacing within text content - use typography components
+- **Content Spacing**: Don't use for spacing within text content - use
+  typography components

@@ -13,7 +13,6 @@ tags:
   - component
   - date
   - calendar
-
 ---
 
 # Date input
@@ -22,7 +21,9 @@ A date input component allows users to enter a specific date.
 
 ## Overview
 
-The date input field uses a conventional date format, such as mm/dd/yyyy, which is localized based on the user's region. Users can type a date directly into the field. The component automatically formats the input as the user types.
+The date input field uses a conventional date format, such as mm/dd/yyyy, which
+is localized based on the user's region. Users can type a date directly into the
+field. The component automatically formats the input as the user types.
 
 ### Resources
 
@@ -31,12 +32,12 @@ Deep dive into implementation details and access the Nimbus design library.
 [Figma Link](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY?node-id=5818-15933#1436729216)
 [Storybook Link](https://nimbus-storybook.vercel.app/?path=/docs/components-date-dateinput--docs)
 
-
 ## Variables
 
 Get familiar with the features.
 
 ### Visual options
+
 **Medium**
 
 ```jsx-live
@@ -48,24 +49,3 @@ const App = () => <DateInput aria-label="Enter a date"/>
 ```jsx-live
 const App = () => <DateInput size="sm" aria-label="Enter a date"/>
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <DateInput aria-label="Enter a date" />
-);
-```
-
-### Accessibility standards
-- Ensure the input field has a clear, descriptive label that is programmatically associated with the input element.
-- The component should be fully operable using a keyboard. 
-- The focus order must be logical and predictable.
-- The component should be compatible with screen readers, announcing its purpose, state, and any validation errors.
-- Error messages should be clearly linked to the input field they refer to and be announced by screen readers.
-- Maintain sufficient color contrast for text and other visual elements to ensure readability.
-- The input field and any interactive elements should have large enough touch targets for mobile users.
-- The date format should align with the user's regional settings and be easily understandable.
-- Use appropriate autocomplete attributes, such as birthday, to assist users and improve form-filling.

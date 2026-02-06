@@ -1,0 +1,76 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} colorPalette="primary">
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <ToggleButtonGroup.Button id="li-processing">
+        <Icons.RotateRight /> Processing
+      </ToggleButtonGroup.Button>
+      <Tooltip.Content>Processing Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <ToggleButtonGroup.Button id="li-shipped">
+        <Icons.LocalShipping /> Shipped
+      </ToggleButtonGroup.Button>
+      <Tooltip.Content>Shipped Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <ToggleButtonGroup.Button id="li-cancelled">
+        <Icons.Dangerous /> Cancelled
+      </ToggleButtonGroup.Button>
+      <Tooltip.Content>Cancelled Status</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <ToggleButtonGroup.Button id="li-refunded">
+        <Icons.CurrencyExchange /> Refunded
+      </ToggleButtonGroup.Button>
+      <Tooltip.Content>Refunded Status</Tooltip.Content>
+    </Tooltip.Root>
+  </ToggleButtonGroup.Root>
+);
+```
+
+### Accessibility standards
+
+- **Provide text alternatives for non-text content:** Provide text alternatives
+  for any non-text content (e.g., icons within buttons) via `aria-label` on the
+  button or surrounding `Tooltip`. Ensure icons have sufficient visual clarity.
+- **Don't rely on color alone:** Avoid relying solely on color to indicate the
+  selected state. Default styles typically use background color and potentially
+  borders or font weight changes.
+- **Ensure sufficient contrast:** Ensure sufficient color contrast between
+  button text/icons and their background, in both selected and unselected
+  states. Ensure sufficient contrast between adjacent buttons.
+- **Keyboard navigation:** Make the entire group focusable using the Tab key.
+  Allow navigation between buttons within the group using arrow keys (Left/Right
+  or Up/Down depending on orientation). Allow selection using the Enter or Space
+  key.
+- **Clear button labels:** Button labels (text or `aria-label` for icons) should
+  clearly describe the action or choice.
+- **Focus visible:** Provide a clear and visible focus indicator for the
+  currently focused button within the group.
+- **No unexpected focus changes:** Ensure that moving focus between buttons does
+  not trigger unexpected actions.
+- **Provide group label:** Provide a clear `aria-label` for the
+  `ToggleButtonGroup.Root` element to describe the purpose of the group to
+  assistive technologies.
+- **Use appropriate ARIA roles:** Use appropriate ARIA roles (e.g., `radiogroup`
+  for single selection, `group` for multiple selection, `radio` or `checkbox`
+  for items depending on mode) to ensure compatibility with assistive
+  technologies. Nimbus components built on React Aria generally handle this
+  automatically.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)
+- [W3C ARIA Authoring Practices Guide (APG) - Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)

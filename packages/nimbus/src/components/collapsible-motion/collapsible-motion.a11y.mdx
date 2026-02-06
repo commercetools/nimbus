@@ -1,0 +1,43 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <CollapsibleMotion.Root defaultExpanded={false}>
+    <CollapsibleMotion.Trigger asChild>
+      <Button>Toggle Content</Button>
+    </CollapsibleMotion.Trigger>
+    <CollapsibleMotion.Content>
+      <Box p="400" bg="neutral.2" borderRadius="200">
+        <Text>This content expands and collapses</Text>
+      </Box>
+    </CollapsibleMotion.Content>
+  </CollapsibleMotion.Root>
+)
+```
+
+### Accessibility standards
+
+- **Clear trigger elements:** Always provide clear, descriptive trigger buttons
+  or elements that indicate their purpose.
+- **Semantic HTML structure:** Use semantic HTML within collapsible content to
+  ensure proper document structure.
+- **Clear focus indicators:** Ensure trigger elements have clear, visible focus
+  indicators for keyboard navigation.
+- **State communication:** Use appropriate ARIA attributes to communicate the
+  expanded/collapsed state to screen readers.
+- **Animation considerations:** Animations respect `prefers-reduced-motion` user
+  preferences for users with vestibular disorders.
+
+### Resources
+
+- [React ARIA Disclosure Docs](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)
+- [ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)

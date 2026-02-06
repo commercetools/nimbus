@@ -16,11 +16,17 @@ tags:
 
 # Combo box input
 
-A combobox is an input that combines a text field with a pop-up list of options. It allows users to select a value from a predefined list or enter their own custom value.
+A combobox is an input that combines a text field with a pop-up list of options.
+It allows users to select a value from a predefined list or enter their own
+custom value.
 
 ## Overview
 
-The combobox component provides both selection and text input capabilities. It displays a list of options that users can choose from, while also allowing them to type directly into the text field. This functionality improves user experience by assisting with value selection and, in some cases, prevents invalid entries.
+The combobox component provides both selection and text input capabilities. It
+displays a list of options that users can choose from, while also allowing them
+to type directly into the text field. This functionality improves user
+experience by assisting with value selection and, in some cases, prevents
+invalid entries.
 
 ### Key features
 
@@ -44,7 +50,9 @@ Get familiar with the features.
 ### Visual options
 
 #### Size
-The medium size of the combobox is default, the small sizes are meant for more compact uses.
+
+The medium size of the combobox is default, the small sizes are meant for more
+compact uses.
 
 ```jsx-live
 const App = () => {
@@ -72,7 +80,7 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      
+
       <ComboBox.Root size="sm" items={options} placeholder="Search...">
         <ComboBox.Trigger />
         <ComboBox.Popover>
@@ -94,6 +102,7 @@ const App = () => {
 ```
 
 #### Appearances
+
 Combobox supports solid and ghost styles.
 
 ```jsx-live
@@ -122,7 +131,7 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      
+
       <ComboBox.Root variant="ghost" items={options} placeholder="Search...">
         <ComboBox.Trigger />
         <ComboBox.Popover>
@@ -144,6 +153,7 @@ const App = () => {
 ```
 
 #### Selection types
+
 Single and multi-select is supported by comboboxes.
 
 ```jsx-live
@@ -199,9 +209,13 @@ const App = () => {
 
 ### Async Loading
 
-ComboBox supports async data loading by managing the async state externally using React Stately's `useAsyncList` hook. This pattern gives you full control over data fetching and works seamlessly with ComboBox's filtering and selection features.
+ComboBox supports async data loading by managing the async state externally
+using React Stately's `useAsyncList` hook. This pattern gives you full control
+over data fetching and works seamlessly with ComboBox's filtering and selection
+features.
 
 **Use cases:**
+
 - Loading large datasets on demand
 - Providing search suggestions from a server
 - Fetching filtered results based on user input
@@ -291,71 +305,3 @@ const App = () => {
   );
 };
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => {
-  const options = [
-    { id: "seasonal", name: "Seasonal", description: "Grower's choice" },
-    { id: "greens", name: "Greens", description: "Leafy and nutritious" },
-    { id: "fruit", name: "Fruit", description: "Sweet and tart" },
-    { id: "root-vegetables", name: "Root Vegetables", description: "Firm and hearty" }
-  ];
-
-  return (
-    <ComboBox.Root 
-      selectionMode="multiple"
-      items={options} 
-      placeholder="Search..."
-      aria-label="Food category selection"
-      isRequired
-    >
-      <ComboBox.Trigger />
-      <ComboBox.Popover>
-        <ComboBox.ListBox>
-          {(item) => (
-            <ComboBox.Option id={item.id} textValue={item.name}>
-              <Stack gap="100">
-                <Text textStyle="sm">{item.name}</Text>
-                <Text textStyle="xs" color="neutral.11">{item.description}</Text>
-              </Stack>
-            </ComboBox.Option>
-          )}
-        </ComboBox.ListBox>
-      </ComboBox.Popover>
-    </ComboBox.Root>
-  )
-}
-```
-
-## Accessibility
-
-This component is built with React Aria and follows WCAG 2.1 AA guidelines.
-
-### Screen reader support
-
-
-- Properly announces combobox role and state
-- Announces open/closed state of popover
-- Announces selected options
-- Announces filter results count
-- Announces loading state
-- Provides descriptive labels for all interactive elements
-
-### Accessibility standards
-
-- Always provide a visible label for the input.
-- If a visible label is not used, provide an `aria-label` or `aria-labelledby` for screen readers.
-- Ensure proper ARIA roles (`combobox`, `listbox`, `option`) and attributes (`aria-expanded`, `aria-autocomplete`, `aria-activedescendant`) are used.
-- Ensure sufficient color contrast for all elements (text, borders, icons).
-- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
-- Clearly indicate the focused and selected states.
-
-### Resources
-
-- [Adobe Spectrum ComboBox](https://spectrum.adobe.com/page/combo-box/)
-- [React Spectrum ComboBox](https://react-spectrum.adobe.com/react-spectrum/ComboBox.html)
-- [W3C ARIA Authoring Practices Guide (APG) - Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)

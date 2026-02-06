@@ -13,17 +13,18 @@ menu:
 tags:
   - list
   - collections
-
 ---
 
 # List
 
-The list component organizes related items or data into a vertical, scannable format.
+The list component organizes related items or data into a vertical, scannable
+format.
 
 ## Overview
 
-The list component presents structured content which can include details such as text, icons, and actions, in a vertical arrangement. With improved readability letting readers quickly scan the content and compare relevant details. 
-
+The list component presents structured content which can include details such as
+text, icons, and actions, in a vertical arrangement. With improved readability
+letting readers quickly scan the content and compare relevant details.
 
 ### Resources
 
@@ -32,7 +33,6 @@ Deep dive into implementation details and access the Nimbus design library.
 [W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)
 [Chakra UI: List](https://chakra-ui.com/docs/components/list)
 
-
 ## Variables
 
 Get familiar with the features.
@@ -40,8 +40,10 @@ Get familiar with the features.
 ### Basic options
 
 #### Vertical lists
-Vertical lists can function differently based on need. Using bullet points, numbered lists, and icons or emojis will help users understand the information differently as needed.
 
+Vertical lists can function differently based on need. Using bullet points,
+numbered lists, and icons or emojis will help users understand the information
+differently as needed.
 
 ```jsx-live
 const App = () => (
@@ -104,7 +106,8 @@ const App = () => (
 
 #### Alignment
 
-List items are aligned to the left, center and the right. Choose what suits the information to be shown based on language and data.
+List items are aligned to the left, center and the right. Choose what suits the
+information to be shown based on language and data.
 
 ```jsx-live
 const App = () => (
@@ -143,9 +146,12 @@ const App = () => (
 )
 ```
 
-
 #### Nested items, added gap space, and item wrapping
-When nesting related items, maintain proper spacing and wrapping to keep the structure intact. Avoid long lines of text; if necessary, rephrase to make it shorter or use body text instead of bullet points, which should be reserved for concise information.
+
+When nesting related items, maintain proper spacing and wrapping to keep the
+structure intact. Avoid long lines of text; if necessary, rephrase to make it
+shorter or use body text instead of bullet points, which should be reserved for
+concise information.
 
 ```jsx-live
 const App = () => (
@@ -207,36 +213,3 @@ const App = () => (
   </Stack>
 )
 ```
-
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <List.Root>
-    <List.Item>
-      Password requirements:
-      <List.Root pl="400">
-        <List.Item>8 characters and 3 numbers</List.Item>
-        <List.Item>One special character (!@#$%^&*)</List.Item>
-      </List.Root>
-    </List.Item>
-    <List.Item>
-      Name and email requirements
-      <List.Root pl="400">
-        <List.Item>Validation process</List.Item>
-      </List.Root>
-    </List.Item>
-  </List.Root>
-)
-```
-
-### Accessibility standards
-
-- **Keyboard navigation:** Ensure all interactive list items are navigable using the Tab key and fully operable using the Enter or Spacebar keys.
-- **ARIA roles:** Use semantic HTML (`<ul>`, `<ol>`) when possible. For custom interactive lists, use appropriate ARIA roles (e.g., `role="listbox"`, `role="option"`) to define the component's structure.
-- **Focus indicators:** Provide a strong, clear visual focus indicator on the entire list item when it is being accessed via the keyboard.
-- **Text alternatives:** Ensure any icons or custom elements within the list item have appropriate aria-label or descriptive text.
-- **Reading order:** The programmatic reading order must logically match the visual vertical order.

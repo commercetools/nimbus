@@ -1,0 +1,62 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Drawer.Root>
+    <Drawer.Trigger>
+      <Button>Open drawer</Button>
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Drawer Title</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+          This is a basic drawer with default settings. It includes a backdrop overlay
+          (enabled by default), title, and close button for a complete experience.
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button>Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
+### Accessibility standards
+
+- **Role identification:** Drawer has `dialog` role with proper labeling.
+- **Focus management:** Focus moves to drawer on open and returns to trigger on
+  close.
+- **Focus containment:** Tab navigation stays within drawer boundaries.
+- **Accessible names:** Title and description properly associate with drawer.
+- **State announcements:** Screen readers announce when drawer opens/closes.
+- **Info and relationships:** Proper semantic structure with header, body, and
+  footer.
+- **Contrast:** All text meets minimum contrast requirements.
+- **Non-text contrast:** Focus indicators and UI components meet contrast
+  standards.
+- **Keyboard navigation:** Full keyboard navigation support.
+- **No keyboard trap:** Focus contained but escapable via Escape key.
+- **Focus order:** Logical focus progression through drawer elements.
+- **Focus visible:** Clear focus indicators on all interactive elements.
+- **On focus:** No unexpected context changes when focusing elements.
+- **On input:** Predictable behavior for all user interactions.
+- **Labels or instructions:** Clear labeling and instructions where needed.
+- **Name, role, value:** Proper semantic markup and ARIA attributes.
+- **Status messages:** Appropriate announcements for state changes.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

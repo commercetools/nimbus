@@ -20,11 +20,14 @@ figmaLink: >-
 
 # Tabs
 
-Organizes content into distinct sections, enabling users to switch views within a single container.
+Organizes content into distinct sections, enabling users to switch views within
+a single container.
 
 ## Overview
 
-Tabs are a navigational component used to organize and switch between different sections of content within the same contextual view, allowing users to access multiple related pages or views without navigating away from the main screen.
+Tabs are a navigational component used to organize and switch between different
+sections of content within the same contextual view, allowing users to access
+multiple related pages or views without navigating away from the main screen.
 
 ### Resources
 
@@ -39,11 +42,14 @@ Get familiar with the features.
 
 ### Direction for tabs
 
-Tabs can be oriented horizontally or vertically to suit different layout requirements.
+Tabs can be oriented horizontally or vertically to suit different layout
+requirements.
 
 #### Horizontal tabs
 
-Organize and display distinct, related sections of content immediately beneath a common navigation bar or header, serving primarily to group content contextually while conserving vertical screen space.
+Organize and display distinct, related sections of content immediately beneath a
+common navigation bar or header, serving primarily to group content contextually
+while conserving vertical screen space.
 
 ```jsx-live
 const App = () => (
@@ -107,7 +113,8 @@ const App = () => (
 
 #### Vertical tabs
 
-Maximize horizontal reading space and accommodate a larger number of consistently visible options than traditional horizontal tabs allow.
+Maximize horizontal reading space and accommodate a larger number of
+consistently visible options than traditional horizontal tabs allow.
 
 ```jsx-live
 const App = () => (
@@ -174,55 +181,3 @@ const App = () => (
   </Stack>
 )
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <Tabs.Root defaultSelectedKey="history">
-    <Tabs.List>
-      <Tabs.Tab id="general">General info</Tabs.Tab>
-      <Tabs.Tab id="history">History</Tabs.Tab>
-      <Tabs.Tab id="subscription">Subscription</Tabs.Tab>
-      <Tabs.Tab id="downloads">Downloads</Tabs.Tab>
-    </Tabs.List>
-    <Tabs.Panels pt="400">
-      <Tabs.Panel id="general">
-        <Stack direction="column" gap="200">
-          <Text>Name: Jon Doe</Text>
-          <Text>Email: Jon.Doe@domain.com</Text>
-        </Stack>
-      </Tabs.Panel>
-      <Tabs.Panel id="history">
-        <List.Root>
-          <List.Item>03.15.25 - Jon Doe created an account.</List.Item>
-          <List.Item>04.03.25 - Jon Doe updated profile information.</List.Item>
-          <List.Item>06.06.25 - Jon Doe made their first purchase.</List.Item>
-        </List.Root>
-      </Tabs.Panel>
-      <Tabs.Panel id="subscription">
-        <Stack direction="column" gap="200">
-          <Text>Current subscription: Coffee delivery subscription $15/mo</Text>
-        </Stack>
-      </Tabs.Panel>
-      <Tabs.Panel id="downloads">
-        <Stack direction="column" gap="200">
-          <Text>No downloads available</Text>
-        </Stack>
-      </Tabs.Panel>
-    </Tabs.Panels>
-  </Tabs.Root>
-)
-```
-
-### Accessibility standards
-
-- **Keyboard navigation:** The Tab key should move focus to the entire tab list. The Left/Right Arrow keys must be used to navigate between tabs once the tab list is focused. Enter or Space selects the focused tab.
-- **ARIA roles and states:**
-  - The container must use `role="tablist"`.
-  - Individual tabs must use `role="tab"` and `aria-selected="true/false"`.
-  - The content area must use `role="tabpanel"` and be linked to its respective tab via `aria-labelledby`.
-- **Focus management:** Ensure that when a tab is activated, focus moves logically to the associated tab panel or the first interactive element within it.
-- **Contrast:** The contrast ratio between the active tab text and its background must be high, and the focus indicator must be easily visible.

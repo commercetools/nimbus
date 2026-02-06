@@ -16,11 +16,13 @@ tags:
 
 # Radio input
 
-A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
+A set of closely related, mutually exclusive or complementary actions that are
+important enough to be displayed directly in the interface for quick access.
 
 ## Overview
 
-Radio inputs ensure users can easily select one option from a small, visible set of mutually exclusive choices with clear labels and visual feedback.
+Radio inputs ensure users can easily select one option from a small, visible set
+of mutually exclusive choices with clear labels and visual feedback.
 
 ### Resources
 
@@ -77,53 +79,3 @@ const App = () => (
   </RadioInput.Root>
 )
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <RadioInput.Root 
-    orientation="horizontal"
-    name="accessibility-example"
-    id="accessibility-example-group"
-    aria-label="Select an option"
-    isRequired={true}
-  >
-    <RadioInput.Option 
-      value="option1"
-      id="option1"
-      aria-label="Select me option"
-    >
-      Select me
-    </RadioInput.Option>
-    <RadioInput.Option 
-      value="option2"
-      id="option2"
-      aria-label="Select me instead option"
-    >
-      Select me instead
-    </RadioInput.Option>
-  </RadioInput.Root>
-)
-```
-
-#### Accessibility standards
-
-- Always provide a visible label for the radio input.
-- Clearly associate the label with the input using the `for` attribute on the `<label>` and a matching `id` on the `<input type="radio">`.
-- Group related radio inputs within a `<fieldset>` with a `<legend>` to provide a clear group label for screen readers.
-- Ensure sufficient color contrast for all elements (text, borders, icons, focus indicators).
-- Clearly indicate the focused state.
-- Support keyboard navigation:
-  - Use Tab to navigate into and out of the radio group.
-  - Use arrow keys (left/right or up/down) to navigate between radio inputs within the group.
-- Selected state should be clearly indicated.
-- Communicate errors clearly, using both visual cues (e.g., color) and descriptive error messages.
-
-### Resources
-
-- [Adobe Spectrum Design System](https://spectrum.adobe.com/)
-- [React Spectrum](https://react-spectrum.adobe.com/)
-- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) (Search for "Radio Button" pattern)

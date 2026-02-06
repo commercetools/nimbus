@@ -18,11 +18,15 @@ figmaLink: >-
 
 # Tag group
 
-A tag group is a compact, interactive element. It categorizes, labels, or adds attributes to objects for quick recognition and filtering.
+A tag group is a compact, interactive element. It categorizes, labels, or adds
+attributes to objects for quick recognition and filtering.
 
 ## Overview
 
-The tag group organizes a collection of individual tag components, allowing users to efficiently scan and understand multiple pieces of metadata or filter criteria associated with a product, order, or entity in a compact, manageable space.
+The tag group organizes a collection of individual tag components, allowing
+users to efficiently scan and understand multiple pieces of metadata or filter
+criteria associated with a product, order, or entity in a compact, manageable
+space.
 
 ### Resources
 
@@ -35,14 +39,13 @@ Deep dive into implementation details and access the Nimbus design library.
 
 Get familiar with the features.
 
-
 ### Visual options
-
 
 #### Size
 
-The large size of the tag within tag groups is the default, the small size is meant for more compact uses. The more tags present, consider smaller sizes to make the information more compact and easily read for the user.
-
+The large size of the tag within tag groups is the default, the small size is
+meant for more compact uses. The more tags present, consider smaller sizes to
+make the information more compact and easily read for the user.
 
 ```jsx-live
 const App = () => {
@@ -59,7 +62,7 @@ const App = () => {
             {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
           </TagGroup.TagList>
         </TagGroup.Root>
-      </Box>      
+      </Box>
       <Box>
         <Text as="p" textStyle="sm" fontWeight="bold" marginBottom="200">Medium</Text>
         <TagGroup.Root size="md" aria-label="Medium tags" onRemove={() => {}}>
@@ -83,7 +86,9 @@ const App = () => {
 
 ### Toggle buttons vs clearable tag groups
 
-Allow users to toggle the active state of a tag, or be able to remove tags by adding a "close" icon to each tag. Avoid mixing these interactions within the same group. 
+Allow users to toggle the active state of a tag, or be able to remove tags by
+adding a "close" icon to each tag. Avoid mixing these interactions within the
+same group.
 
 ```jsx-live
 const App = () => {
@@ -129,32 +134,3 @@ const App = () => {
   );
 }
 ```
-
-
-## Accessibility
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-
-```jsx-live
-const App = () => {
-  const vegetableOptions = [
-  { id: "tomato", name: "Tomato" },
-  { id: "zucchini", name: "Zucchini" },
-  { id: "peppers", name: "Peppers" },
-  ];
-
-  return (
-    <TagGroup.Root onRemove={() => {}}>
-      <TagGroup.TagList items={vegetableOptions}>
-        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-      </TagGroup.TagList>
-    </TagGroup.Root>
-  );
-}
-```
-
-### Accessibility standards
-- **Keyboard focus:** Ensure the user can navigate to and between individual tags (if interactive/removable) using the Tab key.
-- **ARIA labels for removal:** For removable tags, the close button/icon must have a clear `aria-label` (e.g., "Remove filter: [Tag Label]") to inform screen readers exactly what is being dismissed.
-- **Contrast:** Verify that the text contrast ratio against the tag's background color meets WCAG AA standards (4.5:1).
-- **Logical reading order:** The order in which the tags are read by a screen reader must logically align with the visual order.

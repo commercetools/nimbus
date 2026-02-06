@@ -21,11 +21,15 @@ figmaLink: >-
 
 # Money input
 
-A controlled input for money values that combines currency selection with amount input, supporting both standard and high-precision monetary values.
+A controlled input for money values that combines currency selection with amount
+input, supporting both standard and high-precision monetary values.
 
 ## Overview
 
-The money input component combines a currency selector (a dropdown menu) and a numerical input field into a single, cohesive unit, offering robust states like default, invalid, and disabled, alongside specialized handling for focused and hovered interactions.
+The money input component combines a currency selector (a dropdown menu) and a
+numerical input field into a single, cohesive unit, offering robust states like
+default, invalid, and disabled, alongside specialized handling for focused and
+hovered interactions.
 
 ### Resources
 
@@ -42,7 +46,9 @@ Get familiar with the features.
 
 #### Multi-part functions
 
-In each localized money input, there is a dropdown to select the correct currency, a field that lets a user type in directly, and a stepper to allow for incremental numerical changes to the price shown within.
+In each localized money input, there is a dropdown to select the correct
+currency, a field that lets a user type in directly, and a stepper to allow for
+incremental numerical changes to the price shown within.
 
 ```jsx-live
 const App = () => {
@@ -63,7 +69,8 @@ const App = () => {
 
 #### High-precision pricing
 
-This mode is essential for maintaining financial accuracy in large-scale or complex commercial systems.
+This mode is essential for maintaining financial accuracy in large-scale or
+complex commercial systems.
 
 ```jsx-live
 const App = () => {
@@ -128,32 +135,3 @@ const App = () => {
   );
 }
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => {
-  const [value, setValue] = React.useState({
-    amount: "20.00",
-    currencyCode: "EUR"
-  });
-
-  return (
-    <MoneyInput
-      value={value}
-      onValueChange={setValue}
-      currencies={["EUR", "USD", "GBP"]}
-    />
-  );
-}
-```
-
-### Accessibility standards
-
-- **Keyboard operability:** Ensure the user can navigate seamlessly between the currency selector and the number input using the tab key.
-- **ARIA roles:** The currency selector should function as an accessible dropdown/select menu, while the number input should use the appropriate number input type.
-- **Error communication:** Validation errors must be announced to screen readers. The invalid state should use `aria-invalid="true"` on the input field and link to the error message via `aria-describedby`.
-- **Contrast:** Ensure sufficient color contrast for all text, borders, and icons, especially in the `invalid` and `disabled` states.
-- **Focus indication:** Maintain a strong, clear focus ring around both the currency menu and the number input when active.

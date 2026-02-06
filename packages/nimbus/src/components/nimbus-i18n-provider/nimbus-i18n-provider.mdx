@@ -3,7 +3,8 @@ id: Components-NimbusI18nProvider
 title: Nimbus i18n provider
 exportName: NimbusI18nProvider
 description:
-  Provides internationalization context for React Aria components (dates, numbers, etc.)
+  Provides internationalization context for React Aria components (dates,
+  numbers, etc.)
 lifecycleState: Stable
 order: 999
 menu:
@@ -20,19 +21,28 @@ tags:
 
 # Nimbus i18n provider
 
-The NimbusI18nProvider component provides internationalization (i18n) context for React Aria components in your Nimbus application. It controls how dates, numbers, and other locale-specific content is formatted across all React Aria-based components.
+The NimbusI18nProvider component provides internationalization (i18n) context
+for React Aria components in your Nimbus application. It controls how dates,
+numbers, and other locale-specific content is formatted across all React
+Aria-based components.
 
 ## Overview
 
-NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider, making it easy to set the locale for all React Aria components like DatePicker, Calendar, and NumberInput. This ensures consistent formatting across your application.
+NimbusI18nProvider is a proxy component that wraps React Aria's I18nProvider,
+making it easy to set the locale for all React Aria components like DatePicker,
+Calendar, and NumberInput. This ensures consistent formatting across your
+application.
 
 ### Key features
 
-- **Locale-aware formatting**: Controls date, number, and currency formatting based on locale
+- **Locale-aware formatting**: Controls date, number, and currency formatting
+  based on locale
 - **React Aria integration**: Built specifically for React Aria components
-- **BCP47 locale codes**: Supports standard language-region codes (e.g., 'en-US', 'de-DE')
+- **BCP47 locale codes**: Supports standard language-region codes (e.g.,
+  'en-US', 'de-DE')
 - **Type-safe**: Full TypeScript support
-- **Automatic propagation**: Locale settings cascade to all child React Aria components
+- **Automatic propagation**: Locale settings cascade to all child React Aria
+  components
 
 ### Resources
 
@@ -44,7 +54,8 @@ Get familiar with the features.
 
 ### Basic usage
 
-Wrap your application with NimbusI18nProvider to set the locale for React Aria components:
+Wrap your application with NimbusI18nProvider to set the locale for React Aria
+components:
 
 ```jsx-live
 const App = () => (
@@ -110,7 +121,8 @@ const App = () => {
 
 ### Multiple providers
 
-You can nest NimbusI18nProviders to use different locales in different parts of your app:
+You can nest NimbusI18nProviders to use different locales in different parts of
+your app:
 
 ```jsx-live
 const App = () => (
@@ -138,33 +150,3 @@ const App = () => (
   </Stack>
 );
 ```
-
-## Accessibility
-
-This component ensures locale-appropriate formatting for screen reader users.
-
-### Locale codes
-
-Accepts any valid BCP47 language tag, including but not limited to:
-
-- `en-US` - English (United States)
-- `en-GB` - English (United Kingdom)
-- `de-DE` - German (Germany)
-- `es-ES` - Spanish (Spain)
-- `fr-FR` - French (France)
-- `ja-JP` - Japanese (Japan)
-- `zh-CN` - Chinese (Simplified, China)
-- `pt-BR` - Portuguese (Brazil)
-
-### Screen reader support
-
-
-- Dates and numbers are announced in locale-appropriate formats
-- Screen readers use the specified locale for pronunciation
-- Ensures ARIA labels reflect locale conventions
-
-### Best practices
-
-- Always provide a valid BCP47 locale code
-- Use region-specific codes when formatting differs (e.g., date order, decimal separators)
-- Test with actual screen readers to verify proper pronunciation

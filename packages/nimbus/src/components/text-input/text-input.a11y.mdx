@@ -1,0 +1,46 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+The component uses onPress\* props to handle all user interactions—mouse clicks,
+touch taps, and keyboard presses—consistently. These props (onPress,
+onPressStart, onPressEnd, etc.) ensure a smooth and accessible experience
+regardless of the user's input method or device.
+
+```jsx-live
+const App = () => <TextInput placeholder="XX/XX/XXXX" />
+```
+
+### Accessibility standards
+
+- **Info and relationships:** Use proper HTML (`<label>`, `aria-labelledby`,
+  etc.) to connect labels with their inputs. This helps assistive technologies
+  (like screen readers) understand the connection and convey the information
+  correctly.
+- **Color contrast:** Ensure sufficient color contrast between the input field,
+  its label, and the surrounding background. This makes it easier to read for
+  people with low vision. The minimum contrast ratio is 4.5:1 for normal text
+  and 3:1 for large text.
+- **Keyboard accessibility:** Text inputs must be fully operable using only a
+  keyboard (no mouse required). This includes navigating to the input,
+  interacting with it, and submitting the form.
+- **Headings and labels:** Labels should be clear, concise, and descriptive,
+  accurately reflecting the purpose of the input field.
+- **Labels or instructions:** Provide clear labels or instructions to help users
+  understand what type of information is expected in the input field.
+- **Name, role, value:** Ensure the input field's name (label), role (type of
+  input), and current value are programmatically available to assistive
+  technologies.
+- **Error messages:** When input errors occur, provide clear and specific error
+  messages that are easy to understand and locate. Use ARIA attributes
+  (`aria-invalid`, `aria-describedby`) to associate error messages with the
+  input field.
+- **Placeholder text:** While placeholder text can be helpful, it can also
+  create accessibility issues. Avoid using it as a replacement for labels, and
+  ensure sufficient color contrast if you do use it.
+- **Autocomplete:** Autocomplete can improve usability, but make sure it doesn't
+  interfere with accessibility. Users should be able to easily review and
+  override suggestions.

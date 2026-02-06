@@ -1,0 +1,56 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Tooltip triggers must be focusable and hoverable in order to ensure that all
+users can activate them. When displayed, the Tooltip automatically associates
+the tooltip with the trigger element so that it is described by the tooltip
+content.
+
+Authors should ensure that elements with the
+[role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles)
+tooltip are referenced through the use of
+[aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)
+before or at the time the tooltip is displayed.
+
+```jsx-live
+const App = () => (
+  <Stack direction="horizontal" alignItems="center" marginLeft="800" padding="800" gap="400">
+    <Tooltip.Root>
+      <Button>Hover me</Button>
+      <Tooltip.Content>This is a tooltip</Tooltip.Content>
+    </Tooltip.Root>
+  </Stack>
+)
+```
+
+### Accessibility standards
+
+- **Non-text content:** Provide a text alternative (alt text or equivalent) for
+  non-text content within tooltips.
+- **Info and relationships:** Programmatically establish the relationship
+  between a tooltip and its trigger element using ARIA attributes like
+  `aria-describedby`. Assign an id to the trigger element and point
+  `aria-describedby` to that id.
+- **Use of color:** Avoid relying solely on color to convey information within
+  tooltips.
+- **Color contrast:** Ensure tooltip text meets minimum contrast ratio
+  requirements. Use a contrast checking tool.
+- **Keyboard accessibility:** Make tooltips triggered by keyboard focus operable
+  via keyboard. Allow users to navigate to the trigger using the Tab key. Make
+  the tooltip appear on focus. Prevent tooltips from trapping keyboard focus.
+  Make interactive tooltip content keyboard accessible.
+- **Focus visible:** Provide a visible focus indicator for the tooltip trigger
+  element when it receives keyboard focus.
+- **Language of page:** Programmatically determine the tooltip content's
+  language. Use the `lang` attribute on the tooltip element.
+- **On focus:** Prevent tooltips that appear on focus from unexpectedly changing
+  the page context.
+- **Labels or instructions:** Write tooltip text that is clear, concise, and
+  easy to understand.
+- **Name, role, value:** Ensure assistive technologies correctly interpret the
+  role of the tooltip trigger element. Use semantic HTML. Use `aria-describedby`
+  to associate the tooltip with the trigger.

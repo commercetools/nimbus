@@ -1,0 +1,49 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Avatar firstName="Adam" lastName="Vadam" src="https://thispersondoesnotexist.com/ " />
+)
+```
+
+### Accessibility standards
+
+- **Non-text content:** Avatars must have a text alternative. Use the `alt`
+  attribute on the `<img>` tag (if the avatar is an image) or through `ARIA` if
+  the avatar is more complex. The alt text should describe the avatar's purpose
+  or what it represents (e.g., "User profile picture," "John Doe's avatar,"
+  "Company logo"). If the avatar is purely decorative and doesn't convey any
+  meaningful information, the alt attribute should be empty (`alt=""`).
+- **Info and relationships:** If the avatar is associated with other information
+  (e.g., a username, profile link), the relationship should be programmatically
+  determinable. This can be achieved using semantic `HTML` (e.g., placing the
+  avatar and username within a single element) or ARIA attributes (e.g.,
+  `aria-labelledby` or `aria-describedby`).
+- **Use of color:** Don't rely on color alone to convey information about the
+  avatar (e.g., using a colored border to indicate status). Any information
+  conveyed by color must also be available through other means.
+- **Color contrast:** If the avatar contains any text (which is less common),
+  that text must meet minimum contrast ratio requirements.
+- **Keyboard accessibility:** If the avatar is interactive (e.g., clicking it
+  opens a profile), it must be operable using the keyboard. Users should be able
+  to navigate to the avatar using the Tab key and activate it using the Enter or
+  Space key.
+- **Link purpose:** If the avatar is a link, its purpose should be clear from
+  the surrounding context or from the avatar's alt text. Avoid generic link text
+  like "Click here."
+- **Focus visible:** If the avatar is interactive, it should have a visible
+  focus indicator when it receives keyboard focus.
+- **On focus:** If the avatar is interactive and its appearance changes on
+  focus, the change should not be disorienting or unexpected.
+- **Name, role, value:** Assistive technologies should be able to correctly
+  interpret the role of the avatar (e.g., `image`, `link`) and its name (from
+  the alt text).

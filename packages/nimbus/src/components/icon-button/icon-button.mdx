@@ -133,8 +133,8 @@ const App = () => {
 
 #### Primary
 
-This is the default color palette for the icon button. This styling should be used most
-commonly for all actions.
+This is the default color palette for the icon button. This styling should be
+used most commonly for all actions.
 
 ```jsx-live
 const App = () => {
@@ -164,7 +164,8 @@ const App = () => {
 #### Tooltip
 
 For accessibility compliance (and good user experience for all) icon buttons
-that do not have a label must have a tooltip. Go to tooltips for more information about the component.
+that do not have a label must have a tooltip. Go to tooltips for more
+information about the component.
 
 ```jsx-live
 const App = () => {
@@ -180,66 +181,3 @@ const App = () => {
   );
 };
 ```
-
-## Accessibility
-
-The component uses `onPress*` props to handle all user interactions—mouse
-clicks, touch taps, and keyboard presses—consistently. These props (`onPress`,
-`onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience
-regardless of the user's input method or device.
-
-
-```jsx-live
-const App = () => {
-  return (
-    <IconButton colorPalette="primary" variant="solid" onPress={() => alert('Button pressed!')}>
-      <Icons.Edit />
-    </IconButton>
-  )
-}
-```
-
-### Accessibility standards
-
-#### 1. Perceivable:
-
-- **Sufficient Color Contrast:** Ensure enough contrast between the icon and its
-  background. WCAG requires a contrast ratio of at least 3:1 for graphical
-  elements and 4.5:1 for text. Tools like WebAIM's color contrast checker can
-  help you verify this.
-- **Non-text Content:** Icons are considered non-text content. WCAG requires
-  that all non-text content has a text alternative that serves the equivalent
-  purpose. This usually means providing an alternative text (alt text) for the
-  icon.
-- **Visual Cues:** Don't rely solely on color to convey information. Use
-  additional visual cues like shapes, patterns, or text labels to ensure that
-  the icon's meaning is clear to everyone, including people with color
-  blindness.
-
-#### 2. Operable:
-
-- **Keyboard Accessibility:** Icon buttons must be operable using a keyboard.
-  Users should be able to navigate to the button using the Tab key and activate
-  it using the Enter or Space key.
-- **Target Size:** Ensure that the icon button is large enough to be easily
-  clickable, especially on touchscreens. WCAG recommends a minimum target size
-  of 24x24 CSS pixels.
-- **Focus Indicator:** Provide a clear visual indicator when the icon button
-  receives keyboard focus. This helps users understand which element is
-  currently active.
-
-#### 3. Understandable:
-
-- **Clear Labels:** If the icon's meaning isn't universally understood, provide
-  a text label or tooltip to clarify its purpose. This is especially important
-  for less common icons.
-- **Consistent Design:** Use icons consistently throughout your website. This
-  helps users learn the meaning of each icon and makes it easier for them to
-  navigate your site.
-
-#### 4. Robust:
-
-- **Assistive Technology Compatibility:** Ensure that icon buttons are
-  compatible with assistive technologies like screen readers. This often
-  involves using proper HTML markup and ARIA attributes to provide semantic
-  information about the button.

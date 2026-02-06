@@ -1,7 +1,7 @@
 ---
 title: SplitButton
 tab-title: Guidelines
-tab-order: 4
+tab-order: 2
 ---
 
 ## Guidelines
@@ -12,38 +12,80 @@ comprehensive functionality.
 
 ### Best practices
 
-- **Clear primary action:** The main button segment must perform the most common or default action immediately upon being clicked. The label must be clear and action-oriented.
-  - **If there is no default action** and you still want to use a button with a dropdown menu, consider using the menu component with a regular button (with a dropdown icon) as a trigger. In this case, the dropdown menu will open always when clicking the button and no default action will be triggered. Especially useful when all actions are equally important
-- **Visual distinction:** Clearly separate the primary action button from the dropdown trigger. This visually communicates that the two segments perform different functions.
-- **Dropdown content:** Keep the list of secondary actions concise and logically ordered (by frequency or relevance).
-- **State persistence:** When a user selects a secondary action from the dropdown, consider making that action the new primary button action if the user is likely to repeat it, or if it fits the new context.
-- **Sizing and responsiveness:** Ensure both the primary button and the dropdown trigger have adequate touch target sizes. The dropdown menu should be positioned to avoid obscuring important content and should adapt well on mobile devices.
+- **Clear primary action:** The main button segment must perform the most common
+  or default action immediately upon being clicked. The label must be clear and
+  action-oriented.
+  - **If there is no default action** and you still want to use a button with a
+    dropdown menu, consider using the menu component with a regular button (with
+    a dropdown icon) as a trigger. In this case, the dropdown menu will open
+    always when clicking the button and no default action will be triggered.
+    Especially useful when all actions are equally important
+- **Visual distinction:** Clearly separate the primary action button from the
+  dropdown trigger. This visually communicates that the two segments perform
+  different functions.
+- **Dropdown content:** Keep the list of secondary actions concise and logically
+  ordered (by frequency or relevance).
+- **State persistence:** When a user selects a secondary action from the
+  dropdown, consider making that action the new primary button action if the
+  user is likely to repeat it, or if it fits the new context.
+- **Sizing and responsiveness:** Ensure both the primary button and the dropdown
+  trigger have adequate touch target sizes. The dropdown menu should be
+  positioned to avoid obscuring important content and should adapt well on
+  mobile devices.
 
 ### Usage
 
 > [!TIP]\
 > When to use
-- **Primary action focus:** Use a split button when one specific action (e.g., "Save," "Download") is performed significantly more often than its related alternatives (e.g., "Save and Share," "Download as PDF").
-- **Contextual actions:** The dropdown menu must contain actions that are directly related to the primary button's function.
-- **Space efficiency:** Use split buttons in toolbars or dense interfaces where presenting every option as a full button would lead to clutter.
+
+- **Primary action focus:** Use a split button when one specific action (e.g.,
+  "Save," "Download") is performed significantly more often than its related
+  alternatives (e.g., "Save and Share," "Download as PDF").
+- **Contextual actions:** The dropdown menu must contain actions that are
+  directly related to the primary button's function.
+- **Space efficiency:** Use split buttons in toolbars or dense interfaces where
+  presenting every option as a full button would lead to clutter.
 
 > [!CAUTION]\
 > When not to use
-- **When all actions are equally important:** Don't use a split button if all the related actions are performed with equal frequency or importance. Grouping them this way implies hierarchy where none exists, and a simple button group or vertical menu list might be clearer.
-- **When actions are unrelated:** Avoid grouping actions that have no logical connection under the same component. The primary button and all dropdown options must share a clear, single context.
-- **When the primary action changes frequently:** If the default action changes based on complex context or user state, constantly swapping the main button label can confuse the user and create visual instability. Use a standard dropdown menu where all options, including the default, are consistently located inside.
-- **When discovery is crucial:** If users must know all available options (e.g., legally required export formats), burying them in a secondary dropdown menu is a poor choice. Displaying them as separate full buttons or in an obvious button group is better.
-- **For primary navigation:** A split button is an action control, not a primary navigation tool. Using it to link to major sections can confuse users about whether they are performing an action or moving to a new page.
-- **When screen space is not an issue:** If you have ample space, displaying the top two or three most common actions as individual, labeled buttons can sometimes be faster and more transparent than hiding them in a dropdown.
-- **When the dropdown contains complex controls:** Avoid filling the dropdown with complex inputs, multi-step forms, or large amounts of text. A split button dropdown should only contain simple, single-click actions.
+
+- **When all actions are equally important:** Don't use a split button if all
+  the related actions are performed with equal frequency or importance. Grouping
+  them this way implies hierarchy where none exists, and a simple button group
+  or vertical menu list might be clearer.
+- **When actions are unrelated:** Avoid grouping actions that have no logical
+  connection under the same component. The primary button and all dropdown
+  options must share a clear, single context.
+- **When the primary action changes frequently:** If the default action changes
+  based on complex context or user state, constantly swapping the main button
+  label can confuse the user and create visual instability. Use a standard
+  dropdown menu where all options, including the default, are consistently
+  located inside.
+- **When discovery is crucial:** If users must know all available options (e.g.,
+  legally required export formats), burying them in a secondary dropdown menu is
+  a poor choice. Displaying them as separate full buttons or in an obvious
+  button group is better.
+- **For primary navigation:** A split button is an action control, not a primary
+  navigation tool. Using it to link to major sections can confuse users about
+  whether they are performing an action or moving to a new page.
+- **When screen space is not an issue:** If you have ample space, displaying the
+  top two or three most common actions as individual, labeled buttons can
+  sometimes be faster and more transparent than hiding them in a dropdown.
+- **When the dropdown contains complex controls:** Avoid filling the dropdown
+  with complex inputs, multi-step forms, or large amounts of text. A split
+  button dropdown should only contain simple, single-click actions.
 
 ### Split buttons in use
 
 > [!TIP]\
 > Do
->- Do prioritize the primary action. Ensure the main, large section performs the most common or default action immediately upon being clicked.
->- Do group related actions. Include only closely related actions in the secondary dropdown menu.
->- Do keep the dropdown menu concise. It should contain simple, single-click actions, not complex forms or long text.
+>
+> - Do prioritize the primary action. Ensure the main, large section performs
+>   the most common or default action immediately upon being clicked.
+> - Do group related actions. Include only closely related actions in the
+>   secondary dropdown menu.
+> - Do keep the dropdown menu concise. It should contain simple, single-click
+>   actions, not complex forms or long text.
 
 ```jsx-live
 const App = () => {
@@ -64,12 +106,16 @@ const App = () => {
 
 > [!CAUTION]\
 > Don't
->- Don’t add icons that don’t make sense with the action. If one uses an icon, all options should have a corresponding icon. Don’t use icons on both sides. 
->- Don't dynamically swap the primary button's function based on minor changes in the user's state.
->- Don't group actions that have different contexts or objectives.
->- Don't use a split button as a primary site navigation tool.
->- Don't hide legally required or critical options in the dropdown.
->- Don't use the dropdown to house long forms, multi-step processes, or complex configuration settings.
+>
+> - Don’t add icons that don’t make sense with the action. If one uses an icon,
+>   all options should have a corresponding icon. Don’t use icons on both sides.
+> - Don't dynamically swap the primary button's function based on minor changes
+>   in the user's state.
+> - Don't group actions that have different contexts or objectives.
+> - Don't use a split button as a primary site navigation tool.
+> - Don't hide legally required or critical options in the dropdown.
+> - Don't use the dropdown to house long forms, multi-step processes, or complex
+>   configuration settings.
 
 ```jsx-live
 const App = () => {

@@ -1,0 +1,55 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+The component uses `onPress*` props to handle all user interactions—mouse
+clicks, touch taps, and keyboard presses—consistently. These props (`onPress`,
+`onPressStart`, `onPressEnd`, etc.) ensure a smooth and accessible experience
+regardless of the user's input method or device.
+
+```jsx-live
+const App = () => {
+  return (
+    <IconButton colorPalette="primary" variant="solid" onPress={() => alert('Button pressed!')}>
+      <Icons.Edit />
+    </IconButton>
+  )
+}
+```
+
+### Accessibility standards
+
+- **Color contrast:** Ensure enough contrast between the icon and its
+  background. WCAG requires a contrast ratio of at least 3:1 for graphical
+  elements and 4.5:1 for text. Tools like WebAIM's color contrast checker can
+  help you verify this.
+- **Non-text content:** Icons are considered non-text content. WCAG requires
+  that all non-text content has a text alternative that serves the equivalent
+  purpose. This usually means providing an alternative text (alt text) for the
+  icon.
+- **Visual cues:** Don't rely solely on color to convey information. Use
+  additional visual cues like shapes, patterns, or text labels to ensure that
+  the icon's meaning is clear to everyone, including people with color
+  blindness.
+- **Keyboard accessibility:** Icon buttons must be operable using a keyboard.
+  Users should be able to navigate to the button using the Tab key and activate
+  it using the Enter or Space key.
+- **Target size:** Ensure that the icon button is large enough to be easily
+  clickable, especially on touchscreens. WCAG recommends a minimum target size
+  of 24x24 CSS pixels.
+- **Focus indicator:** Provide a clear visual indicator when the icon button
+  receives keyboard focus. This helps users understand which element is
+  currently active.
+- **Clear labels:** If the icon's meaning isn't universally understood, provide
+  a text label or tooltip to clarify its purpose. This is especially important
+  for less common icons.
+- **Consistent design:** Use icons consistently throughout your website. This
+  helps users learn the meaning of each icon and makes it easier for them to
+  navigate your site.
+- **Assistive technology compatibility:** Ensure that icon buttons are
+  compatible with assistive technologies like screen readers. This often
+  involves using proper HTML markup and ARIA attributes to provide semantic
+  information about the button.

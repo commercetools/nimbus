@@ -3,7 +3,8 @@ id: Components-SplitButton
 title: Split button
 exportName: SplitButton
 description:
-  A split button merges a main action with a dropdown for related, less common actions.
+  A split button merges a main action with a dropdown for related, less common
+  actions.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -22,11 +23,15 @@ figmaLink: >-
 
 # Split button
 
-A split button merges a main action with a dropdown for related, less common actions.
+A split button merges a main action with a dropdown for related, less common
+actions.
 
 ## Overview
 
-A split button merges a main action that is immediate with a secondary dropdown menu that holds related actions that are used less often. This component provides quick access to essential functions while offering a complete list of options, all while saving space.
+A split button merges a main action that is immediate with a secondary dropdown
+menu that holds related actions that are used less often. This component
+provides quick access to essential functions while offering a complete list of
+options, all while saving space.
 
 ### Resources
 
@@ -42,7 +47,9 @@ Get familiar with the features.
 
 #### Solid
 
-Most common styling of the split button. Try to keep only one solid primary toned button in an area for user clarity for the most important task. Too many in an area can cause confusion.
+Most common styling of the split button. Try to keep only one solid primary
+toned button in an area for user clarity for the most important task. Too many
+in an area can cause confusion.
 
 ```jsx-live
 const App = () => {
@@ -83,8 +90,9 @@ const App = () => {
 ```
 
 #### Ghost
- 
-Ghost styled buttons are helpful for UI simplification. You will find these in smaller sizes within places like toolbars.
+
+Ghost styled buttons are helpful for UI simplification. You will find these in
+smaller sizes within places like toolbars.
 
 ```jsx-live
 const App = () => {
@@ -105,7 +113,7 @@ const App = () => {
 
 ### Icons
 
-Keep consistency in mind for icons and consider other patterns that are nearby. 
+Keep consistency in mind for icons and consider other patterns that are nearby.
 
 ```jsx-live
 const App = () => (
@@ -125,7 +133,8 @@ const App = () => (
 
 ### Size
 
-There are three sizes to split buttons, the default size is medium (md), extra small (xs), and 2x-small (2xs).
+There are three sizes to split buttons, the default size is medium (md), extra
+small (xs), and 2x-small (2xs).
 
 ```jsx-live
 const App = () => (
@@ -148,31 +157,3 @@ const App = () => (
   </Stack>
 )
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => {
-  return (
-    <SplitButton
-      variant="solid"
-      tone="primary"
-      onAction={(actionId) => alert(`Action: ${actionId}`)}
-      aria-label="More publish options"
-    >
-      <Menu.Item id="publish">Publish</Menu.Item>
-      <Menu.Item id="publish-next">Publish and open next</Menu.Item>
-      <Menu.Item id="save">Save as draft</Menu.Item>
-    </SplitButton>
-  );
-}
-```
-
-## Accessibility Standards
-
-- **Keyboard Navigation:** The component must be fully keyboard accessible. The Tab key should focus on the primary button first.
-- **Dual Focus:** The primary action and the dropdown trigger must be treated as two distinct focusable elements or as a single component where the arrow key can be used to open the menu once the button is focused.
-- **ARIA Roles:** The primary button uses role="button". The dropdown trigger should use role="button" combined with aria-haspopup="true" to indicate that it controls a pop-up menu.
-- **Labeling:** Provide clear, unique aria-label text for both the primary action and the dropdown trigger to ensure screen readers convey the intended function of each segment.

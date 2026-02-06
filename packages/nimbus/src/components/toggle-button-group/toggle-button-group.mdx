@@ -20,11 +20,13 @@ figmaLink: >-
 
 # Toggle button group
 
-A set of closely related, mutually exclusive or complementary actions that are important enough to be displayed directly in the interface for quick access.
+A set of closely related, mutually exclusive or complementary actions that are
+important enough to be displayed directly in the interface for quick access.
 
 ## Overview
 
-Button groups can be used several ways, with and without icons, and spanning from two selections to several.
+Button groups can be used several ways, with and without icons, and spanning
+from two selections to several.
 
 ### Resources
 
@@ -78,7 +80,11 @@ Toggle Button Groups can be configured with labels, icons, or both.
 
 #### Labels and icons
 
-Button groups with icons and labels are used to present a set of related actions in a compact and visually clear way, where icons provide quick recognition and labels offer explicit understanding of each option. This combination enhances user efficiency by making common choices readily available and easily identifiable.
+Button groups with icons and labels are used to present a set of related actions
+in a compact and visually clear way, where icons provide quick recognition and
+labels offer explicit understanding of each option. This combination enhances
+user efficiency by making common choices readily available and easily
+identifiable.
 
 ```jsx-live
 const App = () => (
@@ -101,7 +107,10 @@ const App = () => (
 
 #### Just labels
 
-Button groups with just labels provide explicit understanding of each option. This approach prioritizes readability and ease of comprehension, making it suitable for scenarios where icons might be ambiguous or when the actions are best described through text.
+Button groups with just labels provide explicit understanding of each option.
+This approach prioritizes readability and ease of comprehension, making it
+suitable for scenarios where icons might be ambiguous or when the actions are
+best described through text.
 
 ```jsx-live
 const App = () => (
@@ -121,7 +130,9 @@ const App = () => (
 
 #### Just icons
 
-Messages potential problems or situations that require user attention to prevent issues. They require the user to take action to make needed corrections or confirmation. Use tooltips for accessibility.
+Messages potential problems or situations that require user attention to prevent
+issues. They require the user to take action to make needed corrections or
+confirmation. Use tooltips for accessibility.
 
 ```jsx-live
 const App = () => (
@@ -147,74 +158,3 @@ const App = () => (
   </ToggleButtonGroup.Root>
 );
 ```
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by everyone, including people with disabilities, by addressing visual, auditory, cognitive, and physical limitations.
-
-```jsx-live
-const App = () => (
-  <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} colorPalette="primary">
-    <Tooltip.Root delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-processing">
-        <Icons.RotateRight /> Processing
-      </ToggleButtonGroup.Button>
-      <Tooltip.Content>Processing Status</Tooltip.Content>
-    </Tooltip.Root>
-    <Tooltip.Root delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-shipped">
-        <Icons.LocalShipping /> Shipped
-      </ToggleButtonGroup.Button>
-      <Tooltip.Content>Shipped Status</Tooltip.Content>
-    </Tooltip.Root>
-    <Tooltip.Root delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-cancelled">
-        <Icons.Dangerous /> Cancelled
-      </ToggleButtonGroup.Button>
-      <Tooltip.Content>Cancelled Status</Tooltip.Content>
-    </Tooltip.Root>
-    <Tooltip.Root delay={0} closeDelay={0}>
-      <ToggleButtonGroup.Button id="li-refunded">
-        <Icons.CurrencyExchange /> Refunded
-      </ToggleButtonGroup.Button>
-      <Tooltip.Content>Refunded Status</Tooltip.Content>
-    </Tooltip.Root>
-  </ToggleButtonGroup.Root>
-);
-```
-
-### Accessibility standards
-
-#### 1. Perceivable:
-
--   **1.1.1 Non-text Content (Level A):**
-    -   Provide text alternatives for any non-text content (e.g., icons within buttons) via `aria-label` on the button or surrounding `Tooltip`.
-    -   Ensure icons have sufficient visual clarity.
--   **1.4.1 Use of Color (Level A):**
-    -   Avoid relying solely on color to indicate the selected state. Default styles typically use background color and potentially borders or font weight changes.
--   **1.4.3 Contrast (Minimum) (Level AA):**
-    -   Ensure sufficient color contrast between button text/icons and their background, in both selected and unselected states.
-    -   Ensure sufficient contrast between adjacent buttons.
-
-#### 2. Operable:
-
--   **2.1.1 Keyboard (Level A):**
-    -   Make the entire group focusable using the Tab key.
-    -   Allow navigation between buttons within the group using arrow keys (Left/Right or Up/Down depending on orientation).
-    -   Allow selection using the Enter or Space key.
--   **2.4.4 Link Purpose (In Context) (Level A):** (Applies conceptually to button purpose)
-    -   Button labels (text or `aria-label` for icons) should clearly describe the action or choice.
--   **2.4.7 Focus Visible (Level AA):**
-    -   Provide a clear and visible focus indicator for the currently focused button within the group.
-
-#### 3. Understandable:
-
--   **3.2.1 On Focus (Level A):**
-    -   Ensure that moving focus between buttons does not trigger unexpected actions.
--   **3.3.2 Labels or Instructions (Level A):**
-    -   Provide a clear `aria-label` for the `ToggleButtonGroup.Root` element to describe the purpose of the group to assistive technologies.
-
-#### 4. Robust:
-
--   **4.1.2 Name, Role, Value (Level A):**
-    -   Use appropriate ARIA roles (e.g., `radiogroup` for single selection, `group` for multiple selection, `radio` or `checkbox` for items depending on mode) to ensure compatibility with assistive technologies. Nimbus components built on React Aria generally handle this automatically.

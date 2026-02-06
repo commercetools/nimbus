@@ -1,0 +1,29 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx-live
+const App = () => (
+  <Stack direction="row" width="full">
+    <Button variant="solid">Left</Button>
+    <Spacer />
+    <Button variant="outline">Right</Button>
+  </Stack>
+)
+```
+
+### Accessibility standards
+
+- **Semantic Structure**: Spacer should not affect document semantics or screen
+  reader navigation
+- **Visual Only**: The spacing created by Spacer is purely visual and should not
+  convey meaning
+- **Alternative Approaches**: If spacing conveys important information, consider
+  using semantic HTML elements with appropriate ARIA attributes
