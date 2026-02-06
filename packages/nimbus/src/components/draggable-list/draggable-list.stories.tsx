@@ -538,9 +538,9 @@ export const ControlledMode: Story = {
       return (
         <Flex direction="column" gap={400}>
           <Flex gap={200}>
-            <Button onClick={handleAddItem}>Add Item</Button>
+            <Button onPress={handleAddItem}>Add Item</Button>
             <Button
-              onClick={handleRemoveLastItem}
+              onPress={handleRemoveLastItem}
               isDisabled={listItems.length === 0}
             >
               Remove Last Item

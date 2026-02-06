@@ -1,4 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
+import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
 import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
 import { cardRecipe } from "@/components/card/card.recipe";
@@ -102,4 +103,5 @@ export const slotRecipes = {
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
+  nimbusSteps: stepsSlotRecipe,
 };
