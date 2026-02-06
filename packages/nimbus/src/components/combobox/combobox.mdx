@@ -277,7 +277,11 @@ const App = () => {
   };
 
   // Compute combined loading state
-  const isLoading = isPending || list.loadingState === "loading";
+  // Check all loading states from useAsyncList: "loading", "loadingMore", "filtering"
+  const isLoading = isPending ||
+    list.loadingState === "loading" ||
+    list.loadingState === "loadingMore" ||
+    list.loadingState === "filtering";
 
   return (
     <FormField.Root invalid={!!error}>
