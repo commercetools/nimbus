@@ -164,7 +164,7 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
         },
       }}
     >
-      <Box maxWidth="80ch">{children}</Box>
+      <Box maxWidth="80ch" mx="auto">{children}</Box>
     </Box>
   );
 }
