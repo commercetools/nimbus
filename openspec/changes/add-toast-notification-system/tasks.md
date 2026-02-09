@@ -15,7 +15,9 @@
       action button, promise pattern, stacking/queuing, multi-placement, ARIA
       roles, reduced motion
 - [ ] 2.2 Write unit tests for ToastManager: lazy creation, ID routing,
-      convenience methods, promise handling, action auto-duration
+      convenience methods, promise handling, action→duration:0 enforcement,
+      `.remove()` vs `.dismiss()`, per-placement hotkey mapping, ARIA role
+      override for warning/error types
 - [ ] 2.3 Verify all tests fail (TDD red phase)
 
 ## 3. Implementation
@@ -31,9 +33,15 @@
       toast.close-trigger.tsx with i18n aria-label)
 - [ ] 3.5 Implement compound export in `toast.tsx`
 - [ ] 3.6 Implement `ToastManager` in `toast.manager.ts` (lazy multi-toaster
-      facade, ID-to-placement routing, convenience methods, promise support)
-- [ ] 3.7 Implement `ToastOutlet` in `toast.outlet.tsx` (renders Toaster per
-      active placement, uses Toast compound component for rendering)
+      facade, ID-to-placement routing, convenience methods, promise support,
+      action→duration:0 enforcement, `.remove()` and `.dismiss()`,
+      per-placement hotkey mapping via `PLACEMENT_HOTKEYS`, subscribe/notify
+      pattern for ToastOutlet)
+- [ ] 3.7 Implement `ToastOutlet` in `toast.outlet.tsx` (subscribes to manager,
+      renders `<Toaster toaster={store}>` per active placement with children
+      render function composing `Toast.*` compound components)
+- [ ] 3.7b In `Toast.Root`, override default `role="status"` with correct
+      role/aria-live based on type (warning/error → alert/assertive)
 - [ ] 3.8 Implement i18n in `toast.i18n.ts` (Nimbus.Toast.dismiss message)
 - [ ] 3.9 Add `<ToastOutlet />` to NimbusProvider
 
