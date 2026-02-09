@@ -32,8 +32,8 @@ catalogs:
       specifier: 1.1.5
       version: 1.1.5
     '@types/react':
-      specifier: ^19.2.10
-      version: 19.2.10
+      specifier: ^19.2.13
+      version: 19.2.13
     '@types/react-dom':
       specifier: ^19.2.3
       version: 19.2.3
@@ -193,7 +193,7 @@ overrides:
   prismjs: ^1.30.0
   typescript: ~5.9.3
   react-aria: 3.46.0
-  react-aria-components: 1.15.0
+  react-aria-components: 1.15.1
   react-stately: 3.44.0
   '@react-aria/interactions': 3.27.0
   tmp: ^0.2.5
@@ -287,10 +287,10 @@ importers:
         version: 9.39.2
       '@types/react':
         specifier: catalog:react
-        version: 19.2.10
+        version: 19.2.13
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.3(@types/react@19.2.10)
+        version: 19.2.3(@types/react@19.2.13)
       '@vitejs/plugin-react-swc':
         specifier: catalog:tooling
         version: 4.2.3(@swc/helpers@0.5.17)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -329,7 +329,7 @@ importers:
         version: link:../../packages/nimbus-icons
       '@emotion/react':
         specifier: catalog:react
-        version: 11.14.0(@types/react@19.2.10)(react@19.2.0)
+        version: 11.14.0(@types/react@19.2.13)(react@19.2.0)
       '@internationalized/date':
         specifier: catalog:react
         version: 3.11.0
@@ -338,7 +338,7 @@ importers:
         version: 3.1.1
       '@mdx-js/react':
         specifier: ^3.1.1
-        version: 3.1.1(@types/react@19.2.10)(react@19.2.0)
+        version: 3.1.1(@types/react@19.2.13)(react@19.2.0)
       '@mdx-js/rollup':
         specifier: ^3.1.0
         version: 3.1.1(rollup@4.57.1)
@@ -380,7 +380,7 @@ importers:
         version: 4.0.3
       jotai:
         specifier: ^2.16.2
-        version: 2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.10)(react@19.2.0)
+        version: 2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.13)(react@19.2.0)
       js-yaml:
         specifier: ^3.14.2
         version: 3.14.2
@@ -397,8 +397,8 @@ importers:
         specifier: 3.46.0
         version: 3.46.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.15.0
-        version: 1.15.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.15.1
+        version: 1.15.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-docgen-typescript:
         specifier: ^2.4.0
         version: 2.4.0(typescript@5.9.3)
@@ -459,10 +459,10 @@ importers:
         version: 4.17.23
       '@types/react':
         specifier: catalog:react
-        version: 19.2.10
+        version: 19.2.13
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.3(@types/react@19.2.10)
+        version: 19.2.3(@types/react@19.2.13)
       '@vitejs/plugin-react-swc':
         specifier: catalog:tooling
         version: 4.2.3(@swc/helpers@0.5.17)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -523,7 +523,7 @@ importers:
     dependencies:
       '@chakra-ui/cli':
         specifier: catalog:react
-        version: 3.32.0(@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 3.32.0(@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@emotion/is-prop-valid':
         specifier: catalog:react
         version: 1.4.0
@@ -549,8 +549,8 @@ importers:
         specifier: 3.46.0
         version: 3.46.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.15.0
-        version: 1.15.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.15.1
+        version: 1.15.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-hotkeys-hook:
         specifier: ^5.2.1
         version: 5.2.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -566,7 +566,7 @@ importers:
     devDependencies:
       '@chakra-ui/react':
         specifier: catalog:react
-        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons
@@ -587,7 +587,7 @@ importers:
         version: 10.2.7(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/addon-docs':
         specifier: catalog:tooling
-        version: 10.2.7(@types/react@19.2.10)(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        version: 10.2.7(@types/react@19.2.13)(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       '@storybook/addon-vitest':
         specifier: catalog:tooling
         version: 10.2.7(@vitest/browser-playwright@4.0.18)(@vitest/browser@4.0.18(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18))(@vitest/runner@4.0.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vitest@4.0.18)
@@ -599,7 +599,7 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: catalog:tooling
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@testing-library/user-event':
         specifier: catalog:tooling
         version: 14.6.1(@testing-library/dom@10.4.1)
@@ -614,10 +614,10 @@ importers:
         version: 27.0.0
       '@types/react':
         specifier: catalog:react
-        version: 19.2.10
+        version: 19.2.13
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.3(@types/react@19.2.10)
+        version: 19.2.3(@types/react@19.2.13)
       '@vitejs/plugin-react':
         specifier: catalog:tooling
         version: 5.1.3(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -742,7 +742,7 @@ importers:
         version: 24.10.1
       '@types/react':
         specifier: catalog:react
-        version: 19.2.10
+        version: 19.2.13
       react:
         specifier: catalog:react
         version: 19.2.0
@@ -3113,8 +3113,8 @@ packages:
   '@types/react-syntax-highlighter@15.5.13':
     resolution: {integrity: sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA==}
 
-  '@types/react@19.2.10':
-    resolution: {integrity: sha512-WPigyYuGhgZ/cTPRXB2EwUw+XvsRA3GqHlsP4qteqrnnjDrApbS7MxcGr/hke5iUoeB7E/gQtrs9I37zAJ0Vjw==}
+  '@types/react@19.2.13':
+    resolution: {integrity: sha512-KkiJeU6VbYbUOp5ITMIc7kBfqlYkKA5KhEHVrGMmUUMt7NeaZg65ojdPk+FtNrBAOXNVM5QM72jnADjM+XVRAQ==}
 
   '@types/resolve@1.17.1':
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
@@ -5909,8 +5909,8 @@ packages:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
 
-  react-aria-components@1.15.0:
-    resolution: {integrity: sha512-Zfe0D7gt5Dj0JsgYgKU1M/7gA7rB1n/JSQ8mlG9wHFVWFljWeb6LpPXFs1nhcbuEJMpQZK3YvchUnDFR1EZRBQ==}
+  react-aria-components@1.15.1:
+    resolution: {integrity: sha512-irGhZ+vBvoY9xJHf/qzPLLwFZ8cBUrYwPERGhgjE62dy/RXMUiEW+1DeTHz0OvtjbvFbhNp/I7XM9IaBvmLALg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -7441,12 +7441,12 @@ snapshots:
     dependencies:
       postcss-calc-ast-parser: 0.1.4
 
-  '@chakra-ui/cli@3.32.0(@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+  '@chakra-ui/cli@3.32.0(@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/parser': 7.29.0
       '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.29.0)
-      '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@clack/prompts': 0.11.0
       '@pandacss/is-valid-prop': 1.5.1
       '@types/babel__core': 7.20.5
@@ -7471,11 +7471,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@chakra-ui/react@3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@ark-ui/react': 5.30.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@emotion/is-prop-valid': 1.4.0
-      '@emotion/react': 11.14.0(@types/react@19.2.10)(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.13)(react@19.2.0)
       '@emotion/serialize': 1.3.3
       '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@19.2.0)
       '@emotion/utils': 1.4.2
@@ -7710,7 +7710,7 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.14.0(@types/react@19.2.10)(react@19.2.0)':
+  '@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@emotion/babel-plugin': 11.13.5
@@ -7722,7 +7722,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.2.0
     optionalDependencies:
-      '@types/react': 19.2.10
+      '@types/react': 19.2.13
     transitivePeerDependencies:
       - supports-color
 
@@ -8293,10 +8293,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mdx-js/react@3.1.1(@types/react@19.2.10)(react@19.2.0)':
+  '@mdx-js/react@3.1.1(@types/react@19.2.13)(react@19.2.0)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 19.2.10
+      '@types/react': 19.2.13
       react: 19.2.0
 
   '@mdx-js/rollup@3.1.1(rollup@4.57.1)':
@@ -9644,9 +9644,9 @@ snapshots:
       axe-core: 4.11.0
       storybook: 10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  '@storybook/addon-docs@10.2.7(@types/react@19.2.10)(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@storybook/addon-docs@10.2.7(@types/react@19.2.13)(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
-      '@mdx-js/react': 3.1.1(@types/react@19.2.10)(react@19.2.0)
+      '@mdx-js/react': 3.1.1(@types/react@19.2.13)(react@19.2.0)
       '@storybook/csf-plugin': 10.2.7(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       '@storybook/icons': 2.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@storybook/react-dom-shim': 10.2.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
@@ -9965,15 +9965,15 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@testing-library/dom': 10.4.1
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
     optionalDependencies:
-      '@types/react': 19.2.10
-      '@types/react-dom': 19.2.3(@types/react@19.2.10)
+      '@types/react': 19.2.13
+      '@types/react-dom': 19.2.3(@types/react@19.2.13)
 
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
     dependencies:
@@ -10121,15 +10121,15 @@ snapshots:
 
   '@types/range-parser@1.2.7': {}
 
-  '@types/react-dom@19.2.3(@types/react@19.2.10)':
+  '@types/react-dom@19.2.3(@types/react@19.2.13)':
     dependencies:
-      '@types/react': 19.2.10
+      '@types/react': 19.2.13
 
   '@types/react-syntax-highlighter@15.5.13':
     dependencies:
-      '@types/react': 19.2.10
+      '@types/react': 19.2.13
 
-  '@types/react@19.2.10':
+  '@types/react@19.2.13':
     dependencies:
       csstype: 3.2.3
 
@@ -12548,11 +12548,11 @@ snapshots:
 
   jju@1.4.0: {}
 
-  jotai@2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.10)(react@19.2.0):
+  jotai@2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.13)(react@19.2.0):
     optionalDependencies:
       '@babel/core': 7.29.0
       '@babel/template': 7.28.6
-      '@types/react': 19.2.10
+      '@types/react': 19.2.13
       react: 19.2.0
 
   js-cookie@2.2.1: {}
@@ -13649,7 +13649,7 @@ snapshots:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  react-aria-components@1.15.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-aria-components@1.15.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.11.0
       '@internationalized/string': 3.2.7
