@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-09T18:12:08.106Z",
+  "generated": "2026-02-09T18:27:30.354Z",
   "files": {
     "index.es.js": 7210,
     "components/accordion.es.js": 193,
@@ -69,7 +69,7 @@
     "components/split-button.es.js": 134,
     "components/stack.es.js": 124,
     "components/switch.es.js": 125,
-    "components/table.es.js": 124,
+    "components/table.es.js": 249,
     "components/tabs.es.js": 179,
     "components/tag-group.es.js": 130,
     "components/text-input-field.es.js": 141,
