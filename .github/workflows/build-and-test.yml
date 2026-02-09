@@ -23,6 +23,9 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
+      - name: Check bundle size
+        run: node scripts/check-bundle-size.mjs
+
       - name: Validate OpenSpec proposals
         run: pnpm openspec validate --all --strict
 
