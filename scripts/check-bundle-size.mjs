@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console, process, URL */
 
 /**
  * Bundle size check script for Nimbus.
@@ -13,7 +14,7 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 
@@ -188,9 +189,7 @@ function compareToBaseline(currentSizes) {
     removed: "- ",
   };
 
-  console.log(
-    `\nBundle Size Report (baseline from ${baseline.generated})\n`
-  );
+  console.log(`\nBundle Size Report (baseline from ${baseline.generated})\n`);
   console.log(
     padEnd("File", 50) +
       padStart("Current", 12) +
@@ -203,8 +202,7 @@ function compareToBaseline(currentSizes) {
   for (const row of rows) {
     const current =
       row.currentSize != null ? formatBytes(row.currentSize) : "-";
-    const base =
-      row.baselineSize != null ? formatBytes(row.baselineSize) : "-";
+    const base = row.baselineSize != null ? formatBytes(row.baselineSize) : "-";
     const delta =
       row.currentSize != null && row.baselineSize != null
         ? formatDelta(row.currentSize, row.baselineSize)
@@ -225,10 +223,7 @@ function compareToBaseline(currentSizes) {
 
   // Summary
   const totalCurrent = Object.values(currentSizes).reduce((a, b) => a + b, 0);
-  const totalBaseline = Object.values(baselineFiles).reduce(
-    (a, b) => a + b,
-    0
-  );
+  const totalBaseline = Object.values(baselineFiles).reduce((a, b) => a + b, 0);
   console.log(
     padEnd("TOTAL", 50) +
       padStart(formatBytes(totalCurrent), 12) +
@@ -266,8 +261,7 @@ const shouldUpdate = args.includes("--update-baseline");
 
 if (!existsSync(DIST)) {
   console.error(
-    `dist directory not found at ${DIST}\n` +
-      "Run pnpm build:packages first."
+    `dist directory not found at ${DIST}\n` + "Run pnpm build:packages first."
   );
   process.exit(1);
 }
