@@ -22,17 +22,17 @@ Alert component is persistent and inline, covering a different use case.
 
 ## Decisions
 
-### Foundation: Chakra UI / Ark UI (Zag.js)
+### Foundation: Chakra UI Toast System
 
-Use Chakra UI's toast system (Zag.js state machine). Handles timers, queuing,
-pause/resume, stacking, z-index, and animations out of the box.
+Use Chakra UI's `createToaster` API. Handles timers, queuing, pause/resume,
+stacking, z-index, and animations out of the box.
 
 ### Per-Toast Placement: Multi-Toaster Facade
 
-A `ToastManager` singleton lazily creates Zag.js toaster instances per unique
-placement. Zag.js requires this because one toaster = one fixed-position
-container = one placement (stacking math, ARIA regions, and keyboard nav all
-depend on it).
+A `ToastManager` singleton lazily creates toaster instances per unique placement.
+Chakra's toast system requires this because one toaster = one fixed-position
+container = one placement (stacking, ARIA regions, and keyboard nav all depend
+on it).
 
 Apps using a single placement still only create one toaster.
 
@@ -44,18 +44,35 @@ nodes until the first toast is triggered.
 ### ARIA Roles
 
 `role="status"` (polite) for info/success, `role="alert"` (assertive) for
-warning/error. Set automatically based on type.
+warning/error. Chakra defaults to `role="status"` on all toasts — Nimbus
+`Toast.Root` must override the role and `aria-live` attributes based on type.
 
 ### Auto-Dismiss: 6 Seconds Default
 
-Pause on hover, focus, and page idle. Toasts with actions don't auto-dismiss.
+Pause on hover, focus, and page idle. Toasts with actions don't auto-dismiss
+(`ToastManager.create()` enforces `duration: 0` — Chakra does not do this
+automatically).
 
 ### Z-Index: Popover Level (1500)
 
 Above modals (1400), below skipNav (1600).
+
+### Hotkeys: Per-Placement Numpad Mapping
+
+Each store gets a unique hotkey based on numpad positions (Alt+Shift+1–9). Since
+stores are lazily created, only active placements register keyboard listeners.
+
+### Closable Property
+
+Exposed via `closable` prop on toast options. Useful for hiding the close button
+during loading states.
 
 ## Risks / Trade-offs
 
 - **Multi-toaster complexity** → Encapsulated in ToastManager; consumers never
   see it
 - **NimbusProvider modification** → Low risk; single lazy child component
+- **ARIA role override** → Chakra defaults to `role="status"`, so Nimbus must
+  override for warning/error. Low risk; props are spread after base props.
+- **Toaster render pattern** → Each `<Toaster>` requires a `toaster` store prop
+  and a `children` render function. Documented in ToastOutlet implementation.

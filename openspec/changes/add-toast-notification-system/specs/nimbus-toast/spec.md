@@ -46,6 +46,11 @@ hooks, providers, or setup beyond `NimbusProvider`.
 - **WHEN** a consumer calls `toast.dismiss(id)`
 - **THEN** the specified toast is dismissed with exit animation
 
+#### Scenario: Programmatic remove
+
+- **WHEN** a consumer calls `toast.remove(id)`
+- **THEN** the specified toast is removed immediately without exit animation
+
 #### Scenario: Programmatic update
 
 - **WHEN** a consumer calls `toast.update(id, { title: "New title" })`
@@ -156,23 +161,26 @@ loading, success, and error states based on a promise's lifecycle.
 
 ### Requirement: Queuing and Stacking
 
-The system SHALL display a maximum of 3 toasts per placement region. Additional
-toasts SHALL be queued and displayed as visible slots become available.
+The system SHALL use the default max (24) per placement region. When the
+maximum is exceeded, additional toasts SHALL be queued and displayed as visible
+slots become available.
 
 #### Scenario: Stacking
 
-- **WHEN** 3 toasts are visible in the same region
+- **WHEN** multiple toasts are visible in the same region
 - **THEN** they stack vertically without overlapping
 
 #### Scenario: Queuing overflow
 
-- **WHEN** a 4th toast is created in a region with 3 visible toasts
-- **THEN** it is queued and appears when a visible toast is dismissed
+- **WHEN** the toast count exceeds the maximum for a region
+- **THEN** new toasts are queued and appear when visible toasts are dismissed
 
 ### Requirement: ARIA Role Differentiation
 
 Info and success toasts SHALL use `role="status"` (polite). Warning and error
-toasts SHALL use `role="alert"` (assertive).
+toasts SHALL use `role="alert"` (assertive). Since Chakra defaults to
+`role="status"` on all toasts, the Nimbus `Toast.Root` component SHALL override
+the `role` and `aria-live` attributes based on the toast type.
 
 #### Scenario: Polite announcement
 
@@ -186,13 +194,14 @@ toasts SHALL use `role="alert"` (assertive).
 
 ### Requirement: Keyboard Navigation
 
-The toast region SHALL be a keyboard-navigable ARIA landmark supporting F6
-navigation and a configurable hotkey.
+The toast region SHALL be a keyboard-navigable ARIA landmark supporting
+per-placement hotkeys.
 
-#### Scenario: F6 landmark navigation
+#### Scenario: Per-placement hotkey
 
-- **WHEN** the user presses F6
-- **THEN** focus moves to the toast region (if toasts are visible)
+- **WHEN** the user presses the hotkey for a placement (e.g., Alt+Shift+9 for
+  top-end)
+- **THEN** focus moves to that placement's toast region (if toasts are visible)
 
 #### Scenario: Tab through toast elements
 
@@ -223,6 +232,36 @@ regions. No additional setup SHALL be required from consumers.
 
 - **WHEN** no toasts have been triggered
 - **THEN** no additional DOM nodes are rendered by ToastOutlet
+
+### Requirement: Closable Control
+
+Toasts SHALL support a `closable` property that controls close button
+visibility.
+
+#### Scenario: Closable true (default)
+
+- **WHEN** a toast is created without specifying `closable`
+- **THEN** the close button is visible
+
+#### Scenario: Closable false
+
+- **WHEN** a toast is created with `closable: false`
+- **THEN** the close button is hidden (useful for loading states)
+
+### Requirement: Immediate Removal
+
+The `toast.remove()` method SHALL remove toasts immediately without exit
+animation, in contrast to `toast.dismiss()` which plays exit animation.
+
+#### Scenario: Remove vs dismiss
+
+- **WHEN** a consumer calls `toast.remove(id)`
+- **THEN** the toast is removed from the DOM immediately without animation
+
+#### Scenario: Remove all
+
+- **WHEN** a consumer calls `toast.remove()` without an ID
+- **THEN** all toasts across all regions are removed immediately
 
 ### Requirement: Internationalization
 

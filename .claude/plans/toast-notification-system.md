@@ -12,17 +12,6 @@ several issues identified through research (wrong styling tech, missing
 variants, incomplete accessibility requirements). This plan is the corrected,
 research-backed design.
 
-### Original Ticket Issues Corrected
-
-1. Tailwind CSS → Chakra UI slot recipes
-2. react-aria-components exclusively → Ark UI/Chakra (already in deps)
-3. 3 variants → 4 (added warning)
-4. 5s timeout → 6s default (5s is WCAG minimum, not recommended)
-5. Timer pause hover-only → hover + focus + page idle
-6. Added: ARIA role differentiation, prefers-reduced-motion, queuing/max limit,
-   i18n, z-index strategy, focus management, action buttons, promise pattern,
-   portal rendering, F6 landmark navigation
-
 ---
 
 ## Consumer API
@@ -65,13 +54,20 @@ const id = toast({ title: "Uploading..." });
 toast.update(id, { title: "Upload complete", type: "success" });
 toast.dismiss(id); // with exit animation
 toast.dismiss(); // dismiss all
+toast.remove(id); // immediate removal (no exit animation)
+
+// Closable control
+toast.loading({ title: "Saving...", closable: false }); // no close button
 ```
 
 ### Key API Decisions
 
-- `type` not `variant` — aligns with Zag.js/Ark UI naming
+- `type` not `variant` — aligns with Chakra UI naming
 - `placement` defaults to `'top-end'` but is overridable per-toast
-- `action` presence automatically disables auto-dismiss (WCAG compliance)
+- `action` presence disables auto-dismiss (WCAG compliance) — enforced by
+  `ToastManager.create()`, not automatic in Chakra
+- `closable` controls close button visibility (useful for loading state)
+- Both `toast.dismiss(id)` (animated) and `toast.remove(id)` (immediate) exposed
 
 ---
 
@@ -79,65 +75,151 @@ toast.dismiss(); // dismiss all
 
 ### Foundation
 
-Chakra UI / Ark UI (Zag.js state machine). We import only from
-`@chakra-ui/react`, never from `@zag-js/*` or `@ark-ui/*` directly.
+Chakra UI toast system (`createToaster` from `@chakra-ui/react`).
 
 ### Multi-Toaster Facade
 
-Zag.js ties placement to the toaster instance (one fixed-position DOM container
-per placement). This is intentional:
-
-1. **DOM**: One toaster = one fixed-position container = one placement
-2. **Stacking**: Height calculations require siblings in the same container
-3. **ARIA**: Each region needs a distinct label including its placement
-4. **Keyboard**: Hotkeys focus a specific region by placement
+Chakra's toast system ties placement to the toaster instance — one
+fixed-position container per placement. This means stacking, ARIA regions, and
+hotkeys are all scoped to a single placement.
 
 To support per-toast placement, a `ToastManager` singleton lazily creates and
-caches Zag.js toaster instances per placement:
+caches toaster store instances per placement:
 
 ```typescript
 class ToastManager {
-  private toasters = new Map<Placement, CreateToasterReturn>();
+  private stores = new Map<Placement, CreateToasterReturn>();
+  private idToPlacement = new Map<string, Placement>();
+  private listeners = new Set<() => void>();
   private defaultPlacement: Placement = "top-end";
 
-  private getOrCreate(placement: Placement) {
-    if (!this.toasters.has(placement)) {
-      this.toasters.set(
+  private getOrCreate(placement: Placement): CreateToasterReturn {
+    if (!this.stores.has(placement)) {
+      const store = createToaster({
         placement,
-        createToaster({
-          placement,
-          max: 3,
-          duration: 6000,
-          pauseOnPageIdle: true,
-        })
-      );
+        duration: 6000,
+        pauseOnPageIdle: true,
+        hotkey: PLACEMENT_HOTKEYS[placement],
+      });
+      this.stores.set(placement, store);
+      this.notifyListeners(); // ToastOutlet needs to know about new stores
     }
-    return this.toasters.get(placement)!;
+    return this.stores.get(placement)!;
   }
 
   create(options: ToastOptions) {
     const placement = options.placement ?? this.defaultPlacement;
-    const toaster = this.getOrCreate(placement);
-    return toaster.create(options);
+    const store = this.getOrCreate(placement);
+
+    // Chakra does NOT auto-disable dismiss for action toasts.
+    // We enforce WCAG compliance by setting duration: 0 when action is present.
+    const resolved = options.action
+      ? { ...options, duration: options.duration ?? 0 }
+      : options;
+
+    const id = store.create(resolved);
+    this.idToPlacement.set(id, placement);
+    return id;
   }
 
   dismiss(id?: string) {
-    /* routes to correct toaster via idToPlacement map, or all */
+    if (id) {
+      const placement = this.idToPlacement.get(id);
+      if (placement) this.stores.get(placement)?.dismiss(id);
+    } else {
+      this.stores.forEach((store) => store.dismiss());
+    }
   }
+
+  remove(id?: string) {
+    if (id) {
+      const placement = this.idToPlacement.get(id);
+      if (placement) this.stores.get(placement)?.remove(id);
+    } else {
+      this.stores.forEach((store) => store.remove());
+    }
+  }
+
   update(id: string, options: Partial<ToastOptions>) {
-    /* find & update */
+    const placement = this.idToPlacement.get(id);
+    if (placement) this.stores.get(placement)?.update(id, options);
+  }
+
+  /** Returns all active stores for ToastOutlet to render */
+  getActiveStores(): Array<{
+    placement: Placement;
+    store: CreateToasterReturn;
+  }> {
+    return Array.from(this.stores.entries()).map(([placement, store]) => ({
+      placement,
+      store,
+    }));
+  }
+
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((fn) => fn());
   }
 }
 ```
 
 ID tracking: `idToPlacement` map populated on every `.create()` call, enabling
-`toast.dismiss(id)` and `toast.update(id)` to route to the correct toaster.
+`toast.dismiss(id)`, `toast.remove(id)`, and `toast.update(id)` to route to the
+correct store.
+
+### ToastOutlet and Toaster Render Pattern
+
+The Chakra `<Toaster>` component requires two things:
+
+1. A `toaster` prop — the `CreateToasterReturn` store instance
+2. A `children` render function — `(toast: ToastOptions) => ReactNode`
+
+`<ToastOutlet />` subscribes to the manager and renders one `<Toaster>` per
+active placement. Each `<Toaster>` uses the render function to compose Nimbus
+`Toast.*` compound components:
+
+```tsx
+function ToastOutlet() {
+  const [stores, setStores] = useState(manager.getActiveStores());
+
+  useEffect(
+    () =>
+      manager.subscribe(() => {
+        setStores(manager.getActiveStores());
+      }),
+    []
+  );
+
+  if (stores.length === 0) return null; // Zero DOM nodes until first toast
+
+  return (
+    <>
+      {stores.map(({ placement, store }) => (
+        <Toaster key={placement} toaster={store}>
+          {(toast) => (
+            <Toast.Root toast={toast}>
+              <Toast.Icon />
+              <Toast.Title />
+              <Toast.Description />
+              <Toast.ActionTrigger />
+              <Toast.CloseTrigger />
+            </Toast.Root>
+          )}
+        </Toaster>
+      ))}
+    </>
+  );
+}
+```
 
 ### NimbusProvider Integration
 
-`<ToastOutlet />` renders inside NimbusProvider, subscribing to the manager and
-rendering a `<Toaster>` for each active placement. Apps that never call
-`toast()` get zero extra DOM nodes (lazy creation).
+`<ToastOutlet />` renders inside NimbusProvider. Apps that never call `toast()`
+get zero extra DOM nodes (lazy creation).
 
 ```tsx
 <ChakraProvider value={system}>
@@ -279,23 +361,67 @@ export { toastRecipe } from "@/components/toast/toast.recipe";
 | `warning` | `alert`   | `assertive` | Urgent, announces immediately      |
 | `error`   | `alert`   | `assertive` | Critical, announces immediately    |
 
-Set automatically by `Toast.Root` based on `type` — consumers don't configure
-this.
+**Implementation note:** Chakra's toast system defaults to `role="status"` on
+all toasts regardless of type. The Nimbus `Toast.Root` component MUST override
+the role based on type by spreading after the base props:
+
+```tsx
+// In toast.root.tsx
+const baseProps = toastContext.getRootProps();
+const role = type === "warning" || type === "error" ? "alert" : "status";
+const ariaLive =
+  type === "warning" || type === "error" ? "assertive" : "polite";
+
+return (
+  <ToastRootSlot {...baseProps} role={role} aria-live={ariaLive}>
+    {children}
+  </ToastRootSlot>
+);
+```
+
+Consumers don't configure this — it's automatic based on `type`.
 
 ### Keyboard Navigation
 
-- **Escape**: Dismisses focused toast (Zag.js native)
-- **F6 / Shift+F6**: Navigate to/from toast landmark region (Zag.js native)
-- **Alt+T**: Configurable hotkey to jump to toast region (Zag.js default)
+- **Escape**: Dismisses focused toast
 - **Tab**: Cycles through interactive elements (close button, action button)
 - Focus indicators: `_focusVisible: { focusRing: "outside" }`
+
+#### Per-Placement Hotkeys
+
+Each store accepts a `hotkey` option — an array of modifier keys and key codes
+that must all match (e.g., `["altKey", "shiftKey", "Digit9"]`). Since each
+placement gets its own store, we configure **different hotkeys per region**
+using a numpad-inspired layout matching screen corners:
+
+| Placement      | Hotkey        | Numpad position   |
+| -------------- | ------------- | ----------------- |
+| `top-start`    | `Alt+Shift+7` | 7 (top-left)      |
+| `top`          | `Alt+Shift+8` | 8 (top-center)    |
+| `top-end`      | `Alt+Shift+9` | 9 (top-right)     |
+| `bottom-start` | `Alt+Shift+1` | 1 (bottom-left)   |
+| `bottom`       | `Alt+Shift+2` | 2 (bottom-center) |
+| `bottom-end`   | `Alt+Shift+3` | 3 (bottom-right)  |
+
+```typescript
+const PLACEMENT_HOTKEYS: Record<Placement, string[]> = {
+  "top-start": ["altKey", "shiftKey", "Digit7"],
+  top: ["altKey", "shiftKey", "Digit8"],
+  "top-end": ["altKey", "shiftKey", "Digit9"],
+  "bottom-start": ["altKey", "shiftKey", "Digit1"],
+  bottom: ["altKey", "shiftKey", "Digit2"],
+  "bottom-end": ["altKey", "shiftKey", "Digit3"],
+};
+```
+
+Hotkeys are only registered for placements that are actually in use (lazy
+creation). Pressing a hotkey focuses the corresponding toast region.
 
 ### Focus Management
 
 - Toasts do NOT steal focus — use live regions for announcements
-- F6/Alt+T navigates to most recent toast
+- Per-placement hotkeys navigate to the corresponding toast region
 - Dismissing last focused toast restores focus to previously focused element
-  (Zag.js tracks `lastFocusedEl`)
 
 ### prefers-reduced-motion
 
@@ -308,7 +434,7 @@ this.
 
 ### Additional WCAG 4.1.3 Compliance
 
-- Each region labeled: `aria-label="top-end Notifications"` (auto by Zag.js)
+- Each region labeled: `aria-label="top-end Notifications"`
 - Close button: i18n `aria-label` via `msg.format("dismiss")`
 - Icons: `aria-hidden="true"` (decorative, color is not sole indicator)
 - Action buttons: visible text labels, not icon-only
@@ -322,7 +448,8 @@ this.
 - Default: **6 seconds**
 - Configurable per-toast: `duration: 8000`
 - `duration: 0` disables auto-dismiss
-- Toasts with `action` automatically get `duration: 0`
+- Toasts with `action` get `duration: 0` (enforced by `ToastManager.create()`)
+- `closable: false` hides the close button (useful for loading toasts)
 
 ### Timer Pausing
 
@@ -336,20 +463,22 @@ Resume from paused position when hover/focus leaves.
 
 ### Queuing and Stacking
 
-- Max **3 visible** per placement region
-- FIFO queue for overflow
+- Default `max: 24` per placement region (no artificial limit)
+- FIFO queue for overflow (unlikely to hit in practice)
 - Vertical stack with `gap: 16px`
 - Newest at screen edge (top of stack for `top-*`, bottom for `bottom-*`)
 
 ### Dismissal Methods
 
-| Method               | Behavior                         |
-| -------------------- | -------------------------------- |
-| Close button click   | Dismisses with exit animation    |
-| Escape key (focused) | Dismisses focused toast          |
-| Auto-dismiss timer   | Dismisses after duration         |
-| `toast.dismiss(id)`  | Programmatic with animation      |
-| `toast.dismiss()`    | Dismisses all across all regions |
+| Method               | Behavior                                   |
+| -------------------- | ------------------------------------------ |
+| Close button click   | Dismisses with exit animation              |
+| Escape key (focused) | Dismisses focused toast                    |
+| Auto-dismiss timer   | Dismisses after duration                   |
+| `toast.dismiss(id)`  | Programmatic with exit animation           |
+| `toast.dismiss()`    | Dismisses all across all regions           |
+| `toast.remove(id)`   | Immediate removal (no exit animation)      |
+| `toast.remove()`     | Removes all immediately across all regions |
 
 ### Promise Lifecycle
 
@@ -391,11 +520,14 @@ From `toast/index.ts`:
 export { Toast } from "./toast"; // Compound component
 export { toast } from "./toast.manager"; // Imperative API
 export { ToastOutlet } from "./toast.outlet"; // For NimbusProvider (internal)
-export type { ToastProps, ToastOptions } from "./toast.types";
+export type { ToastProps, ToastOptions, ToastPlacement } from "./toast.types";
 ```
 
-Consumer-facing: `toast` (function) and `ToastOptions` (type). `ToastOutlet` is
-internal — consumed only by NimbusProvider.
+Consumer-facing: `toast` (function + methods), `Toast` (compound component), and
+types. `ToastOutlet` is internal — consumed only by NimbusProvider.
+
+The `toast` object exposes: `.create()`, `.dismiss()`, `.remove()`, `.update()`,
+`.promise()`, `.info()`, `.success()`, `.warning()`, `.error()`, `.loading()`.
 
 ---
 
@@ -413,7 +545,9 @@ internal — consumed only by NimbusProvider.
 | `EscapeKey`                | Focus region, Escape → dismissed                             |
 | `ActionButton`             | Renders button, no auto-dismiss, callback fires              |
 | `PromisePattern`           | Loading → success; loading → error transitions               |
-| `Stacking`                 | 3 toasts stack; 4th queues until slot frees                  |
+| `ClosableControl`          | `closable: false` hides close button                         |
+| `RemoveImmediate`          | `toast.remove(id)` removes without animation                 |
+| `Stacking`                 | Multiple toasts stack; overflow queues until slot frees      |
 | `MultiPlacement`           | Different placements render separate regions                 |
 | `ScreenReaderAnnouncement` | info/success: `role="status"`, warning/error: `role="alert"` |
 | `ReducedMotion`            | No slide/transition with prefers-reduced-motion              |
@@ -421,10 +555,14 @@ internal — consumed only by NimbusProvider.
 ### Unit Tests (`toast.spec.tsx`)
 
 - ToastManager: lazy toaster creation per placement
-- ToastManager: ID routing for dismiss/update
+- ToastManager: ID routing for dismiss/update/remove
+- ToastManager: `.remove()` calls store `.remove()` (not `.dismiss()`)
 - Convenience methods set correct `type`
 - Promise: resolves → success, rejects → error
-- Action presence sets `duration: 0`
+- Action presence sets `duration: 0` (manual enforcement)
+- Hotkey mapping: each placement gets correct `PLACEMENT_HOTKEYS` value
+- ARIA role override: warning/error get `role="alert"`, info/success get
+  `role="status"`
 
 ### Consumer Tests (`toast.docs.spec.tsx`)
 
@@ -443,20 +581,22 @@ pnpm --filter @commercetools/nimbus build && pnpm test packages/nimbus/src/compo
 
 ## Decision Log
 
-| Decision        | Choice                                                     |
-| --------------- | ---------------------------------------------------------- |
-| Foundation      | Chakra UI / Ark UI (Zag.js)                                |
-| Consumer API    | `toast()` function, no setup needed                        |
-| Mounting        | Automatic inside NimbusProvider                            |
-| Placement       | Per-toast, default `top-end`, multi-toaster facade         |
-| Variants        | info, success, warning, error (4 types)                    |
-| Actions         | v1, with auto `duration: 0`                                |
-| Promise pattern | v1, loading → success/error                                |
-| Auto-dismiss    | 6s default, pause on hover + focus + page idle             |
-| Max visible     | 3 per region, FIFO queue                                   |
-| Z-index         | `popover` (1500)                                           |
-| ARIA            | `role="status"` info/success, `role="alert"` warning/error |
-| Reduced motion  | Disable slide/fade transitions                             |
-| Styling         | Chakra slot recipe with `colorPalette` tokens              |
-| i18n            | One message: dismiss label (5 locales)                     |
-| Testing         | Stories (interactions), unit (manager), consumer (docs)    |
+| Decision        | Choice                                                            |
+| --------------- | ----------------------------------------------------------------- |
+| Foundation      | Chakra UI toast system (`createToaster`)                          |
+| Consumer API    | `toast()` function + `.dismiss()` / `.remove()`, no setup needed  |
+| Mounting        | Automatic inside NimbusProvider                                   |
+| Placement       | Per-toast, default `top-end`, multi-toaster facade                |
+| Variants        | info, success, warning, error (4 types)                           |
+| Actions         | v1, `duration: 0` enforced by ToastManager (not Chakra auto)      |
+| Promise pattern | v1, loading → success/error                                       |
+| Auto-dismiss    | 6s default, pause on hover + focus + page idle                    |
+| Max visible     | Default (24), no artificial limit                                 |
+| Z-index         | `popover` (1500)                                                  |
+| ARIA            | Manual override: `role="status"/"alert"` (Chakra defaults status) |
+| Hotkeys         | Per-placement numpad mapping (Alt+Shift+1–9)                      |
+| Reduced motion  | Disable slide/fade transitions                                    |
+| Styling         | Chakra slot recipe with `colorPalette` tokens                     |
+| Closable        | Exposed via `closable` prop, useful for loading state             |
+| i18n            | One message: dismiss label (5 locales)                            |
+| Testing         | Stories (interactions), unit (manager), consumer (docs)           |
