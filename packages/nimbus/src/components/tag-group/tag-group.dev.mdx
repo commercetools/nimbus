@@ -16,7 +16,7 @@ import { TagGroup } from '@commercetools/nimbus';
 
 The TagGroup component is a compound component that displays a collection of tags. It consists of three parts: `TagGroup.Root`, `TagGroup.TagList`, and `TagGroup.Tag`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TagGroup.Root aria-label="Categories">
     <TagGroup.TagList>
@@ -34,7 +34,7 @@ const App = () => (
 
 The `sm`, `md`, and `lg` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TagGroup.Root size="sm" aria-label="Small tags">
@@ -68,7 +68,7 @@ const App = () => (
 
 Use the `items` prop with a render function for dynamic data:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const categories = [
     { id: 'electronics', name: 'Electronics' },
@@ -95,7 +95,7 @@ Customize tag colors by setting the `colorPalette` prop on individual `TagGroup.
 
 Note that the `colorPalette` prop selects which palette to use, but doesn't immediately change the visuals. You must also reference color tokens (e.g. `backgroundColor="colorPalette.11"`, `color="colorPalette.6"`) to actually apply the intended colors.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TagGroup.Root aria-label="Primary tags">
@@ -152,7 +152,7 @@ const App = () => (
 
 Enable tag removal by providing an `onRemove` handler. Users can remove tags by clicking the remove button or pressing Backspace:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [tags, setTags] = useState([
     { id: 'react', name: 'React' },
@@ -189,7 +189,7 @@ const App = () => {
 
 Use `selectionMode="single"` to allow selecting one tag at a time:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = useState(new Set());
 
@@ -224,7 +224,7 @@ const App = () => {
 
 Use `selectionMode="multiple"` to allow selecting multiple tags:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = useState(new Set(['electronics']));
 
@@ -262,7 +262,7 @@ const App = () => {
 
 Disable the entire tag group or individual tags:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -352,7 +352,7 @@ The component supports full keyboard interaction:
 
 Display active filters that can be removed:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [filters, setFilters] = useState([
     { id: 'price-low', name: 'Price: Low to High', category: 'sort' },
@@ -400,7 +400,7 @@ const App = () => {
 
 Use single selection for choosing one category:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = useState(new Set(['all']));
   const [itemCount, setItemCount] = useState(124);
@@ -443,7 +443,7 @@ const App = () => {
 
 Allow multiple selections for filtering:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedSizes, setSelectedSizes] = useState(new Set());
   const [selectedColors, setSelectedColors] = useState(new Set());

@@ -68,7 +68,7 @@ import { SearchInputField, type SearchInputFieldProps } from '@commercetools/nim
 
 The simplest implementation with a label and controlled state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -89,7 +89,7 @@ const App = () => {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSmall, setValueSmall] = useState<string>('');
   const [valueMedium, setValueMedium] = useState<string>('');
@@ -119,7 +119,7 @@ const App = () => {
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSolid, setValueSolid] = useState<string>('');
   const [valueGhost, setValueGhost] = useState<string>('');
@@ -149,7 +149,7 @@ const App = () => {
 
 Add helper text below the input to provide context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -169,7 +169,7 @@ const App = () => {
 
 Show error messages when the field is touched and has validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
   const [touched, setTouched] = useState<boolean>(false);
@@ -199,7 +199,7 @@ const App = () => {
 
 Provide additional context through an info button and popover:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -220,7 +220,7 @@ const App = () => {
 
 Mark fields as required with the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -241,7 +241,7 @@ const App = () => {
 
 Prevent user interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('Cannot edit this');
 
@@ -262,7 +262,7 @@ const App = () => {
 
 Display a non-editable value with the `isReadOnly` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('laptop');
 
@@ -283,7 +283,7 @@ const App = () => {
 
 The SearchInput component includes a built-in clear button that appears when there's text in the input:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('laptop');
 

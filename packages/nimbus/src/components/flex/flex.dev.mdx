@@ -16,7 +16,7 @@ import { Flex, type FlexProps } from '@commercetools/nimbus';
 
 The Flex component applies `display: flex` to create flexible layouts. By default, items are arranged horizontally in a single row:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Flex gap="400">
     <Box p="400" bg="primary.7" borderRadius="200">
@@ -38,7 +38,7 @@ const App = () => (
 
 Use the `direction` prop to arrange items horizontally or vertically:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -78,7 +78,7 @@ const App = () => (
 
 Use `alignItems` and `justifyContent` to control how items are positioned:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -118,7 +118,7 @@ const App = () => (
 
 Control how items grow and shrink using flex properties:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
@@ -158,7 +158,7 @@ const App = () => (
 
 Control how items wrap when they exceed available space:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -190,7 +190,7 @@ const App = () => (
 
 Use responsive prop values to change layout based on viewport size:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Flex
     direction={{ base: "column", md: "row" }}
@@ -260,7 +260,7 @@ The component supports all [Style Props](/home/style-props) with `display="flex"
 
 Create a container that centers content both horizontally and vertically:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Flex
     direction="column"
@@ -283,7 +283,7 @@ const App = () => (
 
 Distribute items with space between them:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Flex
     direction="row"
@@ -308,7 +308,7 @@ const App = () => (
 
 Mix flexible and fixed-width items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>

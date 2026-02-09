@@ -66,7 +66,7 @@ import { DateRangePickerField, type DateRangePickerFieldProps } from '@commercet
 
 The simplest implementation with a label and controlled state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -90,7 +90,7 @@ DateRangePickerField uses the same `@internationalized/date` library as DateRang
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSmall, setValueSmall] = useState<DateRangePickerProps["value"]>(null);
   const [valueMedium, setValueMedium] = useState<DateRangePickerProps["value"]>(null);
@@ -118,7 +118,7 @@ const App = () => {
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSolid, setValueSolid] = useState<DateRangePickerProps["value"]>(null);
   const [valueGhost, setValueGhost] = useState<DateRangePickerProps["value"]>(null);
@@ -146,7 +146,7 @@ const App = () => {
 
 Add helper text below the input to provide context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -165,7 +165,7 @@ const App = () => {
 
 Show error messages when the field is touched and has validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
   const [touched, setTouched] = useState<boolean>(false);
@@ -194,7 +194,7 @@ const App = () => {
 
 Provide additional context through an info button and popover:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -214,7 +214,7 @@ const App = () => {
 
 Mark fields as required with the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -234,7 +234,7 @@ const App = () => {
 
 Prevent user interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -254,7 +254,7 @@ const App = () => {
 
 Display a non-editable value with the `isReadOnly` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -274,7 +274,7 @@ const App = () => {
 
 Include time selection by setting the granularity prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 

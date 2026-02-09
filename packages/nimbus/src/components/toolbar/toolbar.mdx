@@ -52,7 +52,7 @@ Get familiar with the features.
 Most commonly used, horizontal toolbars should sit above the content meant to be
 altered.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Toolbar orientation="horizontal">
     <Group>
@@ -87,7 +87,7 @@ const App = () => (
 Vertical toolbars are less common, but in the right interface it can be more
 helpful than a horizontal placement.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Toolbar orientation="vertical">
     <IconButton size="xs" variant="ghost">
@@ -112,7 +112,7 @@ Two versions are available, a plain version that has a slight shadow to lift,
 and an outlined version that has more contrast from elements around it. The
 plain version without an outline is most common.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="row" gap="600" alignItems="center">
     <Toolbar variant="plain" size="xs">
@@ -155,7 +155,7 @@ combine similar tools in groups to make it easier for users to make choices
 quickly. If there are a lot of tools within a group, fold them under a menu
 button and leave 2-3 out that are the most popular choices.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Toolbar size="xs">
     <Group>

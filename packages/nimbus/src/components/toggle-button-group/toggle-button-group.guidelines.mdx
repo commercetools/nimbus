@@ -79,7 +79,7 @@ hover tooltips.
 >   toggle options.
 > - Do use tooltips to easily explain what a tool is to a user.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Select view" selectedKeys={["view-list"]} colorPalette="primary">
     <Tooltip.Root delay={0} closeDelay={0}>
@@ -111,7 +111,7 @@ const App = () => (
 >   that seem too visually similar.
 > - Always pair icon buttons with tooltip labels for all users.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Select view (Bad Example)" selectedKeys={["view-confusing2"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="view-confusing1" aria-label="Confusing Icon 1">
@@ -140,7 +140,7 @@ In data tables or lists, button groups can be used to filter or sort content.
 >   sometimes look like an item count included with the button group items.
 > - It is not good practice to mix styles in button groupings.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Filter status" selectedKeys={["filter-accepted"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="filter-drafts">
@@ -162,7 +162,7 @@ const App = () => (
 > - Do not confuse the user with unclear options.
 > - Do not use unfamiliar and lengthly labels.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Filter status (Bad Example)" selectedKeys={["filter-granted"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="filter-compositions">

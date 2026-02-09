@@ -41,7 +41,7 @@ page. Primary buttons should only appear once per screen.
   that context. It serves to guide the user towards the desired path and make
   the key interaction clear and prominent.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button colorPalette="primary" size="md" variant="solid">
    <Icons.Add />
@@ -59,7 +59,7 @@ alternative action compared to the primary button.
   important or less frequent than the primary action. They provide users with
   alternative options without distracting from the main call to action.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button colorPalette="primary" variant="outline" size="md">
    <Icons.Replay />
@@ -82,7 +82,7 @@ collection of actions — those that users are unlikely to perform.
   or dashboards. Link and Ghost styled buttons are most used in tertiary
   actions, and are styled in X-small or 2X-small sizes.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" alignItems="center">
     <Button size="md" variant="ghost">
@@ -109,7 +109,7 @@ of the text, but we allow for icons to follow for special uses such as drop
 downs, steppers, and expansion links. For icon placement best practices refer to
 our guidelines.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal">
     <Button size="md" variant="solid">
@@ -142,7 +142,7 @@ const App = () => (
 
 This is the default and preferred size for buttons.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button size="md" variant="solid">
    Save
@@ -155,7 +155,7 @@ const App = () => (
 If there is a space constraint, use these buttons. Ideally will be used
 sparingly.
 
-```jsx-live
+```jsx live
 const App = () => (
  <Button size="xs" variant="solid">
    Apply filters
@@ -168,7 +168,7 @@ const App = () => (
 Used mainly for Ghost and Link buttons, these buttons can be seen in filters
 where the size constraint is tightest.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button size="2xs" variant="ghost">
    <Icons.Edit />
@@ -184,7 +184,7 @@ const App = () => (
 This is the default `colorPalette` for the primary button. This styling should be used
 most commonly for all actions.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button size="md" variant="solid">
     <Icons.SentimentSatisfied />
@@ -198,7 +198,7 @@ const App = () => (
 
 Use this button when the user is approaching a permanent destructive action.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Button colorPalette="critical" size="md" variant="solid">
     <Icons.SentimentSatisfied />

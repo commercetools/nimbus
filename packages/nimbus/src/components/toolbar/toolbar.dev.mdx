@@ -16,7 +16,7 @@ import { Toolbar, type ToolbarProps } from '@commercetools/nimbus';
 
 The simplest implementation creates a horizontal toolbar with default styling:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Toolbar>
     <Button variant="ghost">File</Button>
@@ -32,7 +32,7 @@ const App = () => (
 
 The `xs` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
@@ -71,7 +71,7 @@ const App = () => (
 
 Choose between `plain` and `outline` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
@@ -104,7 +104,7 @@ const App = () => (
 
 The `orientation` prop controls the layout direction and keyboard navigation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600" alignItems="flex-start">
     <Box>
@@ -147,7 +147,7 @@ const App = () => (
 
 Organize toolbar controls using `Group` and `Separator` components:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Toolbar>
     <Group>
@@ -184,7 +184,7 @@ const App = () => (
 
 Integrate toggle button groups for stateful toolbar controls:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Toolbar variant="outline">
     <ToggleButtonGroup.Root
@@ -309,7 +309,7 @@ The component supports full keyboard interaction:
 
 Create a comprehensive text formatting toolbar with multiple control groups:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [textStyle, setTextStyle] = useState("p");
 
@@ -387,7 +387,7 @@ const App = () => {
 
 Build a vertical navigation toolbar for sidebar layouts:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Toolbar
     orientation="vertical"
@@ -419,7 +419,7 @@ const App = () => (
 
 Create a simple action toolbar with primary controls:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400" width="full">
     <Toolbar aria-label="Document actions">

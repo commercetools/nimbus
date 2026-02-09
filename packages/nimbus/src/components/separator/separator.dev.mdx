@@ -16,7 +16,7 @@ import { Separator, type SeparatorProps } from '@commercetools/nimbus';
 
 The simplest implementation uses the default horizontal orientation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box>
     <Box p="400">Content above the separator</Box>
@@ -32,7 +32,7 @@ const App = () => (
 
 The Separator supports both horizontal and vertical orientations to divide content in different layouts:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -92,7 +92,7 @@ The Separator component is a presentational element and does not support keyboar
 
 Use horizontal separators to visually group related form fields:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400" width="400px">
     <Box>
@@ -121,7 +121,7 @@ const App = () => (
 
 Use vertical separators within toolbars to organize actions into logical groups:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Toolbar aria-label="Text formatting">
     <ToggleButtonGroup.Root selectionMode="multiple" defaultSelectedKeys={["bold"]}>

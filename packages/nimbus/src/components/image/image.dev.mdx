@@ -16,7 +16,7 @@ import { Image, type ImageProps } from '@commercetools/nimbus';
 
 The Image component displays images with built-in support for accessibility, lazy loading, and responsive behavior.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Image 
     src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
@@ -33,7 +33,7 @@ const App = () => (
 
 Use the `aspectRatio` prop to maintain a specific aspect ratio regardless of the image's natural dimensions:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Box maxWidth="250px">
@@ -68,7 +68,7 @@ const App = () => (
 
 Control how the image fills its container using the `fit` prop. This maps to the CSS `object-fit` property:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -118,7 +118,7 @@ const App = () => (
 
 Use the `align` prop to control the focal point of the image within its container:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -165,7 +165,7 @@ const App = () => (
 
 Enable lazy loading to defer loading images until they're near the viewport, improving initial page load performance:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -196,7 +196,7 @@ const App = () => (
 
 Use `srcSet` and `sizes` to serve different image resolutions based on the device's screen size and pixel density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Image 
     src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&fit=crop"
@@ -217,7 +217,7 @@ const App = () => (
 
 Create circular images for avatars or profile pictures using border radius:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Image 
@@ -274,7 +274,7 @@ Every image must have an `alt` attribute. The alt text should:
 - Describe the action if the image is interactive (e.g., part of a link or button)
 - Provide meaningful information, not just "image" or the file name
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -350,7 +350,7 @@ Plus Chakra UI style props and the following enhanced props:
 
 Display product images with consistent aspect ratios and hover effects:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap="400">
     <Box>
@@ -400,7 +400,7 @@ const App = () => (
 
 Use Image within custom avatar implementations or as profile pictures:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [imageError, setImageError] = React.useState(false);
   
@@ -448,7 +448,7 @@ const App = () => {
 
 Create hero sections with images and text overlays:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box position="relative" height="400px" rounded="lg" overflow="hidden">
     <Image 
@@ -500,7 +500,7 @@ const App = () => (
 
 Display a grid of images with consistent sizing and spacing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SimpleGrid columns={{ base: 2, md: 3 }} gap="300">
     <Image 

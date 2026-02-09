@@ -31,7 +31,7 @@ import { Box } from "@commercetools/nimbus";
 
 ### Basic usage
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box p="100" bg="primary.3">
     Basic Box
@@ -41,7 +41,7 @@ const App = () => (
 
 ### As a flex container
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box display="flex" gap="100">
     <Box p="100" bg="primary.3">
@@ -56,7 +56,7 @@ const App = () => (
 
 ### With border
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box p="100" border="solid-50" borderColor="primary.3">
     Box with border
@@ -66,7 +66,7 @@ const App = () => (
 
 ### With shadow
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box p="100" boxShadow="6">
     Box with shadow
@@ -79,7 +79,7 @@ const App = () => (
 Use the `asChild` prop to apply Box styles to any child element while
 maintaining the child's functionality:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box p="100" bg="primary.3" asChild>
     <button onClick={() => alert("Clicked!")}>

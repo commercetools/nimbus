@@ -16,7 +16,7 @@ import { DateInput, type DateInputProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode with an accessible label:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <DateInput aria-label="Enter a date" />
 )
@@ -87,7 +87,7 @@ dateTime.toString(); // "2025-06-15T14:30:00"
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateInput size="sm" aria-label="Small date input" />
@@ -100,7 +100,7 @@ const App = () => (
 
 Choose between `solid`, `ghost`, and `plain` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateInput variant="solid" aria-label="Solid variant" />
@@ -119,7 +119,7 @@ const App = () => (
 
 Add icons or interactive elements to enhance the input:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [date, setDate] = useState(null);
 
@@ -158,7 +158,7 @@ const App = () => {
 
 The `granularity` prop controls which date/time segments are displayed:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="100">
@@ -201,7 +201,7 @@ const App = () => (
 
 Control the time display format using the `hourCycle` prop when working with time values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="100">
@@ -230,7 +230,7 @@ const App = () => (
 
 Control whether single-digit values display with leading zeros:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const singleDigitDate = new CalendarDate(2025, 3, 5);
 
@@ -268,7 +268,7 @@ const App = () => {
 
 When using `ZonedDateTime` values, control time zone display with the `hideTimeZone` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const zonedDateTime = new ZonedDateTime(
     2025,
@@ -310,7 +310,7 @@ const App = () => {
 
 Set a starting point for keyboard input when the field is empty using `placeholderValue`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="100">
@@ -332,7 +332,7 @@ const App = () => (
 
 Restrict date selection to a specific range using `minValue` and `maxValue`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [date, setDate] = useState(null);
   const minDate = new CalendarDate(2025, 6, 1);
@@ -372,7 +372,7 @@ const App = () => {
 
 Implement custom validation logic beyond min/max constraints:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [date, setDate] = useState(null);
 
@@ -415,7 +415,7 @@ const App = () => {
 
 DateInput supports disabled, read-only, required, and invalid states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="100">
@@ -464,7 +464,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState('No date selected');
 
@@ -489,7 +489,7 @@ Use uncontrolled mode when you need to capture the selected date without managin
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState(new CalendarDate(2025, 6, 15));
 
@@ -528,7 +528,7 @@ Use controlled mode when you need to:
 
 DateInput automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [locale, setLocale] = useState('en-US');
   const dateValue = new CalendarDate(2025, 6, 15);
@@ -636,7 +636,7 @@ The component supports full keyboard interaction for navigating and editing date
 
 A common pattern for capturing user birth dates with validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [birthDate, setBirthDate] = useState(null);
   const today = new CalendarDate(2025, 12, 2);
@@ -677,7 +677,7 @@ const App = () => {
 
 A pattern for scheduling appointments with time selection:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [appointmentTime, setAppointmentTime] = useState(
     new CalendarDateTime(2025, 12, 15, 10, 0, 0)
@@ -726,7 +726,7 @@ const App = () => {
 
 Pattern for the start date of an event range (pairs with DateRangePicker):
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [startDate, setStartDate] = useState(new CalendarDate(2025, 12, 10));
   const [endDate, setEndDate] = useState(new CalendarDate(2025, 12, 15));

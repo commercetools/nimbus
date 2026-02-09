@@ -16,7 +16,7 @@ import { Select, type SelectProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root aria-label="Select a fruit">
     <Select.Options placeholder="Select an option">
@@ -77,7 +77,7 @@ const [selectedKey, setSelectedKey] = useState<Key | null>(null);
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Select.Root size="sm" aria-label="Small select">
@@ -100,7 +100,7 @@ const App = () => (
 
 Use `isDisabled` to disable the select:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root isDisabled aria-label="Disabled select">
     <Select.Options placeholder="Select...">
@@ -115,7 +115,7 @@ const App = () => (
 
 Choose between `outline` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Select.Root variant="outline" aria-label="Outline select">
@@ -138,7 +138,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultSelectedKey` and `onSelectionChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedValue, setSelectedValue] = useState<string>('Selected: banana');
 
@@ -169,7 +169,7 @@ const App = () => {
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedKey, setSelectedKey] = useState<Key | null>(null);
 
@@ -198,7 +198,7 @@ const App = () => {
 
 Group related options with `Select.OptionGroup`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root aria-label="Select a food">
     <Select.Options placeholder="Choose a food">
@@ -236,7 +236,7 @@ const App = () => (
 
 **Static children example:**
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root aria-label="Select a fruit">
     <Select.Options placeholder="Choose a fruit">
@@ -252,7 +252,7 @@ const App = () => (
 
 When using `items`, children must be a render function that receives each item and returns a `Select.Option`. This example demonstrates using `items` with data that could come from an API, state, or computed values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // In a real app, this data might come from an API, props, or state.
   const fruits = [
@@ -282,7 +282,7 @@ The `items` pattern enables React Aria to optimize rendering and provides better
 
 Use `isClearable` to show a clear button:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root
     isClearable
@@ -303,7 +303,7 @@ const App = () => (
 
 Use `leadingElement` to add an icon or element at the start of the trigger:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Select.Root
     leadingElement={<Icon as={Icons.SentimentSatisfied} />}
@@ -400,7 +400,7 @@ The component supports full keyboard interaction:
 
 A common use case is filtering lists or tables by a selected option:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedCategory, setSelectedCategory] = useState<Key | null>(null);
 
@@ -432,7 +432,7 @@ const App = () => {
 
 Example for selecting a country, region, or category:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [country, setCountry] = useState<Key | null>(null);
 

@@ -17,7 +17,7 @@ import { ProgressBar, type ProgressBarProps } from '@commercetools/nimbus';
 
 The simplest implementation requires a `value` and a `label`. The default range is 0 to 100.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ProgressBar value={40} label="Loading..." />
 )
@@ -29,7 +29,7 @@ const App = () => (
 
 The `2xs` and `md` (default) size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <ProgressBar value={60} size="2xs" label="Extra small (2xs)" />
@@ -42,7 +42,7 @@ const App = () => (
 
 Choose between `solid` (default) and `contrast` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <ProgressBar value={75} variant="solid" label="Solid variant" />
@@ -57,7 +57,7 @@ const App = () => (
 
 The `layout` prop controls the positioning of the label and value text:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <ProgressBar
@@ -86,7 +86,7 @@ const App = () => (
 
 Use the `isIndeterminate` prop when the progress duration is unknown. The bar will show an animated loading state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ProgressBar
     isIndeterminate
@@ -99,7 +99,7 @@ const App = () => (
 
 The `isDynamic` prop indicates whether the progress represents an active, ongoing process (like a download) or a static indicator (like a step in a wizard).
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Stack gap="200">
@@ -131,7 +131,7 @@ const App = () => (
 
 Use `formatOptions` to customize how the value is displayed. This accepts standard `Intl.NumberFormatOptions`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <ProgressBar
@@ -158,7 +158,7 @@ const App = () => (
 
 The `colorPalette` prop allows you to theme the progress bar using the system color tokens:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <ProgressBar value={80} colorPalette="primary" label="Primary" />
@@ -206,7 +206,7 @@ export const Example = () => (
 
 This example demonstrates how to update the progress bar value dynamically to simulate a file upload process.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [progress, setProgress] = useState(0);
   const [isRunning, setIsRunning] = useState(false);

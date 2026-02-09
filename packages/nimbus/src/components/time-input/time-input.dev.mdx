@@ -17,7 +17,7 @@ import { Time, type TimeValue } from '@internationalized/date';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TimeInput aria-label="Enter a time" />
 )
@@ -78,7 +78,7 @@ time.second;   // 0
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TimeInput size="sm" aria-label="Small time input" defaultValue={new Time(9, 30)} />
@@ -91,7 +91,7 @@ const App = () => (
 
 Choose between `solid` (default) and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TimeInput variant="solid" aria-label="Solid variant" defaultValue={new Time(10, 0)} />
@@ -104,7 +104,7 @@ const App = () => (
 
 Add icons or interactive elements before or after the time segments:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TimeInput
@@ -131,7 +131,7 @@ const App = () => (
 
 Control whether the time displays in 12-hour or 24-hour format using the `hourCycle` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -162,7 +162,7 @@ const App = () => (
 
 The `granularity` prop controls which time segments are displayed and editable:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -202,7 +202,7 @@ const App = () => (
 
 Control timezone visibility when using ZonedDateTime values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const zonedTime = parseZonedDateTime('2024-12-04T14:30[America/New_York]');
   
@@ -233,7 +233,7 @@ const App = () => {
 
 Display single-digit hours and minutes with leading zeros:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -260,7 +260,7 @@ const App = () => (
 
 The `placeholderValue` sets the default values when a user first interacts with empty segments:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -284,7 +284,7 @@ const App = () => (
 
 Restrict selectable times using `minValue` and `maxValue`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [time, setTime] = useState<TimeValue | null>(new Time(10, 0));
   const minTime = new Time(9, 0);
@@ -318,7 +318,7 @@ const App = () => {
 
 Prevent user interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TimeInput
     isDisabled
@@ -332,7 +332,7 @@ const App = () => (
 
 Indicate validation errors with the `isInvalid` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TimeInput
@@ -351,7 +351,7 @@ const App = () => (
 
 Display time values without allowing edits:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TimeInput
     isReadOnly
@@ -365,7 +365,7 @@ const App = () => (
 
 Mark the input as required for form validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TimeInput
     isRequired
@@ -378,7 +378,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<string>('No time selected');
 
@@ -407,7 +407,7 @@ Use uncontrolled mode when you need to capture the selected time without managin
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<TimeInputProps["value"]>(new Time(12, 0));
 
@@ -446,7 +446,7 @@ Use controlled mode when you need to:
 
 The TimeInput automatically formats times according to the current locale:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const sampleTime = new Time(14, 30);
   
@@ -479,7 +479,7 @@ const App = () => {
 
 Integrate TimeInput with FormField for complete form layouts:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
   const minTime = new Time(9, 0);
@@ -579,7 +579,7 @@ The component supports full keyboard interaction:
 
 Limit time selection to standard business hours:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [time, setTime] = useState<TimeValue | null>(new Time(9, 0));
   const businessStart = new Time(9, 0);
@@ -616,7 +616,7 @@ const App = () => {
 
 Create start and end time inputs with validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [startTime, setStartTime] = useState<TimeValue | null>(new Time(9, 0));
   const [endTime, setEndTime] = useState<TimeValue | null>(new Time(17, 0));

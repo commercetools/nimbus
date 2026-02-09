@@ -16,7 +16,7 @@ import { Alert, type AlertProps } from '@commercetools/nimbus';
 
 The Alert component uses a compound component pattern. You must wrap all parts in `Alert.Root`. The component automatically handles layout and icon selection based on the `colorPalette`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Alert.Root colorPalette="info">
     <Alert.Title>Information</Alert.Title>
@@ -33,7 +33,7 @@ const App = () => (
 
 The `colorPalette` prop determines the semantic color and the accompanying icon. The following examples demonstrate every palette available for this component (`positive`, `warning`, `critical`, `info`).
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Alert.Root colorPalette="positive">
@@ -63,7 +63,7 @@ const App = () => (
 
 Two visual variants are available to suit different interface needs: `outlined` (default) and `flat`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Alert.Root variant="outlined" colorPalette="info">
@@ -89,7 +89,7 @@ The component parts (`Title`, `Description`, `Actions`, `DismissButton`) can be 
 
 **Title only:**
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Alert.Root colorPalette="positive">
     <Alert.Title>Success: Item created.</Alert.Title>
@@ -99,7 +99,7 @@ const App = () => (
 
 **Description only:**
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Alert.Root colorPalette="info">
     <Alert.Description>
@@ -113,7 +113,7 @@ const App = () => (
 
 Use `Alert.Actions` to group action buttons. These will be positioned correctly within the alert layout.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Alert.Root colorPalette="warning">
     <Alert.Title>Storage Limit Reached</Alert.Title>
@@ -134,7 +134,7 @@ const App = () => (
 
 Add the `Alert.DismissButton` to provide a close action. You must handle the dismissal logic (e.g., removing the alert from the DOM) yourself.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isVisible, setIsVisible] = useState(true);
 

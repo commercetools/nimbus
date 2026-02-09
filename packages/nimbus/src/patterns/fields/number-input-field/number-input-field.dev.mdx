@@ -71,7 +71,7 @@ import { NumberInputField, type NumberInputFieldProps } from '@commercetools/nim
 
 The simplest implementation with a label and controlled state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number>(0);
 
@@ -91,7 +91,7 @@ const App = () => {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSmall, setValueSmall] = useState<number>(0);
   const [valueMedium, setValueMedium] = useState<number>(0);
@@ -121,7 +121,7 @@ const App = () => {
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSolid, setValueSolid] = useState<number>(42);
   const [valueGhost, setValueGhost] = useState<number>(42);
@@ -151,7 +151,7 @@ const App = () => {
 
 Add helper text below the input to provide context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number>(10);
 
@@ -171,7 +171,7 @@ const App = () => {
 
 Show error messages when the field is touched and has validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number | undefined>(undefined);
   const [touched, setTouched] = useState<boolean>(false);
@@ -202,7 +202,7 @@ const App = () => {
 
 Provide additional context through an info button and popover:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number>(50);
 
@@ -223,7 +223,7 @@ const App = () => {
 
 Mark fields as required with the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number | undefined>(undefined);
 
@@ -246,7 +246,7 @@ const App = () => {
 
 Prevent user interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number>(999);
 
@@ -266,7 +266,7 @@ const App = () => {
 
 Display a non-editable value with the `isReadOnly` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<number>(12345);
 
@@ -286,7 +286,7 @@ const App = () => {
 
 Enforce value boundaries with `minValue` and `maxValue`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [percentage, setPercentage] = useState<number>(50);
 
@@ -308,7 +308,7 @@ const App = () => {
 
 Use the `step` prop to control increment/decrement amounts:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [price, setPrice] = useState<number>(5.00);
 
@@ -333,7 +333,7 @@ const App = () => {
 
 Format values as currency using `formatOptions`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [amount, setAmount] = useState<number>(1234.56);
 
@@ -375,7 +375,7 @@ const App = () => {
 
 Format values as percentages:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [rate, setRate] = useState<number>(0.25);
 
@@ -400,7 +400,7 @@ const App = () => {
 
 Add icons or text before the input:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [price, setPrice] = useState<number>(99.99);
 
@@ -421,7 +421,7 @@ const App = () => {
 
 Add units or symbols after the input:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [weight, setWeight] = useState<number>(150);
   const [temperature, setTemperature] = useState<number>(72);
@@ -450,7 +450,7 @@ const App = () => {
 
 Control decimal places with format options:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value1, setValue1] = useState<number>(3.14159);
   const [value2, setValue2] = useState<number>(3.14159);

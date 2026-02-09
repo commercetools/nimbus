@@ -32,7 +32,7 @@ the figma library components to make designing common shared uses easier.
 This action allows users to discard any unsaved changes they've made to the
 controls since the last successful save or the default settings were loaded.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" alignItems="center">
     <Button colorPalette="primary" size="xs" variant="outline">
@@ -53,7 +53,7 @@ Similar to revert and save, there is a difference in persistence and scope.
 a longer period, while "Cancel" typically discards unsaved changes from the
 current interaction.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" alignItems="center">
     <Button colorPalette="primary" size="xs" variant="outline">
@@ -71,7 +71,7 @@ const App = () => (
 Use up to four icons to allow your user to control the information within the
 associated accordion.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" alignItems="center">
     <IconButton colorPalette="primary" variant="ghost">
@@ -95,7 +95,7 @@ const App = () => (
 Single icon button, this is a common used control, used to delete the entire
 accordion and content.
 
-```jsx-live
+```jsx live
   const App = () => (
     <IconButton colorPalette="critical" variant="ghost">
       <Icons.Delete />
@@ -115,7 +115,7 @@ activating the content within to be edited by the user.
 Allowing the users to select from a list. This control often controls the type
 of form that will be shown for user completion.
 
-```jsx-live
+```jsx live
 
 const App = () => (
   <Select.Root aria-label="Select an option" data-testid="select" selectedKey="1" >
@@ -176,7 +176,7 @@ meaningful ways for the user.
 > - Do organize the right information within accordions, if all closed, users
 >   should be able to navigate information easily.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Accordion.Root size="sm">
     <Accordion.Item>
@@ -204,7 +204,7 @@ const App = () => (
 > - Do not nest accordions excessively.
 > - Do not use accordion controls when nested to reduce complexity.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Accordion.Root size="sm">
     <Accordion.Item>
@@ -276,7 +276,7 @@ interact with them when needed.
 >   effects should be.
 > - Include tooltips to describe icon buttons when used.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Accordion.Root size="sm">
     <Accordion.Item>
@@ -321,7 +321,7 @@ const App = () => (
 >   majority of the users. If certain controls require permissions, consider
 >   hiding them from certain users to simplify workspaces.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Accordion.Root size="sm">
     <Accordion.Item>

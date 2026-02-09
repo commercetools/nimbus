@@ -18,7 +18,7 @@ import { Switch, type SwitchProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return <Switch>Enable notifications</Switch>;
 };
@@ -32,7 +32,7 @@ Switch supports two size variants: `sm` (small) and `md` (medium, default).
 
 #### Small size
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return <Switch size="sm">Small switch</Switch>;
 };
@@ -40,7 +40,7 @@ const App = () => {
 
 #### Medium size
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return <Switch size="md">Medium switch</Switch>;
 };
@@ -50,7 +50,7 @@ const App = () => {
 
 It's best practice to provide a visible label that describes what the switch controls.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -66,7 +66,7 @@ const App = () => {
 
 When the context makes the switch's purpose clear, you can omit the visible label. However, you must still provide an accessible label using `aria-label`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -81,7 +81,7 @@ const App = () => {
 
 Use `isDisabled` to prevent user interaction with the switch.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -98,7 +98,7 @@ const App = () => {
 
 Use `isInvalid` to indicate that the switch's current state is not valid, such as when a required setting must be enabled.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -115,7 +115,7 @@ const App = () => {
 
 Use `defaultSelected` to set the initial state in uncontrolled mode.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -130,7 +130,7 @@ const App = () => {
 
 In uncontrolled mode, the Switch manages its own state internally. Use `defaultSelected` to set the initial value and `onChange` to be notified of changes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [lastChanged, setLastChanged] = React.useState('');
 
@@ -154,7 +154,7 @@ const App = () => {
 
 In controlled mode, you manage the switch state externally using the `isSelected` prop.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isEnabled, setIsEnabled] = React.useState<
     SwitchProps['isSelected']
@@ -180,7 +180,7 @@ const App = () => {
 
 Use `isReadOnly` to display a switch that cannot be toggled by the user but shows a specific state.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack gap="400">
@@ -251,7 +251,7 @@ If your use case requires tracking and analytics for this component, it is good 
 
 Use switches for user preference settings that can be turned on or off.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [settings, setSettings] = React.useState({
     emailNotifications: true,
@@ -297,7 +297,7 @@ const App = () => {
 
 Use switches to enable or disable application features.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [darkMode, setDarkMode] = React.useState(false);
   const [autoSave, setAutoSave] = React.useState(true);
@@ -327,7 +327,7 @@ const App = () => {
 
 Show or hide content based on switch state.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [showAdvanced, setShowAdvanced] = React.useState(false);
 

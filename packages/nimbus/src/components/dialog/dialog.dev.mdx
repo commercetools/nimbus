@@ -16,7 +16,7 @@ import { Dialog, type DialogRootProps } from '@commercetools/nimbus';
 
 The Dialog component uses a compound component pattern. You must wrap all parts in `Dialog.Root`. The component handles focus management, keyboard navigation, and portal rendering automatically.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>Open Dialog</Dialog.Trigger>
@@ -43,7 +43,7 @@ const App = () => (
 
 The `placement` prop on `Dialog.Root` controls where the dialog appears in the viewport. Three options are available: `center` (default), `top`, and `bottom`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" flexWrap="wrap">
     <Dialog.Root placement="center">
@@ -92,7 +92,7 @@ const App = () => (
 
 The `scrollBehavior` prop determines how overflow content is handled. Use `outside` (default) for page-level scrolling or `inside` to confine scrolling to the dialog body.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const longContent = Array.from({ length: 60 }, (_, i) => (
     <Text key={i}>Line {i + 1} of long content that will cause overflow.</Text>
@@ -143,7 +143,7 @@ const App = () => {
 
 The dialog manages its own open/close state internally without requiring external state management. Use the `defaultOpen` prop if you need the dialog to start open on mount (though this is rarely needed in practice).
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>Open Dialog</Dialog.Trigger>
@@ -171,7 +171,7 @@ const App = () => (
 
 Use `isOpen` and `onOpenChange` to control the dialog state externally. This is essential when you need to open the dialog programmatically or track state changes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
 
@@ -209,7 +209,7 @@ Control how users can close the dialog using three props: `isDismissable`, `isKe
 
 By default, dialogs can only be closed with the Escape key or close buttons. Clicking the backdrop does nothing. This is the standard behavior for most dialogs.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>Default Behavior</Dialog.Trigger>
@@ -235,7 +235,7 @@ const App = () => (
 
 Use `isDismissable={true}` for non-critical dialogs like notifications or informational content where users should be able to quickly dismiss by clicking outside.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root isDismissable>
     <Dialog.Trigger>Dismissible Notification</Dialog.Trigger>
@@ -262,7 +262,7 @@ const App = () => (
 
 Use `isKeyboardDismissDisabled={true}` for critical confirmations where you need to ensure users explicitly choose an action rather than accidentally dismissing.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root isKeyboardDismissDisabled>
     <Dialog.Trigger>Critical Action</Dialog.Trigger>
@@ -293,7 +293,7 @@ const App = () => (
 Combine `isDismissable` with `isKeyboardDismissDisabled` &  `shouldCloseOnInteractOutside` to implement custom logic, such as protecting unsaved form changes.
 This example prevents backdrop and keyboard dismissal when there are unsaved changes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [formData, setFormData] = useState('');
   const [lastAction, setLastAction] = useState('');
@@ -373,7 +373,7 @@ The dialog parts are composable. You can omit optional parts based on your needs
 
 Use the complete structure (header, body, footer) when users need detailed information before making a decision. This e-commerce example shows refund implications before confirming cancellation.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isCancelling, setIsCancelling] = useState(false);
   const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
@@ -433,7 +433,7 @@ const App = () => {
 
 Omit the footer when actions are embedded in the body content or when only dismissal is needed. This pattern works well for informational dialogs with inline calls-to-action.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>What's New</Dialog.Trigger>
@@ -468,7 +468,7 @@ const App = () => (
 
 Omit the footer entirely when showing non-interruptible processes. Users can't take action until the operation completes, so only the header and progress information are needed.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
   const [progress, setProgress] = useState(0);
@@ -590,7 +590,7 @@ The `Dialog` component uses specific layout slots for proper rendering:
 
 Use dialogs to confirm destructive actions. Make the intent clear with appropriate button variants.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
@@ -640,7 +640,7 @@ const App = () => {
 
 Dialogs can contain forms for data entry. Use controlled mode to handle form submission and validation.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState<DialogRootProps["isOpen"]>(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
@@ -717,7 +717,7 @@ const App = () => {
 
 For important messages that require acknowledgment. Consider making these non-dismissable to ensure users see the message.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Dialog.Root isDismissable={false}>
     <Dialog.Trigger>Show Alert</Dialog.Trigger>

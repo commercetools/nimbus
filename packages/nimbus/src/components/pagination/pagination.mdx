@@ -43,7 +43,7 @@ Get familiar with the features.
 Use this combination for the most control over viewing and jumping to pages. This is best suited for navigating pagination with a lot of resources. Allowing users to jump to different pages as needed. 
 
 
-```jsx-live
+```jsx live
 const App = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(20);
@@ -63,7 +63,7 @@ const App = () => {
 
 This combination allows users to select how many items appear on the page and tab through other existing pages. It simplifies paging but restricts users from jumping pages. This is better suited for content that is 20 pages or less. 
 
-```jsx-live
+```jsx live
 const App = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(20);
@@ -85,7 +85,7 @@ const App = () => {
 
 The simplest solution, and mainly for uses with minimal data or processes that have multiple steps. This won't allow users to select how much information is viewed on the page, but only to navigate through via tapping through the arrows.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   

@@ -61,7 +61,7 @@ right corner or a dismiss button is enough for a user.
 The message is needed in all uses. Please always utilize messaging for the user.
 Use of the title is optional, use if it gives greater clarity to the user.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column">
     <Alert.Root colorPalette="critical" variant="outlined">
@@ -110,7 +110,7 @@ Use when getting attention is more important. These can be used inline, but they
 take up space and it is not as easy to slide into compact areas as much the flat
 variant.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Alert.Root colorPalette="positive" variant="outlined" width="8000">
     <Alert.Title>Success! Your Account is Verified</Alert.Title>
@@ -127,7 +127,7 @@ Use for inline messages specific to a field. You can also use this in dense
 areas with popovers. Do not use as a global page alert. In these placements, use
 links instead of buttons if a user needs to navigate to more information.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column" alignItems="start">
     <Text fontWeight="500">Email</Text>
@@ -145,7 +145,7 @@ const App = () => (
 
 The width is flexible, intended for many inline placements and page wide areas.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Grid templateColumns="repeat(6, 1fr)" gap="400">
     <Grid.Item colSpan={2}>
@@ -187,7 +187,7 @@ Positive alerts should be used for important updates, and product wide
 announcements. They should not be used in place of toasts or confirmation
 messages.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root colorPalette="positive" variant="outlined">
@@ -213,7 +213,7 @@ Should be used when extra explanation is needed, this alert is meant to be more
 temporary than using an info icon with a tooltip which declutters persistent
 information for users.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root colorPalette="info" variant="outlined">
@@ -239,7 +239,7 @@ Messages potential problems or situations that require user attention to prevent
 issues. They require the user to take action to make needed corrections or
 confirmation.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root colorPalette="warning" variant="outlined">
@@ -265,7 +265,7 @@ These are used to message immediate, severe problems that require urgent action.
 They indicate that something has already gone wrong and needs to be addressed
 immediately.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
     <Alert.Root colorPalette="critical" variant="outlined">

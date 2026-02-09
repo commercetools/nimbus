@@ -20,7 +20,7 @@ import { List } from '@commercetools/nimbus';
 
 The simplest implementation renders as an unordered list (`<ul>`) by default:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <List.Root>
     <List.Item>First item</List.Item>
@@ -36,7 +36,7 @@ const App = () => (
 
 The List component supports two visual variants: `marker` (default) and `plain`. The `marker` variant displays native list markers (bullets or numbers), while `plain` removes markers and is ideal for custom indicators.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
@@ -73,7 +73,7 @@ const App = () => (
 
 Control the alignment of list items using the `align` prop. Options include `start` (default), `center`, and `end`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
@@ -107,7 +107,7 @@ const App = () => (
 
 By default, `List.Root` renders as an unordered list (`<ul>`). Use the `as="ol"` prop when you need an ordered list:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="200">
     <Text fontWeight="600">Ordered list (&lt;ol&gt;)</Text>
@@ -125,7 +125,7 @@ const App = () => (
 
 Use `List.Indicator` with the `plain` variant to add custom markers, icons, or other visual elements before list items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <List.Root variant="plain">
     <List.Item>
@@ -154,7 +154,7 @@ const App = () => (
 
 Lists can be nested to create hierarchical structures. Use proper indentation and spacing to maintain visual hierarchy:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <List.Root gap="400">
     <List.Item>
@@ -178,7 +178,7 @@ const App = () => (
 
 Control spacing between list items using the `gap` prop, which accepts Nimbus spacing tokens:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="600" alignItems="flex-start">
     <Stack gap="200" flex="1">
@@ -284,7 +284,7 @@ The List component itself doesn't handle keyboard interactions, as it's a presen
 
 Create a task list with visual status indicators:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const tasks = [
     { id: 1, text: "Review design mockups", completed: true },
@@ -321,7 +321,7 @@ const App = () => {
 
 Use List to create navigation menus:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const menuItems = [
     "Home",
@@ -350,7 +350,7 @@ const App = () => {
 
 Display a requirements checklist with nested items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box p="400" bg="neutral.1" borderRadius="200">
     <Text fontWeight="600" mb="300">Account Setup Requirements</Text>

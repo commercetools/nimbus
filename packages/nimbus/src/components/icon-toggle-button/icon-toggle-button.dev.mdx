@@ -16,7 +16,7 @@ import { IconToggleButton, type IconToggleButtonProps } from '@commercetools/nim
 
 The IconToggleButton component is a specialized toggle button designed for icon-only interactions. It extends the ToggleButton component with required accessibility labeling for icon content.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <IconToggleButton aria-label="Like" onChange={(isSelected) => console.log(isSelected)}>
     <Icons.ThumbUp />
@@ -30,7 +30,7 @@ const App = () => (
 
 IconToggleButton supports two visual variants. The `outline` variant is the default.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconToggleButton variant="outline" aria-label="Star (outline)">
@@ -47,7 +47,7 @@ const App = () => (
 
 IconToggleButton supports three size variants. The `md` size is the default.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconToggleButton size="2xs" aria-label="Bookmark (2xs)">
@@ -67,7 +67,7 @@ const App = () => (
 
 Use color palettes to convey meaning and state. The `primary` color palette is the default.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <IconToggleButton colorPalette="primary" aria-label="Like (primary)">
@@ -90,7 +90,7 @@ const App = () => (
 
 Use `isSelected` and `onChange` to control the toggle state explicitly. This pattern is useful when you need to synchronize state with other parts of your application.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isLiked, setIsLiked] = useState(false);
 
@@ -114,7 +114,7 @@ const App = () => {
 
 Use `defaultSelected` for uncontrolled mode when you don't need to track the state externally.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconToggleButton
@@ -134,7 +134,7 @@ const App = () => (
 
 Use the `isDisabled` prop to prevent interaction. This removes the button from the tab order and prevents state changes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconToggleButton isDisabled aria-label="Like (disabled)">
@@ -151,7 +151,7 @@ const App = () => (
 
 A common pattern for managing multiple independent toggle states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [liked, setLiked] = useState(false);
   const [starred, setStarred] = useState(false);
@@ -242,7 +242,7 @@ The component supports full keyboard interaction:
 
 A common use case for toggle buttons in social features:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [likeCount, setLikeCount] = useState(42);
   const [isLiked, setIsLiked] = useState(false);
@@ -272,7 +272,7 @@ const App = () => {
 
 Toggle buttons work well in toolbars for formatting and view options:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [bold, setBold] = useState(false);
   const [italic, setItalic] = useState(false);
@@ -320,7 +320,7 @@ const App = () => {
 
 Handle asynchronous operations when toggling state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

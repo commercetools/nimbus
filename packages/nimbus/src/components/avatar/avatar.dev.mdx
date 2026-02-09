@@ -17,7 +17,7 @@ import { Avatar, type AvatarProps } from "@commercetools/nimbus";
 The simplest implementation displays an avatar with initials derived from first
 and last names:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Avatar firstName="John" lastName="Doe" />
 )
@@ -30,7 +30,7 @@ const App = () => (
 The `2xs`, `xs`, and `md` size variants are available to match your interface
 density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Avatar firstName="John" lastName="Doe" size="2xs" />
@@ -45,7 +45,7 @@ const App = () => (
 Avatars support different color palettes to convey semantic meaning or match
 your design theme:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Avatar firstName="John" lastName="Doe" colorPalette="primary" />
@@ -62,7 +62,7 @@ const App = () => (
 When a `src` prop is provided, the Avatar displays the image. If the image fails
 to load, it automatically falls back to initials:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Avatar
@@ -87,7 +87,7 @@ The Avatar automatically extracts and displays initials from the provided first
 and last names. This serves as a fallback when no image is available or when the
 image fails to load:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Avatar
@@ -153,7 +153,7 @@ keyboard interaction by default. If you need to make an avatar interactive
 
 Combine Avatar with text components to create a user profile header:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Avatar
@@ -174,7 +174,7 @@ const App = () => (
 
 Display avatars alongside user content in comments or messages:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const comments = [
     { id: 1, author: { firstName: "Alex", lastName: "Chen" }, text: "Great work on this feature!", time: "2 hours ago" },

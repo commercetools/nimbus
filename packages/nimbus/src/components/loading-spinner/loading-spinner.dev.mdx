@@ -16,7 +16,7 @@ import { LoadingSpinner, type LoadingSpinnerProps } from '@commercetools/nimbus'
 
 The LoadingSpinner component indicates an ongoing process or indeterminate loading state.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <LoadingSpinner />
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The `size` prop controls the dimensions of the spinner to match your interface density. Available sizes are `2xs`, `xs`, `sm` (default), `md`, and `lg`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <LoadingSpinner size="2xs" />
@@ -47,7 +47,7 @@ The `colorPalette` prop enables rendering a high-contrast loading spinner on lig
 - `primary`: The default color, suitable for light backgrounds.
 - `white`: Suitable for dark backgrounds or colored surfaces.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <LoadingSpinner colorPalette="primary" margin="400"/>

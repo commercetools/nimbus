@@ -16,7 +16,7 @@ import { DraggableList, type DraggableListRootProps } from '@commercetools/nimbu
 
 The simplest implementation uses an array of items with `key` and `label` properties. The component automatically handles drag-and-drop reordering:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const items = [
     { key: '1', label: 'First item' },
@@ -67,7 +67,7 @@ The component uses React Stately's `useListData` hook internally to manage item 
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [smallItems, setSmallItems] = useState([
     { key: '1', label: 'Task 1' },
@@ -102,7 +102,7 @@ const App = () => {
 
 Enable item removal by setting `removableItems={true}`. When items are removed, the `onUpdateItems` callback receives the updated list:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { key: '1', label: 'Item 1' },
@@ -128,7 +128,7 @@ const App = () => {
 
 For items without `key` and `label` properties, or when you need custom rendering, provide a render function as children:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const items = [
     { id: 'task-1', title: 'Design mockups', priority: 'High' },
@@ -167,7 +167,7 @@ const getKey = useCallback((item) => item.id, []);
 
 Use the `onUpdateItems` callback to track changes when items are reordered or removed:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { key: '1', label: 'High priority' },
@@ -202,7 +202,7 @@ const App = () => {
 
 Customize the message displayed when the list is empty:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([]);
 
@@ -235,7 +235,7 @@ const App = () => {
 
 Items can be dragged between multiple DraggableList instances:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [todoItems, setTodoItems] = useState([
     { key: '1', label: 'Design homepage' },
@@ -273,7 +273,7 @@ const App = () => {
 
 Use TypeScript generics to ensure type safety with your custom item data:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   type TaskItem = {
     key: string;
@@ -378,7 +378,7 @@ The component supports full keyboard interaction:
 
 Integrate DraggableList with form libraries like Formik for validated priority lists:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { key: '1', label: 'Critical bug' },
@@ -417,7 +417,7 @@ const App = () => {
 
 Allow users to add, remove, and reorder items dynamically:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { key: '1', label: 'Task 1' },
@@ -454,7 +454,7 @@ const App = () => {
 
 Sync list order with external state management or API:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { key: '1', label: 'Design system' },

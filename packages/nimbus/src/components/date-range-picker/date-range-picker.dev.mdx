@@ -16,7 +16,7 @@ import { DateRangePicker, type DateRangePickerProps } from '@commercetools/nimbu
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <DateRangePicker />
 )
@@ -106,7 +106,7 @@ type DateRange = {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateRangePicker size="sm" />
@@ -119,7 +119,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateRangePicker variant="solid" />
@@ -132,7 +132,7 @@ const App = () => (
 
 The `granularity` prop controls both the level of date precision and the component's behavior:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateRangePicker granularity="day" />
@@ -149,7 +149,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedRange, setSelectedRange] = useState<string>('No selection');
 
@@ -176,7 +176,7 @@ Use uncontrolled mode when you need to capture the selected value without managi
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
 
@@ -203,7 +203,7 @@ Use controlled mode when you need to:
 
 When working with `ZonedDateTime` values, configure time zone display and hour format:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DateRangePicker
@@ -289,7 +289,7 @@ The component supports full keyboard interaction:
 
 A common use case is filtering lists or tables by date range:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [dateRange, setDateRange] = useState<DateRangePickerProps["value"]>(null);
 
@@ -316,7 +316,7 @@ const App = () => {
 
 For e-commerce scenarios like setting up promotions, sales, or limited-time offers:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [promotionRange, setPromotionRange] = useState<DateRangePickerProps["value"]>(null);
 

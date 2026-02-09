@@ -47,7 +47,7 @@ The large size of the tag within tag groups is the default, the small size is
 meant for more compact uses. The more tags present, consider smaller sizes to
 make the information more compact and easily read for the user.
 
-```jsx-live
+```jsx live
 const App = () => {
   const smallTag = [{ id: "cherries", name: "Cherries" }];
   const mediumTag = [{ id: "kiwis", name: "Kiwis" }];
@@ -90,7 +90,7 @@ Allow users to toggle the active state of a tag, or be able to remove tags by
 adding a "close" icon to each tag. Avoid mixing these interactions within the
 same group.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [selectedToggleTags, setSelectedToggleTags] = useState(new Set(["vegetables"]));
 

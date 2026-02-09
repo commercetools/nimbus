@@ -51,7 +51,7 @@ Most common styling of the split button. Try to keep only one solid primary
 toned button in an area for user clarity for the most important task. Too many
 in an area can cause confusion.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <SplitButton
@@ -72,7 +72,7 @@ const App = () => {
 
 Outlined styled buttons are for secondary or less important actions.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <SplitButton
@@ -94,7 +94,7 @@ const App = () => {
 Ghost styled buttons are helpful for UI simplification. You will find these in
 smaller sizes within places like toolbars.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <SplitButton
@@ -115,7 +115,7 @@ const App = () => {
 
 Keep consistency in mind for icons and consider other patterns that are nearby.
 
-```jsx-live
+```jsx live
 const App = () => (
     <SplitButton
       tone="primary"
@@ -136,7 +136,7 @@ const App = () => (
 There are three sizes to split buttons, the default size is medium (md), extra
 small (xs), and 2x-small (2xs).
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="400" alignItems="center">
     <SplitButton tone="primary" size="md" onAction={(id) => {}} aria-label="publish options">

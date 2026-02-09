@@ -13,7 +13,7 @@ import { Grid, type GridProps } from "@commercetools/nimbus";
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid gap="100">
     <Grid.Item>
@@ -41,7 +41,7 @@ const App = () => (
 
 Use the `templateColumns` prop to define the number and size of columns in your grid.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid gap="100" templateColumns="repeat(3, 1fr)">
     <Grid.Item>
@@ -72,7 +72,7 @@ const App = () => (
 
 Grid items can span multiple rows or columns using the `rowSpan` and `colSpan` props on `Grid.Item`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     h="200px"
@@ -108,7 +108,7 @@ const App = () => (
 
 Use named grid areas to create semantic layouts. This approach is particularly useful for common page layouts.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     h="400px"
@@ -148,7 +148,7 @@ const App = () => (
 
 Grid properties can be responsive using Chakra UI's responsive syntax with breakpoint objects.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     gap="100"
@@ -187,7 +187,7 @@ const App = () => (
 
 Control spacing between grid items using the `gap` prop, or use `columnGap` and `rowGap` for independent control.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -303,7 +303,7 @@ export const ProductGrid = () => (
 
 A responsive dashboard layout with varying widget sizes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     templateColumns="repeat(12, 1fr)"
@@ -349,7 +349,7 @@ const App = () => (
 
 A gallery layout where one item is featured more prominently.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     templateColumns="repeat(4, 1fr)"
@@ -396,7 +396,7 @@ const App = () => (
 
 A page layout with a sticky sidebar using template areas.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid
     minH="400px"
@@ -439,7 +439,7 @@ const App = () => (
 
 Organize form fields in a structured grid layout.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Grid templateColumns="repeat(2, 1fr)" gap="400">
     <Grid.Item colSpan={2}>

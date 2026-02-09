@@ -16,7 +16,7 @@ import { CollapsibleMotion, type CollapsibleMotionRootProps } from '@commercetoo
 
 The simplest implementation uses uncontrolled mode with compound component pattern:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <CollapsibleMotion.Root defaultExpanded={false}>
     <CollapsibleMotion.Trigger asChild>
@@ -37,7 +37,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultExpanded`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [eventLog, setEventLog] = useState<string>('No events yet');
 
@@ -70,7 +70,7 @@ Use uncontrolled mode when you need to capture state changes without managing st
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps["isExpanded"]>(false);
 
@@ -112,7 +112,7 @@ Use controlled mode when you need to:
 
 Prevent interactions by setting `isDisabled`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>
@@ -136,7 +136,7 @@ const App = () => (
 
 Use the `asChild` prop to render your own custom trigger element:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <CollapsibleMotion.Root defaultExpanded={false}>
     <CollapsibleMotion.Trigger asChild>
@@ -158,7 +158,7 @@ const App = () => (
 
 Customize the expand/collapse animations using Chakra's animation system:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <CollapsibleMotion.Root defaultExpanded={false}>
     <CollapsibleMotion.Trigger asChild>
@@ -186,7 +186,7 @@ const App = () => (
 
 The component automatically handles content size changes with ResizeObserver:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [contentSize, setContentSize] = useState<'short' | 'medium' | 'long'>('short');
 
@@ -240,7 +240,7 @@ const App = () => {
 
 For external-only control, omit the Trigger component:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps["isExpanded"]>(false);
 
@@ -309,7 +309,7 @@ The component supports full keyboard interaction:
 
 Create an expandable FAQ section with multiple collapsible items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const faqs = [
     {
@@ -352,7 +352,7 @@ const App = () => {
 
 Create an accordion by coordinating multiple CollapsibleMotion components:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [expandedSection, setExpandedSection] = useState<string | null>('section1');
 

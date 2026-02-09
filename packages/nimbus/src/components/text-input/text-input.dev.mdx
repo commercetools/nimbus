@@ -16,7 +16,7 @@ import { TextInput, type TextInputProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <TextInput placeholder="Enter your name" />
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput size="sm" placeholder="Small input" />
@@ -41,7 +41,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput variant="solid" placeholder="Solid variant (default)" />
@@ -54,7 +54,7 @@ const App = () => (
 
 Add icons, buttons, or other elements before or after the input using `leadingElement` and `trailingElement` props:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput
@@ -80,7 +80,7 @@ const App = () => (
 
 Use placeholder text to provide hints about expected input format:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput placeholder="Enter your email" />
@@ -94,7 +94,7 @@ const App = () => (
 
 Disable input interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput placeholder="Enabled input" />
@@ -112,7 +112,7 @@ const App = () => (
 
 Mark inputs as invalid for validation feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput
@@ -134,7 +134,7 @@ const App = () => (
 
 Use `isReadOnly` to display values without allowing editing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput
@@ -154,7 +154,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<string>('');
 
@@ -181,7 +181,7 @@ Use uncontrolled mode when you need to capture the input value without managing 
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -213,7 +213,7 @@ Use controlled mode when you need to:
 
 Mark inputs as required using the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <TextInput
@@ -291,7 +291,7 @@ Clicking anywhere within the input container (including leading/trailing element
 
 Display an icon to indicate the input's purpose:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -320,7 +320,7 @@ const App = () => {
 
 Create a search input with appropriate icons:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -344,7 +344,7 @@ const App = () => {
 
 Add a button to quickly clear the input value:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 

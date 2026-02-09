@@ -16,7 +16,7 @@ import { IconButton, type IconButtonProps } from '@commercetools/nimbus';
 
 IconButton displays a button containing only an icon as its child. It requires an `aria-label` for accessibility since there is no visible text:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <IconButton aria-label="Open menu">
     <Icons.Menu />
@@ -30,7 +30,7 @@ const App = () => (
 
 The `2xs`, `xs`, and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconButton size="2xs" aria-label="Extra small button">
@@ -50,7 +50,7 @@ const App = () => (
 
 Choose between `solid`, `subtle`, `outline`, `ghost`, and `link` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconButton variant="solid" aria-label="Solid button">
@@ -76,7 +76,7 @@ const App = () => (
 
 Use semantic color palettes to convey meaning or match your brand:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconButton colorPalette="primary" aria-label="Primary action">
@@ -99,7 +99,7 @@ const App = () => (
 
 Disable user interaction when an action is temporarily unavailable:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <IconButton aria-label="Enabled button">
@@ -116,7 +116,7 @@ const App = () => (
 
 Handle user interactions with the `onPress` callback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [count, setCount] = useState(0);
 
@@ -190,7 +190,7 @@ The component supports full keyboard interaction:
 
 Icon buttons should typically include a tooltip to provide additional context for sighted users:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [count, setCount] = useState(0);
 
@@ -228,7 +228,7 @@ const App = () => {
 
 Show a loading state during asynchronous operations:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -258,7 +258,7 @@ const App = () => {
 
 Group related icon buttons using Stack:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [alignment, setAlignment] = useState('left');
 

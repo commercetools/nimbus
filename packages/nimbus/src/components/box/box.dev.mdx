@@ -16,7 +16,7 @@ import { Box, type BoxProps } from '@commercetools/nimbus';
 
 The Box component is a fundamental layout primitive that accepts all Chakra UI system props for styling:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box p="100" bg="primary.3">
     Basic Box
@@ -30,7 +30,7 @@ const App = () => (
 
 Use spacing tokens to control padding and margin:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box p="100" bg="primary.3">
@@ -50,7 +50,7 @@ const App = () => (
 
 Apply background colors and text colors using design tokens:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box p="100" bg="primary.3" color="primary.11">
@@ -70,7 +70,7 @@ const App = () => (
 
 Create visual depth with borders and shadows:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box p="100" border="solid-50" borderColor="primary.3">
@@ -90,7 +90,7 @@ const App = () => (
 
 Use Flexbox props to create flexible layouts in both horizontal and vertical orientations:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Box display="flex" gap="100" alignItems="center" justifyContent="space-between" p="200" bg="primary.3">
@@ -135,7 +135,7 @@ const App = () => (
 
 Create two-dimensional grid layouts with Grid props. Grid is ideal for complex layouts where you need control over both rows and columns simultaneously:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box 
     display="grid" 
@@ -180,7 +180,7 @@ const App = () => (
 
 Change the underlying HTML element using the `as` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box as="section" p="100" bg="primary.3">
@@ -207,7 +207,7 @@ This is particularly important for interactive elements where the element type m
 - **Better accessibility**: Screen readers and assistive technologies see the actual interactive element
 - **Preserved functionality**: The child element retains all its native behavior (click handlers, keyboard navigation, etc.)
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box p="100" bg="primary.3" color="primary.11" asChild>
@@ -280,7 +280,7 @@ Box is a non-interactive layout component and does not support keyboard navigati
 
 Create card-style containers with borders, shadows, and rounded corners:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box 
@@ -324,7 +324,7 @@ const App = () => (
 
 Use responsive object syntax for adaptive layouts across breakpoints:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box 
     display="grid" 
@@ -357,7 +357,7 @@ const App = () => (
 
 Create a centered container with maximum width:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Box bg="neutral.2" p="400">
     <Box maxWidth="3xl" mx="auto" p="400" bg="primary.3">

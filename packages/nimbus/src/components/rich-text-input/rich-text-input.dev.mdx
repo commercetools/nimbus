@@ -16,7 +16,7 @@ import { RichTextInput, type RichTextInputProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RichTextInput placeholder="Start typing..." />
 )
@@ -73,7 +73,7 @@ You don't need to work with Slate.js types directly - just provide and receive H
 
 Use `defaultValue` for simple forms where you don't need to control the value:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -101,7 +101,7 @@ const App = () => {
 
 Use `value` and `onChange` when you need to manage the editor state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = React.useState<RichTextInputProps['value']>(
     '<p>This is <strong>controlled</strong> content.</p>'
@@ -137,7 +137,7 @@ const App = () => {
 
 Show helpful placeholder text when the editor is empty:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RichTextInput placeholder="Enter your blog post content here..." />
 )
@@ -147,7 +147,7 @@ const App = () => (
 
 Initialize the editor with existing content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RichTextInput
     defaultValue={`
@@ -167,7 +167,7 @@ const App = () => (
 
 Prevent editing with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RichTextInput
     isDisabled
@@ -180,7 +180,7 @@ const App = () => (
 
 Display content without editing capabilities (toolbar is hidden):
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RichTextInput
     isReadOnly
@@ -197,7 +197,7 @@ const App = () => (
 
 Show validation errors with the `isInvalid` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="200">
     <RichTextInput
@@ -225,7 +225,7 @@ The editor exposes a `textbox` role with `contenteditable` for keyboard and scre
 
 When using RichTextInput in forms, provide a visible label using FormField or a custom label element:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root>
     <FormField.Label>Article Content</FormField.Label>
@@ -272,7 +272,7 @@ If your use case requires tracking and analytics for this component, it is good 
 
 Integrate RichTextInput with form libraries:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [content, setContent] = React.useState('');
   const [touched, setTouched] = React.useState(false);
@@ -331,7 +331,7 @@ const App = () => {
 
 Validate content length by parsing HTML:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [content, setContent] = React.useState('');
 

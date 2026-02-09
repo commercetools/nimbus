@@ -16,7 +16,7 @@ import { Spacer, type SpacerProps } from '@commercetools/nimbus';
 
 The simplest implementation uses Spacer to push elements apart in a flex container:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" width="full">
     <Button>Left</Button>
@@ -34,7 +34,7 @@ The Spacer component automatically fills available space using `flexGrow="1"`, p
 
 Use Spacer to separate elements horizontally in a row layout:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" width="full">
@@ -56,7 +56,7 @@ const App = () => (
 
 Create navigation bars with grouped elements:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack 
     direction="row" 
@@ -79,7 +79,7 @@ const App = () => (
 
 Use multiple Spacer components to distribute space evenly:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" width="full">
     <Button variant="outline">First</Button>
@@ -97,7 +97,7 @@ Each Spacer receives an equal share of available space, creating even distributi
 
 Spacer works in vertical layouts too:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" height="6400" width="4800" borderWidth="25" borderColor="neutral.6" borderRadius="200" padding="400">
     <Stack direction="column" gap="200">
@@ -121,7 +121,7 @@ const App = () => (
 
 Although typically invisible, Spacer accepts all Box props for custom styling:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" width="full">
@@ -149,7 +149,7 @@ const App = () => (
 
 Create toolbar or header layouts with grouped actions:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack 
     direction="row" 
@@ -228,7 +228,7 @@ export const Navigation = () => (
 
 Common pattern for navigation bars with logo on left and actions on right:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack 
     direction="row" 
@@ -264,7 +264,7 @@ const App = () => (
 
 Pattern for cards with actions positioned at opposite ends:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Card.Root width="6400">
     <Card.Content>
@@ -293,7 +293,7 @@ const App = () => (
 
 Pattern for list items with metadata and actions separated:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const items = [
     { id: 1, name: 'Annual Report 2024.pdf', size: '2.4 MB', date: 'Dec 10' },
@@ -340,7 +340,7 @@ const App = () => {
 
 Pattern for form layouts with actions at opposite ends:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400" width="full">
     <FormField.Root>

@@ -43,7 +43,7 @@ foundation for disclosure patterns, accordions, and expandable content sections.
 The simplest way to use CollapsibleMotion is in uncontrolled mode with default
 settings:
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <CollapsibleMotion.Root defaultExpanded={false}>
@@ -66,7 +66,7 @@ const App = () => {
 For more complex scenarios, you can control the expanded state from a parent
 component:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -101,7 +101,7 @@ const App = () => {
 
 You can customize the minimum height and animation duration:
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <CollapsibleMotion.Root defaultExpanded={false}>
@@ -130,7 +130,7 @@ const App = () => {
 
 CollapsibleMotion automatically handles content that changes size:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [content, setContent] = useState('short');
 
@@ -177,7 +177,7 @@ const App = () => {
 CollapsibleMotion works well with other Nimbus components to create rich
 interactive experiences:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [expandedSections, setExpandedSections] = useState(new Set());
 

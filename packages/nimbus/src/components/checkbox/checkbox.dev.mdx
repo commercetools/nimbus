@@ -16,7 +16,7 @@ import { Checkbox, type CheckboxProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Checkbox>Accept terms and conditions</Checkbox>
 )
@@ -32,7 +32,7 @@ The Checkbox supports three selection states: unchecked (default), checked, and 
 
 The default state when no selection has been made:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox>Option 1</Checkbox>
@@ -45,7 +45,7 @@ const App = () => (
 
 Use the `isSelected` prop to indicate a checked state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox isSelected>Option 1</Checkbox>
@@ -58,7 +58,7 @@ const App = () => (
 
 Use the `isIndeterminate` prop to show a partial selection state, commonly used for "select all" scenarios:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox isIndeterminate>Select all</Checkbox>
@@ -74,7 +74,7 @@ const App = () => (
 
 Use the `isInvalid` prop to indicate validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox isInvalid>Required field</Checkbox>
@@ -87,7 +87,7 @@ const App = () => (
 
 Disable checkbox interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox isDisabled>Disabled checkbox</Checkbox>
@@ -101,7 +101,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<boolean>(false);
 
@@ -129,7 +129,7 @@ Use uncontrolled mode when you need to capture the selected state without managi
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
@@ -228,7 +228,7 @@ The component supports full keyboard interaction:
 
 Group related checkboxes together for multiple selections:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -269,7 +269,7 @@ const App = () => {
 
 Implement a "select all" checkbox with indeterminate state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { id: '1', label: 'Item 1', selected: false },
@@ -323,7 +323,7 @@ const App = () => {
 
 Integrate checkboxes with form state management:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [formData, setFormData] = useState({
     acceptTerms: false,

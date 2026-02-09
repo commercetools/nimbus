@@ -16,7 +16,7 @@ import { Table, type TableRootProps } from '@commercetools/nimbus';
 
 The Table component is a compound component that renders semantic HTML table markup with accessible structure. Use `Table.Root` as the container with nested parts for headers, body, rows, and cells:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const products = [
     { id: '1', name: 'Laptop Pro', category: 'Electronics', price: '$1,299', stock: 'In Stock' },
@@ -55,7 +55,7 @@ const App = () => {
 
 The `size` prop controls padding and text size. Available sizes are `sm`, `md` (default), and `lg`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [size, setSize] = useState('md');
 
@@ -116,7 +116,7 @@ const App = () => {
 
 The `variant` prop controls the table's visual style. Available variants are `line` (default) and `outline`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [variant, setVariant] = useState('line');
 
@@ -182,7 +182,7 @@ const App = () => {
 
 Use `stickyHeader` to keep the table header visible when scrolling. Combine with `Table.ScrollArea` for scrollable content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const transactions = Array.from({ length: 20 }, (_, i) => ({
     id: `TXN-${1000 + i}`,
@@ -222,7 +222,7 @@ const App = () => {
 
 Show vertical borders between columns with the `showColumnBorder` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const metrics = [
     { metric: 'Revenue', q1: '$125K', q2: '$150K', q3: '$180K', q4: '$200K' },
@@ -261,7 +261,7 @@ const App = () => {
 
 Use `Table.Caption` to provide a title or description for the table:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const schedule = [
     { time: '9:00 AM', event: 'Team Checkpoint', location: 'Conference Room A' },
@@ -297,7 +297,7 @@ const App = () => {
 
 Use `Table.Footer` to display summary information or totals at the bottom of the table:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const expenses = [
     { category: 'Office Supplies', amount: 450.00 },

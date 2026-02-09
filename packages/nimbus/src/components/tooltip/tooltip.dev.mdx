@@ -16,7 +16,7 @@ import { Tooltip, MakeElementFocusable } from '@commercetools/nimbus';
 
 The simplest implementation wraps a trigger element and tooltip content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Tooltip.Root>
     <Button>Hover me</Button>
@@ -33,7 +33,7 @@ const App = () => (
 
 The `placement` prop controls where the tooltip appears relative to the trigger element. The default placement is `"bottom"`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <Tooltip.Root>
@@ -77,7 +77,7 @@ The component supports 26 placement options:
 
 Control when tooltips appear and disappear using `delay` and `closeDelay` props on `Tooltip.Root`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <Tooltip.Root delay={0} closeDelay={0}>
@@ -114,7 +114,7 @@ const App = () => (
 
 Tooltip content can include multiple elements using layout components:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Tooltip.Root>
     <Button>Feature info</Button>
@@ -134,7 +134,7 @@ const App = () => (
 
 A common pattern is providing context for icon-only buttons:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="300">
     <Tooltip.Root>
@@ -171,7 +171,7 @@ const App = () => (
 
 Tooltips work with any focusable element. For non-interactive elements like Text, use `MakeElementFocusable`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Tooltip.Root>
@@ -288,7 +288,7 @@ The first child of `Tooltip.Root` must be a focusable element:
 
 Provide additional context for form fields without cluttering the interface:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState('');
 
@@ -331,7 +331,7 @@ const App = () => {
 
 Clarify what icon buttons do before users click them:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [copied, setCopied] = useState(false);
 
@@ -380,7 +380,7 @@ const App = () => {
 
 Provide explanations for table headers or data values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="300">
     <Stack direction="row" gap="400" paddingX="300" paddingY="200">

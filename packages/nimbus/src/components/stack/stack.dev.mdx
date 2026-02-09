@@ -20,7 +20,7 @@ import { Stack, type StackProps } from "@commercetools/nimbus";
 
 By default, Stack arranges children vertically with no gap:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack>
     <Box p="400" bg="primary.7" borderRadius="200">
@@ -42,7 +42,7 @@ const App = () => (
 
 Control the layout direction with the `direction` prop. Supports `column` (default), `row`, `column-reverse`, and `row-reverse`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="200">
@@ -70,7 +70,7 @@ const App = () => (
 
 Use the `gap` prop to control spacing between items. Accepts Nimbus spacing tokens:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [gap, setGap] = useState<StackProps["gap"]>("200");
   
@@ -101,7 +101,7 @@ const App = () => {
 
 Add visual separators between items using the `separator` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Stack 
@@ -144,7 +144,7 @@ const App = () => (
 
 Control alignment with `align` and `justify` props:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
@@ -188,7 +188,7 @@ const App = () => (
 
 Control how items wrap with the `wrap` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Box>
@@ -220,7 +220,7 @@ const App = () => (
 
 Stack supports responsive prop values for different breakpoints:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack 
     direction={{ base: "column", md: "row" }}
@@ -284,7 +284,7 @@ If your use case requires tracking and analytics for this component, it is good 
 
 Use Stack to create navigation layouts with items on opposite ends:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" align="center" gap="400" p="400" bg="neutral.2" borderRadius="200">
     <Text fontWeight="600" fontSize="lg">Logo</Text>
@@ -303,7 +303,7 @@ const App = () => (
 
 Organize form sections with visual separators:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack 
     direction="column" 
@@ -341,7 +341,7 @@ const App = () => (
 
 Create consistent button groups with proper spacing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600" align="stretch">
     <Box>
@@ -389,7 +389,7 @@ const App = () => (
 
 Structure card content with proper spacing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Card.Root>
