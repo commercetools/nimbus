@@ -545,7 +545,6 @@ The component SHALL provide comprehensive documentation per nimbus-core standard
 - **WHEN** component is documented
 - **THEN** SHALL have search-input.mdx file
 - **AND** SHALL include overview, guidelines, best practices
-- **AND** SHALL include usage examples with jsx-live blocks
 - **AND** SHALL document when to use vs when not to use
 - **AND** SHALL include do's and don'ts examples
 

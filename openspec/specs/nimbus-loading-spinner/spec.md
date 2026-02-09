@@ -487,8 +487,7 @@ The component SHALL provide comprehensive documentation per nimbus-core standard
 
 #### Scenario: Live code examples
 - **WHEN** MDX includes code examples
-- **THEN** SHALL use ```jsx-live code blocks
-- **AND** SHALL demonstrate size variants
+- **THEN** SHALL demonstrate size variants
 - **AND** SHALL demonstrate color palettes on different backgrounds
 - **AND** SHALL show composition within Button components
 

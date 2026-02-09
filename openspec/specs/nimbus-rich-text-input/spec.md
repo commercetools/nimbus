@@ -1220,7 +1220,6 @@ standards.
 - **AND** SHALL document supported HTML elements
 - **AND** SHALL document formatting toolbar features
 - **AND** SHALL document keyboard shortcuts
-- **AND** SHALL include usage examples with jsx-live blocks
 - **AND** SHALL include controlled and uncontrolled examples
 
 #### Scenario: Engineering documentation

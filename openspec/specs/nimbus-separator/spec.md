@@ -348,7 +348,6 @@ The component SHALL include comprehensive documentation per nimbus-core standard
 - **WHEN** component is created
 - **THEN** SHALL have separator.mdx for user-facing documentation
 - **AND** SHALL include frontmatter with menu, title, description
-- **AND** SHALL include usage examples with jsx-live code blocks
 - **AND** SHALL document orientation options, color customization, best practices
 - **AND** SHALL include accessibility standards section
 - **AND** SHALL reference Figma design library

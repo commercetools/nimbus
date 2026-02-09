@@ -89,7 +89,7 @@ interfaces. The system prioritizes:
 
 - **docs**: Documentation SPA
   - Component API documentation (auto-generated from TypeScript)
-  - Interactive examples with jsx-live
+  - Interactive live code examples
   - Engineering guides and usage patterns
   - Vite + React application
 
@@ -339,7 +339,7 @@ pnpm changeset:version-and-format
 
 1. **Recipe Registration Required**: All recipes must be manually registered in
    theme config
-2. **No Storybook in MDX**: Documentation must use `jsx-live` blocks, not
+2. **No Storybook in MDX**: Documentation must use live code blocks, not
    Storybook imports
 3. **Build Before Testing**: Storybook tests run against built bundle, not
    source
@@ -403,7 +403,7 @@ pnpm changeset:version-and-format
 
 - **PropsTable Component**: Auto-generated from TypeScript definitions
 - **MDX Processor**: Markdown with live React components
-- **jsx-live**: Interactive code examples in documentation
+- **Live code blocks**: Interactive examples rendered in documentation
 
 ### CI/CD Dependencies
 
