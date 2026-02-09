@@ -174,7 +174,7 @@ with FormField and FieldErrors.
 - Field pattern: Simplified API, automatic error handling
 - Manual composition: More control, custom layouts
 
-```jsx-live-dev
+```jsx live-dev
 // Field pattern example
 const App = () => (
   <ComponentNameField
@@ -185,7 +185,7 @@ const App = () => (
 ```
 ````
 
-```jsx-live-dev
+```jsx live-dev
 // Manual composition example
 const App = () => (
   <FormField label="Field Label">
@@ -213,7 +213,7 @@ import { ComponentName, type ComponentNameProps } from '@commercetools/nimbus';
 Brief description of the component's core functionality from implementation
 perspective.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ComponentName onPress={() => alert('Pressed')}>
     Basic Example
@@ -253,7 +253,7 @@ Show conversion patterns between native types and library types.
 
 Description of this feature/variant with implementation context.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <ComponentName variant="option1">Option 1</ComponentName>
@@ -266,7 +266,7 @@ const App = () => (
 
 Description with technical details.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState('');
 
@@ -322,7 +322,7 @@ The component supports full keyboard interaction:
 
 ### With Formik
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const formik = useFormik({
     initialValues: { fieldName: '' },
@@ -367,7 +367,7 @@ Show FieldErrors integration and touched state patterns.
 
 Description of common implementation pattern or use case.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Implementation showing the pattern
   return (
@@ -381,7 +381,7 @@ const App = () => {
 
 Description of alternative approach or advanced usage.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // More complex example
   return (
@@ -421,15 +421,15 @@ These examples demonstrate how to test your implementation when using [Component
 **IMPORTANT**: Internal component links MUST start with '/' (e.g.,
 `/components/inputs/searchinput`) to ensure absolute paths from root.
 
-## Code Examples (jsx-live-dev Blocks)
+## Code Examples (jsx live-dev Blocks)
 
 ### Requirements
 
-**CRITICAL**: Use `jsx-live-dev` blocks (NOT `jsx-live`) for developer
+**CRITICAL**: Use `jsx live-dev` blocks (NOT `jsx live`) for developer
 documentation:
 
 ````markdown
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ComponentName>
     Developer Example
@@ -465,7 +465,7 @@ import { Button, type ButtonProps } from '@commercetools/nimbus';
 #### Basic Implementation
 
 ```markdown
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Button onPress={() => console.log('Pressed')}>
     Click Me
@@ -478,7 +478,7 @@ const App = () => (
 #### Controlled Component Pattern
 
 ```markdown
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState('');
 
@@ -740,7 +740,7 @@ Create the documentation file:
    - All code examples with component-specific examples
 
 5. **Generate realistic code examples**:
-   - Use `jsx-live-dev` for interactive examples
+   - Use `jsx live-dev` for interactive examples
    - Follow the `const App = () => { }` pattern
    - Include proper TypeScript types
    - Show realistic state management with useState
@@ -813,7 +813,7 @@ full checklist).
 
 ### Code Examples
 
-- Total interactive examples (jsx-live-dev): X
+- Total interactive examples (jsx live-dev): X
 - Total test sections (in .docs.spec.tsx): Y
 - Total test cases: Z
 
@@ -886,7 +886,7 @@ You MUST validate against these requirements:
 
 #### Code Examples
 
-- [ ] Uses `jsx-live-dev` blocks (NOT `jsx-live`)
+- [ ] Uses `jsx live-dev` blocks (NOT `jsx live`)
 - [ ] NO import statements in example code
 - [ ] Examples show implementation patterns
 - [ ] State management demonstrated where relevant
@@ -917,7 +917,7 @@ You MUST validate against these requirements:
 
 #### Critical Pattern Compliance
 
-- [ ] All interactive examples use `jsx-live-dev` (NOT `jsx-live`)
+- [ ] All interactive examples use `jsx live-dev` (NOT `jsx live`)
 - [ ] Getting Started includes type import
       (`import { ComponentName, type ComponentNameProps }`)
 - [ ] Controlled examples use proper type patterns
@@ -1179,7 +1179,7 @@ props.
 If validation fails:
 
 1. You MUST check frontmatter fields (tab-title, tab-order, title suffix)
-2. You MUST verify jsx-live-dev blocks (not jsx-live)
+2. You MUST verify jsx live-dev blocks (not jsx live)
 3. You MUST ensure PropsTable ID is correct
 4. You MUST confirm import examples use correct package
 5. You MUST check test file exists and has JSDoc tags

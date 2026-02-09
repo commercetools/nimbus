@@ -106,7 +106,7 @@ applicable
 ```markdown
 ### Hierarchy
 
-Explain primary, secondary, tertiary actions with design rationale and jsx-live
+Explain primary, secondary, tertiary actions with design rationale and jsx live
 examples.
 ```
 
@@ -119,7 +119,7 @@ examples.
 
 Explain each size with design rationale:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="400">
     <ComponentName size="sm">Small</ComponentName>
@@ -134,7 +134,7 @@ const App = () => (
 
 Document each variant's purpose:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="400">
     <ComponentName colorPalette="primary">Primary</ComponentName>
@@ -192,21 +192,21 @@ Guidelines for content creators and terminology preferences.
 
 ### 6. Usage Examples (Optional)
 
-Show correct vs. incorrect usage with Do/Don't sections and jsx-live examples.
+Show correct vs. incorrect usage with Do/Don't sections and jsx live examples.
 
-## Code Examples (jsx-live Blocks)
+## Code Examples (jsx live Blocks)
 
-**CRITICAL**: Use `jsx-live` blocks (NOT `jsx-live-dev`).
+**CRITICAL**: Use `jsx live` blocks (NOT `jsx live-dev`).
 
 All Nimbus components available globally—NO imports needed. For detailed
-jsx-live patterns, see writing-developer-documentation skill.
+jsx live patterns, see writing-developer-documentation skill.
 
 ## Create Mode
 
 **Step 1**: Gather design context (purpose, hierarchy, colors, sizes, icons,
 Figma resources) **Step 2**: Write frontmatter with ID, menu hierarchy, tags
 **Step 3**: Write overview explaining component from design perspective **Step
-4**: Document visual variants with jsx-live examples and rationale **Step 5**:
+4**: Document visual variants with jsx live examples and rationale **Step 5**:
 Create actionable design guidelines (best practices, when to use/avoid) **Step
 6**: Add writing guidelines if text content applies
 
@@ -220,7 +220,7 @@ Create actionable design guidelines (best practices, when to use/avoid) **Step
 4. You MUST maintain consistency with other designer docs (don't deviate from
    established style without reason)
 5. You SHOULD enhance with visual examples where they clarify (not every section
-   needs jsx-live examples, only places where visual demonstration helps)
+   needs jsx live examples, only places where visual demonstration helps)
 
 Common updates: missing sections, better examples, updated guidelines, Figma
 links, clearer explanations.
@@ -246,12 +246,12 @@ links, clearer explanations.
 - [ ] Introduction paragraph (sets context)
 - [ ] Overview section explaining design purpose (design rationale)
 - [ ] Resources section with links (reference materials)
-- [ ] Variables section with jsx-live examples (shows options)
+- [ ] Variables section with jsx live examples (shows options)
 - [ ] Guidelines section (helps designers decide when to use)
 
 #### Code Examples
 
-- [ ] MUST use `jsx-live` blocks (NOT `jsx-live-dev`)
+- [ ] MUST use `jsx live` blocks (NOT `jsx live-dev`)
 - [ ] MUST NOT have import statements
 - [ ] MUST be visually focused on design, not implementation
 - [ ] MUST show design variants clearly
@@ -325,7 +325,7 @@ If validation fails:
 
 1. You MUST verify frontmatter structure and unique ID (blocks build if wrong)
 2. You MUST ensure menu hierarchy is correct (affects navigation)
-3. You MUST confirm jsx-live blocks (not jsx-live-dev) (doc generation
+3. You MUST confirm jsx live blocks (not jsx live-dev) (doc generation
    requirement)
 4. You SHOULD review tone (designer-focused, not technical) - fixes readability
 
