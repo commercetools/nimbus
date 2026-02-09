@@ -44,7 +44,7 @@ function AppFrameRoot({ children }: AppFrameRootProps) {
         "nav main aside"
       `}
       gridTemplateRows="auto auto 1fr"
-      gridTemplateColumns="minmax(200px, 256px) 80ch 1fr"
+      gridTemplateColumns="minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
       height="100vh"
       width="100vw"
       overflow="hidden"
@@ -134,7 +134,7 @@ function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
 }
 
 /**
- * Main Content Area - Scrollable
+ * Main Content Area - Scrollable with constrained content width
  */
 function AppFrameMainContent({ children }: AppFrameMainContentProps) {
   return (
@@ -164,7 +164,7 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
         },
       }}
     >
-      {children}
+      <Box maxWidth="80ch" mx="auto">{children}</Box>
     </Box>
   );
 }
