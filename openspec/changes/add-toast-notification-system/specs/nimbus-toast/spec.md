@@ -1,0 +1,235 @@
+## ADDED Requirements
+
+### Requirement: Toast Variants
+
+The toast system SHALL support four types: `info`, `success`, `warning`, and
+`error`. Each type SHALL map to a Nimbus semantic color palette (`info`,
+`positive`, `warning`, `critical`) and render a corresponding status icon.
+
+#### Scenario: Info toast
+
+- **WHEN** a toast is created with `type: "info"`
+- **THEN** it renders with the `info` color palette and an info icon
+
+#### Scenario: Success toast
+
+- **WHEN** a toast is created with `type: "success"`
+- **THEN** it renders with the `positive` color palette and a check icon
+
+#### Scenario: Warning toast
+
+- **WHEN** a toast is created with `type: "warning"`
+- **THEN** it renders with the `warning` color palette and a warning icon
+
+#### Scenario: Error toast
+
+- **WHEN** a toast is created with `type: "error"`
+- **THEN** it renders with the `critical` color palette and an error icon
+
+### Requirement: Imperative Toast API
+
+The system SHALL export a `toast` function that creates toasts without requiring
+hooks, providers, or setup beyond `NimbusProvider`.
+
+#### Scenario: Basic toast creation
+
+- **WHEN** a consumer calls `toast({ title: "Saved" })`
+- **THEN** a toast appears in the default placement (`top-end`)
+
+#### Scenario: Convenience methods
+
+- **WHEN** a consumer calls `toast.success({ title: "Done" })`
+- **THEN** a toast appears with `type: "success"`
+
+#### Scenario: Programmatic dismiss
+
+- **WHEN** a consumer calls `toast.dismiss(id)`
+- **THEN** the specified toast is dismissed with exit animation
+
+#### Scenario: Programmatic update
+
+- **WHEN** a consumer calls `toast.update(id, { title: "New title" })`
+- **THEN** the specified toast content is updated in place
+
+### Requirement: Per-Toast Placement
+
+The `toast` function SHALL accept an optional `placement` parameter. The system
+SHALL lazily create and manage separate toaster instances per unique placement.
+
+#### Scenario: Default placement
+
+- **WHEN** a toast is created without specifying placement
+- **THEN** it appears in the `top-end` position
+
+#### Scenario: Custom placement
+
+- **WHEN** a toast is created with `placement: "bottom-end"`
+- **THEN** it appears in the bottom-end position in a separate region
+
+#### Scenario: Multiple placements simultaneously
+
+- **WHEN** toasts exist in both `top-end` and `bottom-end`
+- **THEN** each placement renders its own independent region with correct
+  stacking
+
+### Requirement: Auto-Dismiss
+
+Toasts SHALL auto-dismiss after a configurable duration (default 6 seconds).
+Timers SHALL pause on hover, focus, and page idle.
+
+#### Scenario: Default auto-dismiss
+
+- **WHEN** a toast is created without custom duration
+- **THEN** it dismisses after 6 seconds
+
+#### Scenario: Custom duration
+
+- **WHEN** a toast is created with `duration: 10000`
+- **THEN** it dismisses after 10 seconds
+
+#### Scenario: Disabled auto-dismiss
+
+- **WHEN** a toast is created with `duration: 0`
+- **THEN** it persists until manually dismissed
+
+#### Scenario: Pause on hover
+
+- **WHEN** the user hovers over a toast
+- **THEN** the auto-dismiss timer pauses and resumes on mouse leave
+
+#### Scenario: Pause on focus
+
+- **WHEN** the user focuses an element within a toast via keyboard
+- **THEN** the auto-dismiss timer pauses and resumes on blur
+
+### Requirement: Toast Dismissal
+
+Toasts SHALL be dismissible via a close button, the Escape key, auto-dismiss
+timer, or programmatic API.
+
+#### Scenario: Close button
+
+- **WHEN** the user clicks the close button
+- **THEN** the toast is dismissed with exit animation
+
+#### Scenario: Escape key
+
+- **WHEN** the toast region is focused and the user presses Escape
+- **THEN** the focused toast is dismissed
+
+#### Scenario: Dismiss all
+
+- **WHEN** `toast.dismiss()` is called without an ID
+- **THEN** all toasts across all regions are dismissed
+
+### Requirement: Action Button
+
+Toasts SHALL support an optional action button. Toasts with actions SHALL NOT
+auto-dismiss.
+
+#### Scenario: Action toast
+
+- **WHEN** a toast is created with `action: { label: "Undo", onClick: fn }`
+- **THEN** an action button is rendered and the toast does not auto-dismiss
+
+#### Scenario: Action callback
+
+- **WHEN** the user clicks the action button
+- **THEN** the `onClick` callback is invoked
+
+### Requirement: Promise Pattern
+
+The `toast.promise()` method SHALL create a toast that transitions through
+loading, success, and error states based on a promise's lifecycle.
+
+#### Scenario: Promise resolves
+
+- **WHEN** `toast.promise(promise, { loading, success, error })` is called and
+  the promise resolves
+- **THEN** the toast transitions from loading to success state
+
+#### Scenario: Promise rejects
+
+- **WHEN** `toast.promise(promise, { loading, success, error })` is called and
+  the promise rejects
+- **THEN** the toast transitions from loading to error state
+
+### Requirement: Queuing and Stacking
+
+The system SHALL display a maximum of 3 toasts per placement region. Additional
+toasts SHALL be queued and displayed as visible slots become available.
+
+#### Scenario: Stacking
+
+- **WHEN** 3 toasts are visible in the same region
+- **THEN** they stack vertically without overlapping
+
+#### Scenario: Queuing overflow
+
+- **WHEN** a 4th toast is created in a region with 3 visible toasts
+- **THEN** it is queued and appears when a visible toast is dismissed
+
+### Requirement: ARIA Role Differentiation
+
+Info and success toasts SHALL use `role="status"` (polite). Warning and error
+toasts SHALL use `role="alert"` (assertive).
+
+#### Scenario: Polite announcement
+
+- **WHEN** an info or success toast appears
+- **THEN** it has `role="status"` and waits for the screen reader to finish
+
+#### Scenario: Assertive announcement
+
+- **WHEN** a warning or error toast appears
+- **THEN** it has `role="alert"` and announces immediately
+
+### Requirement: Keyboard Navigation
+
+The toast region SHALL be a keyboard-navigable ARIA landmark supporting F6
+navigation and a configurable hotkey.
+
+#### Scenario: F6 landmark navigation
+
+- **WHEN** the user presses F6
+- **THEN** focus moves to the toast region (if toasts are visible)
+
+#### Scenario: Tab through toast elements
+
+- **WHEN** the toast region is focused
+- **THEN** Tab cycles through close button and action button (if present)
+
+### Requirement: Reduced Motion
+
+When `prefers-reduced-motion` is active, toasts SHALL not use slide or fade
+transitions.
+
+#### Scenario: Reduced motion preference
+
+- **WHEN** the user has `prefers-reduced-motion: reduce` enabled
+- **THEN** toast enter/exit animations are disabled
+
+### Requirement: Zero-Setup via NimbusProvider
+
+`NimbusProvider` SHALL render a `<ToastOutlet />` component that manages toast
+regions. No additional setup SHALL be required from consumers.
+
+#### Scenario: Automatic mounting
+
+- **WHEN** an app uses `NimbusProvider`
+- **THEN** toast functionality is available without additional components
+
+#### Scenario: Lazy rendering
+
+- **WHEN** no toasts have been triggered
+- **THEN** no additional DOM nodes are rendered by ToastOutlet
+
+### Requirement: Internationalization
+
+The close button SHALL use a translated `aria-label` sourced from pre-compiled
+i18n messages (en, de, es, fr-FR, pt-BR).
+
+#### Scenario: Translated dismiss label
+
+- **WHEN** the locale is set to German
+- **THEN** the close button `aria-label` renders the German translation
