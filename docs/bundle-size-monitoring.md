@@ -12,8 +12,11 @@ merged.
 # Check sizes against baseline (what CI runs)
 pnpm check:bundle-size
 
-# Update the baseline after an intentional size change
+# Update the full baseline after an intentional size change
 pnpm update:bundle-baseline
+
+# Update the baseline for a single component
+pnpm update:bundle-baseline button
 ```
 
 ## How It Works
@@ -67,12 +70,16 @@ how fresh it is.
      code.
    - Tree-shaking broke due to side effects in a module.
 3. If the increase is **intentional** (e.g. a new feature that legitimately adds
-   code), update the baseline:
+   code), update the baseline for that component:
 
    ```bash
    pnpm build:packages
-   pnpm update:bundle-baseline
+   pnpm update:bundle-baseline button
    ```
+
+   This updates only `components/button.es.js` in the baseline while preserving
+   all other entries. You can also run `pnpm update:bundle-baseline` without a
+   component name to regenerate the entire baseline.
 
    Commit the updated `scripts/bundle-size-baseline.json` as part of your PR.
 

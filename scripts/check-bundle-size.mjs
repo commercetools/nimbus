@@ -9,8 +9,9 @@
  * threshold, making it suitable as a CI gate.
  *
  * Usage:
- *   node scripts/check-bundle-size.mjs                  # compare against baseline
- *   node scripts/check-bundle-size.mjs --update-baseline # regenerate baseline from current build
+ *   node scripts/check-bundle-size.mjs                            # compare against baseline
+ *   node scripts/check-bundle-size.mjs --update-baseline          # regenerate full baseline
+ *   node scripts/check-bundle-size.mjs --update-baseline button   # update only the button component
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
@@ -99,17 +100,54 @@ function measureFiles(filePaths) {
 // Update baseline
 // ---------------------------------------------------------------------------
 
-function updateBaseline(sizes) {
+function updateBaseline(sizes, componentName) {
+  let files = sizes;
+
+  if (componentName) {
+    // Update only the specified component, preserving everything else
+    const key = `components/${componentName}.es.js`;
+    if (!(key in sizes)) {
+      console.error(
+        `Component "${componentName}" not found in build output.\n` +
+          `Expected: ${key}`
+      );
+      process.exit(1);
+    }
+
+    if (!existsSync(BASELINE_PATH)) {
+      console.error(
+        "No baseline file found. Run --update-baseline without a component name first."
+      );
+      process.exit(1);
+    }
+
+    const existing = JSON.parse(readFileSync(BASELINE_PATH, "utf-8"));
+    const oldSize = existing.files[key];
+    existing.files[key] = sizes[key];
+    existing.generated = new Date().toISOString();
+    writeFileSync(BASELINE_PATH, JSON.stringify(existing, null, 2) + "\n");
+
+    console.log(`Updated baseline for ${key}`);
+    if (oldSize != null) {
+      console.log(
+        `  ${formatBytes(oldSize)} -> ${formatBytes(sizes[key])} (${formatDelta(sizes[key], oldSize)})`
+      );
+    } else {
+      console.log(`  ${formatBytes(sizes[key])} (new)`);
+    }
+    return;
+  }
+
   const baseline = {
     generated: new Date().toISOString(),
-    files: sizes,
+    files,
   };
   writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2) + "\n");
   console.log(`Baseline updated at ${BASELINE_PATH}`);
-  console.log(`Tracking ${Object.keys(sizes).length} files\n`);
+  console.log(`Tracking ${Object.keys(files).length} files\n`);
 
   // Print summary
-  const sorted = Object.entries(sizes).sort((a, b) => b[1] - a[1]);
+  const sorted = Object.entries(files).sort((a, b) => b[1] - a[1]);
   console.log(padEnd("File", 50) + padStart("Gzip Size", 12));
   console.log("-".repeat(62));
   for (const [file, size] of sorted) {
@@ -257,7 +295,12 @@ function compareToBaseline(currentSizes) {
 // ---------------------------------------------------------------------------
 
 const args = process.argv.slice(2);
-const shouldUpdate = args.includes("--update-baseline");
+const updateIndex = args.indexOf("--update-baseline");
+const shouldUpdate = updateIndex !== -1;
+const componentName =
+  shouldUpdate && updateIndex + 1 < args.length
+    ? args[updateIndex + 1]
+    : undefined;
 
 if (!existsSync(DIST)) {
   console.error(
@@ -270,7 +313,7 @@ const filePaths = collectFiles();
 const sizes = measureFiles(filePaths);
 
 if (shouldUpdate) {
-  updateBaseline(sizes);
+  updateBaseline(sizes, componentName);
 } else {
   compareToBaseline(sizes);
 }
