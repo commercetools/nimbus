@@ -16,7 +16,7 @@ import { NumberInput, type NumberInputProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <NumberInput placeholder="Enter a number" />
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput size="sm" placeholder="Small input" />
@@ -41,7 +41,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput variant="solid" placeholder="Solid variant (default)" />
@@ -54,7 +54,7 @@ const App = () => (
 
 Add icons, buttons, or other elements before or after the input using `leadingElement` and `trailingElement` props:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput
@@ -80,7 +80,7 @@ const App = () => (
 
 Control the acceptable range and increment values using `minValue`, `maxValue`, and `step` props:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -124,7 +124,7 @@ const App = () => (
 
 Support decimal precision by setting the `step` prop to a decimal value:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -158,7 +158,7 @@ const App = () => (
 
 Customize number display using `formatOptions`, which leverages the [Intl.NumberFormat API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat) for sophisticated formatting:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -262,7 +262,7 @@ const App = () => (
 
 Disable input interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput placeholder="Enabled input" />
@@ -285,7 +285,7 @@ const App = () => (
 
 Mark inputs as invalid for validation feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput
@@ -307,7 +307,7 @@ const App = () => (
 
 Use `isReadOnly` to display values without allowing editing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput
@@ -332,7 +332,7 @@ const App = () => (
 
 Mark inputs as required using the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <NumberInput
@@ -350,7 +350,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<number | undefined>(undefined);
 
@@ -379,7 +379,7 @@ Use uncontrolled mode when you need to capture the number value without managing
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<NumberInputProps["value"]>(0);
 
@@ -421,7 +421,7 @@ Use controlled mode when you need to:
 
 NumberInput automatically formats numbers according to the user's locale when using React Aria's I18nProvider:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -523,7 +523,7 @@ Clicking anywhere within the input container (including leading/trailing element
 
 Create a quantity input with minimum and maximum values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const totalPrice = quantity * 29.99;
@@ -558,7 +558,7 @@ const App = () => {
 
 Create inputs for measurements with unit labels displayed as trailing elements:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [weight, setWeight] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);

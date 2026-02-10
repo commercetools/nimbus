@@ -16,7 +16,7 @@ import { MultilineTextInput, type MultilineTextInputProps } from '@commercetools
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <MultilineTextInput placeholder="Enter your message" />
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput size="sm" placeholder="Small textarea" />
@@ -41,7 +41,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput variant="solid" placeholder="Solid variant (default)" />
@@ -54,7 +54,7 @@ const App = () => (
 
 Add icons, buttons, or other elements at the start of the textarea using the `leadingElement` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput
@@ -78,7 +78,7 @@ const App = () => (
 
 Control the visible number of text rows using the `rows` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Text fontSize="sm" color="neutral.11">Default (1 row):</Text>
@@ -110,7 +110,7 @@ const App = () => (
 
 Enable automatic height adjustment based on content using the `autoGrow` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Text fontSize="sm" color="neutral.11">
@@ -144,7 +144,7 @@ const App = () => (
 
 Disable textarea interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput placeholder="Enabled textarea" />
@@ -162,7 +162,7 @@ const App = () => (
 
 Mark textareas as invalid for validation feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput
@@ -184,7 +184,7 @@ const App = () => (
 
 Use `isReadOnly` to display content without allowing editing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <MultilineTextInput
@@ -204,7 +204,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<string>('');
 
@@ -231,7 +231,7 @@ Use uncontrolled mode when you need to capture the textarea value without managi
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MultilineTextInputProps["value"]>('');
 
@@ -326,7 +326,7 @@ Clicking anywhere within the textarea container (including leading element area)
 
 Track character count and enforce limits for user-generated content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [comment, setComment] = useState<string>('');
   const maxLength = 280;
@@ -363,7 +363,7 @@ const App = () => {
 
 Create responsive form fields that adapt to content length:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [feedback, setFeedback] = useState<string>('');
   const wordCount = feedback.trim().split(/\s+/).filter(Boolean).length;
@@ -397,7 +397,7 @@ const App = () => {
 
 Combine multiple textareas in a form with validation states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');

@@ -16,7 +16,7 @@ import { RadioInput, type RadioInputRootProps, type RadioInputOptionProps } from
 
 The RadioInput is a compound component that requires both `RadioInput.Root` and `RadioInput.Option` sub-components. The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RadioInput.Root name="choice">
     <RadioInput.Option value="yes">Yes</RadioInput.Option>
@@ -31,7 +31,7 @@ const App = () => (
 
 The `orientation` prop controls the layout direction of radio options. The default is `vertical`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <RadioInput.Root name="vertical-example" orientation="vertical">
@@ -57,7 +57,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
 
@@ -88,7 +88,7 @@ Use uncontrolled mode when you need to capture the selected value without managi
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<RadioInputRootProps["value"]>("option1");
 
@@ -124,7 +124,7 @@ Use controlled mode when you need to:
 
 Use the `isDisabled` prop to disable the entire radio group, or apply it to individual options:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <RadioInput.Root name="disabled-example" isDisabled>
@@ -152,7 +152,7 @@ const App = () => (
 
 Use the `isInvalid` prop to indicate validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <RadioInput.Root name="invalid-example" isInvalid>
@@ -172,7 +172,7 @@ const App = () => (
 
 RadioInput integrates seamlessly with the FormField pattern for consistent form layouts:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root>
     <FormField.Label>Select your preference:</FormField.Label>
@@ -194,7 +194,7 @@ const App = () => (
 
 Use the `isRequired` prop to indicate that a selection is mandatory. When used with `FormField`, it displays a visual indicator (asterisk) in the label and sets `aria-required="true"` for accessibility:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
     <FormField.Root isRequired>
       <FormField.Label>Select your preference</FormField.Label>
@@ -284,7 +284,7 @@ The component supports full keyboard interaction:
 
 Validate radio input selection and display error messages:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -346,7 +346,7 @@ const App = () => {
 
 Show or hide content based on the selected radio option:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string | undefined>(undefined);
 

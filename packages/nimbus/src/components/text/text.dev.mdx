@@ -16,7 +16,7 @@ import { Text, type TextProps } from '@commercetools/nimbus';
 
 The simplest implementation renders a paragraph element with default styling:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return <Text>This is basic text content.</Text>;
 };
@@ -28,7 +28,7 @@ const App = () => {
 
 The `textStyle` prop applies predefined typography styles from the design system. These styles include font-size, line-height, and letter-spacing optimized for readability:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -45,7 +45,7 @@ const App = () => {
 
 Use semantic color tokens to convey meaning and maintain consistent contrast ratios. All colored text uses step 11 of the color scale for accessibility:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -65,7 +65,7 @@ const App = () => {
 
 Use the `as` prop to render Text as different HTML elements while maintaining the same styling API. This is essential for semantic HTML and accessibility:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -90,7 +90,7 @@ const App = () => {
 
 Text supports all Chakra UI style props, allowing you to customize typography beyond the predefined styles:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">

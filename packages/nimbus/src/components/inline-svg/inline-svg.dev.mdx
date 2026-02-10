@@ -13,7 +13,7 @@ import { InlineSvg, type InlineSvgProps } from "@commercetools/nimbus";
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
@@ -29,7 +29,7 @@ const App = () => {
 
 InlineSvg supports the same size variants as the Icon component.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <circle cx="12" cy="12" r="10" fill="currentColor"/>
@@ -52,7 +52,7 @@ const App = () => {
 
 Use the `color` prop to control the icon color. The SVG should use `currentColor` to inherit the color.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const svgData = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v8.72c0 4.55-3.12 8.86-8 10.19-4.88-1.33-8-5.64-8-10.19V7.78l8-3.6z" fill="currentColor"/>
@@ -74,7 +74,7 @@ const App = () => {
 
 InlineSvg preserves inline colors defined in the SVG markup. Use this for icons with multiple colors that shouldn't inherit `currentColor`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const multiColorSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <rect x="3" y="3" width="18" height="18" rx="2" fill="#e11d48"/>
@@ -101,7 +101,7 @@ const App = () => {
 
 InlineSvg handles complex SVG markup with multiple paths, groups, and attributes.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const complexSvg = `<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -120,7 +120,7 @@ const App = () => {
 
 InlineSvg is useful when working with SVG strings from APIs or databases.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedIcon, setSelectedIcon] = React.useState('heart');
   
@@ -210,7 +210,7 @@ const App = () => {
 - Avoid external resources (external stylesheets, fonts)
 - Test SVG content from untrusted sources
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // This malicious SVG will be sanitized - script tags and event handlers removed
   const maliciousSvg = `<svg viewBox="0 0 24 24" onclick="alert('XSS')" xmlns="http://www.w3.org/2000/svg">
@@ -281,7 +281,7 @@ export const FeatureIcon = () => {
 
 Handle loading states and errors when fetching SVG data from an API.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [svgData, setSvgData] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -335,7 +335,7 @@ const App = () => {
 
 Handle cases where SVG data might be invalid or fail sanitization.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [svgInput, setSvgInput] = React.useState('');
   const [displaySvg, setDisplaySvg] = React.useState<string | null>(null);
@@ -384,7 +384,7 @@ const App = () => {
 
 Manage a collection of SVG icons stored as strings.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Simulated icon library from database
   const iconLibrary = [
@@ -439,7 +439,7 @@ const App = () => {
 
 Create icon buttons using SVG strings.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [count, setCount] = React.useState(0);
   

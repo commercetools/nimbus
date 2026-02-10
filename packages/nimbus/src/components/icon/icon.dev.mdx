@@ -20,7 +20,7 @@ import { CheckCircle, Settings, Delete } from "@commercetools/nimbus-icons";
 
 Icons can be used in two ways: by passing the icon component as a child, or using the `as` prop as shorthand:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     {/* Using children */}
@@ -40,7 +40,7 @@ const App = () => (
 
 Icon provides six predefined size variants that can be applied using the `size` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     <Stack direction="column" gap="100" align="center">
@@ -75,7 +75,7 @@ const App = () => (
 
 For sizes beyond the predefined variants, use the `boxSize` style prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     <Icon boxSize="1600" as={Icons.Favorite} />
@@ -89,7 +89,7 @@ const App = () => (
 
 Icons inherit the current text color by default, but can be customized using the `color` prop with Nimbus color tokens or any valid CSS color:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="300" align="center">
@@ -113,7 +113,7 @@ const App = () => (
 
 The `as` prop provides a convenient shorthand for rendering an icon without nesting:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [iconType, setIconType] = React.useState<IconProps["as"]>(Icons.Home);
   
@@ -139,7 +139,7 @@ const App = () => {
 
 While Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. The key is to use `forwardRef` and spread props to ensure proper color inheritance and sizing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const CustomLayersIcon = React.forwardRef((props, ref) => (
     <svg 
@@ -175,7 +175,7 @@ const App = () => {
 
 Icon supports responsive prop values for different breakpoints:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Icon 
@@ -194,7 +194,7 @@ const App = () => (
 
 Icon accepts all Chakra UI SVG props for advanced styling:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" align="center">
     <Icon 
@@ -282,7 +282,7 @@ If your use case requires tracking and analytics for this component, it is good 
 
 Combine icons with buttons for enhanced visual communication:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
     <Stack direction="row" gap="200">
       <Button size="xs" variant="solid" colorPalette="primary">
@@ -305,7 +305,7 @@ const App = () => (
 
 Use colored icons to indicate status or state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="300">
     <Stack direction="row" gap="300" align="center">
@@ -332,7 +332,7 @@ const App = () => (
 
 Create icon-based navigation elements:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = React.useState("home");
   
@@ -369,7 +369,7 @@ const App = () => {
 
 Display lists with icon indicators:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const features = [
     { icon: Icons.CheckCircle, text: "Real-time synchronization", color: "positive.11" },
@@ -395,7 +395,7 @@ const App = () => {
 
 Use icons to represent different file types or content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const files = [
     { name: "Document.pdf", icon: Icons.PictureAsPdf, color: "critical.11" },

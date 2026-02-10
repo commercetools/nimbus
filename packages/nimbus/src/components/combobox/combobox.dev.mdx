@@ -20,7 +20,7 @@ ComboBox supports two patterns for defining options:
 
 Use the `items` prop when working with data from APIs, state, or dynamic sources:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const animals = [
     { id: 'koala', name: 'Koala' },
@@ -47,7 +47,7 @@ const App = () => {
 
 For static lists, you **must** include the `textValue` prop on each option for selections to display correctly:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ComboBox.Root placeholder="Select an animal..." aria-label="Select an animal">
     <ComboBox.Trigger />
@@ -71,7 +71,7 @@ const App = () => (
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const options = [
     { id: '1', name: 'Option 1' },
@@ -109,7 +109,7 @@ const App = () => {
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const options = [
     { id: '1', name: 'Option 1' },
@@ -148,7 +148,7 @@ const App = () => {
 By default, ComboBox operates in single-select mode where users can select one
 option at a time:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
@@ -189,7 +189,7 @@ const App = () => {
 
 Enable multi-select to allow users to choose multiple options displayed as tags:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
@@ -231,7 +231,7 @@ const App = () => {
 
 Add a leading icon to enhance the visual context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const animals = [
     { id: 'koala', name: 'Koala' },
@@ -263,7 +263,7 @@ const App = () => {
 
 Use `isDisabled` to disable the combobox:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const options = [
     { id: '1', name: 'Option 1' },
@@ -289,7 +289,7 @@ const App = () => {
 
 Mark the combobox as invalid for form validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const options = [
     { id: '1', name: 'Option 1' },
@@ -315,7 +315,7 @@ const App = () => {
 
 Use `isReadOnly` for display-only scenarios:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const fruits = [
     { id: 'apple', name: 'Apple' },
@@ -346,7 +346,7 @@ const App = () => {
 
 Organize options into sections with headers:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const foodCategories = [
     {
@@ -398,7 +398,7 @@ const App = () => {
 
 Use the `items` prop for rendering dynamic data efficiently:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const animals = [
     { id: 'koala', name: 'Koala' },
@@ -428,7 +428,7 @@ const App = () => {
 
 Customize how options are filtered using the `filter` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const animals = [
     { id: 1, name: 'Koala', category: 'Marsupial' },
@@ -469,7 +469,7 @@ const App = () => {
 
 Allow users to create new options by typing and pressing Enter:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
     { id: 1, name: 'Apple' },
@@ -521,7 +521,7 @@ const App = () => {
 
 Load options asynchronously with built-in debouncing and loading states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Simulated API call
   const loadPokemon = useCallback(async (filterText, signal) => {
@@ -569,7 +569,7 @@ const App = () => {
 
 Control the input text for advanced scenarios:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -611,7 +611,7 @@ const App = () => {
 
 Control when the dropdown menu opens using `menuTrigger`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const options = [
     { id: '1', name: 'Option 1' },
@@ -717,7 +717,7 @@ The component supports full keyboard interaction:
 
 A common e-commerce pattern combining filtering, grouping, and multi-select:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
@@ -774,7 +774,7 @@ const App = () => {
 
 Enable users to select from existing tags or create new ones:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [tags, setTags] = useState([
     { id: 1, label: 'React' },

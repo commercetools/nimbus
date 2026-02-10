@@ -13,7 +13,7 @@ import { VisuallyHidden, type VisuallyHiddenProps } from "@commercetools/nimbus"
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <VisuallyHidden>
     This text is hidden visually but accessible to screen readers
@@ -27,7 +27,7 @@ const App = () => (
 
 Provide additional context for screen reader users without cluttering the visual interface.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -52,7 +52,7 @@ const App = () => (
 
 Use `isFocusable` to make hidden content visible when it receives keyboard focus. This is essential for skip navigation links.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <VisuallyHidden isFocusable>
@@ -75,7 +75,7 @@ const App = () => (
 
 Use the `as` prop to control whether VisuallyHidden renders as a block (`div`) or inline (`span`) element.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack gap="400">
     <Box>
@@ -101,7 +101,7 @@ const App = () => (
 
 Provide status updates that are only announced to screen readers.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [items, setItems] = React.useState<string[]>([]);
   
@@ -217,7 +217,7 @@ export const SkipLink = () => (
 
 A standard accessibility pattern for keyboard navigation.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const mainContentRef = React.useRef<HTMLDivElement>(null);
   
@@ -257,7 +257,7 @@ const App = () => {
 
 Provide additional context for screen reader users navigating tables.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const data = [
     { product: 'Widget A', price: 29.99, stock: 45 },
@@ -315,7 +315,7 @@ const App = () => {
 
 Provide additional hints for form fields without cluttering the UI.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [password, setPassword] = React.useState('');
   
@@ -353,7 +353,7 @@ const App = () => {
 
 Announce loading states to screen reader users.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<string | null>(null);

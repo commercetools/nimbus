@@ -20,7 +20,7 @@ The Accordion is a compound component with multiple parts that work together. At
 minimum, you need `Accordion.Root`, `Accordion.Item`, `Accordion.Header`, and
 `Accordion.Content`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Accordion.Root>
@@ -63,7 +63,7 @@ const App = () => {
 The Accordion component supports two size variants: `sm` (small) and `md`
 (medium, default). The size affects the font size, icon size, and padding:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="600">
@@ -112,7 +112,7 @@ const App = () => {
 By default, only one accordion item can be expanded at a time. Use the
 `allowsMultipleExpanded` prop to allow multiple items to be open simultaneously:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="600">
@@ -172,7 +172,7 @@ const App = () => {
 
 Disable the entire accordion or individual items to prevent user interaction:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="600">
@@ -227,7 +227,7 @@ const App = () => {
 Use `defaultExpandedKeys` to set which items are initially expanded without
 managing state yourself:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Accordion.Root
@@ -276,7 +276,7 @@ For full control over the expanded state, use the `expandedKeys` and
 - Implement custom expand/collapse logic
 - Integrate with external state management
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [expandedKeys, setExpandedKeys] = React.useState(new Set(["section-1"]));
 
@@ -347,7 +347,7 @@ const App = () => {
 Add buttons, badges, or other elements to the right side of accordion headers
 using `Accordion.HeaderRightContent`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [counts, setCounts] = React.useState({ item1: 0, item2: 0, item3: 0 });
 

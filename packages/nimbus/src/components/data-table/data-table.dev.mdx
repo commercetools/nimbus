@@ -24,7 +24,7 @@ The DataTable renders data in a tabular format with support for sorting,
 selection, resizing, and nested content. At minimum, you need to provide
 `columns` and `rows`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -117,7 +117,7 @@ const rows: DataTableRowItem[] = [
 The `density` prop controls row height and padding. Use `condensed` for
 data-dense interfaces:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [density, setDensity] = useState('default');
 
@@ -161,7 +161,7 @@ const App = () => {
 Enable sorting with `allowsSorting`. Individual columns can opt-out using
 `isSortable: false`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name, isSortable: true },
@@ -193,7 +193,7 @@ const App = () => {
 
 For external sort state management, use `sortDescriptor` and `onSortChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [sortDescriptor, setSortDescriptor] = useState({
     column: 'name',
@@ -250,7 +250,7 @@ const App = () => {
 
 Enable selection with `selectionMode`. Supports `none`, `single`, or `multiple`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['1']));
 
@@ -298,7 +298,7 @@ const App = () => {
 
 Enable column resizing with `isResizable` on the table or individual columns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name, isResizable: true, width: 150 },
@@ -324,7 +324,7 @@ const App = () => {
 
 Use `maxHeight` to enable vertical scrolling with a sticky header:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -351,7 +351,7 @@ const App = () => {
 
 Enable `isTruncated` to truncate long text with ellipsis:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -379,7 +379,7 @@ const App = () => {
 
 Use `onRowClick` to handle row click events for navigation or detail views:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [clickedRow, setClickedRow] = useState(null);
 
@@ -413,7 +413,7 @@ const App = () => {
 
 Use the `search` prop to filter rows across all visible columns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [search, setSearch] = useState('');
 
@@ -449,7 +449,7 @@ const App = () => {
 
 Control which columns are displayed using `visibleColumns`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email']);
 
@@ -494,7 +494,7 @@ const App = () => {
 
 Use `nestedKey` to enable expandable nested content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Category', accessor: (row) => row.name },
@@ -537,7 +537,7 @@ const App = () => {
 
 Add pagination or summary content using the `footer` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [page, setPage] = useState(1);
   const pageSize = 3;
@@ -596,7 +596,7 @@ const App = () => {
 
 Use `disabledKeys` to prevent interaction with specific rows:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -624,7 +624,7 @@ const App = () => {
 
 Pin important rows to the top of the table:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [pinnedRows, setPinnedRows] = useState(new Set(['1']));
 
@@ -668,7 +668,7 @@ const App = () => {
 
 For advanced customization, use the compound component pattern:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -723,7 +723,7 @@ DataTable.Manager must be used within a DataTable.Root to access table state and
 columns. It renders as a settings button that opens a drawer with multiple
 configuration tabs:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
   const [isTruncated, setIsTruncated] = useState(false);
@@ -780,7 +780,7 @@ The Manager provides a dual-list interface for managing visible and hidden
 columns. Users can drag columns between lists, reorder visible columns, and
 search hidden columns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email']);
 
@@ -823,7 +823,7 @@ const App = () => {
 The Layout Settings tab allows users to control text truncation and row density.
 These settings update the table's visual appearance in real-time:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'description']);
   const [isTruncated, setIsTruncated] = useState(false);
@@ -886,7 +886,7 @@ Add a custom settings tab by providing the `customSettings` prop to
 DataTable.Root. This allows extending the Manager with application-specific
 configuration:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'status']);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -952,7 +952,7 @@ const App = () => {
 Manage column configuration externally for features like saving user
 preferences:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
 

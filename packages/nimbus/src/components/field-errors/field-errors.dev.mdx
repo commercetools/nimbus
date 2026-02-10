@@ -16,7 +16,7 @@ import { FieldErrors, type FieldErrorsProps } from '@commercetools/nimbus';
 
 The simplest implementation shows a single error message:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FieldErrors
     errors={{ missing: true }}
@@ -32,7 +32,7 @@ FieldErrors provides localized messages for common validation scenarios. Errors 
 
 #### Basic validation
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -50,7 +50,7 @@ const App = () => (
 
 #### Length validation
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -65,7 +65,7 @@ const App = () => (
 
 #### Format validation
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -80,7 +80,7 @@ const App = () => (
 
 #### Numeric validation
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -104,7 +104,7 @@ const App = () => (
 
 #### Server validation
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -124,7 +124,7 @@ const App = () => (
 
 Override built-in messages for specific error types using `customMessages`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <FieldErrors
@@ -143,7 +143,7 @@ const App = () => (
 
 Use `renderError` for complete control over specific error messages:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FieldErrors
     errors={{
@@ -169,7 +169,7 @@ const App = () => (
 
 Use `renderDefaultError` as a fallback when `renderError` returns null:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FieldErrors
     errors={{
@@ -203,7 +203,7 @@ const App = () => (
 
 Control when errors are displayed using the `isVisible` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [showErrors, setShowErrors] = useState(false);
 
@@ -225,7 +225,7 @@ const App = () => {
 
 FieldErrors integrates seamlessly with FormField for form validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');

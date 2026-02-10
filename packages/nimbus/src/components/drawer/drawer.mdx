@@ -58,7 +58,7 @@ Get familiar with the features.
 
 ### Basic Usage
 
-```jsx-live
+```jsx live
 const App = () => (
   <Drawer.Root>
     <Drawer.Trigger>
@@ -87,7 +87,7 @@ const App = () => (
 Control the drawer width by applying `width` prop on the Content component, it's
 a regular style-prop, so you can use all size-tokens but also custom values.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Drawer.Root >
     <Drawer.Trigger asChild>
@@ -114,7 +114,7 @@ Position the drawer at different locations using the `placement` prop. You can
 also control the backdrop overlay with the `showBackdrop` prop (enabled by
 default):
 
-```jsx-live
+```jsx live
 const App = () => {
   const [showBackdrop, setShowBackdrop] = useState(true);
 
@@ -156,7 +156,7 @@ const App = () => {
 
 Use external state to control the dialog programmatically:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 

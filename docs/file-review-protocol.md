@@ -67,7 +67,7 @@ When reviewing a file, structure your response as:
 
 ### Required Fixes:
 1. Remove all @storybook/blocks imports
-2. Convert Canvas blocks to jsx-live
+2. Convert Canvas blocks to jsx live
 3. Add PropsTable component
 
 ### Content Review:

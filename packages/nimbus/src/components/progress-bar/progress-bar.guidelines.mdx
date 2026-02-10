@@ -79,7 +79,7 @@ the user know what is happening within working processes.
 > - Do ensure the progress bar is responsive. It should adapt to different
 >   screen sizes without distorting the design.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [indexingKey, setIndexingKey] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
@@ -146,7 +146,7 @@ const App = () => {
 > - Don't use a progress bar for system-initiated background tasks. These tasks
 >   should be handled without user intervention or visible indicators.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [isRunning, setIsRunning] = React.useState(false);
   const [value, setValue] = React.useState(0);

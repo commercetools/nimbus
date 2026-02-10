@@ -14,7 +14,7 @@ import { Link, type LinkProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Link href="#">
@@ -30,7 +30,7 @@ const App = () => {
 
 The Link component supports three size variants: `xs`, `sm`, and `md` (default).
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -52,7 +52,7 @@ const App = () => {
 
 Control the link color with the `fontColor` prop. Use `primary` for the theme's primary color or `inherit` to match the parent text color.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -71,7 +71,7 @@ const App = () => {
 
 For external links, use `target="_blank"` with `rel="noopener noreferrer"` for security.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Link
@@ -89,7 +89,7 @@ const App = () => {
 
 Use the `download` attribute to prompt file downloads.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Link
@@ -106,7 +106,7 @@ const App = () => {
 
 Combine links with icons for enhanced visual communication.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -131,7 +131,7 @@ const App = () => {
 
 The `asChild` prop allows you to use custom elements while maintaining Link's styling and behavior.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Link asChild href="/profile">
@@ -147,7 +147,7 @@ const App = () => {
 
 Create accessible mailto and tel links.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -176,7 +176,7 @@ Links must have accessible labels that clearly describe their destination or pur
 - Avoid generic text like "click here" or "read more"
 - For icon-only links, provide an `aria-label`
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">

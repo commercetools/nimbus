@@ -16,7 +16,7 @@ import { SearchInput, type SearchInputProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SearchInput placeholder="Search..." />
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SearchInput size="sm" placeholder="Small search" />
@@ -41,7 +41,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SearchInput variant="solid" placeholder="Solid variant (default)" />
@@ -54,7 +54,7 @@ const App = () => (
 
 SearchInput includes a built-in clear button that automatically appears when the input has a value:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -84,7 +84,7 @@ const App = () => {
 
 Disable input interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SearchInput placeholder="Enabled search" />
@@ -102,7 +102,7 @@ const App = () => (
 
 Mark inputs as invalid for validation feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SearchInput
@@ -124,7 +124,7 @@ const App = () => (
 
 Use `isReadOnly` to display values without allowing editing:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SearchInput
@@ -144,7 +144,7 @@ const App = () => (
 
 SearchInput supports three event handlers for different interaction patterns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
   const [submitted, setSubmitted] = useState<string>('');
@@ -184,7 +184,7 @@ const App = () => {
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<string>('');
 
@@ -211,7 +211,7 @@ Use uncontrolled mode when you need to capture the input value without managing 
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<string>('');
 
@@ -306,7 +306,7 @@ Clicking anywhere within the input container (including the search icon area) wi
 
 Display results that update as the user types:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [query, setQuery] = useState<string>('');
 
@@ -352,7 +352,7 @@ const App = () => {
 
 Handle search submission with Enter key or button click:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<string[]>([]);

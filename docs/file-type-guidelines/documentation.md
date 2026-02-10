@@ -23,7 +23,7 @@ must have both MDX documentation files.
 Required documentation for designers that:
 
 - Explains the component's design purpose and when to use it
-- Shows visual usage examples with live code (using `jsx-live` blocks)
+- Shows visual usage examples with live code (using `jsx live` blocks)
 - Documents design variants and visual options (using `<PropsTable>` component)
 - Provides accessibility information from a user perspective (keyboard
   navigation, screen reader support, WCAG compliance)
@@ -126,14 +126,14 @@ Get familiar with the features.
 
 ### Basic Usage
 
-\`\`\`jsx-live const App = () => ( <ComponentName> Basic example
+\`\`\`jsx live const App = () => ( <ComponentName> Basic example
 </ComponentName> ) \`\`\`
 
 ### Size Variants (If applicable)
 
 Demonstrate all sizes in a single code block for easy comparison:
 
-\`\`\`jsx-live const App = () => (
+\`\`\`jsx live const App = () => (
 <Stack direction="row" gap="400" alignItems="center">
 <ComponentName size="sm">Small</ComponentName>
 <ComponentName size="md">Medium</ComponentName>
@@ -143,7 +143,7 @@ Demonstrate all sizes in a single code block for easy comparison:
 
 Demonstrate all visual variants in a single code block for easy comparison:
 
-\`\`\`jsx-live const App = () => (
+\`\`\`jsx live const App = () => (
 <Stack direction="row" gap="400" alignItems="center">
 <ComponentName variant="solid">Solid</ComponentName>
 <ComponentName variant="outline">Outline</ComponentName>
@@ -219,13 +219,13 @@ This component follows WCAG 2.1 AA guidelines.
 
 ## Code Examples
 
-### jsx-live Block Requirements
+### jsx live Block Requirements
 
-**CRITICAL**: All interactive examples must use `jsx-live` blocks. These blocks
+**CRITICAL**: All interactive examples must use `jsx live` blocks. These blocks
 render live, interactive React components in the documentation site.
 
 ```markdown
-\`\`\`jsx-live const App = () => ( <Button variant="solid">Click me</Button> )
+\`\`\`jsx live const App = () => ( <Button variant="solid">Click me</Button> )
 \`\`\`
 ```
 
@@ -233,7 +233,7 @@ render live, interactive React components in the documentation site.
 
 - All Nimbus components (Button, Stack, Icons, etc.) are available globally - no
   imports needed
-- Each jsx-live block should define an `App` component
+- Each jsx live block should define an `App` component
 - The code executes in the browser and renders as a live component
 - Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
   for non-interactive code examples
@@ -246,7 +246,7 @@ Storybook content.
 #### Simple Component Example
 
 ```markdown
-\`\`\`jsx-live const App = () => ( <Badge colorPalette="primary" size="md">
+\`\`\`jsx live const App = () => ( <Badge colorPalette="primary" size="md">
 <Icons.SentimentSatisfied /> Badge <Icons.SentimentSatisfied /> </Badge> )
 \`\`\`
 ```
@@ -254,7 +254,7 @@ Storybook content.
 #### Interactive State Example
 
 ```markdown
-\`\`\`jsx-live const App = () => { const [count, setCount] = useState(0);
+\`\`\`jsx live const App = () => { const [count, setCount] = useState(0);
 
 return ( <Stack direction="column" gap="400"> <Text>Count: {count}</Text>
 <Button onClick={() => setCount(count + 1)}> Increment </Button> </Stack> ); }
@@ -264,7 +264,7 @@ return ( <Stack direction="column" gap="400"> <Text>Count: {count}</Text>
 #### Compound Component Example
 
 ```markdown
-\`\`\`jsx-live const App = () => ( <Menu.Root> <Menu.Trigger> Actions
+\`\`\`jsx live const App = () => ( <Menu.Root> <Menu.Trigger> Actions
 <Icons.KeyboardArrowDown /> </Menu.Trigger> <Menu.Content> <Menu.Item
 id="copy">Copy</Menu.Item> <Menu.Item id="paste">Paste</Menu.Item> <Menu.Item
 id="delete">Delete</Menu.Item> </Menu.Content> </Menu.Root> ) \`\`\`
@@ -477,13 +477,13 @@ Get familiar with the features.
 
 This is the default size for text inputs.
 
-[jsx-live code block here showing medium size]
+[jsx live code block here showing medium size]
 
 #### Small
 
 Available for the times a more condensed text input is needed.
 
-[jsx-live code block here showing small size]
+[jsx live code block here showing small size]
 ```
 
 See actual MDX files in the codebase (e.g., `text-input.mdx`, `button.mdx`) for
@@ -522,7 +522,7 @@ These components work automatically in MDX files without import statements:
 
 ### Code Blocks
 
-- `jsx-live` - **Required for all interactive examples** - Renders live React
+- `jsx live` - **Required for all interactive examples** - Renders live React
   components in the browser
 - Standard code blocks - For non-interactive code examples with syntax
   highlighting
@@ -566,7 +566,7 @@ Supported in the Nimbus documentation site:
 
 ### Content Requirements
 
-- [ ] **Interactive examples using `jsx-live` blocks only**
+- [ ] **Interactive examples using `jsx live` blocks only**
 - [ ] **NO Storybook-specific imports**
 - [ ] Resources section with relevant external links
 - [ ] Variables/Examples section showing component variations

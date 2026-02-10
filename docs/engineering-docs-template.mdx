@@ -41,7 +41,7 @@ PLACEHOLDERS TO REPLACE:
 - All example code should be customized for your component
 
 STYLE GUIDELINES:
-- Use `jsx-live-dev` for all interactive examples
+- Use `jsx live-dev` for all interactive examples
 - Use `tsx` for type definitions and non-interactive code
 - Start examples with: const App = () => { ... }
 - Use Stack, Text, Button, and other Nimbus components in examples
@@ -125,7 +125,7 @@ import { ComponentName, type ComponentNameProps } from "@commercetools/nimbus";
 
 The simplest implementation uses [uncontrolled/controlled] mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <[ComponentName] />
 )
@@ -220,7 +220,7 @@ Order subsections from simple to complex, ending with controlled/uncontrolled mo
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <[ComponentName] size="sm" />
@@ -235,7 +235,7 @@ const App = () => (
 
 Choose between [variant names] variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <[ComponentName] variant="solid" />
@@ -251,7 +251,7 @@ const App = () => (
 
 The `[propName]` prop controls [behavior description]:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <[ComponentName] [propName]="[value1]" />
@@ -269,7 +269,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [displayValue, setDisplayValue] = useState<string>('[initial state]');
 
@@ -295,7 +295,7 @@ managing state yourself.
 For scenarios requiring programmatic control or coordination with other
 components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
 
@@ -324,7 +324,7 @@ Use controlled mode when you need to:
 <!-- Add as many subsections as needed for your component's features -->
 <!-- Examples: Time zone handling, custom formatting, validation rules, etc. -->
 
-[Description of the feature]: ```jsx-live-dev
+[Description of the feature]: ```jsx live-dev
 
 const App = () => ( <[ComponentName] [featureProp]={[value]}
 [additionalProp]={[value]} /> )
@@ -535,7 +535,7 @@ in production applications. Examples should demonstrate:
 
 ### [Pattern name 1]
 
-[Description of the use case]: ```jsx-live-dev
+[Description of the use case]: ```jsx live-dev
 
 const App = () => { const [value, setValue] =
 useState<ComponentNameProps["value"]>([initialValue]);
@@ -552,7 +552,7 @@ onChange={setValue} /> <Text fontSize="sm"> {[displayLogic]} </Text> </Stack> );
 
 [Description of another common use case]:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<ComponentNameProps["value"]>([initialValue]);
 

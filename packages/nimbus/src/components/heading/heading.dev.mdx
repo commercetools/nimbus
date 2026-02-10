@@ -16,7 +16,7 @@ import { Heading, type HeadingProps } from '@commercetools/nimbus';
 
 The simplest implementation renders a heading with the default xl size:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Heading>Welcome to Nimbus</Heading>
 )
@@ -28,7 +28,7 @@ const App = () => (
 
 The Heading component provides 11 size variants (xs through 7xl) to establish clear typographic hierarchy:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Heading size="xs">Extra Small Heading (xs)</Heading>
@@ -50,7 +50,7 @@ const App = () => (
 
 Use the `as` prop to render the appropriate semantic HTML heading element (h1-h6):
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Heading as="h1" size="4xl">Page Title (h1)</Heading>
@@ -69,7 +69,7 @@ const App = () => (
 
 The Heading component supports Chakra UI style props for additional customization:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Heading size="2xl" color="primary.11">

@@ -16,7 +16,7 @@ import { Pagination, type PaginationProps } from '@commercetools/nimbus';
 
 The simplest implementation requires managing the pagination state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
@@ -44,7 +44,7 @@ const App = () => {
 
 Display the current pagination state to provide context to users:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
@@ -76,7 +76,7 @@ const App = () => {
 
 Enable the page size selector to allow users to change how many items are displayed per page:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(20);
@@ -108,7 +108,7 @@ const App = () => {
 
 The page input field allows users to jump directly to a specific page by typing the page number:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
 
@@ -133,7 +133,7 @@ const App = () => {
 
 Customize which controls are displayed by enabling or disabling the page input and page size selector:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(10);
@@ -175,7 +175,7 @@ const App = () => {
 
 Provide custom page size options to match your application's needs:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(25);
@@ -204,7 +204,7 @@ const App = () => {
 
 Complete example showing pagination with actual data rendering:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PaginationProps["currentPage"]>(1);
   const [pageSize, setPageSize] = useState<PaginationProps["pageSize"]>(5);

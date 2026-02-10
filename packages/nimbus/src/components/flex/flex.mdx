@@ -54,7 +54,7 @@ import { Flex } from "@commercetools/nimbus";
 
 ### Basic usage
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex gap="400">
     <Box p="400" bg="primary.7">
@@ -74,7 +74,7 @@ const App = () => (
 
 Control the direction of flex items using the `direction` prop:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack gap="600">
     <Stack gap="200">
@@ -113,7 +113,7 @@ const App = () => (
 
 Control alignment of flex items using `alignItems` and `justifyContent`:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex
     direction="row"
@@ -140,7 +140,7 @@ const App = () => (
 
 Control how flex items wrap using the `wrap` prop:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex wrap="wrap" gap="400" maxWidth="600px">
     <Box p="400" bg="primary.7" minWidth="150px">
@@ -166,7 +166,7 @@ const App = () => (
 
 Control how individual items grow and shrink using flex properties:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex gap="400">
     <Box p="400" bg="primary.7" flex="1">
@@ -186,7 +186,7 @@ const App = () => (
 
 A common use case is centering content both horizontally and vertically:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex
     alignItems="center"
@@ -206,7 +206,7 @@ const App = () => (
 Use the `asChild` prop to apply Flex styles to any child element while
 maintaining the child's functionality:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Flex gap="400" p="400" bg="neutral.2" asChild>
     <section>

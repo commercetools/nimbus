@@ -45,7 +45,7 @@ Get familiar with the features.
 
 Represents the default or unchosen state.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox>Label</Checkbox>
 ```
 
@@ -54,7 +54,7 @@ const App = () => <Checkbox>Label</Checkbox>
 Visually confirms a user’s choice and is essential for form submissions and
 interactive elements.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox isSelected>Label</Checkbox>
 ```
 
@@ -63,7 +63,7 @@ const App = () => <Checkbox isSelected>Label</Checkbox>
 If some, but not all, of the sub-options are selected, it will visually indicate
 that the selection is partial or mixed.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox isIndeterminate>Label</Checkbox>
 ```
 
@@ -74,7 +74,7 @@ const App = () => <Checkbox isIndeterminate>Label</Checkbox>
 This is the standard initial state of the checkbox that doesn’t have a reason to
 be invalid or disabled for the user.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox isSelected ml="600">Default tone</Checkbox>
 ```
 
@@ -84,7 +84,7 @@ An invalid validation state for a checkbox indicates that the user's input (or
 lack thereof) for that checkbox is not acceptable according to the application's
 rules.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox isInvalid>Invalid</Checkbox>
 ```
 
@@ -93,7 +93,7 @@ const App = () => <Checkbox isInvalid>Invalid</Checkbox>
 This is the styling of disabled elements. The icon is dimmed but the label
 remains legible.
 
-```jsx-live
+```jsx live
 const App = () => <Checkbox isDisabled>Disabled</Checkbox>
 ```
 
@@ -104,7 +104,7 @@ const App = () => <Checkbox isDisabled>Disabled</Checkbox>
 Vertical lists are the most common and generally recommended approach for
 checkbox lists unless there's a specific reason to use a different layout.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column" gap="400">
     <Checkbox>Option 1</Checkbox>
@@ -118,7 +118,7 @@ const App = () => (
 These lists are best when they are concise, visually distinct, and don't require
 much scanning. Used often in filters.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="600">
     <Checkbox>Option 1</Checkbox>

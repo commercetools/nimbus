@@ -16,7 +16,7 @@ import { Box, Card, Link, type CardProps } from '@commercetools/nimbus';
 
 The Card component uses a compound pattern to structure content. You must wrap `Card.Header` and `Card.Content` within `Card.Root`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Card.Root>
     <Card.Header>Card Title</Card.Header>
@@ -33,7 +33,7 @@ const App = () => (
 
 The `cardPadding` prop controls the internal spacing of the card. Available sizes are `sm`, `md`, and `lg`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Card.Root cardPadding="sm">
@@ -58,7 +58,7 @@ const App = () => (
 
 Customize the card's appearance using `borderStyle`, `elevation`, and `backgroundStyle`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Card.Root borderStyle="outlined" elevation="none">
@@ -83,7 +83,7 @@ const App = () => (
 
 When making a card interactive, avoid placing `onClick` directly on the `Card.Root`. Instead, wrap the card in an anchor tag or use proper ARIA roles to ensure accessibility.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     {/* Option 1: Wrapped in a Nimbus Link (Recommended for navigation) */}

@@ -54,7 +54,7 @@ Toggle Button Groups come in different sizes to fit various layout needs.
 
 This is the default size.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Medium size example (default)" selectedKeys={["md-day"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="md-day"><Icons.ViewDay />Day</ToggleButtonGroup.Button>
@@ -68,7 +68,7 @@ const App = () => (
 
 This size is for compact placements.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root size="xs" aria-label="X-Small size example" selectedKeys={["xs-day"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="xs-day"><Icons.ViewDay />Day</ToggleButtonGroup.Button>
@@ -90,7 +90,7 @@ labels offer explicit understanding of each option. This combination enhances
 user efficiency by making common choices readily available and easily
 identifiable.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Labels and icons example" selectedKeys={["li-shipped"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="li-processing">
@@ -116,7 +116,7 @@ This approach prioritizes readability and ease of comprehension, making it
 suitable for scenarios where icons might be ambiguous or when the actions are
 best described through text.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Just labels example" selectedKeys={["label-inactive"]} colorPalette="primary">
     <ToggleButtonGroup.Button id="label-active">
@@ -138,7 +138,7 @@ Messages potential problems or situations that require user attention to prevent
 issues. They require the user to take action to make needed corrections or
 confirmation. Use tooltips for accessibility.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ToggleButtonGroup.Root aria-label="Just icons example" selectedKeys={["icon-copy"]} colorPalette="primary">
     <Tooltip.Root delay={0} closeDelay={0}>

@@ -57,7 +57,7 @@ Get familiar with the features.
 Wrap your application with NimbusI18nProvider to set the locale for React Aria
 components:
 
-```jsx-live
+```jsx live
 const App = () => (
   <NimbusI18nProvider locale="en-US">
     <Stack direction="column" gap="400">
@@ -72,7 +72,7 @@ const App = () => (
 
 Change the locale prop to switch formatting:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [locale, setLocale] = React.useState("en-US");
 
@@ -124,7 +124,7 @@ const App = () => {
 You can nest NimbusI18nProviders to use different locales in different parts of
 your app:
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column" gap="600">
     <NimbusI18nProvider locale="en-US">

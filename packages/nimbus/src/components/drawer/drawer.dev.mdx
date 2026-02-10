@@ -16,7 +16,7 @@ import { Drawer } from '@commercetools/nimbus';
 
 The Drawer component is a compound component with multiple parts that work together. This basic implementation shows a `Trigger` element that toggles the drawer's `Content` wrapper which contains `Header`, `Body`, and `Footer` sections:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Drawer.Root>
     <Drawer.Trigger>Open Drawer</Drawer.Trigger>
@@ -43,7 +43,7 @@ const App = () => (
 
 Control where the drawer appears on screen using the `placement` prop on `Drawer.Root`. Available placements are `left`, `right` (default), `top`, and `bottom`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" flexWrap="wrap">
     {['left', 'right', 'top', 'bottom'].map((placement) => (
@@ -77,7 +77,7 @@ const App = () => (
 
 Control whether to show a backdrop overlay behind the drawer using the `showBackdrop` prop (enabled by default):
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Drawer.Root showBackdrop={false}>
@@ -123,7 +123,7 @@ const App = () => (
 
 Use your own button or interactive element as the trigger using the `asChild` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Drawer.Root>
     <Drawer.Trigger asChild>
@@ -149,7 +149,7 @@ const App = () => (
 
 Control the drawer content width using style props on `Drawer.Content`. You can use design tokens or custom values:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" flexWrap="wrap">
     {['sm', 'md', 'lg', '512px', 'full'].map((size) => (
@@ -179,7 +179,7 @@ const App = () => (
 
 The drawer body automatically handles overflow with scroll support when content exceeds available height:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Drawer.Root>
     <Drawer.Trigger>Open Scrollable Drawer</Drawer.Trigger>
@@ -210,7 +210,7 @@ const App = () => (
 
 Control how users can dismiss the drawer using `isDismissable` and `isKeyboardDismissDisabled` props:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Drawer.Root isDismissable={true} isKeyboardDismissDisabled={false}>
@@ -257,7 +257,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultOpen` and `onOpenChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [lastAction, setLastAction] = useState('No action yet');
 
@@ -295,7 +295,7 @@ Use uncontrolled mode when you only need to react to state changes without manag
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -389,7 +389,7 @@ The component supports full keyboard interaction:
 
 Drawers can be nested to create multi-level workflows. Each drawer maintains proper z-index stacking:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Drawer.Root>
     <Drawer.Trigger>Open First Drawer</Drawer.Trigger>
@@ -432,7 +432,7 @@ const App = () => (
 
 Control whether the drawer should close when clicking outside based on custom logic:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 

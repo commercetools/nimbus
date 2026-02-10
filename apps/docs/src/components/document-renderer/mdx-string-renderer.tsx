@@ -3,6 +3,7 @@ import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { evaluate } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import { remarkMark } from "remark-mark-highlight";
+import { remarkLiveCode } from "./plugins/remark-live-code";
 import { components } from "./components";
 
 import type { FC, ReactNode } from "react";
@@ -35,7 +36,7 @@ export const MdxStringRenderer: FC<{
 
     void evaluate(content, {
       ...runtime,
-      remarkPlugins: [remarkGfm, remarkMark],
+      remarkPlugins: [remarkGfm, remarkMark, remarkLiveCode],
     }).then((r) => {
       // Only update if this is still the content we want
       // (user might have navigated away during evaluation)

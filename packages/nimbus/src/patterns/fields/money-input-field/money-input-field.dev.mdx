@@ -68,7 +68,7 @@ import { MoneyInputField, type MoneyInputFieldProps, type MoneyInputValue } from
 
 The simplest implementation with a label and controlled state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -92,7 +92,7 @@ const App = () => {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSmall, setValueSmall] = useState<MoneyInputValue>({
     amount: "",
@@ -130,7 +130,7 @@ const App = () => {
 
 Add helper text below the input to provide context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -154,7 +154,7 @@ const App = () => {
 
 Show error messages when the field is touched and has validation errors:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -188,7 +188,7 @@ const App = () => {
 
 Provide additional context through an info button and popover:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -213,7 +213,7 @@ const App = () => {
 
 Mark fields as required with the `isRequired` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -238,7 +238,7 @@ const App = () => {
 
 Prevent user interaction with the `isDisabled` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "99.99",
@@ -262,7 +262,7 @@ const App = () => {
 
 Display a non-editable value with the `isReadOnly` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "199.99",
@@ -286,7 +286,7 @@ const App = () => {
 
 MoneyInput automatically detects when an amount has more decimal places than the currency standard and displays a badge. The badge is shown by default but can be disabled:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "99.99999",
@@ -311,7 +311,7 @@ The high precision badge appears automatically when the amount has more decimal 
 
 Keep the currency fixed while allowing amount changes:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -336,7 +336,7 @@ const App = () => {
 
 MoneyInput automatically formats amounts based on the selected currency:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [usd, setUsd] = useState<MoneyInputValue>({
     amount: "99.99",

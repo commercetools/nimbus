@@ -16,7 +16,7 @@ import { LocalizedField, type LocalizedFieldProps, type LocalizedString, type Lo
 
 The LocalizedField component manages multiple locale-specific or currency-specific input fields with expand/collapse functionality. It requires controlled mode with an `onChange` handler:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: 'Hello',
@@ -109,7 +109,7 @@ const handleChange = (e: LocalizedFieldChangeEvent) => {
 
 LocalizedField supports two size variants:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [smallValues, setSmallValues] = React.useState({
     en: 'Small',
@@ -153,7 +153,7 @@ LocalizedField supports four input types: `text`, `multiLine`, `richText`, and `
 
 Single-line text input for short content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: 'Product Name',
@@ -178,7 +178,7 @@ const App = () => {
 
 Textarea for longer content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: 'This is a detailed product description.',
@@ -203,7 +203,7 @@ const App = () => {
 
 Rich text editor for formatted content:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: '<p><strong>Bold</strong> and <em>italic</em> text</p>',
@@ -227,7 +227,7 @@ const App = () => {
 
 Currency-specific price inputs:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [prices, setPrices] = React.useState({
     USD: { amount: '99.99', currencyCode: 'USD' },
@@ -262,7 +262,7 @@ const App = () => {
 
 By default, LocalizedField displays only the default locale and provides a toggle to expand:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: 'English content',
@@ -310,7 +310,7 @@ const App = () => {
 
 Add placeholders and per-locale descriptions for better user guidance:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: '',
@@ -354,7 +354,7 @@ LocalizedField supports both group-level and per-locale validation:
 
 Errors that apply to the entire field group:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: '',
@@ -393,7 +393,7 @@ const App = () => {
 
 Different errors for specific locales:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: 'Valid name',
@@ -437,7 +437,7 @@ const App = () => {
 
 Show required indicator and disable user interaction:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [requiredValues, setRequiredValues] = React.useState({
     en: '',
@@ -479,7 +479,7 @@ const App = () => {
 
 Display values without allowing edits:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values] = React.useState({
     en: 'Read-only English value',
@@ -646,7 +646,7 @@ The component will automatically append locale/currency codes to create unique I
 
 Manage prices across multiple currencies:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [prices, setPrices] = React.useState({
     USD: { amount: '99.99', currencyCode: 'USD' },
@@ -691,7 +691,7 @@ const App = () => {
 
 Apply different validation rules per locale:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [values, setValues] = React.useState({
     en: '',

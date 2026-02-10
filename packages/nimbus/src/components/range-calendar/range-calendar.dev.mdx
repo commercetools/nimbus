@@ -16,7 +16,7 @@ import { RangeCalendar, type RangeCalendarProps } from '@commercetools/nimbus';
 
 The simplest implementation displays a single-month calendar for date range selection:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <RangeCalendar aria-label="Select date range" />
 )
@@ -100,7 +100,7 @@ const range: DateRange = {
 
 The `visibleDuration` prop allows displaying multiple months simultaneously:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Text fontWeight="600">Two months:</Text>
@@ -121,7 +121,7 @@ const App = () => (
 
 The `pageBehavior` prop controls how navigation moves between months:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -152,7 +152,7 @@ const App = () => (
 
 Use `minValue` and `maxValue` to restrict the selectable date range:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const todayDate = today(getLocalTimeZone());
 
@@ -175,7 +175,7 @@ const App = () => {
 
 Use `isDateUnavailable` to mark specific dates as unavailable for selection:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Mark weekends as unavailable
   const isWeekend = (date) => {
@@ -201,7 +201,7 @@ const App = () => {
 
 Enable selection of ranges that span across unavailable dates with `allowsNonContiguousRanges`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Mark Mondays as unavailable
   const isMonday = (date) => {
@@ -227,7 +227,7 @@ const App = () => {
 
 Use `firstDayOfWeek` to change which day starts the week:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Text textStyle="sm" color="neutral.11">
@@ -245,7 +245,7 @@ const App = () => (
 
 The component supports disabled and read-only states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const defaultRange = {
     start: today(getLocalTimeZone()).add({ days: 3 }),
@@ -279,7 +279,7 @@ const App = () => {
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedRange, setSelectedRange] = useState<RangeCalendarProps["value"]>({
     start: today(getLocalTimeZone()).add({ days: 3 }),
@@ -323,7 +323,7 @@ Use uncontrolled mode when you need to capture the selected value without managi
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<RangeCalendarProps["value"]>({
     start: today(getLocalTimeZone()).add({ days: 3 }),
@@ -374,7 +374,7 @@ Use controlled mode when you need to:
 
 The calendar automatically adapts to the locale provided by `NimbusI18nProvider`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Box>
@@ -447,7 +447,7 @@ The component supports full keyboard interaction:
 
 For booking systems that need to prevent selections before today and limit booking windows:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [bookingRange, setBookingRange] = useState<RangeCalendarProps["value"]>(null);
   const todayDate = today(getLocalTimeZone());
@@ -485,7 +485,7 @@ const App = () => {
 
 For scenarios where only business days (weekdays) are selectable:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [dateRange, setDateRange] = useState<RangeCalendarProps["value"]>(null);
 

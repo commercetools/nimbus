@@ -43,7 +43,7 @@ Deep dive into implementation details and access the Nimbus design library.
 Ghost icon buttons are used most often, the represent familiar actions that
 don't compete with a primary action on the page.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="ghost" colorPalette="primary">
@@ -58,7 +58,7 @@ const App = () => {
 Solid icon buttons are sparingly used, but represent commonly understood primary
 actions by the user.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="solid" colorPalette="primary">
@@ -73,7 +73,7 @@ const App = () => {
 Outline icon buttons are used as secondary buttons, used often in button groups
 to represent icon toggles and within data tables.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="outline" colorPalette="primary">
@@ -93,7 +93,7 @@ Get familiar with the features.
 
 These are the default and preferred size for icon buttons.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="solid" colorPalette="primary" size="md">
@@ -107,7 +107,7 @@ const App = () => {
 
 Placed in a small dense content areas, e.g., in pop-over or inside a data table.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="solid" colorPalette="primary" size="xs">
@@ -122,7 +122,7 @@ const App = () => {
 2XS is used sparingly mostly inside other components e.g, inside inputs or
 filter badges.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="solid" colorPalette="primary" size="2xs">
@@ -139,7 +139,7 @@ const App = () => {
 This is the default color palette for the icon button. This styling should be
 used most commonly for all actions.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="ghost" colorPalette="primary">
@@ -154,7 +154,7 @@ const App = () => {
 Use this icon button when the user is approaching a permanent destructive
 action. See guidelines for more information.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <IconButton variant="ghost" colorPalette="critical">
@@ -170,7 +170,7 @@ For accessibility compliance (and good user experience for all) icon buttons
 that do not have a label must have a tooltip. Go to tooltips for more
 information about the component.
 
-```jsx-live
+```jsx live
 const App = () => {
   return (
     <Tooltip.Root delay={0} closeDelay={0}>

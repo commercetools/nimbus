@@ -24,7 +24,7 @@ Read **at least 2-3** existing finalized component MDX files to understand:
 
 - Content structure and organization
 - Frontmatter patterns
-- Code example patterns (jsx-live blocks)
+- Code example patterns (jsx live blocks)
 - Tone and style
 - Section naming conventions
 
@@ -119,7 +119,7 @@ Get familiar with the features.
 
 Description of the variant.
 
-\`\`\`jsx-live const App = () => ( <ComponentName>Example</ComponentName> )
+\`\`\`jsx live const App = () => ( <ComponentName>Example</ComponentName> )
 \`\`\`
 
 ### Feature Category 2
@@ -192,14 +192,14 @@ everyone.
 
 **CRITICAL RULES:**
 
-1. **ALL examples MUST use `jsx-live` blocks:**
+1. **ALL examples MUST use `jsx live` blocks:**
 
    ```markdown
-   \`\`\`jsx-live const App = () => ( <ComponentName>Content</ComponentName> )
+   \`\`\`jsx live const App = () => ( <ComponentName>Content</ComponentName> )
    \`\`\`
    ```
 
-2. **NO Storybook imports or syntax** - jsx-live has components available
+2. **NO Storybook imports or syntax** - jsx live has components available
    globally
 
 3. **Available components (no imports needed):**
@@ -228,7 +228,7 @@ Before considering the task complete:
 1. **Check MDX guidelines:** Review
    `/docs/file-type-guidelines/documentation.md`
 2. **Verify frontmatter:** All required fields present
-3. **Validate code examples:** All use jsx-live, no Storybook syntax
+3. **Validate code examples:** All use jsx live, no Storybook syntax
 4. **Confirm structure:** Matches established patterns
 5. **Test completeness:** No TODO comments or placeholder text
 

@@ -16,7 +16,7 @@ import { ScopedSearchInput, type ScopedSearchInputProps, type ScopedSearchInputV
 
 The ScopedSearchInput combines a select dropdown with a search input field, enabling users to filter searches by category or field type. It requires controlled mode with `value` and `onSubmit`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'all' });
 
@@ -46,7 +46,7 @@ const App = () => {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [valueSm, setValueSm] = useState({ text: '', option: 'name' });
   const [valueMd, setValueMd] = useState({ text: '', option: 'name' });
@@ -84,7 +84,7 @@ const App = () => {
 
 Organize filter categories using option groups for better organization:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'email' });
 
@@ -121,7 +121,7 @@ const App = () => {
 
 After selecting a filter option, the search input automatically receives focus, allowing users to immediately start typing without clicking:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'all' });
 
@@ -152,7 +152,7 @@ const App = () => {
 
 Use separate callbacks for granular control over state changes:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'name' });
   const [history, setHistory] = useState([]);
@@ -208,7 +208,7 @@ const App = () => {
 
 The component supports common input states:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [normalValue, setNormalValue] = useState({ text: '', option: 'all' });
   const [disabledValue, setDisabledValue] = useState({ text: 'disabled', option: 'all' });
@@ -282,7 +282,7 @@ const App = () => {
 
 Use the static `isEmpty` method to validate search input before submission:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'name' });
   const [validationMessage, setValidationMessage] = useState('');
@@ -334,7 +334,7 @@ const App = () => {
 
 The ScopedSearchInput requires controlled mode with explicit state management:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'products' });
   const [lastSubmission, setLastSubmission] = useState(null);
@@ -451,7 +451,7 @@ This ensures consistent tracking across sessions and makes it easier to target s
 
 Integrate with FormField for complete form functionality:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'products' });
   const [error, setError] = useState('');
@@ -511,7 +511,7 @@ const App = () => {
 
 Implement a full-featured search interface with multiple filter categories:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState({ text: '', option: 'name' });
   const [results, setResults] = useState([]);

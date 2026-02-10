@@ -16,7 +16,7 @@ import { MoneyInput, type MoneyInputProps, type MoneyInputValue } from '@commerc
 
 The `MoneyInput` is a controlled component that manages both an amount and a currency code. It requires a `value` object and an `onValueChange` handler.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -44,7 +44,7 @@ const App = () => {
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "123.45",
@@ -74,7 +74,7 @@ const App = () => {
 
 The `currencies` prop controls the available options in the dropdown. If no currencies are provided (or an empty array is passed), the component renders a static label for the currency code instead of a dropdown.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value1, setValue1] = useState<MoneyInputValue>({
     amount: "100.00",
@@ -110,7 +110,7 @@ const App = () => {
 
 The `MoneyInput` automatically detects high precision values (more decimal places than standard for the currency) and displays a "High Precision" badge. This feature can be toggled with `hasHighPrecisionBadge`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "123.4567",
@@ -137,7 +137,7 @@ const App = () => {
 
 The component supports standard interactive states including disabled, read-only, and invalid.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const value = { amount: "123.45", currencyCode: "USD" };
 
@@ -170,7 +170,7 @@ const App = () => {
 
 Use `isCurrencyInputDisabled` to disable only the currency selector while keeping the amount input editable. This is useful when the currency is predetermined but the amount should still be modifiable.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "123.45",
@@ -211,7 +211,7 @@ The component provides granular event handlers for modern integration patterns:
 - `onAmountChange`: Called when only the amount changes
 - `onCurrencyChange`: Called when only the currency changes
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<MoneyInputValue>({
     amount: "",
@@ -309,7 +309,7 @@ The component supports full keyboard interaction:
 
 The `MoneyInput` uses the application's locale (via `NimbusI18nProvider`) to format numbers appropriately (e.g., using commas for decimals in German).
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // Note: In a real app, NimbusI18nProvider would wrap the entire app
   // This example simulates different locales

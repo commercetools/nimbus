@@ -130,7 +130,7 @@ import { ComponentName, type ComponentNameProps } from "@commercetools/nimbus";
 Show the simplest possible usage. Use uncontrolled mode for field components, or
 the most basic configuration for other components.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ComponentName />
 )
@@ -235,7 +235,7 @@ your component.
 
 #### Example Structure
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <ComponentName size="sm" />
@@ -250,7 +250,7 @@ const App = () => (
 
 Always use props interface for type inference:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // ✅ Correct - infers from component props
   const [value, setValue] = useState<ComponentNameProps["value"]>(null);
@@ -264,7 +264,7 @@ const App = () => {
 
 Controlled examples should always show the current value:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<ComponentNameProps["value"]>(null);
 
@@ -508,9 +508,9 @@ Include when relevant:
 
 ### Interactive Examples
 
-**Always use `jsx-live-dev` for interactive examples:**
+**Always use `jsx live-dev` for interactive examples:**
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState(initialValue);
 
@@ -544,7 +544,7 @@ type ComponentProps = {
 
 **Demonstrate proper patterns:**
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   // ✓ Good: Proper type annotation
   const [value, setValue] = useState<ComponentProps["value"]>(null);
@@ -606,7 +606,7 @@ Before publishing, verify:
 
 ### Critical Pattern Compliance
 
-- [ ] All interactive examples use `jsx-live-dev` (NOT `jsx-live`)
+- [ ] All interactive examples use `jsx live-dev` (NOT `jsx live`)
 - [ ] Getting Started includes type import
       (`import { ComponentName, type ComponentNameProps }`)
 - [ ] Controlled examples use `ComponentNameProps["value"]` type pattern
@@ -644,7 +644,7 @@ Before publishing, verify:
 
 ### Code Examples
 
-- [ ] All interactive examples use `jsx-live-dev`
+- [ ] All interactive examples use `jsx live-dev`
 - [ ] All type/test examples use `tsx`
 - [ ] Examples follow `const App = () => { }` pattern
 - [ ] State declarations use prop type inference pattern

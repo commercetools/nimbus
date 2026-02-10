@@ -16,7 +16,7 @@ import { Calendar, type CalendarProps } from '@commercetools/nimbus';
 
 The simplest implementation displays a calendar with no pre-selected date:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Calendar />
 )
@@ -77,7 +77,7 @@ dateTime.toString(); // "2024-01-15T14:30:00"
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedDate, setSelectedDate] = useState<string>('No selection');
 
@@ -101,7 +101,7 @@ Use uncontrolled mode when you need to capture the selected date without managin
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
 
@@ -128,7 +128,7 @@ Use controlled mode when you need to:
 
 Display multiple months simultaneously using the `visibleDuration` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Calendar
     defaultValue={new CalendarDate(2025, 1, 15)}
@@ -144,7 +144,7 @@ Set an appropriate width to accommodate multiple months (approximately 340px per
 
 The `pageBehavior` prop controls how the calendar navigates when using prev/next buttons:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Stack direction="column" gap="200">
@@ -182,7 +182,7 @@ const App = () => (
 
 Restrict selectable dates using `minValue` and `maxValue`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const today = new CalendarDate(2025, 1, 15);
 
@@ -221,7 +221,7 @@ const App = () => {
 
 Mark specific dates as unavailable using the `isDateUnavailable` callback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const today = new CalendarDate(2025, 1, 15);
 
@@ -246,7 +246,7 @@ const App = () => {
 
 Specify which day starts the week using `firstDayOfWeek`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -271,7 +271,7 @@ const App = () => (
 
 The Calendar automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -302,7 +302,7 @@ const App = () => (
 
 Control the calendar's interactive state using `isDisabled`, `isReadOnly`, and `isInvalid`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="column" gap="200">
@@ -393,7 +393,7 @@ The component supports full keyboard interaction:
 
 A typical booking system that prevents past dates and weekends:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
   const today = new CalendarDate(2025, 1, 15);
@@ -427,7 +427,7 @@ const App = () => {
 
 Calendar configured for business day selection with current month focus:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(
     new CalendarDate(2025, 1, 15)
@@ -466,7 +466,7 @@ const App = () => {
 
 Display multiple months for easier range visualization:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [value, setValue] = useState<CalendarProps<DateValue>["value"]>(null);
 

@@ -14,7 +14,7 @@ import { Group, type GroupProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Group aria-label="Action buttons">
@@ -32,7 +32,7 @@ const App = () => {
 
 Use Chakra UI style props like `gap` to control spacing between grouped elements:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -62,7 +62,7 @@ const App = () => {
 
 Always provide descriptive `aria-label` values to help screen reader users understand the purpose of the group:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -92,7 +92,7 @@ const App = () => {
 
 Group provides hover event handlers for tracking user interactions:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [hoverCount, setHoverCount] = useState(0);
@@ -134,7 +134,7 @@ const App = () => {
 
 Group supports all Chakra UI style props for flexible layout customization:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">
@@ -242,7 +242,7 @@ export const ActionToolbar = () => (
 
 Group related actions together for better visual hierarchy:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400" alignItems="flex-start">
@@ -291,7 +291,7 @@ const App = () => {
 
 Use Group to organize related form controls:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -333,7 +333,7 @@ const App = () => {
 
 Create accessible toolbars with grouped controls:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="400">

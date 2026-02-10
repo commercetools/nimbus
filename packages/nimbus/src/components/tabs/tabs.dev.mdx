@@ -18,7 +18,7 @@ The Tabs component supports two approaches depending on your needs.
 
 For maximum control over tab structure and content, use the **Compound API** with manual composition:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Tabs.Root>
@@ -45,7 +45,7 @@ const App = () => {
 
 For data-driven tabs that render from an array, use the **Dynamic rendering** approach:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const tabs = [
     {
@@ -77,7 +77,7 @@ When using the `tabs` prop, provide a `tabListAriaLabel` for accessibility. This
 
 The Tabs component supports three size variants: `sm`, `md` (default), and `lg`.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const tabs = [
     { id: '1', tabLabel: 'Overview', panelContent: 'Overview content' },
@@ -112,7 +112,7 @@ The Tabs component offers two visual styles:
 - **line** (default) - Tabs with an underline indicator
 - **pills** - Tabs with a pill-shaped background when active
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const tabs = [
     { id: '1', tabLabel: 'Dashboard', panelContent: 'Dashboard view' },
@@ -140,7 +140,7 @@ const App = () => {
 
 Tabs can be displayed horizontally or vertically using the `orientation` prop.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="600">
@@ -198,7 +198,7 @@ The `placement` prop controls where the tab list appears relative to the panels:
 - **horizontal orientation**: `start` (left-aligned) or `end` (right-aligned)
 - **vertical orientation**: `start` (tabs on left) or `end` (tabs on right)
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const tabs = [
     { id: '1', tabLabel: 'First', panelContent: 'First panel content' },
@@ -236,7 +236,7 @@ const App = () => {
 
 Individual tabs can be disabled using the `disabledKeys` prop on `Tabs.Root`, or the `isDisabled` prop on individual `Tabs.Tab` components.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Stack direction="column" gap="600">
@@ -294,7 +294,7 @@ const App = () => {
 
 For dynamic content, pass an array of tab configurations to the `tabs` prop. This is useful when tab data comes from an API or changes at runtime.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [tabs, setTabs] = useState([
     {
@@ -353,7 +353,7 @@ const App = () => {
 
 Use the compound API for more control over tab and panel rendering, including custom content and complex layouts.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Tabs.Root variant="pills">
@@ -412,7 +412,7 @@ const App = () => {
 
 By default, Tabs operates in uncontrolled mode where it manages its own state. Use `defaultSelectedKey` to set the initially selected tab.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Tabs.Root defaultSelectedKey="tab2">
@@ -441,7 +441,7 @@ const App = () => {
 
 For full control over tab selection, use the `selectedKey` and `onSelectionChange` props.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selectedTab, setSelectedTab] = useState<TabsProps['selectedKey']>('profile');
 
@@ -564,7 +564,7 @@ export const SettingsTabs = () => (
 
 Combine icons with text labels for more expressive tabs.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Tabs.Root variant="pills" size="lg">
@@ -608,7 +608,7 @@ const App = () => {
 
 Display notification counts or status indicators alongside tab labels using badges.
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   return (
     <Tabs.Root>

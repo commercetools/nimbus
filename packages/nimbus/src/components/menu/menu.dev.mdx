@@ -15,7 +15,7 @@ import { Menu, type MenuRootProps, type MenuItemProps } from '@commercetools/nim
 
 The simplest implementation creates an action menu with items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root onAction={(key) => alert(`Action: ${key}`)}>
     <Menu.Trigger>Actions</Menu.Trigger>
@@ -34,7 +34,7 @@ const App = () => (
 
 Use `asChild` to render custom trigger elements like Button or IconButton:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Menu.Root>
@@ -73,7 +73,7 @@ const App = () => (
 
 Control where the menu appears relative to the trigger with the `placement` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <Menu.Root placement="bottom start">
@@ -113,7 +113,7 @@ const App = () => (
 
 Menu items support icons, labels, descriptions, and keyboard shortcuts using slots:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root>
     <Menu.Trigger>Edit Menu</Menu.Trigger>
@@ -144,7 +144,7 @@ const App = () => (
 
 Use `isCritical` to highlight destructive actions:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root>
     <Menu.Trigger>File Actions</Menu.Trigger>
@@ -172,7 +172,7 @@ const App = () => (
 
 Use `isDisabled` on individual items to prevent interaction:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root>
     <Menu.Trigger>Edit</Menu.Trigger>
@@ -201,7 +201,7 @@ const App = () => (
 
 Group related items using `Menu.Section` with a label:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root>
     <Menu.Trigger>Application Menu</Menu.Trigger>
@@ -225,7 +225,7 @@ const App = () => (
 
 Use `selectionMode="single"` for radio-button-like behavior within a section:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = useState<string>("medium");
 
@@ -268,7 +268,7 @@ const App = () => {
 
 Use `selectionMode="multiple"` for checkbox-like behavior:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set(["bold"]));
 
@@ -315,7 +315,7 @@ const App = () => {
 
 Create nested menus using `Menu.SubmenuTrigger` and `Menu.Submenu`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Menu.Root>
     <Menu.Trigger>Settings</Menu.Trigger>
@@ -355,7 +355,7 @@ const App = () => (
 
 For simpler use cases, use `defaultOpen` and `onOpenChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [lastAction, setLastAction] = useState<string>("None");
 
@@ -383,7 +383,7 @@ const App = () => {
 
 For programmatic control, use `isOpen` and `onOpenChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -465,7 +465,7 @@ The component supports full keyboard interaction:
 
 A common pattern for providing actions on list items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const items = [
     { id: "1", name: "Document A.pdf" },
@@ -530,7 +530,7 @@ const App = () => {
 
 Build menus from data arrays:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const menuItems = [
     { id: "new", label: "New File", icon: Icons.InsertDriveFile, kbd: "⌘N" },

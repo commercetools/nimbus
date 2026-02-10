@@ -58,7 +58,7 @@ Get familiar with the features.
 
 ### Basic Usage
 
-```jsx-live
+```jsx live
 const App = () => (
   <Dialog.Root>
     <Dialog.Trigger>
@@ -87,7 +87,7 @@ const App = () => (
 Control the dialog width by applying `width` prop on the Content component, it's
 a regular style-prop, so you can use all size-tokens but also custom values.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Dialog.Root >
     <Dialog.Trigger asChild>
@@ -112,7 +112,7 @@ const App = () => (
 
 Position the dialog at different locations using the `placement` prop:
 
-```jsx-live
+```jsx live
 const App = () => {
   const placements = [
     { value: "center", label: "Center (default)", description: "Centered in the viewport, works well for most use cases" },
@@ -148,7 +148,7 @@ const App = () => {
 Handle long content with different scrolling approaches using the
 `scrollBehavior` prop:
 
-```jsx-live
+```jsx live
 const App = () => {
   const scrollBehaviors = [
     { value: "outside", label: "Outside (default)", description: "Default scroll behavior, entire dialog scrolls" },
@@ -190,7 +190,7 @@ const App = () => {
 
 Use external state to control the dialog programmatically:
 
-```jsx-live
+```jsx live
 const App = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 

@@ -16,7 +16,7 @@ import { SplitButton, Menu, type SplitButtonProps } from '@commercetools/nimbus'
 
 The simplest implementation combines a primary action button with a dropdown menu:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SplitButton
     onAction={(id) => alert(`Action: ${id}`)}
@@ -37,7 +37,7 @@ The component automatically selects the first enabled `Menu.Item` as the primary
 
 Add an icon to the primary button for visual emphasis:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <SplitButton
@@ -67,7 +67,7 @@ const App = () => (
 
 The component supports three size variants to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <SplitButton
@@ -107,7 +107,7 @@ const App = () => (
 
 Choose between visual variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="300" wrap="wrap">
@@ -163,7 +163,7 @@ const App = () => (
 
 Use different color palettes to indicate action importance:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <SplitButton
@@ -206,7 +206,7 @@ const App = () => (
 
 Organize menu items into logical groups:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SplitButton
     onAction={(id) => alert(`Action: ${id}`)}
@@ -242,7 +242,7 @@ const App = () => (
 
 Use `isDisabled` and `isCritical` props on menu items:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SplitButton
     onAction={(id) => alert(`Action: ${id}`)}
@@ -270,7 +270,7 @@ const App = () => (
 
 Disable the entire split button:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
     <SplitButton
@@ -299,7 +299,7 @@ const App = () => (
 
 Control the menu's open/closed state programmatically:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -339,7 +339,7 @@ const App = () => {
 
 Use `defaultOpen` for uncontrolled menu behavior:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [lastAction, setLastAction] = useState<string>('None');
 
@@ -424,7 +424,7 @@ The component supports full keyboard interaction:
 
 Common pattern for document save operations with multiple options:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [status, setStatus] = useState<string>('No action taken');
   const [isSaving, setIsSaving] = useState(false);
@@ -465,7 +465,7 @@ const App = () => {
 
 Show different actions based on application state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [lastAction, setLastAction] = useState<string>('');

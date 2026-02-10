@@ -16,7 +16,7 @@ import { DatePicker, type DatePickerProps } from '@commercetools/nimbus';
 
 The simplest implementation uses uncontrolled mode with an accessible label:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <DatePicker aria-label="Select a date" />
 )
@@ -98,7 +98,7 @@ dateTime.toString(); // "2025-06-15T14:30:00"
 
 The `sm` and `md` size variants are available to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DatePicker size="sm" aria-label="Small date picker" />
@@ -111,7 +111,7 @@ const App = () => (
 
 Choose between `solid` and `ghost` variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <DatePicker variant="solid" aria-label="Solid variant" />
@@ -128,7 +128,7 @@ const App = () => (
 
 The `granularity` prop controls which date/time segments are displayed and whether the calendar popover automatically closes on selection:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate, CalendarDateTime } from '@internationalized/date';
 
 const App = () => (
@@ -177,7 +177,7 @@ const App = () => (
 
 Control the time display format using the `hourCycle` prop when working with time values:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDateTime } from '@internationalized/date';
 
 const App = () => (
@@ -208,7 +208,7 @@ const App = () => (
 
 When using `ZonedDateTime` values, control time zone display with the `hideTimeZone` prop:
 
-```jsx-live-dev
+```jsx live-dev
 import { ZonedDateTime } from '@internationalized/date';
 
 const App = () => {
@@ -252,7 +252,7 @@ const App = () => {
 
 Set a starting point for keyboard input when the field is empty using `placeholderValue`:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => (
@@ -276,7 +276,7 @@ const App = () => (
 
 Control whether the calendar closes automatically after date selection using `shouldCloseOnSelect`:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => (
@@ -307,7 +307,7 @@ const App = () => (
 
 Restrict date selection to a specific range using `minValue` and `maxValue`:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => {
@@ -349,7 +349,7 @@ const App = () => {
 
 DatePicker supports disabled, read-only, required, and invalid states:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => (
@@ -400,7 +400,7 @@ const App = () => (
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate, type DateValue } from '@internationalized/date';
 
 const App = () => {
@@ -427,7 +427,7 @@ Use uncontrolled mode when you need to capture the selected date without managin
 
 For scenarios requiring programmatic control or coordination with other components, use controlled mode:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate, type DateValue } from '@internationalized/date';
 
 const App = () => {
@@ -468,7 +468,7 @@ Use controlled mode when you need to:
 
 Control the calendar popover's open state programmatically:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => {
@@ -500,7 +500,7 @@ const App = () => {
 
 DatePicker automatically adapts to different locales when wrapped with `NimbusI18nProvider`:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate } from '@internationalized/date';
 
 const App = () => {
@@ -623,7 +623,7 @@ The component supports full keyboard interaction for navigating and editing date
 
 A pattern for scheduling appointments with date and time selection:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDateTime, type DateValue } from '@internationalized/date';
 
 const App = () => {
@@ -674,7 +674,7 @@ const App = () => {
 
 Pattern for setting due dates with past date validation:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';
 
 const App = () => {
@@ -712,7 +712,7 @@ const App = () => {
 
 Pattern for selecting event dates with a reasonable range:
 
-```jsx-live-dev
+```jsx live-dev
 import { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';
 
 const App = () => {

@@ -60,7 +60,7 @@ the difference between placeholder and pre-filled content.
 > - If this information is important to always keep visible, use helper text
 >   instead.
 
-```jsx-live
+```jsx live
 const App = () => <TextInput placeholder="MM/DD/YYYY"/>
 ```
 
@@ -70,7 +70,7 @@ const App = () => <TextInput placeholder="MM/DD/YYYY"/>
 > - This placeholder text looks like it has been prefilled for the user which is
 >   more likely to confuse the user.
 
-```jsx-live
+```jsx live
 const App = () => <TextInput placeholder="01/21/1970"/>
 ```
 
@@ -86,7 +86,7 @@ to make sure there isn’t inaccurate information.
 > - There is enough space that the user can easily consume and correct this
 >   information if needed.
 
-```jsx-live
+```jsx live
 const App = () => <TextInput placeholder="01/21/1970" value="805 St Cloud Road"/>
 ```
 
@@ -96,6 +96,6 @@ const App = () => <TextInput placeholder="01/21/1970" value="805 St Cloud Road"/
 > - The user’s information is too long for this field to be able to read the
 >   details completely.
 
-```jsx-live
+```jsx live
 const App = () => <TextInput value="805 St Cloud Road, Bel Air, Los Angeles, CA" />
 ```

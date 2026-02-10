@@ -143,7 +143,7 @@ If a skill reports validation failures:
   /docs/file-type-guidelines/
 - ALWAYS register recipes in theme configuration when creating new styling
 - ALWAYS include play functions for interactive components in stories
-- ALWAYS use jsx-live blocks in MDX documentation (never Storybook imports)
+- ALWAYS use jsx live blocks in MDX documentation (never Storybook imports)
 - ALWAYS follow the compound component pattern with .Root as first property when
   applicable
 - ALWAYS validate implementations against the File Review Protocol

@@ -48,7 +48,7 @@ Get familiar with the features.
 
 Most common, progress bar is used on white backgrounds.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ProgressBar
     value={50}
@@ -62,7 +62,7 @@ const App = () => (
 
 If being used on a dark background, use the contrast variant.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Box bg="neutral.9" p="600">
     <ProgressBar
@@ -80,7 +80,7 @@ const App = () => (
 There are two sizes to progress bar: the default size is medium (md) and
 2x-small (2xs).
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column" gap="50" alignItems="stretch">
     <ProgressBar
@@ -103,7 +103,7 @@ const App = () => (
 
 Customizable layouts for different use cases, and to fit the UI best.
 
-```jsx-live
+```jsx live
 const App = () => (
   <Stack direction="column" gap="200" alignItems="stretch">
     <ProgressBar
@@ -132,7 +132,7 @@ A determinate progress bar indicates a specific percentage of completion. This
 is useful when the total time or size of a task is known. For dynamic loading,
 the color gradient is animated.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [value, setValue] = React.useState(0);
   const [isRunning, setIsRunning] = React.useState(false);
@@ -184,7 +184,7 @@ const App = () => {
 A static loading bar allows a viewer to know where they are currently in the
 process. Static progress bars do not have an animated color gradient.
 
-```jsx-live
+```jsx live
 const App = () => {
   const [currentLesson, setCurrentLesson] = React.useState(5);
   const totalLessons = 10;
@@ -222,7 +222,7 @@ An indeterminate progress bar shows that an operation is in progress without
 indicating how much of it is complete. This is useful for tasks with an unknown
 duration.
 
-```jsx-live
+```jsx live
 const App = () => (
   <ProgressBar
     isIndeterminate={true}

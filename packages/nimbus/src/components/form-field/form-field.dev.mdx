@@ -16,7 +16,7 @@ import { FormField, type FormFieldProps } from '@commercetools/nimbus';
 
 FormField is a compound component that provides a structured container for form inputs with automatic accessibility via React Aria. It coordinates label, input, description, and error elements:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root>
     <FormField.Label>Username</FormField.Label>
@@ -36,7 +36,7 @@ const App = () => (
 
 FormField supports two size variants that affect the typography scale:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <FormField.Root size="sm">
@@ -62,7 +62,7 @@ const App = () => (
 
 Control the label and input positioning with the `direction` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <FormField.Root direction="column">
@@ -88,7 +88,7 @@ const App = () => (
 
 Mark fields as required to display a visual indicator and set ARIA attributes:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root isRequired>
     <FormField.Label>Email Address</FormField.Label>
@@ -106,7 +106,7 @@ const App = () => (
 
 Display error messages when validation fails using the `isInvalid` prop:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [email, setEmail] = React.useState('invalid-email');
   const [touched, setTouched] = React.useState(false);
@@ -143,7 +143,7 @@ const App = () => {
 
 Disable user interaction with the field using `isDisabled`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root isDisabled>
     <FormField.Label>Account Type</FormField.Label>
@@ -161,7 +161,7 @@ const App = () => (
 
 Display values without allowing edits using `isReadOnly`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root isReadOnly>
     <FormField.Label>User ID</FormField.Label>
@@ -179,7 +179,7 @@ const App = () => (
 
 Provide helpful context with description text that's automatically linked for screen readers:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <FormField.Root>
@@ -209,7 +209,7 @@ const App = () => (
 
 Add an info icon with a popover for additional field context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <FormField.Root>
     <FormField.Label>API Key</FormField.Label>
@@ -240,7 +240,7 @@ const App = () => (
 
 FormField works with any input component:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <FormField.Root>
@@ -338,7 +338,7 @@ The `id` is used by React Aria to generate consistent IDs for all child elements
 
 A realistic login form with validation and state management:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [formData, setFormData] = React.useState({
     email: '',
@@ -423,7 +423,7 @@ const App = () => {
 
 Build multi-step forms with per-step validation:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [step, setStep] = React.useState('personal');
   const [formData, setFormData] = React.useState({
@@ -596,7 +596,7 @@ const App = () => {
 
 Show or hide fields based on form state:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [accountType, setAccountType] = React.useState('personal');
   const [needsShipping, setNeedsShipping] = React.useState(false);
@@ -656,7 +656,7 @@ const App = () => {
 
 FormField integrates seamlessly with React 19's built-in form state features, including `useActionState` for progressive enhancement and server-side validation. This example demonstrates the standard React 19 pattern where validation occurs on form submission:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [state, submitAction, isPending] = React.useActionState(
     async (previousState, formData) => {

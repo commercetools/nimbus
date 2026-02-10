@@ -28,7 +28,7 @@ product listings, image galleries).
 import { SimpleGrid } from "@commercetools/nimbus";
 ```
 
-```jsx-live
+```jsx live
 const App = () => (
   <SimpleGrid gap="100">
     <Box key="1" p="400" bg="neutral.7">
@@ -45,7 +45,7 @@ const App = () => (
 
 Use the columns prop to define the number of columns in the grid layout.
 
-```jsx-live
+```jsx live
 const App = () => (
   <SimpleGrid gap="100" columns={2}>
     <Box key="1" p="400" bg="neutral.7">
@@ -70,7 +70,7 @@ An Auto-Responsive Grid dynamically adjusts the number of columns and item sizes
 based on the viewport width, ensuring an adaptive and fluid layout. adjust
 viewport to see layout rearrangements.
 
-```jsx-live
+```jsx live
 const App = () => (
   <SimpleGrid gap="100" minChildWidth="sm">
     <Box key="1" p="400" bg="neutral.7">
@@ -91,7 +91,7 @@ const App = () => (
 
 ## Simple grid with colSpan
 
-```jsx-live
+```jsx live
 const App = () => (
   <SimpleGrid
     columns={{ base: 2, md: 4 }}
@@ -113,7 +113,7 @@ const App = () => (
 
 ## With row and column gap
 
-```jsx-live
+```jsx live
 const App = () => (
   <SimpleGrid rowGap="400" columnGap="200" columns={2}>
     <Box key="1" p="400" bg="neutral.7">

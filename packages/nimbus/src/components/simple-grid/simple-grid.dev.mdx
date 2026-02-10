@@ -16,7 +16,7 @@ import { SimpleGrid, type SimpleGridProps } from '@commercetools/nimbus';
 
 SimpleGrid creates a grid layout with equal-sized children. Use it for quick, responsive layouts without complex grid configuration:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SimpleGrid columns={2} gap="400">
     <Box p="600" bg="info.7" borderRadius="200">
@@ -41,7 +41,7 @@ const App = () => (
 
 Use the `columns` prop to define a fixed number of columns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Stack direction="column" gap="200">
@@ -93,7 +93,7 @@ const App = () => (
 
 Use `minChildWidth` to create auto-responsive grids that adjust column count based on available space:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SimpleGrid minChildWidth="200px" gap="400">
@@ -133,7 +133,7 @@ const App = () => (
 
 Define different column counts for different breakpoints:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <SimpleGrid 
@@ -176,7 +176,7 @@ const App = () => (
 
 Use `SimpleGrid.Item` with `colSpan` to make items span multiple columns:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SimpleGrid 
     columns={{ base: 2, md: 4 }}
@@ -222,7 +222,7 @@ const App = () => (
 
 Control row and column gaps independently:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
     <Stack direction="column" gap="200">
@@ -280,7 +280,7 @@ const App = () => (
 
 Gap spacing can also be responsive:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <SimpleGrid 
     columns={{ base: 2, md: 3 }}
@@ -387,7 +387,7 @@ export const ProductGrid = () => (
 
 Display products in a responsive grid layout:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const products = [
     { id: 1, name: "Wireless Mouse", price: "$29.99", stock: "In Stock" },
@@ -435,7 +435,7 @@ const App = () => {
 
 Create responsive image galleries:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const images = [
     { id: 1, alt: "Landscape 1", color: "primary.7" },
@@ -473,7 +473,7 @@ const App = () => {
 
 Layout dashboard cards in a responsive grid:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const stats = [
     { label: "Total Sales", value: "$12,345", change: "+12.5%", trend: "up" },
@@ -518,7 +518,7 @@ const App = () => {
 
 Display feature highlights in a grid:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const features = [
     { 

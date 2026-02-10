@@ -16,7 +16,7 @@ import { ToggleButton, type ToggleButtonProps } from '@commercetools/nimbus';
 
 The simplest implementation uses the uncontrolled mode with `defaultSelected`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <ToggleButton
     defaultSelected={false}
@@ -35,7 +35,7 @@ The component starts in the unselected state and manages its own state internall
 
 Control the toggle state externally using `isSelected` and `onChange`:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [isSelected, setIsSelected] = useState<ToggleButtonProps["isSelected"]>(false);
 
@@ -56,7 +56,7 @@ const App = () => {
 
 Add icons to provide visual context for the toggle action:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <ToggleButton onChange={(selected) => alert(`Liked: ${selected}`)}>
@@ -86,7 +86,7 @@ const App = () => (
 
 The component supports three size variants to match your interface density:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center" wrap="wrap">
     <ToggleButton size="2xs">
@@ -108,7 +108,7 @@ const App = () => (
 
 Choose between visual variants to match your design context:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="400" wrap="wrap">
@@ -138,7 +138,7 @@ const App = () => (
 
 Use different color palettes to indicate different types of actions:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Stack direction="row" gap="400" wrap="wrap">
@@ -184,7 +184,7 @@ const App = () => (
 
 Disable the toggle button to prevent user interaction:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" wrap="wrap">
     <ToggleButton isDisabled>
@@ -251,7 +251,7 @@ The component supports full keyboard interaction:
 
 Common pattern for like or favorite actions with visual feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [liked, setLiked] = useState(false);
   const [favorited, setFavorited] = useState(false);
@@ -317,7 +317,7 @@ const App = () => {
 
 Use toggle buttons as filter controls in a toolbar or filter panel:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [showActive, setShowActive] = useState(true);
   const [showInactive, setShowInactive] = useState(false);
@@ -377,7 +377,7 @@ const App = () => {
 
 Pattern for settings or preferences with immediate visual feedback:
 
-```jsx-live-dev
+```jsx live-dev
 const App = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
