@@ -4,6 +4,7 @@ import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
+import { ToastOutlet } from "@/components/toast/toast.outlet";
 
 /**
  * # NimbusProvider
@@ -23,7 +24,10 @@ export function NimbusProvider({
   const content = (
     <ChakraProvider value={system}>
       <NimbusColorModeProvider enableSystem={false} {...props}>
-        <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
+        <NimbusI18nProvider locale={locale}>
+          {children}
+          <ToastOutlet />
+        </NimbusI18nProvider>
       </NimbusColorModeProvider>
     </ChakraProvider>
   );
