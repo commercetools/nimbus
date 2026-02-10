@@ -10,7 +10,10 @@ export const tooltipRecipe = defineRecipe({
 
   // Base styles applied to all instances of the component
   base: {
-    color: "white",
+    // Tooltip styling is inverse of normal dark/light mode styling:
+    // light mode: dark bg / light text
+    // dark mode: light bg / dark text
+    color: "bg",
     textStyle: "xs",
     fontWeight: "400",
     background: "slate.12",
