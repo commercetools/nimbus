@@ -27,13 +27,12 @@ const meta: Meta<typeof Steps.Root> = {
     a11y: {
       config: {
         rules: [
-          // TODO: evaluate these
           {
-            // Disable aria-required-children rule for Steps component.
-            // This is an upstream issue in Chakra/Ark UI where the Steps.List
-            // has role="tablist" but the Items render as div elements with
-            // aria-current instead of proper role="tab" elements.
-            // See: https://github.com/chakra-ui/ark/issues/XXXX (tracking issue)
+            // Ark UI's Steps architecture places Steps.Item (div) between
+            // Steps.List (tablist) and Steps.Trigger (tab). ARIA requires
+            // tablist to have direct tab children. Ark uses aria-owns as
+            // a workaround, but axe still flags the intermediate divs.
+            // This is an upstream architectural limitation in Ark UI.
             id: "aria-required-children",
             enabled: false,
           },

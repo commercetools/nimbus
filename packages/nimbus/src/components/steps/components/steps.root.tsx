@@ -61,13 +61,17 @@ export const StepsRoot = (props: StepsRootProps) => {
   const normalizedOrientation = sysCtx.normalizeValue(orientation);
 
   // useBreakpointValue returns undefined on initial render or when the value
-  // is not responsive. We need to handle both cases properly.
+  // is not responsive. In some edge cases (SSR/hydration), it may return the
+  // object itself rather than undefined, so we also check it's a valid string.
   const breakpointOrientation = useBreakpointValue<"horizontal" | "vertical">(
     normalizedOrientation
   );
   const computedOrientation =
-    breakpointOrientation ??
-    (typeof orientation === "string" ? orientation : "horizontal");
+    typeof breakpointOrientation === "string"
+      ? breakpointOrientation
+      : typeof orientation === "string"
+        ? orientation
+        : "horizontal";
 
   // Remove responsive orientation from recipeProps and use computed value instead.
   // This prevents the responsive object (e.g., { base: "vertical", md: "horizontal" })
