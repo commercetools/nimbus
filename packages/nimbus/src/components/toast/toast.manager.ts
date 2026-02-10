@@ -11,17 +11,23 @@ import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
  */
 const DEFAULT_DURATION = 6000; // 6 seconds
 
+const VALID_PLACEMENTS: ToastPlacement[] = [
+  "top-start",
+  "top",
+  "top-end",
+  "bottom-start",
+  "bottom",
+  "bottom-end",
+];
+
 /**
  * ToastManager - Singleton class managing multiple toaster instances per placement.
  *
  * Architecture:
- * - Lazy creation: Toasters are created only when first toast for that placement is triggered
  * - ID-to-placement routing: Tracks which toast ID belongs to which placement
  * - Convenience methods: info(), success(), warning(), error() methods
  * - Promise support: promise() method that transitions loading → success/error
  * - Action→duration:0 enforcement: If action is provided, force duration: 0
- * - ARIA role override: Override Chakra's default role="status" with role="alert" for warning/error
- * - Subscribe/notify pattern: Allow ToastOutlet to subscribe to new toaster creation
  */
 class ToastManager implements IToastManager {
   private static instance: ToastManager;
@@ -42,48 +48,12 @@ class ToastManager implements IToastManager {
   }
 
   /**
-   * Get the placement for a toast (for routing operations).
-   * Note: We no longer create toaster instances here - they're created by ToastOutlet.
-   */
-  private getPlacement(placement?: ToastPlacement): ToastPlacement {
-    return this.normalizePlacement(placement);
-  }
-
-  /**
-   * Get ARIA role and live region attributes based on toast type.
-   * Warning and error toasts use role="alert" (assertive),
-   * info and success toasts use role="status" (polite).
-   */
-  private getARIAAttributes(type?: string) {
-    if (type === "warning" || type === "error") {
-      return {
-        role: "alert" as const,
-        "aria-live": "assertive" as const,
-      };
-    }
-    return {
-      role: "status" as const,
-      "aria-live": "polite" as const,
-    };
-  }
-
-  /**
    * Validate and normalize placement value.
    */
   private normalizePlacement(placement?: ToastPlacement): ToastPlacement {
-    const validPlacements: ToastPlacement[] = [
-      "top-start",
-      "top",
-      "top-end",
-      "bottom-start",
-      "bottom",
-      "bottom-end",
-    ];
-
-    if (placement && validPlacements.includes(placement)) {
+    if (placement && VALID_PLACEMENTS.includes(placement)) {
       return placement;
     }
-
     return DEFAULT_PLACEMENT;
   }
 
@@ -91,9 +61,8 @@ class ToastManager implements IToastManager {
    * Create a toast and return its ID.
    */
   public create(options: ToastOptions): string {
-    // Handle undefined options gracefully
     const safeOptions = options || {};
-    const placement = this.getPlacement(safeOptions.placement);
+    const placement = this.normalizePlacement(safeOptions.placement);
     const toaster = getToaster(placement);
 
     if (!toaster) {
@@ -108,29 +77,17 @@ class ToastManager implements IToastManager {
           ? safeOptions.duration
           : DEFAULT_DURATION;
 
-    // Get ARIA attributes for the toast type
-    const ariaAttributes = this.getARIAAttributes(safeOptions.type);
-
-    // Default pauseOnInteraction to true
-    const pauseOnInteraction =
-      safeOptions.pauseOnInteraction !== undefined
-        ? safeOptions.pauseOnInteraction
-        : true;
-
     const toastOptions = {
       ...safeOptions,
       duration,
-      pauseOnInteraction,
+      pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
+        closable: safeOptions.closable ?? true,
         ...safeOptions.meta,
-        ...ariaAttributes,
       },
     };
 
-    // Create toast using the toaster instance for this placement
     const id = toaster.create(toastOptions);
-
-    // Track which placement this toast belongs to
     this.toastPlacements.set(id, placement);
 
     return id;
@@ -158,22 +115,11 @@ class ToastManager implements IToastManager {
     if (id) {
       const placement = this.toastPlacements.get(id) || DEFAULT_PLACEMENT;
       const toaster = getToaster(placement);
-
       if (toaster) {
         toaster.dismiss(id);
       }
     } else {
-      // Dismiss all toasts across all placements
-      const allPlacements: ToastPlacement[] = [
-        "top-start",
-        "top",
-        "top-end",
-        "bottom-start",
-        "bottom",
-        "bottom-end",
-      ];
-
-      allPlacements.forEach((placement) => {
+      VALID_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
           toaster.dismiss();
@@ -190,71 +136,46 @@ class ToastManager implements IToastManager {
     if (id) {
       const placement = this.toastPlacements.get(id) || DEFAULT_PLACEMENT;
       const toaster = getToaster(placement);
-
       if (toaster) {
         toaster.remove(id);
       }
       this.toastPlacements.delete(id);
     } else {
-      // Remove all toasts across all placements
-      const allPlacements: ToastPlacement[] = [
-        "top-start",
-        "top",
-        "top-end",
-        "bottom-start",
-        "bottom",
-        "bottom-end",
-      ];
-
-      allPlacements.forEach((placement) => {
+      VALID_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
           toaster.remove();
         }
       });
-
       this.toastPlacements.clear();
     }
   }
 
-  /**
-   * Create info toast.
-   */
   public info(options: Omit<ToastOptions, "type">): string {
     return this.create({ ...options, type: "info" });
   }
 
-  /**
-   * Create success toast.
-   */
   public success(options: Omit<ToastOptions, "type">): string {
     return this.create({ ...options, type: "success" });
   }
 
-  /**
-   * Create warning toast.
-   */
   public warning(options: Omit<ToastOptions, "type">): string {
     return this.create({ ...options, type: "warning" });
   }
 
-  /**
-   * Create error toast.
-   */
   public error(options: Omit<ToastOptions, "type">): string {
     return this.create({ ...options, type: "error" });
   }
 
   /**
    * Create promise toast with loading/success/error states.
-   * The toast will transition from loading → success or loading → error based on promise resolution.
    */
   public promise(
     promise: Promise<unknown>,
     options: ToastPromiseOptions,
     config?: Pick<ToastOptions, "placement">
   ): void {
-    const placement = this.getPlacement(config?.placement);
+    const placement = this.normalizePlacement(config?.placement);
     const toaster = getToaster(placement);
 
     if (toaster) {
@@ -270,9 +191,6 @@ class ToastManager implements IToastManager {
   }
 }
 
-/**
- * Singleton instance of ToastManager.
- */
 const manager = ToastManager.getInstance();
 
 /**

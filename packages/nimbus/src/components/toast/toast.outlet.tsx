@@ -1,6 +1,25 @@
 import { Toaster, Toast as ChakraToast } from "@chakra-ui/react";
-import { Toast } from "./toast";
+import {
+  CheckCircleOutline,
+  ErrorOutline,
+  Info,
+  WarningAmber,
+  Clear,
+} from "@commercetools/nimbus-icons";
+import { Button } from "../button";
+import { IconButton } from "../icon-button";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { toastMessagesStrings } from "./toast.messages";
+import {
+  ToastRoot,
+  ToastIcon,
+  ToastTitle,
+  ToastDescription,
+  ToastActionTrigger,
+  ToastCloseTrigger,
+} from "./toast.slots";
 import { toasters } from "./toast.toasters";
+import type { ToastType } from "./toast.types";
 
 /**
  * Animation styles for the Ark UI toast wrapper.
@@ -9,10 +28,6 @@ import { toasters } from "./toast.toasters";
  * on the element to drive enter/exit animations. These transition styles consume those
  * variables. The data-state attribute transitions between "open" and "closed" to
  * differentiate enter vs exit timing.
- *
- * These styles live here (not in the recipe) because the Ark UI wrapper is a separate
- * DOM element from the Nimbus Toast.Root. The wrapper owns the CSS custom properties
- * and data-state attribute, while the recipe styles apply to the inner visual component.
  */
 const toastAnimationStyles = {
   pointerEvents: "auto",
@@ -31,75 +46,118 @@ const toastAnimationStyles = {
   },
 } as const;
 
+const ICON_MAP: Record<ToastType, React.ReactElement> = {
+  info: <Info />,
+  success: <CheckCircleOutline />,
+  warning: <WarningAmber />,
+  error: <ErrorOutline />,
+};
+
+const COLOR_PALETTE_MAP: Record<ToastType, string> = {
+  info: "info",
+  success: "positive",
+  warning: "warning",
+  error: "critical",
+};
+
+const getARIAAttributes = (type?: ToastType) => {
+  if (type === "warning" || type === "error") {
+    return { role: "alert" as const, "aria-live": "assertive" as const };
+  }
+  return { role: "status" as const, "aria-live": "polite" as const };
+};
+
 /**
  * ToastOutlet - Renders all toast regions.
  *
- * This component renders `<Toaster>` components for all placements,
- * connecting them to the toaster instances created in toast.toasters.ts.
- * Toasts appear when created via the toast() API.
+ * Mount this component once at the root of your application.
+ * Toasts appear when created via the `toast()` imperative API.
  *
- * Architecture:
- * - Eager rendering: All `<Toaster>` components are rendered on mount
- * - Multi-placement support: Each placement gets its own toaster instance
- * - Chakra UI integration: Uses <Toaster> component with children render function
- * - Animation: ChakraToast.Root wraps content to integrate with Ark UI's
- *   animation lifecycle (CSS custom properties + transition events).
- *   The `unstyled` prop disables Chakra's built-in toast recipe while
- *   `css` applies our custom animation transitions.
+ * @example
+ * ```tsx
+ * import { ToastOutlet } from "@commercetools/nimbus";
+ *
+ * function App() {
+ *   return (
+ *     <>
+ *       <YourApp />
+ *       <ToastOutlet />
+ *     </>
+ *   );
+ * }
+ * ```
  *
  * @internal
  */
 export function ToastOutlet() {
+  const msg = useLocalizedStringFormatter(toastMessagesStrings);
+
   return (
     <>
       {Array.from(toasters.entries()).map(([placement, toaster]) => (
         <Toaster key={placement} toaster={toaster}>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
-            const type = toast.type as
-              | "info"
-              | "success"
-              | "warning"
-              | "error"
-              | undefined;
+            const type = (toast.type as ToastType) || "info";
             const closable =
               toast.meta?.closable !== undefined
                 ? (toast.meta.closable as boolean)
                 : true;
+            const ariaAttributes = getARIAAttributes(type);
 
             return (
               <ChakraToast.Root unstyled css={toastAnimationStyles}>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <Toast.Root type={type} {...(toast.meta as any)}>
-                  {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
-                  {toast.description && (
-                    <Toast.Description>{toast.description}</Toast.Description>
+                <ToastRoot
+                  colorPalette={COLOR_PALETTE_MAP[type]}
+                  {...ariaAttributes}
+                >
+                  <ToastIcon alignItems="flex-start">
+                    {ICON_MAP[type]}
+                  </ToastIcon>
+
+                  {toast.title && (
+                    <ToastTitle fontWeight="600">{toast.title}</ToastTitle>
                   )}
+
+                  {toast.description && (
+                    <ToastDescription>{toast.description}</ToastDescription>
+                  )}
+
                   {toast.action && (
-                    <Toast.ActionTrigger
-                      onClick={() => {
-                        if (typeof toast.action === "object" && toast.action) {
+                    <ToastActionTrigger>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onPress={() => {
                           const action = toast.action as {
                             label?: string;
                             onClick?: () => void;
                           };
                           action.onClick?.();
-                        }
-                      }}
-                    >
-                      {typeof toast.action === "object" &&
-                      toast.action &&
-                      "label" in toast.action
-                        ? String(toast.action.label)
-                        : "Action"}
-                    </Toast.ActionTrigger>
+                        }}
+                      >
+                        {typeof toast.action === "object" &&
+                        toast.action &&
+                        "label" in toast.action
+                          ? String(toast.action.label)
+                          : "Action"}
+                      </Button>
+                    </ToastActionTrigger>
                   )}
+
                   {closable && (
-                    <Toast.CloseTrigger
-                      onPress={() => toaster.dismiss(toast.id)}
-                    />
+                    <ToastCloseTrigger>
+                      <IconButton
+                        aria-label={msg.format("dismiss")}
+                        variant="ghost"
+                        size="2xs"
+                        onPress={() => toaster.dismiss(toast.id)}
+                      >
+                        <Clear role="img" />
+                      </IconButton>
+                    </ToastCloseTrigger>
                   )}
-                </Toast.Root>
+                </ToastRoot>
               </ChakraToast.Root>
             );
           }}

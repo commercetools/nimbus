@@ -1,47 +1,33 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
-import type {
-  ToastActionTriggerSlotProps,
-  ToastCloseTriggerSlotProps,
-  ToastDescriptionProps,
-  ToastIconSlotProps,
-  ToastRootSlotProps,
-  ToastTitleProps,
-} from "./toast.types";
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusToast",
 });
 
-export const ToastRoot = withProvider<HTMLDivElement, ToastRootSlotProps>(
+export const ToastRoot = withProvider<HTMLDivElement, HTMLChakraProps<"div">>(
   "div",
   "root"
 );
-
-export const ToastTitle = withContext<HTMLDivElement, ToastTitleProps>(
+export const ToastTitle = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
   "div",
   "title"
 );
-
 export const ToastDescription = withContext<
   HTMLDivElement,
-  ToastDescriptionProps
+  HTMLChakraProps<"div">
 >("div", "description");
-
-export const ToastIcon = withContext<HTMLDivElement, ToastIconSlotProps>(
+export const ToastIcon = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
   "div",
   "icon"
 );
-
-// This is a div wrapper for layout placement - note that we expect it to receive Button props, but we use a div.
-// We then forward the consumer props to the interior Button component.
 export const ToastActionTrigger = withContext<
   HTMLDivElement,
-  ToastActionTriggerSlotProps
+  HTMLChakraProps<"div">
 >("div", "actionTrigger");
-
-// This is a div wrapper for layout placement - note that we expect it to receive IconButton props, but we use a div.
-// We then forward the consumer props to the interior IconButton component.
 export const ToastCloseTrigger = withContext<
   HTMLDivElement,
-  ToastCloseTriggerSlotProps
+  HTMLChakraProps<"div">
 >("div", "closeTrigger");

@@ -289,7 +289,9 @@ export const PauseBehavior: Story = {
       await userEvent.click(button);
 
       const toastText = await body.findByText("Hover or focus me to pause");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
       // Focus the close button
@@ -340,7 +342,9 @@ export const Dismissal: Story = {
       await userEvent.click(showButton);
 
       const toastText = await body.findByText("Close button test");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
       await userEvent.click(closeButton);
@@ -353,7 +357,9 @@ export const Dismissal: Story = {
 
     await step("Escape key dismisses focused toast", async () => {
       const toastText = body.getByText("Escape key test");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
 
       // Focus the toast region
       (toastContainer as HTMLElement).focus();
@@ -445,7 +451,9 @@ export const ActionButton: Story = {
       await userEvent.click(button);
 
       const toastText = await body.findByText("File deleted");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const actionButton = within(toastContainer).getByRole("button", {
         name: /undo/i,
       });
@@ -738,7 +746,9 @@ export const KeyboardNavigation: Story = {
 
     await step("Tab cycles through toast elements", async () => {
       const toastText = body.getByText("Keyboard Toast");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const buttons = within(toastContainer).getAllByRole("button");
 
       // Tab should cycle through buttons (close button and action button)
@@ -782,7 +792,9 @@ export const ClosableControl: Story = {
       await userEvent.click(button);
 
       const toastText = await body.findByText("Closable (default)");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
       await expect(closeButton).toBeInTheDocument();
@@ -791,7 +803,7 @@ export const ClosableControl: Story = {
 
     await step("Toast with closable: false hides close button", async () => {
       const toastText = await body.findByText("Not closable");
-      const toastContainer = toastText.closest('[role="alert"]')!;
+      const toastContainer = toastText.closest('[role="alert"]') as HTMLElement;
       const closeButton = within(toastContainer).queryByRole("button");
 
       // There should be no close button
@@ -840,7 +852,9 @@ export const ReducedMotion: Story = {
         ).matches;
 
         if (prefersReducedMotion) {
-          const toastElement = toastText.closest('[role="status"]')!;
+          const toastElement = toastText.closest(
+            '[role="status"]'
+          ) as HTMLElement;
           const computedStyle = window.getComputedStyle(toastElement);
 
           // Verify animations are disabled or minimal
@@ -947,7 +961,9 @@ export const Internationalization: Story = {
       await userEvent.click(button);
 
       const toastText = await body.findByText("i18n test");
-      const toastContainer = toastText.closest('[role="status"]')!;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
       // Verify aria-label is present and translated (default: English)
@@ -1018,7 +1034,9 @@ export const ComprehensiveIntegration: Story = {
         const loadingToast = await body.findByText("Saving...");
         await expect(loadingToast).toBeInTheDocument();
 
-        const loadingContainer = loadingToast.closest('[role="status"]')!;
+        const loadingContainer = loadingToast.closest(
+          '[role="status"]'
+        ) as HTMLElement;
         const loadingCloseButton =
           within(loadingContainer).queryByRole("button");
         expect(loadingCloseButton).not.toBeInTheDocument();
@@ -1034,7 +1052,9 @@ export const ComprehensiveIntegration: Story = {
 
         // 3. Success toast has undo action button
         const successToast = body.getByText("Saved successfully");
-        const successContainer = successToast.closest('[role="status"]')!;
+        const successContainer = successToast.closest(
+          '[role="status"]'
+        ) as HTMLElement;
         const undoButton = within(successContainer).getByRole("button", {
           name: /undo/i,
         });
@@ -1054,7 +1074,9 @@ export const ComprehensiveIntegration: Story = {
 
         // 1. Error toast appears with role="alert"
         const errorToast = await body.findByText("Network error");
-        const errorContainer = errorToast.closest('[role="alert"]')!;
+        const errorContainer = errorToast.closest(
+          '[role="alert"]'
+        ) as HTMLElement;
         await expect(errorContainer).toBeInTheDocument();
 
         // 2. Has retry action button
