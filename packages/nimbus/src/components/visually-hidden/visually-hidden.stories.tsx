@@ -40,7 +40,7 @@ export const Base: Story = {
     return (
       <VisuallyHidden data-testid="container">
         <div data-testid="content">I should not be visible.</div>
-        <Button data-testid="button" onClick={() => alert("meh")}>
+        <Button data-testid="button" onPress={() => alert("meh")}>
           I should not be focusable.
         </Button>
       </VisuallyHidden>

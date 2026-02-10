@@ -1,0 +1,656 @@
+---
+title: Steps Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+Import the Steps compound component and its TypeScript types:
+
+```tsx
+import { Steps, type StepsRootProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The Steps component is a compound component with multiple parts that work together. At
+minimum, you need `Steps.Root`, `Steps.List`, `Steps.Item`, `Steps.Trigger`, and `Steps.Indicator`:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Steps.Root defaultStep={1} count={3}>
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Account</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Profile</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Review</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+    </Steps.Root>
+  );
+};
+```
+
+## Usage examples
+
+### Controlled vs Uncontrolled
+
+The Steps component supports both controlled and uncontrolled usage patterns:
+
+**Uncontrolled** - The component manages state internally using `defaultStep`:
+
+```tsx
+<Steps.Root defaultStep={0} count={3}>...</Steps.Root>
+```
+
+**Controlled** - You manage state externally using `step` and `onStepChange`:
+
+```jsx-live-dev
+const App = () => {
+  const [currentStep, setCurrentStep] = React.useState(0);
+
+  return (
+    <Stack direction="column" gap="600">
+      <Steps.Root
+        step={currentStep}
+        onStepChange={(details) => setCurrentStep(details.step)}
+        count={3}
+      >
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Icons.Check />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Account</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Icons.Check />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Profile</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status
+                  complete={<Icons.Check />}
+                  incomplete={<Steps.Number />}
+                />
+              </Steps.Indicator>
+              <Steps.Title>Review</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+
+      <Text color="neutral.11" fontSize="350">
+        Current step: {currentStep}
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Size variants
+
+The Steps component supports three size variants: `xs` (extra small), `sm` (small, default), and `md` (medium). The size affects the indicator dimensions and typography:
+
+```jsx-live-dev
+const App = () => {
+  const renderSteps = (size) => (
+    <Steps.Root defaultStep={1} count={3} size={size}>
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Account</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Profile</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Review</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+    </Steps.Root>
+  );
+
+  return (
+    <Stack direction="column" gap="800">
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Extra Small (xs) - 24px indicator</Text>
+        {renderSteps("xs")}
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Small (sm, default) - 32px indicator</Text>
+        {renderSteps("sm")}
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Medium (md) - 40px indicator</Text>
+        {renderSteps("md")}
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Orientation
+
+Choose between `horizontal` (default) and `vertical` orientations to match your layout needs:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="row" gap="800" alignItems="flex-start">
+      <Stack direction="column" gap="400" flex="1">
+        <Text fontWeight="600">Horizontal (default)</Text>
+        <Steps.Root defaultStep={1} count={3} orientation="horizontal">
+          <Steps.List>
+            <Steps.Item index={0}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Account</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={1}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Profile</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={2}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Review</Steps.Title>
+              </Steps.Trigger>
+            </Steps.Item>
+          </Steps.List>
+        </Steps.Root>
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Vertical</Text>
+        <Steps.Root defaultStep={1} count={3} orientation="vertical">
+          <Steps.List>
+            <Steps.Item index={0}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Box>
+                  <Steps.Title>Account</Steps.Title>
+                  <Steps.Description>Create your account</Steps.Description>
+                </Box>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={1}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Box>
+                  <Steps.Title>Profile</Steps.Title>
+                  <Steps.Description>Complete your profile</Steps.Description>
+                </Box>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={2}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Box>
+                  <Steps.Title>Review</Steps.Title>
+                  <Steps.Description>Review and submit</Steps.Description>
+                </Box>
+              </Steps.Trigger>
+            </Steps.Item>
+          </Steps.List>
+        </Steps.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### Custom indicator content
+
+The `Steps.Indicator` wraps content that changes based on step state. Use `Steps.Status` to show different content for complete, current, and incomplete states:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Stack direction="column" gap="800">
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Numbers with checkmark on complete</Text>
+        <Steps.Root defaultStep={1} count={3}>
+          <Steps.List>
+            <Steps.Item index={0}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Complete</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={1}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Current</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={2}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Steps.Number />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Incomplete</Steps.Title>
+              </Steps.Trigger>
+            </Steps.Item>
+          </Steps.List>
+        </Steps.Root>
+      </Stack>
+
+      <Stack direction="column" gap="400">
+        <Text fontWeight="600">Custom icons for each step</Text>
+        <Steps.Root defaultStep={1} count={3}>
+          <Steps.List>
+            <Steps.Item index={0}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Icons.Person />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Account</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={1}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Icons.Settings />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Settings</Steps.Title>
+              </Steps.Trigger>
+              <Steps.Separator />
+            </Steps.Item>
+
+            <Steps.Item index={2}>
+              <Steps.Trigger>
+                <Steps.Indicator>
+                  <Steps.Status
+                    complete={<Icons.Check />}
+                    incomplete={<Icons.Verified />}
+                  />
+                </Steps.Indicator>
+                <Steps.Title>Verify</Steps.Title>
+              </Steps.Trigger>
+            </Steps.Item>
+          </Steps.List>
+        </Steps.Root>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+### With content panels and navigation
+
+Use `Steps.Content` to show content for each step and `Steps.PrevTrigger`/`Steps.NextTrigger` for built-in navigation:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Steps.Root defaultStep={0} count={3}>
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Account</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Profile</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Review</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+
+      <Box mt="600" p="400" bg="neutral.2" borderRadius="md">
+        <Steps.Content index={0}>
+          <Text fontWeight="bold" mb="200">Create your account</Text>
+          <Text>Enter your email and password to get started.</Text>
+        </Steps.Content>
+        <Steps.Content index={1}>
+          <Text fontWeight="bold" mb="200">Complete your profile</Text>
+          <Text>Add your personal information and preferences.</Text>
+        </Steps.Content>
+        <Steps.Content index={2}>
+          <Text fontWeight="bold" mb="200">Review and confirm</Text>
+          <Text>Review your information before submitting.</Text>
+        </Steps.Content>
+        <Steps.CompletedContent>
+          <Text fontWeight="bold" color="success.9">
+            All steps completed successfully!
+          </Text>
+        </Steps.CompletedContent>
+      </Box>
+
+      <Flex gap="400" mt="400">
+        <Steps.PrevTrigger asChild>
+          <Button variant="outline">Back</Button>
+        </Steps.PrevTrigger>
+        <Steps.NextTrigger asChild>
+          <Button variant="solid">Continue</Button>
+        </Steps.NextTrigger>
+      </Flex>
+    </Steps.Root>
+  );
+};
+```
+
+### Linear mode
+
+Use the `linear` prop to restrict navigation to sequential progress only:
+
+```jsx-live-dev
+const App = () => {
+  return (
+    <Steps.Root defaultStep={0} count={3} linear>
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Step 1</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Step 2</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Icons.Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Step 3</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+
+      <Box mt="600" p="400" bg="neutral.2" borderRadius="md">
+        <Steps.Content index={0}>
+          <Text>Complete this step before proceeding.</Text>
+        </Steps.Content>
+        <Steps.Content index={1}>
+          <Text>You can only go forward or back to completed steps.</Text>
+        </Steps.Content>
+        <Steps.Content index={2}>
+          <Text>Final step - you can go back but not skip ahead.</Text>
+        </Steps.Content>
+        <Steps.CompletedContent>
+          <Text fontWeight="bold" color="success.9">All steps completed!</Text>
+        </Steps.CompletedContent>
+      </Box>
+
+      <Flex gap="400" mt="400">
+        <Steps.PrevTrigger asChild>
+          <Button variant="outline">Back</Button>
+        </Steps.PrevTrigger>
+        <Steps.NextTrigger asChild>
+          <Button variant="solid">Next</Button>
+        </Steps.NextTrigger>
+      </Flex>
+    </Steps.Root>
+  );
+};
+```
+
+## Component structure
+
+The Steps component is composed of the following parts:
+
+| Component | Description |
+|-----------|-------------|
+| `Steps.Root` | Container that manages step state and provides context |
+| `Steps.List` | Container for grouping step items |
+| `Steps.Item` | Container for a single step (trigger + separator) |
+| `Steps.Trigger` | Clickable element within each step for direct navigation |
+| `Steps.Indicator` | Visual marker showing step status |
+| `Steps.Number` | Displays the step number (1-indexed) |
+| `Steps.Status` | Renders different content based on step state |
+| `Steps.Title` | Displays the step title |
+| `Steps.Description` | Displays optional hint text |
+| `Steps.Separator` | Visual line connecting step indicators |
+| `Steps.Content` | Content container that auto-shows/hides based on current step |
+| `Steps.CompletedContent` | Content displayed when all steps are complete |
+| `Steps.PrevTrigger` | Navigation button to go to previous step |
+| `Steps.NextTrigger` | Navigation button to go to next step |
+| `Steps.Context` | Render prop for accessing step state |
+| `Steps.ItemContext` | Render prop for accessing current item state |
+
+## Accessibility
+
+The Steps component implements accessibility features following WAI-ARIA patterns:
+
+**Roles:**
+
+- `Steps.List` has `role="tablist"`
+- Each `Steps.Trigger` has `role="tab"`
+- `Steps.Content` panels have `role="tabpanel"`
+
+**State communication:**
+
+- Current step trigger has `aria-selected="true"`
+- Triggers reference their content panels via `aria-controls`
+- Orientation is communicated via `aria-orientation`
+
+**Keyboard navigation:**
+
+- Tab moves focus between triggers
+- Click or Enter activates a trigger (unless `linear` mode restricts it)
+- Arrow keys can navigate between triggers
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "checkout-progress-steps";
+
+export const CheckoutProgress = () => (
+  <Steps.Root id={PERSISTENT_ID} defaultStep={0} count={4}>
+    <Steps.List>
+      {/* ... */}
+    </Steps.List>
+  </Steps.Root>
+);
+```
+
+## API reference
+
+<PropsTable id="Steps" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Steps within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: steps.docs.spec.tsx}}
+
+## Resources
+
+- [Steps Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-steps--docs)

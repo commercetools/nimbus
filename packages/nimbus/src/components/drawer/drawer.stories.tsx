@@ -631,7 +631,7 @@ export const LoginForm: Story = {
               <Button
                 variant="solid"
                 isDisabled={!username || !password || !loginReason}
-                onClick={handleSubmit}
+                onPress={handleSubmit}
               >
                 Submit
               </Button>

@@ -396,20 +396,20 @@ export const ProgressSimulation: Story = {
       <Stack direction="column" gap="600" alignItems="stretch">
         <Stack direction="row" gap="400">
           <Button
-            onClick={startProgress}
-            disabled={isRunning || isCompleted}
+            onPress={startProgress}
+            isDisabled={isRunning || isCompleted}
             variant="solid"
           >
             {isCompleted ? "Completed!" : "Start Progress"}
           </Button>
           <Button
-            onClick={pauseProgress}
-            disabled={!isRunning}
+            onPress={pauseProgress}
+            isDisabled={!isRunning}
             variant="outline"
           >
             Pause
           </Button>
-          <Button onClick={resetProgress} variant="ghost">
+          <Button onPress={resetProgress} variant="ghost">
             Reset
           </Button>
         </Stack>

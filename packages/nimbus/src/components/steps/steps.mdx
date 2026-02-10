@@ -1,0 +1,514 @@
+---
+id: Components-Steps
+title: Steps
+description:
+  A progress indicator with built-in navigation for multi-step processes like
+  forms, wizards, and onboarding flows.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Steps
+tags:
+  - component
+  - stepper
+  - progress
+  - wizard
+  - navigation
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7347-81826
+---
+
+# Steps
+
+A progress indicator with built-in navigation that visually communicates the
+user's position within a multi-step process such as forms, wizards, and
+onboarding flows.
+
+## Overview
+
+The Steps component helps users understand where they are in a multi-step
+process. It provides clear visual feedback about completed, current, and
+upcoming steps, making complex workflows feel more manageable and predictable.
+
+### Key Features
+
+- **Three size variants**: Extra small (xs), small (sm), and medium (md) to fit
+  different interface densities
+- **Two orientations**: Horizontal for wide layouts and vertical for sidebar or
+  narrow contexts
+- **Flexible indicators**: Numeric step numbers with optional checkmarks, or
+  custom icons for semantic meaning
+- **Built-in navigation**: Includes navigation triggers and content panels with
+  automatic state management
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7347-81826)
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+Three sizes are available to match your interface density.
+
+```jsx-live
+const App = () => (
+  <Stack direction="column" gap="800">
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Extra Small (xs) - 24px indicator</Text>
+      <Steps.Root defaultStep={1} count={3} size="xs">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Account</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Profile</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Review</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Small (sm, default) - 32px indicator</Text>
+      <Steps.Root defaultStep={1} count={3} size="sm">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Account</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Profile</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Review</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontWeight="600" fontSize="350">Medium (md) - 40px indicator</Text>
+      <Steps.Root defaultStep={1} count={3} size="md">
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Account</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Profile</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator>
+                <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+              </Steps.Indicator>
+              <Steps.Title>Review</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    </Stack>
+  </Stack>
+)
+```
+
+### Orientation
+
+Choose between horizontal and vertical layouts.
+
+#### Horizontal
+
+Default orientation, best for wide layouts and wizard headers.
+
+```jsx-live
+const App = () => (
+  <Steps.Root defaultStep={1} count={3} orientation="horizontal">
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Account</Steps.Title>
+            <Steps.Description>Create your account</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={1}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Profile</Steps.Title>
+            <Steps.Description>Complete your profile</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={2}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Review</Steps.Title>
+            <Steps.Description>Review and submit</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+#### Vertical
+
+Best for sidebars, narrow containers, or when steps need longer descriptions.
+
+```jsx-live
+const App = () => (
+  <Steps.Root defaultStep={1} count={3} orientation="vertical">
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Account Details</Steps.Title>
+            <Steps.Description>Set up your email and password</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={1}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Personal Information</Steps.Title>
+            <Steps.Description>Enter your name and contact details</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={2}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Box>
+            <Steps.Title>Confirmation</Steps.Title>
+            <Steps.Description>Review and complete your setup</Steps.Description>
+          </Box>
+        </Steps.Trigger>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+### Indicator content
+
+The `Steps.Status` component renders different content based on step state,
+allowing you to customize what appears for complete and incomplete steps.
+
+#### Numbers with checkmarks
+
+Show step numbers that transform into checkmarks when complete.
+
+```jsx-live
+const App = () => (
+  <Steps.Root defaultStep={1} count={3}>
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Complete</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={1}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Current</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={2}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Incomplete</Steps.Title>
+        </Steps.Trigger>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+#### Custom icons
+
+Display semantic icons that change to checkmarks when complete, providing visual
+context for each step's purpose.
+
+```jsx-live
+const App = () => (
+  <Steps.Root defaultStep={1} count={3}>
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Icons.Person />} />
+          </Steps.Indicator>
+          <Steps.Title>Account</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={1}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Icons.Settings />} />
+          </Steps.Indicator>
+          <Steps.Title>Settings</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={2}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Icons.Verified />} />
+          </Steps.Indicator>
+          <Steps.Title>Verify</Steps.Title>
+        </Steps.Trigger>
+      </Steps.Item>
+    </Steps.List>
+  </Steps.Root>
+)
+```
+
+### Step states
+
+Each step visually indicates its state based on the current progress. Use the
+built-in navigation triggers for seamless step management.
+
+```jsx-live
+const App = () => (
+  <Steps.Root defaultStep={1} count={4}>
+    <Steps.List>
+      <Steps.Item index={0}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Step 1</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={1}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Step 2</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={2}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Step 3</Steps.Title>
+        </Steps.Trigger>
+        <Steps.Separator />
+      </Steps.Item>
+      <Steps.Item index={3}>
+        <Steps.Trigger>
+          <Steps.Indicator>
+            <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+          </Steps.Indicator>
+          <Steps.Title>Step 4</Steps.Title>
+        </Steps.Trigger>
+      </Steps.Item>
+    </Steps.List>
+
+    <Stack direction="row" gap="400" mt="600">
+      <Steps.PrevTrigger asChild>
+        <Button variant="outline" size="sm">Previous</Button>
+      </Steps.PrevTrigger>
+      <Steps.NextTrigger asChild>
+        <Button variant="solid" size="sm">Next</Button>
+      </Steps.NextTrigger>
+    </Stack>
+  </Steps.Root>
+)
+```
+
+### Color palette
+
+Customize the visual theme using the `colorPalette` prop.
+
+```jsx-live
+const App = () => {
+  const renderSteps = (colorPalette) => (
+    <Steps.Root defaultStep={1} count={3} colorPalette={colorPalette}>
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+            </Steps.Indicator>
+            <Steps.Title>Step 1</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+            </Steps.Indicator>
+            <Steps.Title>Step 2</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status complete={<Icons.Check />} incomplete={<Steps.Number />} />
+            </Steps.Indicator>
+            <Steps.Title>Step 3</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+    </Steps.Root>
+  );
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">primary (default)</Text>
+        {renderSteps("primary")}
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">positive</Text>
+        {renderSteps("positive")}
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="600">critical</Text>
+        {renderSteps("critical")}
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+## Guidelines
+
+Use the Steps component strategically to enhance user workflow.
+
+### Best practices
+
+- **Keep labels concise**: Use short, clear step labels that describe the action
+  or content
+- **Limit step count**: Avoid more than 5-7 steps to prevent overwhelming users
+- **Provide descriptions**: Use descriptions for complex steps that need
+  additional context
+- **Maintain consistency**: Use the same indicator pattern throughout a flow
+
+> [!TIP]\
+> When to use
+>
+> - **Multi-step forms**: Registration, checkout, surveys
+> - **Wizards**: Setup flows, configuration, onboarding
+> - **Progress tracking**: Task completion, status indicators
+
+> [!CAUTION]\
+> When not to use
+>
+> - **Linear navigation**: Use tabs or pagination instead
+> - **Single actions**: Steps are meant for multi-step processes
+> - **Unknown step count**: Use progress bars for indeterminate progress
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Accessibility standards
+
+- **Semantic structure**: Uses tablist semantics (`role="tablist"` and
+  `role="tab"`) for proper screen reader navigation
+- **Current step indication**: Uses `aria-selected="true"` to announce the
+  active step
+- **Panel association**: Triggers reference their content panels via
+  `aria-controls`
+- **Orientation**: Communicated via `aria-orientation` attribute
+- **Keyboard navigation**: Tab moves focus between triggers; Enter/Click
+  activates a trigger
+- **Color independence**: State is communicated through both color AND visual
+  indicators (checkmarks, styling) to support users with color vision deficiency
