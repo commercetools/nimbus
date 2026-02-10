@@ -103,7 +103,7 @@ export const slotRecipes = {
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
-  nimbusToast: toastRecipe,
+  toast: toastRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
 };
