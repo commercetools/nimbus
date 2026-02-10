@@ -5,20 +5,12 @@ import {
   DataTableRoot,
   DataTableTable,
   DataTableHeader,
-  DataTableColumn,
   DataTableBody,
-  DataTableRow,
-  DataTableCell,
   DataTableFooter,
   DataTableManager,
   DataTableContext,
   useDataTableContext,
 } from "./components";
-import {
-  DataTableExpandButton,
-  DataTableNestedIcon,
-  DataTableSelectionCell,
-} from "./data-table.slots";
 import type { DataTableProps } from "./data-table.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "./data-table.messages";
