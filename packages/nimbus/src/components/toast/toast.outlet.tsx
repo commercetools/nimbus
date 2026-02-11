@@ -4,6 +4,7 @@ import {
   useToastStyles,
   chakra,
 } from "@chakra-ui/react";
+import type { CreateToasterReturn } from "@chakra-ui/react";
 import {
   CheckCircleOutline,
   ErrorOutline,
@@ -11,6 +12,7 @@ import {
   WarningAmber,
   Clear,
 } from "@commercetools/nimbus-icons";
+import { IconButton } from "../icon-button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { toastMessagesStrings } from "./toast.messages";
 import { toasters } from "./toast.toasters";
@@ -38,13 +40,69 @@ const getARIAAttributes = (type?: ToastType) => {
 };
 
 /**
- * Renders the icon indicator for a toast using recipe styles.
- * Uses `useToastStyles` to consume the indicator slot styles
- * from the overridden toast recipe.
+ * Inner content of a toast, rendered inside ChakraToast.Root (the recipe provider).
+ * Uses `useToastStyles` to apply recipe slot styles to custom elements.
  */
-function ToastIcon({ children }: { children: React.ReactNode }) {
+function ToastContent({
+  toast,
+  toaster,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toast: any;
+  toaster: CreateToasterReturn;
+}) {
   const styles = useToastStyles();
-  return <chakra.div css={styles.indicator}>{children}</chakra.div>;
+  const msg = useLocalizedStringFormatter(toastMessagesStrings);
+  const type = (toast.type as ToastType) || "info";
+  const closable =
+    toast.meta?.closable !== undefined
+      ? (toast.meta.closable as boolean)
+      : true;
+
+  return (
+    <>
+      <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
+
+      {toast.title && (
+        <ChakraToast.Title fontWeight="600">{toast.title}</ChakraToast.Title>
+      )}
+
+      {toast.description && (
+        <ChakraToast.Description>{toast.description}</ChakraToast.Description>
+      )}
+
+      {toast.action && (
+        <ChakraToast.ActionTrigger
+          onClick={() => {
+            const action = toast.action as {
+              label?: string;
+              onClick?: () => void;
+            };
+            action.onClick?.();
+          }}
+        >
+          {typeof toast.action === "object" &&
+          toast.action &&
+          "label" in toast.action
+            ? String(toast.action.label)
+            : "Action"}
+        </ChakraToast.ActionTrigger>
+      )}
+
+      {closable && (
+        <chakra.div css={styles.closeTrigger}>
+          <IconButton
+            aria-label={msg.format("dismiss")}
+            variant="ghost"
+            size="2xs"
+            onPress={() => toaster.dismiss(toast.id)}
+          >
+            <Clear role="img" />
+          </IconButton>
+        </chakra.div>
+      )}
+    </>
+  );
 }
 
 /**
@@ -70,8 +128,6 @@ function ToastIcon({ children }: { children: React.ReactNode }) {
  * @internal
  */
 export function ToastOutlet() {
-  const msg = useLocalizedStringFormatter(toastMessagesStrings);
-
   return (
     <>
       {Array.from(toasters.entries()).map(([placement, toaster]) => (
@@ -79,54 +135,13 @@ export function ToastOutlet() {
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
             const type = (toast.type as ToastType) || "info";
-            const closable =
-              toast.meta?.closable !== undefined
-                ? (toast.meta.closable as boolean)
-                : true;
-            const ariaAttributes = getARIAAttributes(type);
 
             return (
               <ChakraToast.Root
                 colorPalette={COLOR_PALETTE_MAP[type]}
-                {...ariaAttributes}
+                {...getARIAAttributes(type)}
               >
-                <ToastIcon>{ICON_MAP[type]}</ToastIcon>
-
-                {toast.title && (
-                  <ChakraToast.Title fontWeight="600">
-                    {toast.title}
-                  </ChakraToast.Title>
-                )}
-
-                {toast.description && (
-                  <ChakraToast.Description>
-                    {toast.description}
-                  </ChakraToast.Description>
-                )}
-
-                {toast.action && (
-                  <ChakraToast.ActionTrigger
-                    onClick={() => {
-                      const action = toast.action as {
-                        label?: string;
-                        onClick?: () => void;
-                      };
-                      action.onClick?.();
-                    }}
-                  >
-                    {typeof toast.action === "object" &&
-                    toast.action &&
-                    "label" in toast.action
-                      ? String(toast.action.label)
-                      : "Action"}
-                  </ChakraToast.ActionTrigger>
-                )}
-
-                {closable && (
-                  <ChakraToast.CloseTrigger aria-label={msg.format("dismiss")}>
-                    <Clear role="img" />
-                  </ChakraToast.CloseTrigger>
-                )}
+                <ToastContent toast={toast} toaster={toaster} />
               </ChakraToast.Root>
             );
           }}
