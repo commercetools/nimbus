@@ -63,9 +63,7 @@ function ToastContent({
     <>
       <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
 
-      {toast.title && (
-        <ChakraToast.Title fontWeight="600">{toast.title}</ChakraToast.Title>
-      )}
+      {toast.title && <ChakraToast.Title>{toast.title}</ChakraToast.Title>}
 
       {toast.description && (
         <ChakraToast.Description>{toast.description}</ChakraToast.Description>
@@ -93,7 +91,7 @@ function ToastContent({
         <chakra.div css={styles.closeTrigger}>
           <IconButton
             aria-label={msg.format("dismiss")}
-            variant="ghost"
+            variant="solid"
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}
           >
