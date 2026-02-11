@@ -344,9 +344,9 @@ export const PauseBehavior: Story = {
 export const Dismissal: Story = {
   render: () => {
     const showDismissalToasts = () => {
-      toast({ title: "Close button test", type: "info", duration: 0 });
-      toast({ title: "Escape key test", type: "success", duration: 0 });
-      toast({ title: "Programmatic dismiss", type: "warning", duration: 0 });
+      toast.info({ title: "Close button test", duration: 5000 });
+      toast.success({ title: "Escape key test", duration: 5000 });
+      toast.warning({ title: "Programmatic dismiss", duration: 5000 });
     };
 
     return (
@@ -378,6 +378,15 @@ export const Dismissal: Story = {
       ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
+      // Wait for animation to complete before interacting
+      await waitFor(
+        () => {
+          const styles = window.getComputedStyle(closeButton);
+          expect(styles.pointerEvents).not.toBe("none");
+        },
+        { timeout: 2000 }
+      );
+
       await userEvent.click(closeButton);
 
       // Toast should animate out then be removed
@@ -394,6 +403,15 @@ export const Dismissal: Story = {
         '[role="status"]'
       ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
+
+      // Wait for animation to complete before interacting
+      await waitFor(
+        () => {
+          const styles = window.getComputedStyle(closeButton);
+          expect(styles.pointerEvents).not.toBe("none");
+        },
+        { timeout: 2000 }
+      );
 
       // Focus the toast's close button
       closeButton.focus();
