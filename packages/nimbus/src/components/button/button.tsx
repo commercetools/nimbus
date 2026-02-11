@@ -42,7 +42,15 @@ const ButtonComponent = (props: ButtonProps) => {
 
   const { isDisabled } = contextProps;
 
-  const componentProps = mergeProps(buttonProps, {
+  // Strip props from contextProps that useButton already returns in buttonProps
+  // to prevent double-firing of event handlers (onClick, onKeyDown, etc.)
+  // while preserving non-standard props (Chakra style props, etc.) that
+  // useButton's filterDOMProps strips out.
+  const passthroughContextProps = Object.fromEntries(
+    Object.entries(contextProps).filter(([key]) => !(key in buttonProps))
+  );
+
+  const componentProps = mergeProps(passthroughContextProps, buttonProps, {
     as,
     asChild,
     /**
