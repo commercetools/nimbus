@@ -88,7 +88,7 @@ export const Variants: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showToasts}>Show All Variants</Button>
+        <Button onPress={showToasts}>Show All Variants</Button>
         <Text fontSize="sm" color="fg.muted">
           Click to show info, success, warning, and error toasts
         </Text>
@@ -150,7 +150,7 @@ export const ARIARoles: Story = {
     };
 
     return (
-      <Button onClick={showRoleToasts} data-testid="show-role-toasts">
+      <Button onPress={showRoleToasts} data-testid="show-role-toasts">
         Show ARIA Role Toasts
       </Button>
     );
@@ -208,7 +208,7 @@ export const AutoDismiss: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showAutoDismissToasts} data-testid="auto-dismiss-btn">
+        <Button onPress={showAutoDismissToasts} data-testid="auto-dismiss-btn">
           Show Auto-Dismiss Variations
         </Button>
         <Text fontSize="sm" color="fg.muted">
@@ -277,7 +277,7 @@ export const PauseBehavior: Story = {
     };
 
     return (
-      <Button onClick={showPauseToast} data-testid="pause-toast-btn">
+      <Button onPress={showPauseToast} data-testid="pause-toast-btn">
         Show Pausable Toast
       </Button>
     );
@@ -351,13 +351,13 @@ export const Dismissal: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showDismissalToasts} data-testid="dismissal-btn">
+        <Button onPress={showDismissalToasts} data-testid="dismissal-btn">
           Show Dismissal Toasts
         </Button>
-        <Button onClick={() => toast.dismiss()} data-testid="dismiss-all-btn">
+        <Button onPress={() => toast.dismiss()} data-testid="dismiss-all-btn">
           Dismiss All
         </Button>
-        <Button onClick={() => toast.remove()} data-testid="remove-all-btn">
+        <Button onPress={() => toast.remove()} data-testid="remove-all-btn">
           Remove All (No Animation)
         </Button>
       </Stack>
@@ -474,7 +474,7 @@ export const ActionButton: Story = {
     };
 
     return (
-      <Button onClick={showActionToast} data-testid="action-toast-btn">
+      <Button onPress={showActionToast} data-testid="action-toast-btn">
         Show Toast with Action
       </Button>
     );
@@ -546,10 +546,10 @@ export const PromisePattern: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={successPromise} data-testid="success-promise-btn">
+        <Button onPress={successPromise} data-testid="success-promise-btn">
           Promise Resolves
         </Button>
-        <Button onClick={errorPromise} data-testid="error-promise-btn">
+        <Button onPress={errorPromise} data-testid="error-promise-btn">
           Promise Rejects
         </Button>
       </Stack>
@@ -617,10 +617,10 @@ export const StackingAndQueuing: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showMultipleToasts} data-testid="multiple-btn">
+        <Button onPress={showMultipleToasts} data-testid="multiple-btn">
           Show 5 Toasts (Stacking)
         </Button>
-        <Button onClick={showManyToasts} data-testid="many-btn">
+        <Button onPress={showManyToasts} data-testid="many-btn">
           Show 30 Toasts (Queuing)
         </Button>
       </Stack>
@@ -686,7 +686,7 @@ export const MultiPlacement: Story = {
     };
 
     return (
-      <Button onClick={showMultiPlacement} data-testid="multi-placement-btn">
+      <Button onPress={showMultiPlacement} data-testid="multi-placement-btn">
         Show Toasts in All Placements
       </Button>
     );
@@ -758,7 +758,7 @@ export const KeyboardNavigation: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showKeyboardToast} data-testid="keyboard-toast-btn">
+        <Button onPress={showKeyboardToast} data-testid="keyboard-toast-btn">
           Show Keyboard Toast
         </Button>
         <Text fontSize="sm" color="fg.muted">
@@ -832,7 +832,7 @@ export const ClosableControl: Story = {
     };
 
     return (
-      <Button onClick={showClosableToasts} data-testid="closable-btn">
+      <Button onPress={showClosableToasts} data-testid="closable-btn">
         Show Closable Variations
       </Button>
     );
@@ -884,7 +884,7 @@ export const ReducedMotion: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showMotionToast} data-testid="motion-toast-btn">
+        <Button onPress={showMotionToast} data-testid="motion-toast-btn">
           Show Toast
         </Button>
         <Text fontSize="sm" color="fg.muted">
@@ -944,10 +944,10 @@ export const ProgrammaticUpdate: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showUpdateToast} data-testid="show-update-toast-btn">
+        <Button onPress={showUpdateToast} data-testid="show-update-toast-btn">
           Show Toast
         </Button>
-        <Button onClick={updateToast} data-testid="update-toast-btn">
+        <Button onPress={updateToast} data-testid="update-toast-btn">
           Update Toast
         </Button>
       </Stack>
@@ -990,7 +990,7 @@ export const Internationalization: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={showI18nToast} data-testid="i18n-toast-btn">
+        <Button onPress={showI18nToast} data-testid="i18n-toast-btn">
           Show Toast
         </Button>
         <Text fontSize="sm" color="fg.muted">
@@ -1059,10 +1059,10 @@ export const ComprehensiveIntegration: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onClick={saveScenario} data-testid="save-scenario-btn">
+        <Button onPress={saveScenario} data-testid="save-scenario-btn">
           Save Document (Promise Pattern)
         </Button>
-        <Button onClick={networkErrorScenario} data-testid="error-scenario-btn">
+        <Button onPress={networkErrorScenario} data-testid="error-scenario-btn">
           Network Error (Persistent with Action)
         </Button>
       </Stack>
