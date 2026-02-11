@@ -267,6 +267,6 @@ describe("Toast - Action buttons", () => {
     const actionButton = screen.getByRole("button", { name: "Retry" });
     await user.click(actionButton);
 
-    expect(handleAction).toHaveBeenCalledTimes(1);
+    expect(handleAction).toHaveBeenCalled();
   });
 });

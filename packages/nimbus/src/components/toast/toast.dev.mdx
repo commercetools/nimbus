@@ -9,14 +9,12 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { toast, Toast, type ToastOptions } from '@commercetools/nimbus';
+import { toast, type ToastOptions } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
 
-The Toast component provides two ways to create notifications: an imperative API for programmatic toasts and compound components for custom layouts. The imperative API is the recommended approach for most use cases.
-
-**Imperative API (recommended):**
+Create toast notifications using the imperative `toast()` API. Toasts are rendered automatically by the `NimbusProvider`.
 
 ```jsx-live-dev
 const App = () => {
@@ -34,20 +32,6 @@ const App = () => {
     </Button>
   );
 }
-```
-
-**Compound components:**
-
-```jsx-live-dev
-const App = () => (
-  <Toast.Root type="info">
-    <Toast.Title>Information</Toast.Title>
-    <Toast.Description>
-      This is an informational message.
-    </Toast.Description>
-    <Toast.CloseTrigger />
-  </Toast.Root>
-)
 ```
 
 ## Usage examples
@@ -348,7 +332,33 @@ Hotkeys are only active for placements with visible toasts.
 
 ## API reference
 
-<PropsTable id="Toast" />
+### `toast(options: ToastOptions): string`
+
+Creates a toast and returns its ID. Also available as convenience methods: `toast.info()`, `toast.success()`, `toast.warning()`, `toast.error()`.
+
+### ToastOptions
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style and ARIA semantics |
+| `title` | `string` | — | Title text |
+| `description` | `string` | — | Description text |
+| `action` | `{ label: string; onClick: () => void }` | — | Action button (disables auto-dismiss) |
+| `duration` | `number` | `6000` | Auto-dismiss in ms (`0` = never) |
+| `placement` | `ToastPlacement` | `"top-end"` | Screen position |
+| `closable` | `boolean` | `true` | Show/hide close button |
+| `pauseOnInteraction` | `boolean` | `true` | Pause timer on hover/focus |
+| `pauseOnPageIdle` | `boolean` | `true` | Pause when tab is hidden |
+| `meta` | `Record<string, unknown>` | — | Custom metadata |
+
+### Control methods
+
+| Method | Description |
+| --- | --- |
+| `toast.update(id, options)` | Update toast content |
+| `toast.dismiss(id?)` | Dismiss with animation (omit `id` for all) |
+| `toast.remove(id?)` | Remove immediately (omit `id` for all) |
+| `toast.promise(promise, options, config?)` | Loading → success/error transitions |
 
 ## Common patterns
 

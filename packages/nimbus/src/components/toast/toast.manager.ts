@@ -245,6 +245,7 @@ export const toast = Object.assign(
       manager.update(id, options),
     dismiss: (id?: string) => manager.dismiss(id),
     remove: (id?: string) => manager.remove(id),
+    reset: () => manager.reset(),
   }
 );
 

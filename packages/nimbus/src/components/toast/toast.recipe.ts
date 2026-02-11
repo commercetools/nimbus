@@ -36,7 +36,8 @@ export const toastRecipe = defineSlotRecipe({
       maxWidth: "560px",
       alignItems: "start",
       backgroundColor: "colorPalette.9",
-      padding: "200",
+      px: "400",
+      py: "300",
       borderRadius: "200",
       boxShadow: "md",
       focusRing: "outside",
@@ -70,6 +71,7 @@ export const toastRecipe = defineSlotRecipe({
       gridColumn: "2",
       order: "1",
       color: "colorPalette.contrast",
+      textStyle: "lg",
       fontWeight: "600",
     },
     description: {

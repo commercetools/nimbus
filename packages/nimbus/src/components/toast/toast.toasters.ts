@@ -11,14 +11,19 @@ const ALL_PLACEMENTS: ToastPlacement[] = [
   "bottom-end",
 ];
 
-// Numpad-based hotkey mapping for toast placements
-const PLACEMENT_HOTKEYS: Record<ToastPlacement, string> = {
-  "top-start": "Alt+Shift+7",
-  top: "Alt+Shift+8",
-  "top-end": "Alt+Shift+9",
-  "bottom-start": "Alt+Shift+1",
-  bottom: "Alt+Shift+2",
-  "bottom-end": "Alt+Shift+3",
+/**
+ * Numpad-based hotkey mapping for toast placements.
+ * Format follows Zag.js convention: each array element is checked against
+ * `event[key]` (for modifiers) or `event.code` (for key codes).
+ * All keys must match for the hotkey to trigger.
+ */
+const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
+  "top-start": ["altKey", "shiftKey", "Digit7"],
+  top: ["altKey", "shiftKey", "Digit8"],
+  "top-end": ["altKey", "shiftKey", "Digit9"],
+  "bottom-start": ["altKey", "shiftKey", "Digit1"],
+  bottom: ["altKey", "shiftKey", "Digit2"],
+  "bottom-end": ["altKey", "shiftKey", "Digit3"],
 };
 
 /**
@@ -28,11 +33,10 @@ const PLACEMENT_HOTKEYS: Record<ToastPlacement, string> = {
  */
 export const toasters = new Map(
   ALL_PLACEMENTS.map((placement) => {
-    const hotkey = PLACEMENT_HOTKEYS[placement];
     const toaster = createToaster({
       placement,
       pauseOnPageIdle: true,
-      hotkey: hotkey ? [hotkey] : undefined,
+      hotkey: PLACEMENT_HOTKEYS[placement],
     });
 
     return [placement, toaster];

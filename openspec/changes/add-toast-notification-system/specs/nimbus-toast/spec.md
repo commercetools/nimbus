@@ -59,7 +59,7 @@ hooks, providers, or setup beyond `NimbusProvider`.
 ### Requirement: Per-Toast Placement
 
 The `toast` function SHALL accept an optional `placement` parameter. The system
-SHALL lazily create and manage separate toaster instances per unique placement.
+SHALL manage separate pre-created toaster instances per placement.
 
 #### Scenario: Default placement
 
@@ -80,7 +80,8 @@ SHALL lazily create and manage separate toaster instances per unique placement.
 ### Requirement: Auto-Dismiss
 
 Toasts SHALL auto-dismiss after a configurable duration (default 6 seconds).
-Timers SHALL pause on hover, focus, and page idle.
+Timers SHALL pause on hover, focus, and page idle (via Chakra's built-in
+`pauseOnInteraction` and `pauseOnPageIdle`).
 
 #### Scenario: Default auto-dismiss
 
@@ -130,7 +131,7 @@ timer, or programmatic API.
 ### Requirement: Action Button
 
 Toasts SHALL support an optional action button. Toasts with actions SHALL NOT
-auto-dismiss.
+auto-dismiss (`ToastManager.create()` enforces `duration: 0`).
 
 #### Scenario: Action toast
 
@@ -145,7 +146,8 @@ auto-dismiss.
 ### Requirement: Promise Pattern
 
 The `toast.promise()` method SHALL create a toast that transitions through
-loading, success, and error states based on a promise's lifecycle.
+loading, success, and error states based on a promise's lifecycle. This is
+delegated directly to Chakra's `toaster.promise()`.
 
 #### Scenario: Promise resolves
 
@@ -161,7 +163,7 @@ loading, success, and error states based on a promise's lifecycle.
 
 ### Requirement: Queuing and Stacking
 
-The system SHALL use the default max (24) per placement region. When the
+The system SHALL use Chakra's default max (24) per placement region. When the
 maximum is exceeded, additional toasts SHALL be queued and displayed as visible
 slots become available.
 
@@ -178,45 +180,45 @@ slots become available.
 ### Requirement: ARIA Role Differentiation
 
 Info and success toasts SHALL use `role="status"` (polite). Warning and error
-toasts SHALL use `role="alert"` (assertive). Since Chakra defaults to
-`role="status"` on all toasts, the Nimbus `Toast.Root` component SHALL override
-the `role` and `aria-live` attributes based on the toast type.
+toasts SHALL use `role="alert"` (assertive). The `ToastOutlet` SHALL override
+these attributes on `Toast.Root` since Chakra defaults all toasts to
+`role="status"`.
 
 #### Scenario: Polite announcement
 
 - **WHEN** an info or success toast appears
-- **THEN** it has `role="status"` and waits for the screen reader to finish
+- **THEN** it has `role="status"` and `aria-live="polite"`
 
 #### Scenario: Assertive announcement
 
 - **WHEN** a warning or error toast appears
-- **THEN** it has `role="alert"` and announces immediately
+- **THEN** it has `role="alert"` and `aria-live="assertive"`
 
 ### Requirement: Keyboard Navigation
 
-The toast region SHALL be a keyboard-navigable ARIA landmark supporting
-per-placement hotkeys.
+Toast regions SHALL support per-placement hotkeys and standard keyboard
+navigation within toasts.
 
 #### Scenario: Per-placement hotkey
 
-- **WHEN** the user presses the hotkey for a placement (e.g., Alt+Shift+9 for
-  top-end)
-- **THEN** focus moves to that placement's toast region (if toasts are visible)
+- **WHEN** the user presses Alt+Shift+9
+- **THEN** focus moves to the top-end toast region (if toasts are visible)
 
 #### Scenario: Tab through toast elements
 
-- **WHEN** the toast region is focused
-- **THEN** Tab cycles through close button and action button (if present)
+- **WHEN** a toast with close button and action button is focused
+- **THEN** Tab cycles through the interactive elements
 
 ### Requirement: Reduced Motion
 
-When `prefers-reduced-motion` is active, toasts SHALL not use slide or fade
-transitions.
+When `prefers-reduced-motion` is active, toast transitions SHALL be minimal.
+This is handled by CSS transition properties in the recipe and Chakra's built-in
+animation system.
 
 #### Scenario: Reduced motion preference
 
 - **WHEN** the user has `prefers-reduced-motion: reduce` enabled
-- **THEN** toast enter/exit animations are disabled
+- **THEN** toast enter/exit transitions are reduced or disabled
 
 ### Requirement: Zero-Setup via NimbusProvider
 
@@ -228,15 +230,11 @@ regions. No additional setup SHALL be required from consumers.
 - **WHEN** an app uses `NimbusProvider`
 - **THEN** toast functionality is available without additional components
 
-#### Scenario: Lazy rendering
-
-- **WHEN** no toasts have been triggered
-- **THEN** no additional DOM nodes are rendered by ToastOutlet
-
 ### Requirement: Closable Control
 
 Toasts SHALL support a `closable` property that controls close button
-visibility.
+visibility. Forwarded via `meta.closable` for toasts created through
+`ToastManager.create()`.
 
 #### Scenario: Closable true (default)
 
@@ -246,7 +244,7 @@ visibility.
 #### Scenario: Closable false
 
 - **WHEN** a toast is created with `closable: false`
-- **THEN** the close button is hidden (useful for loading states)
+- **THEN** the close button is hidden
 
 ### Requirement: Immediate Removal
 

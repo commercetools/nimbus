@@ -7,13 +7,13 @@ without interrupting workflow. No toast component exists in Nimbus today.
 
 ## What Changes
 
-- **NEW** `Toast` compound component (root, icon, title, description,
-  actionTrigger, closeTrigger)
 - **NEW** `toast` imperative API for creating toasts from anywhere
-- **NEW** `ToastManager` internal facade managing per-placement toaster instances
+- **NEW** `ToastManager` internal singleton routing toast IDs to placement-specific
+  Chakra UI toaster instances
 - **NEW** `ToastOutlet` rendered inside `NimbusProvider` for zero-setup
-- **NEW** `nimbusToast` slot recipe
-- **NEW** i18n message: `Nimbus.Toast.dismiss` (5 locales)
+- **NEW** `toast` slot recipe (overrides Chakra's default toast recipe key)
+- **NEW** i18n message: `Nimbus.Toast.dismiss` (5 locales: en, de, es, fr-FR,
+  pt-BR)
 - **MODIFIED** `NimbusProvider` renders `<ToastOutlet />` as child
 
 ## Impact
@@ -23,4 +23,3 @@ without interrupting workflow. No toast component exists in Nimbus today.
   - `packages/nimbus/src/components/toast/` (new)
   - `packages/nimbus/src/components/nimbus-provider/nimbus-provider.tsx`
   - `packages/nimbus/src/theme/slot-recipes/index.ts`
-  - `packages/nimbus/src/index.ts`
