@@ -151,6 +151,29 @@ type DataTableVariantProps = OmitInternalProps<
 // ============================================================
 // MAIN PROPS
 // ============================================================
+
+/**
+ * DataTable component props
+ *
+ * @warning Use the simple `Table` component for static, read-only data.
+ * DataTable is designed for **interactive data management** with features like
+ * sorting, filtering, selection, and pagination. It adds complexity and overhead
+ * that's unnecessary for simple static displays.
+ *
+ * **When to use Table (simple):**
+ * - Static reference data (specifications, comparisons)
+ * - Small datasets (< 50 rows)
+ * - Read-only content without interactions
+ *
+ * **When to use DataTable (complex):**
+ * - Sorting, filtering, or searching data
+ * - Row selection for bulk actions
+ * - Column management (show/hide, reorder, resize)
+ * - Pagination for large datasets (> 50 rows)
+ * - Server-side data operations
+ *
+ * @see {@link Table} for simple static table layouts
+ */
 export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   DataTableVariantProps,
   "truncated"

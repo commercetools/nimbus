@@ -42,6 +42,7 @@ for more information held in modals or further detail pages.
 > [!CAUTION]\
 > When not to use
 
+- **For static, read-only data**: Use the simpler [Table component](/components/data-display/table) instead for static content without interactive features (sorting, filtering, selection). DataTable adds unnecessary complexity for simple displays.
 - Presenting simple lists of items.
 - Displaying content with complex, varying layouts (use card or a grid layout).
 - Presenting an action-focused list where the primary interaction is on the
@@ -50,6 +51,11 @@ for more information held in modals or further detail pages.
   frustrating way to understand the information presented.
 - To display information that is not meant to be read in the format of a data
   table like long blocks of text.
+
+> [!TIP]\
+> **Use Table for simple cases**
+>
+> If you're displaying fewer than 50 rows of static data without needing sorting, filtering, or selection, use the [Table component](/components/data-display/table) instead. It's lighter, simpler, and faster to implement for straightforward data presentation.
 
 #### Tags and tag group in use
 

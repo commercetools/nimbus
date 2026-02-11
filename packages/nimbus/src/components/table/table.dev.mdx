@@ -49,6 +49,43 @@ const App = () => {
 }
 ```
 
+## When to use Table
+
+Use the **Table** component when you need to display **static, read-only data** in a simple tabular format. It's designed for straightforward data presentation without interactive features.
+
+### Ideal use cases
+
+- **Static content displays**: Product specifications, feature comparisons, pricing tiers
+- **Small datasets**: Fewer than 50 rows that don't require pagination
+- **Read-only data**: Information that users only need to view, not interact with
+- **Simple layouts**: Basic tables without complex features like sorting or filtering
+- **Documentation and reference**: Help content, glossaries, or static lists
+
+### When to upgrade to DataTable
+
+Consider upgrading to the [DataTable component](/components/data-display/datatable) when you need:
+
+- **Sorting**: Allow users to sort columns in ascending or descending order
+- **Row selection**: Enable users to select one or multiple rows for bulk actions
+- **Column management**: Let users show/hide, reorder, or resize columns
+- **Search and filtering**: Help users find specific data within large datasets
+- **Pagination**: Handle datasets with more than 50 rows efficiently
+- **Server-side operations**: Support for server-side sorting, filtering, and pagination
+- **Nested data**: Display hierarchical data with expandable rows
+- **Dense data visualization**: Use condensed row spacing for data-heavy interfaces
+
+**Quick decision guide:**
+
+| Feature | Table | DataTable |
+|---------|-------|-----------|
+| Static display | ✓ | ✓ |
+| Sorting | ✗ | ✓ |
+| Selection | ✗ | ✓ |
+| Filtering | ✗ | ✓ |
+| Pagination | ✗ | ✓ |
+| Column resizing | ✗ | ✓ |
+| Best for | < 50 rows | > 50 rows |
+
 ## Usage examples
 
 ### Size variants
@@ -552,6 +589,12 @@ These examples demonstrate how to test your implementation when using Table with
 
 ## Resources
 
+### Related components
+
+- **[DataTable Component](/components/data-display/data-table)** - Upgrade to DataTable when you need sorting, filtering, selection, pagination, or other interactive features for complex data management
+
+### External documentation
+
 - [Chakra UI - Table Documentation](https://chakra-ui.com/docs/components/table)
-- [DataTable Component](../components/data-display/datatable) - Advanced table with sorting, selection, and more features
-- [MDN - HTML Table Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
+- [MDN - HTML Table Element](https://developer.mozilla.org/en-docs/Web/HTML/Element/table)
+- [WCAG - Table Accessibility](https://www.w3.org/WAI/tutorials/tables/)

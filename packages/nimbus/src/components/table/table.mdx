@@ -2,7 +2,7 @@
 id: Table
 title: Table
 exportName: Table
-description: Displays a table.
+description: A simple, semantic HTML table for displaying static, read-only data without interactive features.
 documentState: InitialDraft
 lifecycleState: Stable
 order: 999
@@ -13,8 +13,30 @@ menu:
 tags:
   - table
   - tabular data
+  - static table
+  - read-only
 ---
 
 # Table
 
-Experimental component. Do not use in production.
+The Table component provides a straightforward way to display static, read-only data in a tabular format. It uses semantic HTML table elements and is designed for simple data presentation without interactive features like sorting, filtering, or selection.
+
+## When to use
+
+**Use Table for:**
+- Product specifications, feature comparisons, or pricing tiers
+- Small datasets (fewer than 50 rows) that don't require pagination
+- Static reference content like glossaries or help documentation
+- Simple layouts where users only need to view information
+
+## When to use DataTable instead
+
+**Upgrade to [DataTable](/components/data-display/data-table) when you need:**
+- Sorting, filtering, or searching capabilities
+- Row selection for bulk actions
+- Column management (show/hide, reorder, resize)
+- Pagination for large datasets (> 50 rows)
+- Server-side data operations
+- Nested or hierarchical data with expandable rows
+
+The DataTable component is built for complex, interactive data management. If you only need to display static content, Table is the simpler, lighter choice.
