@@ -56,9 +56,4 @@ export type ButtonProps = Omit<ButtonRootSlotProps, keyof RaButtonProps> &
      * Ref forwarding to the button element
      */
     ref?: React.Ref<HTMLButtonElement>;
-    /**
-     * Standard HTML disabled attribute. Maps to `isDisabled` internally.
-     * If both `disabled` and `isDisabled` are set, `isDisabled` takes precedence.
-     */
-    disabled?: boolean;
   };

@@ -8,7 +8,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, userEvent } from "@/test/utils";
 import { Button } from "./button";
-import { createRef, Children, cloneElement, isValidElement } from "react";
+import { createRef } from "react";
 
 describe("Button", () => {
   describe("Base", () => {
@@ -128,18 +128,6 @@ describe("Button", () => {
       expect(button).toHaveAttribute("aria-disabled", "true");
       expect(button).toHaveAttribute("data-disabled", "true");
     });
-
-    it("Supports HTML disabled prop", () => {
-      render(
-        <Button disabled data-testid="test">
-          Disabled Button
-        </Button>
-      );
-
-      const button = screen.getByTestId("test");
-      expect(button).toHaveAttribute("aria-disabled", "true");
-      expect(button).toHaveAttribute("data-disabled", "true");
-    });
   });
 
   describe("AsLink", () => {
@@ -176,63 +164,6 @@ describe("Button", () => {
 
       const button = screen.getByRole("button");
       expect(buttonRef.current).toBe(button);
-    });
-  });
-
-  describe("Context disabled", () => {
-    it("Sets disabled via ButtonContext", () => {
-      render(
-        <Button.Context.Provider
-          value={{
-            isDisabled: true,
-            id: "test-id",
-            "aria-controls": "panel-1",
-            "aria-expanded": false,
-            onPress: () => {},
-            onPressStart: () => {},
-          }}
-        >
-          <Button data-testid="test">Test</Button>
-        </Button.Context.Provider>
-      );
-
-      const button = screen.getByTestId("test");
-      expect(button).toHaveAttribute("aria-disabled", "true");
-      expect(button).toHaveAttribute("data-disabled", "true");
-      expect(button).toHaveAttribute("aria-controls", "panel-1");
-    });
-  });
-
-  describe("cloneElement disabled", () => {
-    it("Receives isDisabled via cloneElement", () => {
-      const disclosureProps = {
-        isDisabled: true,
-        id: "test-id",
-        "aria-controls": "panel-1",
-        "aria-expanded": false,
-        onPress: () => {},
-        onPressStart: () => {},
-      };
-
-      const Wrapper = ({ children }: { children: React.ReactNode }) => {
-        const child = Children.only(children);
-        if (isValidElement(child)) {
-          return cloneElement(
-            child,
-            disclosureProps as Record<string, unknown>
-          );
-        }
-        return null;
-      };
-
-      render(
-        <Wrapper>
-          <Button data-testid="test">Test</Button>
-        </Wrapper>
-      );
-
-      const button = screen.getByTestId("test");
-      expect(button).toHaveAttribute("aria-disabled", "true");
     });
   });
 

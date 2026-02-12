@@ -419,30 +419,25 @@ had no styles defined).
 — verifies `onClick`, `onPress`, `onFocus`, `onBlur`, and `onKeyDown` each fire
 exactly once per interaction.
 
-**Button `disabled` prop** (`button.tsx`, `button.types.ts`):
-
-Added support for the standard HTML `disabled` attribute. The prop maps to
-`isDisabled` internally, with `isDisabled` taking precedence if both are set.
-
-This is needed because compound components like `CollapsibleMotion.Trigger` pass
-`disabled` (the HTML attribute) via `mergeProps` when forwarding disclosure
-state to child elements. Without this mapping, `<Button disabled>` would not
-apply React Aria's disabled behavior (no `aria-disabled`, no `data-disabled`,
-press events still fire).
-
-Unit tests added:
-
-- `Supports HTML disabled prop` — direct `<Button disabled>` usage
-- `Sets disabled via ButtonContext` — disabled propagated through RA context
-- `Receives isDisabled via cloneElement` — disabled propagated via prop cloning
-
 ### CollapsibleMotion compatibility
 
 Verified that `CollapsibleMotion.Trigger` works correctly with the Button fix.
-The trigger component uses `useDisclosure` from `react-aria` which returns
-`buttonProps` (including `onPress`, `aria-expanded`, `aria-controls`). In the
-`asChild` path, these are merged via `mergeProps` and forwarded to the child
-element (typically a Nimbus `Button`).
+All 9 story tests and 14 docs spec tests pass.
+
+**Why the trigger uses `disabled` (not `isDisabled`):**
+
+The trigger's `asChild` path wraps children in `<chakra.button asChild>`.
+Chakra's `asChild` mechanism strips non-DOM props — so `isDisabled` (a React
+Aria prop present in `useDisclosure`'s `buttonProps`) never reaches the child
+component. The trigger works around this by explicitly passing
+`{ disabled: isDisabled }` in `mergeProps`. The native HTML `disabled` attribute
+survives Chakra's filtering and natively disables the button at the browser
+level.
+
+This is a Chakra `asChild` limitation, not a Button issue. A `disabled` →
+`isDisabled` mapping on Button was considered and rejected — it would special-
+case one native HTML attribute without a principled reason to do so for all of
+them. The trigger's workaround is sufficient.
 
 **Key finding:** Using the Nimbus Button _internally_ in the trigger (replacing
 the current `RaButton` from `react-aria-components`) would be problematic — it
@@ -455,13 +450,9 @@ them). The current architecture is correct:
 - **`asChild` path:** Consumer provides their own element (typically Nimbus
   `Button`) via composition
 
-All 9 collapsible-motion story tests and 14 docs spec tests pass with the Button
-changes.
-
 ### All tests pass
 
 - Button: 13/13 stories pass (including `EventHandlersFireOnce`)
-- Button unit tests: all pass (including new `disabled` prop tests)
 - DataTable: 25/25 stories pass (including Nested Table and Row Pinning)
 - CollapsibleMotion: 9/9 stories + 14/14 docs specs pass
 
