@@ -13,7 +13,12 @@ import type { ButtonProps } from "./button.types.ts";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
  */
 const ButtonComponent = (props: ButtonProps) => {
-  const { ref: forwardedRef, as, asChild, children, ...rest } = props;
+  const { ref: forwardedRef, as, asChild, children, disabled, ...rest } = props;
+
+  // Map `disabled` to `isDisabled`, with `isDisabled` taking precedence
+  if (disabled !== undefined && rest.isDisabled === undefined) {
+    rest.isDisabled = disabled;
+  }
 
   // create a local ref (because the consumer may not provide a forwardedRef)
   const localRef = useRef<HTMLButtonElement>(null);

@@ -419,10 +419,51 @@ had no styles defined).
 — verifies `onClick`, `onPress`, `onFocus`, `onBlur`, and `onKeyDown` each fire
 exactly once per interaction.
 
+**Button `disabled` prop** (`button.tsx`, `button.types.ts`):
+
+Added support for the standard HTML `disabled` attribute. The prop maps to
+`isDisabled` internally, with `isDisabled` taking precedence if both are set.
+
+This is needed because compound components like `CollapsibleMotion.Trigger` pass
+`disabled` (the HTML attribute) via `mergeProps` when forwarding disclosure
+state to child elements. Without this mapping, `<Button disabled>` would not
+apply React Aria's disabled behavior (no `aria-disabled`, no `data-disabled`,
+press events still fire).
+
+Unit tests added:
+
+- `Supports HTML disabled prop` — direct `<Button disabled>` usage
+- `Sets disabled via ButtonContext` — disabled propagated through RA context
+- `Receives isDisabled via cloneElement` — disabled propagated via prop cloning
+
+### CollapsibleMotion compatibility
+
+Verified that `CollapsibleMotion.Trigger` works correctly with the Button fix.
+The trigger component uses `useDisclosure` from `react-aria` which returns
+`buttonProps` (including `onPress`, `aria-expanded`, `aria-controls`). In the
+`asChild` path, these are merged via `mergeProps` and forwarded to the child
+element (typically a Nimbus `Button`).
+
+**Key finding:** Using the Nimbus Button _internally_ in the trigger (replacing
+the current `RaButton` from `react-aria-components`) would be problematic — it
+would cause double React Aria processing (`useDisclosure` produces
+`onPress`/ARIA props, then `useButton` inside Nimbus Button would re-process
+them). The current architecture is correct:
+
+- **Non-`asChild` path:** Raw `RaButton` + `CollapsibleMotionTriggerSlot` —
+  minimal, unstyled trigger with proper ARIA attributes
+- **`asChild` path:** Consumer provides their own element (typically Nimbus
+  `Button`) via composition
+
+All 9 collapsible-motion story tests and 14 docs spec tests pass with the Button
+changes.
+
 ### All tests pass
 
 - Button: 13/13 stories pass (including `EventHandlersFireOnce`)
+- Button unit tests: all pass (including new `disabled` prop tests)
 - DataTable: 25/25 stories pass (including Nested Table and Row Pinning)
+- CollapsibleMotion: 9/9 stories + 14/14 docs specs pass
 
 ### Follow-up work
 
