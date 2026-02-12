@@ -9,6 +9,9 @@ catalogs:
     '@internationalized/string-compiler':
       specifier: ^3.3.0
       version: 3.3.0
+    chromatic:
+      specifier: ^15.1.0
+      version: 15.1.0
   react:
     '@chakra-ui/cli':
       specifier: ^3.32.0
@@ -230,6 +233,9 @@ importers:
       '@preconstruct/cli':
         specifier: catalog:tooling
         version: 2.8.12
+      chromatic:
+        specifier: 'catalog:'
+        version: 15.1.0
       eslint:
         specifier: catalog:tooling
         version: 9.39.2
@@ -3877,6 +3883,18 @@ packages:
 
   chroma-js@3.1.2:
     resolution: {integrity: sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==}
+
+  chromatic@15.1.0:
+    resolution: {integrity: sha512-XODNgiczeX5SpaWsCQLEwGpXrF2QVPb9bka7nHa8NQssyRRTt9EI8jVH8BRDUPcrQKqQqmXmxOy2Cq4IK1ydFQ==}
+    hasBin: true
+    peerDependencies:
+      '@chromatic-com/cypress': ^0.*.* || ^1.0.0
+      '@chromatic-com/playwright': ^0.*.* || ^1.0.0
+    peerDependenciesMeta:
+      '@chromatic-com/cypress':
+        optional: true
+      '@chromatic-com/playwright':
+        optional: true
 
   ci-info@3.9.0:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
@@ -11307,6 +11325,8 @@ snapshots:
       readdirp: 5.0.0
 
   chroma-js@3.1.2: {}
+
+  chromatic@15.1.0: {}
 
   ci-info@3.9.0: {}
 
