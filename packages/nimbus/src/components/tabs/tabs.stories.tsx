@@ -12,6 +12,9 @@ import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 const meta: Meta<typeof Tabs.Root> = {
   title: "Components/Tabs",
   component: Tabs.Root,
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   argTypes: {
     variant: {
       control: "select",

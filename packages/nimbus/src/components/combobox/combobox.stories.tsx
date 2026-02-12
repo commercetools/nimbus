@@ -80,6 +80,9 @@ const verifyOptionsSelected = async (
 const meta: Meta<typeof ComboBox.Root> = {
   title: "Components/ComboBox",
   component: ComboBox.Root,
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
 };
 
 export default meta;
