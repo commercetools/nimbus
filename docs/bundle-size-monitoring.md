@@ -23,17 +23,15 @@ pnpm update:bundle-baseline button
 
 The script (`scripts/check-bundle-size.mjs`) does the following:
 
-1. Scans `packages/nimbus/dist/` for `index.es.js` and all `components/*.es.js`
-   files.
-2. Gzips each file (level 9) and records the byte count.
-3. Compares every file against `packages/nimbus/bundle-size-baseline.json`.
+1. Scans `packages/nimbus/dist/` for `index.es.js`, all `components/*.es.js`
+   files, and all internal chunks in `dist/chunks/`.
+2. Gzips each file (level 9) and records the byte count. Internal chunks are
+   summed into a single **aggregate** entry because their hashed filenames
+   change across builds.
+3. Compares every entry against `packages/nimbus/bundle-size-baseline.json`.
 4. Prints a table with current size, baseline size, percentage delta, and
    status.
-5. Exits with code 1 if any file exceeds the **error threshold**.
-
-Only ES module entry points are tracked. Internal chunks (hashed filenames in
-`dist/chunks/`) are excluded because they change names across builds and
-represent shared implementation details rather than public API surface.
+5. Exits with code 1 if any entry exceeds the **error threshold**.
 
 ## Thresholds
 
@@ -53,6 +51,9 @@ evolves.
   gzipped.
 - **`components/*.es.js`** — One file per component. Most are small re-export
   stubs (~120–340 B gzipped) that point into shared chunks.
+- **`chunks (aggregate)`** — The combined gzipped size of all internal chunks in
+  `dist/chunks/`. Tracked as a single sum because individual chunk filenames
+  contain content hashes that change across builds.
 
 The baseline file also records when it was last generated, so reviewers can tell
 how fresh it is.
