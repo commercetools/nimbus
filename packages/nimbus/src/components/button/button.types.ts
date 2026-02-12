@@ -4,7 +4,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react";
-import type { SemanticPalettesOnly } from "@/type-utils";
+import type { SemanticPalettesOnly, DeprecateOnClick } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -42,18 +42,20 @@ export type ButtonRootSlotProps = Omit<
 // MAIN PROPS
 // ============================================================
 
-export type ButtonProps = Omit<ButtonRootSlotProps, keyof RaButtonProps> &
-  RaButtonProps & {
-    /**
-     * Data attributes for testing or custom metadata
-     */
-    [key: `data-${string}`]: unknown;
-    /**
-     * Slot name for React Aria Components composition
-     */
-    slot?: string | null | undefined;
-    /**
-     * Ref forwarding to the button element
-     */
-    ref?: React.Ref<HTMLButtonElement>;
-  };
+export type ButtonProps = DeprecateOnClick<
+  Omit<ButtonRootSlotProps, keyof RaButtonProps> &
+    RaButtonProps & {
+      /**
+       * Data attributes for testing or custom metadata
+       */
+      [key: `data-${string}`]: unknown;
+      /**
+       * Slot name for React Aria Components composition
+       */
+      slot?: string | null | undefined;
+      /**
+       * Ref forwarding to the button element
+       */
+      ref?: React.Ref<HTMLButtonElement>;
+    }
+>;

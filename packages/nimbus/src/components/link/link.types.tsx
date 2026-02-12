@@ -4,6 +4,7 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react";
 import type { AriaLinkOptions } from "react-aria";
+import type { DeprecateOnClick } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -42,13 +43,15 @@ type LinkVariantProps = Omit<
 // MAIN PROPS
 // ============================================================
 
-export type LinkProps = LinkVariantProps & {
-  /**
-   * Content to display inside the link
-   */
-  children?: React.ReactNode;
-  /**
-   * Ref forwarding to the anchor element
-   */
-  ref?: React.Ref<HTMLAnchorElement>;
-};
+export type LinkProps = DeprecateOnClick<
+  LinkVariantProps & {
+    /**
+     * Content to display inside the link
+     */
+    children?: React.ReactNode;
+    /**
+     * Ref forwarding to the anchor element
+     */
+    ref?: React.Ref<HTMLAnchorElement>;
+  }
+>;

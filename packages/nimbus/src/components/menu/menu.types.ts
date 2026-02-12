@@ -9,7 +9,10 @@ import type {
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
 import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
-import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  OmitInternalProps,
+  DeprecateOnClick,
+} from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -62,18 +65,17 @@ export type MenuRootProps = Omit<RaMenuTriggerProps, "trigger" | "children"> &
   };
 
 // Menu trigger component
-export type MenuTriggerProps = OmitInternalProps<
-  MenuTriggerSlotProps,
-  keyof RaButtonProps
-> &
-  RaButtonProps & {
-    /**
-     * When true, the trigger will not render its own button element.
-     * Instead, it will pass props to its child element.
-     */
-    asChild?: boolean;
-    ref?: Ref<HTMLButtonElement>;
-  };
+export type MenuTriggerProps = DeprecateOnClick<
+  OmitInternalProps<MenuTriggerSlotProps, keyof RaButtonProps> &
+    RaButtonProps & {
+      /**
+       * When true, the trigger will not render its own button element.
+       * Instead, it will pass props to its child element.
+       */
+      asChild?: boolean;
+      ref?: Ref<HTMLButtonElement>;
+    }
+>;
 
 // Menu content/popover component
 export type MenuContentProps = {

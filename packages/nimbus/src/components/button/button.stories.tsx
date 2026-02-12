@@ -358,6 +358,8 @@ export const EventHandlersFireOnce: Story = {
     onPress: fn(),
     onFocus: fn(),
     onBlur: fn(),
+    onKeyDown: fn(),
+    onPointerDown: fn(),
     children: "Click Me",
     ["data-testid"]: "event-test",
   },
@@ -378,6 +380,10 @@ export const EventHandlersFireOnce: Story = {
       await expect(args.onFocus).toHaveBeenCalledTimes(1);
     });
 
+    await step("onPointerDown fires exactly once per click", async () => {
+      await expect(args.onPointerDown).toHaveBeenCalledTimes(1);
+    });
+
     await step("onBlur fires exactly once after blur", async () => {
       await userEvent.tab(); // move focus away
       await expect(args.onBlur).toHaveBeenCalledTimes(1);
@@ -389,8 +395,18 @@ export const EventHandlersFireOnce: Story = {
         await userEvent.click(button);
         await expect(args.onClick).toHaveBeenCalledTimes(2);
         await expect(args.onPress).toHaveBeenCalledTimes(2);
+        await expect(args.onPointerDown).toHaveBeenCalledTimes(2);
       }
     );
+
+    await step("onKeyDown fires exactly once per keypress", async () => {
+      // onKeyDown accumulated calls from earlier interactions (tab, etc.)
+      const countBefore = (args.onKeyDown as ReturnType<typeof fn>).mock.calls
+        .length;
+      button.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(args.onKeyDown).toHaveBeenCalledTimes(countBefore + 1);
+    });
   },
 };
 

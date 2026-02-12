@@ -7,7 +7,10 @@ import type {
   ButtonProps as RaButtonProps,
 } from "react-aria-components";
 // TODO: this needs to be an @/ import
-import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type {
+  OmitInternalProps,
+  DeprecateOnClick,
+} from "../../type-utils/omit-props";
 
 // ============================================================
 // RECIPE PROPS
@@ -58,14 +61,14 @@ export type AccordionItemProps = OmitInternalProps<
  * Props for the Accordion.Header component.
  * Displays the clickable header that expands/collapses content.
  */
-export type AccordionHeaderProps = OmitInternalProps<
-  RaButtonProps & HTMLChakraProps<"div">
-> & {
-  /** The header content to display */
-  children: ReactNode;
-  /** Ref to the header element */
-  ref?: Ref<HTMLButtonElement>;
-};
+export type AccordionHeaderProps = DeprecateOnClick<
+  OmitInternalProps<RaButtonProps & HTMLChakraProps<"div">> & {
+    /** The header content to display */
+    children: ReactNode;
+    /** Ref to the header element */
+    ref?: Ref<HTMLButtonElement>;
+  }
+>;
 
 /**
  * Props for the Accordion.Content component.

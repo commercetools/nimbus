@@ -1,6 +1,6 @@
 import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-components";
-import type { SemanticPalettesOnly } from "@/type-utils";
+import type { SemanticPalettesOnly, DeprecateOnClick } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -43,13 +43,12 @@ type ExcludedProps = "css" | "colorScheme" | "recipe" | "as" | "asChild";
 // MAIN PROPS
 // ============================================================
 
-export type ToggleButtonProps = Omit<
-  ToggleButtonRootSlotProps,
-  keyof RaToggleButtonProps | ExcludedProps
-> &
-  RaToggleButtonProps & {
-    /**
-     * Ref forwarding to the button element
-     */
-    ref?: React.Ref<HTMLButtonElement>;
-  };
+export type ToggleButtonProps = DeprecateOnClick<
+  Omit<ToggleButtonRootSlotProps, keyof RaToggleButtonProps | ExcludedProps> &
+    RaToggleButtonProps & {
+      /**
+       * Ref forwarding to the button element
+       */
+      ref?: React.Ref<HTMLButtonElement>;
+    }
+>;
