@@ -52,7 +52,7 @@ Use the **DataTable** component when you need **interactive data management feat
 
 **Use the Table component when you:**
 - Display static reference data (specifications, comparisons, pricing)
-- Have small datasets (fewer than 50 rows)
+- Have small datasets (between 10 - 20 rows)
 - Don't need sorting, filtering, or selection
 - Want a straightforward implementation without state management
 
@@ -71,8 +71,8 @@ Use the **DataTable** component when you need **interactive data management feat
 ```tsx
 // ✗ Avoid - Overkill for static data
 <DataTable
-  columns={specColumns}
-  rows={productSpecs}
+  columns={threeStaticColumns}
+  rows={fiveStaticRows}
 />
 
 // ✓ Better - Use Table for static content
@@ -1187,14 +1187,13 @@ application-specific logic.
 
 {{docs-tests: data-table.docs.spec.tsx}}
 
+
 ## Resources
-
-### Related components
-
-- **[Table Component](/components/data-display/table)** - Use the simpler Table component for static, read-only data without interactive features
-
-### External documentation
 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-datatable--docs)
 - [React Aria Table](https://react-spectrum.adobe.com/react-aria/Table.html)
 - [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+
+**Related components**
+
+- **[Table Component](/components/data-display/table)** - Use the simpler Table component for static, read-only data without interactive features
