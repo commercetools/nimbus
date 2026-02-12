@@ -6,6 +6,7 @@ catalogMode: strict
 
 catalogs:
   tooling:
+    chromatic: ^15.1.0
     "@fission-ai/openspec": ^1.2.0
     eslint-plugin-react-hooks: ^7.0.1
     globals: ^17.4.0
