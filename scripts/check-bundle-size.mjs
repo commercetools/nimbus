@@ -81,6 +81,17 @@ function collectFiles() {
     }
   }
 
+  // Internal chunks (tracked as aggregate)
+  const chunksDir = join(DIST, "chunks");
+  if (existsSync(chunksDir)) {
+    const chunkPaths = readdirSync(chunksDir)
+      .filter((file) => file.endsWith(".es.js"))
+      .map((file) => join(chunksDir, file));
+    if (chunkPaths.length > 0) {
+      files["chunks (aggregate)"] = chunkPaths;
+    }
+  }
+
   return files;
 }
 
@@ -90,8 +101,12 @@ function collectFiles() {
 
 function measureFiles(filePaths) {
   const sizes = {};
-  for (const [key, fullPath] of Object.entries(filePaths)) {
-    sizes[key] = gzipSize(fullPath);
+  for (const [key, value] of Object.entries(filePaths)) {
+    if (Array.isArray(value)) {
+      sizes[key] = value.reduce((sum, p) => sum + gzipSize(p), 0);
+    } else {
+      sizes[key] = gzipSize(value);
+    }
   }
   return sizes;
 }

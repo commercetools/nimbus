@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-10T16:03:36.603Z",
+  "generated": "2026-02-12T18:37:39.804Z",
   "files": {
     "index.es.js": 7247,
     "components/accordion.es.js": 212,
@@ -81,6 +81,7 @@
     "components/toolbar.es.js": 126,
     "components/tooltip.es.js": 177,
     "components/utils.es.js": 9833,
-    "components/visually-hidden.es.js": 137
+    "components/visually-hidden.es.js": 137,
+    "chunks (aggregate)": 406029
   }
 }
