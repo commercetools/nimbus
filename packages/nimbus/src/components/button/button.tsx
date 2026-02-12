@@ -40,7 +40,7 @@ const ButtonComponent = (props: ButtonProps) => {
     contextRef
   );
 
-  const componentProps = mergeProps(contextProps, buttonProps, {
+  const componentProps = mergeProps(buttonProps, {
     as,
     asChild,
     /**
@@ -55,8 +55,8 @@ const ButtonComponent = (props: ButtonProps) => {
     <ButtonRoot
       ref={contextRef}
       {...componentProps}
-      aria-disabled={componentProps.isDisabled || undefined}
-      data-disabled={componentProps.isDisabled || undefined}
+      aria-disabled={contextProps.isDisabled || undefined}
+      data-disabled={contextProps.isDisabled || undefined}
     >
       {children}
     </ButtonRoot>

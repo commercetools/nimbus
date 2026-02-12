@@ -348,6 +348,63 @@ export const SmokeTest: Story = {
 };
 
 /**
+ * Verifies that each event handler fires exactly once per interaction,
+ * guarding against the double-firing bug where mergeProps could combine
+ * both the original and React Aria-processed handlers.
+ */
+export const EventHandlersFireOnce: Story = {
+  args: {
+    onClick: fn(),
+    onPress: fn(),
+    onFocus: fn(),
+    onBlur: fn(),
+    onKeyDown: fn(),
+    children: "Click Me",
+    ["data-testid"]: "event-test",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("event-test");
+
+    await step("onClick fires exactly once per click", async () => {
+      await userEvent.click(button);
+      await expect(args.onClick).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onPress fires exactly once per click", async () => {
+      await expect(args.onPress).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onFocus fires exactly once after click", async () => {
+      await expect(args.onFocus).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onBlur fires exactly once after blur", async () => {
+      await userEvent.tab(); // move focus away
+      await expect(args.onBlur).toHaveBeenCalledTimes(1);
+    });
+
+    await step(
+      "A second click increments all counts to exactly 2",
+      async () => {
+        await userEvent.click(button);
+        await expect(args.onClick).toHaveBeenCalledTimes(2);
+        await expect(args.onPress).toHaveBeenCalledTimes(2);
+      }
+    );
+
+    await step("onKeyDown fires exactly once per keypress", async () => {
+      // onKeyDown accumulated calls from earlier interactions (tab, etc.)
+      const countBefore = (args.onKeyDown as ReturnType<typeof fn>).mock.calls
+        .length;
+      button.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(args.onKeyDown).toHaveBeenCalledTimes(countBefore + 1);
+    });
+  },
+};
+
+/**
  * Demonstrates Button consuming context from React Aria's ButtonContext.
  * This validates the useContextProps integration.
  */
