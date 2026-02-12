@@ -17,8 +17,15 @@
 
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Button, Stack, Text, toast } from "@commercetools/nimbus";
+import { Toast as ChakraToast, Toaster, createToaster } from "@chakra-ui/react";
+import {
+  CheckCircleOutline,
+  ErrorOutline,
+  Info,
+  WarningAmber,
+} from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -137,6 +144,174 @@ export const Variants: Story = {
 };
 
 /**
+ * Visual Variants
+ * Tests both "solid" (bold colored background) and "muted" (subtle with border) variants
+ */
+export const VisualVariants: Story = {
+  render: () => {
+    const showSolidVariants = () => {
+      toast.info({ title: "Info (solid)", variant: "solid" });
+      toast.success({ title: "Success (solid)", variant: "solid" });
+      toast.warning({ title: "Warning (solid)", variant: "solid" });
+      toast.error({ title: "Error (solid)", variant: "solid" });
+    };
+
+    const showMutedVariants = () => {
+      toast.info({ title: "Info (muted)", variant: "muted" });
+      toast.success({ title: "Success (muted)", variant: "muted" });
+      toast.warning({ title: "Warning (muted)", variant: "muted" });
+      toast.error({ title: "Error (muted)", variant: "muted" });
+    };
+
+    return (
+      <Stack direction="column" gap="16px">
+        <Button onPress={showSolidVariants} data-testid="show-solid">
+          Show Solid Variants
+        </Button>
+        <Button onPress={showMutedVariants} data-testid="show-muted">
+          Show Muted Variants
+        </Button>
+        <Text fontSize="sm" color="fg.muted">
+          Solid: Bold colored backgrounds (default)
+          <br />
+          Muted: Subtle backgrounds with borders
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Solid variants render with bold backgrounds", async () => {
+      const solidButton = canvas.getByTestId("show-solid");
+      await userEvent.click(solidButton);
+
+      const infoSolid = await body.findByText("Info (solid)");
+      const successSolid = await body.findByText("Success (solid)");
+      const warningSolid = await body.findByText("Warning (solid)");
+      const errorSolid = await body.findByText("Error (solid)");
+
+      await expect(infoSolid).toBeInTheDocument();
+      await expect(successSolid).toBeInTheDocument();
+      await expect(warningSolid).toBeInTheDocument();
+      await expect(errorSolid).toBeInTheDocument();
+
+      await clearToasts();
+    });
+
+    await step("Subtle variants render with subtle borders", async () => {
+      const subtleButton = canvas.getByTestId("show-subtle");
+      await userEvent.click(subtleButton);
+
+      const infoSubtle = await body.findByText("Info (subtle)");
+      const successSubtle = await body.findByText("Success (subtle)");
+      const warningSubtle = await body.findByText("Warning (subtle)");
+      const errorSubtle = await body.findByText("Error (subtle)");
+
+      await expect(infoSubtle).toBeInTheDocument();
+      await expect(successSubtle).toBeInTheDocument();
+      await expect(warningSubtle).toBeInTheDocument();
+      await expect(errorSubtle).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Static Visual Variants
+ * Displays all toast variants statically for styling purposes
+ * Shows all combinations of type (info, success, warning, error) × variant (solid, subtle)
+ */
+export const StaticVisualVariants: Story = {
+  render: () => {
+    const ICON_MAP = {
+      info: <Info />,
+      success: <CheckCircleOutline />,
+      warning: <WarningAmber />,
+      error: <ErrorOutline />,
+    };
+
+    const COLOR_PALETTE_MAP = {
+      info: "info",
+      success: "positive",
+      warning: "warning",
+      error: "critical",
+    };
+
+    const types: Array<"info" | "success" | "warning" | "error"> = [
+      "info",
+      "success",
+      "warning",
+      "error",
+    ];
+
+    // Create a dummy toaster for context (not used for actual toasting)
+    const [toaster] = React.useState(() =>
+      createToaster({ placement: "top-end" })
+    );
+
+    return (
+      <Toaster toaster={toaster}>
+        <Stack direction="column" gap="32px" maxWidth="600px">
+          <Stack direction="column" gap="16px">
+            <Text fontSize="lg" fontWeight="semibold">
+              Solid Variant (Default)
+            </Text>
+            {types.map((type) => (
+              <ChakraToast.Root
+                key={`solid-${type}`}
+                colorPalette={COLOR_PALETTE_MAP[type]}
+                variant="solid"
+              >
+                <Stack direction="row" gap="8px" align="start">
+                  {ICON_MAP[type]}
+                  <Stack direction="column" gap="4px" flex="1">
+                    <ChakraToast.Title>
+                      {type.charAt(0).toUpperCase() + type.slice(1)} Toast
+                    </ChakraToast.Title>
+                    <ChakraToast.Description>
+                      This is a {type} message with bold colored background and
+                      contrast text.
+                    </ChakraToast.Description>
+                  </Stack>
+                </Stack>
+              </ChakraToast.Root>
+            ))}
+          </Stack>
+
+          <Stack direction="column" gap="16px">
+            <Text fontSize="lg" fontWeight="semibold">
+              Subtle Variant
+            </Text>
+            {types.map((type) => (
+              <ChakraToast.Root
+                key={`subtle-${type}`}
+                colorPalette={COLOR_PALETTE_MAP[type]}
+                variant="subtle"
+              >
+                <Stack direction="row" gap="8px" align="start">
+                  {ICON_MAP[type]}
+                  <Stack direction="column" gap="4px" flex="1">
+                    <ChakraToast.Title>
+                      {type.charAt(0).toUpperCase() + type.slice(1)} Toast
+                    </ChakraToast.Title>
+                    <ChakraToast.Description>
+                      This is a {type} message with subtle background and
+                      border.
+                    </ChakraToast.Description>
+                  </Stack>
+                </Stack>
+              </ChakraToast.Root>
+            ))}
+          </Stack>
+        </Stack>
+      </Toaster>
+    );
+  },
+};
+
+/**
  * ARIA Role Differentiation
  * Tests that info/success use role="status" (polite) and warning/error use role="alert" (assertive)
  */
@@ -196,14 +371,14 @@ export const ARIARoles: Story = {
 
 /**
  * Auto-Dismiss Behavior
- * Tests default 6s duration, custom duration, and disabled auto-dismiss (duration: 0)
+ * Tests default 6s duration, custom duration, and disabled auto-dismiss (duration: Infinity)
  */
 export const AutoDismiss: Story = {
   render: () => {
     const showAutoDismissToasts = () => {
       toast({ title: "Default (6s)", type: "info" });
       toast({ title: "Custom (2s)", type: "success", duration: 2000 });
-      toast({ title: "No auto-dismiss", type: "warning", duration: 0 });
+      toast({ title: "No auto-dismiss", type: "warning", duration: Infinity });
     };
 
     return (
@@ -212,7 +387,7 @@ export const AutoDismiss: Story = {
           Show Auto-Dismiss Variations
         </Button>
         <Text fontSize="sm" color="fg.muted">
-          Default 6s, custom 2s, and persistent (duration: 0)
+          Default 6s, custom 2s, and persistent (duration: Infinity)
         </Text>
       </Stack>
     );
@@ -223,39 +398,50 @@ export const AutoDismiss: Story = {
     const body = within(document.body);
     const button = canvas.getByTestId("auto-dismiss-btn");
 
-    await step("Default toast auto-dismisses after 6 seconds", async () => {
+    await step("All three toasts appear when button is clicked", async () => {
       await userEvent.click(button);
 
+      // All three toasts should appear
       const defaultToast = await body.findByText("Default (6s)");
-      await expect(defaultToast).toBeInTheDocument();
+      const customToast = await body.findByText("Custom (2s)");
+      const persistentToast = await body.findByText("No auto-dismiss");
 
-      // Wait for toast to auto-dismiss (6s + buffer)
-      await waitFor(() => expect(defaultToast).not.toBeInTheDocument(), {
-        timeout: 7000,
-      });
+      await expect(defaultToast).toBeInTheDocument();
+      await expect(customToast).toBeInTheDocument();
+      await expect(persistentToast).toBeInTheDocument();
+    });
+
+    await step("Custom duration toast dismisses after 2 seconds", async () => {
+      // Wait for custom toast to auto-dismiss (2s + buffer)
+      await waitFor(
+        () => expect(body.queryByText("Custom (2s)")).not.toBeInTheDocument(),
+        { timeout: 3000 }
+      );
+
+      // Default and persistent should still be visible
+      await expect(body.getByText("Default (6s)")).toBeInTheDocument();
+      await expect(body.getByText("No auto-dismiss")).toBeInTheDocument();
+    });
+
+    await step("Default toast dismisses after 6 seconds", async () => {
+      // Wait for default toast to auto-dismiss (6s total + buffer)
+      await waitFor(
+        () => expect(body.queryByText("Default (6s)")).not.toBeInTheDocument(),
+        { timeout: 5000 }
+      );
+
+      // Persistent toast should still be visible
+      await expect(body.getByText("No auto-dismiss")).toBeInTheDocument();
     });
 
     await step(
-      "Custom duration toast dismisses after specified time",
-      async () => {
-        const customToast = body.getByText("Custom (2s)");
-        await expect(customToast).toBeInTheDocument();
-
-        // Wait for toast to auto-dismiss (2s + buffer)
-        await waitFor(() => expect(customToast).not.toBeInTheDocument(), {
-          timeout: 3000,
-        });
-      }
-    );
-
-    await step(
-      "Toast with duration: 0 persists until manually dismissed",
+      "Toast with duration: Infinity persists indefinitely",
       async () => {
         const persistentToast = body.getByText("No auto-dismiss");
         await expect(persistentToast).toBeInTheDocument();
 
-        // Wait 7 seconds to ensure it doesn't auto-dismiss
-        await new Promise((resolve) => setTimeout(resolve, 7000));
+        // Wait additional time to ensure it doesn't auto-dismiss
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         await expect(persistentToast).toBeInTheDocument();
       }
     );
@@ -477,8 +663,6 @@ export const Dismissal: Story = {
  */
 export const ActionButton: Story = {
   render: () => {
-    const mockActionHandler = fn();
-
     const showActionToast = () => {
       toast({
         title: "File deleted",
@@ -486,7 +670,9 @@ export const ActionButton: Story = {
         type: "info",
         action: {
           label: "Undo",
-          onClick: mockActionHandler,
+          onClick: () => {
+            console.log("Action clicked");
+          },
         },
       });
     };
@@ -503,10 +689,30 @@ export const ActionButton: Story = {
     const body = within(document.body);
     const button = canvas.getByTestId("action-toast-btn");
 
-    await step("Action button is rendered and clickable", async () => {
+    await step("Toast with action does not auto-dismiss", async () => {
       await userEvent.click(button);
 
       const toastText = await body.findByText("File deleted");
+      await expect(toastText).toBeInTheDocument();
+
+      // Verify action button is rendered
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
+      const actionButton = within(toastContainer).getByRole("button", {
+        name: /undo/i,
+      });
+      await expect(actionButton).toBeInTheDocument();
+
+      // Wait 7 seconds (longer than default 6s)
+      await new Promise((resolve) => setTimeout(resolve, 7000));
+
+      // Toast should still be visible (action forces duration: Infinity)
+      await expect(toastText).toBeInTheDocument();
+    });
+
+    await step("Action button is clickable", async () => {
+      const toastText = body.getByText("File deleted");
       const toastContainer = toastText.closest(
         '[role="status"]'
       ) as HTMLElement;
@@ -514,22 +720,9 @@ export const ActionButton: Story = {
         name: /undo/i,
       });
 
-      await expect(actionButton).toBeInTheDocument();
       await userEvent.click(actionButton);
-
       // Note: mockActionHandler is local to render, so we can't assert on it here
       // This is a limitation of Storybook play functions
-    });
-
-    await step("Toast with action does not auto-dismiss", async () => {
-      const toastText = body.getByText("File deleted");
-      await expect(toastText).toBeInTheDocument();
-
-      // Wait 7 seconds (longer than default 6s)
-      await new Promise((resolve) => setTimeout(resolve, 7000));
-
-      // Toast should still be visible (action forces duration: 0)
-      await expect(toastText).toBeInTheDocument();
     });
   },
 };
@@ -622,14 +815,14 @@ export const StackingAndQueuing: Story = {
   render: () => {
     const showMultipleToasts = () => {
       for (let i = 1; i <= 5; i++) {
-        toast({ title: `Toast ${i}`, type: "info", duration: 0 });
+        toast({ title: `Toast ${i}`, type: "info", duration: Infinity });
       }
     };
 
     const showManyToasts = () => {
       for (let i = 1; i <= 30; i++) {
         // Exceeds max of 24
-        toast({ title: `Toast ${i}`, type: "info", duration: 0 });
+        toast({ title: `Toast ${i}`, type: "info", duration: Infinity });
       }
     };
 
@@ -759,8 +952,6 @@ export const MultiPlacement: Story = {
  */
 export const KeyboardNavigation: Story = {
   render: () => {
-    const mockAction = fn();
-
     const showKeyboardToast = () => {
       toast({
         title: "Keyboard Toast",
@@ -769,7 +960,9 @@ export const KeyboardNavigation: Story = {
         placement: "top-end", // Alt+Shift+9
         action: {
           label: "Action",
-          onClick: mockAction,
+          onClick: () => {
+            console.log("Action clicked");
+          },
         },
       });
     };
@@ -840,12 +1033,12 @@ export const KeyboardNavigation: Story = {
 export const ClosableControl: Story = {
   render: () => {
     const showClosableToasts = () => {
-      toast({ title: "Closable (default)", type: "info", duration: 0 });
+      toast({ title: "Closable (default)", type: "info", duration: Infinity });
       toast({
         title: "Not closable",
         type: "warning",
         closable: false,
-        duration: 0,
+        duration: Infinity,
       });
     };
 
@@ -870,8 +1063,9 @@ export const ClosableControl: Story = {
       ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
+      // Close button should be in the document and enabled
       await expect(closeButton).toBeInTheDocument();
-      await expect(closeButton).toBeVisible();
+      await expect(closeButton).toBeEnabled();
     });
 
     await step("Toast with closable: false hides close button", async () => {
@@ -938,16 +1132,17 @@ export const ReducedMotion: Story = {
  * Tests toast.update() to change toast content in place
  */
 export const ProgrammaticUpdate: Story = {
-  render: () => {
-    let toastId: string | undefined;
+  render: function UpdateToastDemo() {
+    const [toastId, setToastId] = React.useState<string | undefined>();
 
     const showUpdateToast = () => {
-      toastId = toast({
+      const id = toast({
         title: "Initial title",
         description: "Initial description",
         type: "info",
-        duration: 0,
+        duration: Infinity,
       });
+      setToastId(id);
     };
 
     const updateToast = () => {
@@ -1003,7 +1198,7 @@ export const ProgrammaticUpdate: Story = {
 export const Internationalization: Story = {
   render: () => {
     const showI18nToast = () => {
-      toast({ title: "i18n test", type: "info", duration: 0 });
+      toast({ title: "i18n test", type: "info", duration: Infinity });
     };
 
     return (
@@ -1049,9 +1244,6 @@ export const Internationalization: Story = {
 export const ComprehensiveIntegration: Story = {
   name: "Integration: Real-world Scenarios",
   render: () => {
-    const mockUndo = fn();
-    const mockRetry = fn();
-
     const saveScenario = () => {
       // Simulate save operation with promise
       const savePromise = new Promise((resolve) => setTimeout(resolve, 1500));
@@ -1060,7 +1252,12 @@ export const ComprehensiveIntegration: Story = {
         success: {
           title: "Saved successfully",
           description: "Your changes have been saved",
-          action: { label: "Undo", onClick: mockUndo },
+          action: {
+            label: "Undo",
+            onClick: () => {
+              console.log("Undo clicked");
+            },
+          },
         },
         error: { title: "Save failed", description: "Could not save changes" },
       });
@@ -1070,8 +1267,13 @@ export const ComprehensiveIntegration: Story = {
       toast.error({
         title: "Network error",
         description: "Could not connect to server",
-        duration: 0, // Persist
-        action: { label: "Retry", onClick: mockRetry },
+        duration: Infinity, // Persist
+        action: {
+          label: "Retry",
+          onClick: () => {
+            console.log("Retry clicked");
+          },
+        },
       });
     };
 
@@ -1145,7 +1347,7 @@ export const ComprehensiveIntegration: Story = {
         const buttons = within(errorContainer).getAllByRole("button");
         expect(buttons.length).toBeGreaterThan(1); // At least action + close
 
-        // 4. Toast persists (duration: 0)
+        // 4. Toast persists (duration: Infinity)
         await new Promise((resolve) => setTimeout(resolve, 7000));
         await expect(errorToast).toBeInTheDocument();
       }

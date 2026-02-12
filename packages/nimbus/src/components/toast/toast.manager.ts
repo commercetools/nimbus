@@ -27,7 +27,7 @@ const VALID_PLACEMENTS: ToastPlacement[] = [
  * - ID-to-placement routing: Tracks which toast ID belongs to which placement
  * - Convenience methods: info(), success(), warning(), error() methods
  * - Promise support: promise() method that transitions loading → success/error
- * - Action→duration:0 enforcement: If action is provided, force duration: 0
+ * - Action→duration:Infinity enforcement: If action is provided, force duration: Infinity
  */
 class ToastManager implements IToastManager {
   private static instance: ToastManager;
@@ -69,10 +69,10 @@ class ToastManager implements IToastManager {
       throw new Error(`Toaster not found for placement: ${placement}`);
     }
 
-    // Enforce duration: 0 when action is provided (toasts with actions should not auto-dismiss)
+    // Enforce duration: Infinity when action is provided (toasts with actions should not auto-dismiss)
     const duration =
       safeOptions.action !== undefined
-        ? 0
+        ? Infinity
         : safeOptions.duration !== undefined
           ? safeOptions.duration
           : DEFAULT_DURATION;
@@ -83,6 +83,7 @@ class ToastManager implements IToastManager {
       pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
         closable: safeOptions.closable ?? true,
+        variant: safeOptions.variant ?? "solid",
         ...safeOptions.meta,
       },
     };
@@ -206,6 +207,10 @@ const manager = ToastManager.getInstance();
  * toast.success({ title: "Success" });
  * toast.warning({ title: "Warning" });
  * toast.error({ title: "Error" });
+ *
+ * // With variant (default is "solid")
+ * toast.info({ title: "Muted info", variant: "muted" });
+ * toast.success({ title: "Bold success", variant: "solid" });
  *
  * // With action button
  * toast({

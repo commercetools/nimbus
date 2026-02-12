@@ -13,6 +13,7 @@ import {
   Clear,
 } from "@commercetools/nimbus-icons";
 import { IconButton } from "../icon-button";
+import { Button } from "../button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { toastMessagesStrings } from "./toast.messages";
 import { toasters } from "./toast.toasters";
@@ -54,6 +55,7 @@ function ToastContent({
   const styles = useToastStyles();
   const msg = useLocalizedStringFormatter(toastMessagesStrings);
   const type = (toast.type as ToastType) || "info";
+  const variant = (toast.meta?.variant as "solid" | "subtle") || "solid";
   const closable =
     toast.meta?.closable !== undefined
       ? (toast.meta.closable as boolean)
@@ -70,20 +72,23 @@ function ToastContent({
       )}
 
       {toast.action && (
-        <ChakraToast.ActionTrigger
-          onClick={() => {
-            const action = toast.action as {
-              label?: string;
-              onClick?: () => void;
-            };
-            action.onClick?.();
-          }}
-        >
-          {typeof toast.action === "object" &&
-          toast.action &&
-          "label" in toast.action
-            ? String(toast.action.label)
-            : "Action"}
+        <ChakraToast.ActionTrigger asChild>
+          <Button
+            variant={variant === "solid" ? "solid" : "subtle"}
+            onPress={() => {
+              const action = toast.action as {
+                label?: string;
+                onClick?: () => void;
+              };
+              action.onClick?.();
+            }}
+          >
+            {typeof toast.action === "object" &&
+            toast.action &&
+            "label" in toast.action
+              ? String(toast.action.label)
+              : "Action"}
+          </Button>
         </ChakraToast.ActionTrigger>
       )}
 
@@ -91,7 +96,7 @@ function ToastContent({
         <chakra.div css={styles.closeTrigger}>
           <IconButton
             aria-label={msg.format("dismiss")}
-            variant="solid"
+            variant={variant === "solid" ? "solid" : "ghost"}
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}
           >
@@ -133,10 +138,13 @@ export function ToastOutlet() {
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
             const type = (toast.type as ToastType) || "info";
+            const variant =
+              (toast.meta?.variant as "solid" | "subtle") || "solid";
 
             return (
               <ChakraToast.Root
                 colorPalette={COLOR_PALETTE_MAP[type]}
+                variant={variant}
                 {...getARIAAttributes(type)}
               >
                 <ToastContent toast={toast} toaster={toaster} />

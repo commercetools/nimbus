@@ -12,6 +12,10 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * - success → positive (green)
  * - warning → warning (amber)
  * - error → critical (red)
+ *
+ * Variants:
+ * - solid: Bold colored background with contrast text (default)
+ * - subtle: Subtle background with border
  */
 export const toastRecipe = defineSlotRecipe({
   slots: [
@@ -35,12 +39,8 @@ export const toastRecipe = defineSlotRecipe({
       minWidth: "320px",
       maxWidth: "560px",
       alignItems: "start",
-      backgroundColor: "colorPalette.9",
-      px: "400",
-      py: "300",
       borderRadius: "200",
       boxShadow: "md",
-      focusRing: "outside",
       // Animation styles consuming Ark UI's CSS custom properties
       pointerEvents: "auto",
       translate: "var(--x) var(--y)",
@@ -64,35 +64,77 @@ export const toastRecipe = defineSlotRecipe({
       "& svg": {
         width: "500",
         height: "500",
-        color: "colorPalette.contrast",
       },
     },
     title: {
       gridColumn: "2",
       order: "1",
-      color: "colorPalette.contrast",
       textStyle: "lg",
-      fontWeight: "600",
     },
     description: {
       gridColumn: "2",
       order: "2",
-      color: "colorPalette.contrast",
     },
     actionTrigger: {
       gridColumn: "2",
       order: "3",
       justifySelf: "start",
-      color: "colorPalette.contrast",
-      textDecoration: "underline",
-      cursor: "pointer",
     },
     closeTrigger: {
       gridColumn: "3",
       gridRow: "1",
-      color: "colorPalette.contrast",
     },
   },
 
-  variants: {},
+  variants: {
+    variant: {
+      solid: {
+        root: {
+          backgroundColor: "colorPalette.9",
+          px: "400",
+          py: "300",
+          focusRing: "outside",
+        },
+        indicator: {
+          "& svg": {
+            color: "colorPalette.contrast",
+          },
+        },
+        title: {
+          color: "colorPalette.contrast",
+          fontWeight: "600",
+        },
+        description: {
+          color: "colorPalette.contrast",
+        },
+        actionTrigger: {},
+        closeTrigger: {
+          color: "colorPalette.contrast",
+        },
+      },
+      subtle: {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.5",
+          backgroundColor: "colorPalette.2",
+          padding: "200",
+        },
+        indicator: {
+          "& svg": {
+            color: "colorPalette.11",
+          },
+        },
+        title: {
+          color: "colorPalette.11",
+        },
+        description: {
+          color: "colorPalette.11",
+        },
+      },
+    },
+  },
+
+  defaultVariants: {
+    variant: "solid",
+  },
 });

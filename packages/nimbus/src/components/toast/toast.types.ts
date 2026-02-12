@@ -34,18 +34,27 @@ export interface ToastAction {
 }
 
 /**
+ * Toast visual variant.
+ * - solid: Bold colored background with contrast text (default)
+ * - subtle: Subtle background with border
+ */
+export type ToastVariant = "solid" | "subtle";
+
+/**
  * Options for creating a toast notification.
  */
 export interface ToastOptions {
   /** Toast type determines styling and ARIA role */
   type?: ToastType;
+  /** Visual variant (default: "solid") */
+  variant?: ToastVariant;
   /** Title text (required for most toasts) */
   title?: string;
   /** Description text */
   description?: string;
   /** Optional action button */
   action?: ToastAction;
-  /** Auto-dismiss duration in milliseconds (default: 6000, 0 = never) */
+  /** Auto-dismiss duration in milliseconds (default: 6000, Infinity = never) */
   duration?: number;
   /** Placement on screen (default: "top-end") */
   placement?: ToastPlacement;

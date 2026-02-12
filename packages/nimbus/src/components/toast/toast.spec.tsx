@@ -6,7 +6,7 @@
  * - ID routing to correct toaster
  * - Convenience methods (info, success, warning, error)
  * - Promise handling with state transitions
- * - Action button → duration:0 enforcement
+ * - Action button → duration:Infinity enforcement
  * - remove() vs dismiss() behavior
  * - Closable option forwarding via meta
  */
@@ -218,7 +218,7 @@ describe("ToastManager", () => {
   });
 
   describe("Action Button → Duration:0 Enforcement", () => {
-    it("Sets duration: 0 when action is provided", () => {
+    it("Sets duration: Infinity when action is provided", () => {
       toast({
         title: "Action toast",
         action: {
@@ -230,7 +230,7 @@ describe("ToastManager", () => {
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Action toast",
-          duration: 0,
+          duration: Infinity,
           action: expect.any(Object),
         })
       );
@@ -248,7 +248,7 @@ describe("ToastManager", () => {
 
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          duration: 0,
+          duration: Infinity,
         })
       );
     });
