@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "packages/nimbus/dist");
-const BASELINE_PATH = join(__dirname, "bundle-size-baseline.json");
+const BASELINE_PATH = join(ROOT, "packages/nimbus/bundle-size-baseline.json");
 
 // Thresholds (percentage increase over baseline)
 const WARN_THRESHOLD = 0.15; // 15%
@@ -266,25 +266,21 @@ function compareToBaseline(currentSizes) {
     padEnd("TOTAL", 50) +
       padStart(formatBytes(totalCurrent), 12) +
       padStart(formatBytes(totalBaseline), 12) +
-      padStart(formatDelta(totalCurrent, totalBaseline), 10)
+      padStart(formatDelta(totalCurrent, totalBaseline), 10) +
+      "\n"
   );
-  console.log();
 
   if (hasErrors) {
-    console.log(
-      `✖ FAIL: One or more files exceeded the ${(ERROR_THRESHOLD * 100).toFixed(0)}% error threshold.`
-    );
-    console.log(
-      "  If this increase is intentional, run: node scripts/check-bundle-size.mjs --update-baseline"
+    console.error(
+      `✖ FAIL: One or more files exceeded the ${(ERROR_THRESHOLD * 100).toFixed(0)}% error threshold.\n  If this increase is intentional, run: node scripts/check-bundle-size.mjs --update-baseline`
     );
     process.exit(1);
   }
 
   if (hasWarnings) {
-    console.log(
-      `⚠ WARNING: One or more files exceeded the ${(WARN_THRESHOLD * 100).toFixed(0)}% warning threshold.`
+    console.warn(
+      `⚠ WARNING: One or more files exceeded the ${(WARN_THRESHOLD * 100).toFixed(0)}% warning threshold.\n  Review the changes above to ensure they are expected.`
     );
-    console.log("  Review the changes above to ensure they are expected.\n");
   } else {
     console.log("✓ All files within acceptable size limits.\n");
   }

@@ -26,7 +26,7 @@ The script (`scripts/check-bundle-size.mjs`) does the following:
 1. Scans `packages/nimbus/dist/` for `index.es.js` and all `components/*.es.js`
    files.
 2. Gzips each file (level 9) and records the byte count.
-3. Compares every file against `scripts/bundle-size-baseline.json`.
+3. Compares every file against `packages/nimbus/bundle-size-baseline.json`.
 4. Prints a table with current size, baseline size, percentage delta, and
    status.
 5. Exits with code 1 if any file exceeds the **error threshold**.
@@ -81,7 +81,8 @@ how fresh it is.
    all other entries. You can also run `pnpm update:bundle-baseline` without a
    component name to regenerate the entire baseline.
 
-   Commit the updated `scripts/bundle-size-baseline.json` as part of your PR.
+   Commit the updated `packages/nimbus/bundle-size-baseline.json` as part of
+   your PR.
 
 ### A New Component Was Added
 
