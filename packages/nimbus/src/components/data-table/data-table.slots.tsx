@@ -71,11 +71,6 @@ export const DataTableSelectionCell = withContext<
   HTMLChakraProps<"td">
 >("td", "selectionCell");
 
-export const DataTableExpandButton = withContext<
-  HTMLButtonElement,
-  HTMLChakraProps<"button">
->("button", "expandButton");
-
 export const DataTableNestedIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">

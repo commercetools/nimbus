@@ -8,7 +8,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
-import { DataTableExpandButton, DataTableRowSlot } from "../data-table.slots";
+import { DataTableRowSlot } from "../data-table.slots";
 import type {
   DataTableRowItem,
   DataTableColumnItem,
@@ -355,15 +355,17 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
             >
               {hasNestedContent ? (
-                <DataTableExpandButton
+                // TODO:Button does not occupy the whole height
+                <IconButton
                   w="100%"
                   h="100%"
-                  cursor="pointer"
+                  unstyled
+                  borderRadius="0"
                   aria-label={isExpanded ? "Collapse" : "Expand"}
-                  onClick={() => toggleExpand(row.id)}
+                  onPress={() => toggleExpand(row.id)}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-                </DataTableExpandButton>
+                </IconButton>
               ) : null}
             </DataTableCell>
           )}

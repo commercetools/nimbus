@@ -2,9 +2,10 @@
 
 ## Status: Resolved
 
-**Date:** 2026-02-12 **PR under review:**
-[#1060](https://github.com/commercetools/nimbus/pull/1060) **Branch:**
-`CRAFT-2106-button-handlers`
+**Date:** 2026-02-12 **PR:**
+[#1061](https://github.com/commercetools/nimbus/pull/1061) (supersedes
+[#1060](https://github.com/commercetools/nimbus/pull/1060)) **Branch:**
+`fix/CRAFT-2106-button-double-firing--revision-1`
 
 ---
 
@@ -361,21 +362,33 @@ Button/IconButton in consumer or internal code, so nothing is lost.
 **Button** (`button.tsx`):
 
 ```tsx
-// Before (buggy): contextProps merged twice
+// Before (buggy): contextProps merged via mergeProps (chains handlers → double-firing)
 const componentProps = mergeProps(contextProps, buttonProps, { ... });
+<ButtonRoot {...componentProps}>
 
-// After: only buttonProps merged, contextProps.isDisabled sourced directly
+// After: contextProps spread first, componentProps spread second (JSX overwrite)
 const componentProps = mergeProps(buttonProps, {
   as, asChild,
   slot: contextProps.slot || undefined,
 });
-
-// aria-disabled/data-disabled sourced from contextProps (not componentProps)
 <ButtonRoot
+  {...contextProps}
+  {...componentProps}
   aria-disabled={contextProps.isDisabled || undefined}
   data-disabled={contextProps.isDisabled || undefined}
 >
 ```
+
+**Why JSX spread instead of `mergeProps`:**
+
+- `mergeProps` **chains** function props — both fire → double-firing
+- JSX spread **overwrites** — last one wins → only `useButton`'s processed
+  handler fires
+- `useButton`'s handlers already call the user's handlers internally (via
+  `usePress`, `useFocusable`), so the user's handler fires exactly once
+- Recipe/style props (`size`, `variant`, `colorPalette`) survive from
+  `contextProps` because `useButton` doesn't output them — they pass through to
+  `ButtonRoot` unchanged
 
 **DataTable capture handler** (`data-table.row.tsx`):
 
@@ -385,15 +398,22 @@ const componentProps = mergeProps(buttonProps, {
 
 **DataTable `onClick` → `onPress` migration:**
 
-| File                                   | Component           | Change                |
-| -------------------------------------- | ------------------- | --------------------- |
-| `data-table.row.tsx`                   | Pin IconButton      | `onClick` → `onPress` |
-| `data-table.manager.tsx`               | Settings IconButton | `onClick` → `onPress` |
-| `data-table.visible-columns-panel.tsx` | Reset Button        | `onClick` → `onPress` |
+| File                                   | Component           | Change                                        |
+| -------------------------------------- | ------------------- | --------------------------------------------- |
+| `data-table.row.tsx`                   | Pin IconButton      | `onClick` → `onPress`                         |
+| `data-table.row.tsx`                   | Expand button       | Raw Chakra slot → `IconButton` with `onPress` |
+| `data-table.manager.tsx`               | Settings IconButton | `onClick` → `onPress`                         |
+| `data-table.visible-columns-panel.tsx` | Reset Button        | `onClick` → `onPress`                         |
 
-**Note:** The expand button (`DataTableExpandButton`) stays as `onClick` — it's
-a raw Chakra `<button>` slot, not a Nimbus Button/IconButton, so `onPress`
-doesn't apply.
+**DataTable expand button replacement:**
+
+The `DataTableExpandButton` was a raw Chakra
+`withContext("button", "expandButton")` slot — a plain `<button>` element with
+no React Aria behavior. It was replaced with `IconButton` (`variant="ghost"`,
+`borderRadius="0"`, `w="100%"`, `h="100%"`) to gain proper
+`useButton`/`usePress` handling and keyboard accessibility. The `expandButton`
+slot was removed from both `data-table.slots.tsx` and `data-table.recipe.ts` (it
+had no styles defined).
 
 **Regression test:** `EventHandlersFireOnce` story added to `button.stories.tsx`
 — verifies `onClick`, `onPress`, `onFocus`, `onBlur`, and `onKeyDown` each fire
@@ -409,12 +429,3 @@ exactly once per interaction.
 - **`onClick` in docs**: The ~45 `onClick` usages across MDX docs and test files
   teach consumers the wrong pattern. A separate effort should migrate
   documentation examples to `onPress`.
-
-- **`DataTableExpandButton` should use `IconButton`**: The expand button in
-  `data-table.row.tsx` uses a raw Chakra `<button>` slot (`withContext`) instead
-  of the Nimbus `IconButton`. This means it has no `useButton`/`usePress`
-  behavior and must use `onClick` instead of `onPress`. The pin button right
-  next to it already uses `IconButton`. There's no obvious reason for the
-  inconsistency — likely an oversight from when the slot was first created.
-  Replacing it with `IconButton` would give it proper press handling, keyboard
-  accessibility, and consistency with the rest of the DataTable.

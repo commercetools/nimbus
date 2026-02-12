@@ -54,6 +54,7 @@ const ButtonComponent = (props: ButtonProps) => {
   return (
     <ButtonRoot
       ref={contextRef}
+      {...contextProps}
       {...componentProps}
       aria-disabled={contextProps.isDisabled || undefined}
       data-disabled={contextProps.isDisabled || undefined}
