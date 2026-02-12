@@ -152,7 +152,6 @@ type DataTableVariantProps = OmitInternalProps<
 // MAIN PROPS
 // ============================================================
 
-
 export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   DataTableVariantProps,
   "truncated"
@@ -206,7 +205,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
 export type DataTableHeaderProps<T extends DataTableColumnItem> =
   RaTableHeaderProps<T> &
-    DataTableHeaderSlotProps & { ref?: Ref<HTMLTableSectionElement> };
+  DataTableHeaderSlotProps & { ref?: Ref<HTMLTableSectionElement> };
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */
 export type DataTableColumnProps = RaColumnProps &
@@ -223,7 +222,7 @@ export type DataTableColumnComponent = FC<DataTableColumnProps>;
 /** Combined props for the TableBody element (Chakra styles + Aria behavior). */
 export type DataTableBodyProps<T extends DataTableRowItem> =
   RaTableBodyProps<T> &
-    DataTableBodySlotProps & { ref?: Ref<HTMLTableSectionElement> };
+  DataTableBodySlotProps & { ref?: Ref<HTMLTableSectionElement> };
 
 /** Combined props for the Row element (Chakra styles + Aria behavior). */
 export type DataTableRowProps<T extends DataTableRowItem> = RaRowProps<T> &
