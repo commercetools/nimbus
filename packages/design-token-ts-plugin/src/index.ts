@@ -15,14 +15,14 @@ function init(_modules: { typescript: typeof typescript }) {
       info: typescript.server.PluginCreateInfo
     ): typescript.LanguageService {
       info.project.projectService.logger.info(
-        "[nimbus-ts-plugin] Initializing..."
+        "[nimbus-design-token-ts-plugin] Initializing..."
       );
 
       const tokenData = loadTokenData();
 
       if (!tokenData) {
         info.project.projectService.logger.info(
-          "[nimbus-ts-plugin] Could not load token data, plugin disabled."
+          "[nimbus-design-token-ts-plugin] Could not load token data, plugin disabled."
         );
         return info.languageService;
       }
@@ -33,7 +33,7 @@ function init(_modules: { typescript: typeof typescript }) {
         0
       );
       info.project.projectService.logger.info(
-        `[nimbus-ts-plugin] Loaded ${totalTokens} tokens across ${categoryCount} categories.`
+        `[nimbus-design-token-ts-plugin] Loaded ${totalTokens} tokens across ${categoryCount} categories.`
       );
 
       return createPlugin(_modules.typescript, info, tokenData);

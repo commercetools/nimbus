@@ -30,6 +30,7 @@ function loadDesignTokens(): Record<string, unknown> | undefined {
 
   // Fallback: resolve the package directory and load the generated CJS entrypoint
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const path = require("path");
     // Resolve any file from the package to find its directory
     // Use require.resolve with paths to find the package location
