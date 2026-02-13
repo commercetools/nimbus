@@ -32,7 +32,7 @@ const ButtonComponent = (props: ButtonProps) => {
 
   const elementType = as || (asChild ? "a" : "button") || "button";
 
-  const { buttonProps } = useButton(
+  const { buttonProps, isPressed } = useButton(
     {
       ...contextProps,
       elementType,
@@ -58,6 +58,7 @@ const ButtonComponent = (props: ButtonProps) => {
       {...componentProps}
       aria-disabled={contextProps.isDisabled || undefined}
       data-disabled={contextProps.isDisabled || undefined}
+      data-pressed={isPressed || undefined}
     >
       {children}
     </ButtonRoot>
