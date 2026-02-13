@@ -117,7 +117,7 @@ describe("Button", () => {
       expect(button).not.toHaveFocus();
     });
 
-    it("Sets disabled and data-disabled on native <button>", () => {
+    it("Sets disabled attribute on native <button>", () => {
       render(
         <Button isDisabled data-testid="test">
           Disabled Button
@@ -127,10 +127,9 @@ describe("Button", () => {
       const button = screen.getByTestId("test");
       // Native <button> gets the `disabled` attribute from useButton
       expect(button).toBeDisabled();
-      expect(button).toHaveAttribute("data-disabled", "true");
     });
 
-    it("Sets aria-disabled on non-native elements (as='a')", () => {
+    it("Sets aria-disabled (not disabled) and role='button' on non-native elements (as='a')", () => {
       render(
         <Button isDisabled as="a" data-testid="test">
           Disabled Link Button
@@ -138,9 +137,10 @@ describe("Button", () => {
       );
 
       const button = screen.getByTestId("test");
-      // Non-native elements get aria-disabled from useButton
+      // Non-native elements get aria-disabled and role="button" from useButton
       expect(button).toHaveAttribute("aria-disabled", "true");
-      expect(button).toHaveAttribute("data-disabled", "true");
+      expect(button).toHaveAttribute("role", "button");
+      expect(button).not.toHaveAttribute("disabled");
     });
   });
 

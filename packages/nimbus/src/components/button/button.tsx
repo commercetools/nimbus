@@ -51,7 +51,7 @@ const ButtonComponent = (props: ButtonProps) => {
     onPressChange: _onPressChange,
     onPressUp: _onPressUp,
     onFocusChange: _onFocusChange,
-    isDisabled,
+    isDisabled: _isDisabled,
     preventFocusOnPress: _preventFocusOnPress,
     excludeFromTabOrder: _excludeFromTabOrder,
     slot: _slot,
@@ -67,7 +67,6 @@ const ButtonComponent = (props: ButtonProps) => {
       as={as}
       asChild={asChild}
       slot={contextProps.slot || undefined}
-      data-disabled={isDisabled || undefined}
       data-pressed={isPressed || undefined}
     >
       {children}
