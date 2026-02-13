@@ -1,5 +1,36 @@
 # @commercetools/nimbus
 
+## 2.6.0
+
+### Minor Changes
+
+- [#1005](https://github.com/commercetools/nimbus/pull/1005)
+  [`91baca2`](https://github.com/commercetools/nimbus/commit/91baca2d3f8a15b0dd5b6bc09635d768b0f0da9d)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Created Steps component and
+  relevant documentation
+
+- [#965](https://github.com/commercetools/nimbus/pull/965)
+  [`d582980`](https://github.com/commercetools/nimbus/commit/d5829808d61cec1ba62ce2da81dbeb139a9e2b40)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Remove disabled state
+  from Avatar component
+
+### Patch Changes
+
+- [#1052](https://github.com/commercetools/nimbus/pull/1052)
+  [`d26bb99`](https://github.com/commercetools/nimbus/commit/d26bb995a1637b75317cf07d49e47c2bcd070299)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - DataTable "pin row"
+  cell now renders dark background in dark mode. Tooltip now renders dark text
+  on light background in dark mode.
+
+- [#1053](https://github.com/commercetools/nimbus/pull/1053)
+  [`2fb0433`](https://github.com/commercetools/nimbus/commit/2fb04339775a348fc687a730b5f01af4a8f12686)
+  Thanks [@stephsprinkle](https://github.com/stephsprinkle)! - Removed internal
+  `DataTable` components from public API.
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.6.0
+  - @commercetools/nimbus-icons@2.6.0
+
 ## 2.5.0
 
 ### Minor Changes
