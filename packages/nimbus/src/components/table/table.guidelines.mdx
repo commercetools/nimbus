@@ -1,0 +1,240 @@
+---
+tab-title: Guidelines
+tab-order: 2
+---
+
+# Table Guidelines
+
+The Table component provides a simple, semantic HTML table structure for displaying static, read-only data. It's designed for straightforward data presentation without interactive features like sorting, filtering, or selection.
+
+## When to use Table
+
+Use the **Table** component when you need to display **static, read-only data** in a simple tabular format. It's designed for straightforward data presentation without interactive features.
+
+> [!TIP]\
+> **Ideal use cases**
+
+- **Static content displays**: Product specifications, feature comparisons, pricing tiers
+- **Small datasets**: Fewer than 50 rows that don't require pagination
+- **Read-only data**: Information that users only need to view, not interact with
+- **Simple layouts**: Basic tables without complex features like sorting or filtering
+- **Documentation and reference**: Help content, glossaries, or static lists
+
+## When to upgrade to DataTable
+
+Consider upgrading to the [DataTable component](/components/data-display/data-table) when you need any of these features:
+
+> [!CAUTION]\
+> **Upgrade to DataTable if you need:**
+
+- **Sorting**: Allow users to sort columns in ascending or descending order
+- **Row selection**: Enable users to select one or multiple rows for bulk actions
+- **Column management**: Let users show/hide, reorder, or resize columns
+- **Search and filtering**: Help users find specific data within large datasets
+- **Pagination**: Handle datasets with more than 50 rows efficiently
+- **Server-side operations**: Support for server-side sorting, filtering, and pagination
+- **Nested data**: Display hierarchical data with expandable rows
+- **Dense data visualization**: Use condensed row spacing for data-heavy interfaces
+
+## Quick decision guide
+
+| Feature | Table | DataTable |
+|---------|-------|-----------|
+| Static display | ✓ | ✓ |
+| Sorting | ✗ | ✓ |
+| Selection | ✗ | ✓ |
+| Filtering | ✗ | ✓ |
+| Pagination | ✗ | ✓ |
+| Column resizing | ✗ | ✓ |
+| Best for | < 50 rows | > 50 rows |
+
+## Best practices
+
+> [!TIP]\
+> **Do**
+
+- Use Table for static, read-only content that doesn't require user interaction
+- Keep tables simple with clear column headers and well-organized rows
+- Use consistent alignment (left-align text, right-align numbers)
+- Provide a caption or accessible label for screen readers
+- Consider responsive design for mobile viewports
+
+```jsx live
+const App = () => {
+  const specs = [
+    { feature: 'Weight', value: '1.4 kg' },
+    { feature: 'Display', value: '13.3-inch Retina' },
+    { feature: 'Battery', value: 'Up to 17 hours' },
+    { feature: 'Storage', value: '256GB SSD' },
+  ];
+
+  return (
+    <Table.Root variant="outline">
+      <Table.Caption>MacBook Air Specifications</Table.Caption>
+      <Table.Body>
+        {specs.map((spec, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell fontWeight="medium">{spec.feature}</Table.Cell>
+            <Table.Cell>{spec.value}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+```
+
+> [!CAUTION]\
+> **Don't**
+
+- Don't use Table for interactive data that requires sorting, filtering, or selection
+- Don't use Table for large datasets (> 50 rows) that need pagination
+- Don't force horizontal scrolling unless absolutely necessary
+- Don't use tables only for layout purposes; they are for data only
+
+```jsx live
+const App = () => {
+  // ✗ Avoid - This dataset is too large and needs sorting/filtering
+  const products = Array.from({ length: 100 }, (_, i) => ({
+    id: i + 1,
+    name: `Product ${i + 1}`,
+    price: `$${(Math.random() * 100).toFixed(2)}`,
+    status: i % 2 === 0 ? 'In Stock' : 'Out of Stock',
+  }));
+
+  return (
+    <Table.Root>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Product</Table.ColumnHeader>
+          <Table.ColumnHeader>Price</Table.ColumnHeader>
+          <Table.ColumnHeader>Status</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {products.map((product) => (
+          <Table.Row key={product.id}>
+            <Table.Cell>{product.name}</Table.Cell>
+            <Table.Cell>{product.price}</Table.Cell>
+            <Table.Cell>{product.status}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+```
+
+**Why this doesn't work:** This example shows 100 rows without pagination, sorting, or filtering—making it difficult for users to find information. Use [DataTable](/components/data-display/data-table) instead for datasets of this size.
+
+## Usage patterns
+
+### Product specifications
+
+Perfect for displaying static product details or feature comparisons:
+
+```jsx live
+const App = () => {
+  const specs = [
+    { spec: 'Processor', basic: 'M1 Chip', pro: 'M1 Pro Chip', max: 'M1 Max Chip' },
+    { spec: 'RAM', basic: '8GB', pro: '16GB', max: '32GB' },
+    { spec: 'Storage', basic: '256GB', pro: '512GB', max: '1TB' },
+  ];
+
+  return (
+    <Table.Root variant="outline" showColumnBorder>
+      <Table.Caption>MacBook Model Comparison</Table.Caption>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Specification</Table.ColumnHeader>
+          <Table.ColumnHeader>Basic</Table.ColumnHeader>
+          <Table.ColumnHeader>Pro</Table.ColumnHeader>
+          <Table.ColumnHeader>Max</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {specs.map((spec, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell fontWeight="medium">{spec.spec}</Table.Cell>
+            <Table.Cell>{spec.basic}</Table.Cell>
+            <Table.Cell>{spec.pro}</Table.Cell>
+            <Table.Cell>{spec.max}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+```
+
+### Pricing tiers
+
+Ideal for displaying pricing information and plan comparisons:
+
+```jsx live
+const App = () => {
+  const pricing = [
+    { feature: 'Users', starter: '5', business: '25', enterprise: 'Unlimited' },
+    { feature: 'Storage', starter: '10GB', business: '100GB', enterprise: '1TB' },
+    { feature: 'Support', starter: 'Email', business: 'Priority', enterprise: '24/7' },
+  ];
+
+  return (
+    <Table.Root>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Feature</Table.ColumnHeader>
+          <Table.ColumnHeader>Starter</Table.ColumnHeader>
+          <Table.ColumnHeader>Business</Table.ColumnHeader>
+          <Table.ColumnHeader>Enterprise</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {pricing.map((item, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell fontWeight="medium">{item.feature}</Table.Cell>
+            <Table.Cell>{item.starter}</Table.Cell>
+            <Table.Cell>{item.business}</Table.Cell>
+            <Table.Cell>{item.enterprise}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+```
+
+### Reference data
+
+Great for glossaries, definitions, or other reference content:
+
+```jsx live
+const App = () => {
+  const terms = [
+    { term: 'API', definition: 'Application Programming Interface' },
+    { term: 'SDK', definition: 'Software Development Kit' },
+    { term: 'CLI', definition: 'Command Line Interface' },
+    { term: 'REST', definition: 'Representational State Transfer' },
+  ];
+
+  return (
+    <Table.Root variant="line">
+      <Table.Caption>Common Development Terms</Table.Caption>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Term</Table.ColumnHeader>
+          <Table.ColumnHeader>Definition</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {terms.map((item, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell fontWeight="medium">{item.term}</Table.Cell>
+            <Table.Cell>{item.definition}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+```

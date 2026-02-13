@@ -49,6 +49,43 @@ const App = () => {
 }
 ```
 
+## When to use Table
+
+Use the **Table** component when you need to display **static, read-only data** in a simple tabular format. It's designed for straightforward data presentation without interactive features.
+
+### Ideal use cases
+
+- **Static content displays**: Product specifications, feature comparisons, pricing tiers
+- **Small datasets**: Fewer than 50 rows that don't require pagination
+- **Read-only data**: Information that users only need to view, not interact with
+- **Simple layouts**: Basic tables without complex features like sorting or filtering
+- **Documentation and reference**: Help content, glossaries, or static lists
+
+### When to upgrade to DataTable
+
+Consider upgrading to the [DataTable component](/components/data-display/data-table) when you need:
+
+- **Sorting**: Allow users to sort columns in ascending or descending order
+- **Row selection**: Enable users to select one or multiple rows for bulk actions
+- **Column management**: Let users show/hide, reorder, or resize columns
+- **Search and filtering**: Help users find specific data within large datasets
+- **Pagination**: Handle datasets with more than 50 rows efficiently
+- **Server-side operations**: Support for server-side sorting, filtering, and pagination
+- **Nested data**: Display hierarchical data with expandable rows
+- **Dense data visualization**: Use condensed row spacing for data-heavy interfaces
+
+**Quick decision guide:**
+
+| Feature | Table | DataTable |
+|---------|-------|-----------|
+| Static display | ✓ | ✓ |
+| Sorting | ✗ | ✓ |
+| Selection | ✗ | ✓ |
+| Filtering | ✗ | ✓ |
+| Pagination | ✗ | ✓ |
+| Column resizing | ✗ | ✓ |
+| Best for | < 20 rows | > 20 rows |
+
 ## Usage examples
 
 ### Size variants
@@ -375,57 +412,27 @@ export const InventoryTable = () => (
 );
 ```
 
+## Compound component API
+
+The Table component uses a compound component pattern with multiple sub-components that work together. Each part accepts standard HTML table element props plus Chakra style props.
+
+### Available sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `Table.Root` | Main container that provides styling and configuration for the entire table |
+| `Table.Header` | Container for the table header row(s) (renders `<thead>`) |
+| `Table.Body` | Container for the table data rows (renders `<tbody>`) |
+| `Table.Footer` | Container for footer rows with summary or totals (renders `<tfoot>`) |
+| `Table.Row` | Individual table row (renders `<tr>`) |
+| `Table.ColumnHeader` | Header cell for column labels (renders `<th>`) |
+| `Table.Cell` | Data cell for table content (renders `<td>`) |
+| `Table.Caption` | Table caption for providing a title or description (renders `<caption>`) |
+| `Table.ScrollArea` | Wrapper for scrollable tables with sticky header support |
+
 ## API reference
 
-The Table component is re-exported from Chakra UI v3. Each part accepts standard HTML table element props plus Chakra style props.
-
-### Table.Root
-
-Main container that provides styling and configuration for the entire table.
-
-**Props:**
-- `variant`: `"line"` | `"outline"` - Visual style (default: `"line"`)
-- `size`: `"sm"` | `"md"` | `"lg"` - Size variant (default: `"md"`)
-- `interactive`: boolean - Enables hover highlighting on rows
-- `striped`: boolean - Alternating row backgrounds
-- `showColumnBorder`: boolean - Vertical borders between columns
-- `stickyHeader`: boolean - Keeps header fixed during scroll
-- All HTMLChakraProps for `<table>` element
-
-### Table.Header
-
-Container for the table header row(s). Renders `<thead>`.
-
-### Table.Body
-
-Container for the table data rows. Renders `<tbody>`.
-
-### Table.Footer
-
-Container for footer rows (summary, totals). Renders `<tfoot>`.
-
-### Table.Row
-
-A table row. Renders `<tr>`.
-
-### Table.ColumnHeader
-
-A header cell. Renders `<th>`. Use for column headers to provide semantic structure.
-
-### Table.Cell
-
-A data cell. Renders `<td>`.
-
-### Table.Caption
-
-Table caption for providing a title or description. Renders `<caption>`.
-
-### Table.ScrollArea
-
-Wrapper for scrollable tables. Use with `stickyHeader` to keep headers visible.
-
-**Props:**
-- `maxHeight`: string - Maximum height before scrolling
+<PropsTable id="Table" />
 
 ## Common patterns
 
@@ -553,5 +560,9 @@ These examples demonstrate how to test your implementation when using Table with
 ## Resources
 
 - [Chakra UI - Table Documentation](https://chakra-ui.com/docs/components/table)
-- [DataTable Component](../components/data-display/datatable) - Advanced table with sorting, selection, and more features
-- [MDN - HTML Table Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
+- [MDN - HTML Table Element](https://developer.mozilla.org/en-docs/Web/HTML/Element/table)
+- [WCAG - Table Accessibility](https://www.w3.org/WAI/tutorials/tables/)
+
+**Related components**
+
+- **[DataTable Component](/components/data-display/data-table)** - Upgrade to DataTable when you need sorting, filtering, selection, pagination, or other interactive features for complex data management

@@ -151,6 +151,7 @@ type DataTableVariantProps = OmitInternalProps<
 // ============================================================
 // MAIN PROPS
 // ============================================================
+
 export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   DataTableVariantProps,
   "truncated"

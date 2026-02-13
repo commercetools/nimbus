@@ -14,6 +14,27 @@ export type TableRecipeProps = SlotRecipeProps<"nimbusTable">;
  * Props for the Table.Root component
  *
  * The root table container that wraps all table parts.
+ *
+ * @description Use Table for **static, read-only data displays**. It renders
+ * semantic HTML table markup without interactive features. Perfect for small
+ * datasets (< 50 rows), product specifications, pricing tiers, or reference content.
+ *
+ * **When to use Table (simple):**
+ * - Static content displays (specifications, comparisons, pricing)
+ * - Small datasets (< 50 rows) without pagination needs
+ * - Read-only data that users only need to view
+ * - Simple layouts without sorting, filtering, or selection
+ *
+ * **When to upgrade to DataTable (complex):**
+ * - Sorting columns in ascending/descending order
+ * - Row selection for bulk actions
+ * - Column management (show/hide, reorder, resize)
+ * - Search and filtering across data
+ * - Pagination for large datasets (> 50 rows)
+ * - Server-side data operations
+ * - Nested/hierarchical data with expansion
+ *
+ * @see {@link DataTable} for interactive tables with sorting, filtering, and selection
  */
 export type TableRootProps = HTMLChakraProps<"table", TableRecipeProps> & {
   ref?: React.Ref<HTMLTableElement>;
