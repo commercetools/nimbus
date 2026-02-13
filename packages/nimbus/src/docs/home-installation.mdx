@@ -101,6 +101,52 @@ If the postinstall doesn't run, generate types manually:
 npx @chakra-ui/cli typegen node_modules/@commercetools/nimbus/dist/index.es.js
 ```
 
+### Design Token Autocomplete (Optional)
+
+Install the design token TypeScript plugin to see resolved CSS values next to token names in autocomplete. For example, when you type `gap="`, the dropdown shows `600 = 24px` instead of just `600`.
+
+#### pnpm
+
+```bash
+pnpm add -D @commercetools/nimbus-design-token-ts-plugin
+```
+
+#### npm
+
+```bash
+npm install -D @commercetools/nimbus-design-token-ts-plugin
+```
+
+#### yarn
+
+```bash
+yarn add -D @commercetools/nimbus-design-token-ts-plugin
+```
+
+Then add the plugin to your `tsconfig.json` (or `tsconfig.app.json` if using
+project references):
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [
+      { "name": "@commercetools/nimbus-design-token-ts-plugin" }
+    ]
+  }
+}
+```
+
+In VS Code, you must use the workspace TypeScript version for the plugin to
+activate:
+
+1. Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+2. Run **"TypeScript: Select TypeScript Version"**
+3. Select **"Use Workspace Version"**
+4. Restart the TS server: **"TypeScript: Restart TS Server"**
+
+The plugin supports spacing, colors, font sizes, border radius, font weights,
+shadows, opacity, z-index, and more.
+
 ## 2. Set up NimbusProvider
 
 Wrap your application with the `NimbusProvider` at the root level. This provider
