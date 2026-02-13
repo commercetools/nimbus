@@ -72,6 +72,6 @@ TypeScript already provides.
 
 ## Requirements
 
-- `@commercetools/nimbus-tokens` must be installed (included as a dependency)
+- `@commercetools/nimbus-tokens` must be installed (defined as peer dependency)
 - TypeScript >= 5.0
 - VS Code or any editor that supports TypeScript language service plugins
