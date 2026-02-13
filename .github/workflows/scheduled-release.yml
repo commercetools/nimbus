@@ -1,0 +1,164 @@
+name: Scheduled Monthly Release
+
+# Runs on the 1st Tuesday of each month at 10:00 UTC
+# Cron: minute hour day-of-month month day-of-week
+# Day 1-7 covers all possible 1st Tuesdays; day-of-week 2 = Tuesday
+on:
+  schedule:
+    - cron: "0 10 1-7 * 2"
+  # Allow manual trigger for testing or ad-hoc releases
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (check PR status without merging)"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge-version-packages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Generate GitHub token (via CT Changesets App)
+        id: generate_github_token
+        uses: tibdex/github-app-token@v2.1.0
+        with:
+          app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
+          private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
+
+      - name: Find Version Packages PR
+        id: find_pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_github_token.outputs.token }}
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:changeset-release/main`
+            });
+
+            if (prs.length === 0) {
+              console.log('No Version Packages PR found. Nothing to release.');
+              core.setOutput('found', 'false');
+              return;
+            }
+
+            const pr = prs[0];
+            console.log(`Found PR #${pr.number}: ${pr.title}`);
+            core.setOutput('found', 'true');
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('pr_title', pr.title);
+            core.setOutput('pr_url', pr.html_url);
+
+      - name: Check PR CI status
+        if: steps.find_pr.outputs.found == 'true'
+        id: check_ci
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_github_token.outputs.token }}
+          script: |
+            const prNumber = ${{ steps.find_pr.outputs.pr_number }};
+
+            // Get the PR to find the head SHA
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const sha = pr.head.sha;
+            console.log(`Checking CI status for commit ${sha}`);
+
+            // Get combined status
+            const { data: status } = await github.rest.repos.getCombinedStatusForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: sha
+            });
+
+            // Get check runs
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: sha
+            });
+
+            const allChecksPassed = checks.check_runs.every(
+              check => check.conclusion === 'success' || check.conclusion === 'skipped'
+            );
+
+            const statusOk = status.state === 'success' || status.statuses.length === 0;
+
+            console.log(`Combined status: ${status.state}`);
+            console.log(`Check runs: ${checks.check_runs.map(c => `${c.name}: ${c.conclusion}`).join(', ')}`);
+
+            if (statusOk && allChecksPassed) {
+              console.log('All CI checks passed!');
+              core.setOutput('passed', 'true');
+            } else {
+              console.log('CI checks have not passed. Skipping auto-merge.');
+              core.setOutput('passed', 'false');
+            }
+
+      - name: Merge Version Packages PR
+        if: |
+          steps.find_pr.outputs.found == 'true' &&
+          steps.check_ci.outputs.passed == 'true' &&
+          inputs.dry_run != 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_github_token.outputs.token }}
+          script: |
+            const prNumber = ${{ steps.find_pr.outputs.pr_number }};
+
+            console.log(`Merging PR #${prNumber}...`);
+
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              merge_method: 'squash'
+            });
+
+            console.log(`Successfully merged PR #${prNumber}!`);
+            console.log('The release workflow will now publish to npm.');
+
+      - name: Dry run summary
+        if: inputs.dry_run == 'true' && steps.find_pr.outputs.found == 'true'
+        run: |
+          echo "## Dry Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PR Found:** #${{ steps.find_pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Title:** ${{ steps.find_pr.outputs.pr_title }}" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.find_pr.outputs.pr_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**CI Status:** ${{ steps.check_ci.outputs.passed == 'true' && 'Passed ✅' || 'Not passing ❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_This was a dry run. No merge was performed._" >> $GITHUB_STEP_SUMMARY
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.find_pr.outputs.found }}" != "true" ]; then
+            echo "## Monthly Release Check" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No Version Packages PR found. Nothing to release this month." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.check_ci.outputs.passed }}" != "true" ]; then
+            echo "## Monthly Release Check" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Version Packages PR found but CI has not passed." >> $GITHUB_STEP_SUMMARY
+            echo "Please check [PR #${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.dry_run }}" != "true" ]; then
+            echo "## Monthly Release" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Successfully merged Version Packages PR #${{ steps.find_pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The release workflow is now publishing to npm." >> $GITHUB_STEP_SUMMARY
+          fi
