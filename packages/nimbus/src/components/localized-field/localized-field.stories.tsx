@@ -334,9 +334,7 @@ export const Disabled: Story = {
     await step("Text Field", async () => {
       const textField = await getFieldContainerForType(canvas, "text");
       await step("Field toggle button is disabled", async () => {
-        expect(
-          await getExpandButtonForField(textField, "text")
-        ).toHaveAttribute("aria-disabled", "true");
+        expect(await getExpandButtonForField(textField, "text")).toBeDisabled();
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -358,7 +356,7 @@ export const Disabled: Story = {
       await step("Field toggle button is disabled", async () => {
         expect(
           await getExpandButtonForField(multiLineField, "multiLine")
-        ).toHaveAttribute("aria-disabled", "true");
+        ).toBeDisabled();
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -377,7 +375,7 @@ export const Disabled: Story = {
       await step("Field toggle button is disabled", async () => {
         expect(
           await getExpandButtonForField(richTextField, "richText")
-        ).toHaveAttribute("aria-disabled", "true");
+        ).toBeDisabled();
       });
       await step(
         "Field toggle does not expand field when pressed",
@@ -399,7 +397,7 @@ export const Disabled: Story = {
       await step("Field toggle button is disabled", async () => {
         expect(
           await getExpandButtonForField(moneyField, "money")
-        ).toHaveAttribute("aria-disabled", "true");
+        ).toBeDisabled();
       });
       await step(
         "Field toggle does not expand field when pressed",

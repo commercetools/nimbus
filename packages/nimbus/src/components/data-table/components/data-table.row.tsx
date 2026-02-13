@@ -8,7 +8,7 @@ import { mergeRefs } from "@chakra-ui/react";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
-import { DataTableExpandButton, DataTableRowSlot } from "../data-table.slots";
+import { DataTableRowSlot } from "../data-table.slots";
 import type {
   DataTableRowItem,
   DataTableColumnItem,
@@ -47,37 +47,18 @@ function getIsTableRowChildElementInteractive(e: Event) {
 }
 
 /**
- * Determines if a click event originated from a selection-related interactive element.
- * This helps distinguish between selection controls and other interactive elements.
+ * Prevents pointerdown propagation for non-interactive areas of a table row.
  *
- * @param e - The DOM Event object from the click listener
- * @returns Element if a selection-related interactive element was found, null otherwise
- */
-function getIsSelectionInteractiveElement(e: Event) {
-  const clickedElement = e.target as Element;
-  return clickedElement?.closest(
-    '[slot="selection"], [data-slot="selection"], [role="checkbox"]'
-  );
-}
-
-/**
- * Prevents event propagation when clicking on non-interactive elements or
- * interactive elements that are not selection-related.
- * This ensures that:
- * - Selection only happens when clicking on selection controls
- * - Other interactive elements (buttons, etc.) don't trigger selection
- * - Non-interactive areas don't trigger selection
+ * This stops React Aria's row-level press handling from triggering selection
+ * when clicking on empty row areas. Interactive elements (buttons, checkboxes)
+ * are left alone so their own press handlers (usePress/onPress) can work.
  *
  * @param e - The DOM Event to potentially stop propagation on
  */
-function stopPropagationToNonInteractiveElements(e: Event) {
+function stopPropagationForNonInteractiveElements(e: Event) {
   const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-  const isSelectionElement = getIsSelectionInteractiveElement(e);
 
-  // Stop propagation if:
-  // 1. It's not an interactive element at all, OR
-  // 2. It's an interactive element but NOT a selection element
-  if (!isInteractiveElement || (isInteractiveElement && !isSelectionElement)) {
+  if (!isInteractiveElement) {
     e.stopPropagation();
   }
 }
@@ -234,7 +215,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
         node.addEventListener(
           // Use pointerdown event in order to capture event before it bubbles to react-aria's onPress handler
           "pointerdown",
-          stopPropagationToNonInteractiveElements,
+          stopPropagationForNonInteractiveElements,
           {
             capture: true,
           }
@@ -277,7 +258,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
       if (counterRef.current.count >= 1 && counterRef.current.node) {
         counterRef.current.node.removeEventListener(
           "pointerdown",
-          stopPropagationToNonInteractiveElements
+          stopPropagationForNonInteractiveElements
         );
         counterRef.current.node.removeEventListener("mouseup", handleRowClick);
         counterRef.current.node.removeEventListener(
@@ -374,18 +355,17 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
             >
               {hasNestedContent ? (
-                <DataTableExpandButton
+                // TODO:Button does not occupy the whole height
+                <IconButton
                   w="100%"
                   h="100%"
-                  cursor="pointer"
+                  unstyled
+                  borderRadius="0"
                   aria-label={isExpanded ? "Collapse" : "Expand"}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpand(row.id);
-                  }}
+                  onPress={() => toggleExpand(row.id)}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-                </DataTableExpandButton>
+                </IconButton>
               ) : null}
             </DataTableCell>
           )}
@@ -438,10 +418,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   variant="ghost"
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    togglePin(row.id);
-                  }}
+                  onPress={() => togglePin(row.id)}
                 >
                   <PushPin />
                 </IconButton>
