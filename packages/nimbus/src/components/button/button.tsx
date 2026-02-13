@@ -40,29 +40,10 @@ const ButtonComponent = (props: ButtonProps) => {
     contextRef
   );
 
-  // Separate React Aria logical props (consumed by useButton) from
-  // passthrough props (recipe variants, style props, data-*, className).
-  // These logical props are NOT valid DOM attributes and must not be spread.
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const {
-    onPress: _onPress,
-    onPressStart: _onPressStart,
-    onPressEnd: _onPressEnd,
-    onPressChange: _onPressChange,
-    onPressUp: _onPressUp,
-    onFocusChange: _onFocusChange,
-    isDisabled: _isDisabled,
-    preventFocusOnPress: _preventFocusOnPress,
-    excludeFromTabOrder: _excludeFromTabOrder,
-    slot: _slot,
-    ...passthroughProps
-  } = contextProps;
-  /* eslint-enable @typescript-eslint/no-unused-vars */
-
   return (
     <ButtonRoot
       ref={contextRef}
-      {...passthroughProps}
+      {...contextProps}
       {...buttonProps}
       as={as}
       asChild={asChild}
