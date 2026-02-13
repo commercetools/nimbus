@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useButton, useObjectRef, mergeProps } from "react-aria";
+import { useButton, useObjectRef } from "react-aria";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { mergeRefs } from "@chakra-ui/react";
 import { ButtonRoot } from "./button.slots.tsx";
@@ -29,9 +29,9 @@ const ButtonComponent = (props: ButtonProps) => {
 
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
-
   const elementType = as || (asChild ? "a" : "button") || "button";
 
+  // Let useButton process all behavior and accessibility concerns
   const { buttonProps, isPressed } = useButton(
     {
       ...contextProps,
@@ -40,24 +40,34 @@ const ButtonComponent = (props: ButtonProps) => {
     contextRef
   );
 
-  const componentProps = mergeProps(buttonProps, {
-    as,
-    asChild,
-    /**
-     * In case `slot` was null, the `useContextProps` hook already
-     * processed it at this point, so it's safe to not attach it
-     * to the DOM element
-     */
-    slot: contextProps.slot || undefined,
-  });
+  // Separate React Aria logical props (consumed by useButton) from
+  // passthrough props (recipe variants, style props, data-*, className).
+  // These logical props are NOT valid DOM attributes and must not be spread.
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const {
+    onPress: _onPress,
+    onPressStart: _onPressStart,
+    onPressEnd: _onPressEnd,
+    onPressChange: _onPressChange,
+    onPressUp: _onPressUp,
+    onFocusChange: _onFocusChange,
+    isDisabled,
+    preventFocusOnPress: _preventFocusOnPress,
+    excludeFromTabOrder: _excludeFromTabOrder,
+    slot: _slot,
+    ...passthroughProps
+  } = contextProps;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   return (
     <ButtonRoot
       ref={contextRef}
-      {...contextProps}
-      {...componentProps}
-      aria-disabled={contextProps.isDisabled || undefined}
-      data-disabled={contextProps.isDisabled || undefined}
+      {...passthroughProps}
+      {...buttonProps}
+      as={as}
+      asChild={asChild}
+      slot={contextProps.slot || undefined}
+      data-disabled={isDisabled || undefined}
       data-pressed={isPressed || undefined}
     >
       {children}

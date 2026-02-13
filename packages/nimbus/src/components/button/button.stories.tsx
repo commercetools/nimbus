@@ -422,8 +422,8 @@ export const WithinReactAriaContext: Story = {
     await step("Button consumes disabled prop from ButtonContext", async () => {
       const button = canvas.getByRole("button");
 
-      // Verify Button receives disabled attribute from ButtonContext
-      await expect(button).toHaveAttribute("aria-disabled", "true");
+      // Native <button> gets the `disabled` attribute from useButton (not aria-disabled)
+      await expect(button).toBeDisabled();
     });
   },
 };

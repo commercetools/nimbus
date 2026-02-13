@@ -3,35 +3,6 @@ import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";
 import type { ButtonRootSlotProps } from "./button.types";
 
-/**
- * React Aria-specific event props that should NOT be forwarded to DOM elements.
- * These are custom event handlers that React Aria uses internally but are not
- * valid DOM event handlers.
- *
- * @see https://react-spectrum.adobe.com/react-aria/interactions.html
- */
-const REACT_ARIA_EVENT_PROPS = [
-  "onPress",
-  "onPressStart",
-  "onPressEnd",
-  "onPressChange",
-  "onPressUp",
-  "onFocusChange",
-  "onHoverStart",
-  "onHoverEnd",
-  "onHoverChange",
-  "onMoveStart",
-  "onMove",
-  "onMoveEnd",
-];
-
-/**
- * Checks if a prop is a React Aria-specific event handler that should not
- * be forwarded to the DOM.
- */
-const isReactAriaEventProp = (prop: string): boolean =>
-  REACT_ARIA_EVENT_PROPS.some((ariaProp) => prop.includes(ariaProp));
-
 const { withContext } = createRecipeContext({
   key: "nimbusButton",
 });
@@ -47,16 +18,15 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootSlotProps>(
       type: "button",
     },
     /**
-     * Filter out React Aria-specific props that shouldn't reach the DOM.
-     * These props are consumed by useButton() but may still be present in
-     * contextProps from ButtonContext slots.
+     * Standard Chakra shouldForwardProp with @emotion/is-prop-valid as safety net.
+     * React Aria logical props (onPress, isDisabled, etc.) are already filtered
+     * at the component level in button.tsx. This function serves as defense-in-depth
+     * in case any non-DOM props leak through (e.g., from external ButtonContext providers).
      */
     shouldForwardProp(prop, variantKeys) {
       const chakraSfp =
         !variantKeys?.includes(prop) && !system.isValidProperty(prop);
-      return (
-        shouldForwardProp(prop) && chakraSfp && !isReactAriaEventProp(prop)
-      );
+      return shouldForwardProp(prop) && chakraSfp;
     },
   }
 );
