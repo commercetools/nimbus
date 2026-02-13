@@ -100,6 +100,32 @@ export const Disabled: Story = {
       await userEvent.tab();
       await expect(button).not.toHaveFocus();
     });
+
+    await step("Sets disabled attribute on native <button>", async () => {
+      await expect(button).toBeDisabled();
+    });
+  },
+};
+
+export const DisabledAsLink: Story = {
+  args: {
+    children: "Disabled Link Button",
+    isDisabled: true,
+    as: "a",
+    ["data-testid"]: "test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("test");
+
+    await step(
+      "Sets aria-disabled (not disabled) and role='button' on non-native elements",
+      async () => {
+        await expect(button).toHaveAttribute("aria-disabled", "true");
+        await expect(button).toHaveAttribute("role", "button");
+        await expect(button).not.toHaveAttribute("disabled");
+      }
+    );
   },
 };
 
@@ -452,5 +478,37 @@ export const OverrideContextWithLocalProps: Story = {
         await expect(button).not.toHaveAttribute("aria-disabled");
       }
     );
+  },
+};
+
+/**
+ * Verifies that React Aria event handler props passed via ButtonContext
+ * are not forwarded to the DOM element (which would cause React warnings).
+ */
+export const DOMPropFiltering: Story = {
+  render: () => {
+    return (
+      <Button.Context.Provider
+        value={{
+          onFocusChange: () => {},
+          onHoverStart: () => {},
+          onPressChange: () => {},
+        }}
+      >
+        <Button data-testid="test">Test</Button>
+      </Button.Context.Provider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Does not forward React Aria event props to DOM", async () => {
+      const button = canvas.getByTestId("test");
+      // These React Aria callback props should be consumed by hooks,
+      // not forwarded as DOM attributes
+      await expect(button).not.toHaveAttribute("onFocusChange");
+      await expect(button).not.toHaveAttribute("onHoverStart");
+      await expect(button).not.toHaveAttribute("onPressChange");
+    });
   },
 };
