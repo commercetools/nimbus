@@ -13,14 +13,15 @@
     "url": "https://github.com/commercetools/nimbus.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && echo '🎉 Nimbus design token typescript plugin built'",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@commercetools/nimbus-tokens": "workspace:^"
   },
   "devDependencies": {
+    "@commercetools/nimbus-tokens": "workspace:^",
     "@types/node": "catalog:utils",
     "typescript": "catalog:tooling",
     "vitest": "catalog:tooling"

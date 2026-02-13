@@ -517,11 +517,10 @@ importers:
         version: 24.10.1
 
   packages/design-token-ts-plugin:
-    dependencies:
+    devDependencies:
       '@commercetools/nimbus-tokens':
         specifier: workspace:^
         version: link:../tokens
-    devDependencies:
       '@types/node':
         specifier: catalog:utils
         version: 24.10.1
