@@ -33,6 +33,9 @@
       "@types",
       // "@types-extensions",
       "node_modules/@types"
+    ],
+    "plugins": [
+      { "name": "@commercetools/nimbus-ts-plugin" }
     ]
   }
 }

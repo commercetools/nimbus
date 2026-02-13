@@ -67,6 +67,7 @@
     "eslint-plugin-react-hooks": "catalog:tooling",
     "eslint-plugin-react-refresh": "catalog:tooling",
     "globals": "catalog:tooling",
+    "@commercetools/nimbus-ts-plugin": "workspace:^",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
     "vite": "catalog:tooling",

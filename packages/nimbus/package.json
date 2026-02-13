@@ -61,6 +61,7 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
+    "@commercetools/nimbus-ts-plugin": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@react-types/shared": "catalog:tooling",
