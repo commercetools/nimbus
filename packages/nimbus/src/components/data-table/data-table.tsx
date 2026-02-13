@@ -16,11 +16,13 @@ import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "./data-table.messages";
 
 // Default DataTable component that provides the standard structure
-const DataTableBase = function DataTable({
+const DataTableBase = function DataTable<
+  T extends object = Record<string, unknown>,
+>({
   ref: forwardedRef,
   footer,
   ...props
-}: DataTableProps & {
+}: DataTableProps<T> & {
   footer?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 }) {
