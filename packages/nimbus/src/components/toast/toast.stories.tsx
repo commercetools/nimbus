@@ -20,6 +20,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import {
   Button,
+  IconButton,
   LoadingSpinner,
   Stack,
   Text,
@@ -28,6 +29,7 @@ import {
 import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   CheckCircleOutline,
+  Clear,
   ErrorOutline,
   Info,
   WarningAmber,
@@ -371,6 +373,15 @@ function StaticToast({
       >
         Undo
       </Button>
+      <IconButton
+        css={styles.closeTrigger}
+        aria-label="Dismiss"
+        variant="solid"
+        size="2xs"
+        onPress={() => {}}
+      >
+        <Clear role="img" />
+      </IconButton>
     </chakra.div>
   );
 }
@@ -414,7 +425,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="subtle"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description="Supporting text that provides additional context."
+            description="Supporting text that provides  context."
           />
         ))}
       </Stack>

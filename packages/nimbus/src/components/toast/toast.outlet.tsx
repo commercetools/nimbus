@@ -104,23 +104,16 @@ function ToastContent({
       )}
 
       {closable && (
-        <chakra.div css={styles.closeTrigger}>
+        <ChakraToast.CloseTrigger asChild>
           <IconButton
             aria-label={msg.format("dismiss")}
-            variant={variant === "solid" ? "solid" : "ghost"}
-            colorPalette={
-              variant === "solid"
-                ? undefined
-                : variant === "accent-start"
-                  ? "neutral"
-                  : COLOR_PALETTE_MAP[type]
-            }
+            variant="solid"
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}
           >
             <Clear role="img" />
           </IconButton>
-        </chakra.div>
+        </ChakraToast.CloseTrigger>
       )}
     </>
   );

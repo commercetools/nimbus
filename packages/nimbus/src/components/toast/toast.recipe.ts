@@ -44,6 +44,8 @@ export const toastRecipe = defineSlotRecipe({
       py: "300",
       borderRadius: "100",
       boxShadow: "1",
+      position: "relative",
+
       // Animation styles consuming Ark UI's CSS custom properties
       pointerEvents: "auto",
       translate: "var(--x) var(--y)",
@@ -63,10 +65,10 @@ export const toastRecipe = defineSlotRecipe({
     indicator: {
       gridColumn: "1",
       gridRow: "1",
-      marginTop: "50",
+
       "& svg": {
-        width: "500",
-        height: "500",
+        width: "600",
+        height: "600",
       },
     },
     title: {
@@ -86,8 +88,10 @@ export const toastRecipe = defineSlotRecipe({
       alignSelf: "center",
     },
     closeTrigger: {
-      gridColumn: "3",
-      gridRow: "1",
+      position: "absolute",
+      top: "-300",
+      right: "-300",
+      outline: "1px solid {colors.bg}",
     },
   },
 
@@ -115,9 +119,6 @@ export const toastRecipe = defineSlotRecipe({
             color: "colorPalette.contrast",
             borderColor: "colorPalette.contrast",
           },
-        },
-        closeTrigger: {
-          color: "colorPalette.contrast",
         },
       },
       subtle: {
