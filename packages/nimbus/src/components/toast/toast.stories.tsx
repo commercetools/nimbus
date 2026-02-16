@@ -59,7 +59,7 @@ async function clearToasts() {
       },
       { timeout: 3000 }
     );
-  } catch (e) {
+  } catch {
     // If toasts don't clear in time, force remove them and continue
     console.warn("Toasts did not clear in time, forcing cleanup");
     const toastElements = document.querySelectorAll(
