@@ -542,6 +542,7 @@ export const PauseBehavior: Story = {
         title: "Hover or focus me to pause",
         type: "info",
         duration: 3000,
+        closable: true,
       });
     };
 
@@ -613,8 +614,16 @@ export const PauseBehavior: Story = {
 export const Dismissal: Story = {
   render: () => {
     const showDismissalToasts = () => {
-      toast.info({ title: "Close button test", duration: 5000 });
-      toast.success({ title: "Escape key test", duration: 5000 });
+      toast.info({
+        title: "Close button test",
+        duration: 5000,
+        closable: true,
+      });
+      toast.success({
+        title: "Escape key test",
+        duration: 5000,
+        closable: true,
+      });
       toast.warning({ title: "Programmatic dismiss", duration: 5000 });
     };
 
@@ -1041,6 +1050,7 @@ export const KeyboardNavigation: Story = {
         description: "Navigate with Tab and hotkeys",
         type: "info",
         placement: "top-end", // Alt+Shift+9
+        closable: true,
         action: {
           label: "Action",
           onClick: () => {
@@ -1111,16 +1121,20 @@ export const KeyboardNavigation: Story = {
 
 /**
  * Closable Control
- * Tests closable true (default) and closable false
+ * Tests closable: true (opt-in) and closable: false (default)
  */
 export const ClosableControl: Story = {
   render: () => {
     const showClosableToasts = () => {
-      toast({ title: "Closable (default)", type: "info", duration: Infinity });
       toast({
-        title: "Not closable",
+        title: "Not closable (default)",
         type: "warning",
-        closable: false,
+        duration: Infinity,
+      });
+      toast({
+        title: "Closable (opt-in)",
+        type: "info",
+        closable: true,
         duration: Infinity,
       });
     };
@@ -1137,10 +1151,24 @@ export const ClosableControl: Story = {
     const body = within(document.body);
     const button = canvas.getByTestId("closable-btn");
 
-    await step("Default toast has close button (closable: true)", async () => {
-      await userEvent.click(button);
+    await step(
+      "Default toast has no close button (closable: false)",
+      async () => {
+        await userEvent.click(button);
 
-      const toastText = await body.findByText("Closable (default)");
+        const toastText = await body.findByText("Not closable (default)");
+        const toastContainer = toastText.closest(
+          '[role="alert"]'
+        ) as HTMLElement;
+        const closeButton = within(toastContainer).queryByRole("button");
+
+        // There should be no close button
+        await expect(closeButton).not.toBeInTheDocument();
+      }
+    );
+
+    await step("Toast with closable: true shows close button", async () => {
+      const toastText = await body.findByText("Closable (opt-in)");
       const toastContainer = toastText.closest(
         '[role="status"]'
       ) as HTMLElement;
@@ -1149,15 +1177,6 @@ export const ClosableControl: Story = {
       // Close button should be in the document and enabled
       await expect(closeButton).toBeInTheDocument();
       await expect(closeButton).toBeEnabled();
-    });
-
-    await step("Toast with closable: false hides close button", async () => {
-      const toastText = await body.findByText("Not closable");
-      const toastContainer = toastText.closest('[role="alert"]') as HTMLElement;
-      const closeButton = within(toastContainer).queryByRole("button");
-
-      // There should be no close button
-      await expect(closeButton).not.toBeInTheDocument();
     });
   },
 };
@@ -1281,7 +1300,12 @@ export const ProgrammaticUpdate: Story = {
 export const Internationalization: Story = {
   render: () => {
     const showI18nToast = () => {
-      toast({ title: "i18n test", type: "info", duration: Infinity });
+      toast({
+        title: "i18n test",
+        type: "info",
+        duration: Infinity,
+        closable: true,
+      });
     };
 
     return (
@@ -1351,6 +1375,7 @@ export const ComprehensiveIntegration: Story = {
         title: "Network error",
         description: "Could not connect to server",
         duration: Infinity, // Persist
+        closable: true,
         action: {
           label: "Retry",
           onClick: () => {

@@ -61,7 +61,7 @@ function ToastContent({
   const closable =
     toast.meta?.closable !== undefined
       ? (toast.meta.closable as boolean)
-      : true;
+      : false;
 
   return (
     <>

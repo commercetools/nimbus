@@ -77,12 +77,17 @@ class ToastManager implements IToastManager {
           ? safeOptions.duration
           : DEFAULT_DURATION;
 
+    // Enforce closable: true for persistent toasts (duration: Infinity)
+    // so the user always has a way to dismiss them.
+    const closable =
+      safeOptions.closable ?? (duration === Infinity ? true : false);
+
     const toastOptions = {
       ...safeOptions,
       duration,
       pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
-        closable: safeOptions.closable ?? true,
+        closable,
         variant: safeOptions.variant ?? "solid",
         ...safeOptions.meta,
       },
@@ -209,8 +214,11 @@ const manager = ToastManager.getInstance();
  * toast.error({ title: "Error" });
  *
  * // With variant (default is "solid")
- * toast.info({ title: "Muted info", variant: "muted" });
+ * toast.info({ title: "Subtle info", variant: "subtle" });
  * toast.success({ title: "Bold success", variant: "solid" });
+ *
+ * // With close button (off by default)
+ * toast.info({ title: "Closable", closable: true });
  *
  * // With action button
  * toast({
