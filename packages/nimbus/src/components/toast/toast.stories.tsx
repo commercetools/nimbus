@@ -407,7 +407,7 @@ function StaticToast({
       <IconButton
         css={styles.closeTrigger}
         aria-label="Dismiss"
-        variant="solid"
+        variant="subtle"
         size="2xs"
         onPress={() => {}}
       >

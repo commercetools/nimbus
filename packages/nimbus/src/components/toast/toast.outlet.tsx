@@ -107,7 +107,7 @@ function ToastContent({
         <ChakraToast.CloseTrigger asChild>
           <IconButton
             aria-label={msg.format("dismiss")}
-            variant="solid"
+            variant="subtle"
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}
           >

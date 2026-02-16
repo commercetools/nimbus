@@ -91,7 +91,7 @@ export const toastRecipe = defineSlotRecipe({
       position: "absolute",
       top: "-300",
       right: "-300",
-      outline: "1px solid {colors.bg}",
+      border: "1px solid {colors.bg}",
     },
   },
 
@@ -157,6 +157,9 @@ export const toastRecipe = defineSlotRecipe({
         },
         description: {
           color: "neutral.11",
+        },
+        closeTrigger: {
+          colorPalette: "neutral",
         },
       },
     },
