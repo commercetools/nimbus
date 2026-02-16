@@ -32,7 +32,7 @@ const COLOR_PALETTE_MAP: Record<ToastType, string> = {
   success: "positive",
   warning: "warning",
   error: "critical",
-  loading: "info",
+  loading: "neutral",
 };
 
 const getARIAAttributes = (type?: ToastType) => {

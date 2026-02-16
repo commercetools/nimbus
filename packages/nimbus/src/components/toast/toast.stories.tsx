@@ -18,7 +18,13 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
-import { Button, Stack, Text, toast } from "@commercetools/nimbus";
+import {
+  Button,
+  LoadingSpinner,
+  Stack,
+  Text,
+  toast,
+} from "@commercetools/nimbus";
 import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   CheckCircleOutline,
@@ -268,7 +274,7 @@ function StaticToast({
   title,
   description,
 }: {
-  type: "info" | "success" | "warning" | "error";
+  type: "info" | "success" | "warning" | "error" | "loading";
   variant: "solid" | "subtle" | "accent-start";
   title: string;
   description: string;
@@ -278,6 +284,12 @@ function StaticToast({
     success: <CheckCircleOutline />,
     warning: <WarningAmber />,
     error: <ErrorOutline />,
+    loading: (
+      <LoadingSpinner
+        size="xs"
+        colorPalette={variant === "solid" ? "white" : "primary"}
+      />
+    ),
   };
 
   const COLOR_PALETTE_MAP = {
@@ -285,6 +297,7 @@ function StaticToast({
     success: "positive",
     warning: "warning",
     error: "critical",
+    loading: "neutral",
   };
 
   const recipe = useSlotRecipe({ key: "toast" });
@@ -319,12 +332,8 @@ function StaticToast({
   );
 }
 
-const TOAST_TYPES: Array<"info" | "success" | "warning" | "error"> = [
-  "info",
-  "success",
-  "warning",
-  "error",
-];
+const TOAST_TYPES: Array<"info" | "success" | "warning" | "error" | "loading"> =
+  ["info", "success", "warning", "error", "loading"];
 
 /**
  * Static Visual Variants
