@@ -128,7 +128,7 @@ export const toastRecipe = defineSlotRecipe({
           color: "colorPalette.11",
         },
         description: {
-          color: "colorPalette.11",
+          color: "colorPalette.12",
         },
       },
       "accent-start": {
