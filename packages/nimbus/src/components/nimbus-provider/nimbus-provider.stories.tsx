@@ -390,7 +390,7 @@ export const WithoutFontLoading: Story = {
             This provider does not load fonts (loadFonts=false). Fonts should be
             provided by host application.
           </Text>
-          <Text fontSize="sm" color="neutral.8">
+          <Text fontSize="sm" color="neutral.11">
             Use this when your application already loads Inter font.
           </Text>
         </Stack>
@@ -429,7 +429,7 @@ export const WithFontLoading: Story = {
           <Text>
             This text should render in Inter font (loaded from Google Fonts).
           </Text>
-          <Text fontSize="sm" color="neutral.8">
+          <Text fontSize="sm" color="neutral.11">
             Font stack: Inter, -apple-system, BlinkMacSystemFont, sans-serif
           </Text>
         </Stack>
