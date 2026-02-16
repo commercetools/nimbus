@@ -230,7 +230,7 @@ function StaticToast({
   description,
 }: {
   type: "info" | "success" | "warning" | "error";
-  variant: "solid" | "subtle";
+  variant: "solid" | "subtle" | "accent-start";
   title: string;
   description: string;
 }) {
@@ -324,6 +324,21 @@ export const StaticVisualVariants: Story = {
             variant="subtle"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
             description={`This is a ${type} message with subtle background and border.`}
+          />
+        ))}
+      </Stack>
+
+      <Stack direction="column" gap="16px">
+        <Text fontSize="lg" fontWeight="semibold">
+          Accent Start Variant
+        </Text>
+        {TOAST_TYPES.map((type) => (
+          <StaticToast
+            key={`accent-start-${type}`}
+            type={type}
+            variant="accent-start"
+            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
+            description={`This is a ${type} message with a colored accent line on the start edge.`}
           />
         ))}
       </Stack>

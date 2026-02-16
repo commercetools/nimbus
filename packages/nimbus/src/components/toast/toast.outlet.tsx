@@ -17,7 +17,7 @@ import { Button } from "../button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { toastMessagesStrings } from "./toast.messages";
 import { toasters } from "./toast.toasters";
-import type { ToastType } from "./toast.types";
+import type { ToastType, ToastVariant } from "./toast.types";
 
 const ICON_MAP: Record<ToastType, React.ReactElement> = {
   info: <Info />,
@@ -55,7 +55,7 @@ function ToastContent({
   const styles = useToastStyles();
   const msg = useLocalizedStringFormatter(toastMessagesStrings);
   const type = (toast.type as ToastType) || "info";
-  const variant = (toast.meta?.variant as "solid" | "subtle") || "solid";
+  const variant = (toast.meta?.variant as ToastVariant) || "solid";
   const closable =
     toast.meta?.closable !== undefined
       ? (toast.meta.closable as boolean)
@@ -138,8 +138,7 @@ export function ToastOutlet() {
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
             const type = (toast.type as ToastType) || "info";
-            const variant =
-              (toast.meta?.variant as "solid" | "subtle") || "solid";
+            const variant = (toast.meta?.variant as ToastVariant) || "solid";
 
             return (
               <ChakraToast.Root

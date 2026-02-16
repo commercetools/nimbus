@@ -37,8 +37,9 @@ export interface ToastAction {
  * Toast visual variant.
  * - solid: Bold colored background with contrast text (default)
  * - subtle: Subtle background with border
+ * - accent-start: Subtle background with a colored accent line on the inline-start edge
  */
-export type ToastVariant = "solid" | "subtle";
+export type ToastVariant = "solid" | "subtle" | "accent-start";
 
 /**
  * Options for creating a toast notification.

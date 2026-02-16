@@ -16,6 +16,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Variants:
  * - solid: Bold colored background with contrast text (default)
  * - subtle: Subtle background with border
+ * - accent-start: Subtle background with a colored accent line on the inline-start edge (via inset box-shadow)
  */
 export const toastRecipe = defineSlotRecipe({
   slots: [
@@ -118,6 +119,26 @@ export const toastRecipe = defineSlotRecipe({
           borderColor: "colorPalette.5",
           backgroundColor: "colorPalette.2",
           padding: "200",
+        },
+        indicator: {
+          "& svg": {
+            color: "colorPalette.11",
+          },
+        },
+        title: {
+          color: "colorPalette.11",
+        },
+        description: {
+          color: "colorPalette.11",
+        },
+      },
+      "accent-start": {
+        root: {
+          backgroundColor: "colorPalette.2",
+          padding: "200",
+          // Accent line on the inline-start edge via inset box-shadow
+          // (no real border, so it doesn't affect layout).
+          boxShadow: "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9)",
         },
         indicator: {
           "& svg": {
