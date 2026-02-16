@@ -6,7 +6,7 @@
     "packages": ["packages/tokens"]
   },
   "scripts": {
-    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
+    "build": "pnpm build:tokens && pnpm extract-intl && pnpm run build:packages && pnpm run build:docs",
     "build:packages": "pnpm -r --filter './packages/*' build",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
