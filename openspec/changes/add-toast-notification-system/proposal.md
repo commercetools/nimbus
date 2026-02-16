@@ -11,7 +11,8 @@ without interrupting workflow. No toast component exists in Nimbus today.
 - **NEW** `ToastManager` internal singleton routing toast IDs to placement-specific
   Chakra UI toaster instances
 - **NEW** `ToastOutlet` rendered inside `NimbusProvider` for zero-setup
-- **NEW** `toast` slot recipe (overrides Chakra's default toast recipe key)
+- **NEW** `toast` slot recipe with 3 visual variants (solid, subtle, accent-start)
+  registered under the `toast` key to override Chakra's default toast recipe
 - **NEW** i18n message: `Nimbus.Toast.dismiss` (5 locales: en, de, es, fr-FR,
   pt-BR)
 - **MODIFIED** `NimbusProvider` renders `<ToastOutlet />` as child

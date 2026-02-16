@@ -47,7 +47,7 @@ export type ToastVariant = "solid" | "subtle" | "accent-start";
 export interface ToastOptions {
   /** Toast type determines styling and ARIA role */
   type?: ToastType;
-  /** Visual variant (default: "solid") */
+  /** Visual variant (default: "accent-start") */
   variant?: ToastVariant;
   /** Title text (required for most toasts) */
   title?: string;

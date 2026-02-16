@@ -1,10 +1,11 @@
 ## ADDED Requirements
 
-### Requirement: Toast Variants
+### Requirement: Toast Types
 
-The toast system SHALL support four types: `info`, `success`, `warning`, and
-`error`. Each type SHALL map to a Nimbus semantic color palette (`info`,
-`positive`, `warning`, `critical`) and render a corresponding status icon.
+The toast system SHALL support four semantic types: `info`, `success`,
+`warning`, and `error`. Each type SHALL map to a Nimbus semantic color palette
+(`info`, `positive`, `warning`, `critical`) and render a corresponding status
+icon. A fifth type, `loading`, is used internally by the promise pattern.
 
 #### Scenario: Info toast
 
@@ -26,6 +27,33 @@ The toast system SHALL support four types: `info`, `success`, `warning`, and
 - **WHEN** a toast is created with `type: "error"`
 - **THEN** it renders with the `critical` color palette and an error icon
 
+#### Scenario: Loading toast (promise pattern)
+
+- **WHEN** a promise toast is in the loading state
+- **THEN** it renders with the `neutral` color palette and a loading spinner
+
+### Requirement: Toast Visual Variants
+
+The toast system SHALL support three visual variants controlling the toast's
+appearance: `solid`, `subtle`, and `accent-start`. The default variant is
+`accent-start`.
+
+#### Scenario: Solid variant
+
+- **WHEN** a toast is created with `variant: "solid"`
+- **THEN** it renders with a bold colored background and contrast text
+
+#### Scenario: Subtle variant
+
+- **WHEN** a toast is created with `variant: "subtle"`
+- **THEN** it renders with a subtle background and an inset border
+
+#### Scenario: Accent-start variant (default)
+
+- **WHEN** a toast is created without specifying a variant
+- **THEN** it renders with a subtle neutral background and a colored accent line
+  on the inline-start edge
+
 ### Requirement: Imperative Toast API
 
 The system SHALL export a `toast` function that creates toasts without requiring
@@ -33,12 +61,14 @@ hooks, providers, or setup beyond `NimbusProvider`.
 
 #### Scenario: Basic toast creation
 
-- **WHEN** a consumer calls `toast({ title: "Saved" })`
+- **WHEN** a consumer calls
+  `toast({ title: "Saved", description: "Your changes have been saved" })`
 - **THEN** a toast appears in the default placement (`top-end`)
 
 #### Scenario: Convenience methods
 
-- **WHEN** a consumer calls `toast.success({ title: "Done" })`
+- **WHEN** a consumer calls
+  `toast.success({ title: "Done", description: "Operation completed" })`
 - **THEN** a toast appears with `type: "success"`
 
 #### Scenario: Programmatic dismiss
@@ -95,7 +125,7 @@ Timers SHALL pause on hover, focus, and page idle (via Chakra's built-in
 
 #### Scenario: Disabled auto-dismiss
 
-- **WHEN** a toast is created with `duration: 0`
+- **WHEN** a toast is created with `duration: Infinity`
 - **THEN** it persists until manually dismissed
 
 #### Scenario: Pause on hover
@@ -131,7 +161,7 @@ timer, or programmatic API.
 ### Requirement: Action Button
 
 Toasts SHALL support an optional action button. Toasts with actions SHALL NOT
-auto-dismiss (`ToastManager.create()` enforces `duration: 0`).
+auto-dismiss (`ToastManager.create()` enforces `duration: Infinity`).
 
 #### Scenario: Action toast
 
@@ -234,17 +264,25 @@ regions. No additional setup SHALL be required from consumers.
 
 Toasts SHALL support a `closable` property that controls close button
 visibility. Forwarded via `meta.closable` for toasts created through
-`ToastManager.create()`.
+`ToastManager.create()`. By default, the close button is hidden. Persistent
+toasts (`duration: Infinity`) automatically enable the close button unless
+explicitly set to `false`.
 
-#### Scenario: Closable true (default)
+#### Scenario: Closable false (default)
 
 - **WHEN** a toast is created without specifying `closable`
+- **THEN** the close button is hidden
+
+#### Scenario: Closable true
+
+- **WHEN** a toast is created with `closable: true`
 - **THEN** the close button is visible
 
-#### Scenario: Closable false
+#### Scenario: Persistent toasts default to closable
 
-- **WHEN** a toast is created with `closable: false`
-- **THEN** the close button is hidden
+- **WHEN** a toast is created with an action (which forces `duration: Infinity`)
+  and no explicit `closable` value
+- **THEN** the close button is visible
 
 ### Requirement: Immediate Removal
 

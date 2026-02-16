@@ -88,7 +88,7 @@ class ToastManager implements IToastManager {
       pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
         closable,
-        variant: safeOptions.variant ?? "solid",
+        variant: safeOptions.variant ?? "accent-start",
         ...safeOptions.meta,
       },
     };

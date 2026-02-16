@@ -11,7 +11,8 @@ inline, covering a different use case.
   - Zero-setup consumer experience (just call `toast()`)
   - Per-toast placement without consumer-managed toasters
   - WCAG 2.1 AA compliance with ARIA role differentiation
-  - 4 variants: info, success, warning, error
+  - 4 types: info, success, warning, error (plus loading for promise pattern)
+  - 3 visual variants: solid, subtle, accent-start
   - Action buttons and promise/loading pattern
   - i18n support for library strings
 
@@ -56,8 +57,20 @@ Managed by `ToastManager.create()` which sets `duration: 6000` by default.
 Pause on hover/focus is Chakra's built-in behavior (`pauseOnInteraction: true`).
 Pause on page idle enabled via `pauseOnPageIdle: true`.
 
-Toasts with `action` get `duration: 0` — enforced by `ToastManager.create()`,
-as Chakra does not do this automatically.
+Toasts with `action` get `duration: Infinity` — enforced by
+`ToastManager.create()`, as Chakra does not do this automatically.
+
+### Visual Variants
+
+Three visual variants control toast appearance:
+
+- **accent-start** (default): Neutral background with a 3px colored accent line
+  on the inline-start edge. Appropriate for most use cases.
+- **solid**: Bold colored background with contrast text. High visual prominence.
+- **subtle**: Subtle colored background with an inset border.
+
+The variant is passed via `meta.variant` and read by `ToastOutlet` to set the
+recipe variant on `ChakraToast.Root`.
 
 ### Hotkeys: Per-Placement Numpad Mapping
 
@@ -68,9 +81,10 @@ corresponding toast region.
 ### Closable Property
 
 Forwarded via `meta.closable` to the render function. The `ToastOutlet` reads
-this to show/hide the close button. Note: for `toast.promise()`, options are
-passed directly to Chakra's `toaster.promise()` — the `closable` property
-follows Chakra's native handling in that path.
+this to show/hide the close button. Defaults to `false` for timed toasts and
+`true` for persistent toasts (`duration: Infinity`). Note: for
+`toast.promise()`, options are passed directly to Chakra's `toaster.promise()` —
+the `closable` property follows Chakra's native handling in that path.
 
 ## Risks / Trade-offs
 
