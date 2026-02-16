@@ -116,27 +116,6 @@ describe("useFontLoader", () => {
     });
   });
 
-  it("should handle SSR environment without errors", () => {
-    // Instead of trying to simulate full SSR with renderHook,
-    // we verify the hook returns early when document is undefined
-    // by checking it doesn't attempt to call document methods
-
-    const querySelectorCalls = querySelectorSpy.mock.calls.length;
-    const appendCalls = appendSpy.mock.calls.length;
-
-    // In real SSR, document would be undefined and the hook would return early
-    // Here we verify the guard clause works by checking the implementation
-    // The actual SSR compatibility is verified by the typeof check in the hook
-
-    // Hook should check typeof document before accessing it
-    // This test verifies hook structure rather than simulating SSR
-    expect(useFontLoader).toBeDefined();
-    expect(typeof document).toBe("object"); // Confirms we're in browser test env
-
-    // In SSR (where document is undefined), no document methods would be called
-    // Our implementation handles this via: if (typeof document === 'undefined') return;
-  });
-
   it("should re-inject fonts when enabled changes from false to true", () => {
     const { rerender } = renderHook(({ enabled }) => useFontLoader(enabled), {
       initialProps: { enabled: false },
