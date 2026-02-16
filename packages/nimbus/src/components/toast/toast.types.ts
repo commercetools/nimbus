@@ -9,7 +9,7 @@
  * - warning: Warning messages (role="alert", assertive)
  * - error: Error messages (role="alert", assertive)
  */
-export type ToastType = "info" | "success" | "warning" | "error";
+export type ToastType = "info" | "success" | "warning" | "error" | "loading";
 
 /**
  * Toast placement determines position on screen.

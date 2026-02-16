@@ -14,12 +14,13 @@ import {
 } from "@commercetools/nimbus-icons";
 import { IconButton } from "../icon-button";
 import { Button } from "../button";
+import { LoadingSpinner } from "../loading-spinner/loading-spinner";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { toastMessagesStrings } from "./toast.messages";
 import { toasters } from "./toast.toasters";
 import type { ToastType, ToastVariant } from "./toast.types";
 
-const ICON_MAP: Record<ToastType, React.ReactElement> = {
+const ICON_MAP: Record<Exclude<ToastType, "loading">, React.ReactElement> = {
   info: <Info />,
   success: <CheckCircleOutline />,
   warning: <WarningAmber />,
@@ -31,6 +32,7 @@ const COLOR_PALETTE_MAP: Record<ToastType, string> = {
   success: "positive",
   warning: "warning",
   error: "critical",
+  loading: "info",
 };
 
 const getARIAAttributes = (type?: ToastType) => {
@@ -63,7 +65,16 @@ function ToastContent({
 
   return (
     <>
-      <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
+      <chakra.div css={styles.indicator}>
+        {type === "loading" ? (
+          <LoadingSpinner
+            size="xs"
+            colorPalette={variant === "solid" ? "white" : "primary"}
+          />
+        ) : (
+          ICON_MAP[type]
+        )}
+      </chakra.div>
 
       {toast.title && <ChakraToast.Title>{toast.title}</ChakraToast.Title>}
 
