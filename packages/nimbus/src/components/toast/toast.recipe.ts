@@ -35,7 +35,8 @@ export const toastRecipe = defineSlotRecipe({
     root: {
       display: "grid",
       gridTemplateColumns: "auto 1fr auto",
-      gap: "200",
+      gridColumnGap: "200",
+      gridRowGap: "0",
       width: "400px",
       alignItems: "start",
       px: "400",
@@ -70,12 +71,13 @@ export const toastRecipe = defineSlotRecipe({
     title: {
       gridColumn: "2",
       order: "1",
-      textStyle: "lg",
+      textStyle: "md",
       fontWeight: "600",
     },
     description: {
       gridColumn: "2",
       order: "2",
+      textStyle: "sm",
     },
     actionTrigger: {
       gridColumn: "2",
