@@ -35,6 +35,7 @@ export const toastRecipe = defineSlotRecipe({
     root: {
       display: "grid",
       gridTemplateColumns: "auto 1fr auto",
+      gridTemplateRows: "auto auto",
       gridColumnGap: "200",
       gridRowGap: "0",
       width: "400px",
@@ -70,13 +71,13 @@ export const toastRecipe = defineSlotRecipe({
     },
     title: {
       gridColumn: "2",
-      order: "1",
+      gridRow: "1",
       textStyle: "md",
       fontWeight: "600",
     },
     description: {
       gridColumn: "2",
-      order: "2",
+      gridRow: "2",
       textStyle: "sm",
     },
     actionTrigger: {
@@ -109,7 +110,11 @@ export const toastRecipe = defineSlotRecipe({
           color: "colorPalette.contrast",
         },
         actionTrigger: {
-          color: "colorPalette.contrast!",
+          // TODO: override, dependency on button a button variant that might change
+          "&:not(&:hover)": {
+            color: "colorPalette.contrast",
+            borderColor: "colorPalette.contrast",
+          },
         },
         closeTrigger: {
           color: "colorPalette.contrast",

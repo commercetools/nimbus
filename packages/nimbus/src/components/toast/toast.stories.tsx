@@ -363,11 +363,14 @@ function StaticToast({
       <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
       <chakra.div css={styles.title}>{title}</chakra.div>
       <chakra.div css={styles.description}>{description}</chakra.div>
-      <chakra.div css={styles.actionTrigger}>
-        <Button variant="outline" size="xs" onPress={() => {}}>
-          Undo
-        </Button>
-      </chakra.div>
+      <Button
+        css={styles.actionTrigger}
+        variant="outline"
+        size="xs"
+        onPress={() => {}}
+      >
+        Undo
+      </Button>
     </chakra.div>
   );
 }
