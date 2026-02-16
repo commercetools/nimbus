@@ -42,7 +42,7 @@ export const toastRecipe = defineSlotRecipe({
       px: "400",
       py: "300",
       borderRadius: "100",
-      boxShadow: "md",
+      boxShadow: "1",
       // Animation styles consuming Ark UI's CSS custom properties
       pointerEvents: "auto",
       translate: "var(--x) var(--y)",
@@ -115,9 +115,9 @@ export const toastRecipe = defineSlotRecipe({
       },
       subtle: {
         root: {
-          border: "solid-25",
-          borderColor: "colorPalette.5",
           backgroundColor: "colorPalette.2",
+          boxShadow:
+            "inset 0 0 0 1px var(--nimbus-colors-color-palette-5), {shadows.1}",
         },
         indicator: {
           "& svg": {
@@ -136,7 +136,8 @@ export const toastRecipe = defineSlotRecipe({
           backgroundColor: "neutral.2",
           // Accent line on the inline-start edge via inset box-shadow
           // (no real border, so it doesn't affect layout).
-          boxShadow: "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9)",
+          boxShadow:
+            "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9), inset 0 0 0 1px var(--nimbus-colors-neutral-5), {shadows.1}",
         },
         indicator: {
           "& svg": {
