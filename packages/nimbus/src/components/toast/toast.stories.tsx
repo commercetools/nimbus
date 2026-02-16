@@ -1,7 +1,7 @@
 /**
  * Storybook stories for Toast component with comprehensive play functions
  * Testing all requirements from OpenSpec:
- * - All 4 variants (info, success, warning, error)
+ * - All 4 types (info, success, warning, error)
  * - Auto-dismiss behavior (default, custom, disabled)
  * - Pause behavior (hover, focus)
  * - Dismissal (close button, Escape key, programmatic)
@@ -80,10 +80,16 @@ async function clearToasts() {
 }
 
 /**
- * Base Story - All 4 Variants
- * Tests the four toast types with correct icons and color palettes
+ * Types
+ * Tests the four functional toast types (info, success, warning, error)
+ * with correct icons, color palettes, and ARIA roles.
+ *
+ * Types are functional permutations that determine semantics:
+ * - icon displayed
+ * - color palette applied
+ * - ARIA role (status vs alert) and aria-live (polite vs assertive)
  */
-export const Variants: Story = {
+export const Types: Story = {
   render: () => {
     const showToasts = () => {
       toast.info({ title: "Info toast", description: "This is informational" });
@@ -103,7 +109,7 @@ export const Variants: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onPress={showToasts}>Show All Variants</Button>
+        <Button onPress={showToasts}>Show All Types</Button>
         <Text fontSize="sm" color="fg.muted">
           Click to show info, success, warning, and error toasts
         </Text>
@@ -114,49 +120,74 @@ export const Variants: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByRole("button", { name: /Show All Variants/i });
+    const button = canvas.getByRole("button", { name: /Show All Types/i });
+
+    await step("Renders all 4 toast types with correct content", async () => {
+      await userEvent.click(button);
+
+      // Wait for toasts to appear
+      const infoToast = await body.findByText(
+        "Info toast",
+        {},
+        { timeout: 3000 }
+      );
+      const successToast = await body.findByText("Success toast");
+      const warningToast = await body.findByText("Warning toast");
+      const errorToast = await body.findByText("Error toast");
+
+      await expect(infoToast).toBeInTheDocument();
+      await expect(successToast).toBeInTheDocument();
+      await expect(warningToast).toBeInTheDocument();
+      await expect(errorToast).toBeInTheDocument();
+    });
 
     await step(
-      "Renders all 4 toast variants with correct attributes",
+      "Info and success types have role='status' (polite)",
       async () => {
-        await userEvent.click(button);
+        const infoToast = body.getByText("Info toast");
+        const successToast = body.getByText("Success toast");
 
-        // Wait for toasts to appear
-        const infoToast = await body.findByText(
-          "Info toast",
-          {},
-          { timeout: 3000 }
-        );
-        const successToast = await body.findByText("Success toast");
-        const warningToast = await body.findByText("Warning toast");
-        const errorToast = await body.findByText("Error toast");
-
-        await expect(infoToast).toBeInTheDocument();
-        await expect(successToast).toBeInTheDocument();
-        await expect(warningToast).toBeInTheDocument();
-        await expect(errorToast).toBeInTheDocument();
-
-        // Check ARIA roles
         const infoContainer = infoToast.closest('[role="status"]');
         const successContainer = successToast.closest('[role="status"]');
+
+        await expect(infoContainer).toBeInTheDocument();
+        await expect(infoContainer).toHaveAttribute("aria-live", "polite");
+        await expect(successContainer).toBeInTheDocument();
+        await expect(successContainer).toHaveAttribute("aria-live", "polite");
+      }
+    );
+
+    await step(
+      "Warning and error types have role='alert' (assertive)",
+      async () => {
+        const warningToast = body.getByText("Warning toast");
+        const errorToast = body.getByText("Error toast");
+
         const warningContainer = warningToast.closest('[role="alert"]');
         const errorContainer = errorToast.closest('[role="alert"]');
 
-        await expect(infoContainer).toBeInTheDocument();
-        await expect(successContainer).toBeInTheDocument();
         await expect(warningContainer).toBeInTheDocument();
+        await expect(warningContainer).toHaveAttribute(
+          "aria-live",
+          "assertive"
+        );
         await expect(errorContainer).toBeInTheDocument();
+        await expect(errorContainer).toHaveAttribute("aria-live", "assertive");
       }
     );
   },
 };
 
 /**
- * Visual Variants
- * Tests "solid" (bold colored background), "subtle" (subtle with border),
- * and "accent-start" (accent line on inline-start edge) variants
+ * Variants
+ * Tests the three visual variants: solid, subtle, and accent-start.
+ *
+ * Variants are visual permutations that determine presentation:
+ * - solid: Bold colored background with contrast text
+ * - subtle: Subtle background with border
+ * - accent-start: Neutral background with colored accent line on inline-start edge
  */
-export const VisualVariants: Story = {
+export const Variants: Story = {
   render: () => {
     const showSolidVariants = () => {
       toast.info({
@@ -390,11 +421,11 @@ const TOAST_TYPES: Array<"info" | "success" | "warning" | "error" | "loading"> =
   ["info", "success", "warning", "error", "loading"];
 
 /**
- * Static Visual Variants
- * Displays all toast variants statically (no toasting) for styling purposes.
- * Shows all combinations of type (info, success, warning, error) × variant (solid, subtle)
+ * Static Variants
+ * Displays all toast type × variant combinations statically (no toasting) for styling purposes.
+ * Shows the full matrix: type (info, success, warning, error, loading) × variant (solid, subtle, accent-start)
  */
-export const StaticVisualVariants: Story = {
+export const StaticVariants: Story = {
   parameters: {
     layout: "padded",
   },
@@ -402,7 +433,7 @@ export const StaticVisualVariants: Story = {
     <Stack direction="row" gap="32px" alignItems="start">
       <Stack direction="column" gap="16px">
         <Text fontSize="lg" fontWeight="semibold">
-          Solid (Default)
+          Solid
         </Text>
         {TOAST_TYPES.map((type) => (
           <StaticToast
@@ -432,7 +463,7 @@ export const StaticVisualVariants: Story = {
 
       <Stack direction="column" gap="16px">
         <Text fontSize="lg" fontWeight="semibold">
-          Accent Start
+          Accent Start (Default)
         </Text>
         {TOAST_TYPES.map((type) => (
           <StaticToast
@@ -446,76 +477,6 @@ export const StaticVisualVariants: Story = {
       </Stack>
     </Stack>
   ),
-};
-
-/**
- * ARIA Role Differentiation
- * Tests that info/success use role="status" (polite) and warning/error use role="alert" (assertive)
- */
-export const ARIARoles: Story = {
-  render: () => {
-    const showRoleToasts = () => {
-      toast.info({
-        title: "Info (status) toast",
-        description: "Uses role=status",
-      });
-      toast.success({
-        title: "Success (status) toast",
-        description: "Uses role=status",
-      });
-      toast.warning({
-        title: "Warning (alert) toast",
-        description: "Uses role=alert",
-      });
-      toast.error({
-        title: "Error (alert) toast",
-        description: "Uses role=alert",
-      });
-    };
-
-    return (
-      <Button onPress={showRoleToasts} data-testid="show-role-toasts">
-        Show ARIA Role Toasts
-      </Button>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    await clearToasts();
-    const canvas = within(canvasElement);
-    const body = within(document.body);
-    const button = canvas.getByTestId("show-role-toasts");
-
-    await step("Info and success toasts have role='status'", async () => {
-      await userEvent.click(button);
-
-      // Find toasts by their text content
-      const infoToast = await body.findByText("Info (status) toast");
-      const successToast = await body.findByText("Success (status) toast");
-
-      // Verify they have role="status" and aria-live="polite"
-      const infoContainer = infoToast.closest('[role="status"]');
-      const successContainer = successToast.closest('[role="status"]');
-
-      await expect(infoContainer).toBeInTheDocument();
-      await expect(infoContainer).toHaveAttribute("aria-live", "polite");
-      await expect(successContainer).toBeInTheDocument();
-      await expect(successContainer).toHaveAttribute("aria-live", "polite");
-    });
-
-    await step("Warning and error toasts have role='alert'", async () => {
-      const warningToast = await body.findByText("Warning (alert) toast");
-      const errorToast = await body.findByText("Error (alert) toast");
-
-      // Verify they have role="alert" and aria-live="assertive"
-      const warningContainer = warningToast.closest('[role="alert"]');
-      const errorContainer = errorToast.closest('[role="alert"]');
-
-      await expect(warningContainer).toBeInTheDocument();
-      await expect(warningContainer).toHaveAttribute("aria-live", "assertive");
-      await expect(errorContainer).toBeInTheDocument();
-      await expect(errorContainer).toHaveAttribute("aria-live", "assertive");
-    });
-  },
 };
 
 /**

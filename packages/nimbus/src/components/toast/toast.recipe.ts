@@ -37,7 +37,7 @@ export const toastRecipe = defineSlotRecipe({
       gridTemplateColumns: "auto 1fr auto",
       gridTemplateRows: "auto auto",
       gridColumnGap: "200",
-      gridRowGap: "0",
+      gridRowGap: "100",
       width: "400px",
       alignItems: "start",
       px: "400",
@@ -64,7 +64,7 @@ export const toastRecipe = defineSlotRecipe({
     },
     indicator: {
       gridColumn: "1",
-      gridRow: "1",
+      gridRow: "1 / -1",
 
       "& svg": {
         width: "600",
