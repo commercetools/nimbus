@@ -356,7 +356,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="solid"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with bold colored background.`}
+            description="Supporting text that provides additional context."
           />
         ))}
       </Stack>
@@ -371,7 +371,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="subtle"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with subtle background.`}
+            description="Supporting text that provides additional context."
           />
         ))}
       </Stack>
@@ -386,7 +386,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="accent-start"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with accent line.`}
+            description="Supporting text that provides additional context."
           />
         ))}
       </Stack>

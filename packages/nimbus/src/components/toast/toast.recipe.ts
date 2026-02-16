@@ -133,7 +133,7 @@ export const toastRecipe = defineSlotRecipe({
       },
       "accent-start": {
         root: {
-          backgroundColor: "colorPalette.2",
+          backgroundColor: "neutral.2",
           // Accent line on the inline-start edge via inset box-shadow
           // (no real border, so it doesn't affect layout).
           boxShadow: "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9)",
@@ -144,10 +144,10 @@ export const toastRecipe = defineSlotRecipe({
           },
         },
         title: {
-          color: "colorPalette.11",
+          color: "neutral.12",
         },
         description: {
-          color: "colorPalette.11",
+          color: "neutral.11",
         },
       },
     },
