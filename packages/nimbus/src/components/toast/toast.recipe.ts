@@ -37,9 +37,10 @@ export const toastRecipe = defineSlotRecipe({
       gridTemplateColumns: "auto 1fr auto",
       gap: "200",
       width: "100%",
-      minWidth: "320px",
-      maxWidth: "560px",
+      maxWidth: "400px",
       alignItems: "start",
+      px: "400",
+      py: "300",
       borderRadius: "100",
       boxShadow: "md",
       // Animation styles consuming Ark UI's CSS custom properties
@@ -93,8 +94,6 @@ export const toastRecipe = defineSlotRecipe({
       solid: {
         root: {
           backgroundColor: "colorPalette.9",
-          px: "400",
-          py: "300",
           focusRing: "outside",
         },
         indicator: {
@@ -118,7 +117,6 @@ export const toastRecipe = defineSlotRecipe({
           border: "solid-25",
           borderColor: "colorPalette.5",
           backgroundColor: "colorPalette.2",
-          padding: "200",
         },
         indicator: {
           "& svg": {
@@ -135,7 +133,6 @@ export const toastRecipe = defineSlotRecipe({
       "accent-start": {
         root: {
           backgroundColor: "colorPalette.2",
-          padding: "200",
           // Accent line on the inline-start edge via inset box-shadow
           // (no real border, so it doesn't affect layout).
           boxShadow: "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9)",
