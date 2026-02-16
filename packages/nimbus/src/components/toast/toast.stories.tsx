@@ -170,166 +170,6 @@ export const Types: Story = {
   },
 };
 
-/**
- * Variants
- * Tests the three visual variants: solid, subtle, and accent-start.
- *
- * Variants are visual permutations that determine presentation:
- * - solid: Bold colored background with contrast text
- * - subtle: Subtle background with border
- * - accent-start: Neutral background with colored accent line on inline-start edge
- */
-export const Variants: Story = {
-  render: () => {
-    const showSolidVariants = () => {
-      toast.info({
-        title: "Info (solid)",
-        description: "Solid variant demo",
-        variant: "solid",
-      });
-      toast.success({
-        title: "Success (solid)",
-        description: "Solid variant demo",
-        variant: "solid",
-      });
-      toast.warning({
-        title: "Warning (solid)",
-        description: "Solid variant demo",
-        variant: "solid",
-      });
-      toast.error({
-        title: "Error (solid)",
-        description: "Solid variant demo",
-        variant: "solid",
-      });
-    };
-
-    const showSubtleVariants = () => {
-      toast.info({
-        title: "Info (subtle)",
-        description: "Subtle variant demo",
-        variant: "subtle",
-      });
-      toast.success({
-        title: "Success (subtle)",
-        description: "Subtle variant demo",
-        variant: "subtle",
-      });
-      toast.warning({
-        title: "Warning (subtle)",
-        description: "Subtle variant demo",
-        variant: "subtle",
-      });
-      toast.error({
-        title: "Error (subtle)",
-        description: "Subtle variant demo",
-        variant: "subtle",
-      });
-    };
-
-    const showAccentStartVariants = () => {
-      toast.info({
-        title: "Info (accent-start)",
-        description: "Accent variant demo",
-        variant: "accent-start",
-      });
-      toast.success({
-        title: "Success (accent-start)",
-        description: "Accent variant demo",
-        variant: "accent-start",
-      });
-      toast.warning({
-        title: "Warning (accent-start)",
-        description: "Accent variant demo",
-        variant: "accent-start",
-      });
-      toast.error({
-        title: "Error (accent-start)",
-        description: "Accent variant demo",
-        variant: "accent-start",
-      });
-    };
-
-    return (
-      <Stack direction="column" gap="16px">
-        <Button onPress={showSolidVariants} data-testid="show-solid">
-          Show Solid Variants
-        </Button>
-        <Button onPress={showSubtleVariants} data-testid="show-subtle">
-          Show Subtle Variants
-        </Button>
-        <Button
-          onPress={showAccentStartVariants}
-          data-testid="show-accent-start"
-        >
-          Show Accent Start Variants
-        </Button>
-        <Text fontSize="sm" color="fg.muted">
-          Solid: Bold colored backgrounds (default)
-          <br />
-          Subtle: Subtle backgrounds with borders
-          <br />
-          Accent Start: Subtle background with colored accent line
-        </Text>
-      </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    await clearToasts();
-    const canvas = within(canvasElement);
-    const body = within(document.body);
-
-    await step("Solid variants render with bold backgrounds", async () => {
-      const solidButton = canvas.getByTestId("show-solid");
-      await userEvent.click(solidButton);
-
-      const infoSolid = await body.findByText("Info (solid)");
-      const successSolid = await body.findByText("Success (solid)");
-      const warningSolid = await body.findByText("Warning (solid)");
-      const errorSolid = await body.findByText("Error (solid)");
-
-      await expect(infoSolid).toBeInTheDocument();
-      await expect(successSolid).toBeInTheDocument();
-      await expect(warningSolid).toBeInTheDocument();
-      await expect(errorSolid).toBeInTheDocument();
-
-      await clearToasts();
-    });
-
-    await step("Subtle variants render with subtle borders", async () => {
-      const subtleButton = canvas.getByTestId("show-subtle");
-      await userEvent.click(subtleButton);
-
-      const infoSubtle = await body.findByText("Info (subtle)");
-      const successSubtle = await body.findByText("Success (subtle)");
-      const warningSubtle = await body.findByText("Warning (subtle)");
-      const errorSubtle = await body.findByText("Error (subtle)");
-
-      await expect(infoSubtle).toBeInTheDocument();
-      await expect(successSubtle).toBeInTheDocument();
-      await expect(warningSubtle).toBeInTheDocument();
-      await expect(errorSubtle).toBeInTheDocument();
-
-      await clearToasts();
-    });
-
-    await step("Accent-start variants render with accent line", async () => {
-      const accentButton = canvas.getByTestId("show-accent-start");
-      await userEvent.click(accentButton);
-
-      const infoAccent = await body.findByText("Info (accent-start)");
-      const successAccent = await body.findByText("Success (accent-start)");
-      const warningAccent = await body.findByText("Warning (accent-start)");
-      const errorAccent = await body.findByText("Error (accent-start)");
-
-      await expect(infoAccent).toBeInTheDocument();
-      await expect(successAccent).toBeInTheDocument();
-      await expect(warningAccent).toBeInTheDocument();
-      await expect(errorAccent).toBeInTheDocument();
-    });
-  },
-};
-
 const TOAST_TYPES: ToastType[] = ["info", "success", "warning", "error"];
 
 const VARIANT_PLACEMENTS: Array<{
@@ -342,10 +182,14 @@ const VARIANT_PLACEMENTS: Array<{
 ];
 
 /**
- * All Variants
+ * Variants
  * Fires all type × variant combinations, each variant in a different corner.
+ *
+ * - accent-start → top-start
+ * - subtle → top-end
+ * - solid → bottom-end
  */
-export const AllVariants: Story = {
+export const Variants: Story = {
   parameters: {
     layout: "fullscreen",
   },

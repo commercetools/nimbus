@@ -86,6 +86,7 @@ function ToastContent({
         <ChakraToast.ActionTrigger asChild>
           <Button
             variant={variant === "solid" ? "solid" : "outline"}
+            size="sm"
             onPress={() => {
               const action = toast.action as {
                 label?: string;
