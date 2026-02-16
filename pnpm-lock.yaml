@@ -451,6 +451,9 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12
     devDependencies:
+      '@commercetools/nimbus-design-token-ts-plugin':
+        specifier: workspace:^
+        version: link:../../packages/design-token-ts-plugin
       '@eslint/js':
         specifier: catalog:tooling
         version: 9.39.2
@@ -513,6 +516,21 @@ importers:
         specifier: catalog:utils
         version: 24.10.1
 
+  packages/design-token-ts-plugin:
+    devDependencies:
+      '@commercetools/nimbus-tokens':
+        specifier: workspace:^
+        version: link:../tokens
+      '@types/node':
+        specifier: catalog:utils
+        version: 24.10.1
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: catalog:tooling
+        version: 4.0.18(@types/node@24.10.1)(@vitest/browser-playwright@4.0.18)(happy-dom@20.0.8)(jsdom@27.4.0(postcss@8.5.6))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+
   packages/i18n:
     devDependencies:
       '@internationalized/string-compiler':
@@ -567,6 +585,9 @@ importers:
       '@chakra-ui/react':
         specifier: catalog:react
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools/nimbus-design-token-ts-plugin':
+        specifier: workspace:^
+        version: link:../design-token-ts-plugin
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons

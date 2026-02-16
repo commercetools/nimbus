@@ -23,7 +23,10 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "plugins": [
+      { "name": "@commercetools/nimbus-design-token-ts-plugin" }
+    ]
   },
   "include": ["src"]
 }

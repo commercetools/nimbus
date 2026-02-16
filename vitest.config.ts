@@ -11,6 +11,7 @@ export default defineConfig({
     projects: [
       "./packages/nimbus/vitest.storybook.config.ts",
       "./packages/nimbus/vitest.unit.config.ts",
+      "./packages/design-token-ts-plugin/vitest.config.ts",
     ],
   },
 });
