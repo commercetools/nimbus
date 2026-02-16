@@ -420,10 +420,19 @@ function StaticToast({
 const TOAST_TYPES: Array<"info" | "success" | "warning" | "error" | "loading"> =
   ["info", "success", "warning", "error", "loading"];
 
+const TOAST_VARIANTS: Array<{
+  value: "accent-start" | "subtle" | "solid";
+  label: string;
+}> = [
+  { value: "accent-start", label: "Accent Start (Default)" },
+  { value: "subtle", label: "Subtle" },
+  { value: "solid", label: "Solid" },
+];
+
 /**
  * Static Variants
  * Displays all toast type × variant combinations statically (no toasting) for styling purposes.
- * Shows the full matrix: type (info, success, warning, error, loading) × variant (solid, subtle, accent-start)
+ * Shows the full matrix: type (info, success, warning, error, loading) × variant (accent-start, subtle, solid)
  */
 export const StaticVariants: Story = {
   parameters: {
@@ -431,50 +440,22 @@ export const StaticVariants: Story = {
   },
   render: () => (
     <Stack direction="row" gap="32px" alignItems="start">
-      <Stack direction="column" gap="16px">
-        <Text fontSize="lg" fontWeight="semibold">
-          Solid
-        </Text>
-        {TOAST_TYPES.map((type) => (
-          <StaticToast
-            key={`solid-${type}`}
-            type={type}
-            variant="solid"
-            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description="Supporting text that provides additional context."
-          />
-        ))}
-      </Stack>
-
-      <Stack direction="column" gap="16px">
-        <Text fontSize="lg" fontWeight="semibold">
-          Subtle
-        </Text>
-        {TOAST_TYPES.map((type) => (
-          <StaticToast
-            key={`subtle-${type}`}
-            type={type}
-            variant="subtle"
-            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description="Supporting text that provides additional context."
-          />
-        ))}
-      </Stack>
-
-      <Stack direction="column" gap="16px">
-        <Text fontSize="lg" fontWeight="semibold">
-          Accent Start (Default)
-        </Text>
-        {TOAST_TYPES.map((type) => (
-          <StaticToast
-            key={`accent-start-${type}`}
-            type={type}
-            variant="accent-start"
-            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description="Supporting text that provides additional context."
-          />
-        ))}
-      </Stack>
+      {TOAST_VARIANTS.map(({ value, label }) => (
+        <Stack key={value} direction="column" gap="16px">
+          <Text fontSize="lg" fontWeight="semibold">
+            {label}
+          </Text>
+          {TOAST_TYPES.map((type) => (
+            <StaticToast
+              key={`${value}-${type}`}
+              type={type}
+              variant={value}
+              title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
+              description="Supporting text that provides additional context."
+            />
+          ))}
+        </Stack>
+      ))}
     </Stack>
   ),
 };
