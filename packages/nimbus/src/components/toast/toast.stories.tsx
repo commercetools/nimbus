@@ -19,9 +19,10 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Button, Stack, Text, toast } from "@commercetools/nimbus";
-import { Toast as ChakraToast, Toaster, createToaster } from "@chakra-ui/react";
+import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   CheckCircleOutline,
+  Clear,
   ErrorOutline,
   Info,
   WarningAmber,
@@ -219,96 +220,115 @@ export const VisualVariants: Story = {
 };
 
 /**
+ * A single static toast rendered with recipe styles directly.
+ * No Toaster/toast machine needed — just the visual layout.
+ */
+function StaticToast({
+  type,
+  variant,
+  title,
+  description,
+}: {
+  type: "info" | "success" | "warning" | "error";
+  variant: "solid" | "subtle";
+  title: string;
+  description: string;
+}) {
+  const ICON_MAP = {
+    info: <Info />,
+    success: <CheckCircleOutline />,
+    warning: <WarningAmber />,
+    error: <ErrorOutline />,
+  };
+
+  const COLOR_PALETTE_MAP = {
+    info: "info",
+    success: "positive",
+    warning: "warning",
+    error: "critical",
+  };
+
+  const recipe = useSlotRecipe({ key: "toast" });
+  const styles = recipe({ variant });
+
+  // Override Ark UI animation CSS custom properties for static display
+  const staticRootStyles = {
+    ...styles.root,
+    colorPalette: COLOR_PALETTE_MAP[type],
+    // Neutralize animation transforms so the toast is fully visible
+    translate: "0 0",
+    scale: "1",
+    opacity: "1",
+    height: "auto",
+    willChange: "auto",
+    transition: "none",
+    position: "relative" as const,
+  };
+
+  return (
+    <chakra.div css={staticRootStyles}>
+      <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
+      <chakra.div css={styles.title}>{title}</chakra.div>
+      <chakra.div css={styles.description}>{description}</chakra.div>
+      <chakra.div css={styles.closeTrigger}>
+        <Clear
+          style={{ width: "20px", height: "20px", cursor: "pointer" }}
+          role="img"
+        />
+      </chakra.div>
+    </chakra.div>
+  );
+}
+
+const TOAST_TYPES: Array<"info" | "success" | "warning" | "error"> = [
+  "info",
+  "success",
+  "warning",
+  "error",
+];
+
+/**
  * Static Visual Variants
- * Displays all toast variants statically for styling purposes
+ * Displays all toast variants statically (no toasting) for styling purposes.
  * Shows all combinations of type (info, success, warning, error) × variant (solid, subtle)
  */
 export const StaticVisualVariants: Story = {
-  render: () => {
-    const ICON_MAP = {
-      info: <Info />,
-      success: <CheckCircleOutline />,
-      warning: <WarningAmber />,
-      error: <ErrorOutline />,
-    };
-
-    const COLOR_PALETTE_MAP = {
-      info: "info",
-      success: "positive",
-      warning: "warning",
-      error: "critical",
-    };
-
-    const types: Array<"info" | "success" | "warning" | "error"> = [
-      "info",
-      "success",
-      "warning",
-      "error",
-    ];
-
-    // Create a dummy toaster for context (not used for actual toasting)
-    const [toaster] = React.useState(() =>
-      createToaster({ placement: "top-end" })
-    );
-
-    return (
-      <Toaster toaster={toaster}>
-        <Stack direction="column" gap="32px" maxWidth="600px">
-          <Stack direction="column" gap="16px">
-            <Text fontSize="lg" fontWeight="semibold">
-              Solid Variant (Default)
-            </Text>
-            {types.map((type) => (
-              <ChakraToast.Root
-                key={`solid-${type}`}
-                colorPalette={COLOR_PALETTE_MAP[type]}
-                variant="solid"
-              >
-                <Stack direction="row" gap="8px" align="start">
-                  {ICON_MAP[type]}
-                  <Stack direction="column" gap="4px" flex="1">
-                    <ChakraToast.Title>
-                      {type.charAt(0).toUpperCase() + type.slice(1)} Toast
-                    </ChakraToast.Title>
-                    <ChakraToast.Description>
-                      This is a {type} message with bold colored background and
-                      contrast text.
-                    </ChakraToast.Description>
-                  </Stack>
-                </Stack>
-              </ChakraToast.Root>
-            ))}
-          </Stack>
-
-          <Stack direction="column" gap="16px">
-            <Text fontSize="lg" fontWeight="semibold">
-              Subtle Variant
-            </Text>
-            {types.map((type) => (
-              <ChakraToast.Root
-                key={`subtle-${type}`}
-                colorPalette={COLOR_PALETTE_MAP[type]}
-                variant="subtle"
-              >
-                <Stack direction="row" gap="8px" align="start">
-                  {ICON_MAP[type]}
-                  <Stack direction="column" gap="4px" flex="1">
-                    <ChakraToast.Title>
-                      {type.charAt(0).toUpperCase() + type.slice(1)} Toast
-                    </ChakraToast.Title>
-                    <ChakraToast.Description>
-                      This is a {type} message with subtle background and
-                      border.
-                    </ChakraToast.Description>
-                  </Stack>
-                </Stack>
-              </ChakraToast.Root>
-            ))}
-          </Stack>
-        </Stack>
-      </Toaster>
-    );
+  parameters: {
+    layout: "padded",
   },
+  render: () => (
+    <Stack direction="column" gap="32px" maxWidth="600px">
+      <Stack direction="column" gap="16px">
+        <Text fontSize="lg" fontWeight="semibold">
+          Solid Variant (Default)
+        </Text>
+        {TOAST_TYPES.map((type) => (
+          <StaticToast
+            key={`solid-${type}`}
+            type={type}
+            variant="solid"
+            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
+            description={`This is a ${type} message with bold colored background and contrast text.`}
+          />
+        ))}
+      </Stack>
+
+      <Stack direction="column" gap="16px">
+        <Text fontSize="lg" fontWeight="semibold">
+          Subtle Variant
+        </Text>
+        {TOAST_TYPES.map((type) => (
+          <StaticToast
+            key={`subtle-${type}`}
+            type={type}
+            variant="subtle"
+            title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
+            description={`This is a ${type} message with subtle background and border.`}
+          />
+        ))}
+      </Stack>
+    </Stack>
+  ),
 };
 
 /**
