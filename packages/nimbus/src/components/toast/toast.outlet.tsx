@@ -97,6 +97,9 @@ function ToastContent({
           <IconButton
             aria-label={msg.format("dismiss")}
             variant={variant === "solid" ? "solid" : "ghost"}
+            colorPalette={
+              variant === "solid" ? undefined : COLOR_PALETTE_MAP[type]
+            }
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}
           >

@@ -40,7 +40,7 @@ export const toastRecipe = defineSlotRecipe({
       minWidth: "320px",
       maxWidth: "560px",
       alignItems: "start",
-      borderRadius: "200",
+      borderRadius: "100",
       boxShadow: "md",
       // Animation styles consuming Ark UI's CSS custom properties
       pointerEvents: "auto",
@@ -71,6 +71,7 @@ export const toastRecipe = defineSlotRecipe({
       gridColumn: "2",
       order: "1",
       textStyle: "lg",
+      fontWeight: "600",
     },
     description: {
       gridColumn: "2",
@@ -103,7 +104,6 @@ export const toastRecipe = defineSlotRecipe({
         },
         title: {
           color: "colorPalette.contrast",
-          fontWeight: "600",
         },
         description: {
           color: "colorPalette.contrast",
