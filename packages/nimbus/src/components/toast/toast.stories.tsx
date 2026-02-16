@@ -20,20 +20,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import {
   Button,
-  IconButton,
-  LoadingSpinner,
   Stack,
   Text,
   toast,
+  type ToastType,
+  type ToastVariant,
 } from "@commercetools/nimbus";
-import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
-import {
-  CheckCircleOutline,
-  Clear,
-  ErrorOutline,
-  Info,
-  WarningAmber,
-} from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -338,126 +330,56 @@ export const Variants: Story = {
   },
 };
 
-/**
- * A single static toast rendered with recipe styles directly.
- * No Toaster/toast machine needed — just the visual layout.
- */
-function StaticToast({
-  type,
-  variant,
-  title,
-  description,
-}: {
-  type: "info" | "success" | "warning" | "error" | "loading";
-  variant: "solid" | "subtle" | "accent-start";
-  title: string;
-  description: string;
-}) {
-  const ICON_MAP = {
-    info: <Info />,
-    success: <CheckCircleOutline />,
-    warning: <WarningAmber />,
-    error: <ErrorOutline />,
-    loading: (
-      <LoadingSpinner
-        size="xs"
-        colorPalette={variant === "solid" ? "white" : "primary"}
-      />
-    ),
-  };
+const TOAST_TYPES: ToastType[] = ["info", "success", "warning", "error"];
 
-  const COLOR_PALETTE_MAP = {
-    info: "info",
-    success: "positive",
-    warning: "warning",
-    error: "critical",
-    loading: "neutral",
-  };
-
-  const recipe = useSlotRecipe({ key: "toast" });
-  const styles = recipe({ variant });
-
-  // Override Ark UI animation CSS custom properties for static display
-  const staticRootStyles = {
-    ...styles.root,
-    colorPalette: COLOR_PALETTE_MAP[type],
-    // Neutralize animation transforms so the toast is fully visible
-    translate: "0 0",
-    scale: "1",
-    opacity: "1",
-    height: "auto",
-    willChange: "auto",
-    transition: "none",
-    position: "relative" as const,
-  };
-
-  return (
-    <chakra.div css={staticRootStyles}>
-      <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
-      <chakra.div css={styles.title}>{title}</chakra.div>
-      <chakra.div css={styles.description}>{description}</chakra.div>
-      <Button
-        css={styles.actionTrigger}
-        variant="outline"
-        size="xs"
-        onPress={() => {}}
-      >
-        Undo
-      </Button>
-      <IconButton
-        css={styles.closeTrigger}
-        aria-label="Dismiss"
-        variant="subtle"
-        size="2xs"
-        onPress={() => {}}
-      >
-        <Clear role="img" />
-      </IconButton>
-    </chakra.div>
-  );
-}
-
-const TOAST_TYPES: Array<"info" | "success" | "warning" | "error" | "loading"> =
-  ["info", "success", "warning", "error", "loading"];
-
-const TOAST_VARIANTS: Array<{
-  value: "accent-start" | "subtle" | "solid";
-  label: string;
+const VARIANT_PLACEMENTS: Array<{
+  variant: ToastVariant;
+  placement: "top-start" | "top-end" | "bottom-end";
 }> = [
-  { value: "accent-start", label: "Accent Start (Default)" },
-  { value: "subtle", label: "Subtle" },
-  { value: "solid", label: "Solid" },
+  { variant: "accent-start", placement: "top-start" },
+  { variant: "subtle", placement: "top-end" },
+  { variant: "solid", placement: "bottom-end" },
 ];
 
 /**
- * Static Variants
- * Displays all toast type × variant combinations statically (no toasting) for styling purposes.
- * Shows the full matrix: type (info, success, warning, error, loading) × variant (accent-start, subtle, solid)
+ * All Variants
+ * Fires all type × variant combinations, each variant in a different corner.
  */
-export const StaticVariants: Story = {
+export const AllVariants: Story = {
   parameters: {
-    layout: "padded",
+    layout: "fullscreen",
   },
-  render: () => (
-    <Stack direction="row" gap="32px" alignItems="start">
-      {TOAST_VARIANTS.map(({ value, label }) => (
-        <Stack key={value} direction="column" gap="16px">
-          <Text fontSize="lg" fontWeight="semibold">
-            {label}
-          </Text>
-          {TOAST_TYPES.map((type) => (
-            <StaticToast
-              key={`${value}-${type}`}
-              type={type}
-              variant={value}
-              title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-              description="Supporting text that provides additional context."
-            />
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  ),
+  render: () => {
+    const showAll = () => {
+      VARIANT_PLACEMENTS.forEach(({ variant, placement }) => {
+        TOAST_TYPES.forEach((type) => {
+          toast[type]({
+            title: `${type} (${variant})`,
+            description: "Supporting text that provides additional context.",
+            variant,
+            placement,
+            closable: true,
+            duration: Infinity,
+            action: {
+              label: "Undo",
+              onClick: () => {},
+            },
+          });
+        });
+      });
+    };
+
+    return (
+      <Button onPress={showAll} margin="400" data-testid="show-all-variants">
+        Show All Variants
+      </Button>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("show-all-variants");
+    await userEvent.click(button);
+  },
 };
 
 /**

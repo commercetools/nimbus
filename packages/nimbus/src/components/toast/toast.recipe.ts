@@ -114,11 +114,7 @@ export const toastRecipe = defineSlotRecipe({
           color: "colorPalette.contrast",
         },
         actionTrigger: {
-          // TODO: override, dependency on button a button variant that might change
-          "&:not(&:hover)": {
-            color: "colorPalette.contrast",
-            borderColor: "colorPalette.contrast",
-          },
+          borderColor: "colorPalette.contrast",
         },
       },
       subtle: {
@@ -157,6 +153,9 @@ export const toastRecipe = defineSlotRecipe({
         },
         description: {
           color: "neutral.11",
+        },
+        actionTrigger: {
+          colorPalette: "neutral",
         },
         closeTrigger: {
           colorPalette: "neutral",
