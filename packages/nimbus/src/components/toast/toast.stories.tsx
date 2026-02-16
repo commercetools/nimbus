@@ -146,7 +146,8 @@ export const Variants: Story = {
 
 /**
  * Visual Variants
- * Tests both "solid" (bold colored background) and "muted" (subtle with border) variants
+ * Tests "solid" (bold colored background), "subtle" (subtle with border),
+ * and "accent-start" (accent line on inline-start edge) variants
  */
 export const VisualVariants: Story = {
   render: () => {
@@ -157,11 +158,24 @@ export const VisualVariants: Story = {
       toast.error({ title: "Error (solid)", variant: "solid" });
     };
 
-    const showMutedVariants = () => {
-      toast.info({ title: "Info (muted)", variant: "muted" });
-      toast.success({ title: "Success (muted)", variant: "muted" });
-      toast.warning({ title: "Warning (muted)", variant: "muted" });
-      toast.error({ title: "Error (muted)", variant: "muted" });
+    const showSubtleVariants = () => {
+      toast.info({ title: "Info (subtle)", variant: "subtle" });
+      toast.success({ title: "Success (subtle)", variant: "subtle" });
+      toast.warning({ title: "Warning (subtle)", variant: "subtle" });
+      toast.error({ title: "Error (subtle)", variant: "subtle" });
+    };
+
+    const showAccentStartVariants = () => {
+      toast.info({ title: "Info (accent-start)", variant: "accent-start" });
+      toast.success({
+        title: "Success (accent-start)",
+        variant: "accent-start",
+      });
+      toast.warning({
+        title: "Warning (accent-start)",
+        variant: "accent-start",
+      });
+      toast.error({ title: "Error (accent-start)", variant: "accent-start" });
     };
 
     return (
@@ -169,13 +183,21 @@ export const VisualVariants: Story = {
         <Button onPress={showSolidVariants} data-testid="show-solid">
           Show Solid Variants
         </Button>
-        <Button onPress={showMutedVariants} data-testid="show-muted">
-          Show Muted Variants
+        <Button onPress={showSubtleVariants} data-testid="show-subtle">
+          Show Subtle Variants
+        </Button>
+        <Button
+          onPress={showAccentStartVariants}
+          data-testid="show-accent-start"
+        >
+          Show Accent Start Variants
         </Button>
         <Text fontSize="sm" color="fg.muted">
           Solid: Bold colored backgrounds (default)
           <br />
-          Muted: Subtle backgrounds with borders
+          Subtle: Subtle backgrounds with borders
+          <br />
+          Accent Start: Subtle background with colored accent line
         </Text>
       </Stack>
     );
@@ -215,6 +237,23 @@ export const VisualVariants: Story = {
       await expect(successSubtle).toBeInTheDocument();
       await expect(warningSubtle).toBeInTheDocument();
       await expect(errorSubtle).toBeInTheDocument();
+
+      await clearToasts();
+    });
+
+    await step("Accent-start variants render with accent line", async () => {
+      const accentButton = canvas.getByTestId("show-accent-start");
+      await userEvent.click(accentButton);
+
+      const infoAccent = await body.findByText("Info (accent-start)");
+      const successAccent = await body.findByText("Success (accent-start)");
+      const warningAccent = await body.findByText("Warning (accent-start)");
+      const errorAccent = await body.findByText("Error (accent-start)");
+
+      await expect(infoAccent).toBeInTheDocument();
+      await expect(successAccent).toBeInTheDocument();
+      await expect(warningAccent).toBeInTheDocument();
+      await expect(errorAccent).toBeInTheDocument();
     });
   },
 };
@@ -297,10 +336,10 @@ export const StaticVisualVariants: Story = {
     layout: "padded",
   },
   render: () => (
-    <Stack direction="column" gap="32px" maxWidth="600px">
+    <Stack direction="row" gap="32px" alignItems="start">
       <Stack direction="column" gap="16px">
         <Text fontSize="lg" fontWeight="semibold">
-          Solid Variant (Default)
+          Solid (Default)
         </Text>
         {TOAST_TYPES.map((type) => (
           <StaticToast
@@ -308,14 +347,14 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="solid"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with bold colored background and contrast text.`}
+            description={`This is a ${type} message with bold colored background.`}
           />
         ))}
       </Stack>
 
       <Stack direction="column" gap="16px">
         <Text fontSize="lg" fontWeight="semibold">
-          Subtle Variant
+          Subtle
         </Text>
         {TOAST_TYPES.map((type) => (
           <StaticToast
@@ -323,14 +362,14 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="subtle"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with subtle background and border.`}
+            description={`This is a ${type} message with subtle background.`}
           />
         ))}
       </Stack>
 
       <Stack direction="column" gap="16px">
         <Text fontSize="lg" fontWeight="semibold">
-          Accent Start Variant
+          Accent Start
         </Text>
         {TOAST_TYPES.map((type) => (
           <StaticToast
@@ -338,7 +377,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="accent-start"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description={`This is a ${type} message with a colored accent line on the start edge.`}
+            description={`This is a ${type} message with accent line.`}
           />
         ))}
       </Stack>
