@@ -11,7 +11,7 @@ catalogs:
   tooling:
     "@fission-ai/openspec": ^1.1.1
     globals: ^17.3.0
-    glob: ^11.0.3
+    glob: ^13.0.3
     typescript: ~5.9.3
     typescript-eslint: ^8.54.0
     tsx: ^4.21.0
