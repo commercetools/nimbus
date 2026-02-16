@@ -163,6 +163,6 @@ export const toastRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
-    variant: "solid",
+    variant: "accent-start",
   },
 });

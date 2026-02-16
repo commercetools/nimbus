@@ -425,7 +425,7 @@ export const StaticVisualVariants: Story = {
             type={type}
             variant="subtle"
             title={`${type.charAt(0).toUpperCase() + type.slice(1)} Toast`}
-            description="Supporting text that provides  context."
+            description="Supporting text that provides additional context."
           />
         ))}
       </Stack>

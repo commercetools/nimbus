@@ -57,7 +57,7 @@ function ToastContent({
   const styles = useToastStyles();
   const msg = useLocalizedStringFormatter(toastMessagesStrings);
   const type = (toast.type as ToastType) || "info";
-  const variant = (toast.meta?.variant as ToastVariant) || "solid";
+  const variant = (toast.meta?.variant as ToastVariant) || "accent-start";
   const closable =
     toast.meta?.closable !== undefined
       ? (toast.meta.closable as boolean)
@@ -149,7 +149,8 @@ export function ToastOutlet() {
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
             const type = (toast.type as ToastType) || "info";
-            const variant = (toast.meta?.variant as ToastVariant) || "solid";
+            const variant =
+              (toast.meta?.variant as ToastVariant) || "accent-start";
 
             return (
               <ChakraToast.Root
