@@ -1124,15 +1124,15 @@ export const ProgrammaticUpdate: Story = {
 };
 
 /**
- * Internationalization
- * Tests translated aria-label for close button
+ * Close Button Aria Label
+ * Tests that close button has a hardcoded aria-label
  */
-export const Internationalization: Story = {
+export const CloseButtonAriaLabel: Story = {
   render: () => {
-    const showI18nToast = () => {
+    const showToast = () => {
       toast({
-        title: "i18n test",
-        description: "Close button label is translated",
+        title: "Aria label test",
+        description: "Close button should have an aria-label",
         type: "info",
         duration: Infinity,
         closable: true,
@@ -1141,12 +1141,9 @@ export const Internationalization: Story = {
 
     return (
       <Stack direction="column" gap="16px">
-        <Button onPress={showI18nToast} data-testid="i18n-toast-btn">
+        <Button onPress={showToast} data-testid="aria-label-toast-btn">
           Show Toast
         </Button>
-        <Text fontSize="sm" color="fg.muted">
-          Close button should have translated aria-label based on locale
-        </Text>
       </Stack>
     );
   },
@@ -1154,23 +1151,18 @@ export const Internationalization: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("i18n-toast-btn");
+    const button = canvas.getByTestId("aria-label-toast-btn");
 
-    await step("Close button has translated aria-label", async () => {
+    await step("Close button has aria-label", async () => {
       await userEvent.click(button);
 
-      const toastText = await body.findByText("i18n test");
+      const toastText = await body.findByText("Aria label test");
       const toastContainer = toastText.closest(
         '[role="status"]'
       ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
-      // Verify aria-label is present and translated (default: English)
-      const ariaLabel = closeButton.getAttribute("aria-label");
-      expect(ariaLabel).toBeTruthy();
-
-      // Common translations: "Dismiss", "Close", "Schließen" (de), "Cerrar" (es), "Fermer" (fr)
-      expect(ariaLabel).toMatch(/dismiss|close|schließen|cerrar|fermer/i);
+      expect(closeButton.getAttribute("aria-label")).toBe("__Dismiss");
     });
   },
 };

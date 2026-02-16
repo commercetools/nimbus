@@ -15,8 +15,6 @@ import {
 import { IconButton } from "../icon-button";
 import { Button } from "../button";
 import { LoadingSpinner } from "../loading-spinner/loading-spinner";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { toastMessagesStrings } from "./toast.messages";
 import { toasters } from "./toast.toasters";
 import type { ToastType, ToastVariant } from "./toast.types";
 
@@ -55,7 +53,6 @@ function ToastContent({
   toaster: CreateToasterReturn;
 }) {
   const styles = useToastStyles();
-  const msg = useLocalizedStringFormatter(toastMessagesStrings);
   const type = (toast.type as ToastType) || "info";
   const variant = (toast.meta?.variant as ToastVariant) || "accent-start";
   const closable =
@@ -107,7 +104,8 @@ function ToastContent({
       {closable && (
         <ChakraToast.CloseTrigger asChild>
           <IconButton
-            aria-label={msg.format("dismiss")}
+            // TODO: replace with i18n translated string once localization is wired up
+            aria-label="__Dismiss"
             variant="subtle"
             size="2xs"
             onPress={() => toaster.dismiss(toast.id)}

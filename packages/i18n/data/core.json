@@ -542,9 +542,5 @@
   "Nimbus.TagGroup.removeTag": {
     "developer_comment": "aria-label for remove tag button",
     "string": "Remove tag"
-  },
-  "Nimbus.Toast.dismiss": {
-    "developer_comment": "Aria-label for toast close button",
-    "string": "Dismiss"
   }
 }
