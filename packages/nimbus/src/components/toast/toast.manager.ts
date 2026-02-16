@@ -205,32 +205,33 @@ const manager = ToastManager.getInstance();
  * @example
  * ```tsx
  * // Create toast
- * const id = toast({ title: "Success", type: "success" });
+ * const id = toast({ title: "Success", description: "Operation completed", type: "success" });
  *
  * // Convenience methods
- * toast.info({ title: "Information" });
- * toast.success({ title: "Success" });
- * toast.warning({ title: "Warning" });
- * toast.error({ title: "Error" });
+ * toast.info({ title: "Information", description: "Something happened" });
+ * toast.success({ title: "Success", description: "Operation completed" });
+ * toast.warning({ title: "Warning", description: "Please review" });
+ * toast.error({ title: "Error", description: "Something went wrong" });
  *
  * // With variant (default is "solid")
- * toast.info({ title: "Subtle info", variant: "subtle" });
- * toast.success({ title: "Bold success", variant: "solid" });
+ * toast.info({ title: "Subtle info", description: "Additional context", variant: "subtle" });
+ * toast.success({ title: "Bold success", description: "Changes saved", variant: "solid" });
  *
  * // With close button (off by default)
- * toast.info({ title: "Closable", closable: true });
+ * toast.info({ title: "Closable", description: "Can be dismissed", closable: true });
  *
  * // With action button
  * toast({
  *   title: "Action required",
+ *   description: "File was deleted",
  *   action: { label: "Undo", onClick: () => {} }
  * });
  *
  * // Promise pattern
  * toast.promise(fetchData(), {
- *   loading: { title: "Loading..." },
- *   success: { title: "Done!" },
- *   error: { title: "Failed!" }
+ *   loading: { title: "Loading...", description: "Please wait" },
+ *   success: { title: "Done!", description: "Data loaded" },
+ *   error: { title: "Failed!", description: "Could not load data" }
  * });
  *
  * // Dismiss

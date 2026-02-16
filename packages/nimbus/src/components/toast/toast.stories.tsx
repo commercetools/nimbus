@@ -28,7 +28,6 @@ import {
 import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   CheckCircleOutline,
-  Clear,
   ErrorOutline,
   Info,
   WarningAmber,
@@ -158,30 +157,72 @@ export const Variants: Story = {
 export const VisualVariants: Story = {
   render: () => {
     const showSolidVariants = () => {
-      toast.info({ title: "Info (solid)", variant: "solid" });
-      toast.success({ title: "Success (solid)", variant: "solid" });
-      toast.warning({ title: "Warning (solid)", variant: "solid" });
-      toast.error({ title: "Error (solid)", variant: "solid" });
+      toast.info({
+        title: "Info (solid)",
+        description: "Solid variant demo",
+        variant: "solid",
+      });
+      toast.success({
+        title: "Success (solid)",
+        description: "Solid variant demo",
+        variant: "solid",
+      });
+      toast.warning({
+        title: "Warning (solid)",
+        description: "Solid variant demo",
+        variant: "solid",
+      });
+      toast.error({
+        title: "Error (solid)",
+        description: "Solid variant demo",
+        variant: "solid",
+      });
     };
 
     const showSubtleVariants = () => {
-      toast.info({ title: "Info (subtle)", variant: "subtle" });
-      toast.success({ title: "Success (subtle)", variant: "subtle" });
-      toast.warning({ title: "Warning (subtle)", variant: "subtle" });
-      toast.error({ title: "Error (subtle)", variant: "subtle" });
+      toast.info({
+        title: "Info (subtle)",
+        description: "Subtle variant demo",
+        variant: "subtle",
+      });
+      toast.success({
+        title: "Success (subtle)",
+        description: "Subtle variant demo",
+        variant: "subtle",
+      });
+      toast.warning({
+        title: "Warning (subtle)",
+        description: "Subtle variant demo",
+        variant: "subtle",
+      });
+      toast.error({
+        title: "Error (subtle)",
+        description: "Subtle variant demo",
+        variant: "subtle",
+      });
     };
 
     const showAccentStartVariants = () => {
-      toast.info({ title: "Info (accent-start)", variant: "accent-start" });
+      toast.info({
+        title: "Info (accent-start)",
+        description: "Accent variant demo",
+        variant: "accent-start",
+      });
       toast.success({
         title: "Success (accent-start)",
+        description: "Accent variant demo",
         variant: "accent-start",
       });
       toast.warning({
         title: "Warning (accent-start)",
+        description: "Accent variant demo",
         variant: "accent-start",
       });
-      toast.error({ title: "Error (accent-start)", variant: "accent-start" });
+      toast.error({
+        title: "Error (accent-start)",
+        description: "Accent variant demo",
+        variant: "accent-start",
+      });
     };
 
     return (
@@ -322,11 +363,10 @@ function StaticToast({
       <chakra.div css={styles.indicator}>{ICON_MAP[type]}</chakra.div>
       <chakra.div css={styles.title}>{title}</chakra.div>
       <chakra.div css={styles.description}>{description}</chakra.div>
-      <chakra.div css={styles.closeTrigger}>
-        <Clear
-          style={{ width: "20px", height: "20px", cursor: "pointer" }}
-          role="img"
-        />
+      <chakra.div css={styles.actionTrigger}>
+        <Button variant="outline" size="xs" onPress={() => {}}>
+          Undo
+        </Button>
       </chakra.div>
     </chakra.div>
   );
@@ -401,10 +441,22 @@ export const StaticVisualVariants: Story = {
 export const ARIARoles: Story = {
   render: () => {
     const showRoleToasts = () => {
-      toast.info({ title: "Info (status) toast" });
-      toast.success({ title: "Success (status) toast" });
-      toast.warning({ title: "Warning (alert) toast" });
-      toast.error({ title: "Error (alert) toast" });
+      toast.info({
+        title: "Info (status) toast",
+        description: "Uses role=status",
+      });
+      toast.success({
+        title: "Success (status) toast",
+        description: "Uses role=status",
+      });
+      toast.warning({
+        title: "Warning (alert) toast",
+        description: "Uses role=alert",
+      });
+      toast.error({
+        title: "Error (alert) toast",
+        description: "Uses role=alert",
+      });
     };
 
     return (
@@ -459,9 +511,23 @@ export const ARIARoles: Story = {
 export const AutoDismiss: Story = {
   render: () => {
     const showAutoDismissToasts = () => {
-      toast({ title: "Default (6s)", type: "info" });
-      toast({ title: "Custom (2s)", type: "success", duration: 2000 });
-      toast({ title: "No auto-dismiss", type: "warning", duration: Infinity });
+      toast({
+        title: "Default (6s)",
+        description: "Dismisses after 6 seconds",
+        type: "info",
+      });
+      toast({
+        title: "Custom (2s)",
+        description: "Dismisses after 2 seconds",
+        type: "success",
+        duration: 2000,
+      });
+      toast({
+        title: "No auto-dismiss",
+        description: "Persists until dismissed",
+        type: "warning",
+        duration: Infinity,
+      });
     };
 
     return (
@@ -540,6 +606,7 @@ export const PauseBehavior: Story = {
     const showPauseToast = () => {
       toast({
         title: "Hover or focus me to pause",
+        description: "Timer pauses on interaction",
         type: "info",
         duration: 3000,
         closable: true,
@@ -616,15 +683,21 @@ export const Dismissal: Story = {
     const showDismissalToasts = () => {
       toast.info({
         title: "Close button test",
+        description: "Click the close button to dismiss",
         duration: 5000,
         closable: true,
       });
       toast.success({
         title: "Escape key test",
+        description: "Press Escape to dismiss",
         duration: 5000,
         closable: true,
       });
-      toast.warning({ title: "Programmatic dismiss", duration: 5000 });
+      toast.warning({
+        title: "Programmatic dismiss",
+        description: "Dismissed via API",
+        duration: 5000,
+      });
     };
 
     return (
@@ -907,14 +980,24 @@ export const StackingAndQueuing: Story = {
   render: () => {
     const showMultipleToasts = () => {
       for (let i = 1; i <= 5; i++) {
-        toast({ title: `Toast ${i}`, type: "info", duration: Infinity });
+        toast({
+          title: `Toast ${i}`,
+          description: `Stacking demo toast ${i}`,
+          type: "info",
+          duration: Infinity,
+        });
       }
     };
 
     const showManyToasts = () => {
       for (let i = 1; i <= 30; i++) {
         // Exceeds max of 24
-        toast({ title: `Toast ${i}`, type: "info", duration: Infinity });
+        toast({
+          title: `Toast ${i}`,
+          description: `Queuing demo toast ${i}`,
+          type: "info",
+          duration: Infinity,
+        });
       }
     };
 
@@ -978,11 +1061,27 @@ export const StackingAndQueuing: Story = {
 export const MultiPlacement: Story = {
   render: () => {
     const showMultiPlacement = () => {
-      toast({ title: "Top End", type: "info", placement: "top-end" });
-      toast({ title: "Bottom End", type: "success", placement: "bottom-end" });
-      toast({ title: "Top Start", type: "warning", placement: "top-start" });
+      toast({
+        title: "Top End",
+        description: "Placed at top-end",
+        type: "info",
+        placement: "top-end",
+      });
+      toast({
+        title: "Bottom End",
+        description: "Placed at bottom-end",
+        type: "success",
+        placement: "bottom-end",
+      });
+      toast({
+        title: "Top Start",
+        description: "Placed at top-start",
+        type: "warning",
+        placement: "top-start",
+      });
       toast({
         title: "Bottom Start",
+        description: "Placed at bottom-start",
         type: "error",
         placement: "bottom-start",
       });
@@ -1023,7 +1122,10 @@ export const MultiPlacement: Story = {
     });
 
     await step("Default placement is top-end", async () => {
-      toast({ title: "Default placement" });
+      toast({
+        title: "Default placement",
+        description: "Should appear at top-end",
+      });
       const toastText = await body.findByText("Default placement");
       const rect = toastText.getBoundingClientRect();
 
@@ -1128,11 +1230,13 @@ export const ClosableControl: Story = {
     const showClosableToasts = () => {
       toast({
         title: "Not closable (default)",
+        description: "No close button shown",
         type: "warning",
         duration: Infinity,
       });
       toast({
         title: "Closable (opt-in)",
+        description: "Close button is visible",
         type: "info",
         closable: true,
         duration: Infinity,
@@ -1193,7 +1297,11 @@ export const ClosableControl: Story = {
 export const ReducedMotion: Story = {
   render: () => {
     const showMotionToast = () => {
-      toast({ title: "Motion test", type: "info" });
+      toast({
+        title: "Motion test",
+        description: "Verify animation behavior",
+        type: "info",
+      });
     };
 
     return (
@@ -1302,6 +1410,7 @@ export const Internationalization: Story = {
     const showI18nToast = () => {
       toast({
         title: "i18n test",
+        description: "Close button label is translated",
         type: "info",
         duration: Infinity,
         closable: true,
@@ -1355,7 +1464,7 @@ export const ComprehensiveIntegration: Story = {
       // Simulate save operation with promise
       const savePromise = new Promise((resolve) => setTimeout(resolve, 1500));
       toast.promise(savePromise, {
-        loading: { title: "Saving..." },
+        loading: { title: "Saving...", description: "Please wait" },
         success: {
           title: "Saved successfully",
           description: "Your changes have been saved",

@@ -44,7 +44,10 @@ describe("Toast - Basic usage", () => {
       <NimbusProvider>
         <Button
           onPress={() => {
-            toast.success({ title: "Success Toast" });
+            toast.success({
+              title: "Success Toast",
+              description: "Operation completed successfully",
+            });
           }}
         >
           Show Success
@@ -69,6 +72,7 @@ describe("Toast - Basic usage", () => {
           onPress={() => {
             toast({
               title: "Custom Placement",
+              description: "This toast appears at bottom-end",
               placement: "bottom-end",
             });
           }}
@@ -151,6 +155,7 @@ describe("Toast - Programmatic control", () => {
           onPress={() => {
             toastId = toast({
               title: "Dismissible Toast",
+              description: "This toast can be dismissed programmatically",
               duration: 0,
             });
           }}
@@ -203,9 +208,21 @@ describe("Toast - Promise pattern", () => {
         <Button
           onPress={() => {
             toast.promise(asyncOperation(), {
-              loading: { title: "Loading...", closable: false },
-              success: { title: "Success!", type: "success" },
-              error: { title: "Failed", type: "error" },
+              loading: {
+                title: "Loading...",
+                description: "Please wait",
+                closable: false,
+              },
+              success: {
+                title: "Success!",
+                description: "Operation completed",
+                type: "success",
+              },
+              error: {
+                title: "Failed",
+                description: "Something went wrong",
+                type: "error",
+              },
             });
           }}
         >

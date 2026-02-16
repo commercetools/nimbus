@@ -51,8 +51,8 @@ export interface ToastOptions {
   variant?: ToastVariant;
   /** Title text (required for most toasts) */
   title?: string;
-  /** Description text */
-  description?: string;
+  /** Description text (required for accessibility and context) */
+  description: string;
   /** Optional action button */
   action?: ToastAction;
   /** Auto-dismiss duration in milliseconds (default: 6000, Infinity = never) */

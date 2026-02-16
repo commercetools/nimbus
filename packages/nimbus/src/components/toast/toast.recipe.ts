@@ -80,9 +80,9 @@ export const toastRecipe = defineSlotRecipe({
       textStyle: "sm",
     },
     actionTrigger: {
-      gridColumn: "2",
-      order: "3",
-      justifySelf: "start",
+      gridColumn: "3",
+      gridRow: "1 / -1",
+      alignSelf: "center",
     },
     closeTrigger: {
       gridColumn: "3",
@@ -108,7 +108,9 @@ export const toastRecipe = defineSlotRecipe({
         description: {
           color: "colorPalette.contrast",
         },
-        actionTrigger: {},
+        actionTrigger: {
+          color: "colorPalette.contrast!",
+        },
         closeTrigger: {
           color: "colorPalette.contrast",
         },
