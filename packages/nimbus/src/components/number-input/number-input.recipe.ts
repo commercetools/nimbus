@@ -41,13 +41,11 @@ export const numberInputRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
     },
     trailingElement: {
-      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
