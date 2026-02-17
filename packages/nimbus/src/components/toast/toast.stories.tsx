@@ -170,7 +170,7 @@ export const Types: Story = {
   },
 };
 
-const TOAST_TYPES: ToastType[] = ["info", "success", "warning", "error"];
+const TOAST_TYPES = ["info", "success", "warning", "error"] as const;
 
 const VARIANT_PLACEMENTS: Array<{
   variant: ToastVariant;
