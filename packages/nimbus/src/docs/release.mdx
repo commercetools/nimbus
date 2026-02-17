@@ -26,16 +26,16 @@ type, and how to stay informed about changes that may affect your application.
 Nimbus follows [Semantic Versioning](https://semver.org/) with a predictable
 release schedule:
 
-| Release Type      | Frequency                   | Contents                           |
-| ----------------- | --------------------------- | ---------------------------------- |
-| **Major (X.0.0)** | As needed (infrequently)    | Breaking changes, major features   |
-| **Minor (x.Y.0)** | Monthly (1st Tuesday)       | New features, non-breaking changes |
-| **Patch (x.x.Z)** | As needed                   | Bug fixes, security patches        |
+| Release Type      | Frequency                                 | Contents                           |
+| ----------------- | ---------------------------               | ---------------------------------- |
+| **Major (X.0.0)** | As needed (infrequently)                  | Breaking changes, major features   |
+| **Minor (x.Y.0)** | Monthly (1st Tuesday) and as needed       | New features, non-breaking changes |
+| **Patch (x.x.Z)** | As needed                                 | Bug fixes, security patches        |
 
 ### What This Means for You
 
-- **Monthly minors** are released automatically on the 1st Tuesday of each month
-  at 10:00 UTC, giving you a predictable rhythm for planning upgrades
+- **Monthly minors** happen approximately monthly, giving you a predictable
+  rhythm for planning upgrades
 - **Ad-hoc patches** ensure critical fixes aren't delayed by the calendar
 - **Rare majors** minimize breaking change fatigue; we batch breaking changes
   when possible
@@ -70,11 +70,12 @@ situation and provide guidance.
 
 ### Communication Channels
 
-| Channel                                                                     | What You'll Find                  |
-| --------------------------------                                            | --------------------------------- |
-| **#nimbus-releases** (Slack)                                                | Release announcements             |
-| **#ask-nimbus-anything** (Slack)                                            | General questions, bug reports    |
-| **Changelog** ([GitHub](https://github.com/commercetools/nimbus/releases))  | Detailed technical changes        |
+| Channel                                                                        | What You'll Find                     |
+| ------------------------------------------------------------------------------ | ------------------------------------ |
+| [**Changelog**](https://github.com/commercetools/nimbus/releases)        | Release announcements, changelog     |
+| [**GitHub Issues**](https://github.com/commercetools/nimbus/issues)            | Bug reports, feature requests        |
+| [**GitHub Discussions**](https://github.com/commercetools/nimbus/discussions)  | Questions, major release Q&A         |
+| **#ask-nimbus-anything** (Slack)                                               | General questions                    |
 
 ### Announcement Format
 
@@ -90,9 +91,9 @@ All release announcements follow a consistent format:
 
 If a release introduces a critical issue:
 
-1. We'll communicate immediately in #nimbus-releases
+1. We'll create a [GitHub issue](https://github.com/commercetools/nimbus/issues) documenting the problem
 2. We'll publish a patch that reverts the problematic changes
-3. We'll provide a timeline for the proper fix
+3. We'll communicate in #ask-nimbus-anything linking to the issue
 
 ## Getting Support
 
@@ -100,7 +101,7 @@ If a release introduces a critical issue:
 
 Most questions can be answered through our documentation:
 
-- **Component documentation** — Usage examples and API reference (pinned in #ask-nimbus-anything)
+- **Component documentation** — Usage examples and API reference
 - **Storybook** — Interactive examples and visual testing
 - **Changelog** — Detailed list of all changes
 - **Migration guides** — Step-by-step upgrade instructions
@@ -109,14 +110,15 @@ Most questions can be answered through our documentation:
 
 If you can't find what you need in the docs:
 
-1. **Search #ask-nimbus-anything** — Your question may have been answered before
-2. **Post in #ask-nimbus-anything** — We aim to respond within 24 hours
-3. **File a GitHub issue** — For confirmed bugs or feature requests
+1. **Search GitHub Issues and Discussions** — Your question may have been answered before
+2. **File an Issue or start a Discussion** — We aim to respond within 24 hours
+3. **Internal developers**: also try #ask-nimbus-anything for quick questions
 
 ### Office Hours
 
 For major releases, we hold office hours where you can get live help with
-migrations and ask questions directly. These are announced in #nimbus-releases.
+migrations and ask questions directly. These are announced via GitHub Discussions
+and #ask-nimbus-anything.
 
 ### What We Can Help With
 
@@ -129,7 +131,8 @@ migrations and ask questions directly. These are announced in #nimbus-releases.
 
 - Updating your application code for you
 - Debugging issues in your application unrelated to Nimbus
-- Expedited timelines for specific features
+- Guaranteeing specific timelines for feature requests (though we do consider
+  urgency when planning our roadmap)
 
 ## Documentation Standards
 
@@ -145,6 +148,6 @@ We maintain documentation alongside code changes:
 
 ## Questions?
 
-- **General questions**: #ask-nimbus-anything
-- **Release announcements**: #nimbus-releases
-- **Bugs and feature requests**: [GitHub Issues](https://github.com/commercetools/nimbus/issues)
+- **Questions & discussions**: [GitHub Discussions](https://github.com/commercetools/nimbus/discussions)
+- **Bugs & feature requests**: [GitHub Issues](https://github.com/commercetools/nimbus/issues)
+- **Internal quick questions**: #ask-nimbus-anything
