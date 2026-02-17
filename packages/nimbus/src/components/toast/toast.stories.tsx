@@ -860,10 +860,7 @@ export const MultiPlacement: Story = {
 
 /**
  * Keyboard Navigation
- * Tests Tab navigation within toast.
- *
- * Note: Per-placement hotkeys (e.g., Alt+Shift+9) cannot be tested programmatically
- * due to browser security restrictions. Manual verification required.
+ * Tests Tab navigation and per-placement hotkeys within toast.
  */
 export const KeyboardNavigation: Story = {
   render: () => {
@@ -939,6 +936,35 @@ export const KeyboardNavigation: Story = {
       await userEvent.tab();
       expect(buttons.some((btn) => btn === document.activeElement)).toBe(true);
     });
+
+    await step(
+      "Alt+Shift+9 hotkey focuses the top-end toast region",
+      async () => {
+        // Move focus away from the toast region first
+        button.focus();
+        expect(button).toHaveFocus();
+
+        // Dispatch native KeyboardEvent matching Zag.js hotkey format
+        // Zag checks: event.altKey && event.shiftKey && event.code === "Digit9"
+        document.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            code: "Digit9",
+            key: "9",
+            altKey: true,
+            shiftKey: true,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+
+        // The hotkey should focus the top-end toast region
+        await waitFor(() => {
+          const activeEl = document.activeElement;
+          const region = activeEl?.closest('[data-placement="top-end"]');
+          expect(region).not.toBeNull();
+        });
+      }
+    );
   },
 };
 
