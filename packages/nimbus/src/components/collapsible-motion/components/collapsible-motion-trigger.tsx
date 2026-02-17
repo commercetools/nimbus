@@ -3,7 +3,7 @@ import { mergeProps } from "react-aria";
 import { useCollapsibleMotionContext } from "./collapsible-motion-context";
 import { CollapsibleMotionTriggerSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionTriggerProps } from "../collapsible-motion.types";
-import { Button as RaButton } from "react-aria-components";
+import { Button as RaButton, ButtonContext } from "react-aria-components";
 import { chakra } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 /**
@@ -25,12 +25,17 @@ export const CollapsibleMotionTrigger = forwardRef<
     disabled: isDisabled,
   });
 
-  // If asChild is true, wrap children directly in a button with asChild
+  // If asChild is true, wrap children directly in a button with asChild.
+  // ButtonContext.Provider passes isDisabled through React Aria's context so
+  // Nimbus Button's useButton receives it (the native `disabled` HTML attribute
+  // alone is overwritten by useButton's output in the JSX spread).
   if (asChild) {
     return (
-      <chakra.button asChild {...componentProps}>
-        {children}
-      </chakra.button>
+      <ButtonContext.Provider value={{ isDisabled }}>
+        <chakra.button asChild {...componentProps}>
+          {children}
+        </chakra.button>
+      </ButtonContext.Provider>
     );
   }
 

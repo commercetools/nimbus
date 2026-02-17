@@ -35,6 +35,7 @@ const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
     <Button size="2xs">2XS Button</Button>
     <Button size="xs">XS Button</Button>
+    <Button size="sm">SM Button</Button>
     <Button size="md">MD Button (Default)</Button>
   </Stack>
 )
@@ -210,55 +211,7 @@ const App = () => {
 
 These examples demonstrate how to test your implementation when using Button in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
 
-### Basic rendering tests
-
-Verify the component renders with expected content:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import { Button } from '@commercetools/nimbus';
-
-describe('Button', () => {
-  it('renders with correct text', () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByRole('button', { name: /click me/i })).toBeInTheDocument();
-  });
-});
-```
-
-### Interaction tests
-
-Test user interactions with the component:
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Button } from '@commercetools/nimbus';
-
-describe('Button interactions', () => {
-  it('calls onPress handler when clicked', async () => {
-    const user = userEvent.setup();
-    const handlePress = jest.fn();
-    
-    render(<Button onPress={handlePress}>Action</Button>);
-
-    await user.click(screen.getByRole('button', { name: /action/i }));
-
-    expect(handlePress).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not call onPress when disabled', async () => {
-    const user = userEvent.setup();
-    const handlePress = jest.fn();
-    
-    render(<Button isDisabled onPress={handlePress}>Action</Button>);
-
-    await user.click(screen.getByRole('button', { name: /action/i }));
-
-    expect(handlePress).not.toHaveBeenCalled();
-  });
-});
-```
+{{docs-tests: button.docs.spec.tsx}}
 
 ## Resources
 

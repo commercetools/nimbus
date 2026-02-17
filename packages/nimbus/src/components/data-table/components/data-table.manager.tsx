@@ -169,7 +169,7 @@ export const DataTableManager = () => {
           colorPalette="primary"
           size="xs"
           aria-label={msg.format("settings")}
-          onClick={() => setIsOpen(true)}
+          onPress={() => setIsOpen(true)}
         >
           <Settings />
         </IconButton>

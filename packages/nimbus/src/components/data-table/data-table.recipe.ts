@@ -16,7 +16,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     "cell",
     "footer",
     "selectionCell",
-    "expandButton",
     "nestedIcon",
     "headerSortIcon",
     "columnResizer",

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useButton, useObjectRef, mergeProps } from "react-aria";
+import { useButton, useObjectRef } from "react-aria";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { mergeRefs } from "@chakra-ui/react";
 import { ButtonRoot } from "./button.slots.tsx";
@@ -29,10 +29,10 @@ const ButtonComponent = (props: ButtonProps) => {
 
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
-
   const elementType = as || (asChild ? "a" : "button") || "button";
 
-  const { buttonProps } = useButton(
+  // Let useButton process all behavior and accessibility concerns
+  const { buttonProps, isPressed } = useButton(
     {
       ...contextProps,
       elementType,
@@ -40,23 +40,15 @@ const ButtonComponent = (props: ButtonProps) => {
     contextRef
   );
 
-  const componentProps = mergeProps(contextProps, buttonProps, {
-    as,
-    asChild,
-    /**
-     * In case `slot` was null, the `useContextProps` hook already
-     * processed it at this point, so it's safe to not attach it
-     * to the DOM element
-     */
-    slot: contextProps.slot || undefined,
-  });
-
   return (
     <ButtonRoot
       ref={contextRef}
-      {...componentProps}
-      aria-disabled={componentProps.isDisabled || undefined}
-      data-disabled={componentProps.isDisabled || undefined}
+      {...contextProps}
+      {...buttonProps}
+      as={as}
+      asChild={asChild}
+      slot={contextProps.slot || undefined}
+      data-pressed={isPressed || undefined}
     >
       {children}
     </ButtonRoot>

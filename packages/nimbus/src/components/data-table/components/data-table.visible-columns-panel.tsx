@@ -227,7 +227,7 @@ export const VisibleColumnsPanel = ({
           variant="ghost"
           colorPalette="primary"
           size="xs"
-          onClick={handleResetColumns}
+          onPress={handleResetColumns}
           aria-label={msg.format("reset")}
         >
           <Refresh />
