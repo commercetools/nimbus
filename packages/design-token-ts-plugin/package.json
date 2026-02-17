@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus-design-token-ts-plugin",
-  "version": "0.1.0",
+  "version": "2.6.0",
   "description": "TypeScript language service plugin that shows design token CSS values in autocomplete",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,5 @@
     "typescript": "catalog:tooling",
     "vitest": "catalog:tooling"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }
