@@ -20,6 +20,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import {
   Button,
+  Dialog,
   Stack,
   Text,
   toast,
@@ -1307,5 +1308,98 @@ export const ComprehensiveIntegration: Story = {
         await expect(errorToast).toBeInTheDocument();
       }
     );
+  },
+};
+
+/**
+ * Z-Index Layering
+ * Verifies that toasts render above modal dialogs.
+ * Zag.js sets z-index to MAX_Z_INDEX (2147483647) on toast regions,
+ * ensuring toasts are always the topmost layer.
+ */
+export const ZIndexLayering: Story = {
+  render: () => {
+    const showToastFromModal = () => {
+      toast.error({
+        title: "Error",
+        description: "Toast triggered from inside a modal",
+        closable: true,
+      });
+    };
+
+    return (
+      <Dialog.Root>
+        <Dialog.Trigger data-testid="open-modal-btn">Open Modal</Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Modal Dialog</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
+            <Button
+              onPress={showToastFromModal}
+              data-testid="toast-from-modal-btn"
+            >
+              Trigger Toast
+            </Button>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Dialog.CloseTrigger>Close</Dialog.CloseTrigger>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Toast renders above open modal dialog", async () => {
+      // Open the modal
+      const openBtn = canvas.getByTestId("open-modal-btn");
+      await userEvent.click(openBtn);
+
+      // Wait for modal to be visible
+      const modalTitle = await body.findByText("Modal Dialog");
+      await expect(modalTitle).toBeInTheDocument();
+
+      // Trigger toast from within the modal
+      const toastBtn = body.getByTestId("toast-from-modal-btn");
+      await userEvent.click(toastBtn);
+
+      // Wait for toast to appear
+      const toastText = await body.findByText(
+        "Toast triggered from inside a modal"
+      );
+      await expect(toastText).toBeInTheDocument();
+
+      // Find the toast region's z-index by walking up from the toast text
+      // to the positioned container with an inline z-index style
+      let toastEl: HTMLElement | null = toastText.closest(
+        "[data-placement]"
+      ) as HTMLElement;
+      while (toastEl && !toastEl.style.zIndex) {
+        toastEl = toastEl.parentElement;
+      }
+
+      // Find the modal overlay's z-index by walking up from the dialog
+      const dialogEl = body.getByRole("dialog");
+      let modalEl: HTMLElement | null = dialogEl as HTMLElement;
+      while (modalEl && window.getComputedStyle(modalEl).zIndex === "auto") {
+        modalEl = modalEl.parentElement;
+      }
+
+      const toastZIndex = toastEl
+        ? parseInt(toastEl.style.zIndex || "0", 10)
+        : 0;
+      const modalZIndex = modalEl
+        ? parseInt(window.getComputedStyle(modalEl).zIndex || "0", 10)
+        : 0;
+
+      // Toast region must have higher z-index than modal
+      expect(toastZIndex).toBeGreaterThan(0);
+      expect(modalZIndex).toBeGreaterThan(0);
+      expect(toastZIndex).toBeGreaterThan(modalZIndex);
+    });
   },
 };

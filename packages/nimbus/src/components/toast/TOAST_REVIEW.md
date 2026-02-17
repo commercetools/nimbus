@@ -58,6 +58,10 @@ through these top-down; they're ordered by priority.
       Keyboard navigation section. Fixed stale `meta` references and incorrect
       defaults in the same file.
 
-- [ ] **z-index layering not explicitly managed** Chakra's `<Toaster>` handles
+- [x] **z-index layering not explicitly managed** Chakra's `<Toaster>` handles
       z-index, but there's no guarantee toasts layer above Nimbus
-      modals/dialogs. Verify and document the stacking behavior.
+      modals/dialogs. Verify and document the stacking behavior. **Resolution:**
+      Zag.js sets `z-index: 2147483647` (MAX_Z_INDEX) on toast regions —
+      intentionally the highest possible value. Added ZIndexLayering story that
+      opens a modal, triggers a toast, and asserts the toast region's z-index
+      exceeds the modal's.
