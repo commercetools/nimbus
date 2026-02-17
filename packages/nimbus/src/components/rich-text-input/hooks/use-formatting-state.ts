@@ -16,7 +16,7 @@
  */
 import { useMemo, useCallback } from "react";
 import { Editor } from "slate";
-import { useSlate } from "slate-react";
+import { useSlate, useSlateSelection } from "slate-react";
 import type { Key } from "react-aria";
 import { BASIC_FORMATTING, SCRIPT_FORMATTING } from "../constants";
 import { isMarkActive, toggleMark } from "../utils/slate-helpers";
@@ -29,6 +29,8 @@ export const useFormattingState = ({
   withPreservedSelection,
 }: UseFormattingStateProps) => {
   const editor = useSlate();
+  // Subscribe to selection changes properly (required after Slate 0.116)
+  const selection = useSlateSelection();
 
   // Get currently selected formatting keys (strikethrough and code)
   const selectedKeys = useMemo(() => {
@@ -37,7 +39,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+  }, [selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected script formatting key (superscript or subscript - mutually exclusive)
   const selectedScriptKeys = useMemo(() => {
@@ -46,7 +48,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
-  }, [editor.selection, editor.children, Editor.marks(editor)]);
+  }, [selection, editor.children, Editor.marks(editor)]);
 
   // Combine all selected keys for display purposes
   const allSelectedKeys = useMemo(() => {
