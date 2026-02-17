@@ -25,7 +25,7 @@ jobs:
       - name: Update bundle size baseline
         run: node scripts/check-bundle-size.mjs --update-baseline
 
-      - uses: stefanzweifel/git-auto-commit-action@v7
+      - uses: step-security/git-auto-commit-action@v7
         with:
           commit_message: "chore: update bundle size baseline [skip ci]"
           file_pattern: "packages/nimbus/bundle-size-baseline.json"
