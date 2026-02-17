@@ -316,9 +316,11 @@ animation, in contrast to `toast.dismiss()` which plays exit animation.
 
 ### Requirement: Internationalization (Deferred)
 
-The close button currently uses a hardcoded English `aria-label` (`"__Dismiss"`).
-Full i18n with pre-compiled translations (en, de, es, fr-FR, pt-BR) is deferred
-until localization infrastructure is wired up.
+The toast system SHALL provide internationalized labels for all UI-rendered
+strings (e.g., close button `aria-label`). Currently the close button uses a
+hardcoded English label (`"__Dismiss"`); full i18n with pre-compiled translations
+(en, de, es, fr-FR, pt-BR) is deferred until localization infrastructure is
+wired up.
 
 #### Scenario: Translated dismiss label (deferred)
 
@@ -328,8 +330,9 @@ until localization infrastructure is wired up.
 
 ### Requirement: Nested NimbusProvider Safety
 
-When `NimbusProvider` is nested (e.g., in micro-frontends or Storybook
-decorators), only the outermost provider SHALL render a `<ToastOutlet />`.
+The toast system SHALL ensure that when `NimbusProvider` is nested (e.g., in
+micro-frontends or Storybook decorators), only the outermost provider renders a
+`<ToastOutlet />`.
 Duplicate outlets cause WCAG landmark-unique violations from duplicate
 `role="region"` elements.
 
