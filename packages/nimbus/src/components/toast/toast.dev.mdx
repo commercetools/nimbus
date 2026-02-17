@@ -73,17 +73,11 @@ const App = () => (
     <Button onPress={() => toast({ title: "Top Start", placement: "top-start" })}>
       Top Start
     </Button>
-    <Button onPress={() => toast({ title: "Top", placement: "top" })}>
-      Top
-    </Button>
     <Button onPress={() => toast({ title: "Top End (Default)", placement: "top-end" })}>
       Top End
     </Button>
     <Button onPress={() => toast({ title: "Bottom Start", placement: "bottom-start" })}>
       Bottom Start
-    </Button>
-    <Button onPress={() => toast({ title: "Bottom", placement: "bottom" })}>
-      Bottom
     </Button>
     <Button onPress={() => toast({ title: "Bottom End", placement: "bottom-end" })}>
       Bottom End
@@ -322,10 +316,8 @@ Toast regions support keyboard interaction:
 - `Escape`: Dismiss the focused toast
 - `Alt+Shift+[1-9]`: Focus specific placement regions via numpad hotkeys
   - `Alt+Shift+7`: Top-start
-  - `Alt+Shift+8`: Top
   - `Alt+Shift+9`: Top-end (default)
   - `Alt+Shift+1`: Bottom-start
-  - `Alt+Shift+2`: Bottom
   - `Alt+Shift+3`: Bottom-end
 
 Hotkeys are only active for placements with visible toasts.

@@ -25,8 +25,8 @@
       ToastAction, ToastPromiseOptions, IToastManager)
 - [x] 3.2 Implement slot recipe in `toast.recipe.ts` (6 slots: root, indicator,
       title, description, actionTrigger, closeTrigger — registered as `toast` key)
-- [x] 3.3 Implement pre-created toasters in `toast.toasters.ts` (6 placements,
-      per-placement hotkeys, pauseOnPageIdle)
+- [x] 3.3 Implement pre-created toasters in `toast.toasters.ts` (4 corner
+      placements, per-placement hotkeys, pauseOnPageIdle)
 - [x] 3.4 Implement `ToastManager` in `toast.manager.ts` (singleton,
       ID-to-placement routing, convenience methods, promise forwarding,
       action→duration:0 enforcement, closable via meta forwarding)

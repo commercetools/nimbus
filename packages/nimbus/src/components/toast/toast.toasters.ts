@@ -4,10 +4,8 @@ import type { ToastPlacement } from "./toast.types";
 // Define all possible placements
 const ALL_PLACEMENTS: ToastPlacement[] = [
   "top-start",
-  "top",
   "top-end",
   "bottom-start",
-  "bottom",
   "bottom-end",
 ];
 
@@ -19,10 +17,8 @@ const ALL_PLACEMENTS: ToastPlacement[] = [
  */
 const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
   "top-start": ["altKey", "shiftKey", "Digit7"],
-  top: ["altKey", "shiftKey", "Digit8"],
   "top-end": ["altKey", "shiftKey", "Digit9"],
   "bottom-start": ["altKey", "shiftKey", "Digit1"],
-  bottom: ["altKey", "shiftKey", "Digit2"],
   "bottom-end": ["altKey", "shiftKey", "Digit3"],
 };
 

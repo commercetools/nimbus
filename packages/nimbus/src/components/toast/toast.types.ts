@@ -17,10 +17,8 @@ export type ToastType = "info" | "success" | "warning" | "error" | "loading";
  */
 export type ToastPlacement =
   | "top-start"
-  | "top"
   | "top-end"
   | "bottom-start"
-  | "bottom"
   | "bottom-end";
 
 /**

@@ -13,10 +13,8 @@ const DEFAULT_DURATION = 6000; // 6 seconds
 
 const VALID_PLACEMENTS: ToastPlacement[] = [
   "top-start",
-  "top",
   "top-end",
   "bottom-start",
-  "bottom",
   "bottom-end",
 ];
 

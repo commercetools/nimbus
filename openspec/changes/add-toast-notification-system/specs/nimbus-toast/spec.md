@@ -89,7 +89,8 @@ hooks, providers, or setup beyond `NimbusProvider`.
 ### Requirement: Per-Toast Placement
 
 The `toast` function SHALL accept an optional `placement` parameter. The system
-SHALL manage separate pre-created toaster instances per placement.
+SHALL manage separate pre-created toaster instances for 4 corner placements:
+`top-start`, `top-end`, `bottom-start`, `bottom-end`.
 
 #### Scenario: Default placement
 
@@ -233,6 +234,8 @@ navigation within toasts.
 
 - **WHEN** the user presses Alt+Shift+9
 - **THEN** focus moves to the top-end toast region (if toasts are visible)
+- **NOTE**: Hotkeys map to numpad corners: 7=top-start, 9=top-end,
+  1=bottom-start, 3=bottom-end
 
 #### Scenario: Tab through toast elements
 

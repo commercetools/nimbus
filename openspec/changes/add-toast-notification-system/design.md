@@ -34,10 +34,12 @@ slot recipe registered under the `toast` key to override Chakra's defaults.
 
 ### Per-Toast Placement: Pre-Created Toasters
 
-All 6 toaster instances (one per placement) are pre-created at module load time
-in `toast.toasters.ts`. A `ToastManager` singleton routes toast IDs to the
-correct toaster via an `idToPlacement` map. Consumers just pass `placement` to
-`toast()`.
+All 4 toaster instances (one per corner placement) are pre-created at module load
+time in `toast.toasters.ts`. Only corner placements are supported (`top-start`,
+`top-end`, `bottom-start`, `bottom-end`) to minimize persistent DOM elements.
+Center placements (`top`, `bottom`) were removed since on-demand rendering is not
+feasible. A `ToastManager` singleton routes toast IDs to the correct toaster via
+an `idToPlacement` map. Consumers just pass `placement` to `toast()`.
 
 ### Mounting: Inside NimbusProvider
 
@@ -85,8 +87,9 @@ recipe variant on `ChakraToast.Root`.
 
 ### Hotkeys: Per-Placement Numpad Mapping
 
-Each toaster gets a unique hotkey in the format
-`["altKey", "shiftKey", "Digit9"]`. Pressing the hotkey focuses the
+Each toaster gets a unique hotkey based on numpad corner positions:
+`Alt+Shift+7` (top-start), `Alt+Shift+9` (top-end), `Alt+Shift+1`
+(bottom-start), `Alt+Shift+3` (bottom-end). Pressing the hotkey focuses the
 corresponding toast region.
 
 ### Closable Property
@@ -99,9 +102,10 @@ the `closable` property follows Chakra's native handling in that path.
 
 ## Risks / Trade-offs
 
-- **Pre-created toasters** → 6 empty container divs always in DOM, even if
-  never used. On-demand rendering not feasible due to Zag.js machine timing.
-  Acceptable trade-off for simpler routing architecture.
+- **Pre-created toasters** → 4 empty container divs always in DOM (one per
+  corner). Reduced from 6 by removing center placements. On-demand rendering not
+  feasible due to Zag.js machine timing. Acceptable trade-off for simpler routing
+  architecture.
 - **NimbusProvider modification** → Low risk; single child component with
   context guard for nested provider safety.
 - **ARIA role override** → Low risk; props spread after Chakra's base props.
