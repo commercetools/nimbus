@@ -40,7 +40,7 @@ export const useToolbarState = ({
   textStyles,
 }: UseToolbarStateProps) => {
   const editor = useSlate();
-  // Subscribe to selection changes properly (required after Slate 0.116)
+  // Subscribe to selection changes properly
   const selection = useSlateSelection();
 
   // Get current block type - using useSlateSelection() means this automatically updates

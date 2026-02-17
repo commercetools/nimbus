@@ -54,7 +54,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
   };
 
   // Create editor instance - lifted from RichTextEditor for controlled value support
-  // In Slate 0.100+, the editor is uncontrolled and initialValue is only used on mount.
+  // In Slate, the editor is uncontrolled and initialValue is only used on mount.
   // By owning the editor here, we can directly update editor.children for controlled updates.
   const editor = useMemo(() => {
     const baseEditor = createEditor();
@@ -83,7 +83,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
   const editorRef = useRef<RichTextEditorRef>(null);
 
   // Handle controlled value changes from parent
-  // In Slate 0.100+, we must directly update editor.children since the component is uncontrolled
+  // In Slate, we must directly update editor.children since the component is uncontrolled
   useEffect(() => {
     // Skip if this is an internal change (user typing) or if value matches
     if (
@@ -99,7 +99,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
     const newSlateValue = value ? fromHTML(value) : createEmptyValue();
     const validatedValue = validSlateStateAdapter(newSlateValue);
 
-    // Replace editor content directly (Slate 0.100+ pattern)
+    // Replace editor content directly (Slate pattern)
     // Set children and selection atomically before triggering onChange
     editor.children = validatedValue;
 

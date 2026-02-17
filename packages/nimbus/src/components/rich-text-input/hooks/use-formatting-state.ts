@@ -29,7 +29,7 @@ export const useFormattingState = ({
   withPreservedSelection,
 }: UseFormattingStateProps) => {
   const editor = useSlate();
-  // Subscribe to selection changes properly (required after Slate 0.116)
+  // Subscribe to selection changes properly
   const selection = useSlateSelection();
 
   // Get currently selected formatting keys (strikethrough and code)

@@ -33,7 +33,6 @@ describe("RichTextInput - Basic usage", () => {
 
     const editor = screen.getByRole("textbox");
     // Slate.js uses data-slate-placeholder for empty state
-    // In Slate 0.100+, placeholder rendering may need a tick to complete
     await waitFor(() => {
       const placeholder = editor.querySelector("[data-slate-placeholder]");
       expect(placeholder).toBeInTheDocument();

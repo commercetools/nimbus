@@ -25,14 +25,11 @@ import { EDITOR_DEFAULTS } from "../constants";
 
 export type RichTextEditorProps = {
   /**
-   * The Slate editor instance - created by parent for controlled value support.
-   * In Slate 0.100+, the editor is uncontrolled and parent needs direct access
-   * to update editor.children for controlled value changes.
+   * The Slate editor instance - created by parent for controlled value support
    */
   editor: Editor;
   /**
-   * Initial value for the editor. In Slate 0.100+, this is only used on mount.
-   * Subsequent changes should be made directly to editor.children.
+   * Initial value for the editor
    */
   initialValue: Descendant[];
   onChange: (value: Descendant[]) => void;
@@ -123,8 +120,6 @@ export const RichTextEditor = function RichTextEditor({
       : defaultValue;
 
   return (
-    // In Slate 0.100+, `initialValue` replaces `value` - it's only used on mount.
-    // For controlled updates, parent component directly updates editor.children.
     <Slate editor={editor} initialValue={safeInitialValue} onChange={onChange}>
       {toolbar && (
         <RichTextInputToolbarSlot>{toolbar}</RichTextInputToolbarSlot>
