@@ -296,18 +296,6 @@ The Toast component handles accessibility requirements internally via React Aria
 **Internationalization:**
 The close button includes a translated `aria-label` that adapts to the user's locale (English, German, Spanish, French, Portuguese).
 
-If your use case requires tracking and analytics for toasts, you can pass a **persistent**, **unique** id through the meta prop:
-
-```tsx
-const PERSISTENT_ID = "checkout-error-toast";
-
-toast({
-  title: "Checkout Error",
-  type: "error",
-  meta: { id: PERSISTENT_ID }
-});
-```
-
 #### Keyboard navigation
 
 Toast regions support keyboard interaction:
@@ -334,14 +322,14 @@ Creates a toast and returns its ID. Also available as convenience methods: `toas
 | --- | --- | --- | --- |
 | `type` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style and ARIA semantics |
 | `title` | `string` | — | Title text |
-| `description` | `string` | — | Description text |
+| `description` | `string` | — | Description text (optional) |
 | `action` | `{ label: string; onClick: () => void }` | — | Action button (disables auto-dismiss) |
 | `duration` | `number` | `6000` | Auto-dismiss in ms (`0` = never) |
 | `placement` | `ToastPlacement` | `"top-end"` | Screen position |
-| `closable` | `boolean` | `true` | Show/hide close button |
+| `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |
 | `pauseOnInteraction` | `boolean` | `true` | Pause timer on hover/focus |
 | `pauseOnPageIdle` | `boolean` | `true` | Pause when tab is hidden |
-| `meta` | `Record<string, unknown>` | — | Custom metadata |
+| `variant` | `"solid" \| "subtle" \| "accent-start"` | `"accent-start"` | Visual variant |
 
 ### Control methods
 

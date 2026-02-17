@@ -52,9 +52,11 @@ through these top-down; they're ordered by priority.
       immediate fix needed, but document the constraint. If SSR support becomes
       a goal, this will need lazy initialization behind a `typeof window` guard.
 
-- [ ] **Hotkeys are undiscoverable** `Alt+Shift+7/9/1/3` focus the toast regions
+- [x] **Hotkeys are undiscoverable** `Alt+Shift+7/9/1/3` focus the toast regions
       but are not mentioned in consumer-facing docs (`toast.dev.mdx`). Add a
-      section to the dev docs.
+      section to the dev docs. **Resolution:** Already documented in the
+      Keyboard navigation section. Fixed stale `meta` references and incorrect
+      defaults in the same file.
 
 - [ ] **z-index layering not explicitly managed** Chakra's `<Toaster>` handles
       z-index, but there's no guarantee toasts layer above Nimbus
