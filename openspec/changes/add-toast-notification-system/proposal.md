@@ -13,9 +13,11 @@ without interrupting workflow. No toast component exists in Nimbus today.
 - **NEW** `ToastOutlet` rendered inside `NimbusProvider` for zero-setup
 - **NEW** `toast` slot recipe with 3 visual variants (solid, subtle, accent-start)
   registered under the `toast` key to override Chakra's default toast recipe
-- **NEW** i18n message: `Nimbus.Toast.dismiss` (5 locales: en, de, es, fr-FR,
-  pt-BR)
-- **MODIFIED** `NimbusProvider` renders `<ToastOutlet />` as child
+- **DEFERRED** i18n message: `Nimbus.Toast.dismiss` — close button uses a
+  hardcoded `aria-label` until localization infrastructure is wired up
+- **MODIFIED** `NimbusProvider` renders `<ToastOutlet />` as child, with a
+  context guard (`ToastOutletMountedContext`) to prevent duplicate outlets when
+  NimbusProviders are nested
 
 ## Impact
 

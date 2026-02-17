@@ -14,7 +14,7 @@ inline, covering a different use case.
   - 4 types: info, success, warning, error (plus loading for promise pattern)
   - 3 visual variants: solid, subtle, accent-start
   - Action buttons and promise/loading pattern
-  - i18n support for library strings
+  - i18n support for library strings (deferred — hardcoded label for now)
 
 - **Non-Goals:**
   - Notification center / persistent history
@@ -42,8 +42,19 @@ correct toaster via an `idToPlacement` map. Consumers just pass `placement` to
 ### Mounting: Inside NimbusProvider
 
 `<ToastOutlet />` renders inside NimbusProvider. The Chakra `<Toaster>`
-components always render their container elements, but these are empty until
-toasts are triggered.
+components always render their container elements (`<div role="region">`), but
+these are empty until toasts are triggered.
+
+A `ToastOutletMountedContext` (React context) prevents duplicate outlets when
+NimbusProviders are nested. Only the outermost provider renders the outlet.
+Without this guard, nested providers produce duplicate landmark regions that
+violate WCAG's landmark-unique rule.
+
+**On-demand rendering was considered and rejected.** Lazily mounting `<Toaster>`
+on first toast creation fails because the underlying Zag.js state machine starts
+asynchronously (via `queueMicrotask` in `useSafeLayoutEffect`) and the
+`subscribeToStore` effect only receives future events — meaning the machine
+misses the initial toast that triggered the mount.
 
 ### ARIA Roles
 
@@ -89,8 +100,10 @@ the `closable` property follows Chakra's native handling in that path.
 ## Risks / Trade-offs
 
 - **Pre-created toasters** → 6 empty container divs always in DOM, even if
-  never used. Acceptable trade-off for simpler routing architecture.
-- **NimbusProvider modification** → Low risk; single child component.
+  never used. On-demand rendering not feasible due to Zag.js machine timing.
+  Acceptable trade-off for simpler routing architecture.
+- **NimbusProvider modification** → Low risk; single child component with
+  context guard for nested provider safety.
 - **ARIA role override** → Low risk; props spread after Chakra's base props.
 - **Recipe key override** → Registering as `toast` (not `nimbusToast`) to
   override Chakra's default styling. Works because Chakra's Toast components

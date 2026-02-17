@@ -299,12 +299,31 @@ animation, in contrast to `toast.dismiss()` which plays exit animation.
 - **WHEN** a consumer calls `toast.remove()` without an ID
 - **THEN** all toasts across all regions are removed immediately
 
-### Requirement: Internationalization
+### Requirement: Internationalization (Deferred)
 
-The close button SHALL use a translated `aria-label` sourced from pre-compiled
-i18n messages (en, de, es, fr-FR, pt-BR).
+The close button currently uses a hardcoded English `aria-label` (`"__Dismiss"`).
+Full i18n with pre-compiled translations (en, de, es, fr-FR, pt-BR) is deferred
+until localization infrastructure is wired up.
 
-#### Scenario: Translated dismiss label
+#### Scenario: Translated dismiss label (deferred)
 
 - **WHEN** the locale is set to German
 - **THEN** the close button `aria-label` renders the German translation
+- **STATUS**: Not yet implemented — close button uses hardcoded label
+
+### Requirement: Nested NimbusProvider Safety
+
+When `NimbusProvider` is nested (e.g., in micro-frontends or Storybook
+decorators), only the outermost provider SHALL render a `<ToastOutlet />`.
+Duplicate outlets cause WCAG landmark-unique violations from duplicate
+`role="region"` elements.
+
+#### Scenario: Nested providers
+
+- **WHEN** a `NimbusProvider` is nested inside another `NimbusProvider`
+- **THEN** only the outermost provider renders toast regions
+
+#### Scenario: Single provider
+
+- **WHEN** a single `NimbusProvider` wraps the application
+- **THEN** the `ToastOutlet` renders normally

@@ -33,9 +33,10 @@
 - [x] 3.5 Implement `ToastOutlet` in `toast.outlet.tsx` (renders `<Toaster>` per
       placement, composes Chakra Toast subcomponents, overrides ARIA role/aria-live
       based on type, i18n close button aria-label)
-- [x] 3.6 Implement i18n in `toast.i18n.ts` (Nimbus.Toast.dismiss message)
-- [x] 3.7 Pre-compile translations in `intl/` (en, de, es, fr-FR, pt-BR)
-- [x] 3.8 Add `<ToastOutlet />` to NimbusProvider
+- [ ] 3.6 ~~Implement i18n in `toast.i18n.ts`~~ (deferred — hardcoded label for now)
+- [ ] 3.7 ~~Pre-compile translations in `intl/`~~ (deferred — awaiting localization wiring)
+- [x] 3.8 Add `<ToastOutlet />` to NimbusProvider with context guard to prevent
+      duplicate outlets in nested providers
 
 ## 4. Documentation
 
@@ -45,8 +46,8 @@
 ## 5. Validation
 
 - [x] 5.1 All unit tests pass
-- [ ] 5.2 All Storybook story tests pass
+- [x] 5.2 All Storybook story tests pass
 - [x] 5.3 All consumer implementation tests pass
 - [x] 5.4 TypeScript compiles without errors
-- [ ] 5.5 Build succeeds
-- [ ] 5.6 Full test suite passes
+- [x] 5.5 Build succeeds
+- [x] 5.6 Full test suite passes
