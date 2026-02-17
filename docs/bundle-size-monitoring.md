@@ -113,6 +113,22 @@ The check runs in the `build-and-test` workflow
 No additional dependencies or services are required — the script uses only
 Node.js built-ins (`fs`, `zlib`, `path`).
 
+### Automatic Baseline Updates
+
+When a PR merges to `main` that touches source files in `packages/nimbus/src/`
+or `packages/tokens/`, a separate workflow
+(`.github/workflows/update-bundle-baseline.yml`) automatically rebuilds and
+updates `bundle-size-baseline.json`. This keeps the baseline in sync without
+manual intervention.
+
+The auto-update commit uses `[skip ci]` to avoid re-triggering workflows. If the
+baseline hasn't changed, the workflow no-ops and no commit is created.
+
+This means you typically **don't need to manually update the baseline** after
+your PR merges. The only time you need to update it manually is during PR
+development when your changes exceed the 30% error threshold and you need the CI
+check to pass.
+
 ## Running Locally
 
 You need a built `packages/nimbus/dist` directory. If you don't have one:
