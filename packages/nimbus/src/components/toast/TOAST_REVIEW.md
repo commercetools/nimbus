@@ -34,7 +34,7 @@ through these top-down; they're ordered by priority.
       `duration: Infinity`. **Fix:** Rename to
       `"Action Button → Duration:Infinity Enforcement"`.
 
-- [ ] **Fixed 400px width is not responsive** `toast.recipe.ts:41` —
+- [x] **Fixed 400px width is not responsive** `toast.recipe.ts:41` —
       `width: "400px"` will overflow on viewports narrower than 400px. **Fix:**
       Change to `maxWidth: "400px"` and add `width: "100%"` or use
       `min(400px, calc(100vw - 2rem))`.

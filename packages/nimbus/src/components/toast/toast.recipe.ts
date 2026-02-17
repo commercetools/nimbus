@@ -38,7 +38,7 @@ export const toastRecipe = defineSlotRecipe({
       gridTemplateRows: "auto auto",
       gridColumnGap: "200",
       gridRowGap: "100",
-      width: "400px",
+      width: "min(400px, calc(100vw - 2rem))",
       alignItems: "start",
       px: "400",
       py: "300",
