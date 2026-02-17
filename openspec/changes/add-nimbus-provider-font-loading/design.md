@@ -73,13 +73,14 @@ However, standalone Nimbus usage (Custom Applications, Storybook, documentation 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
   rel="stylesheet"
   data-nimbus-fonts
 />
 ```
 
-**Font Weights**: Load 400, 500, 600, 700 (weights used in Nimbus design tokens)
+**Font Weights**: Load all 9 specific weights: 100, 200, 300, 400, 500, 600, 700, 800, 900 (matching Nimbus design tokens exactly)
+**Static Font Approach**: Use explicit weight list `wght@100;200;300;400;500;600;700;800;900` for precise control over loaded weights rather than variable font range
 **Display Strategy**: `display=swap` minimizes FOUT by showing fallback immediately, swapping when Inter loads
 
 ### Decision 3: Custom Hook for Font Loading

@@ -32,14 +32,15 @@ The component SHALL use Google Fonts CSS API v2 for font delivery.
 - **WHEN** font loading is enabled
 - **THEN** SHALL inject stylesheet link for Inter font from Google Fonts
 - **AND** stylesheet URL SHALL use CSS API v2 format
-- **AND** SHALL include font weights: 400, 500, 600, 700
+- **AND** SHALL include explicit font weights: 100, 200, 300, 400, 500, 600, 700, 800, 900
 - **AND** SHALL use display=swap parameter to minimize FOUT
 - **AND** link element SHALL include data-nimbus-fonts attribute for identification
 
-#### Scenario: Variable font support
+#### Scenario: Static font weight loading
 - **WHEN** fonts load from Google Fonts
-- **THEN** SHALL support Inter variable font format
-- **AND** SHALL allow smooth weight transitions between 400-700
+- **THEN** SHALL load specific static font weights matching Nimbus design tokens
+- **AND** SHALL load all 9 weights (100, 200, 300, 400, 500, 600, 700, 800, 900)
+- **AND** SHALL use explicit weight syntax for precise control over loaded fonts
 - **AND** browser SHALL receive optimized font format based on capabilities
 
 ### Requirement: Font Deduplication

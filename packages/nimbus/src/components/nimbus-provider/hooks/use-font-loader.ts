@@ -2,10 +2,10 @@ import { useEffect } from "react";
 
 /**
  * URL for Google Fonts CSS API v2 to load Inter font family.
- * Loads weights 400, 500, 600, 700 with display=swap for optimal loading.
+ * Loads specific font weights (100, 200, 300, 400, 500, 600, 700, 800, 900) matching Nimbus design tokens.
  */
 const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap";
 
 /**
  * Creates a link element with specified attributes.
