@@ -44,19 +44,19 @@ The component SHALL use Google Fonts CSS API v2 for font delivery.
 - **AND** browser SHALL receive optimized font format based on capabilities
 
 ### Requirement: Font Deduplication
-The component SHALL prevent duplicate font loading across multiple provider instances.
+The component SHALL leverage React 19's automatic deduplication for font links.
 
 #### Scenario: Multiple provider instances
-- **WHEN** multiple NimbusProvider instances exist on same page
-- **THEN** SHALL check for existing [data-nimbus-fonts] attribute before injection
-- **AND** SHALL only inject fonts once per document
-- **AND** subsequent providers SHALL skip font injection
+- **WHEN** multiple NimbusProvider instances exist on same page with loadFonts enabled
+- **THEN** React SHALL automatically deduplicate identical link tags
+- **AND** SHALL result in single set of font links in document head
+- **AND** deduplication SHALL be handled by React framework
 - **AND** all providers SHALL share same font resources
 
-#### Scenario: Idempotent font loading
+#### Scenario: Automatic deduplication
 - **WHEN** provider remounts or re-renders
-- **THEN** SHALL not inject duplicate font links
-- **AND** SHALL verify existence before every injection attempt
+- **THEN** React SHALL compare link props and deduplicate automatically
+- **AND** SHALL not require manual existence checks
 - **AND** font loading SHALL remain consistent across render cycles
 
 ### Requirement: SSR Compatibility
@@ -64,50 +64,50 @@ The component SHALL support server-side rendering without errors.
 
 #### Scenario: Server-side rendering
 - **WHEN** component renders on server
-- **THEN** SHALL detect server environment (typeof document === 'undefined')
-- **AND** SHALL skip font injection during SSR
-- **AND** SHALL not throw errors about missing document object
-- **AND** server output SHALL not include font links
+- **THEN** React SHALL handle link tag rendering for SSR automatically
+- **AND** SHALL serialize links appropriately for server output
+- **AND** SHALL not throw errors during server rendering
+- **AND** font links SHALL be included in SSR HTML output
 
 #### Scenario: Client-side hydration
 - **WHEN** component hydrates on client after SSR
-- **THEN** SHALL inject fonts during first client-side effect
-- **AND** SHALL not cause hydration mismatch warnings
-- **AND** fonts SHALL load after initial page render
+- **THEN** React SHALL hydrate links without mismatch warnings
+- **AND** SHALL maintain consistency between server and client
+- **AND** fonts SHALL be available immediately after hydration
 - **AND** fallback fonts SHALL display during font download
 
 ### Requirement: Font Loading Cleanup
-The component SHALL clean up injected font resources on unmount.
+The component SHALL rely on React to manage link tag lifecycle.
 
 #### Scenario: Provider unmount
 - **WHEN** NimbusProvider unmounts
-- **THEN** SHALL remove injected preconnect links from document head
-- **AND** SHALL remove injected stylesheet link from document head
+- **THEN** React SHALL remove associated link tags from document head
+- **AND** SHALL handle cleanup automatically without manual intervention
 - **AND** SHALL prevent memory leaks from orphaned DOM nodes
 - **AND** cleanup SHALL not affect fonts cached by browser
 
 #### Scenario: Hot module replacement
 - **WHEN** component reloads during development
-- **THEN** cleanup SHALL remove old font links
-- **AND** new mount SHALL inject fresh font links
+- **THEN** React SHALL manage link tag lifecycle across reloads
+- **AND** SHALL remove old links and add new ones as needed
 - **AND** SHALL maintain clean DOM state across reloads
 
-### Requirement: Font Loading Hook
-The component SHALL use dedicated hook for font loading logic.
+### Requirement: Font Loading Component
+The component SHALL use React 19 link hoisting for font loading.
 
-#### Scenario: useFontLoader hook integration
+#### Scenario: InterFontLoader component rendering
 - **WHEN** NimbusProvider renders with loadFonts enabled
-- **THEN** SHALL call useFontLoader hook with enabled parameter
-- **AND** hook SHALL handle all font injection logic
-- **AND** hook SHALL return cleanup function for unmount
-- **AND** hook SHALL be located in hooks/ directory
+- **THEN** SHALL render InterFontLoader component
+- **AND** component SHALL render link tags declaratively
+- **AND** React SHALL automatically hoist links to document head
+- **AND** component SHALL be internal implementation detail
 
-#### Scenario: Hook testability
-- **WHEN** testing font loading behavior
-- **THEN** hook SHALL be independently testable
-- **AND** SHALL accept enabled boolean parameter
-- **AND** SHALL allow mocking of document.head operations
-- **AND** test isolation SHALL be straightforward
+#### Scenario: React 19 automatic hoisting
+- **WHEN** InterFontLoader renders link tags
+- **THEN** React SHALL automatically move links to document head
+- **AND** SHALL handle SSR vs client rendering automatically
+- **AND** SHALL deduplicate identical links automatically
+- **AND** SHALL remove links when component unmounts
 
 ### Requirement: loadFonts Prop
 The component SHALL accept loadFonts prop for font loading control.

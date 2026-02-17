@@ -16,8 +16,8 @@ Nimbus uses Inter as its font of choice but does not provide a mechanism to load
 
 - **Affected specs**: `nimbus-nimbus-provider`
 - **Affected code**:
-  - `packages/nimbus/src/components/nimbus-provider/nimbus-provider.tsx` - Add font loading integration
+  - `packages/nimbus/src/components/nimbus-provider/nimbus-provider.tsx` - Add font loading via InterFontLoader component
   - `packages/nimbus/src/components/nimbus-provider/nimbus-provider.types.ts` - Add `loadFonts` prop
-  - `packages/nimbus/src/components/nimbus-provider/hooks/use-font-loader.ts` - New hook for font loading logic
+  - `packages/nimbus/src/components/nimbus-provider/nimbus-provider.spec.tsx` - Unit tests for font loading behavior
 - **Breaking**: No breaking changes - new functionality is opt-out with safe defaults
 - **Migration**: Merchant Center should add `loadFonts={false}` to avoid duplicate font loading

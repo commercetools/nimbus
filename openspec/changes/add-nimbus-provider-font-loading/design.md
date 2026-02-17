@@ -83,48 +83,55 @@ However, standalone Nimbus usage (Custom Applications, Storybook, documentation 
 **Static Font Approach**: Use explicit weight list `wght@100;200;300;400;500;600;700;800;900` for precise control over loaded weights rather than variable font range
 **Display Strategy**: `display=swap` minimizes FOUT by showing fallback immediately, swapping when Inter loads
 
-### Decision 3: Custom Hook for Font Loading
+### Decision 3: React 19 Link Hoisting Component
 
-**Choice**: Extract logic into `use-font-loader.ts` hook
-
-**Rationale**:
-- **Separation of concerns**: Provider orchestrates, hook handles font logic
-- **Testability**: Hook can be unit tested independently
-- **Reusability**: Could be used outside provider if needed in future
-- **Follows Nimbus patterns**: Hooks in `hooks/` folder, not component files
-
-**Hook Signature**:
-```typescript
-function useFontLoader(enabled: boolean): void
-```
-
-### Decision 4: Deduplication Strategy
-
-**Choice**: Check for `[data-nimbus-fonts]` attribute before injecting
+**Choice**: Use simple component that renders link tags, leveraging React 19's automatic hoisting
 
 **Rationale**:
-- **Multiple provider instances**: Apps might nest providers for different locales
-- **Prevents duplicate network requests**: Only inject once per page
-- **Simple implementation**: Single `querySelector` check
-- **Idempotent**: Safe to call multiple times
+- **Simpler implementation**: No useEffect, no manual DOM manipulation, no cleanup needed
+- **React 19 feature**: React automatically hoists `<link>` tags to document head
+- **Automatic deduplication**: React handles duplicate links automatically
+- **SSR-safe by default**: React handles server vs client rendering
+- **Less code**: ~5 lines vs ~40 lines of hook logic with edge cases
+- **Better DX**: Declarative JSX instead of imperative DOM manipulation
 
-**Implementation**:
+**Component Structure**:
 ```typescript
-if (document.querySelector('[data-nimbus-fonts]')) {
-  return; // Already loaded
+function InterFontLoader() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link href="..." rel="stylesheet" data-nimbus-fonts="" />
+    </>
+  );
 }
 ```
 
-### Decision 5: Cleanup on Unmount
+### Decision 4: Automatic Deduplication via React
 
-**Choice**: Remove injected links in `useEffect` cleanup function
+**Choice**: Rely on React 19's built-in deduplication for link tags
 
 **Rationale**:
-- **Memory leaks**: Prevent accumulating DOM nodes
-- **Testing**: Clean state between test renders
-- **Hot reload**: Works correctly during development
+- **Zero manual logic**: React automatically deduplicates identical link tags
+- **No querySelector checks**: React handles this internally
+- **Works across provider instances**: Multiple providers with same links = single link in head
+- **Framework-level optimization**: Leverages React's reconciliation
 
-**Caveat**: If fonts are still in use by other components, browser caches them. Removal just cleans up DOM, doesn't unload fonts from memory.
+**How React handles it**:
+- React compares link tags by their props (href, rel, etc.)
+- Identical links are deduplicated automatically
+- No additional code needed
+
+### Decision 5: No Manual Cleanup Needed
+
+**Choice**: Let React handle link lifecycle automatically
+
+**Rationale**:
+- **React manages unmounting**: Links are removed when component unmounts
+- **No useEffect cleanup**: React 19 handles link tag lifecycle
+- **Simpler code**: No manual DOM manipulation or cleanup functions
+- **More reliable**: Framework handles edge cases (concurrent mode, suspense, etc.)
 
 ## Risks / Trade-offs
 

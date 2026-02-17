@@ -4,7 +4,24 @@ import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
-import { useFontLoader } from "./hooks/use-font-loader";
+
+/**
+ * Internal component that loads Inter font from Google Fonts.
+ * React 19 automatically hoists these link tags to the document head.
+ */
+function InterFontLoader() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+        data-nimbus-fonts=""
+      />
+    </>
+  );
+}
 
 /**
  * # NimbusProvider
@@ -24,15 +41,16 @@ export function NimbusProvider({
   loadFonts = true,
   ...props
 }: NimbusProviderProps) {
-  // Load Inter font from Google Fonts (unless disabled)
-  useFontLoader(loadFonts);
   // Inner content with all the existing providers
   const content = (
-    <ChakraProvider value={system}>
-      <NimbusColorModeProvider enableSystem={false} {...props}>
-        <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
-      </NimbusColorModeProvider>
-    </ChakraProvider>
+    <>
+      {loadFonts && <InterFontLoader />}
+      <ChakraProvider value={system}>
+        <NimbusColorModeProvider enableSystem={false} {...props}>
+          <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
+        </NimbusColorModeProvider>
+      </ChakraProvider>
+    </>
   );
 
   // If router config is provided, wrap with RouterProvider for client-side routing
