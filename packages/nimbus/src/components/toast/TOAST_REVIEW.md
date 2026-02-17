@@ -29,7 +29,7 @@ through these top-down; they're ordered by priority.
       **Fix:** Spread `safeOptions.meta` first, then set `closable` and
       `variant`.
 
-- [ ] **Stale describe block title in unit tests** `toast.spec.tsx:220` — Says
+- [x] **Stale describe block title in unit tests** `toast.spec.tsx:220` — Says
       `"Action Button → Duration:0 Enforcement"` but the actual behavior is
       `duration: Infinity`. **Fix:** Rename to
       `"Action Button → Duration:Infinity Enforcement"`.

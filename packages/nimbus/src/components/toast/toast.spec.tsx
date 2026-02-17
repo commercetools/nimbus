@@ -217,7 +217,7 @@ describe("ToastManager", () => {
     });
   });
 
-  describe("Action Button → Duration:0 Enforcement", () => {
+  describe("Action Button → Duration:Infinity Enforcement", () => {
     it("Sets duration: Infinity when action is provided", () => {
       toast({
         title: "Action toast",
