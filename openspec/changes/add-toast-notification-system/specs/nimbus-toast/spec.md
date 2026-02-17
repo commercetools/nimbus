@@ -81,6 +81,18 @@ hooks, providers, or setup beyond `NimbusProvider`.
 - **WHEN** a consumer calls `toast.remove(id)`
 - **THEN** the specified toast is removed immediately without exit animation
 
+#### Scenario: Internal routing state cleanup on dismiss
+
+- **WHEN** a toast is dismissed via `toast.dismiss(id)` or removed via
+  `toast.remove(id)`
+- **THEN** the internal ID-to-placement mapping for that toast is deleted
+- **AND** subsequent calls referencing that ID fall back to default placement
+
+#### Scenario: Internal routing state cleanup on dismiss/remove all
+
+- **WHEN** `toast.dismiss()` or `toast.remove()` is called without an ID
+- **THEN** all internal ID-to-placement mappings are cleared
+
 #### Scenario: Programmatic update
 
 - **WHEN** a consumer calls `toast.update(id, { title: "New title" })`

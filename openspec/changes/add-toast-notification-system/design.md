@@ -41,6 +41,11 @@ Center placements (`top`, `bottom`) were removed since on-demand rendering is no
 feasible. A `ToastManager` singleton routes toast IDs to the correct toaster via
 an `idToPlacement` map. Consumers just pass `placement` to `toast()`.
 
+The `idToPlacement` map entry for a toast is cleaned up when the toast is
+dismissed (`dismiss()`) or removed (`remove()`). Both single-ID and
+dismiss/remove-all paths clear their respective entries to prevent unbounded map
+growth in long-lived SPAs.
+
 ### Mounting: Inside NimbusProvider
 
 `<ToastOutlet />` renders inside NimbusProvider. The Chakra `<Toaster>`

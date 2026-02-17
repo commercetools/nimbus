@@ -122,6 +122,7 @@ class ToastManager implements IToastManager {
       if (toaster) {
         toaster.dismiss(id);
       }
+      this.toastPlacements.delete(id);
     } else {
       VALID_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
@@ -129,6 +130,7 @@ class ToastManager implements IToastManager {
           toaster.dismiss();
         }
       });
+      this.toastPlacements.clear();
     }
   }
 
