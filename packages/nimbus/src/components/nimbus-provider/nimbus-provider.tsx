@@ -1,3 +1,4 @@
+import { createContext, useContext } from "react";
 import { ChakraProvider } from "@chakra-ui/react/styled-system";
 import { RouterProvider } from "react-aria";
 import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
@@ -5,6 +6,12 @@ import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
 import { ToastOutlet } from "@/components/toast/toast.outlet";
+
+/**
+ * Prevents duplicate ToastOutlets when NimbusProviders are nested.
+ * Only the outermost provider renders the outlet.
+ */
+const ToastOutletMountedContext = createContext(false);
 
 /**
  * # NimbusProvider
@@ -20,13 +27,17 @@ export function NimbusProvider({
   router,
   ...props
 }: NimbusProviderProps) {
+  const hasToastOutlet = useContext(ToastOutletMountedContext);
+
   // Inner content with all the existing providers
   const content = (
     <ChakraProvider value={system}>
       <NimbusColorModeProvider enableSystem={false} {...props}>
         <NimbusI18nProvider locale={locale}>
-          {children}
-          <ToastOutlet />
+          <ToastOutletMountedContext.Provider value={true}>
+            {children}
+            {!hasToastOutlet && <ToastOutlet />}
+          </ToastOutletMountedContext.Provider>
         </NimbusI18nProvider>
       </NimbusColorModeProvider>
     </ChakraProvider>

@@ -944,7 +944,10 @@ export const KeyboardNavigation: Story = {
 
 /**
  * Closable Control
- * Tests closable: true (opt-in) and closable: false (default)
+ * Tests closable behavior:
+ * - Default (finite duration): no close button (closable defaults to false)
+ * - Infinite duration: close button auto-enforced (users need a way to dismiss)
+ * - Explicit closable: true: close button shown
  */
 export const ClosableControl: Story = {
   render: () => {
@@ -954,6 +957,7 @@ export const ClosableControl: Story = {
         description: "No close button shown",
         type: "warning",
         duration: Infinity,
+        closable: false,
       });
       toast({
         title: "Closable (opt-in)",
@@ -976,21 +980,16 @@ export const ClosableControl: Story = {
     const body = within(document.body);
     const button = canvas.getByTestId("closable-btn");
 
-    await step(
-      "Default toast has no close button (closable: false)",
-      async () => {
-        await userEvent.click(button);
+    await step("Toast with closable: false has no close button", async () => {
+      await userEvent.click(button);
 
-        const toastText = await body.findByText("Not closable (default)");
-        const toastContainer = toastText.closest(
-          '[role="alert"]'
-        ) as HTMLElement;
-        const closeButton = within(toastContainer).queryByRole("button");
+      const toastText = await body.findByText("Not closable (default)");
+      const toastContainer = toastText.closest('[role="alert"]') as HTMLElement;
+      const closeButton = within(toastContainer).queryByRole("button");
 
-        // There should be no close button
-        await expect(closeButton).not.toBeInTheDocument();
-      }
-    );
+      // There should be no close button
+      await expect(closeButton).not.toBeInTheDocument();
+    });
 
     await step("Toast with closable: true shows close button", async () => {
       const toastText = await body.findByText("Closable (opt-in)");
