@@ -39,7 +39,7 @@ through these top-down; they're ordered by priority.
       Change to `maxWidth: "400px"` and add `width: "100%"` or use
       `min(400px, calc(100vw - 2rem))`.
 
-- [ ] **`description` is required in types but optional in rendering**
+- [x] **`description` is required in types but optional in rendering**
       `toast.types.ts:53` marks `description` as required, but
       `toast.outlet.tsx:78` guards with `toast.description &&`. Either make the
       type optional or remove the guard.
