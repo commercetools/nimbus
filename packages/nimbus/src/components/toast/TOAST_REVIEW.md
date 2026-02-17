@@ -22,7 +22,7 @@ through these top-down; they're ordered by priority.
 
 ## Low Priority
 
-- [ ] **`meta` spread order allows consumer override of internals**
+- [x] **`meta` spread order allows consumer override of internals**
       `toast.manager.ts:88-91` — `...safeOptions.meta` is spread _after_
       `closable` and `variant`, meaning a consumer passing
       `meta: { variant: "bogus" }` silently overrides the intended variant.

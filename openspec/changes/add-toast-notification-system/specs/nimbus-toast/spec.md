@@ -277,11 +277,11 @@ regions. No additional setup SHALL be required from consumers.
 
 ### Requirement: Closable Control
 
-Toasts SHALL support a `closable` property that controls close button
-visibility. Forwarded via `meta.closable` for toasts created through
-`ToastManager.create()`. By default, the close button is hidden. Persistent
-toasts (`duration: Infinity`) automatically enable the close button unless
-explicitly set to `false`.
+Toasts SHALL support a `closable` property on `ToastOptions` that controls close
+button visibility. Internally, `ToastManager` tunnels this value through Chakra's
+`meta` bag (an implementation detail not exposed to consumers). By default, the
+close button is hidden. Persistent toasts (`duration: Infinity`) automatically
+enable the close button unless explicitly set to `false`.
 
 #### Scenario: Closable false (default)
 

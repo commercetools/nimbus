@@ -63,8 +63,6 @@ export interface ToastOptions {
   pauseOnInteraction?: boolean;
   /** Pause auto-dismiss when page is idle (default: true) */
   pauseOnPageIdle?: boolean;
-  /** Custom metadata passed to render function */
-  meta?: Record<string, unknown>;
 }
 
 /**

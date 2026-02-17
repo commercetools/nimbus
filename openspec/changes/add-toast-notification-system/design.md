@@ -87,8 +87,11 @@ Three visual variants control toast appearance:
 - **solid**: Bold colored background with contrast text. High visual prominence.
 - **subtle**: Subtle colored background with an inset border.
 
-The variant is passed via `meta.variant` and read by `ToastOutlet` to set the
-recipe variant on `ChakraToast.Root`.
+Consumers set the variant via the top-level `variant` option on `ToastOptions`.
+Internally, `ToastManager` tunnels it through Chakra's `meta` bag (since Chakra's
+toaster API has no native variant field). The `ToastOutlet` reads `meta.variant`
+to set the recipe variant on `ChakraToast.Root`. The `meta` property is not
+exposed to consumers.
 
 ### Hotkeys: Per-Placement Numpad Mapping
 
@@ -99,8 +102,9 @@ corresponding toast region.
 
 ### Closable Property
 
-Forwarded via `meta.closable` to the render function. The `ToastOutlet` reads
-this to show/hide the close button. Defaults to `false` for timed toasts and
+Consumers set the `closable` option on `ToastOptions`. Internally, `ToastManager`
+tunnels it through Chakra's `meta` bag. The `ToastOutlet` reads `meta.closable`
+to show/hide the close button. Defaults to `false` for timed toasts and
 `true` for persistent toasts (`duration: Infinity`). Note: for
 `toast.promise()`, options are passed directly to Chakra's `toaster.promise()` —
 the `closable` property follows Chakra's native handling in that path.

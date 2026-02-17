@@ -87,7 +87,6 @@ class ToastManager implements IToastManager {
       meta: {
         closable,
         variant: safeOptions.variant ?? "accent-start",
-        ...safeOptions.meta,
       },
     };
 
