@@ -1,5 +1,8 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react";
+import { createEditor } from "slate";
+import { withReact } from "slate-react";
+import { withHistory } from "slate-history";
 import { extractStyleProps } from "@/utils";
 import { RichTextInputRootSlot } from "./rich-text-input.slots";
 import {
@@ -13,6 +16,7 @@ import {
   fromHTML,
   createEmptyValue,
   validSlateStateAdapter,
+  withLinks,
 } from "./utils";
 import { richTextInputRecipe } from "./rich-text-input.recipe";
 
@@ -49,8 +53,16 @@ export const RichTextInput = (props: RichTextInputProps) => {
     "data-readonly": isReadOnly ? "true" : undefined,
   };
 
-  // Internal state management
-  const [internalValue, setInternalValue] = useState(() => {
+  // Create editor instance - lifted from RichTextEditor for controlled value support
+  // In Slate 0.100+, the editor is uncontrolled and initialValue is only used on mount.
+  // By owning the editor here, we can directly update editor.children for controlled updates.
+  const editor = useMemo(() => {
+    const baseEditor = createEditor();
+    return withLinks(withHistory(withReact(baseEditor)));
+  }, []);
+
+  // Compute initial value once for the Slate component's initialValue prop
+  const initialSlateValue = useMemo(() => {
     const initialHtml = value ?? defaultValue ?? "";
     try {
       return initialHtml ? fromHTML(initialHtml) : createEmptyValue();
@@ -58,43 +70,77 @@ export const RichTextInput = (props: RichTextInputProps) => {
       console.warn("Failed to parse initial HTML, using empty value:", error);
       return createEmptyValue();
     }
-  });
+  }, []); // Empty deps - only compute once on mount
 
+  // Track the current serialized value for change detection
   const [serializedValue, setSerializedValue] = useState(() => {
     return value ?? defaultValue ?? "";
   });
 
+  // Track if we're in the middle of an internal change to avoid loops
+  const isInternalChangeRef = useRef(false);
+
   const editorRef = useRef<RichTextEditorRef>(null);
 
-  // Handle controlled value changes
+  // Handle controlled value changes from parent
+  // In Slate 0.100+, we must directly update editor.children since the component is uncontrolled
   useEffect(() => {
-    if (value !== undefined && value !== serializedValue) {
-      const newSlateValue = value ? fromHTML(value) : createEmptyValue();
-      setInternalValue(newSlateValue);
-      setSerializedValue(value);
+    // Skip if this is an internal change (user typing) or if value matches
+    if (
+      isInternalChangeRef.current ||
+      value === undefined ||
+      value === serializedValue
+    ) {
+      isInternalChangeRef.current = false;
+      return;
     }
-  }, [value, serializedValue]);
+
+    // External value change - update editor content directly
+    const newSlateValue = value ? fromHTML(value) : createEmptyValue();
+    const validatedValue = validSlateStateAdapter(newSlateValue);
+
+    // Replace editor content directly (Slate 0.100+ pattern)
+    // Set children and selection atomically before triggering onChange
+    editor.children = validatedValue;
+
+    // Reset selection to null first, then set to start after DOM sync
+    // This avoids "Cannot resolve a DOM point" errors
+    editor.selection = null;
+
+    // Clear history since this is an external reset - preserves clean undo state
+    if (editor.history) {
+      editor.history.undos = [];
+      editor.history.redos = [];
+    }
+
+    // Update our tracked value
+    setSerializedValue(value);
+
+    // Trigger a re-render to sync DOM with new state
+    editor.onChange();
+  }, [value, serializedValue, editor]);
 
   const handleChange = useCallback(
     (slateValue: ReturnType<typeof createEmptyValue>) => {
       const newHtml = toHTML(slateValue);
       const hasSerializedValueChanged = newHtml !== serializedValue;
 
-      setInternalValue(slateValue);
-      setSerializedValue(newHtml);
+      // Mark this as an internal change to prevent useEffect from overwriting
+      if (hasSerializedValueChanged) {
+        isInternalChangeRef.current = true;
+        setSerializedValue(newHtml);
 
-      // Only call onChange if the serialized HTML actually changed
-      if (hasSerializedValueChanged && onChange) {
-        onChange(newHtml);
+        // Call onChange if the serialized HTML actually changed
+        if (onChange) {
+          onChange(newHtml);
+        }
       }
     },
     [serializedValue, onChange]
   );
 
-  const currentValue = internalValue;
-
-  // Safety check: ensure we always have a valid Slate value
-  const safeValue = validSlateStateAdapter(currentValue);
+  // Safety check: ensure we always have a valid Slate value for initial render
+  const safeInitialValue = validSlateStateAdapter(initialSlateValue);
 
   return (
     <RichTextInputRootSlot
@@ -107,7 +153,8 @@ export const RichTextInput = (props: RichTextInputProps) => {
     >
       <RichTextEditor
         ref={editorRef}
-        value={safeValue}
+        editor={editor}
+        initialValue={safeInitialValue}
         onChange={handleChange}
         onFocus={onFocus}
         onBlur={onBlur}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { useState } from "react";
 import { RichTextInput, NimbusProvider } from "@commercetools/nimbus";
 
@@ -24,7 +24,7 @@ describe("RichTextInput - Basic usage", () => {
     expect(editor.querySelector("strong")).toHaveTextContent("editor");
   });
 
-  it("displays placeholder when empty", () => {
+  it("displays placeholder when empty", async () => {
     render(
       <NimbusProvider>
         <RichTextInput placeholder="Start typing..." />
@@ -33,8 +33,11 @@ describe("RichTextInput - Basic usage", () => {
 
     const editor = screen.getByRole("textbox");
     // Slate.js uses data-slate-placeholder for empty state
-    const placeholder = editor.querySelector("[data-slate-placeholder]");
-    expect(placeholder).toBeInTheDocument();
+    // In Slate 0.100+, placeholder rendering may need a tick to complete
+    await waitFor(() => {
+      const placeholder = editor.querySelector("[data-slate-placeholder]");
+      expect(placeholder).toBeInTheDocument();
+    });
   });
 });
 

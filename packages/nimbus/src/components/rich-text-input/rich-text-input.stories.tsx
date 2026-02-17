@@ -87,11 +87,14 @@ export const Default: Story = {
     expect(toolbar).toBeInTheDocument();
 
     // Verify placeholder is present (Slate.js handles placeholders differently)
-    const hasPlaceholder =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.textContent === "" ||
-      editor.querySelector(".slate-placeholder");
-    expect(hasPlaceholder).toBeTruthy();
+    // In Slate 0.100+, placeholder rendering may need a tick to complete
+    await waitFor(() => {
+      const hasPlaceholder =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.textContent === "" ||
+        editor.querySelector(".slate-placeholder");
+      expect(hasPlaceholder).toBeTruthy();
+    });
 
     // Test basic typing
     await userEvent.click(editor);
@@ -114,10 +117,13 @@ export const WithPlaceholder: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Verify placeholder is visible
-    const placeholderElement =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.querySelector(".slate-placeholder");
-    expect(placeholderElement || editor.textContent === "").toBeTruthy();
+    // In Slate 0.100+, placeholder rendering may need a tick to complete
+    await waitFor(() => {
+      const placeholderElement =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.querySelector(".slate-placeholder");
+      expect(placeholderElement || editor.textContent === "").toBeTruthy();
+    });
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
@@ -800,6 +806,10 @@ export const UndoRedo: Story = {
       },
       { timeout: 5000 }
     );
+
+    // Note: A "Cannot resolve a DOM point" error may appear in test output after this test.
+    // This is a known Slate issue during Storybook test cleanup and doesn't affect test results.
+    // See: https://github.com/ianstormtaylor/slate/issues/3280
   },
 };
 
