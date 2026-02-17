@@ -32,14 +32,20 @@ Rendering uses Chakra's built-in `Toast.Root`, `Toast.Title`,
 `Toast.Description`, `Toast.ActionTrigger` subcomponents — styled via a Nimbus
 slot recipe registered under the `toast` key to override Chakra's defaults.
 
-### Per-Toast Placement: Pre-Created Toasters
+### Per-Toast Placement: Lazily-Initialized Toasters
 
-All 4 toaster instances (one per corner placement) are pre-created at module load
-time in `toast.toasters.ts`. Only corner placements are supported (`top-start`,
-`top-end`, `bottom-start`, `bottom-end`) to minimize persistent DOM elements.
-Center placements (`top`, `bottom`) were removed since on-demand rendering is not
-feasible. A `ToastManager` singleton routes toast IDs to the correct toaster via
-an `idToPlacement` map. Consumers just pass `placement` to `toast()`.
+All 4 toaster instances (one per corner placement) are lazily initialized on
+first access in `toast.toasters.ts`. Only corner placements are supported
+(`top-start`, `top-end`, `bottom-start`, `bottom-end`) to minimize persistent DOM
+elements. Center placements (`top`, `bottom`) were removed since on-demand
+rendering is not feasible. A `ToastManager` singleton routes toast IDs to the
+correct toaster via an `idToPlacement` map. Consumers just pass `placement` to
+`toast()`.
+
+Lazy initialization avoids module-level side effects, improving tree-shaking,
+SSR safety (no state machines created during server rendering), and test
+isolation. The underlying Zag.js store is SSR-safe (no DOM access at creation
+time), but lazy init is preferred as a general best practice.
 
 The `idToPlacement` map entry for a toast is cleaned up when the toast is
 dismissed (`dismiss()`) or removed (`remove()`). Both single-ID and
@@ -111,10 +117,11 @@ the `closable` property follows Chakra's native handling in that path.
 
 ## Risks / Trade-offs
 
-- **Pre-created toasters** → 4 empty container divs always in DOM (one per
-  corner). Reduced from 6 by removing center placements. On-demand rendering not
-  feasible due to Zag.js machine timing. Acceptable trade-off for simpler routing
-  architecture.
+- **Lazily-initialized toasters** → 4 empty container divs in DOM once
+  initialized (one per corner). Reduced from 6 by removing center placements.
+  Toasters are created on first access (not at import time), avoiding
+  module-level side effects for SSR safety and tree-shaking. On-demand
+  per-toast rendering not feasible due to Zag.js machine timing.
 - **NimbusProvider modification** → Low risk; single child component with
   context guard for nested provider safety.
 - **ARIA role override** → Low risk; props spread after Chakra's base props.

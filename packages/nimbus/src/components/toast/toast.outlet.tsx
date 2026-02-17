@@ -15,7 +15,7 @@ import {
 import { IconButton } from "../icon-button";
 import { Button } from "../button";
 import { LoadingSpinner } from "../loading-spinner/loading-spinner";
-import { toasters } from "./toast.toasters";
+import { getToasterEntries } from "./toast.toasters";
 import type { ToastType, ToastVariant } from "./toast.types";
 
 const ICON_MAP: Record<Exclude<ToastType, "loading">, React.ReactElement> = {
@@ -144,7 +144,7 @@ function ToastContent({
 export function ToastOutlet() {
   return (
     <>
-      {Array.from(toasters.entries()).map(([placement, toaster]) => (
+      {getToasterEntries().map(([placement, toaster]) => (
         <Toaster key={placement} toaster={toaster}>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {

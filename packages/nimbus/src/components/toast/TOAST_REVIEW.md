@@ -46,7 +46,7 @@ through these top-down; they're ordered by priority.
 
 ## Worth Documenting / Future Consideration
 
-- [ ] **Module-level side effects in `toast.toasters.ts`** Importing anything
+- [x] **Module-level side effects in `toast.toasters.ts`** Importing anything
       from the toast module eagerly creates 4 Zag.js state machines via
       `createToaster`. This affects tree-shaking, SSR, and test isolation. No
       immediate fix needed, but document the constraint. If SSR support becomes

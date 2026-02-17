@@ -23,27 +23,45 @@ const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
 };
 
 /**
- * Create toaster instances for all placements.
- * These toaster instances are shared between ToastOutlet (which renders them)
- * and ToastManager (which uses them to create toasts).
+ * Lazily-initialized toaster instances per placement.
+ *
+ * Toasters are created on first access rather than at module load time.
+ * This avoids module-level side effects, improving tree-shaking, SSR safety,
+ * and test isolation. The underlying Zag.js store is SSR-safe (no DOM access),
+ * but lazy init is still preferred as a general best practice.
  */
-export const toasters = new Map(
-  ALL_PLACEMENTS.map((placement) => {
-    const toaster = createToaster({
-      placement,
-      pauseOnPageIdle: true,
-      hotkey: PLACEMENT_HOTKEYS[placement],
-    });
+let toasters: Map<ToastPlacement, ReturnType<typeof createToaster>> | null =
+  null;
 
-    return [placement, toaster];
-  })
-);
+function ensureToasters() {
+  if (!toasters) {
+    toasters = new Map(
+      ALL_PLACEMENTS.map((placement) => {
+        const toaster = createToaster({
+          placement,
+          pauseOnPageIdle: true,
+          hotkey: PLACEMENT_HOTKEYS[placement],
+        });
+
+        return [placement, toaster];
+      })
+    );
+  }
+  return toasters;
+}
 
 /**
  * Get toaster for a specific placement.
  */
 export function getToaster(placement: ToastPlacement) {
-  return toasters.get(placement);
+  return ensureToasters().get(placement);
+}
+
+/**
+ * Get all toaster entries (used by ToastOutlet for rendering).
+ */
+export function getToasterEntries() {
+  return Array.from(ensureToasters().entries());
 }
 
 /**

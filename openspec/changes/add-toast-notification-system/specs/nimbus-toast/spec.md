@@ -65,6 +65,11 @@ hooks, providers, or setup beyond `NimbusProvider`.
   `toast({ title: "Saved", description: "Your changes have been saved" })`
 - **THEN** a toast appears in the default placement (`top-end`)
 
+#### Scenario: Title-only toast
+
+- **WHEN** a consumer calls `toast({ title: "Saved!" })` without a description
+- **THEN** a toast appears with only the title rendered
+
 #### Scenario: Convenience methods
 
 - **WHEN** a consumer calls
@@ -345,3 +350,20 @@ Duplicate outlets cause WCAG landmark-unique violations from duplicate
 
 - **WHEN** a single `NimbusProvider` wraps the application
 - **THEN** the `ToastOutlet` renders normally
+
+### Requirement: SSR Safety
+
+The toast module SHALL be safe to import in server-side rendering environments
+(Node.js). Toaster instances SHALL be lazily initialized on first access rather
+than at module load time, avoiding module-level side effects that could interfere
+with tree-shaking, SSR, or test isolation.
+
+#### Scenario: Server-side import
+
+- **WHEN** the toast module is imported in a Node.js (SSR) environment
+- **THEN** no toaster instances are created until first client-side access
+
+#### Scenario: Lazy initialization
+
+- **WHEN** `toast()` or `<ToastOutlet />` is invoked for the first time
+- **THEN** toaster instances are created on demand and reused for subsequent calls
