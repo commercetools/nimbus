@@ -1,0 +1,33 @@
+name: Update Bundle Size Baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/nimbus/src/**"
+      - "packages/tokens/**"
+
+jobs:
+  update-baseline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.0-noble
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/ci
+
+      - name: Update bundle size baseline
+        run: node scripts/check-bundle-size.mjs --update-baseline
+
+      - name: Commit updated baseline
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages/nimbus/bundle-size-baseline.json
+          git diff --staged --quiet || (git commit -m "chore: update bundle size baseline [skip ci]" && git push)
