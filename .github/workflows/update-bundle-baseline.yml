@@ -25,10 +25,7 @@ jobs:
       - name: Update bundle size baseline
         run: node scripts/check-bundle-size.mjs --update-baseline
 
-      - name: Commit updated baseline
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add packages/nimbus/bundle-size-baseline.json
-          git diff --staged --quiet || (git commit -m "chore: update bundle size baseline [skip ci]" && git push)
+      - uses: step-security/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: update bundle size baseline [skip ci]"
+          file_pattern: "packages/nimbus/bundle-size-baseline.json"
