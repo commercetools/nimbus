@@ -23,6 +23,7 @@ export const numberInputRecipe = defineSlotRecipe({
     root: {
       display: "inline-flex",
       position: "relative",
+      overflow: "hidden",
       borderRadius: "200",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       _focusWithin: {
@@ -55,6 +56,7 @@ export const numberInputRecipe = defineSlotRecipe({
       display: "flex",
       flexGrow: 1,
       flexShrink: 1,
+      minWidth: 0,
       borderRadius: "inherit",
       colorPalette: "neutral",
       bg: "transparent",
