@@ -310,13 +310,13 @@ describe("ToastManager", () => {
   });
 
   describe("Closable option forwarding", () => {
-    it("Forwards closable: true to meta by default", () => {
+    it("Forwards closable: false to meta by default", () => {
       toast({ title: "Closable toast" });
 
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           meta: expect.objectContaining({
-            closable: true,
+            closable: false,
           }),
         })
       );

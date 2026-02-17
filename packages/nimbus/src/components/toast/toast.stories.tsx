@@ -23,7 +23,6 @@ import {
   Stack,
   Text,
   toast,
-  type ToastType,
   type ToastVariant,
 } from "@commercetools/nimbus";
 
