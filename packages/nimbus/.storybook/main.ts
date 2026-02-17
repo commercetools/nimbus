@@ -24,6 +24,10 @@ const config: StorybookConfig = {
     getAbsolutePackagePath("@vueless/storybook-dark-mode"),
     getAbsolutePackagePath("@storybook/addon-vitest"),
     getAbsolutePackagePath("@storybook/addon-docs"),
+    {
+      name: getAbsolutePackagePath("@chromatic-com/storybook"),
+      options: { projectId: "698e33aebdbff7804c1287d4" },
+    },
   ],
   framework: {
     name: getAbsolutePackagePath("@storybook/react-vite"),

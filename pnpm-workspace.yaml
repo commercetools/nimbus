@@ -5,6 +5,7 @@ packages:
 catalog:
   '@internationalized/string-compiler': ^3.3.0
   chromatic: ^15.1.0
+  '@chromatic-com/storybook': ^5.0.1
 
 catalogMode: strict
 
