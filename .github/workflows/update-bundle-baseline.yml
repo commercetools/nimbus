@@ -27,6 +27,7 @@ jobs:
 
       - name: Commit updated baseline
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add packages/nimbus/bundle-size-baseline.json
