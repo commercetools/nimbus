@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import {
   Toaster,
   Toast as ChakraToast,
@@ -17,7 +16,7 @@ import { IconButton } from "../icon-button";
 import { Button } from "../button";
 import { LoadingSpinner } from "../loading-spinner/loading-spinner";
 import { toasters } from "./toast.toasters";
-import type { ToastPlacement, ToastType, ToastVariant } from "./toast.types";
+import type { ToastType, ToastVariant } from "./toast.types";
 
 const ICON_MAP: Record<Exclude<ToastType, "loading">, React.ReactElement> = {
   info: <Info />,
@@ -120,82 +119,11 @@ function ToastContent({
 }
 
 /**
- * Renders a single toast region on-demand.
- *
- * The Chakra/Ark `<Toaster>` always renders a `<div role="region">` into the DOM,
- * even when no toasts are active. To avoid polluting the DOM with empty landmark
- * regions, this wrapper subscribes to the underlying store and only mounts the
- * `<Toaster>` once the first toast for this placement is created.
- *
- * On first activation the Toaster's internal Zag machine may miss the initial
- * store event (it subscribes during mount, after the event was published).
- * We work around this by re-publishing existing toasts via `store.update()`
- * in an effect that runs after the machine has started.
- *
- * Once mounted the Toaster stays mounted to avoid repeated sync overhead.
- */
-function OnDemandToaster({
-  placement,
-  toaster,
-}: {
-  placement: ToastPlacement;
-  toaster: CreateToasterReturn;
-}) {
-  const [active, setActive] = useState(false);
-  const needsSyncRef = useRef(false);
-
-  // Subscribe to the store and activate on first toast
-  useEffect(() => {
-    return toaster.subscribe(() => {
-      if (!active) {
-        needsSyncRef.current = true;
-        setActive(true);
-      }
-    });
-  }, [toaster, active]);
-
-  // After mount, re-publish existing toasts so the Zag machine picks them up
-  useEffect(() => {
-    if (!needsSyncRef.current) return;
-    needsSyncRef.current = false;
-
-    const visible = toaster.getVisibleToasts();
-    for (const t of visible) {
-      if (t.id) {
-        toaster.update(t.id, {});
-      }
-    }
-  });
-
-  if (!active) return null;
-
-  return (
-    <Toaster key={placement} toaster={toaster}>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {(toast: any) => {
-        const type = (toast.type as ToastType) || "info";
-        const variant = (toast.meta?.variant as ToastVariant) || "accent-start";
-
-        return (
-          <ChakraToast.Root
-            colorPalette={COLOR_PALETTE_MAP[type]}
-            variant={variant}
-            {...getARIAAttributes(type)}
-          >
-            <ToastContent toast={toast} toaster={toaster} />
-          </ChakraToast.Root>
-        );
-      }}
-    </Toaster>
-  );
-}
-
-/**
- * ToastOutlet - Renders toast regions on-demand.
+ * ToastOutlet - Renders all toast regions.
  *
  * Mount this component once at the root of your application (NimbusProvider
- * does this automatically). Toast regions are created lazily — no DOM elements
- * are rendered until the first toast for a given placement is created.
+ * does this automatically and prevents duplicates when nested).
+ * Toasts appear when created via the `toast()` imperative API.
  *
  * @example
  * ```tsx
@@ -217,11 +145,24 @@ export function ToastOutlet() {
   return (
     <>
       {Array.from(toasters.entries()).map(([placement, toaster]) => (
-        <OnDemandToaster
-          key={placement}
-          placement={placement}
-          toaster={toaster}
-        />
+        <Toaster key={placement} toaster={toaster}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {(toast: any) => {
+            const type = (toast.type as ToastType) || "info";
+            const variant =
+              (toast.meta?.variant as ToastVariant) || "accent-start";
+
+            return (
+              <ChakraToast.Root
+                colorPalette={COLOR_PALETTE_MAP[type]}
+                variant={variant}
+                {...getARIAAttributes(type)}
+              >
+                <ToastContent toast={toast} toaster={toaster} />
+              </ChakraToast.Root>
+            );
+          }}
+        </Toaster>
       ))}
     </>
   );
