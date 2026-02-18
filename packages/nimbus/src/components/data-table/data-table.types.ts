@@ -189,6 +189,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   nestedKey?: string;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  /** Controlled expansion state - map of row IDs to their expanded state */
+  expanded?: Record<string, boolean>;
+  /** Default expansion state for uncontrolled mode */
+  defaultExpanded?: Record<string, boolean>;
+  /** Callback fired when expansion state changes */
+  onExpandChange?: (expanded: Record<string, boolean>) => void;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
