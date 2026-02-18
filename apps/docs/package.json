@@ -64,7 +64,6 @@
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",
     "eslint": "catalog:tooling",
-    "eslint-plugin-react-hooks": "catalog:tooling",
     "eslint-plugin-react-refresh": "catalog:tooling",
     "globals": "catalog:tooling",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
