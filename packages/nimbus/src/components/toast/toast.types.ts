@@ -49,10 +49,10 @@ export interface ToastOptions {
   type?: ToastType;
   /** Visual variant (default: "accent-start") */
   variant?: ToastVariant;
-  /** Title text (required for most toasts) */
-  title?: string;
+  /** Title text */
+  title: string;
   /** Description text providing additional context */
-  description?: string;
+  description: string;
   /** Optional action button */
   action?: ToastAction;
   /** Custom icon element that replaces the default type-based icon */

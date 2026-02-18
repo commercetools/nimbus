@@ -87,11 +87,6 @@ hooks, providers, or setup beyond `NimbusProvider`.
   `toast({ title: "Saved", description: "Your changes have been saved" })`
 - **THEN** a toast appears in the default placement (`top-end`)
 
-#### Scenario: Title-only toast
-
-- **WHEN** a consumer calls `toast({ title: "Saved!" })` without a description
-- **THEN** a toast appears with only the title rendered
-
 #### Scenario: Convenience methods
 
 - **WHEN** a consumer calls
