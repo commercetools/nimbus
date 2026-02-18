@@ -1324,6 +1324,12 @@ export const ZIndexLayering: Story = {
         title: "Error",
         description: "Toast triggered from inside a modal",
         closable: true,
+        action: {
+          label: "Retry",
+          onClick: () => {
+            /* noop for test */
+          },
+        },
       });
     };
 
@@ -1401,5 +1407,33 @@ export const ZIndexLayering: Story = {
       expect(modalZIndex).toBeGreaterThan(0);
       expect(toastZIndex).toBeGreaterThan(modalZIndex);
     });
+
+    await step(
+      "Toast buttons are interactive while modal is open (not blocked by inert)",
+      async () => {
+        // The toast region must not be inert — React Aria's ariaHideOutside
+        // skips elements with data-react-aria-top-layer="true"
+        const toastRegion = document.querySelector(
+          "[data-scope='toast'][data-part='group']"
+        ) as HTMLElement;
+        await expect(toastRegion).not.toBeNull();
+        await expect(toastRegion.inert).toBe(false);
+
+        // Verify action button is clickable
+        const retryBtn = body.getByRole("button", { name: "Retry" });
+        await expect(retryBtn).toBeInTheDocument();
+        await userEvent.click(retryBtn);
+
+        // Clicking the action button should dismiss the toast
+        await waitFor(
+          () => {
+            expect(
+              body.queryByText("Toast triggered from inside a modal")
+            ).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
   },
 };

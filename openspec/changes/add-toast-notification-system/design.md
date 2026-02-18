@@ -106,6 +106,23 @@ Each toaster gets a unique hotkey based on numpad corner positions:
 (bottom-start), `Alt+Shift+3` (bottom-end). Pressing the hotkey focuses the
 corresponding toast region.
 
+### Modal Interaction: React Aria Top-Layer
+
+When a React Aria modal (Dialog) opens, it calls `ariaHideOutside` which sets
+`inert` on all sibling DOM elements to enforce focus trapping. Because Zag.js
+toast regions render as top-level `<div>` elements (siblings of the modal),
+they would become inert — blocking all pointer events on close buttons and
+action buttons, even though the toast visually renders above the modal via
+z-index.
+
+The fix uses React Aria's built-in escape hatch: adding
+`data-react-aria-top-layer="true"` to each `<Toaster>` component. React Aria's
+`ariaHideOutside` explicitly skips elements with this attribute during both the
+initial walk and the MutationObserver callback for dynamically added nodes. Ark
+UI's `<Toaster>` merges extra props onto the group container via
+`mergeProps(api.getGroupProps(), localProps)`, so the attribute propagates to
+the rendered `<div>`.
+
 ### Closable Property
 
 Consumers set the `closable` option on `ToastOptions`. Internally, `ToastManager`

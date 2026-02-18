@@ -145,7 +145,11 @@ export function ToastOutlet() {
   return (
     <>
       {getToasterEntries().map(([placement, toaster]) => (
-        <Toaster key={placement} toaster={toaster}>
+        <Toaster
+          key={placement}
+          toaster={toaster}
+          data-react-aria-top-layer="true"
+        >
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(toast: any) => {
             const type = (toast.type as ToastType) || "info";

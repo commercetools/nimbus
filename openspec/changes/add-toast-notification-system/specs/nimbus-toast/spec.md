@@ -351,6 +351,27 @@ Duplicate outlets cause WCAG landmark-unique violations from duplicate
 - **WHEN** a single `NimbusProvider` wraps the application
 - **THEN** the `ToastOutlet` renders normally
 
+### Requirement: Modal Interaction Safety
+
+Toast regions SHALL remain interactive when a React Aria modal (Dialog) is open.
+React Aria's `ariaHideOutside` sets `inert` on sibling DOM elements during modal
+focus trapping, which would block pointer events on toast close and action
+buttons. Toast group containers SHALL be marked with
+`data-react-aria-top-layer="true"` so React Aria's hide walk skips them.
+
+#### Scenario: Toast buttons clickable above modal
+
+- **GIVEN** a modal dialog is open
+- **AND** a toast with a close button and action button is visible
+- **WHEN** the user clicks the toast's close button or action button
+- **THEN** the button responds to the click (toast is not inert)
+
+#### Scenario: Toast region not marked inert
+
+- **GIVEN** a modal dialog is open
+- **WHEN** a toast region exists in the DOM
+- **THEN** the toast region's `inert` property is `false`
+
 ### Requirement: SSR Safety
 
 The toast module SHALL be safe to import in server-side rendering environments
