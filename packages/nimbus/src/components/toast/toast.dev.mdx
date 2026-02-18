@@ -99,7 +99,7 @@ const App = () => (
     <Button onPress={() => toast({ title: "Custom Duration", description: "Dismisses after 10 seconds", duration: 10000 })}>
       10 Second Duration
     </Button>
-    <Button onPress={() => toast({ title: "Persistent", description: "Never auto-dismisses", duration: 0 })}>
+    <Button onPress={() => toast({ title: "Persistent", description: "Never auto-dismisses", duration: Infinity })}>
       No Auto-Dismiss
     </Button>
   </Stack>
@@ -109,7 +109,7 @@ const App = () => (
 **Duration values:**
 - Default: `6000` (6 seconds)
 - Custom: Any positive number in milliseconds
-- Persistent: `0` (never auto-dismisses)
+- Persistent: `Infinity` (never auto-dismisses)
 
 ### Action buttons
 
@@ -186,7 +186,7 @@ const App = () => {
     const id = toast({
       title: "Processing...",
       description: "Operation in progress",
-      duration: 0
+      duration: Infinity
     });
     setToastId(id);
   };
@@ -324,7 +324,7 @@ Creates a toast and returns its ID. Also available as convenience methods: `toas
 | `title` | `string` | — | Title text |
 | `description` | `string` | — | Description text (optional) |
 | `action` | `{ label: string; onClick: () => void }` | — | Action button (disables auto-dismiss) |
-| `duration` | `number` | `6000` | Auto-dismiss in ms (`0` = never) |
+| `duration` | `number` | `6000` | Auto-dismiss in ms (`Infinity` = never) |
 | `placement` | `ToastPlacement` | `"top-end"` | Screen position |
 | `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |
 | `pauseOnInteraction` | `boolean` | `true` | Pause timer on hover/focus |
@@ -425,7 +425,7 @@ const App = () => {
       title: "Step 1 of 3",
       description: "Validating data...",
       type: "info",
-      duration: 0
+      duration: Infinity
     });
 
     await new Promise(resolve => setTimeout(resolve, 1500));
