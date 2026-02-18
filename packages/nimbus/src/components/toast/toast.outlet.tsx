@@ -66,7 +66,7 @@ function ToastContent({
       <chakra.div css={styles.indicator}>
         {type === "loading" ? (
           <LoadingSpinner
-            size="xs"
+            size="sm"
             colorPalette={variant === "solid" ? "white" : "primary"}
           />
         ) : (
