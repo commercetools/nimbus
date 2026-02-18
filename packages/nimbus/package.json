@@ -74,7 +74,6 @@
     "@testing-library/user-event": "catalog:tooling",
     "@types/escape-html": "^1.0.4",
     "@types/is-hotkey": "^0.1.10",
-    "@types/jsdom": "catalog:tooling",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
