@@ -81,8 +81,9 @@ Managed by `ToastManager.create()` which sets `duration: 6000` by default.
 Pause on hover/focus is Chakra's built-in behavior (`pauseOnInteraction: true`).
 Pause on page idle enabled via `pauseOnPageIdle: true`.
 
-Toasts with `action` get `duration: Infinity` — enforced by
-`ToastManager.create()`, as Chakra does not do this automatically.
+Action buttons do not override the toast duration. Consumers control duration
+independently — an action toast auto-dismisses at the default 6s unless the
+consumer explicitly sets `duration: Infinity`.
 
 ### Visual Variants
 

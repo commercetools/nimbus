@@ -217,8 +217,8 @@ describe("ToastManager", () => {
     });
   });
 
-  describe("Action Button → Duration:Infinity Enforcement", () => {
-    it("Sets duration: Infinity when action is provided", () => {
+  describe("Action Button → Duration Behavior", () => {
+    it("Uses default duration when action is provided without explicit duration", () => {
       toast({
         title: "Action toast",
         action: {
@@ -230,13 +230,13 @@ describe("ToastManager", () => {
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Action toast",
-          duration: Infinity,
+          duration: 6000,
           action: expect.any(Object),
         })
       );
     });
 
-    it("Overrides explicit duration when action is provided", () => {
+    it("Respects explicit duration when action is provided", () => {
       toast({
         title: "Action toast",
         duration: 5000,
@@ -248,7 +248,7 @@ describe("ToastManager", () => {
 
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          duration: Infinity,
+          duration: 5000,
         })
       );
     });

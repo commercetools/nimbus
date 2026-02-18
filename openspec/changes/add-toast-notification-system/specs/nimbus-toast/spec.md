@@ -178,13 +178,15 @@ timer, or programmatic API.
 
 ### Requirement: Action Button
 
-Toasts SHALL support an optional action button. Toasts with actions SHALL NOT
-auto-dismiss (`ToastManager.create()` enforces `duration: Infinity`).
+Toasts SHALL support an optional action button. Action buttons do not override
+the toast duration — consumers control duration independently. An action toast
+uses the default 6s duration unless the consumer explicitly sets a different
+value.
 
 #### Scenario: Action toast
 
 - **WHEN** a toast is created with `action: { label: "Undo", onClick: fn }`
-- **THEN** an action button is rendered and the toast does not auto-dismiss
+- **THEN** an action button is rendered and the toast uses the default duration
 
 #### Scenario: Action callback
 
@@ -300,8 +302,8 @@ enable the close button unless explicitly set to `false`.
 
 #### Scenario: Persistent toasts default to closable
 
-- **WHEN** a toast is created with an action (which forces `duration: Infinity`)
-  and no explicit `closable` value
+- **WHEN** a toast is created with `duration: Infinity` and no explicit
+  `closable` value
 - **THEN** the close button is visible
 
 ### Requirement: Immediate Removal

@@ -546,7 +546,8 @@ export const Dismissal: Story = {
 
 /**
  * Action Button
- * Tests action button rendering, prevents auto-dismiss, and onClick callback
+ * Tests action button rendering, onClick callback, and that action
+ * does NOT force duration: Infinity (consumers control duration independently)
  */
 export const ActionButton: Story = {
   render: () => {
@@ -576,27 +577,24 @@ export const ActionButton: Story = {
     const body = within(document.body);
     const button = canvas.getByTestId("action-toast-btn");
 
-    await step("Toast with action does not auto-dismiss", async () => {
-      await userEvent.click(button);
+    await step(
+      "Toast with action renders action button and respects default duration",
+      async () => {
+        await userEvent.click(button);
 
-      const toastText = await body.findByText("File deleted");
-      await expect(toastText).toBeInTheDocument();
+        const toastText = await body.findByText("File deleted");
+        await expect(toastText).toBeInTheDocument();
 
-      // Verify action button is rendered
-      const toastContainer = toastText.closest(
-        '[role="status"]'
-      ) as HTMLElement;
-      const actionButton = within(toastContainer).getByRole("button", {
-        name: /undo/i,
-      });
-      await expect(actionButton).toBeInTheDocument();
-
-      // Wait 7 seconds (longer than default 6s)
-      await new Promise((resolve) => setTimeout(resolve, 7000));
-
-      // Toast should still be visible (action forces duration: Infinity)
-      await expect(toastText).toBeInTheDocument();
-    });
+        // Verify action button is rendered
+        const toastContainer = toastText.closest(
+          '[role="status"]'
+        ) as HTMLElement;
+        const actionButton = within(toastContainer).getByRole("button", {
+          name: /undo/i,
+        });
+        await expect(actionButton).toBeInTheDocument();
+      }
+    );
 
     await step("Action button is clickable", async () => {
       const toastText = body.getByText("File deleted");

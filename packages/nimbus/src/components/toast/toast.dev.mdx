@@ -113,7 +113,7 @@ const App = () => (
 
 ### Action buttons
 
-Add action buttons to toasts. Toasts with actions never auto-dismiss:
+Add action buttons to toasts. Duration is controlled independently — set `duration: Infinity` if the action requires user acknowledgment:
 
 ```jsx-live-dev
 const App = () => {
@@ -323,7 +323,7 @@ Creates a toast and returns its ID. Also available as convenience methods: `toas
 | `type` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style and ARIA semantics |
 | `title` | `string` | — | Title text |
 | `description` | `string` | — | Description text (optional) |
-| `action` | `{ label: string; onClick: () => void }` | — | Action button (disables auto-dismiss) |
+| `action` | `{ label: string; onClick: () => void }` | — | Action button |
 | `duration` | `number` | `6000` | Auto-dismiss in ms (`Infinity` = never) |
 | `placement` | `ToastPlacement` | `"top-end"` | Screen position |
 | `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |

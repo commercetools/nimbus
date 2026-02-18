@@ -25,7 +25,7 @@ const VALID_PLACEMENTS: ToastPlacement[] = [
  * - ID-to-placement routing: Tracks which toast ID belongs to which placement
  * - Convenience methods: info(), success(), warning(), error() methods
  * - Promise support: promise() method that transitions loading → success/error
- * - Action→duration:Infinity enforcement: If action is provided, force duration: Infinity
+ * - Default duration: 6000ms, consumer-controlled (action does not override)
  */
 class ToastManager implements IToastManager {
   private static instance: ToastManager;
@@ -67,13 +67,7 @@ class ToastManager implements IToastManager {
       throw new Error(`Toaster not found for placement: ${placement}`);
     }
 
-    // Enforce duration: Infinity when action is provided (toasts with actions should not auto-dismiss)
-    const duration =
-      safeOptions.action !== undefined
-        ? Infinity
-        : safeOptions.duration !== undefined
-          ? safeOptions.duration
-          : DEFAULT_DURATION;
+    const duration = safeOptions.duration ?? DEFAULT_DURATION;
 
     // Enforce closable: true for persistent toasts (duration: Infinity)
     // so the user always has a way to dismiss them.
