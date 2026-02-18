@@ -17,7 +17,7 @@
 
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor } from "storybook/test";
+import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import {
   Button,
   Dialog,
@@ -633,7 +633,10 @@ export const Dismissal: Story = {
  * does NOT force duration: Infinity (consumers control duration independently)
  */
 export const ActionButton: Story = {
-  render: () => {
+  args: {
+    onAction: fn(),
+  },
+  render: (args) => {
     const showActionToast = () => {
       toast({
         title: "File deleted",
@@ -641,9 +644,7 @@ export const ActionButton: Story = {
         type: "info",
         action: {
           label: "Undo",
-          onPress: () => {
-            console.log("Action clicked");
-          },
+          onPress: args.onAction,
         },
       });
     };
@@ -654,7 +655,7 @@ export const ActionButton: Story = {
       </Button>
     );
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, step, args }) => {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
@@ -679,19 +680,22 @@ export const ActionButton: Story = {
       }
     );
 
-    await step("Action button is clickable", async () => {
-      const toastText = body.getByText("File deleted");
-      const toastContainer = toastText.closest(
-        '[role="status"]'
-      ) as HTMLElement;
-      const actionButton = within(toastContainer).getByRole("button", {
-        name: /undo/i,
-      });
+    await step(
+      "Action button calls onPress exactly once when clicked",
+      async () => {
+        const toastText = body.getByText("File deleted");
+        const toastContainer = toastText.closest(
+          '[role="status"]'
+        ) as HTMLElement;
+        const actionButton = within(toastContainer).getByRole("button", {
+          name: /undo/i,
+        });
 
-      await userEvent.click(actionButton);
-      // Note: mockActionHandler is local to render, so we can't assert on it here
-      // This is a limitation of Storybook play functions
-    });
+        args.onAction.mockClear();
+        await userEvent.click(actionButton);
+        await expect(args.onAction).toHaveBeenCalledTimes(1);
+      }
+    );
   },
 };
 
