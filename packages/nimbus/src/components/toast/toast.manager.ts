@@ -1,4 +1,5 @@
 import type {
+  ToastAction,
   ToastOptions,
   ToastPlacement,
   IToastManager,
@@ -10,6 +11,16 @@ import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
  * Default toast configuration values.
  */
 const DEFAULT_DURATION = 6000; // 6 seconds
+
+/**
+ * Map consumer-facing `onPress` to Chakra/Zag's internal `onClick`.
+ */
+function mapAction(
+  action: ToastAction | undefined
+): { label: string; onClick: () => void } | undefined {
+  if (!action) return undefined;
+  return { label: action.label, onClick: action.onPress };
+}
 
 const VALID_PLACEMENTS: ToastPlacement[] = [
   "top-start",
@@ -74,8 +85,14 @@ class ToastManager implements IToastManager {
     const closable =
       safeOptions.closable ?? (duration === Infinity ? true : false);
 
+    // Destructure `action` out to prevent our ToastAction (onPress) from
+    // leaking into the Chakra options object which expects onClick.
+    const { action: consumerAction, ...restOptions } = safeOptions;
+    const action = mapAction(consumerAction);
+
     const toastOptions = {
-      ...safeOptions,
+      ...restOptions,
+      action,
       duration,
       pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
@@ -100,7 +117,8 @@ class ToastManager implements IToastManager {
     const toaster = getToaster(placement);
 
     if (toaster) {
-      toaster.update(id, options);
+      const { action, ...rest } = options;
+      toaster.update(id, { ...rest, action: mapAction(action) });
     }
   }
 
@@ -178,7 +196,18 @@ class ToastManager implements IToastManager {
     const toaster = getToaster(placement);
 
     if (toaster) {
-      toaster.promise(promise, options);
+      const mapped = {
+        loading: {
+          ...options.loading,
+          action: mapAction(options.loading.action),
+        },
+        success: {
+          ...options.success,
+          action: mapAction(options.success.action),
+        },
+        error: { ...options.error, action: mapAction(options.error.action) },
+      };
+      toaster.promise(promise, mapped);
     }
   }
 
@@ -217,7 +246,7 @@ const manager = ToastManager.getInstance();
  * toast({
  *   title: "Action required",
  *   description: "File was deleted",
- *   action: { label: "Undo", onClick: () => {} }
+ *   action: { label: "Undo", onPress: () => {} }
  * });
  *
  * // Promise pattern

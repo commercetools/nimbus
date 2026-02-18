@@ -223,7 +223,7 @@ describe("ToastManager", () => {
         title: "Action toast",
         action: {
           label: "Undo",
-          onClick: vi.fn(),
+          onPress: vi.fn(),
         },
       });
 
@@ -242,7 +242,7 @@ describe("ToastManager", () => {
         duration: 5000,
         action: {
           label: "Undo",
-          onClick: vi.fn(),
+          onPress: vi.fn(),
         },
       });
 

@@ -153,7 +153,7 @@ describe("Toast - Action buttons", () => {
       description: "Please take action",
       action: {
         label: "Retry",
-        onClick: handleAction,
+        onPress: handleAction,
       },
     });
 

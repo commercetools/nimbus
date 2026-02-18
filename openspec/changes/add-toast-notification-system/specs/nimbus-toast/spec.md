@@ -178,20 +178,23 @@ timer, or programmatic API.
 
 ### Requirement: Action Button
 
-Toasts SHALL support an optional action button. Action buttons do not override
-the toast duration — consumers control duration independently. An action toast
-uses the default 6s duration unless the consumer explicitly sets a different
-value.
+Toasts SHALL support an optional action button configured via
+`action: { label: string; onPress: () => void }`. The callback property SHALL
+be named `onPress` (not `onClick`) to align with the Nimbus/React Aria event
+naming convention. Internally, the action button renders a Nimbus `<Button>`
+which natively supports `onPress`. Action buttons do not override the toast
+duration — consumers control duration independently. An action toast uses the
+default 6s duration unless the consumer explicitly sets a different value.
 
 #### Scenario: Action toast
 
-- **WHEN** a toast is created with `action: { label: "Undo", onClick: fn }`
+- **WHEN** a toast is created with `action: { label: "Undo", onPress: fn }`
 - **THEN** an action button is rendered and the toast uses the default duration
 
 #### Scenario: Action callback
 
 - **WHEN** the user clicks the action button
-- **THEN** the `onClick` callback is invoked
+- **THEN** the `onPress` callback is invoked
 
 ### Requirement: Promise Pattern
 

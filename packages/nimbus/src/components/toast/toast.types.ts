@@ -27,8 +27,8 @@ export type ToastPlacement =
 export interface ToastAction {
   /** Label text for the action button */
   label: string;
-  /** Click handler for the action button */
-  onClick: () => void;
+  /** Press handler for the action button */
+  onPress: () => void;
 }
 
 /**

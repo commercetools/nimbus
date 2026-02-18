@@ -206,7 +206,7 @@ export const Variants: Story = {
             duration: Infinity,
             action: {
               label: "Undo",
-              onClick: () => {},
+              onPress: () => {},
             },
           });
         });
@@ -546,7 +546,7 @@ export const Dismissal: Story = {
 
 /**
  * Action Button
- * Tests action button rendering, onClick callback, and that action
+ * Tests action button rendering, onPress callback, and that action
  * does NOT force duration: Infinity (consumers control duration independently)
  */
 export const ActionButton: Story = {
@@ -558,7 +558,7 @@ export const ActionButton: Story = {
         type: "info",
         action: {
           label: "Undo",
-          onClick: () => {
+          onPress: () => {
             console.log("Action clicked");
           },
         },
@@ -872,7 +872,7 @@ export const KeyboardNavigation: Story = {
         closable: true,
         action: {
           label: "Action",
-          onClick: () => {
+          onPress: () => {
             console.log("Action clicked");
           },
         },
@@ -1207,7 +1207,7 @@ export const ComprehensiveIntegration: Story = {
           description: "Your changes have been saved",
           action: {
             label: "Undo",
-            onClick: () => {
+            onPress: () => {
               console.log("Undo clicked");
             },
           },
@@ -1224,7 +1224,7 @@ export const ComprehensiveIntegration: Story = {
         closable: true,
         action: {
           label: "Retry",
-          onClick: () => {
+          onPress: () => {
             console.log("Retry clicked");
           },
         },
@@ -1324,7 +1324,7 @@ export const ZIndexLayering: Story = {
         closable: true,
         action: {
           label: "Retry",
-          onClick: () => {
+          onPress: () => {
             /* noop for test */
           },
         },

@@ -128,7 +128,7 @@ const App = () => {
       type: "info",
       action: {
         label: "Undo",
-        onClick: handleUndo
+        onPress: handleUndo
       }
     });
   };
@@ -323,7 +323,7 @@ Creates a toast and returns its ID. Also available as convenience methods: `toas
 | `type` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style and ARIA semantics |
 | `title` | `string` | — | Title text |
 | `description` | `string` | — | Description text (optional) |
-| `action` | `{ label: string; onClick: () => void }` | — | Action button |
+| `action` | `{ label: string; onPress: () => void }` | — | Action button |
 | `duration` | `number` | `6000` | Auto-dismiss in ms (`Infinity` = never) |
 | `placement` | `ToastPlacement` | `"top-end"` | Screen position |
 | `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |
@@ -358,7 +358,7 @@ const App = () => {
       description: "Failed to connect to the server",
       action: {
         label: "Retry",
-        onClick: handleRetry
+        onPress: handleRetry
       }
     });
   };
@@ -389,7 +389,7 @@ const App = () => {
       description: `${item} has been removed`,
       action: {
         label: "Undo",
-        onClick: () => {
+        onPress: () => {
           if (lastDeleted) {
             setItems([...items, lastDeleted]);
             setLastDeleted(null);
