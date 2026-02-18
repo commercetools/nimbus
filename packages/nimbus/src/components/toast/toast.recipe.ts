@@ -46,6 +46,8 @@ export const toastRecipe = defineSlotRecipe({
       boxShadow: "1",
       position: "relative",
 
+      focusRing: "outside",
+
       // Animation styles consuming Ark UI's CSS custom properties
       pointerEvents: "auto",
       translate: "var(--x) var(--y)",
@@ -100,7 +102,6 @@ export const toastRecipe = defineSlotRecipe({
       solid: {
         root: {
           backgroundColor: "colorPalette.9",
-          focusRing: "outside",
         },
         indicator: {
           "& svg": {
