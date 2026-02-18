@@ -1,12 +1,9 @@
-name: Scheduled Monthly Release
+name: Auto-merge Stale Version Packages PR
 
-# Runs on the 1st Tuesday of each month at 10:00 UTC
-# Cron: minute hour day-of-month month day-of-week
-# Day 1-7 covers all possible 1st Tuesdays; day-of-week 2 = Tuesday
+# Runs daily to check if Version Packages PR has been open for 30+ days
 on:
   schedule:
-    - cron: "0 10 1-7 * 2"
-  # Allow manual trigger for testing or ad-hoc releases
+    - cron: "0 10 * * *" # Daily at 10:00 UTC
   workflow_dispatch:
     inputs:
       dry_run:
@@ -14,13 +11,21 @@ on:
         required: false
         default: "false"
         type: boolean
+      max_age_days:
+        description: "Override max PR age in days (default: 30)"
+        required: false
+        default: "30"
+        type: string
 
 permissions:
   contents: write
   pull-requests: write
 
+env:
+  MAX_AGE_DAYS: 30
+
 jobs:
-  auto-merge-version-packages:
+  auto-merge-stale-pr:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -46,20 +51,46 @@ jobs:
             });
 
             if (prs.length === 0) {
-              console.log('No Version Packages PR found. Nothing to release.');
+              console.log('No Version Packages PR found.');
               core.setOutput('found', 'false');
               return;
             }
 
             const pr = prs[0];
+            const createdAt = new Date(pr.created_at);
+            const now = new Date();
+            const ageInDays = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+
             console.log(`Found PR #${pr.number}: ${pr.title}`);
+            console.log(`Created: ${pr.created_at}`);
+            console.log(`Age: ${ageInDays} days`);
+
             core.setOutput('found', 'true');
             core.setOutput('pr_number', pr.number);
             core.setOutput('pr_title', pr.title);
             core.setOutput('pr_url', pr.html_url);
+            core.setOutput('pr_age_days', ageInDays);
+
+      - name: Check if PR is stale
+        if: steps.find_pr.outputs.found == 'true'
+        id: check_stale
+        run: |
+          MAX_AGE="${{ inputs.max_age_days || env.MAX_AGE_DAYS }}"
+          PR_AGE="${{ steps.find_pr.outputs.pr_age_days }}"
+
+          echo "PR age: ${PR_AGE} days"
+          echo "Max age threshold: ${MAX_AGE} days"
+
+          if [ "$PR_AGE" -ge "$MAX_AGE" ]; then
+            echo "PR is stale (${PR_AGE} >= ${MAX_AGE} days)"
+            echo "is_stale=true" >> $GITHUB_OUTPUT
+          else
+            echo "PR is not stale yet (${PR_AGE} < ${MAX_AGE} days)"
+            echo "is_stale=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Check PR CI status
-        if: steps.find_pr.outputs.found == 'true'
+        if: steps.find_pr.outputs.found == 'true' && steps.check_stale.outputs.is_stale == 'true'
         id: check_ci
         uses: actions/github-script@v7
         with:
@@ -111,6 +142,7 @@ jobs:
       - name: Merge Version Packages PR
         if: |
           steps.find_pr.outputs.found == 'true' &&
+          steps.check_stale.outputs.is_stale == 'true' &&
           steps.check_ci.outputs.passed == 'true' &&
           inputs.dry_run != 'true'
         uses: actions/github-script@v7
@@ -118,8 +150,9 @@ jobs:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
             const prNumber = ${{ steps.find_pr.outputs.pr_number }};
+            const prAge = ${{ steps.find_pr.outputs.pr_age_days }};
 
-            console.log(`Merging PR #${prNumber}...`);
+            console.log(`Merging PR #${prNumber} (stale for ${prAge} days)...`);
 
             await github.rest.pulls.merge({
               owner: context.repo.owner,
@@ -131,34 +164,31 @@ jobs:
             console.log(`Successfully merged PR #${prNumber}!`);
             console.log('The release workflow will now publish to npm.');
 
-      - name: Dry run summary
-        if: inputs.dry_run == 'true' && steps.find_pr.outputs.found == 'true'
-        run: |
-          echo "## Dry Run Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**PR Found:** #${{ steps.find_pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Title:** ${{ steps.find_pr.outputs.pr_title }}" >> $GITHUB_STEP_SUMMARY
-          echo "**URL:** ${{ steps.find_pr.outputs.pr_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "**CI Status:** ${{ steps.check_ci.outputs.passed == 'true' && 'Passed ✅' || 'Not passing ❌' }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "_This was a dry run. No merge was performed._" >> $GITHUB_STEP_SUMMARY
-
       - name: Summary
         if: always()
         run: |
+          echo "## Stale Release Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
           if [ "${{ steps.find_pr.outputs.found }}" != "true" ]; then
-            echo "## Monthly Release Check" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "No Version Packages PR found. Nothing to release this month." >> $GITHUB_STEP_SUMMARY
+            echo "No Version Packages PR found." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.check_stale.outputs.is_stale }}" != "true" ]; then
+            echo "**PR Found:** [#${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
+            echo "**Age:** ${{ steps.find_pr.outputs.pr_age_days }} days" >> $GITHUB_STEP_SUMMARY
+            echo "**Status:** Not stale yet (threshold: ${{ inputs.max_age_days || env.MAX_AGE_DAYS }} days)" >> $GITHUB_STEP_SUMMARY
           elif [ "${{ steps.check_ci.outputs.passed }}" != "true" ]; then
-            echo "## Monthly Release Check" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "⚠️ Version Packages PR found but CI has not passed." >> $GITHUB_STEP_SUMMARY
-            echo "Please check [PR #${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ inputs.dry_run }}" != "true" ]; then
-            echo "## Monthly Release" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ Successfully merged Version Packages PR #${{ steps.find_pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+            echo "**PR Found:** [#${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
+            echo "**Age:** ${{ steps.find_pr.outputs.pr_age_days }} days (stale)" >> $GITHUB_STEP_SUMMARY
+            echo "**Status:** ⚠️ CI has not passed - cannot auto-merge" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "**PR Found:** [#${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
+            echo "**Age:** ${{ steps.find_pr.outputs.pr_age_days }} days (stale)" >> $GITHUB_STEP_SUMMARY
+            echo "**CI Status:** ✅ Passed" >> $GITHUB_STEP_SUMMARY
+            echo "**Status:** _Dry run - would have merged_" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**PR Merged:** [#${{ steps.find_pr.outputs.pr_number }}](${{ steps.find_pr.outputs.pr_url }})" >> $GITHUB_STEP_SUMMARY
+            echo "**Age:** ${{ steps.find_pr.outputs.pr_age_days }} days" >> $GITHUB_STEP_SUMMARY
+            echo "**Status:** ✅ Auto-merged (stale threshold reached)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "The release workflow is now publishing to npm." >> $GITHUB_STEP_SUMMARY
           fi
