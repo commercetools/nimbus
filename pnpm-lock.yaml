@@ -162,8 +162,8 @@ catalogs:
       specifier: ^4.5.4
       version: 4.5.4
     vite-tsconfig-paths:
-      specifier: ^5.1.4
-      version: 5.1.4
+      specifier: ^6.1.1
+      version: 6.1.1
     vitest:
       specifier: ^4.0.18
       version: 4.0.18
@@ -698,7 +698,7 @@ importers:
         version: 4.5.4(@types/node@24.10.1)(rollup@4.57.1)(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       vite-tsconfig-paths:
         specifier: catalog:tooling
-        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        version: 6.1.1(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       vitest:
         specifier: catalog:tooling
         version: 4.0.18(@types/node@24.10.1)(@vitest/browser-playwright@4.0.18)(happy-dom@20.0.8)(jsdom@27.4.0(postcss@8.5.6))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
@@ -6738,6 +6738,11 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
+
+  vite-tsconfig-paths@6.1.1:
+    resolution: {integrity: sha512-2cihq7zliibCCZ8P9cKJrQBkfgdvcFkOOc3Y02o3GWUDLgqjWsZudaoiuOwO/gzTzy17cS5F7ZPo4bsnS4DGkg==}
+    peerDependencies:
+      vite: '*'
 
   vite@7.3.1:
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
@@ -14668,6 +14673,16 @@ snapshots:
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
+      vite: 7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  vite-tsconfig-paths@6.1.1(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)):
+    dependencies:
+      debug: 4.4.3
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.3)
       vite: 7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
