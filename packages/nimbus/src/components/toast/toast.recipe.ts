@@ -45,6 +45,7 @@ export const toastRecipe = defineSlotRecipe({
       borderRadius: "100",
       boxShadow: "1",
       position: "relative",
+      userSelect: "none",
 
       focusRing: "outside",
 

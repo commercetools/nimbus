@@ -281,6 +281,17 @@ navigation within toasts.
 - **WHEN** a toast with close button and action button is focused
 - **THEN** Tab cycles through the interactive elements
 
+### Requirement: Non-Selectable Text
+
+Toast text content SHALL NOT be selectable by the user. Toasts are transient
+notifications, not content — text selection is disabled via `user-select: none`
+on the toast root.
+
+#### Scenario: Text not selectable
+
+- **WHEN** the user attempts to select text within a toast
+- **THEN** the text is not selectable
+
 ### Requirement: Reduced Motion
 
 When `prefers-reduced-motion` is active, toast transitions SHALL be minimal.
