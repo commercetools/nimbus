@@ -59,6 +59,7 @@ function ToastContent({
     toast.meta?.closable !== undefined
       ? (toast.meta.closable as boolean)
       : false;
+  const customIcon = toast.meta?.icon as React.ReactElement | undefined;
 
   return (
     <>
@@ -69,7 +70,7 @@ function ToastContent({
             colorPalette={variant === "solid" ? "white" : "primary"}
           />
         ) : (
-          ICON_MAP[type]
+          (customIcon ?? ICON_MAP[type])
         )}
       </chakra.div>
 

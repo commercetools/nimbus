@@ -223,6 +223,29 @@ const App = () => {
 - `toast.dismiss(id)`: Dismiss with animation (omit `id` to dismiss all)
 - `toast.remove(id)`: Remove immediately without animation (omit `id` to remove all)
 
+### Custom icon
+
+Override the default type-based icon with a custom icon element using the `icon` prop:
+
+```jsx-live-dev
+const App = () => {
+  const { Bathtub } = NimbusIcons;
+
+  return (
+    <Stack direction="row" gap="200" flexWrap="wrap">
+      <Button onPress={() => toast.info({ title: "Custom Icon", description: "This toast uses a Bathtub icon", icon: <Bathtub /> })}>
+        Custom Icon Toast
+      </Button>
+      <Button onPress={() => toast.info({ title: "Default Icon", description: "This toast uses the default info icon" })}>
+        Default Icon Toast
+      </Button>
+    </Stack>
+  );
+}
+```
+
+When the `icon` prop is provided, it replaces the default icon for that toast type. The `loading` type always shows a spinner regardless of the `icon` prop.
+
 ### Closable control
 
 Control close button visibility with the `closable` prop. Useful for loading states:
@@ -324,6 +347,7 @@ Creates a toast and returns its ID. Also available as convenience methods: `toas
 | `title` | `string` | — | Title text |
 | `description` | `string` | — | Description text (optional) |
 | `action` | `{ label: string; onPress: () => void }` | — | Action button |
+| `icon` | `React.ReactElement` | — | Custom icon replacing the default type-based icon |
 | `duration` | `number` | `6000` | Auto-dismiss in ms (`Infinity` = never) |
 | `placement` | `ToastPlacement` | `"top-end"` | Screen position |
 | `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |

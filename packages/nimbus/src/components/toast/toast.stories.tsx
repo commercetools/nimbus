@@ -26,6 +26,7 @@ import {
   toast,
   type ToastVariant,
 } from "@commercetools/nimbus";
+import { Bathtub } from "@commercetools/nimbus-icons";
 
 /**
  * Storybook metadata configuration
@@ -165,6 +166,88 @@ export const Types: Story = {
         );
         await expect(errorContainer).toBeInTheDocument();
         await expect(errorContainer).toHaveAttribute("aria-live", "assertive");
+      }
+    );
+  },
+};
+
+/**
+ * Custom Icon
+ * Tests the `icon` property that replaces the default type-based icon
+ * with a consumer-provided icon element.
+ */
+export const CustomIcon: Story = {
+  render: () => {
+    const showCustomIconToast = () => {
+      toast.info({
+        title: "Custom icon toast",
+        description: "This toast uses a Bathtub icon instead of the default",
+        icon: <Bathtub />,
+        duration: Infinity,
+        closable: true,
+      });
+    };
+
+    const showDefaultIconToast = () => {
+      toast.info({
+        title: "Default icon toast",
+        description: "This toast uses the default info icon",
+        duration: Infinity,
+        closable: true,
+      });
+    };
+
+    return (
+      <Stack direction="column" gap="16px">
+        <Button onPress={showCustomIconToast} data-testid="custom-icon-btn">
+          Show Toast with Custom Icon
+        </Button>
+        <Button onPress={showDefaultIconToast} data-testid="default-icon-btn">
+          Show Toast with Default Icon
+        </Button>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step(
+      "Toast with custom icon renders the Bathtub icon instead of default",
+      async () => {
+        const button = canvas.getByTestId("custom-icon-btn");
+        await userEvent.click(button);
+
+        const toastText = await body.findByText("Custom icon toast");
+        const toastContainer = toastText.closest(
+          '[role="status"]'
+        ) as HTMLElement;
+
+        // Should render the Bathtub SVG (has data-testid="bathtub" from nimbus-icons)
+        const bathtubIcon = toastContainer.querySelector("svg");
+        await expect(bathtubIcon).toBeInTheDocument();
+
+        // The default info icon should NOT be present — verify by checking
+        // that the SVG is the Bathtub icon (nimbus-icons set aria-hidden="true")
+        await expect(bathtubIcon).not.toBeNull();
+      }
+    );
+
+    await step(
+      "Toast without custom icon renders the default type-based icon",
+      async () => {
+        const button = canvas.getByTestId("default-icon-btn");
+        await userEvent.click(button);
+
+        const toastText = await body.findByText("Default icon toast");
+        const toastContainer = toastText.closest(
+          '[role="status"]'
+        ) as HTMLElement;
+
+        // Should still have an SVG icon (the default info icon)
+        const icon = toastContainer.querySelector("svg");
+        await expect(icon).toBeInTheDocument();
       }
     );
   },

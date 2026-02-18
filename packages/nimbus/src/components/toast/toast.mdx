@@ -152,6 +152,26 @@ const App = () => {
 }
 ```
 
+#### Custom icons
+
+Override the default type-based icon with a custom icon to provide more specific visual context.
+
+```jsx-live
+const App = () => {
+  const { Bathtub } = NimbusIcons;
+
+  const showCustomIconToast = () => {
+    toast.info({
+      title: "Bath is ready",
+      description: "Your bath has reached the perfect temperature.",
+      icon: <Bathtub />
+    });
+  };
+
+  return <Button onPress={showCustomIconToast}>Show Custom Icon Toast</Button>;
+}
+```
+
 #### Action buttons
 
 Include action buttons when users might want to undo or view details. Toasts with actions don't auto-dismiss.

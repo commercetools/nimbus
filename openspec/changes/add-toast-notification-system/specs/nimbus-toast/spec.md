@@ -54,6 +54,28 @@ appearance: `solid`, `subtle`, and `accent-start`. The default variant is
 - **THEN** it renders with a subtle neutral background and a colored accent line
   on the inline-start edge
 
+### Requirement: Custom Icon
+
+The toast system SHALL support an optional `icon` property on `ToastOptions`
+that accepts a `React.ReactElement`. When provided, the custom icon replaces the
+default type-based icon. The `loading` type always renders a spinner regardless
+of the `icon` property.
+
+#### Scenario: Custom icon replaces default
+
+- **WHEN** a toast is created with `icon: <Bathtub />`
+- **THEN** the Bathtub icon is rendered instead of the default type-based icon
+
+#### Scenario: Default icon without custom icon
+
+- **WHEN** a toast is created without an `icon` property
+- **THEN** the default type-based icon is rendered
+
+#### Scenario: Loading type ignores custom icon
+
+- **WHEN** a toast is created with `type: "loading"` and an `icon` property
+- **THEN** the loading spinner is rendered instead of the custom icon
+
 ### Requirement: Imperative Toast API
 
 The system SHALL export a `toast` function that creates toasts without requiring

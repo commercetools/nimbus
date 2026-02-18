@@ -85,9 +85,10 @@ class ToastManager implements IToastManager {
     const closable =
       safeOptions.closable ?? (duration === Infinity ? true : false);
 
-    // Destructure `action` out to prevent our ToastAction (onPress) from
+    // Destructure `action` and `icon` out to prevent our ToastAction (onPress) from
     // leaking into the Chakra options object which expects onClick.
-    const { action: consumerAction, ...restOptions } = safeOptions;
+    // `icon` is tunneled through meta so the outlet can access it.
+    const { action: consumerAction, icon, ...restOptions } = safeOptions;
     const action = mapAction(consumerAction);
 
     const toastOptions = {
@@ -98,6 +99,7 @@ class ToastManager implements IToastManager {
       meta: {
         closable,
         variant: safeOptions.variant ?? "accent-start",
+        icon,
       },
     };
 

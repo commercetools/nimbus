@@ -1,3 +1,5 @@
+import type React from "react";
+
 // ============================================================
 // TOAST CORE TYPES
 // ============================================================
@@ -53,6 +55,8 @@ export interface ToastOptions {
   description?: string;
   /** Optional action button */
   action?: ToastAction;
+  /** Custom icon element that replaces the default type-based icon */
+  icon?: React.ReactElement;
   /** Auto-dismiss duration in milliseconds (default: 6000, Infinity = never) */
   duration?: number;
   /** Placement on screen (default: "top-end") */

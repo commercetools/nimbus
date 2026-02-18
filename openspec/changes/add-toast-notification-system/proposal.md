@@ -13,6 +13,8 @@ without interrupting workflow. No toast component exists in Nimbus today.
 - **NEW** `ToastOutlet` rendered inside `NimbusProvider` for zero-setup
 - **NEW** `toast` slot recipe with 3 visual variants (solid, subtle, accent-start)
   registered under the `toast` key to override Chakra's default toast recipe
+- **NEW** Optional `icon` property on `ToastOptions` that replaces the default
+  type-based icon with a consumer-provided `React.ReactElement`
 - **DEFERRED** i18n message: `Nimbus.Toast.dismiss` — close button uses a
   hardcoded `aria-label` until localization infrastructure is wired up
 - **MODIFIED** `NimbusProvider` renders `<ToastOutlet />` as child, with a
