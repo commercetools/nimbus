@@ -246,6 +246,60 @@ describe("ToastManager", () => {
         })
       );
     });
+
+    it("Tunnels closable, variant, and icon through meta for each promise state", () => {
+      const promise = Promise.resolve();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const customIcon = { type: "svg", props: {} } as any;
+
+      toast.promise(promise, {
+        loading: {
+          title: "Loading...",
+          closable: true,
+          variant: "solid",
+          icon: customIcon,
+        },
+        success: {
+          title: "Done!",
+          closable: true,
+          variant: "solid",
+          icon: customIcon,
+        },
+        error: {
+          title: "Failed!",
+          closable: true,
+          variant: "solid",
+          icon: customIcon,
+        },
+      });
+
+      expect(mockToasterInstance.promise).toHaveBeenCalledWith(
+        promise,
+        expect.objectContaining({
+          loading: expect.objectContaining({
+            meta: expect.objectContaining({
+              closable: true,
+              variant: "solid",
+              icon: customIcon,
+            }),
+          }),
+          success: expect.objectContaining({
+            meta: expect.objectContaining({
+              closable: true,
+              variant: "solid",
+              icon: customIcon,
+            }),
+          }),
+          error: expect.objectContaining({
+            meta: expect.objectContaining({
+              closable: true,
+              variant: "solid",
+              icon: customIcon,
+            }),
+          }),
+        })
+      );
+    });
   });
 
   describe("Action Button → Duration Behavior", () => {
