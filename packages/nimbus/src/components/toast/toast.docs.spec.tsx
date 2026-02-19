@@ -113,12 +113,16 @@ describe("Toast - Programmatic control", () => {
  */
 describe("Toast - Promise pattern", () => {
   it("shows loading then success states", async () => {
+    const promiseSpy = vi.spyOn(toast, "promise");
+
     const asyncOperation = () =>
       new Promise((resolve) => {
         setTimeout(() => resolve("Done"), 10);
       });
 
-    toast.promise(asyncOperation(), {
+    const promise = asyncOperation();
+
+    toast.promise(promise, {
       loading: {
         title: "Loading...",
         description: "Please wait",
@@ -135,6 +139,18 @@ describe("Toast - Promise pattern", () => {
         type: "error",
       },
     });
+
+    // Verify toast.promise was called with the correct promise and state titles
+    expect(promiseSpy).toHaveBeenCalledWith(
+      promise,
+      expect.objectContaining({
+        loading: expect.objectContaining({ title: "Loading..." }),
+        success: expect.objectContaining({ title: "Success!" }),
+        error: expect.objectContaining({ title: "Failed" }),
+      })
+    );
+
+    promiseSpy.mockRestore();
   });
 });
 
