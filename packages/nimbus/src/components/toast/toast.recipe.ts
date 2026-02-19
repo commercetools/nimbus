@@ -58,11 +58,11 @@ export const toastRecipe = defineSlotRecipe({
       willChange: "translate, opacity, scale",
       transition:
         "translate {durations.slower}, scale {durations.slower}, opacity {durations.slower}, height {durations.slower}",
-      transitionTimingFunction: "cubic-bezier(0.21, 1.02, 0.73, 1)",
+      transitionTimingFunction: "ease-out",
       _closed: {
         transition:
           "translate {durations.slower}, scale {durations.slower}, opacity {durations.moderate}",
-        transitionTimingFunction: "cubic-bezier(0.06, 0.71, 0.55, 1)",
+        transitionTimingFunction: "ease-in-smooth",
       },
     },
     indicator: {
@@ -122,8 +122,7 @@ export const toastRecipe = defineSlotRecipe({
       subtle: {
         root: {
           backgroundColor: "colorPalette.2",
-          boxShadow:
-            "inset 0 0 0 1px var(--nimbus-colors-color-palette-5), {shadows.1}",
+          boxShadow: "inset 0 0 0 1px {colors.colorPalette.5}, {shadows.1}",
         },
         indicator: {
           "& svg": {
@@ -143,7 +142,7 @@ export const toastRecipe = defineSlotRecipe({
           // Accent line on the inline-start edge via inset box-shadow
           // (no real border, so it doesn't affect layout).
           boxShadow:
-            "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9), inset 0 0 0 1px var(--nimbus-colors-neutral-5), {shadows.1}",
+            "inset 3px 0 0 0 {colors.colorPalette.9}, inset 0 0 0 1px {colors.neutral.5}, {shadows.1}",
         },
         indicator: {
           "& svg": {
