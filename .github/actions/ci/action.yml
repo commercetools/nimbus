@@ -25,16 +25,8 @@ runs:
       run: pnpm install
       shell: bash
 
-    - name: Build design tokens
-      run: pnpm build:tokens
-      shell: bash
-
-    - name: Extract and compile i18n messages
-      # Generates *.messages.ts and intl/*.ts files (gitignored) required at build time
-      run: pnpm extract-intl
-      shell: bash
-
-    - name: Build packages
-      # Skip docs build - Vercel handles docs deployment separately
-      run: pnpm build:packages
+    - name: Building packages
+      # Skip docs build - saves disk space and build time
+      # Vercel handles docs deployment and builds them separately
+      run: pnpm build:tokens && pnpm build:packages
       shell: bash
