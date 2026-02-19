@@ -306,10 +306,32 @@ export const Variants: Story = {
       </Button>
     );
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
     const canvas = within(canvasElement);
+    const body = within(document.body);
     const button = canvas.getByRole("button", { name: /Show All Variants/i });
-    await userEvent.click(button);
+
+    await step(
+      "Clicking the button renders one toast per variant",
+      async () => {
+        await userEvent.click(button);
+
+        // One representative title per variant — each variant fires 4 types so we
+        // spot-check one per variant to confirm all three variants rendered.
+        const accentStartToast = await body.findByText(
+          "info (accent-start)",
+          {},
+          { timeout: 3000 }
+        );
+        const subtleToast = await body.findByText("info (subtle)");
+        const solidToast = await body.findByText("info (solid)");
+
+        await expect(accentStartToast).toBeInTheDocument();
+        await expect(subtleToast).toBeInTheDocument();
+        await expect(solidToast).toBeInTheDocument();
+      }
+    );
   },
 };
 
