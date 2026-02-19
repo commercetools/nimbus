@@ -122,7 +122,6 @@ Choose placement based on interface layout and user attention priorities.
 Best for important confirmations that users should notice immediately. Use top-end (default) for most cases as it aligns with reading direction and avoids covering primary content.
 
 - **Top-start**: Left-aligned notifications
-- **Top**: Center-aligned, use sparingly for critical system messages
 - **Top-end**: Right-aligned (default), recommended for most use cases
 
 #### Bottom positions
@@ -130,7 +129,6 @@ Best for important confirmations that users should notice immediately. Use top-e
 Better for less urgent updates or dense interfaces where top placement might obscure important content.
 
 - **Bottom-start**: Left-aligned, use in left-nav interfaces
-- **Bottom**: Center-aligned, use for app-wide announcements
 - **Bottom-end**: Right-aligned, balances with top-end
 
 ### Structure
@@ -174,7 +172,7 @@ const App = () => {
 
 #### Action buttons
 
-Include action buttons when users might want to undo or view details. Toasts with actions don't auto-dismiss.
+Include action buttons when users might want to undo or view details. Toasts with actions auto-dismiss after the standard duration (6 seconds by default).
 
 ```jsx-live
 const App = () => {
@@ -293,7 +291,7 @@ Users can dismiss toasts via keyboard, ensuring full accessibility for non-mouse
 
 ### Auto-dismiss considerations
 
-- Toasts with action buttons don't auto-dismiss, giving users time to interact
+- Toasts with action buttons auto-dismiss after the standard duration; use `duration: Infinity` with `closable: true` to create persistent toasts that require user interaction
 - Timers pause when toast is focused or hovered, accommodating users who need more time
 - Default 6-second duration allows sufficient time to read messages (reading time: ~2-3 seconds + comprehension buffer)
 

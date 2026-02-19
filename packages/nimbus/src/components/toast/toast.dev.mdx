@@ -253,7 +253,7 @@ Control close button visibility with the `closable` prop. Useful for loading sta
 ```jsx-live-dev
 const App = () => (
   <Stack direction="row" gap="200">
-    <Button onPress={() => toast({ title: "Closable (Default)", description: "Has close button", closable: true })}>
+    <Button onPress={() => toast({ title: "Closable Toast", description: "Has close button", closable: true })}>
       With Close Button
     </Button>
     <Button onPress={() => toast({ title: "Loading...", description: "Processing your request", closable: false, duration: 3000 })}>
@@ -317,7 +317,7 @@ The Toast component handles accessibility requirements internally via React Aria
 - Warning and error toasts use `role="alert"` with `aria-live="assertive"` for immediate attention
 
 **Internationalization:**
-The close button includes a translated `aria-label` that adapts to the user's locale (English, German, Spanish, French, Portuguese).
+The close button uses a localized `aria-label` resolved via `useLocalizedStringFormatter` from `@react-aria/i18n`. Translations are provided for English, German, Spanish, French, and Portuguese.
 
 #### Keyboard navigation
 
@@ -488,7 +488,7 @@ These examples demonstrate how to test your implementation when using Toast in y
 
 ## Resources
 
-- [Storybook](link-tbd)
+<!-- TODO: Add Storybook deep-link once the story is published -->
 - [Chakra UI Toast Documentation](https://www.chakra-ui.com/docs/components/toast)
 - [React Aria Live Regions](https://react-spectrum.adobe.com/react-aria/useLiveAnnouncer.html)
 - [ARIA Live Regions](https://www.w3.org/WAI/ARIA/apg/practices/live-regions/)
