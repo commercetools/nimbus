@@ -103,6 +103,10 @@ export const slotRecipes = {
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
+  // NOTE: intentionally NOT prefixed with "nimbus" — the "toast" key overrides
+  // Chakra's built-in toast recipe so that useToastStyles() in ToastOutlet resolves
+  // Nimbus styles through Chakra's recipe system. Adding the nimbus prefix would
+  // break style resolution. This is the only Nimbus recipe that is an override.
   toast: toastRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
