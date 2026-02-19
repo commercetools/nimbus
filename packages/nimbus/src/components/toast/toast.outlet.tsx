@@ -20,6 +20,23 @@ import { getToasterEntries } from "./toast.toasters";
 import { toastMessagesStrings } from "./toast.messages";
 import type { ToastType, ToastVariant } from "./toast.types";
 
+/**
+ * Internal type representing the toast data object passed by Chakra UI's Toaster
+ * render prop. Only covers the fields accessed by the outlet.
+ */
+type ChakraToastData = {
+  id?: string;
+  type?: string;
+  title?: string;
+  description?: string;
+  action?: { label: string; onClick: () => void };
+  meta?: {
+    closable?: boolean;
+    variant?: ToastVariant;
+    icon?: React.ReactElement;
+  };
+};
+
 const ICON_MAP: Record<Exclude<ToastType, "loading">, React.ReactElement> = {
   info: <Info />,
   success: <CheckCircleOutline />,
@@ -50,19 +67,15 @@ function ToastContent({
   toast,
   toaster,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  toast: any;
+  toast: ChakraToastData;
   toaster: CreateToasterReturn;
 }) {
   const styles = useToastStyles();
   const msg = useLocalizedStringFormatter(toastMessagesStrings);
   const type = (toast.type as ToastType) || "info";
-  const variant = (toast.meta?.variant as ToastVariant) || "accent-start";
-  const closable =
-    toast.meta?.closable !== undefined
-      ? (toast.meta.closable as boolean)
-      : false;
-  const customIcon = toast.meta?.icon as React.ReactElement | undefined;
+  const variant = toast.meta?.variant || "accent-start";
+  const closable = toast.meta?.closable ?? false;
+  const customIcon = toast.meta?.icon;
 
   return (
     <>
@@ -143,11 +156,10 @@ export function ToastOutlet() {
           toaster={toaster}
           data-react-aria-top-layer="true"
         >
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {(toast: any) => {
+          {(chakraToast) => {
+            const toast = chakraToast as ChakraToastData;
             const type = (toast.type as ToastType) || "info";
-            const variant =
-              (toast.meta?.variant as ToastVariant) || "accent-start";
+            const variant = toast.meta?.variant || "accent-start";
 
             return (
               <ChakraToast.Root
