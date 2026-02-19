@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm run build:docs && pnpm run build:app && pnpm run copy-index",
-    "build:docs": "npx tsx ./scripts/build.ts",
+    "build:docs": "pnpm tsx ./scripts/build.ts",
     "build:app": "vite build",
     "copy-index": "cp dist/index.html dist/404.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
