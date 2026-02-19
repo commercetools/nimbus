@@ -38,6 +38,12 @@ const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
 let toasters: Map<ToastPlacement, ReturnType<typeof createToaster>> | null =
   null;
 
+/**
+ * Listeners notified when toasters are first initialized.
+ * Used by ToastOutlet to defer rendering until a toast is actually created.
+ */
+const activationListeners = new Set<() => void>();
+
 function ensureToasters() {
   if (!toasters) {
     toasters = new Map(
@@ -53,6 +59,9 @@ function ensureToasters() {
         return [placement, toaster];
       })
     );
+
+    // Notify outlet that toasters are now available
+    activationListeners.forEach((listener) => listener());
   }
   return toasters;
 }
@@ -66,6 +75,29 @@ function ensureToasters() {
  */
 export function resetToasters(): void {
   toasters = null;
+}
+
+/**
+ * Whether toasters have been initialized (i.e., at least one toast was created).
+ */
+export function isToastersActive(): boolean {
+  return toasters !== null;
+}
+
+/**
+ * Subscribe to toaster activation. The callback fires once when toasters
+ * are first initialized. Returns an unsubscribe function.
+ */
+export function onToastersActivated(callback: () => void): () => void {
+  // Already active — fire immediately
+  if (toasters) {
+    callback();
+    return () => {};
+  }
+  activationListeners.add(callback);
+  return () => {
+    activationListeners.delete(callback);
+  };
 }
 
 /**

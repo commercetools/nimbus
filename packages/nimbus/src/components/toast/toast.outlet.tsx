@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import {
   Toaster,
   Toast as ChakraToast,
@@ -16,7 +17,11 @@ import { IconButton } from "../icon-button/icon-button";
 import { Button } from "../button/button";
 import { LoadingSpinner } from "../loading-spinner/loading-spinner";
 import { useLocalizedStringFormatter } from "@/hooks";
-import { getToasterEntries } from "./toast.toasters";
+import {
+  getToasterEntries,
+  isToastersActive,
+  onToastersActivated,
+} from "./toast.toasters";
 import { toastMessagesStrings } from "./toast.messages";
 import type { ToastType, ToastVariant } from "./toast.types";
 
@@ -129,11 +134,25 @@ function ToastContent({
 }
 
 /**
+ * Subscribe function for useSyncExternalStore.
+ * Bridges the imperative onToastersActivated callback into React's
+ * concurrent-safe external store subscription model.
+ */
+function subscribeToActivation(onStoreChange: () => void) {
+  return onToastersActivated(onStoreChange);
+}
+
+/**
  * ToastOutlet - Renders all toast regions.
  *
  * Mount this component once at the root of your application (NimbusProvider
  * does this automatically and prevents duplicates when nested).
  * Toasts appear when created via the `toast()` imperative API.
+ *
+ * The outlet defers rendering of `<Toaster>` instances until the first
+ * toast is actually created. This avoids mounting zag-js state machines
+ * (and their DOM event listeners) when toasts are never used, and
+ * eliminates spurious `act(...)` warnings in JSDOM-based tests.
  *
  * @example
  * ```tsx
@@ -152,6 +171,12 @@ function ToastContent({
  * @internal
  */
 export function ToastOutlet() {
+  const active = useSyncExternalStore(subscribeToActivation, isToastersActive);
+
+  if (!active) {
+    return null;
+  }
+
   return (
     <>
       {getToasterEntries().map(([placement, toaster]) => (
