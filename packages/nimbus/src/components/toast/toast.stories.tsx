@@ -216,7 +216,9 @@ export const CustomIcon: Story = {
     await step(
       "Toast with custom icon renders the Bathtub icon instead of default",
       async () => {
-        const button = canvas.getByTestId("custom-icon-btn");
+        const button = canvas.getByRole("button", {
+          name: /Show Toast with Custom Icon/i,
+        });
         await userEvent.click(button);
 
         const toastText = await body.findByText("Custom icon toast");
@@ -237,7 +239,9 @@ export const CustomIcon: Story = {
     await step(
       "Toast without custom icon renders the default type-based icon",
       async () => {
-        const button = canvas.getByTestId("default-icon-btn");
+        const button = canvas.getByRole("button", {
+          name: /Show Toast with Default Icon/i,
+        });
         await userEvent.click(button);
 
         const toastText = await body.findByText("Default icon toast");
@@ -304,7 +308,7 @@ export const Variants: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByTestId("show-all-variants");
+    const button = canvas.getByRole("button", { name: /Show All Variants/i });
     await userEvent.click(button);
   },
 };
@@ -350,7 +354,9 @@ export const AutoDismiss: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("auto-dismiss-btn");
+    const button = canvas.getByRole("button", {
+      name: /Show Auto-Dismiss Variations/i,
+    });
 
     await step("All three toasts appear when button is clicked", async () => {
       await userEvent.click(button);
@@ -428,7 +434,7 @@ export const PauseBehavior: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("pause-toast-btn");
+    const button = canvas.getByRole("button", { name: /Show Pausable Toast/i });
 
     await step("Timer pauses on hover", async () => {
       await userEvent.click(button);
@@ -659,7 +665,9 @@ export const ActionButton: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("action-toast-btn");
+    const button = canvas.getByRole("button", {
+      name: /Show Toast with Action/i,
+    });
 
     await step(
       "Toast with action renders action button and respects default duration",
@@ -959,9 +967,7 @@ export const KeyboardNavigation: Story = {
         closable: true,
         action: {
           label: "Action",
-          onPress: () => {
-            console.log("Action clicked");
-          },
+          onPress: () => {},
         },
       });
     };
@@ -981,7 +987,7 @@ export const KeyboardNavigation: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("keyboard-toast-btn");
+    const button = canvas.getByRole("button", { name: /Show Keyboard Toast/i });
 
     await step(
       "Toast with action renders both action and close buttons",
@@ -1090,7 +1096,9 @@ export const ClosableControl: Story = {
     await clearToasts();
     const canvas = within(canvasElement);
     const body = within(document.body);
-    const button = canvas.getByTestId("closable-btn");
+    const button = canvas.getByRole("button", {
+      name: /Show Closable Variations/i,
+    });
 
     await step("Toast with closable: false has no close button", async () => {
       await userEvent.click(button);
@@ -1285,8 +1293,8 @@ export const ComprehensiveIntegration: Story = {
   name: "Integration: Real-world Scenarios",
   render: () => {
     const saveScenario = () => {
-      // Simulate save operation with promise
-      const savePromise = new Promise((resolve) => setTimeout(resolve, 1500));
+      // Simulate save operation with promise (short duration for test performance)
+      const savePromise = new Promise((resolve) => setTimeout(resolve, 500));
       toast.promise(savePromise, {
         loading: { title: "Saving...", description: "Please wait" },
         success: {
@@ -1294,9 +1302,7 @@ export const ComprehensiveIntegration: Story = {
           description: "Your changes have been saved",
           action: {
             label: "Undo",
-            onPress: () => {
-              console.log("Undo clicked");
-            },
+            onPress: () => {},
           },
         },
         error: { title: "Save failed", description: "Could not save changes" },
@@ -1311,9 +1317,7 @@ export const ComprehensiveIntegration: Story = {
         closable: true,
         action: {
           label: "Retry",
-          onPress: () => {
-            console.log("Retry clicked");
-          },
+          onPress: () => {},
         },
       });
     };
@@ -1337,7 +1341,7 @@ export const ComprehensiveIntegration: Story = {
     await step(
       "Save scenario: loading → success with undo action",
       async () => {
-        const button = canvas.getByTestId("save-scenario-btn");
+        const button = canvas.getByRole("button", { name: /Save Document/i });
         await userEvent.click(button);
 
         // 1. Loading toast appears
@@ -1368,7 +1372,7 @@ export const ComprehensiveIntegration: Story = {
     await step(
       "Error scenario: persistent error with retry action",
       async () => {
-        const button = canvas.getByTestId("error-scenario-btn");
+        const button = canvas.getByRole("button", { name: /Network Error/i });
         await userEvent.click(button);
 
         // 1. Error toast appears with role="alert"
@@ -1388,8 +1392,8 @@ export const ComprehensiveIntegration: Story = {
         const buttons = within(errorContainer).getAllByRole("button");
         expect(buttons.length).toBeGreaterThan(1); // At least action + close
 
-        // 4. Toast persists (duration: Infinity)
-        await new Promise((resolve) => setTimeout(resolve, 7000));
+        // 4. Toast persists (duration: Infinity) — short wait to confirm persistence
+        await new Promise((resolve) => setTimeout(resolve, 500));
         await expect(errorToast).toBeInTheDocument();
       }
     );
