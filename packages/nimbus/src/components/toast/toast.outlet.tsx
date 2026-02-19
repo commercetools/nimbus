@@ -83,6 +83,10 @@ function ToastContent({
         {type === "loading" ? (
           <LoadingSpinner
             size="sm"
+            // "white" is a valid LoadingSpinner colorPalette (see loading-spinner.types.ts).
+            // On the solid variant the background is the colorPalette color, so white
+            // provides the necessary contrast. On other variants the background is neutral,
+            // so "primary" matches the icon color used by ICON_MAP entries.
             colorPalette={variant === "solid" ? "white" : "primary"}
           />
         ) : (
