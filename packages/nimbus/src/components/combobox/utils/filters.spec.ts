@@ -478,7 +478,7 @@ describe("filter utilities", () => {
           const text = node.textValue.toLowerCase();
           const lowerInput = input.toLowerCase();
 
-          let score = 0;
+          let score;
           if (text === lowerInput)
             score = 1000; // Exact match
           else if (text.startsWith(lowerInput))
