@@ -57,6 +57,7 @@ export const formFieldRecipe = defineSlotRecipe({
       fontSize: "var(--form-field-font-size)",
       lineHeight: "var(--form-field-line-height)",
       display: "flex",
+      alignItems: "flex-start",
       gap: "100",
     },
     popover: {
