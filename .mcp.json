@@ -21,6 +21,14 @@
       "command": "npx",
       "args": ["@react-spectrum/mcp", "react-aria"],
       "env": {}
+    },
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "type": "http"
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp",
+      "type": "http"
     }
   }
 }
