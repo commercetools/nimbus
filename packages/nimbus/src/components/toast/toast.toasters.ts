@@ -39,6 +39,8 @@ function ensureToasters() {
       ALL_PLACEMENTS.map((placement) => {
         const toaster = createToaster({
           placement,
+          // pauseOnPageIdle is a global setting applied at toaster creation time.
+          // It cannot be overridden on a per-toast basis via ToastOptions.
           pauseOnPageIdle: true,
           hotkey: PLACEMENT_HOTKEYS[placement],
         });

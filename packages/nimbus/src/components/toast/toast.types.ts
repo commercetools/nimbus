@@ -65,8 +65,6 @@ export type ToastOptions = {
   closable?: boolean;
   /** Pause auto-dismiss on hover/focus (default: true) */
   pauseOnInteraction?: boolean;
-  /** Pause auto-dismiss when page is idle (default: true) */
-  pauseOnPageIdle?: boolean;
 };
 
 /**
