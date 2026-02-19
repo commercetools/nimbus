@@ -1,6 +1,6 @@
 import { createToaster } from "@chakra-ui/react";
-import type { ToastPlacement } from "./toast.types";
-import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "./constants";
+import type { ToastPlacement } from "../toast.types";
+import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "../constants";
 
 /**
  * Lazily-initialized toaster instances per placement.

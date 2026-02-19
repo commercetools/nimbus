@@ -39,7 +39,7 @@ describe("ToastManager", () => {
     vi.clearAllMocks();
     mockToasterInstance.create.mockReturnValue("toast-id-1");
 
-    const module = await import("./toast.manager");
+    const module = await import("./services/toast.manager");
     ToastManager = module.ToastManager;
     toast = module.toast;
   });

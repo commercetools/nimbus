@@ -4,9 +4,9 @@ import {
   getToasterEntries,
   isToastersActive,
   onToastersActivated,
-} from "./toast.toasters";
-import { ToastContent } from "./components";
-import type { ChakraToastData, ToastType } from "./toast.types";
+} from "../services/toast.toasters";
+import { ToastContent } from "./toast.content";
+import type { ChakraToastData, ToastType } from "../toast.types";
 
 const COLOR_PALETTE_MAP: Record<ToastType, string> = {
   info: "info",

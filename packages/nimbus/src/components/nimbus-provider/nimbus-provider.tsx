@@ -5,7 +5,7 @@ import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
-import { ToastOutlet } from "@/components/toast/toast.outlet";
+import { ToastOutlet } from "@/components/toast/components/toast.outlet";
 
 /**
  * Prevents duplicate ToastOutlets when NimbusProviders are nested.

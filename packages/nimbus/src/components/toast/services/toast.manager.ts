@@ -4,13 +4,13 @@ import type {
   ToastPlacement,
   ToastManagerApi,
   ToastPromiseOptions,
-} from "./toast.types";
+} from "../toast.types";
 import { getToaster } from "./toast.toasters";
 import {
   DEFAULT_DURATION,
   DEFAULT_PLACEMENT,
   ALL_PLACEMENTS,
-} from "./constants";
+} from "../constants";
 
 /**
  * Map action to the shape expected by the internal toast infrastructure.

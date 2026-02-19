@@ -2,8 +2,8 @@
  * Main barrel export for Toast
  */
 
-export { toast } from "./toast.manager";
-export { ToastOutlet } from "./toast.outlet";
+export { toast } from "./services/toast.manager";
+export { ToastOutlet } from "./components/toast.outlet";
 export type {
   ToastType,
   ToastVariant,
