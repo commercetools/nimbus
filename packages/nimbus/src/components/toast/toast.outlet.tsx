@@ -12,8 +12,8 @@ import {
   WarningAmber,
   Clear,
 } from "@commercetools/nimbus-icons";
-import { IconButton } from "../icon-button";
-import { Button } from "../button";
+import { IconButton } from "../icon-button/icon-button";
+import { Button } from "../button/button";
 import { LoadingSpinner } from "../loading-spinner/loading-spinner";
 import { getToasterEntries } from "./toast.toasters";
 import type { ToastType, ToastVariant } from "./toast.types";
