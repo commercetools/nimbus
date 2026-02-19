@@ -114,7 +114,7 @@ syntax.
 ### H-1 — `promise()` does not tunnel `closable`, `variant`, or `icon` into `meta`
 
 **Statement:** `toast.manager.ts`'s `promise()` method spreads toast state
-options directly onto the Zag toast object without wrapping `closable`,
+options directly onto the Chakra toast object without wrapping `closable`,
 `variant`, and `icon` inside `meta`, so the outlet (which reads
 `toast.meta?.closable`, etc.) never renders the close button or custom icon for
 promise toasts.
@@ -536,7 +536,7 @@ the lazily-initialized toasters block in `toast.toasters.ts`.
 
 ### S-5 — Export `resetToasters()` for test isolation
 
-**Statement:** `toast.reset()` clears the ID map but the underlying Zag.js
+**Statement:** `toast.reset()` clears the ID map but the underlying Chakra
 toaster instances persist, potentially causing cross-test state leakage.
 
 **Recommendation:** Export a `resetToasters()` function from `toast.toasters.ts`

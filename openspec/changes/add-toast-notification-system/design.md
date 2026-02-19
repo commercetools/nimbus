@@ -44,7 +44,7 @@ correct toaster via an `idToPlacement` map. Consumers just pass `placement` to
 
 Lazy initialization avoids module-level side effects, improving tree-shaking,
 SSR safety (no state machines created during server rendering), and test
-isolation. The underlying Zag.js store is SSR-safe (no DOM access at creation
+isolation. The underlying store is SSR-safe (no DOM access at creation
 time), but lazy init is preferred as a general best practice.
 
 The `idToPlacement` map entry for a toast is cleaned up when the toast is
@@ -64,7 +64,7 @@ Without this guard, nested providers produce duplicate landmark regions that
 violate WCAG's landmark-unique rule.
 
 **On-demand rendering was considered and rejected.** Lazily mounting `<Toaster>`
-on first toast creation fails because the underlying Zag.js state machine starts
+on first toast creation fails because the underlying Chakra state machine starts
 asynchronously (via `queueMicrotask` in `useSafeLayoutEffect`) and the
 `subscribeToStore` effect only receives future events — meaning the machine
 misses the initial toast that triggered the mount.
@@ -110,7 +110,7 @@ corresponding toast region.
 ### Modal Interaction: React Aria Top-Layer
 
 When a React Aria modal (Dialog) opens, it calls `ariaHideOutside` which sets
-`inert` on all sibling DOM elements to enforce focus trapping. Because Zag.js
+`inert` on all sibling DOM elements to enforce focus trapping. Because Chakra
 toast regions render as top-level `<div>` elements (siblings of the modal),
 they would become inert — blocking all pointer events on close buttons and
 action buttons, even though the toast visually renders above the modal via
@@ -139,7 +139,7 @@ the `closable` property follows Chakra's native handling in that path.
   initialized (one per corner). Reduced from 6 by removing center placements.
   Toasters are created on first access (not at import time), avoiding
   module-level side effects for SSR safety and tree-shaking. On-demand
-  per-toast rendering not feasible due to Zag.js machine timing.
+  per-toast rendering not feasible due to Chakra state machine timing.
 - **NimbusProvider modification** → Low risk; single child component with
   context guard for nested provider safety.
 - **ARIA role override** → Low risk; props spread after Chakra's base props.
