@@ -173,11 +173,32 @@ describe("ToastManager", () => {
         error: { title: "Failed!" },
       });
 
-      expect(mockToasterInstance.promise).toHaveBeenCalledWith(promise, {
-        loading: { title: "Loading..." },
-        success: { title: "Done!" },
-        error: { title: "Failed!" },
-      });
+      expect(mockToasterInstance.promise).toHaveBeenCalledWith(
+        promise,
+        expect.objectContaining({
+          loading: expect.objectContaining({
+            title: "Loading...",
+            meta: expect.objectContaining({
+              closable: false,
+              variant: "accent-start",
+            }),
+          }),
+          success: expect.objectContaining({
+            title: "Done!",
+            meta: expect.objectContaining({
+              closable: false,
+              variant: "accent-start",
+            }),
+          }),
+          error: expect.objectContaining({
+            title: "Failed!",
+            meta: expect.objectContaining({
+              closable: false,
+              variant: "accent-start",
+            }),
+          }),
+        })
+      );
     });
 
     it("Creates loading toast that transitions to error", async () => {
@@ -189,11 +210,19 @@ describe("ToastManager", () => {
         error: { title: "Failed!" },
       });
 
-      expect(mockToasterInstance.promise).toHaveBeenCalledWith(promise, {
-        loading: { title: "Loading..." },
-        success: { title: "Done!" },
-        error: { title: "Failed!" },
-      });
+      expect(mockToasterInstance.promise).toHaveBeenCalledWith(
+        promise,
+        expect.objectContaining({
+          loading: expect.objectContaining({
+            title: "Loading...",
+            meta: expect.objectContaining({ closable: false }),
+          }),
+          error: expect.objectContaining({
+            title: "Failed!",
+            meta: expect.objectContaining({ closable: false }),
+          }),
+        })
+      );
 
       // Prevent unhandled rejection
       promise.catch(() => {});
@@ -211,7 +240,9 @@ describe("ToastManager", () => {
       expect(mockToasterInstance.promise).toHaveBeenCalledWith(
         promise,
         expect.objectContaining({
-          loading: expect.objectContaining({ closable: false }),
+          loading: expect.objectContaining({
+            meta: expect.objectContaining({ closable: false }),
+          }),
         })
       );
     });
