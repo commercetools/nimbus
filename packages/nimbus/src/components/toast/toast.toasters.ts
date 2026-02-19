@@ -29,6 +29,11 @@ const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
  * This avoids module-level side effects, improving tree-shaking, SSR safety,
  * and test isolation. The underlying Zag.js store is SSR-safe (no DOM access),
  * but lazy init is still preferred as a general best practice.
+ *
+ * @note This module requires a browser environment. Calling `toast()` during
+ * server-side rendering (SSR) will throw because `createToaster` depends on
+ * browser globals. Initialize toasts only after hydration or inside event
+ * handlers (e.g. `onClick`, `useEffect`).
  */
 let toasters: Map<ToastPlacement, ReturnType<typeof createToaster>> | null =
   null;
