@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "packages/nimbus/dist");
-const BASELINE_PATH = join(ROOT, "packages/nimbus/bundle-size-baseline.json");
+const BASELINE_PATH = join(ROOT, ".bundle-baseline/bundle-size-baseline.json");
 
 // Thresholds (percentage increase over baseline)
 const WARN_THRESHOLD = 0.15; // 15%
