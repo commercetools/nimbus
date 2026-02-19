@@ -1272,7 +1272,7 @@ export const CloseButtonAriaLabel: Story = {
       ) as HTMLElement;
       const closeButton = within(toastContainer).getByRole("button");
 
-      expect(closeButton.getAttribute("aria-label")).toBe("__Dismiss");
+      expect(closeButton.getAttribute("aria-label")).toBe("Dismiss");
     });
   },
 };
