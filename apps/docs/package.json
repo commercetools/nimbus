@@ -32,7 +32,7 @@
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
-    "jotai": "^2.16.2",
+    "jotai": "^2.18.0",
     "js-yaml": "^4.1.0",
     "lodash": "catalog:utils",
     "prism-react-renderer": "^2.4.0",
