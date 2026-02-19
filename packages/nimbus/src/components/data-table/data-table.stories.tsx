@@ -2889,7 +2889,7 @@ export const NestedTableDefaultExpanded: Story = {
     ],
     rows: modifiedFetchedData,
     nestedKey: "sky",
-    defaultExpanded: { "galaxy-1": true },
+    defaultExpandedRows: new Set(["galaxy-1"]),
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -2951,9 +2951,9 @@ export const NestedTableDefaultExpanded: Story = {
 
 export const NestedTableControlledExpansion: Story = {
   render: (args) => {
-    const [expanded, setExpanded] = useState<Record<string, boolean>>({
-      "galaxy-1": true,
-    });
+    const [expandedRows, setExpandedRows] = useState<Set<string>>(
+      new Set(["galaxy-1"])
+    );
 
     return (
       <Stack gap="400">
@@ -2965,20 +2965,25 @@ export const NestedTableControlledExpansion: Story = {
         <Flex gap="300">
           <Button
             variant="outline"
-            onPress={() => setExpanded({ "galaxy-1": true, "galaxy-2": true })}
+            onPress={() => setExpandedRows(new Set(["galaxy-1", "galaxy-2"]))}
           >
             Expand All
           </Button>
-          <Button variant="outline" onPress={() => setExpanded({})}>
+          <Button variant="outline" onPress={() => setExpandedRows(new Set())}>
             Collapse All
           </Button>
           <Button
             variant="outline"
             onPress={() =>
-              setExpanded((prev) => ({
-                ...prev,
-                "galaxy-2": !prev["galaxy-2"],
-              }))
+              setExpandedRows((prev) => {
+                const next = new Set(prev);
+                if (next.has("galaxy-2")) {
+                  next.delete("galaxy-2");
+                } else {
+                  next.add("galaxy-2");
+                }
+                return next;
+              })
             }
           >
             Toggle Andromeda
@@ -2986,8 +2991,8 @@ export const NestedTableControlledExpansion: Story = {
         </Flex>
         <DataTableWithModals
           {...args}
-          expanded={expanded}
-          onExpandChange={setExpanded}
+          expandedRows={expandedRows}
+          onExpandRowsChange={setExpandedRows}
           onRowClick={() => {}}
         />
       </Stack>

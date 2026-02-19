@@ -44,9 +44,9 @@ export const DataTableRoot = function DataTableRoot<
     disabledKeys,
     onRowAction,
     isResizable,
-    expanded: controlledExpanded,
-    defaultExpanded,
-    onExpandChange,
+    expandedRows: controlledExpandedRows,
+    defaultExpandedRows,
+    onExpandRowsChange,
     pinnedRows: controlledPinnedRows,
     defaultPinnedRows,
     onPinToggle,
@@ -64,15 +64,15 @@ export const DataTableRoot = function DataTableRoot<
     SortDescriptor | undefined
   >(defaultSortDescriptor);
 
-  const [internalExpanded, setInternalExpanded] = useState<
-    Record<string, boolean>
-  >(() => defaultExpanded || {});
+  const [internalExpandedRows, setInternalExpandedRows] = useState<Set<string>>(
+    () => defaultExpandedRows || new Set()
+  );
   const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
     () => defaultPinnedRows || new Set()
   );
 
   const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
-  const expanded = controlledExpanded ?? internalExpanded;
+  const expanded = controlledExpandedRows ?? internalExpandedRows;
   const pinnedRows = controlledPinnedRows ?? internalPinnedRows;
 
   const activeColumns = useMemo(() => {
@@ -110,13 +110,18 @@ export const DataTableRoot = function DataTableRoot<
 
   const toggleExpand = useCallback(
     (id: string) => {
-      const newExpanded = { ...expanded, [id]: !expanded[id] };
-      onExpandChange?.(newExpanded);
-      if (controlledExpanded === undefined) {
-        setInternalExpanded(newExpanded);
+      const newExpanded = new Set(expanded);
+      if (newExpanded.has(id)) {
+        newExpanded.delete(id);
+      } else {
+        newExpanded.add(id);
+      }
+      onExpandRowsChange?.(newExpanded);
+      if (controlledExpandedRows === undefined) {
+        setInternalExpandedRows(newExpanded);
       }
     },
-    [expanded, onExpandChange, controlledExpanded]
+    [expanded, onExpandRowsChange, controlledExpandedRows]
   );
 
   const togglePin = useCallback(
