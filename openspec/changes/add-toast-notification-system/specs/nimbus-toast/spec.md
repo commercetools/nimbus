@@ -63,8 +63,8 @@ of the `icon` property.
 
 #### Scenario: Custom icon replaces default
 
-- **WHEN** a toast is created with `icon: <Bathtub />`
-- **THEN** the Bathtub icon is rendered instead of the default type-based icon
+- **WHEN** a toast is created with a custom `icon` element
+- **THEN** the custom icon is rendered instead of the default type-based icon
 
 #### Scenario: Default icon without custom icon
 
@@ -196,12 +196,10 @@ timer, or programmatic API.
 ### Requirement: Action Button
 
 Toasts SHALL support an optional action button configured via
-`action: { label: string; onPress: () => void }`. The callback property SHALL
-be named `onPress` (not `onClick`) to align with the Nimbus/React Aria event
-naming convention. Internally, the action button renders a Nimbus `<Button>`
-which natively supports `onPress`. Action buttons do not override the toast
-duration — consumers control duration independently. An action toast uses the
-default 6s duration unless the consumer explicitly sets a different value.
+`action: { label: string; onPress: () => void }`. Action buttons do not
+override the toast duration — consumers control duration independently. An
+action toast uses the default 6s duration unless the consumer explicitly sets a
+different value.
 
 #### Scenario: Action toast
 

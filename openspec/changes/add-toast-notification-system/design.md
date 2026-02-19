@@ -136,7 +136,7 @@ the `closable` property follows Chakra's native handling in that path.
 ## Risks / Trade-offs
 
 - **Lazily-initialized toasters** → 4 empty container divs in DOM once
-  initialized (one per corner). Reduced from 6 by removing center placements.
+  initialized (one per corner).
   Toasters are created on first access (not at import time), avoiding
   module-level side effects for SSR safety and tree-shaking. On-demand
   per-toast rendering not feasible due to Chakra state machine timing.
