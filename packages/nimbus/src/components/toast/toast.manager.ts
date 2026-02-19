@@ -119,8 +119,17 @@ class ToastManager implements ToastManagerApi {
     const toaster = getToaster(placement);
 
     if (toaster) {
-      const { action, ...rest } = options;
-      toaster.update(id, { ...rest, action: mapAction(action) });
+      const { action, icon, variant, closable, ...rest } = options;
+      const metaUpdate: Record<string, unknown> = {};
+      if (icon !== undefined) metaUpdate.icon = icon;
+      if (variant !== undefined) metaUpdate.variant = variant;
+      if (closable !== undefined) metaUpdate.closable = closable;
+
+      toaster.update(id, {
+        ...rest,
+        action: mapAction(action),
+        ...(Object.keys(metaUpdate).length > 0 ? { meta: metaUpdate } : {}),
+      });
     }
   }
 
@@ -198,16 +207,33 @@ class ToastManager implements ToastManagerApi {
     const toaster = getToaster(placement);
 
     if (toaster) {
+      const mapState = (stateOptions: ToastOptions) => {
+        const {
+          action: consumerAction,
+          icon,
+          variant,
+          closable,
+          ...rest
+        } = stateOptions;
+        const duration = stateOptions.duration ?? DEFAULT_DURATION;
+        const resolvedClosable =
+          closable ?? (duration === Infinity ? true : false);
+        return {
+          ...rest,
+          duration,
+          action: mapAction(consumerAction),
+          meta: {
+            closable: resolvedClosable,
+            variant: variant ?? "accent-start",
+            icon,
+          },
+        };
+      };
+
       const mapped = {
-        loading: {
-          ...options.loading,
-          action: mapAction(options.loading.action),
-        },
-        success: {
-          ...options.success,
-          action: mapAction(options.success.action),
-        },
-        error: { ...options.error, action: mapAction(options.error.action) },
+        loading: mapState(options.loading),
+        success: mapState(options.success),
+        error: mapState(options.error),
       };
       toaster.promise(promise, mapped);
     }
