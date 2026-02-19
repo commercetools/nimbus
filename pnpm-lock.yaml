@@ -66,8 +66,8 @@ catalogs:
       specifier: ^3.33.0
       version: 3.33.0
     '@storybook/addon-a11y':
-      specifier: ^10.2.9
-      version: 10.2.9
+      specifier: ^10.2.10
+      version: 10.2.10
     '@storybook/addon-docs':
       specifier: ^10.2.9
       version: 10.2.9
@@ -605,7 +605,7 @@ importers:
         version: 3.33.0(react@19.2.0)
       '@storybook/addon-a11y':
         specifier: catalog:tooling
-        version: 10.2.9(storybook@10.2.9(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 10.2.10(storybook@10.2.9(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/addon-docs':
         specifier: catalog:tooling
         version: 10.2.9(@types/react@19.2.14)(esbuild@0.27.0)(rollup@4.57.1)(storybook@10.2.9(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.1)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -2714,10 +2714,10 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@storybook/addon-a11y@10.2.9':
-    resolution: {integrity: sha512-oWho1jJXS1QfjShin9yC2o60pvkPskgpqUDB5Of4XHFpOaV4hVfoqS1HjhZBQyjWZkN64EE42X3HVlwUwToPfg==}
+  '@storybook/addon-a11y@10.2.10':
+    resolution: {integrity: sha512-1S9pDXgvbHhBStGarCvfJ3/rfcaiAcQHRhuM3Nk4WGSIYtC1LCSRuzYdDYU0aNRpdCbCrUA7kUCbqvIE3tH+3Q==}
     peerDependencies:
-      storybook: ^10.2.9
+      storybook: ^10.2.10
 
   '@storybook/addon-docs@10.2.9':
     resolution: {integrity: sha512-rPUSyymt6IDI8PbZVEXPnqOysstp+mKeZiPRxcKIklecDhLUiy5Yc2PQneYY//Gp7Z/CEe54tJHr+WpFgtLPYg==}
@@ -9683,7 +9683,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@storybook/addon-a11y@10.2.9(storybook@10.2.9(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+  '@storybook/addon-a11y@10.2.10(storybook@10.2.9(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.11.0
