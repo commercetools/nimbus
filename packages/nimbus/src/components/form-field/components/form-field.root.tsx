@@ -180,9 +180,8 @@ export const FormFieldRoot = function FormFieldRoot({
               as={ErrorOutline}
               display="inline-flex"
               boxSize="400"
-              verticalAlign="text-bottom"
-              mr="100"
-              alignSelf="center"
+              flexShrink="0"
+              mt="50"
             />
             {context.error}
           </FormFieldErrorSlot>
