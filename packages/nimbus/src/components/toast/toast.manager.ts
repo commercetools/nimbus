@@ -13,7 +13,7 @@ import {
 } from "./constants";
 
 /**
- * Map consumer-facing `onPress` to the internal `onClick` expected by Chakra.
+ * Map action to the shape expected by the internal toast infrastructure.
  */
 function mapAction(
   action: ToastAction | undefined
@@ -78,8 +78,7 @@ class ToastManager implements ToastManagerApi {
     const closable =
       safeOptions.closable ?? (duration === Infinity ? true : false);
 
-    // Destructure `action` and `icon` out to prevent our ToastAction (onPress) from
-    // leaking into the Chakra options object which expects onClick.
+    // Destructure `action` and `icon` to map them to the internal format.
     // `icon` is tunneled through meta so the outlet can access it.
     const { action: consumerAction, icon, ...restOptions } = safeOptions;
     const action = mapAction(consumerAction);
