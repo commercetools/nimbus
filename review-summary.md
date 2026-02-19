@@ -469,6 +469,10 @@ correctly in both light and dark themes. If it is not a defined token palette,
 replace it with the appropriate token. Low priority if visual testing confirms
 it renders correctly.
 
+**Status: ✅ RESOLVED** — `"white"` is a valid, explicitly typed palette in
+`loading-spinner.types.ts` (`colorPalette?: "primary" | "white"`). Added inline
+comment explaining the contrast rationale. No code change needed.
+
 ---
 
 ## 💡 Suggestions
@@ -481,6 +485,10 @@ H-1 regression and prevent it from recurring.
 
 **Recommendation:** Add test to `toast.spec.tsx` after H-1 is fixed.
 
+**Status: ✅ RESOLVED** — Added "Tunnels closable, variant, and icon through
+meta for each promise state" test to `toast.spec.tsx`. Verifies all three meta
+fields with non-default values across loading, success, and error states.
+
 ---
 
 ### S-2 — `Variants` story play function lacks assertions
@@ -490,6 +498,10 @@ nothing about the rendered output, making it a no-op test.
 
 **Recommendation:** Add at least one assertion (e.g., that toast elements with
 each variant's text are present in the document).
+
+**Status: ✅ RESOLVED** — Added step assertions verifying one representative
+toast title per variant (accent-start, subtle, solid) is present in the document
+after clicking the trigger.
 
 ---
 
@@ -502,6 +514,10 @@ asserted.
 **Recommendation:** Assert that the mock toaster receives a `.promise()` call,
 or that the loading toast ID is returned.
 
+**Status: ✅ RESOLVED** — Added `vi.spyOn(toast, "promise")` assertion verifying
+the function was called with the correct promise reference and the expected
+state titles (loading/success/error).
+
 ---
 
 ### S-4 — Document SSR constraint in `toast.toasters.ts`
@@ -512,6 +528,9 @@ note that `toast()` cannot be called during server-side rendering.
 
 **Recommendation:** Add a brief JSDoc note in `toast.toasters.ts` or
 `toast.manager.ts` warning that the API requires a browser environment.
+
+**Status: ✅ RESOLVED** — Added `@note` JSDoc warning about SSR constraint to
+the lazily-initialized toasters block in `toast.toasters.ts`.
 
 ---
 
@@ -524,6 +543,9 @@ toaster instances persist, potentially causing cross-test state leakage.
 that sets the internal `toasters` map to `null`, and call it from
 `toast.reset()`.
 
+**Status: ✅ RESOLVED** — Added `resetToasters()` export to `toast.toasters.ts`
+and updated `toast.manager.ts`'s `reset()` to call it, providing full cleanup.
+
 ---
 
 ### S-6 — Replace hardcoded `3px` in `accent-start` box-shadow with a design token
@@ -534,6 +556,10 @@ which is inconsistent with the token-based approach used throughout the recipe.
 
 **Recommendation:** Replace with the nearest spacing token (likely `sizes.25` or
 similar, depending on the token scale).
+
+**Status: ✅ RESOLVED** — Registered `borderWidths` (25=1px, 50=2px, 75=3px,
+100=4px) as a Chakra token category in the nimbus theme, then replaced the
+hardcoded `3px` in the recipe with `{borderWidths.75}`.
 
 ---
 
