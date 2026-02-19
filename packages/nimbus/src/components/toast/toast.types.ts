@@ -80,6 +80,27 @@ export type ToastPromiseOptions = {
 };
 
 // ============================================================
+// Internal Types
+// ============================================================
+
+/**
+ * Internal type representing the toast data object passed by Chakra UI's Toaster
+ * render prop. Only covers the fields accessed by the outlet.
+ */
+export type ChakraToastData = {
+  id?: string;
+  type?: string;
+  title?: string;
+  description?: string;
+  action?: { label: string; onClick: () => void };
+  meta?: {
+    closable?: boolean;
+    variant?: ToastVariant;
+    icon?: React.ReactElement;
+  };
+};
+
+// ============================================================
 // Main Props
 // ============================================================
 

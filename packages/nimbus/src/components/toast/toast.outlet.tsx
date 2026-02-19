@@ -23,24 +23,7 @@ import {
   onToastersActivated,
 } from "./toast.toasters";
 import { toastMessagesStrings } from "./toast.messages";
-import type { ToastType, ToastVariant } from "./toast.types";
-
-/**
- * Internal type representing the toast data object passed by Chakra UI's Toaster
- * render prop. Only covers the fields accessed by the outlet.
- */
-type ChakraToastData = {
-  id?: string;
-  type?: string;
-  title?: string;
-  description?: string;
-  action?: { label: string; onClick: () => void };
-  meta?: {
-    closable?: boolean;
-    variant?: ToastVariant;
-    icon?: React.ReactElement;
-  };
-};
+import type { ChakraToastData, ToastType } from "./toast.types";
 
 const ICON_MAP: Record<Exclude<ToastType, "loading">, React.ReactElement> = {
   info: <Info />,
@@ -150,7 +133,7 @@ function subscribeToActivation(onStoreChange: () => void) {
  * Toasts appear when created via the `toast()` imperative API.
  *
  * The outlet defers rendering of `<Toaster>` instances until the first
- * toast is actually created. This avoids mounting zag-js state machines
+ * toast is actually created. This avoids mounting internal state machines
  * (and their DOM event listeners) when toasts are never used, and
  * eliminates spurious `act(...)` warnings in JSDOM-based tests.
  *

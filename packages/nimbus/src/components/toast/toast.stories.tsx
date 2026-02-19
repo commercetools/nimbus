@@ -1058,8 +1058,8 @@ export const KeyboardNavigation: Story = {
         button.focus();
         expect(button).toHaveFocus();
 
-        // Dispatch native KeyboardEvent matching Zag.js hotkey format
-        // Zag checks: event.altKey && event.shiftKey && event.code === "Digit9"
+        // Dispatch native KeyboardEvent matching the hotkey format
+        // Checks: event.altKey && event.shiftKey && event.code === "Digit9"
         document.dispatchEvent(
           new KeyboardEvent("keydown", {
             code: "Digit9",
@@ -1425,7 +1425,7 @@ export const ComprehensiveIntegration: Story = {
 /**
  * Z-Index Layering
  * Verifies that toasts render above modal dialogs.
- * Zag.js sets z-index to MAX_Z_INDEX (2147483647) on toast regions,
+ * Chakra sets z-index to MAX_Z_INDEX (2147483647) on toast regions,
  * ensuring toasts are always the topmost layer.
  */
 export const ZIndexLayering: Story = {

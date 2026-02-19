@@ -5,15 +5,15 @@ import type {
   ToastManagerApi,
   ToastPromiseOptions,
 } from "./toast.types";
-import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
+import { getToaster } from "./toast.toasters";
+import {
+  DEFAULT_DURATION,
+  DEFAULT_PLACEMENT,
+  ALL_PLACEMENTS,
+} from "./constants";
 
 /**
- * Default toast configuration values.
- */
-const DEFAULT_DURATION = 6000; // 6 seconds
-
-/**
- * Map consumer-facing `onPress` to Chakra/Zag's internal `onClick`.
+ * Map consumer-facing `onPress` to the internal `onClick` expected by Chakra.
  */
 function mapAction(
   action: ToastAction | undefined
@@ -21,13 +21,6 @@ function mapAction(
   if (!action) return undefined;
   return { label: action.label, onClick: action.onPress };
 }
-
-const VALID_PLACEMENTS: ToastPlacement[] = [
-  "top-start",
-  "top-end",
-  "bottom-start",
-  "bottom-end",
-];
 
 /**
  * ToastManager - Singleton class managing multiple toaster instances per placement.
@@ -60,7 +53,7 @@ class ToastManager implements ToastManagerApi {
    * Validate and normalize placement value.
    */
   private normalizePlacement(placement?: ToastPlacement): ToastPlacement {
-    if (placement && VALID_PLACEMENTS.includes(placement)) {
+    if (placement && ALL_PLACEMENTS.includes(placement)) {
       return placement;
     }
     return DEFAULT_PLACEMENT;
@@ -146,7 +139,7 @@ class ToastManager implements ToastManagerApi {
       }
       this.toastPlacements.delete(id);
     } else {
-      VALID_PLACEMENTS.forEach((placement) => {
+      ALL_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
           toaster.dismiss();
@@ -169,7 +162,7 @@ class ToastManager implements ToastManagerApi {
       }
       this.toastPlacements.delete(id);
     } else {
-      VALID_PLACEMENTS.forEach((placement) => {
+      ALL_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
           toaster.remove();
