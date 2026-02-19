@@ -58,6 +58,17 @@ function ensureToasters() {
 }
 
 /**
+ * Reset all toaster instances back to their uninitialized state.
+ *
+ * Intended for test isolation only — calling this in production will
+ * cause the next toast() call to recreate all toasters from scratch,
+ * discarding any in-flight state.
+ */
+export function resetToasters(): void {
+  toasters = null;
+}
+
+/**
  * Get toaster for a specific placement.
  */
 export function getToaster(placement: ToastPlacement) {

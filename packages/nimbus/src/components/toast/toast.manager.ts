@@ -5,7 +5,7 @@ import type {
   ToastManagerApi,
   ToastPromiseOptions,
 } from "./toast.types";
-import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
+import { getToaster, DEFAULT_PLACEMENT, resetToasters } from "./toast.toasters";
 
 /**
  * Default toast configuration values.
@@ -241,9 +241,13 @@ class ToastManager implements ToastManagerApi {
 
   /**
    * Reset manager state (for testing only).
+   *
+   * Clears the ID-to-placement map and resets all underlying toaster
+   * instances so tests start from a clean slate.
    */
   public reset(): void {
     this.toastPlacements.clear();
+    resetToasters();
   }
 }
 
