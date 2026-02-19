@@ -143,7 +143,7 @@ export const toastRecipe = defineSlotRecipe({
           // Accent line on the inline-start edge via inset box-shadow
           // (no real border, so it doesn't affect layout).
           boxShadow:
-            "inset {borderWidths.75} 0 0 0 var(--nimbus-colors-color-palette-9), inset 0 0 0 1px var(--nimbus-colors-neutral-5), {shadows.1}",
+            "inset 3px 0 0 0 var(--nimbus-colors-color-palette-9), inset 0 0 0 1px var(--nimbus-colors-neutral-5), {shadows.1}",
         },
         indicator: {
           "& svg": {

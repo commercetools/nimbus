@@ -2,7 +2,6 @@ import { aspectRatios } from "./aspect-ratios";
 import { animations } from "./animations";
 import { blurs } from "./blurs";
 import { borders } from "./borders";
-import { borderWidths } from "./border-widths";
 import { colors, darkColors } from "./colors";
 import { durations } from "./durations";
 import { easings } from "./easings";
@@ -22,7 +21,6 @@ export const tokens = {
   animations,
   blurs,
   borders,
-  borderWidths,
   colors,
   durations,
   easings,
@@ -43,7 +41,6 @@ export const darkTokens = {
   animations,
   blurs,
   borders,
-  borderWidths,
   colors: darkColors,
   durations,
   easings,

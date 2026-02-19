@@ -5,7 +5,7 @@ import type {
   ToastManagerApi,
   ToastPromiseOptions,
 } from "./toast.types";
-import { getToaster, DEFAULT_PLACEMENT, resetToasters } from "./toast.toasters";
+import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
 
 /**
  * Default toast configuration values.
@@ -247,7 +247,6 @@ class ToastManager implements ToastManagerApi {
    */
   public reset(): void {
     this.toastPlacements.clear();
-    resetToasters();
   }
 }
 
