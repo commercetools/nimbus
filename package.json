@@ -49,7 +49,8 @@
       "glob@>=10.2.0 <10.5.0": ">=10.5.0",
       "glob@>=11.0.0 <11.1.0": ">=11.1.0",
       "js-yaml": "^3.14.2",
-      "qs": "^6.14.1"
+      "qs": "^6.14.2",
+      "axios": ">=1.13.5"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
