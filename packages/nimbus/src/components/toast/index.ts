@@ -11,5 +11,5 @@ export type {
   ToastAction,
   ToastOptions,
   ToastPromiseOptions,
-  IToastManager,
+  ToastManagerApi,
 } from "./toast.types";

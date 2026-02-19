@@ -26,12 +26,12 @@ export type ToastPlacement =
 /**
  * Action button configuration for toast.
  */
-export interface ToastAction {
+export type ToastAction = {
   /** Label text for the action button */
   label: string;
   /** Press handler for the action button */
   onPress: () => void;
-}
+};
 
 /**
  * Toast visual variant.
@@ -44,7 +44,7 @@ export type ToastVariant = "solid" | "subtle" | "accent-start";
 /**
  * Options for creating a toast notification.
  */
-export interface ToastOptions {
+export type ToastOptions = {
   /** Toast type determines styling and ARIA role */
   type?: ToastType;
   /** Visual variant (default: "accent-start") */
@@ -52,7 +52,7 @@ export interface ToastOptions {
   /** Title text */
   title: string;
   /** Description text providing additional context */
-  description: string;
+  description?: string;
   /** Optional action button */
   action?: ToastAction;
   /** Custom icon element that replaces the default type-based icon */
@@ -67,28 +67,28 @@ export interface ToastOptions {
   pauseOnInteraction?: boolean;
   /** Pause auto-dismiss when page is idle (default: true) */
   pauseOnPageIdle?: boolean;
-}
+};
 
 /**
  * Promise toast configuration for loading/success/error states.
  */
-export interface ToastPromiseOptions {
+export type ToastPromiseOptions = {
   /** Toast options for loading state */
   loading: ToastOptions;
   /** Toast options for success state */
   success: ToastOptions;
   /** Toast options for error state */
   error: ToastOptions;
-}
+};
 
 // ============================================================
 // TOAST MANAGER TYPES
 // ============================================================
 
 /**
- * Toast manager interface for imperative API.
+ * Toast manager API for imperative toast control.
  */
-export interface IToastManager {
+export type ToastManagerApi = {
   /** Create a toast and return its ID */
   create: (options: ToastOptions) => string;
   /** Update an existing toast */
@@ -113,4 +113,4 @@ export interface IToastManager {
   ) => void;
   /** Reset manager state (testing only) */
   reset: () => void;
-}
+};

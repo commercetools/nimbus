@@ -2,7 +2,7 @@ import type {
   ToastAction,
   ToastOptions,
   ToastPlacement,
-  IToastManager,
+  ToastManagerApi,
   ToastPromiseOptions,
 } from "./toast.types";
 import { getToaster, DEFAULT_PLACEMENT } from "./toast.toasters";
@@ -38,7 +38,7 @@ const VALID_PLACEMENTS: ToastPlacement[] = [
  * - Promise support: promise() method that transitions loading → success/error
  * - Default duration: 6000ms, consumer-controlled (action does not override)
  */
-class ToastManager implements IToastManager {
+class ToastManager implements ToastManagerApi {
   private static instance: ToastManager;
   private toastPlacements: Map<string, ToastPlacement> = new Map();
 
