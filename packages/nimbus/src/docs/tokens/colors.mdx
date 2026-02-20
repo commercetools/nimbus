@@ -33,21 +33,31 @@ seamlessly.
 Below is a list of steps with corresponding use cases for various background,
 border, and text styles in the design system:
 
-| **Step** | **Use Case**                                           |
-| -------- | ------------------------------------------------------ |
-| 1        | App background                                         |
-| 2        | Subtle background                                      |
-| 3        | UI element background                                  |
-| 4        | Hovered UI element background                          |
-| 5        | Active / Selected UI element background                |
-| 6        | Subtle borders and separators                          |
-| 7        | UI element border and focus rings                      |
-| 8        | Hovered UI element border                              |
-| 9        | Solid backgrounds                                      |
-| 10       | Hovered solid backgrounds                              |
-| 11       | Low-contrast text                                      |
-| 12       | High-contrast text                                     |
-| contrast | High-contrast text (black/white) for use on solid backgrounds (step 9+10) |
+| **Step** | **Use Case** | **WCAG AA Text Pairing** |
+| -------- | ------------------------------------------------------ | ------------------------ |
+| 1        | App background                                         | Steps 11, 12            |
+| 2        | Subtle background                                      | Steps 11, 12            |
+| 3        | UI element background                                  | Steps 11, 12            |
+| 4        | Hovered UI element background                          | Steps 11, 12            |
+| 5        | Active / Selected UI element background                | Steps 11, 12            |
+| 6        | Subtle borders and separators                          | —                        |
+| 7        | UI element border and focus rings                      | —                        |
+| 8        | Hovered UI element border                              | —                        |
+| 9        | Solid backgrounds                                      | contrast step            |
+| 10       | Hovered solid backgrounds                              | contrast step            |
+| 11       | Low-contrast text                                      | Steps 1–5               |
+| 12       | High-contrast text                                     | Steps 1–5               |
+| contrast | High-contrast text on solid backgrounds                | Steps 9, 10             |
+
+The Radix color system guarantees that background steps (1–5) always meet
+WCAG AA contrast ratio (4.5:1) with text steps (11–12) across all color scales.
+This is why the scales are interchangeable — swapping one color scale for
+another preserves the same contrast relationships. For solid background colors
+(steps 9–10), use the special `contrast` step which provides a black or white
+value guaranteed to meet contrast requirements.
+
+For more details on how the scale is designed, see the
+[Radix color scale documentation](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
 
 ## System Colors
 
