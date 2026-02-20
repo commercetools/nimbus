@@ -6,16 +6,14 @@ import {
   onToastersActivated,
 } from "../services/toast.toasters";
 import { ToastContent } from "./toast.content";
+import { COLOR_PALETTE_MAP } from "../constants";
 import type { ChakraToastData, ToastType } from "../toast.types";
 
-const COLOR_PALETTE_MAP: Record<ToastType, string> = {
-  info: "info",
-  success: "positive",
-  warning: "warning",
-  error: "critical",
-  loading: "neutral",
-};
-
+/**
+ * Returns the correct ARIA role and live-region politeness for a toast type.
+ * Warning and error toasts use `role="alert"` with `aria-live="assertive"`,
+ * all others use `role="status"` with `aria-live="polite"`.
+ */
 const getARIAAttributes = (type?: ToastType) => {
   if (type === "warning" || type === "error") {
     return { role: "alert" as const, "aria-live": "assertive" as const };

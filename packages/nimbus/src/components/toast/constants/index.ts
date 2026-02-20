@@ -1,4 +1,4 @@
-import type { ToastPlacement } from "../toast.types";
+import type { ToastPlacement, ToastType } from "../toast.types";
 
 /**
  * Default toast duration in milliseconds (6 seconds).
@@ -31,4 +31,15 @@ export const PLACEMENT_HOTKEYS: Record<ToastPlacement, string[]> = {
   "top-end": ["altKey", "shiftKey", "Digit9"],
   "bottom-start": ["altKey", "shiftKey", "Digit1"],
   "bottom-end": ["altKey", "shiftKey", "Digit3"],
+};
+
+/**
+ * Maps toast semantic types to Nimbus color palettes.
+ */
+export const COLOR_PALETTE_MAP: Record<ToastType, string> = {
+  info: "info",
+  success: "positive",
+  warning: "warning",
+  error: "critical",
+  loading: "neutral",
 };
