@@ -28,7 +28,7 @@ The script (`scripts/check-bundle-size.mjs`) does the following:
 2. Gzips each file (level 9) and records the byte count. Internal chunks are
    summed into a single **aggregate** entry because their hashed filenames
    change across builds.
-3. Compares every entry against `packages/nimbus/bundle-size-baseline.json`.
+3. Compares every entry against `.bundle-baseline/bundle-size-baseline.json`.
 4. Prints a table with current size, baseline size, percentage delta, and
    status.
 5. Exits with code 1 if any entry exceeds the **error threshold**.
@@ -82,7 +82,7 @@ how fresh it is.
    all other entries. You can also run `pnpm update:bundle-baseline` without a
    component name to regenerate the entire baseline.
 
-   Commit the updated `packages/nimbus/bundle-size-baseline.json` as part of
+   Commit the updated `.bundle-baseline/bundle-size-baseline.json` as part of
    your PR.
 
 ### A New Component Was Added
@@ -162,5 +162,5 @@ const WARN_THRESHOLD = 0.15; // 15% — prints a warning
 const ERROR_THRESHOLD = 0.3; // 30% — fails the build
 ```
 
-If you find the thresholds too sensitive or too lenient after a few weeks of
+If we find the thresholds too sensitive or too lenient after a few weeks of
 use, adjust them and commit the change.
