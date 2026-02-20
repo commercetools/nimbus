@@ -4,8 +4,7 @@
 
 Toast: add Toast notification system
 
-Imperative toast API built on Chakra UI's `createToaster` with full Nimbus
-styling and accessibility support.
+Imperative toast API with full Nimbus styling and accessibility support.
 
 - `toast()` function with convenience shorthands (`toast.info()`,
   `toast.success()`, `toast.warning()`, `toast.error()`)
