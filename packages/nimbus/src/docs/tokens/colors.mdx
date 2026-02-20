@@ -15,11 +15,12 @@ icon: Palette
 
 # Colors
 
-In our design system, colors are organized into **scales** based on **contrast**
-levels to ensure clarity and **usability** across various contexts. Each scale
-provides a range of tones, from subtle backgrounds to high-contrast elements
-like text and interactive borders, enabling a consistent and accessible user
-experience.
+Our color system is built on [Radix Colors](https://www.radix-ui.com/colors),
+which organizes colors into **scales** based on **contrast** levels to ensure
+clarity and **usability** across various contexts. Each scale provides a range
+of tones, from subtle backgrounds to high-contrast elements like text and
+interactive borders. A full scale for a given color is referred to as a
+**colorPalette** (e.g., colorPalette: "red").
 
 The scales are _interchangeable_, meaning a color like red can be swapped with
 green without losing the intended contrast levels. This flexibility ensures that
@@ -35,19 +36,19 @@ border, and text styles in the design system:
 
 | **Step** | **Use Case** | **WCAG AA Text Pairing** |
 | -------- | ------------------------------------------------------ | ------------------------ |
-| 1        | App background                                         | Steps 11, 12            |
-| 2        | Subtle background                                      | Steps 11, 12            |
-| 3        | UI element background                                  | Steps 11, 12            |
-| 4        | Hovered UI element background                          | Steps 11, 12            |
-| 5        | Active / Selected UI element background                | Steps 11, 12            |
-| 6        | Subtle borders and separators                          | —                        |
-| 7        | UI element border and focus rings                      | —                        |
-| 8        | Hovered UI element border                              | —                        |
-| 9        | Solid backgrounds                                      | contrast step            |
-| 10       | Hovered solid backgrounds                              | contrast step            |
-| 11       | Low-contrast text                                      | Steps 1–5               |
-| 12       | High-contrast text                                     | Steps 1–5               |
-| contrast | High-contrast text on solid backgrounds                | Steps 9, 10             |
+| **1**        | App background                                         | Steps 11, 12            |
+| **2**        | Subtle background                                      | Steps 11, 12            |
+| **3**        | UI element background                                  | Steps 11, 12            |
+| **4**        | Hovered UI element background                          | Steps 11, 12            |
+| **5**        | Active / Selected UI element background                | Steps 11, 12            |
+| **6**        | Subtle borders and separators                          | —                        |
+| **7**        | UI element border and focus rings                      | —                        |
+| **8**        | Hovered UI element border                              | —                        |
+| **9**        | Solid backgrounds                                      | contrast step            |
+| **10**       | Hovered solid backgrounds                              | contrast step            |
+| **11**       | Low-contrast text                                      | Steps 1–5               |
+| **12**       | High-contrast text                                     | Steps 1–5               |
+| **contrast** | High-contrast text on solid backgrounds                | Steps 9, 10             |
 
 <br />
 
