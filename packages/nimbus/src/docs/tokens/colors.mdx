@@ -49,6 +49,8 @@ border, and text styles in the design system:
 | 12       | High-contrast text                                     | Steps 1–5               |
 | contrast | High-contrast text on solid backgrounds                | Steps 9, 10             |
 
+<br />
+
 The Radix color system guarantees that background steps (1–5) always meet
 WCAG AA contrast ratio (4.5:1) with text steps (11–12) across all color scales.
 This is why the scales are interchangeable — swapping one color scale for
@@ -58,6 +60,22 @@ value guaranteed to meet contrast requirements.
 
 For more details on how the scale is designed, see the
 [Radix color scale documentation](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
+
+## Semantic Colors
+
+Colors with meaning, used to communicate status or state.
+
+<br />
+
+<ColorScales ids="primary, neutral, info, positive, warning, critical" />
+
+## Brand Colors
+
+Custom colors, tailored to the brand.
+
+<br />
+
+<ColorScales ids="ctviolet, ctteal, ctyellow" />
 
 ## System Colors
 
@@ -72,26 +90,10 @@ Colors available for decoration or reference.
 Black and white color scales do not adapt to the selected color-mode. Means a
 white will always be white, a black will always be black.
 
-> [!TIP]  
+> [!TIP]
 > Use the `neutral` color scales if you want to refer to a gray-tone that works
 > on the current background color (light-/dark-mode dependent).
 
 <br />
 
 <ColorScales ids="blackAlpha, whiteAlpha" />
-
-## Brand Colors
-
-Custom colors, tailored to the brand.
-
-<br />
-
-<ColorScales ids="ctviolet, ctteal, ctyellow" />
-
-## Semantic Colors
-
-Colors with meaning, used to communicate status or state.
-
-<br />
-
-<ColorScales ids="primary, neutral, info, positive, warning, critical" />
