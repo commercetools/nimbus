@@ -109,19 +109,25 @@ describe("loadTokenData", () => {
       }
     });
 
-    it("flattens palette colors using light values", () => {
+    it("flattens palette colors with light/dark values", () => {
       const colors = data!.categoryValues["colors"];
       const amber = tokens.color["system-palettes"].amber;
-      for (const [name, value] of Object.entries(amber.light)) {
-        expect(colors[`amber.${name}`]).toBe(value);
+      for (const [name, lightVal] of Object.entries(amber.light)) {
+        const darkVal = amber.dark[name];
+        const expected =
+          lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
+        expect(colors[`amber.${name}`]).toBe(expected);
       }
     });
 
-    it("includes semantic palette colors", () => {
+    it("includes semantic palette colors with light/dark values", () => {
       const colors = data!.categoryValues["colors"];
       const neutral = tokens.color["semantic-palettes"].neutral;
-      for (const [name, value] of Object.entries(neutral.light)) {
-        expect(colors[`neutral.${name}`]).toBe(value);
+      for (const [name, lightVal] of Object.entries(neutral.light)) {
+        const darkVal = neutral.dark[name];
+        const expected =
+          lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
+        expect(colors[`neutral.${name}`]).toBe(expected);
       }
     });
   });

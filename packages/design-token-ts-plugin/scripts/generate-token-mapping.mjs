@@ -1,7 +1,7 @@
 /**
  * Generates a JSON mapping file containing resolved/formatted values for tokens
  * that the TS plugin can't handle from designTokens alone:
- * - Semantic colors (bg, fg, border.*) with resolved light-mode values
+ * - Semantic colors (bg, fg, border.*) with resolved light & dark mode values
  * - Text styles formatted as "fontSize: Xpx, lineHeight: Ypx"
  * - Layer styles formatted as "prop1: val1, prop2: val2"
  * - Letter spacing unwrapped from {value: "..."} format
@@ -34,8 +34,9 @@ async function main() {
     "@commercetools/nimbus-tokens"
   );
 
-  const colorLookup = buildColorLookup(designTokens.color);
-  const semanticColors = resolveSemanticColors(colorLookup, themeTokens);
+  const lightLookup = buildColorLookup(designTokens.color, "light");
+  const darkLookup = buildColorLookup(designTokens.color, "dark");
+  const semanticColors = resolveSemanticColors(lightLookup, darkLookup, themeTokens);
   const textStyles = formatTextStyles(designTokens.textStyle);
   const layerStyles = loadAndFormatLayerStyles();
   const letterSpacing = unwrapLetterSpacing(designTokens.letterSpacing);
@@ -53,9 +54,10 @@ async function main() {
 // ---------------------------------------------------------------------------
 
 /**
- * Build a flat lookup: "paletteName.step" → "hsl(...)" using light-mode values.
+ * Build a flat lookup: "paletteName.step" → "hsl(...)" for the given color mode.
+ * @param {"light" | "dark"} mode — which side of the light/dark pair to use
  */
-function buildColorLookup(colorObj) {
+function buildColorLookup(colorObj, mode) {
   const lookup = {};
   if (!colorObj || typeof colorObj !== "object") return lookup;
 
@@ -64,13 +66,15 @@ function buildColorLookup(colorObj) {
 
     for (const [paletteName, palette] of Object.entries(group)) {
       if (typeof palette === "string") {
+        // Mode-independent value (e.g. black, white)
         lookup[paletteName] = palette;
         continue;
       }
       if (!palette || typeof palette !== "object") continue;
 
       if ("light" in palette && "dark" in palette) {
-        for (const [step, value] of Object.entries(palette.light)) {
+        const modeObj = palette[mode];
+        for (const [step, value] of Object.entries(modeObj)) {
           if (typeof value === "string") {
             lookup[`${paletteName}.${step}`] = value;
           }
@@ -132,14 +136,14 @@ function extractObjectFromDefineCall(source, fnCallPrefix) {
 
 /**
  * Read semantic color definitions from the nimbus theme source and resolve
- * token references to light-mode CSS values.
+ * token references to both light and dark CSS values.
  *
  * The source file uses `defineSemanticTokens.colors({...})` which is a type-only
  * wrapper, plus spreads of `themeTokens.color["*-palettes"]` for palette colors.
  * We evaluate the object with real themeTokens and then filter out palette keys
  * to keep only the semantic shortcuts (bg, fg, border.*).
  */
-function resolveSemanticColors(colorLookup, themeTokens) {
+function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
   let source;
   try {
     source = readFileSync(SEMANTIC_COLORS_PATH, "utf-8");
@@ -192,9 +196,9 @@ function resolveSemanticColors(colorLookup, themeTokens) {
     }
   }
 
-  // Flatten nested structure and resolve token references
+  // Flatten nested structure and resolve token references for both modes
   const result = {};
-  flattenSemanticTokenDefs(semanticDefs, "", result, colorLookup);
+  flattenSemanticTokenDefs(semanticDefs, "", result, lightLookup, darkLookup);
   return result;
 }
 
@@ -202,12 +206,13 @@ function resolveSemanticColors(colorLookup, themeTokens) {
  * Recursively flatten Chakra semantic token definitions into a flat map.
  *
  * Structure: `{ border: { DEFAULT: { value: "..." }, muted: { value: "..." } } }`
- * → `{ "border": "resolved", "border.muted": "resolved" }`
+ * → `{ "border": "l: <light> d: <dark>", "border.muted": "l: <light> d: <dark>" }`
  *
  * DEFAULT means use the parent key name. `value` is either a string reference
- * or an object with `_light`/`_dark` keys (use `_light`).
+ * (resolved against both light and dark lookups) or an object with
+ * `_light`/`_dark` keys.
  */
-function flattenSemanticTokenDefs(obj, prefix, result, lookup) {
+function flattenSemanticTokenDefs(obj, prefix, result, lightLookup, darkLookup) {
   for (const [key, val] of Object.entries(obj)) {
     if (!val || typeof val !== "object") continue;
 
@@ -219,23 +224,40 @@ function flattenSemanticTokenDefs(obj, prefix, result, lookup) {
       const rawValue = val.value;
 
       if (typeof rawValue === "string") {
-        result[name] = resolveRef(rawValue, lookup);
+        // Same reference for both modes — resolve against each lookup
+        const light = resolveRef(rawValue, lightLookup);
+        const dark = resolveRef(rawValue, darkLookup);
+        result[name] = formatLightDark(light, dark);
       } else if (
         rawValue &&
         typeof rawValue === "object" &&
         "_light" in rawValue
       ) {
-        const lightVal = rawValue._light;
-        result[name] =
-          typeof lightVal === "string" && lightVal.startsWith("{")
-            ? resolveRef(lightVal, lookup)
-            : String(lightVal);
+        const lightRaw = rawValue._light;
+        const darkRaw = rawValue._dark;
+        const light =
+          typeof lightRaw === "string" && lightRaw.startsWith("{")
+            ? resolveRef(lightRaw, lightLookup)
+            : String(lightRaw);
+        const dark =
+          typeof darkRaw === "string" && darkRaw.startsWith("{")
+            ? resolveRef(darkRaw, darkLookup)
+            : String(darkRaw);
+        result[name] = formatLightDark(light, dark);
       }
     } else {
       // Nested group — recurse
-      flattenSemanticTokenDefs(val, name, result, lookup);
+      flattenSemanticTokenDefs(val, name, result, lightLookup, darkLookup);
     }
   }
+}
+
+/**
+ * Format a light/dark pair. If both are identical, return just the value.
+ */
+function formatLightDark(light, dark) {
+  if (light === dark) return light;
+  return `l: ${light} d: ${dark}`;
 }
 
 // ---------------------------------------------------------------------------

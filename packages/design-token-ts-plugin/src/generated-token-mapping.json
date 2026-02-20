@@ -1,16 +1,16 @@
 {
   "semanticColors": {
-    "bg": "#fff",
-    "fg": "hsl(0, 0%, 13%)",
-    "border": "hsl(0, 0%, 85%)",
-    "border.muted": "hsl(0, 0%, 81%)",
-    "border.subtle": "hsl(0, 0%, 85%)",
-    "border.emphasized": "hsl(0, 0%, 73%)",
-    "border.inverted": "hsl(0, 0%, 55%)",
-    "border.critical": "hsl(359, 70%, 74%)",
-    "border.warning": "hsl(38, 75%, 55%)",
-    "border.positive": "hsl(131, 38%, 56%)",
-    "border.info": "hsl(206, 82%, 65%)"
+    "bg": "l: #fff d: hsl(0, 0%, 7%)",
+    "fg": "l: hsl(0, 0%, 13%) d: hsl(0, 0%, 93%)",
+    "border": "l: hsl(0, 0%, 85%) d: hsl(0, 0%, 23%)",
+    "border.muted": "l: hsl(0, 0%, 81%) d: hsl(0, 0%, 28%)",
+    "border.subtle": "l: hsl(0, 0%, 85%) d: hsl(0, 0%, 23%)",
+    "border.emphasized": "l: hsl(0, 0%, 73%) d: hsl(0, 0%, 38%)",
+    "border.inverted": "l: hsl(0, 0%, 55%) d: hsl(0, 0%, 43%)",
+    "border.critical": "l: hsl(359, 70%, 74%) d: hsl(358, 45%, 49%)",
+    "border.warning": "l: hsl(38, 75%, 55%) d: hsl(36, 60%, 35%)",
+    "border.positive": "l: hsl(131, 38%, 56%) d: hsl(131, 32%, 36%)",
+    "border.info": "l: hsl(206, 82%, 65%) d: hsl(211, 65%, 45%)"
   },
   "textStyles": {
     "2xs": "fontSize: 10px, lineHeight: 14px",

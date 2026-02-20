@@ -250,8 +250,9 @@ export function loadTokenData(): TokenData | undefined {
 
 /**
  * Recursively flatten a color object into dot-notation keys.
- * For light/dark structures, use the light value.
- * E.g. { amber: { light: { "1": "hsl(...)" } } } → "amber.1" = "hsl(...)"
+ * For light/dark structures, show both values as "l: <light> d: <dark>".
+ * E.g. { amber: { light: { "1": "hsl(a)" }, dark: { "1": "hsl(b)" } } }
+ *   → "amber.1" = "l: hsl(a) d: hsl(b)"
  * E.g. { black: "hsl(...)" } → "black" = "hsl(...)"
  */
 function flattenColors(
@@ -267,15 +268,23 @@ function flattenColors(
     } else if (val && typeof val === "object") {
       const record = val as Record<string, unknown>;
 
-      // If this object has "light" and "dark" keys, use the light values
+      // If this object has "light" and "dark" keys, merge both
       if ("light" in record && "dark" in record) {
-        const lightObj = record.light;
+        const lightObj = record.light as Record<string, unknown> | undefined;
+        const darkObj = record.dark as Record<string, unknown> | undefined;
+        const colorPrefix = prefix ? `${prefix}.${key}` : key;
+
         if (lightObj && typeof lightObj === "object") {
-          flattenColors(
-            lightObj as Record<string, unknown>,
-            prefix ? `${prefix}.${key}` : key,
-            result
-          );
+          for (const [step, lightVal] of Object.entries(lightObj)) {
+            if (typeof lightVal !== "string") continue;
+            const darkVal = darkObj?.[step];
+            const stepKey = `${colorPrefix}.${step}`;
+            if (typeof darkVal === "string" && darkVal !== lightVal) {
+              result[stepKey] = `l: ${lightVal} d: ${darkVal}`;
+            } else {
+              result[stepKey] = lightVal;
+            }
+          }
         }
       } else {
         // Regular nested object — recurse
