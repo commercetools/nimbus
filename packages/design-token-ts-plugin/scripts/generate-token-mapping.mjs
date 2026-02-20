@@ -1,3 +1,5 @@
+/* global console, process */
+
 /**
  * Generates a JSON mapping file containing resolved/formatted values for tokens
  * that the TS plugin can't handle from designTokens alone:
@@ -30,13 +32,16 @@ const LAYER_STYLES_PATH = join(
 );
 
 async function main() {
-  const { designTokens, themeTokens } = await import(
-    "@commercetools/nimbus-tokens"
-  );
+  const { designTokens, themeTokens } =
+    await import("@commercetools/nimbus-tokens");
 
   const lightLookup = buildColorLookup(designTokens.color, "light");
   const darkLookup = buildColorLookup(designTokens.color, "dark");
-  const semanticColors = resolveSemanticColors(lightLookup, darkLookup, themeTokens);
+  const semanticColors = resolveSemanticColors(
+    lightLookup,
+    darkLookup,
+    themeTokens
+  );
   const textStyles = formatTextStyles(designTokens.textStyle);
   const layerStyles = loadAndFormatLayerStyles();
   const letterSpacing = unwrapLetterSpacing(designTokens.letterSpacing);
@@ -45,7 +50,6 @@ async function main() {
 
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, JSON.stringify(mapping, null, 2) + "\n");
-  // eslint-disable-next-line no-console
   console.log(`Generated token mapping → ${OUTPUT_PATH}`);
 }
 
@@ -148,7 +152,6 @@ function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
   try {
     source = readFileSync(SEMANTIC_COLORS_PATH, "utf-8");
   } catch {
-    // eslint-disable-next-line no-console
     console.warn(
       `Could not read ${SEMANTIC_COLORS_PATH}, skipping semantic colors`
     );
@@ -160,7 +163,6 @@ function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
     "defineSemanticTokens.colors("
   );
   if (!objSource) {
-    // eslint-disable-next-line no-console
     console.warn(
       "Could not extract object from defineSemanticTokens.colors(), skipping semantic colors"
     );
@@ -175,7 +177,6 @@ function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
     const fn = new Function("themeTokens", `return (${objSource});`);
     fullDef = fn(themeTokens);
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.warn("Could not evaluate semantic colors object:", e.message);
     return {};
   }
@@ -212,12 +213,17 @@ function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
  * (resolved against both light and dark lookups) or an object with
  * `_light`/`_dark` keys.
  */
-function flattenSemanticTokenDefs(obj, prefix, result, lightLookup, darkLookup) {
+function flattenSemanticTokenDefs(
+  obj,
+  prefix,
+  result,
+  lightLookup,
+  darkLookup
+) {
   for (const [key, val] of Object.entries(obj)) {
     if (!val || typeof val !== "object") continue;
 
-    const name =
-      key === "DEFAULT" ? prefix : prefix ? `${prefix}.${key}` : key;
+    const name = key === "DEFAULT" ? prefix : prefix ? `${prefix}.${key}` : key;
 
     if ("value" in val) {
       // Leaf node: { value: "..." } or { value: { _light, _dark } }
@@ -275,16 +281,12 @@ function loadAndFormatLayerStyles() {
   try {
     source = readFileSync(LAYER_STYLES_PATH, "utf-8");
   } catch {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `Could not read ${LAYER_STYLES_PATH}, skipping layer styles`
-    );
+    console.warn(`Could not read ${LAYER_STYLES_PATH}, skipping layer styles`);
     return {};
   }
 
   const objSource = extractObjectFromDefineCall(source, "defineLayerStyles(");
   if (!objSource) {
-    // eslint-disable-next-line no-console
     console.warn(
       "Could not extract object from defineLayerStyles(), skipping layer styles"
     );
@@ -296,7 +298,6 @@ function loadAndFormatLayerStyles() {
     const fn = new Function(`return (${objSource});`);
     layerDef = fn();
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.warn("Could not evaluate layer styles object:", e.message);
     return {};
   }
@@ -356,7 +357,6 @@ function unwrapLetterSpacing(letterSpacingObj) {
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error("Failed to generate token mapping:", err);
   process.exit(1);
 });
