@@ -1,5 +1,25 @@
 # @commercetools/nimbus
 
+## 2.7.0
+
+### Minor Changes
+
+- [#1096](https://github.com/commercetools/nimbus/pull/1096)
+  [`6cc65e2`](https://github.com/commercetools/nimbus/commit/6cc65e22a2997eeeabeff6b8d488ac846fe475eb)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Allows for
+  programmatically expanding nested rows in the DataTable component.
+
+### Patch Changes
+
+- [#1104](https://github.com/commercetools/nimbus/pull/1104)
+  [`6566e21`](https://github.com/commercetools/nimbus/commit/6566e21235f6a953d958ad85396d7efa47cd31aa)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - FormField: fix error icon
+  shrinking on multiline error messages
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.7.0
+  - @commercetools/nimbus-icons@2.7.0
+
 ## 2.6.0
 
 ### Minor Changes
