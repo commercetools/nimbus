@@ -29,6 +29,20 @@ const config = {
   proseWrap: "always",
   /** enforce single attribute per line in HTML and JSX. */
   singleAttributePerLine: false,
+  overrides: [
+    {
+      /**
+       * Skill files use YAML frontmatter with a `description` field that must
+       * stay on a single line for the Claude skill-file parser to read it.
+       * `proseWrap: "always"` breaks the description across lines, which the
+       * parser interprets as separate YAML keys and raises a diagnostic error.
+       */
+      files: ".claude/skills/**/SKILL.md",
+      options: {
+        proseWrap: "preserve",
+      },
+    },
+  ],
 };
 
 export default config;
