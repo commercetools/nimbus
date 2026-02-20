@@ -197,13 +197,30 @@ The component SHALL show loading state during data fetch.
 - **AND** SHALL maintain table dimensions
 
 ### Requirement: Row Expansion
-The component SHALL support expandable row details.
+The component SHALL support expandable row details with controlled and uncontrolled state management.
 
 #### Scenario: Expand control
 - **WHEN** row has expandable content
 - **THEN** SHALL show expand/collapse icon
 - **AND** clicking icon SHALL toggle expansion
 - **AND** SHALL render expanded content in spanning row
+
+#### Scenario: Uncontrolled expansion (default)
+- **WHEN** no `expanded` prop is provided
+- **THEN** expansion state SHALL be managed internally
+- **AND** `defaultExpanded` SHALL set initial expansion state if provided
+- **AND** user interactions SHALL update internal state directly
+
+#### Scenario: Controlled expansion
+- **WHEN** `expanded` prop is provided
+- **THEN** component SHALL reflect the provided expansion state
+- **AND** SHALL NOT manage expansion state internally
+- **AND** parent component SHALL be responsible for state updates
+
+#### Scenario: Expansion change notification
+- **WHEN** expansion state changes via user interaction
+- **THEN** SHALL call `onExpandChange` with the new expansion state
+- **AND** callback SHALL receive full `Record<string, boolean>` state
 
 ### Requirement: ARIA Grid Pattern
 The component SHALL implement ARIA grid pattern per nimbus-core standards.

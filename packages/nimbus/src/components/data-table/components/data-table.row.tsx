@@ -279,7 +279,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
-  const isExpanded = expanded[row.id];
+  const isExpanded = expanded.has(row.id);
   const isPinned = pinnedRows.has(row.id);
 
   // Calculate pinned row position for styling

@@ -108,7 +108,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     sortDescriptor?: SortDescriptor;
     selectedKeys?: Selection;
     defaultSelectedKeys?: Selection;
-    expanded: Record<string, boolean>;
+    expanded: Set<string>;
     allowsSorting?: boolean;
     selectionMode?: "none" | "single" | "multiple";
     disallowEmptySelection?: boolean;
@@ -189,6 +189,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   nestedKey?: string;
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  /** Controlled expansion state - map of row IDs to their expanded state */
+  expandedRows?: Set<string>;
+  /** Default expansion state for uncontrolled mode */
+  defaultExpandedRows?: Set<string>;
+  /** Callback fired when expansion state changes */
+  onExpandRowsChange?: (expanded: Set<string>) => void;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
