@@ -1,8 +1,5 @@
 ---
-description:
-  Create Jira tickets from a plan or spec, with predecessor/successor dependency
-  links. Supports creating tickets under an epic, labeling by phase, and
-  generating a bulk link script for dependencies.
+description: Create Jira tickets from a plan or spec, with dependency links, epic parenting, phase labels, and a bulk link script.
 argument-hint: <epic-key> [plan-file-path] [--dry-run]
 ---
 
