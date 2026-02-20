@@ -25,7 +25,7 @@ jobs:
       - name: Update bundle size baseline
         run: node scripts/check-bundle-size.mjs --update-baseline
 
-      - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update bundle size baseline [skip ci]"
           file_pattern: ".bundle-baseline/bundle-size-baseline.json"
