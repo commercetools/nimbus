@@ -1,6 +1,9 @@
 /**
  * Loads design token data from @commercetools/nimbus-tokens and builds
  * lookup maps for enriching autocomplete with CSS values.
+ *
+ * Also loads a generated mapping for tokens that aren't simple key→string pairs:
+ * semantic colors (bg, fg, border.*), textStyles, layerStyles, letterSpacing.
  */
 
 /** category name → { token name → CSS value string } */
@@ -12,6 +15,14 @@ export type CategorySets = Record<string, Set<string>>;
 export interface TokenData {
   categoryValues: CategoryValues;
   categorySets: CategorySets;
+}
+
+/** Shape of the generated-token-mapping.json file */
+interface GeneratedTokenMapping {
+  semanticColors: Record<string, string>;
+  textStyles: Record<string, string>;
+  layerStyles: Record<string, string>;
+  letterSpacing: Record<string, string>;
 }
 
 /**
@@ -51,6 +62,22 @@ function loadDesignTokens(): Record<string, unknown> | undefined {
   }
 
   return undefined;
+}
+
+/**
+ * Load the generated token mapping JSON from the same directory as the compiled plugin.
+ * Falls back to undefined if the file doesn't exist (graceful degradation).
+ */
+function loadGeneratedMapping(): GeneratedTokenMapping | undefined {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const path = require("path");
+    const mappingPath = path.join(__dirname, "generated-token-mapping.json");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    return require(mappingPath) as GeneratedTokenMapping;
+  } catch {
+    return undefined;
+  }
 }
 
 export function loadTokenData(): TokenData | undefined {
@@ -175,6 +202,42 @@ export function loadTokenData(): TokenData | undefined {
       if (Object.keys(values).length > 0) {
         categoryValues["zIndex"] = values;
         categorySets["zIndex"] = new Set(Object.keys(values));
+      }
+    }
+
+    // Load generated token mapping for semantic colors, composite tokens, etc.
+    const mapping = loadGeneratedMapping();
+    if (mapping) {
+      // Merge semantic colors into existing colors category
+      if (mapping.semanticColors) {
+        if (!categoryValues["colors"]) {
+          categoryValues["colors"] = {};
+        }
+        Object.assign(categoryValues["colors"], mapping.semanticColors);
+        categorySets["colors"] = new Set(Object.keys(categoryValues["colors"]));
+      }
+
+      // Add textStyles category
+      if (mapping.textStyles && Object.keys(mapping.textStyles).length > 0) {
+        categoryValues["textStyles"] = mapping.textStyles;
+        categorySets["textStyles"] = new Set(Object.keys(mapping.textStyles));
+      }
+
+      // Add layerStyles category
+      if (mapping.layerStyles && Object.keys(mapping.layerStyles).length > 0) {
+        categoryValues["layerStyles"] = mapping.layerStyles;
+        categorySets["layerStyles"] = new Set(Object.keys(mapping.layerStyles));
+      }
+
+      // Add letterSpacing category
+      if (
+        mapping.letterSpacing &&
+        Object.keys(mapping.letterSpacing).length > 0
+      ) {
+        categoryValues["letterSpacing"] = mapping.letterSpacing;
+        categorySets["letterSpacing"] = new Set(
+          Object.keys(mapping.letterSpacing)
+        );
       }
     }
 
