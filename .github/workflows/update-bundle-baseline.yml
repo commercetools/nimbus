@@ -29,6 +29,5 @@ jobs:
         with:
           commit_message: "chore: update bundle size baseline [skip ci]"
           file_pattern: ".bundle-baseline/bundle-size-baseline.json"
-          repository: .bundle-baseline
           commit_options: "--amend --no-edit"
           push_options: "--force"
