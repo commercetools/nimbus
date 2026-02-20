@@ -87,10 +87,11 @@ export default function App() {
 ```
 
 **Default behavior:**
-- Loads Inter with weights 400, 500, 600, 700 (used by Nimbus design tokens)
+- Loads Inter with all 9 weights (100-900) to match Nimbus design tokens
 - Uses `display=swap` to minimize FOUT (Flash of Unstyled Text)
 - Includes preconnect links to Google Fonts origins for optimal performance
 - Gracefully falls back to system fonts if Google Fonts is unavailable
+- Automatically deduplicated across multiple provider instances
 
 **Disabling font loading:**
 
@@ -572,21 +573,30 @@ function CustomLink({ href, children }) {
 
 ### Merchant Center integration
 
-If you're using Nimbus within Merchant Center or any application where app-kit/ui-kit already loads the Inter font, disable automatic font loading to avoid duplicates:
+> [!WARNING]
+> **Action Required for Merchant Center Applications**
+>
+> If you're using Nimbus within Merchant Center or any application where app-kit/ui-kit already loads the Inter font, you **must** add `loadFonts={false}` to prevent duplicate font loading and performance regressions.
 
-**Before (Nimbus loads fonts):**
+**Before (causes duplicate font loading):**
 ```tsx
 <NimbusProvider locale={locale} router={router}>
   <App />
 </NimbusProvider>
 ```
 
-**After (app-kit loads fonts):**
+**After (prevents duplicates):**
 ```tsx
 <NimbusProvider locale={locale} router={router} loadFonts={false}>
   <App />
 </NimbusProvider>
 ```
+
+**Impact of not updating:**
+- Duplicate network requests for Inter font files (performance regression)
+- Increased page load time due to redundant font downloads
+- Potential FOUT (Flash of Unstyled Text) issues
+- Unnecessary bandwidth consumption for users
 
 **How to verify fonts are loaded:**
 
