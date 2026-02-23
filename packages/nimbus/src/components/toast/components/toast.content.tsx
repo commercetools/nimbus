@@ -1,5 +1,8 @@
-import { Toast as ChakraToast, useToastStyles, chakra } from "@chakra-ui/react";
-import type { CreateToasterReturn } from "@chakra-ui/react";
+import {
+  Toast as ChakraToast,
+  useToastStyles,
+  type CreateToasterReturn,
+} from "@chakra-ui/react/toast";
 import {
   CheckCircleOutline,
   ErrorOutline,
@@ -9,6 +12,7 @@ import {
 } from "@commercetools/nimbus-icons";
 import { IconButton } from "../../icon-button/icon-button";
 import { Button } from "../../button/button";
+import { Box } from "../../box";
 import { LoadingSpinner } from "../../loading-spinner/loading-spinner";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { toastMessagesStrings } from "../toast.messages";
@@ -41,7 +45,7 @@ export function ToastContent({
 
   return (
     <>
-      <chakra.div css={styles.indicator}>
+      <Box css={styles.indicator}>
         {type === "loading" ? (
           <LoadingSpinner
             size="sm"
@@ -54,7 +58,7 @@ export function ToastContent({
         ) : (
           (customIcon ?? ICON_MAP[type])
         )}
-      </chakra.div>
+      </Box>
 
       {toast.title && <ChakraToast.Title>{toast.title}</ChakraToast.Title>}
 
