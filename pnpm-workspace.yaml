@@ -11,7 +11,7 @@ catalogs:
   tooling:
     "@fission-ai/openspec": ^1.1.1
     globals: ^17.3.0
-    glob: ^13.0.5
+    glob: ^13.0.6
     typescript: ~5.9.3
     typescript-eslint: ^8.56.0
     tsx: ^4.21.0
@@ -20,10 +20,10 @@ catalogs:
     "@babel/preset-typescript": ^7.28.5
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.33.0
-    eslint: ^10.0.0
+    eslint: ^10.0.1
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
-    eslint-plugin-react-refresh: ^0.5.0
+    eslint-plugin-react-refresh: ^0.5.1
     express-rate-limit: ^8.2.1
     prettier: ^3.8.1
     "@preconstruct/cli": ^2.8.12
@@ -33,7 +33,7 @@ catalogs:
     vite-bundle-analyzer: ^1.3.6
     vite-plugin-dts: ^4.5.4
     vite-tsconfig-paths: ^6.1.1
-    rollup: ^4.57.1
+    rollup: ^4.59.0
     rollup-plugin-tree-shakeable: ^2.0.0
     "@vitest/browser": ^4.0.18
     "@vitest/browser-playwright": ^4.0.18
