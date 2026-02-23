@@ -70,7 +70,14 @@ response or description is expected.
 > - Do utilize an undo and redo button to assist a user with writing and editing
 >   text when possible.
 
-![Do](/images/rich-text-input/rich-text-input-do.png)
+```jsx live
+const App = () => (
+  <RichTextInput
+    defaultValue="<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac <strong>user experience</strong> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>"
+    placeholder="Write your product description here."
+  />
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -80,4 +87,12 @@ response or description is expected.
 > - Don't move the rich text toolbar to sit on the bottom of the input.
 > - Don't overload the rich text toolbar with tools that are unnecessary.
 
-![Don't](/images/rich-text-input/rich-text-input-dont.png)
+```jsx live
+const App = () => (
+  <RichTextInput
+    height="2000"
+    defaultValue="<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac <strong>user experience</strong> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>"
+    placeholder="Write your product description here."
+  />
+);
+```

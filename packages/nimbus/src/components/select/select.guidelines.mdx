@@ -59,7 +59,22 @@ form wide. The popover width should match the width of the field itself.
 > - Longer options flow to the next lines, and when chosen, those longer texts
 >   are truncated so the user can still see the icons clearly.
 
-![](/images/select/solid-styled-widths.png)
+```jsx live
+const App = () => (
+  <Select.Root defaultSelectedKey="project-1" w="6400">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option id="project-2lines">
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -67,7 +82,22 @@ form wide. The popover width should match the width of the field itself.
 > - Do not have different widths for select inputs.
 > - Do not change the width of the field to match the content once selected.
 
-![](/images/select/solid-styled-widths-dont.png)
+```jsx live
+const App = () => (
+  <Select.Root variant="ghost" defaultSelectedKey="project-1">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option id="project-2lines">
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 ### Ghost-styled widths
 
@@ -82,7 +112,22 @@ on a page wide form.
 > - Select input field width set to "hug" with max width popover at 268px.
 > - Content flows to next line when needed.
 
-![](/images/select/ghost-styled-widths.png)
+```jsx live
+const App = () => (
+  <Select.Root variant="ghost" defaultSelectedKey="project-1">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option id="project-2lines">
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -90,7 +135,27 @@ on a page wide form.
 > - This drop down icon looks like it is not related to the select input field.
 > - Do not truncate options that should flow to the next line.
 
-![](/images/select/ghost-styled-widths-dont.png)
+```jsx live
+const App = () => (
+  <Select.Root defaultSelectedKey="project-1" w="6400">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option
+        id="project-2lines"
+        overflow="hidden"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+      >
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 > [!TIP]\
 > **Do**
@@ -98,7 +163,18 @@ on a page wide form.
 > - With short selectable content, match content width to match the select input
 >   "hug" width.
 
-![](/images/select/short-selectable-content.png)
+```jsx live
+const App = () => (
+  <Select.Root variant="ghost" defaultSelectedKey="1">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="0">0</Select.Option>
+      <Select.Option id="1">1</Select.Option>
+      <Select.Option id="2">2</Select.Option>
+      <Select.Option id="3">3</Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -106,7 +182,18 @@ on a page wide form.
 > - Do not set the popover width to "hug", this content should match the width
 >   of the field.
 
-![](/images/select/short-selectable-content-dont.png)
+```jsx live
+const App = () => (
+  <Select.Root variant="ghost" defaultSelectedKey="1" w="6400">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="0">0</Select.Option>
+      <Select.Option id="1">1</Select.Option>
+      <Select.Option id="2">2</Select.Option>
+      <Select.Option id="3">3</Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 ### Labels and preselection
 
@@ -119,7 +206,23 @@ Make sure to place tooltips in areas where they will be seen easily.
 >   instructions.
 > - Use placeholder if there isn't a most common or default choice.
 
-![](/images/select/labels-and-preselection.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Favorite color</FormField.Label>
+    <FormField.Input>
+      <Select.Root aria-label="Favorite color">
+        <Select.Options placeholder="Select...">
+          <Select.Option id="red">Red</Select.Option>
+          <Select.Option id="blue">Blue</Select.Option>
+          <Select.Option id="green">Green</Select.Option>
+          <Select.Option id="teal">Teal</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -128,7 +231,22 @@ Make sure to place tooltips in areas where they will be seen easily.
 > - Do not preselect a random option unless it's genuinely the most common or
 >   default choice.
 
-![](/images/select/labels-and-preselection-dont.png)
+```jsx live
+const App = () => (
+  <Select.Root
+    isClearable
+    defaultSelectedKey="green"
+    aria-label="Favorite color"
+  >
+    <Select.Options placeholder="Select...">
+      <Select.Option id="red">Red</Select.Option>
+      <Select.Option id="blue">Blue</Select.Option>
+      <Select.Option id="green">Green</Select.Option>
+      <Select.Option id="teal">Teal</Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 ### Labels and layout exceptions
 
@@ -142,7 +260,22 @@ commonly found in filters and with rule builders.
 > - Use a short and easily understandable label.
 > - Use placeholder if there isn't a most common or default choice.
 
-![](/images/select/labels-and-layout-exceptions.png)
+```jsx live
+const App = () => (
+  <Flex alignItems="center" gap="200">
+    <Text>Color</Text>
+    <Text>is</Text>
+    <Select.Root variant="ghost" aria-label="Color value">
+      <Select.Options placeholder="Select...">
+        <Select.Option id="red">Red</Select.Option>
+        <Select.Option id="blue">Blue</Select.Option>
+        <Select.Option id="green">Green</Select.Option>
+        <Select.Option id="teal">Teal</Select.Option>
+      </Select.Options>
+    </Select.Root>
+  </Flex>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -152,7 +285,68 @@ commonly found in filters and with rule builders.
 > - Make sure that if logic is being used that it goes through user testing and
 >   is understandable for the targeted user.
 
-![](/images/select/labels-and-layout-exceptions-dont.png)
+```jsx live
+const App = () => (
+  <Stack gap="200">
+    <Flex alignItems="center" gap="100" flexWrap="wrap">
+      <Text>item's location is</Text>
+      <Select.Root
+        variant="ghost"
+        defaultSelectedKey="us"
+        aria-label="Location"
+        isClearable={false}
+      >
+        <Select.Options>
+          <Select.Option id="us">United States</Select.Option>
+          <Select.Option id="uk">United Kingdom</Select.Option>
+          <Select.Option id="ca">Canada</Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Text>and color</Text>
+      <Select.Root
+        variant="ghost"
+        defaultSelectedKey="is-blue"
+        aria-label="Color condition"
+        isClearable={false}
+      >
+        <Select.Options>
+          <Select.Option id="is-blue">is blue</Select.Option>
+          <Select.Option id="is-red">is red</Select.Option>
+          <Select.Option id="is-teal">is teal</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Flex>
+    <Flex alignItems="center" gap="100" flexWrap="wrap">
+      <Text>apply discounts to</Text>
+      <Select.Root
+        variant="ghost"
+        defaultSelectedKey="all"
+        aria-label="Apply to"
+        isClearable={false}
+      >
+        <Select.Options>
+          <Select.Option id="all">all of matching items</Select.Option>
+          <Select.Option id="some">some of matching items</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Flex>
+    <Flex alignItems="center" gap="100" flexWrap="wrap">
+      <Text>except</Text>
+      <Select.Root
+        variant="ghost"
+        defaultSelectedKey="if-teal"
+        aria-label="Exception"
+        isClearable={false}
+      >
+        <Select.Options>
+          <Select.Option id="if-teal">if item is teal</Select.Option>
+          <Select.Option id="if-blue">if item is blue</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Flex>
+  </Stack>
+);
+```
 
 ### Keep menu items concise
 
@@ -168,7 +362,60 @@ content more space.
 >   instructions.
 > - Text can flow to three lines, but truncate further text.
 
-![](/images/select/keep-menu-items-concise.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Discount templates</FormField.Label>
+    <FormField.Input>
+      <Select.Root aria-label="Discount templates">
+        <Select.Options placeholder="Select...">
+          <Select.OptionGroup label="Product discounts">
+            <Select.Option id="pct-off-product">
+              Percentage off product
+            </Select.Option>
+            <Select.Option id="amt-off-product">
+              Amount off product
+            </Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Cart discounts with line items">
+            <Select.Option id="pct-off-cart">
+              Percentage off item(s) on cart
+            </Select.Option>
+            <Select.Option id="amt-off-cart">
+              Amount off item(s) in cart
+            </Select.Option>
+            <Select.Option id="buy-x-get-x">
+              Buy x get x with percentage off
+            </Select.Option>
+            <Select.Option id="fixed-price">Fixed-price in cart</Select.Option>
+            <Select.Option id="discounted-shipping">
+              Discounted shipping
+            </Select.Option>
+            <Select.Option id="gift">Gift with purchase</Select.Option>
+            <Select.Option id="amt-total-spend">
+              Amount off based on total spend
+            </Select.Option>
+            <Select.Option id="pct-total-spend">
+              Percentage off based on total spend
+            </Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Cart discounts with custom line items">
+            <Select.Option id="custom-pct">
+              Percentage off item(s) in cart
+            </Select.Option>
+            <Select.Option id="custom-amt">
+              Amount off item(s) in cart
+            </Select.Option>
+            <Select.Option id="custom-buy-x">
+              Buy x get x with percentage off
+            </Select.Option>
+          </Select.OptionGroup>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -179,7 +426,92 @@ content more space.
 > - Do not encourage lengthy text for drop down experiences. Text can flow to
 >   three lines, but truncate further text.
 
-![](/images/select/keep-menu-items-concise-dont.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Discount templates</FormField.Label>
+    <FormField.Input>
+      <Select.Root aria-label="Discount templates">
+        <Select.Options placeholder="Select...">
+          <Select.OptionGroup label="Product discounts">
+            <Select.Option
+              id="pct-off-product"
+              textValue="Percentage off product"
+            >
+              Discount the target item(s) relative to its price.
+              <Text slot="description">Discount type: relative</Text>
+            </Select.Option>
+            <Select.Option id="amt-off-product" textValue="Amount off product">
+              Discount the target item(s) by an absolute amount.
+              <Text slot="description">Discount type: absolute</Text>
+            </Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Cart discounts with line items">
+            <Select.Option id="pct-off-cart" textValue="Percentage off cart">
+              Discount the target item(s) relative to its price.
+              <Text slot="description">Discount type: relative</Text>
+            </Select.Option>
+            <Select.Option id="amt-off-cart" textValue="Amount off cart">
+              Discount the target item(s) by an absolute amount.
+              <Text slot="description">Discount type: absolute</Text>
+            </Select.Option>
+            <Select.Option id="buy-x-get-x" textValue="Buy x get x">
+              A relative (% off) discount is applied when the shopper buys a
+              specified quantity of an item.
+              <Text slot="description">Discount type: multi-buy</Text>
+            </Select.Option>
+            <Select.Option id="fixed-price" textValue="Fixed price">
+              Discount the target item(s) by setting a fixed price.
+              <Text slot="description">Discount type: fixed-price</Text>
+            </Select.Option>
+            <Select.Option
+              id="discounted-shipping"
+              textValue="Discounted shipping"
+            >
+              Discount the cart's shipping cost for the customer.
+              <Text slot="description">Discount type: shipping</Text>
+            </Select.Option>
+            <Select.Option id="gift" textValue="Gift with purchase">
+              Discount adds a free line item(s) to the cart when the specified
+              conditions are met.
+              <Text slot="description">Discount type: gift line item</Text>
+            </Select.Option>
+            <Select.Option
+              id="amt-total-spend"
+              textValue="Amount off total spend"
+            >
+              Discount an absolute amount based on cart total.
+              <Text slot="description">Discount type: absolute</Text>
+            </Select.Option>
+            <Select.Option
+              id="pct-total-spend"
+              textValue="Percentage off total spend"
+            >
+              Discount an amount relative to the cart total.
+              <Text slot="description">Discount type: relative</Text>
+            </Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Cart discounts with custom line items">
+            <Select.Option id="custom-pct" textValue="Custom percentage off">
+              Discount the target custom line item(s) relative to its price.
+              <Text slot="description">Discount type: relative</Text>
+            </Select.Option>
+            <Select.Option id="custom-amt" textValue="Custom amount off">
+              Discount the target custom line item(s) by an absolute amount.
+              <Text slot="description">Discount type: absolute</Text>
+            </Select.Option>
+            <Select.Option id="custom-buy-x" textValue="Custom buy x get x">
+              A relative (% off) discount is applied when the shopper buys a
+              specified quantity of an item defined as a custom line item.
+              <Text slot="description">Discount type: multibuy</Text>
+            </Select.Option>
+          </Select.OptionGroup>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 ### Organize dropdown content when possible
 
@@ -195,7 +527,42 @@ experience. By default, organize by alphabetical order.
 > - If actions lists become bulky and hard to scan, consider another experience
 >   for the user.
 
-![](/images/select/organize-dropdown-content-when-possible.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Actions</FormField.Label>
+    <FormField.Input>
+      <Select.Root aria-label="Actions">
+        <Select.Options placeholder="Select...">
+          <Select.OptionGroup label="Common actions">
+            <Select.Option id="publish">Publish</Select.Option>
+            <Select.Option id="unpublish">Unpublish</Select.Option>
+            <Select.Option id="delete">Delete</Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Import">
+            <Select.Option id="import-csv">Import via CSV</Select.Option>
+            <Select.Option id="bulk-unpublish-csv">
+              Bulk unpublish via CSV
+            </Select.Option>
+            <Select.Option id="bulk-delete-csv">
+              Bulk delete via CSV
+            </Select.Option>
+            <Select.Option id="import-inventories">
+              Import inventories
+            </Select.Option>
+          </Select.OptionGroup>
+          <Select.OptionGroup label="Export">
+            <Select.Option id="export-products">Export products</Select.Option>
+            <Select.Option id="export-inventories">
+              Export Inventories
+            </Select.Option>
+          </Select.OptionGroup>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -204,7 +571,36 @@ experience. By default, organize by alphabetical order.
 >   prioritize them at the top and group related actions together to facilitate
 >   quick user selection.
 
-![](/images/select/organize-dropdown-content-when-possible-dont.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Actions</FormField.Label>
+    <FormField.Input>
+      <Select.Root defaultSelectedKey="bulk-unpublish-csv" aria-label="Actions">
+        <Select.Options placeholder="Select...">
+          <Select.Option id="bulk-delete-csv">
+            Bulk delete via CSV
+          </Select.Option>
+          <Select.Option id="bulk-unpublish-csv">
+            Bulk unpublish via CSV
+          </Select.Option>
+          <Select.Option id="delete">Delete</Select.Option>
+          <Select.Option id="export-inventories">
+            Export Inventories
+          </Select.Option>
+          <Select.Option id="export-products">Export products</Select.Option>
+          <Select.Option id="import-inventories">
+            Import inventories
+          </Select.Option>
+          <Select.Option id="import-csv">Import via CSV</Select.Option>
+          <Select.Option id="publish">Publish</Select.Option>
+          <Select.Option id="unpublish">Unpublish</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 ### Help and error text inclusion
 
@@ -218,11 +614,52 @@ triggered.
 >   if self explanatory.
 > - Error and helper text should be short and easily understood.
 
-![](/images/select/help-and-error-text-inclusion.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Store restriction</FormField.Label>
+    <FormField.Input>
+      <Select.Root aria-label="Store restriction">
+        <Select.Options placeholder="Select...">
+          <Select.Option id="store-1">Europe store</Select.Option>
+          <Select.Option id="store-2">North America store</Select.Option>
+          <Select.Option id="store-3">Asia Pacific store</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+    <FormField.Description>
+      Restrict this account to only make future purchases to these stores.
+    </FormField.Description>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
 >
 > - Don't show both helper text and information text simultaneously.
 
-![](/images/select/help-and-error-text-inclusion-dont.png)
+```jsx live
+const App = () => (
+  <FormField.Root isInvalid>
+    <FormField.Label>Store restriction</FormField.Label>
+    <FormField.Input>
+      <Select.Root
+        isClearable
+        defaultSelectedKey="valencia"
+        aria-label="Store restriction"
+      >
+        <Select.Options placeholder="Select...">
+          <Select.Option id="valencia">Valencia, Spain</Select.Option>
+          <Select.Option id="madrid">Madrid, Spain</Select.Option>
+          <Select.Option id="barcelona">Barcelona, Spain</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </FormField.Input>
+    <FormField.Description>
+      Restrict this account to only make future purchases to these stores.
+    </FormField.Description>
+    <FormField.Error>Cannot perform this action</FormField.Error>
+  </FormField.Root>
+);
+```

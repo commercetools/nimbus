@@ -76,7 +76,24 @@ Radio inputs work best when there are a limited number of options for a user.
 >
 > - Use when there are a few options available for the user.
 
-![](/images/radio-input/radio-options-do.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Shipping priority</FormField.Label>
+    <FormField.Input mt="200">
+      <RadioInput.Root orientation="vertical" name="shipping-speed">
+        <RadioInput.Option value="standard">Standard</RadioInput.Option>
+        <RadioInput.Option value="express">Express</RadioInput.Option>
+        <RadioInput.Option value="priority">Priority</RadioInput.Option>
+        <RadioInput.Option value="same-day">Same-day</RadioInput.Option>
+        <RadioInput.Option value="instore-pickup">
+          In-store pick up
+        </RadioInput.Option>
+      </RadioInput.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -87,4 +104,54 @@ Radio inputs work best when there are a limited number of options for a user.
 >   small area. Instead, use a dropdown selector to simplify the UI and make it
 >   easier to search quickly to find the right option.
 
-![](/images/radio-input/radio-options-dont.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Shipping priority</FormField.Label>
+    <FormField.Input mt="200">
+      <RadioInput.Root name="shipping-dont">
+        <Grid
+          templateColumns="repeat(3, auto)"
+          gap="400"
+          rowGap="400"
+          justifyItems="start"
+        >
+          <RadioInput.Option value="standard">Standard</RadioInput.Option>
+          <RadioInput.Option value="next-business">
+            Next business day
+          </RadioInput.Option>
+          <RadioInput.Option value="local-pickup">
+            Local pickup
+          </RadioInput.Option>
+          <RadioInput.Option value="express">Express</RadioInput.Option>
+          <RadioInput.Option value="express-2">Express</RadioInput.Option>
+          <RadioInput.Option value="rural">
+            Rural/remote area shipping
+          </RadioInput.Option>
+          <RadioInput.Option value="priority">Priority</RadioInput.Option>
+          <RadioInput.Option value="two-day">
+            Two-day shipping
+          </RadioInput.Option>
+          <RadioInput.Option value="temp-controlled">
+            Temperature-controlled shipping
+          </RadioInput.Option>
+          <RadioInput.Option value="sameday">Same-day</RadioInput.Option>
+          <RadioInput.Option value="freight">
+            Freight shipping
+          </RadioInput.Option>
+          <RadioInput.Option value="white-glove">
+            White glove delivery
+          </RadioInput.Option>
+          <RadioInput.Option value="pickup">In-store pick up</RadioInput.Option>
+          <RadioInput.Option value="intl-economy">
+            International economy
+          </RadioInput.Option>
+          <RadioInput.Option value="carbon-neutral">
+            Carbon-neutral shipping
+          </RadioInput.Option>
+        </Grid>
+      </RadioInput.Root>
+    </FormField.Input>
+  </FormField.Root>
+);
+```

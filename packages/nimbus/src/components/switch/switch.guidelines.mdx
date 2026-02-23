@@ -44,7 +44,16 @@ checkboxes if you have many settings that are selectable.
 >
 > - Keep switches to binary options, simplifying for the user.
 
-![Do](/images/switch/mixed-state-do.png)
+```jsx live
+const App = () => (
+  <Stack gap="200" alignItems="flex-start">
+    <Text fontWeight="700">Notifications</Text>
+    <Separator />
+    <Switch>Email notifications</Switch>
+    <Switch>Text notifications</Switch>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -54,4 +63,13 @@ checkboxes if you have many settings that are selectable.
 > - Do not excessively use switches, other options like checkboxes are
 >   available.
 
-![Dont](/images/switch/mixed-state-dont.png)
+```jsx live
+const App = () => (
+  <Stack gap="200" alignItems="flex-start">
+    <Switch>Notifications</Switch>
+    <Separator />
+    <Switch defaultSelected>Email notifications</Switch>
+    <Switch>Text notifications</Switch>
+  </Stack>
+);
+```

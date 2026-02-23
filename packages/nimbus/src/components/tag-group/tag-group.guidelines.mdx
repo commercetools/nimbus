@@ -82,7 +82,9 @@ multi-select inputs.
 
 ```jsx live
 const App = () => {
-  const [selected, setSelected] = useState(new Set(["pop", "jazz", "hip-hop", "reggae"]));
+  const [selected, setSelected] = useState(
+    new Set(["pop", "jazz", "hip-hop", "reggae"])
+  );
 
   const musicGenres = [
     { id: "rock", name: "Rock" },
@@ -96,20 +98,20 @@ const App = () => {
   ];
 
   return (
-   <Box width="9600">
-    <TagGroup.Root
-      aria-label="Music genres"
-      selectionMode="multiple"
-      selectedKeys={selected}
-      onSelectionChange={setSelected}
-    >
-      <TagGroup.TagList items={musicGenres} gap="300">
-        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-      </TagGroup.TagList>
-    </TagGroup.Root>
-   </Box>
+    <Box width="9600">
+      <TagGroup.Root
+        aria-label="Music genres"
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <TagGroup.TagList items={musicGenres} gap="300">
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    </Box>
   );
-}
+};
 ```
 
 > [!CAUTION]\
@@ -122,4 +124,48 @@ const App = () => {
 > - Don't use colors that are a misuse of semantic meanings. Use the neutral
 >   color options if colors are meant to show variety.
 
-![tag group in use - dont](/images/tag-group/tag-group-in-use-dont.png)
+```jsx live
+const App = () => (
+  <Stack gap="300">
+    <Text fontWeight="700">Select music categories</Text>
+    <Flex gap="300" flexWrap="wrap">
+      <TagGroup.Root aria-label="non-removable music tags" selectionMode="none">
+        <TagGroup.TagList gap="300">
+          <TagGroup.Tag id="pop" colorPalette="warning">
+            Pop
+          </TagGroup.Tag>
+          <TagGroup.Tag id="jazz" colorPalette="positive">
+            Jazz
+          </TagGroup.Tag>
+          <TagGroup.Tag id="reggae" colorPalette="warning">
+            Reggae
+          </TagGroup.Tag>
+          <TagGroup.Tag id="electronic" colorPalette="critical">
+            Electronic
+          </TagGroup.Tag>
+          <TagGroup.Tag id="hip-hop" colorPalette="positive">
+            Hip Hop
+          </TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+      <TagGroup.Root
+        aria-label="removable music tags"
+        selectionMode="none"
+        onRemove={() => {}}
+      >
+        <TagGroup.TagList gap="300">
+          <TagGroup.Tag id="rock" colorPalette="critical">
+            Rock
+          </TagGroup.Tag>
+          <TagGroup.Tag id="classical" colorPalette="warning">
+            Classical
+          </TagGroup.Tag>
+          <TagGroup.Tag id="country" colorPalette="critical">
+            Country
+          </TagGroup.Tag>
+        </TagGroup.TagList>
+      </TagGroup.Root>
+    </Flex>
+  </Stack>
+);
+```
