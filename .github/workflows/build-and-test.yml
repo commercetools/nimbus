@@ -25,6 +25,8 @@ jobs:
 
       - name: Check bundle size
         run: node scripts/check-bundle-size.mjs
+        env:
+          BUNDLE_BASELINE_GIST_ID: ${{ vars.BUNDLE_BASELINE_GIST_ID }}
 
       - name: Validate OpenSpec proposals
         run: pnpm openspec validate --all --strict

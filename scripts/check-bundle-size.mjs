@@ -1,17 +1,25 @@
 #!/usr/bin/env node
-/* global console, process, URL */
+/* global console, process, URL, fetch */
 
 /**
  * Bundle size check script for Nimbus.
  *
  * Measures gzipped sizes of built ES module files and compares against a
- * checked-in baseline. Exits non-zero when any file exceeds the error
- * threshold, making it suitable as a CI gate.
+ * baseline stored in a GitHub Gist. Falls back to a local baseline file
+ * when the BUNDLE_BASELINE_GIST_ID env var is not set (e.g. local dev).
+ * Exits non-zero when any file exceeds the error threshold, making it
+ * suitable as a CI gate.
  *
  * Usage:
  *   node scripts/check-bundle-size.mjs                            # compare against baseline
  *   node scripts/check-bundle-size.mjs --update-baseline          # regenerate full baseline
  *   node scripts/check-bundle-size.mjs --update-baseline button   # update only the button component
+ *
+ * Environment variables:
+ *   BUNDLE_BASELINE_GIST_ID  - GitHub Gist ID containing the baseline JSON.
+ *                               When set, the compare step fetches from the gist.
+ *                               The update step always writes locally; the CI
+ *                               workflow uploads the result to the gist.
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
@@ -171,10 +179,27 @@ function updateBaseline(sizes, componentName) {
 }
 
 // ---------------------------------------------------------------------------
-// Compare against baseline
+// Fetch baseline (from gist or local file)
 // ---------------------------------------------------------------------------
 
-function compareToBaseline(currentSizes) {
+const GIST_ID = process.env.BUNDLE_BASELINE_GIST_ID;
+
+async function fetchBaseline() {
+  if (GIST_ID) {
+    const url = `https://gist.githubusercontent.com/raw/${GIST_ID}/bundle-size-baseline.json`;
+    console.log(`Fetching baseline from gist ${GIST_ID}...`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(
+        `Failed to fetch baseline from gist (HTTP ${res.status}).\n` +
+          `  URL: ${url}\n` +
+          `  Ensure BUNDLE_BASELINE_GIST_ID is correct and the gist exists.`
+      );
+      process.exit(1);
+    }
+    return res.json();
+  }
+
   if (!existsSync(BASELINE_PATH)) {
     console.error(
       "No baseline file found. Run with --update-baseline first.\n" +
@@ -183,7 +208,15 @@ function compareToBaseline(currentSizes) {
     process.exit(1);
   }
 
-  const baseline = JSON.parse(readFileSync(BASELINE_PATH, "utf-8"));
+  return JSON.parse(readFileSync(BASELINE_PATH, "utf-8"));
+}
+
+// ---------------------------------------------------------------------------
+// Compare against baseline
+// ---------------------------------------------------------------------------
+
+async function compareToBaseline(currentSizes) {
+  const baseline = await fetchBaseline();
   const baselineFiles = baseline.files;
 
   let hasWarnings = false;
@@ -326,5 +359,5 @@ const sizes = measureFiles(filePaths);
 if (shouldUpdate) {
   updateBaseline(sizes, componentName);
 } else {
-  compareToBaseline(sizes);
+  await compareToBaseline(sizes);
 }
