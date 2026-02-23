@@ -96,7 +96,21 @@ understand what date information is required and how to provide it correctly.
 > - Do validate the input and provide clear error messages for incorrect formats
 >   or invalid dates.
 
-![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Active promotion date</FormField.Label>
+    <FormField.Input>
+      <DatePicker
+        size="md"
+        aria-label="Active promotion date"
+        granularity="minute"
+        width="1/2"
+      />
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -127,7 +141,22 @@ accessibility needs.
 > - Do consider providing preset date ranges (e.g., "Last Week," "Next Month")
 >   when relevant.
 
-![interaction and selection - do's](/images/date-picker/interaction-and-selection-do.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Delivery date</FormField.Label>
+    <FormField.Input>
+      <DatePicker
+        size="md"
+        aria-label="Delivery date"
+        width="1/3"
+        defaultValue={new CalendarDate(2025, 5, 11)}
+      />
+    </FormField.Input>
+    <FormField.Description>Format MM/DD/YYYY</FormField.Description>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**

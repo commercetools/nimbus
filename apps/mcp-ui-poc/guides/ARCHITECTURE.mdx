@@ -1,0 +1,1094 @@
+# MCP UI Architecture Guide
+
+> A comprehensive guide to understanding the Nimbus MCP UI implementation for
+> frontend developers
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Core Concepts](#core-concepts)
+- [Architecture Components](#architecture-components)
+- [Complete Data Flow Example](#complete-data-flow-example)
+- [Key Files Reference](#key-files-reference)
+- [Development Patterns](#development-patterns)
+
+---
+
+## Overview
+
+The Nimbus MCP UI is a **proof-of-concept system** that enables LLMs (like
+Claude) to generate rich, branded Nimbus UI components through the Model Context
+Protocol (MCP).
+
+### The Big Picture
+
+Think of it like this:
+
+- **MCP Server** = A cookbook with recipes for UI components
+- **Claude** = A chef who reads the cookbook and decides what to make
+- **React Client** = A kitchen with all the ingredients (Nimbus components)
+  already available
+
+The server doesn't send React code—it sends **lightweight JSON descriptions**
+(~30 KB) of what to render. The client, which already has the full Nimbus
+library installed, maps these descriptions to real React components.
+
+### Why This is Clever
+
+**Instead of:**
+
+- ❌ Shipping React code from server to client
+- ❌ Client parsing JSX strings
+- ❌ Bundling Nimbus on the server
+
+**You have:**
+
+- ✅ Server creates lightweight JSON descriptions
+- ✅ Client already has full Nimbus library installed
+- ✅ Data payload: ~30 KB instead of ~150 KB
+
+---
+
+## Core Concepts
+
+### 1. Virtual DOM vs Real DOM
+
+The server creates **virtual elements** that look like DOM elements but aren't:
+
+```javascript
+// SERVER SIDE (server/src/tools/button.ts)
+const button = document.createElement("nimbus-button");
+button.variant = "solid";
+button.textContent = "Submit";
+
+// This is NOT creating a real DOM element!
+// It's creating a data structure that looks like:
+{
+  type: "nimbus-button",
+  props: { variant: "solid" },
+  children: ["Submit"]
+}
+```
+
+### 2. Component Registry
+
+The client maintains a lookup table mapping virtual element names to real React
+components:
+
+```javascript
+// CLIENT SIDE (client/src/components/remote-dom-renderer.tsx:241-275)
+const componentRegistry = {
+  "nimbus-badge": Nimbus.Badge,
+  "nimbus-button": ButtonWrapper,
+  "nimbus-text-input": Nimbus.TextInput,
+  "nimbus-data-table": DataTableWrapper,
+  // ... 35+ more components
+};
+```
+
+When the client receives `<nimbus-button>`, it looks up `ButtonWrapper` and
+renders `<Nimbus.Button>`.
+
+### 3. Event Handling with Wrappers
+
+The server can't send functions over the wire, so the client uses **wrapper
+components** to handle events:
+
+```jsx
+// CLIENT SIDE (client/src/components/remote-dom-renderer.tsx:80-122)
+const ButtonWrapper = (props) => {
+  const handlePress = () => {
+    // Extract form data if inside a form
+    const formData = extractFormData();
+
+    // Send event BACK to server via WebSocket
+    sendClientEvent("buttonClick", uri, {
+      buttonId: props.id,
+      formData,
+    });
+
+    // Also call any local handler
+    if (props.onPress) props.onPress();
+  };
+
+  return <Nimbus.Button {...props} onPress={handlePress} />;
+};
+```
+
+**It's like event delegation, but across the network!**
+
+### 4. Two Communication Channels
+
+1. **HTTP (MCP Protocol)** - Initial requests and tool calls
+   - Client → Server: "Create a form"
+   - Server → Client: Virtual DOM JSON
+
+2. **WebSocket** - Live updates and events
+   - Client → Server: "Button clicked with form data"
+   - Server → Client: Real-time UI updates, toasts, mutations
+
+---
+
+## Architecture Components
+
+### Server Side
+
+```
+apps/mcp-ui-poc/server/
+├── src/
+│   ├── index.ts              # MCP server setup, tool registration
+│   ├── tools/                # MCP tool implementations
+│   │   ├── button.ts         # Creates button components
+│   │   ├── simple-form.ts    # Creates form components
+│   │   ├── data-table.ts     # Creates table components
+│   │   └── ...
+│   ├── elements/             # Virtual element definitions
+│   │   ├── button.ts         # Button element schema
+│   │   ├── form-field.ts     # FormField element schema
+│   │   └── ...
+│   ├── remote-dom/           # Remote DOM protocol implementation
+│   │   ├── renderer.tsx      # JSX → Virtual DOM converter
+│   │   ├── environment.ts    # Virtual element registration
+│   │   └── websocket-server.ts # WebSocket for live updates
+│   ├── resources/            # MCP resources (docs for Claude)
+│   │   ├── component-tags.ts # Available components list
+│   │   ├── design-tokens.ts  # Design system info
+│   │   └── style-system.ts   # Styling capabilities
+│   └── utils/
+│       ├── action-queue.ts   # Event handling queue
+│       ├── create-remote-dom-resource.ts # Serialization
+│       └── toaster.ts        # Toast notifications
+```
+
+### Client Side
+
+```
+apps/mcp-ui-poc/client/
+├── src/
+│   ├── lib/
+│   │   └── claude-client.ts  # Claude + MCP client integration
+│   ├── components/
+│   │   ├── chat-interface.tsx          # Main chat UI
+│   │   ├── remote-dom-renderer.tsx     # Virtual → React mapping
+│   │   ├── prop-injector.tsx           # Props/events mapping
+│   │   └── ...
+│   ├── hooks/
+│   │   ├── use-remote-connection.ts    # WebSocket connection
+│   │   └── use-mutation-stream.ts      # Remote DOM updates
+│   └── types/
+│       └── virtual-dom.ts              # TypeScript types
+```
+
+### Commerce MCP Server
+
+```
+apps/mcp-ui-poc/commerce-mcp-server/
+└── src/
+    └── index.ts              # Commercetools MCP integration
+```
+
+---
+
+## Complete Data Flow Example
+
+### Scenario: User Creates a Product Form
+
+Let's trace through **every step** with actual code and data.
+
+#### **Step 1: User Types Message**
+
+**Location:** `client/src/components/chat-interface.tsx`
+
+```
+User input: "Create a form to add a new product with name, description, and price"
+```
+
+---
+
+#### **Step 2: Client Sends to Claude**
+
+**Location:** `client/src/lib/claude-client.ts:477-483`
+
+```javascript
+const stream = this.anthropic.messages.stream({
+  model: "claude-sonnet-4-5-20250929",
+  messages: [
+    {
+      role: "user",
+      content: "Create a form to add a new product...",
+    },
+  ],
+  tools: [
+    // 50+ tools from both UI and Commerce servers
+    {
+      name: "ui__createSimpleForm",
+      description: "[UI] Creates a form with text inputs...",
+      input_schema: {
+        /* fields, submitLabel, actionToolName */
+      },
+    },
+    {
+      name: "commerce__execute_tool",
+      description: "[COMMERCE] Execute commercetools operations...",
+      input_schema: {
+        /* toolMethod, params */
+      },
+    },
+    // ...
+  ],
+});
+```
+
+**What happens:** Claude analyzes available tools and decides which to call.
+
+---
+
+#### **Step 3: Claude Calls MCP Tool**
+
+**Location:** `client/src/lib/claude-client.ts:501-547`
+
+Claude's response includes tool_use blocks:
+
+```javascript
+{
+  type: "tool_use",
+  id: "toolu_123abc",
+  name: "ui__createSimpleForm",
+  input: {
+    title: "Add New Product",
+    fields: [
+      {
+        name: "productName",
+        label: "Product Name",
+        type: "text",
+        required: true
+      },
+      {
+        name: "description",
+        label: "Description",
+        type: "text"
+      },
+      {
+        name: "price",
+        label: "Price",
+        type: "number",
+        required: true
+      }
+    ],
+    submitLabel: "Create Product",
+    actionToolName: "commerce__execute_tool",
+    actionParams: {
+      toolMethod: "create_products",
+      body: { /* will be filled with form data */ }
+    }
+  }
+}
+```
+
+---
+
+#### **Step 4: Client Routes to UI MCP Server**
+
+**Location:** `client/src/lib/claude-client.ts:519-547`
+
+```javascript
+// Parse tool name: "ui__createSimpleForm"
+const [serverName, ...toolNameParts] = toolUse.name.split("__");
+// serverName = "ui"
+// actualToolName = "createSimpleForm"
+
+const client = this.mcpClients.get("ui");
+
+// HTTP POST to http://localhost:3001/mcp
+const result = await client.callTool({
+  name: "createSimpleForm",
+  arguments: {
+    /* the input from above */
+  },
+});
+```
+
+---
+
+#### **Step 5: Server Creates Virtual DOM**
+
+**Location:** `server/src/tools/simple-form.ts:28-152`
+
+```javascript
+export function createSimpleForm(args) {
+  // Create virtual card container
+  const cardRoot = document.createElement("nimbus-card-root");
+  cardRoot.elevation = "elevated";
+  cardRoot.styleProps = { maxWidth: "600px" };
+
+  // Create heading
+  const heading = document.createElement("nimbus-heading");
+  heading.size = "lg";
+  heading.textContent = "Add New Product";
+  cardRoot.appendChild(heading);
+
+  // Create form container
+  const formContainer = document.createElement("nimbus-flex");
+  formContainer.as = "form";
+  const formId = `form-${Date.now()}`;
+  formContainer.setAttribute("id", formId);
+
+  // Build form fields
+  args.fields.forEach((field) => {
+    // Create FormField.Root
+    const formFieldRoot = document.createElement("nimbus-form-field-root");
+    if (field.required) formFieldRoot.isRequired = true;
+
+    // Create Label
+    const formFieldLabel = document.createElement("nimbus-form-field-label");
+    const labelText = document.createElement("nimbus-text");
+    labelText.textContent = field.label;
+    formFieldLabel.appendChild(labelText);
+
+    // Create Input
+    const formFieldInput = document.createElement("nimbus-form-field-input");
+    const textInput = document.createElement("nimbus-text-input");
+    textInput.name = field.name;
+    textInput.type = field.type;
+    textInput.isRequired = field.required;
+    formFieldInput.appendChild(textInput);
+
+    // Assemble
+    formFieldRoot.appendChild(formFieldLabel);
+    formFieldRoot.appendChild(formFieldInput);
+    formContainer.appendChild(formFieldRoot);
+  });
+
+  // Create submit button
+  const submitButtonId = `${formId}-submit`;
+  const submitButton = document.createElement("nimbus-button");
+  submitButton.setAttribute("id", submitButtonId);
+  submitButton.textContent = "Create Product";
+  submitButton.variant = "solid";
+  submitButton.colorPalette = "primary";
+  formContainer.appendChild(submitButton);
+
+  cardRoot.appendChild(formContainer);
+
+  // Store button action for later (when clicked)
+  configureButtonAction(
+    submitButtonId,
+    "commerce__execute_tool",
+    args.actionParams,
+    "ui://simple-form/123"
+  );
+
+  // Serialize and return
+  return createRemoteDomResource(cardRoot, {
+    uri: "ui://simple-form/123",
+    title: "Simple Form",
+    description: args.title,
+  });
+}
+```
+
+**Key Insight:** These aren't real DOM elements! They're lightweight data
+structures.
+
+---
+
+#### **Step 6: Server Returns JSON**
+
+**Location:** `server/src/utils/create-remote-dom-resource.ts`
+
+The virtual DOM tree gets serialized:
+
+```json
+{
+  "type": "resource",
+  "resource": {
+    "uri": "ui://simple-form/123",
+    "mimeType": "application/vnd.remote-dom",
+    "text": "{...serialized virtual DOM tree...}",
+    "_meta": {
+      "title": "Simple Form",
+      "description": "Add New Product"
+    }
+  }
+}
+```
+
+This returns to the client via `client/src/lib/claude-client.ts:551-583`.
+
+---
+
+#### **Step 7: Client Renders Real Components**
+
+**Location:** `client/src/components/chat-interface.tsx`
+
+```jsx
+{
+  message.uiResources?.map((uiResource) => (
+    <RemoteDomRenderer
+      key={uiResource.resource.uri}
+      uri={uiResource.resource.uri}
+    />
+  ));
+}
+```
+
+**Location:** `client/src/components/remote-dom-renderer.tsx:422-444`
+
+```jsx
+export function RemoteDomRenderer({ uri }) {
+  const receiver = getReceiverForUri(uri);
+
+  // Connect to WebSocket for live updates
+  useRemoteConnection(receiver, "http://localhost:3001", uri);
+
+  // Map virtual elements to real Nimbus components
+  const componentMap = React.useMemo(() => createComponentMap(), []);
+
+  return <RemoteRootRenderer receiver={receiver} components={componentMap} />;
+}
+```
+
+**Location:** `client/src/components/remote-dom-renderer.tsx:241-275`
+
+The component registry does the mapping:
+
+```javascript
+const componentRegistry = {
+  "nimbus-card-root": Nimbus.Card.Root,
+  "nimbus-heading": Nimbus.Heading,
+  "nimbus-form-field-root": FormFieldRootWrapper,
+  "nimbus-text-input": Nimbus.TextInput,
+  "nimbus-button": ButtonWrapper, // Special wrapper!
+  // ...
+};
+```
+
+**What the user actually sees (the rendered React tree):**
+
+```jsx
+<Card.Root elevation="elevated" maxWidth="600px">
+  <Heading size="lg">Add New Product</Heading>
+  <Flex as="form" gap="400">
+    <FormField.Root isRequired>
+      <FormField.Label>
+        <Text>Product Name</Text>
+      </FormField.Label>
+      <FormField.Input>
+        <TextInput name="productName" type="text" required />
+      </FormField.Input>
+    </FormField.Root>
+
+    <FormField.Root>
+      <FormField.Label>
+        <Text>Description</Text>
+      </FormField.Label>
+      <FormField.Input>
+        <TextInput name="description" type="text" />
+      </FormField.Input>
+    </FormField.Root>
+
+    <FormField.Root isRequired>
+      <FormField.Label>
+        <Text>Price</Text>
+      </FormField.Label>
+      <FormField.Input>
+        <TextInput name="price" type="number" required />
+      </FormField.Input>
+    </FormField.Root>
+
+    <Button
+      id="form-123-submit"
+      variant="solid"
+      colorPalette="primary"
+      onPress={handlePress} // Added by ButtonWrapper!
+    >
+      Create Product
+    </Button>
+  </Flex>
+</Card.Root>
+```
+
+---
+
+#### **Step 8: User Fills & Submits Form**
+
+User interactions:
+
+1. Types "Widget Pro" in Product Name
+2. Types "Amazing widget" in Description
+3. Types "99.99" in Price
+4. Clicks "Create Product" button
+
+---
+
+#### **Step 9: Button Wrapper Captures Event**
+
+**Location:** `client/src/components/remote-dom-renderer.tsx:80-122`
+
+```javascript
+const ButtonWrapper = (props) => {
+  const buttonRef = React.useRef(null);
+
+  const handlePress = () => {
+    // Extract form data from the DOM
+    const formData = {};
+    const form = buttonRef.current?.closest("form");
+
+    if (form) {
+      const inputs = form.querySelectorAll("input[name]");
+      inputs.forEach((input) => {
+        formData[input.name] = input.value;
+      });
+      console.log("📝 Extracted form data:", formData);
+      // {
+      //   productName: "Widget Pro",
+      //   description: "Amazing widget",
+      //   price: "99.99"
+      // }
+    }
+
+    // Send event to server via WebSocket
+    sendClientEvent(
+      "buttonClick",
+      uri,
+      {
+        buttonId: props.id,
+        formData,
+      },
+      false
+    );
+  };
+
+  return <Nimbus.Button {...props} onPress={handlePress} ref={buttonRef} />;
+};
+```
+
+**What happens:** WebSocket message sent to `ws://localhost:3001/ws`
+
+---
+
+#### **Step 10: Server Handles Button Click**
+
+**Location:** `server/src/tools/button.ts:37-96`
+
+```javascript
+export function handleButtonClick(buttonId, formData) {
+  console.log(`🖱️ Button clicked: ${buttonId}`);
+  console.log(`📝 Form data:`, formData);
+
+  // Look up what action this button should trigger
+  const actionMeta = buttonActionsByButtonId.get(buttonId);
+  // {
+  //   toolName: "commerce__execute_tool",
+  //   params: { toolMethod: "create_products", body: {...} },
+  //   uri: "ui://simple-form/123"
+  // }
+
+  // Merge form data with configured params
+  const params = {
+    ...actionMeta.params,
+    formData, // Add the user's input!
+  };
+
+  // Queue MCP tool call
+  const action = queueAction(
+    {
+      type: "mcp-tool-call",
+      toolName: "commerce__execute_tool",
+      params: {
+        toolMethod: "create_products",
+        body: {
+          name: formData.productName,
+          description: formData.description,
+          price: parseFloat(formData.price),
+        },
+      },
+      uri: actionMeta.uri,
+    },
+    (result, error) => {
+      if (error) {
+        showToast({
+          type: "error",
+          title: "Action Failed",
+          message: error.message,
+        });
+      } else {
+        showToast({
+          type: "success",
+          title: "Success",
+          message: "Product created successfully",
+        });
+      }
+    }
+  );
+
+  return action;
+}
+```
+
+---
+
+#### **Step 11: Server Calls Commerce MCP**
+
+**HTTP POST to:** `http://localhost:8888/mcp`
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "execute_tool",
+    "arguments": {
+      "toolMethod": "create_products",
+      "body": {
+        "name": "Widget Pro",
+        "description": "Amazing widget",
+        "price": 99.99
+      }
+    }
+  }
+}
+```
+
+**Location:** `commerce-mcp-server/src/index.ts:52-102`
+
+```javascript
+const commerceServer = new CommercetoolsCommerceAgentStreamable({
+  authConfig: {
+    /* commercetools credentials */
+  },
+  configuration: {
+    actions: {
+      products: { read: true, create: true, update: true },
+    },
+  },
+});
+```
+
+The commerce server creates the product in commercetools and returns success!
+
+---
+
+#### **Step 12: Success Toast Appears**
+
+**Location:** `server/src/tools/button.ts:82-90`
+
+```javascript
+showToast({
+  type: "success",
+  title: "Success",
+  message: "Product created successfully",
+});
+```
+
+This creates a **new UI resource** (toast notification) and sends it to the
+client via WebSocket. The client automatically renders it using the same Remote
+DOM system!
+
+---
+
+### Visual Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. User Types Message                                       │
+│    "Create a form to add a new product"                     │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 2. Claude Analyzes & Decides                                │
+│    Tool: ui__createSimpleForm                               │
+│    Params: { fields: [...], actionToolName: "commerce..." } │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ HTTP POST (MCP Protocol)
+┌─────────────────────────────────────────────────────────────┐
+│ 3. UI MCP Server                                            │
+│    Creates virtual DOM tree:                                │
+│    <nimbus-card-root>                                       │
+│      <nimbus-heading>Add New Product</nimbus-heading>       │
+│      <nimbus-form-field-root name="productName">            │
+│      <nimbus-button id="form-123-submit">                   │
+│    Stores: button → commerce tool mapping                   │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ JSON Response
+┌─────────────────────────────────────────────────────────────┐
+│ 4. Client Maps & Renders                                    │
+│    "nimbus-card-root" → <Nimbus.Card.Root>                  │
+│    "nimbus-button" → <ButtonWrapper> → <Nimbus.Button>      │
+│    User sees: Beautiful Nimbus form!                        │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ User fills form
+┌─────────────────────────────────────────────────────────────┐
+│ 5. User Clicks Submit                                       │
+│    ButtonWrapper extracts DOM form data:                    │
+│    { productName: "Widget Pro", price: "99.99" }            │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ WebSocket
+┌─────────────────────────────────────────────────────────────┐
+│ 6. Server Handles Click                                     │
+│    Looks up: button ID → commerce tool mapping              │
+│    Queues: commerce__execute_tool with form data            │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ HTTP POST (MCP Protocol)
+┌─────────────────────────────────────────────────────────────┐
+│ 7. Commerce MCP Server                                      │
+│    Calls: commercetools API                                 │
+│    Creates product in system                                │
+│    Returns: Success!                                        │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓ WebSocket
+┌─────────────────────────────────────────────────────────────┐
+│ 8. Client Shows Toast                                       │
+│    Renders success notification:                            │
+│    "Product created successfully!"                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Files Reference
+
+### Essential Reading (Start Here)
+
+#### Server Entry Point
+
+**File:** `server/src/index.ts`
+
+What it does:
+
+- Sets up Express server with MCP protocol endpoints
+- Manages MCP sessions (HTTP + WebSocket)
+- Registers all MCP tools
+- Connects Remote DOM messaging to WebSocket broadcasts
+
+Key endpoints:
+
+- `POST /mcp` - Client-to-server MCP messages
+- `GET /mcp` - Long-lived stream for server-to-client
+- `DELETE /mcp` - Session termination
+- `GET /health` - Health check
+
+#### Client Entry Point
+
+**File:** `client/src/lib/claude-client.ts`
+
+What it does:
+
+- Initializes connections to both UI and Commerce MCP servers
+- Manages conversation with Claude
+- Handles tool calling loop
+- Extracts UI resources from tool results
+- Routes tools to correct MCP server based on prefix
+
+Key methods:
+
+- `initialize()` - Connect to MCP servers
+- `sendMessage()` - Send user message to Claude
+- `connectToMCPServer()` - Setup individual MCP connection
+
+#### Chat Interface
+
+**File:** `client/src/components/chat-interface.tsx`
+
+What it does:
+
+- Main chat UI component
+- Displays conversation history
+- Renders UI resources alongside text
+- Manages message sending
+
+#### Remote DOM Renderer
+
+**File:** `client/src/components/remote-dom-renderer.tsx`
+
+What it does:
+
+- Maps virtual elements to real Nimbus components
+- Maintains component registry (lines 241-275)
+- Provides wrappers for interactive components
+- Connects to WebSocket for live updates
+
+Key sections:
+
+- Lines 241-275: Component registry
+- Lines 80-122: ButtonWrapper (event handling)
+- Lines 127-168: DataTableWrapper
+- Lines 291-321: FormFieldRootWrapper
+
+---
+
+### Tool Examples (Pick 2-3)
+
+#### Simple Tool: Button
+
+**File:** `server/src/tools/button.ts`
+
+- Shows basic virtual element creation
+- Demonstrates action configuration
+- Handles button click events
+- Queues MCP tool calls on interaction
+
+#### Complex Tool: Simple Form
+
+**File:** `server/src/tools/simple-form.ts`
+
+- Composes multiple elements into a form
+- Configures submit button with action
+- Shows nested element structure
+- Demonstrates form field mapping
+
+#### Data Display: Data Table
+
+**File:** `server/src/tools/data-table.ts`
+
+- Creates complex compound components
+- Handles row click events
+- Shows JSON data passing
+- Demonstrates detail drawer integration
+
+---
+
+### Element Definitions
+
+#### Button Element
+
+**File:** `server/src/elements/button.ts`
+
+Defines the virtual `<nimbus-button>` element with:
+
+- Available properties (variant, size, colorPalette, etc.)
+- Event handlers (press)
+- Property types and defaults
+
+#### Form Field Element
+
+**File:** `server/src/elements/form-field.ts`
+
+Defines compound FormField elements:
+
+- `<nimbus-form-field-root>`
+- `<nimbus-form-field-label>`
+- `<nimbus-form-field-input>`
+- `<nimbus-form-field-error>`
+
+---
+
+### Utilities
+
+#### Create Remote DOM Resource
+
+**File:** `server/src/utils/create-remote-dom-resource.ts`
+
+Serializes virtual DOM elements into MCP resources that can be sent to the
+client.
+
+#### Action Queue
+
+**File:** `server/src/utils/action-queue.ts`
+
+Manages queued MCP tool calls triggered by user interactions (button clicks,
+etc.).
+
+#### Prop Injector
+
+**File:** `client/src/components/prop-injector.tsx`
+
+Converts server-side attribute names to React prop names and injects event
+handlers.
+
+---
+
+## Development Patterns
+
+### Adding a New Component Tool
+
+1. **Define the element** in `server/src/elements/`:
+
+```javascript
+// my-component.ts
+export function createMyComponentElement() {
+  const element = document.createElement("nimbus-my-component");
+
+  // Define properties
+  element.defineProperty("variant", { type: "string" });
+  element.defineProperty("size", { type: "string" });
+
+  // Define events
+  element.defineEvent("change");
+
+  return element;
+}
+```
+
+2. **Create the tool** in `server/src/tools/`:
+
+```javascript
+// my-component.ts
+export function registerMyComponentTool(server: McpServer) {
+  server.registerTool(
+    "createMyComponent",
+    {
+      title: "Create My Component",
+      description: "Creates my custom component",
+      inputSchema: z.object({
+        variant: z.string().optional(),
+        size: z.string().optional(),
+      }),
+    },
+    async (args) => {
+      const element = document.createElement("nimbus-my-component");
+      element.variant = args.variant;
+      element.size = args.size;
+
+      return {
+        content: [
+          createRemoteDomResource(element, {
+            uri: `ui://my-component/${Date.now()}`,
+          }),
+        ],
+      };
+    }
+  );
+}
+```
+
+3. **Register in client** in `client/src/components/remote-dom-renderer.tsx`:
+
+```javascript
+const componentRegistry = {
+  // ...existing components
+  "nimbus-my-component": Nimbus.MyComponent,
+};
+```
+
+4. **Export tool** in `server/src/tools/index.ts`:
+
+```javascript
+export { registerMyComponentTool } from "./my-component.js";
+```
+
+---
+
+### Adding Event Handling
+
+For components that need to send events back to the server:
+
+1. **Create a wrapper** in `client/src/components/remote-dom-renderer.tsx`:
+
+```javascript
+const MyComponentWrapper = (props) => {
+  const uri = useUri();
+  const { styleProps, id, onChange, ...rest } = props;
+
+  const handleChange = (value) => {
+    if (id) {
+      sendClientEvent("myComponentChange", uri, {
+        componentId: id,
+        value,
+      });
+    }
+    if (onChange) onChange(value);
+  };
+
+  return (
+    <Nimbus.MyComponent {...rest} {...styleProps} onChange={handleChange} />
+  );
+};
+```
+
+2. **Register handler** in server tool:
+
+```javascript
+export function registerMyComponentTool(server, mutationServer) {
+  // Register event handler
+  mutationServer.registerToolHandler("myComponentChange", (_, params) => {
+    return handleMyComponentChange(params.componentId, params.value);
+  });
+
+  // ... rest of tool registration
+}
+```
+
+---
+
+### Configuring Actions
+
+To make a component trigger an MCP tool call:
+
+```javascript
+// In your tool
+const buttonId = `btn-${Date.now()}`;
+const button = document.createElement("nimbus-button");
+button.setAttribute("id", buttonId);
+
+// Configure what happens when clicked
+configureButtonAction(
+  buttonId,
+  "commerce__execute_tool", // Tool to call
+  {
+    toolMethod: "create_products",
+    params: {
+      /* ... */
+    },
+  },
+  uri
+);
+```
+
+---
+
+## Key Takeaways
+
+### For Frontend Developers
+
+1. **Server never sends React code** - Only lightweight JSON descriptions
+2. **Client already has Nimbus** - Just maps strings to components via registry
+3. **Events work via callbacks** - Wrappers intercept interactions, send to
+   server
+4. **Two-way communication** - HTTP for requests, WebSocket for live updates
+5. **Claude orchestrates** - Decides which MCP tools to call based on user
+   intent
+
+### Architecture Benefits
+
+- ✅ **Small payloads** - ~30 KB instead of ~150 KB
+- ✅ **No code shipping** - Client has all components pre-installed
+- ✅ **Type safety** - Virtual DOM matches Nimbus API
+- ✅ **Live updates** - WebSocket enables real-time UI changes
+- ✅ **Composability** - Tools can call other tools
+- ✅ **Multi-tenant ready** - Server can generate branded UI per tenant
+
+---
+
+## Next Steps
+
+### For Understanding
+
+1. Read `server/src/index.ts` to see server initialization
+2. Read `client/src/lib/claude-client.ts` to see client orchestration
+3. Pick a simple tool like `button.ts` and trace through its lifecycle
+4. Pick a complex tool like `simple-form.ts` to see composition
+
+### For Development
+
+1. Try adding a new component tool
+2. Experiment with event handling
+3. Create a custom wrapper component
+4. Build a compound component tool
+
+### For Production
+
+The `/plans/full-mcp-ui-workflow/` directory contains strategic planning for:
+
+- Multi-tenancy with dynamic theming
+- SSR rendering service
+- Three deployment strategies (Remote DOM, HTML Snippet, Hosted Widget)
+- RAML-to-MCP-UI schema generation
+
+---
+
+**Questions?** Refer to:
+
+- Project README: `apps/mcp-ui-poc/README.md`
+- Component Guidelines: See `guides/ADD_NIMBUS_COMPONENT_TOOL_CALL.md`
+- MCP Protocol: https://modelcontextprotocol.io

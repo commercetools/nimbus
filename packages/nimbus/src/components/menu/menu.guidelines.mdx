@@ -50,15 +50,15 @@ not needed.
 ```jsx live
 const App = () => (
   <Menu.Root>
-      <Menu.Trigger asChild>
-        <IconButton
-          variant="ghost"
-          colorPalette="neutral"
-          aria-label="More options"
-        >
-          <Icons.MoreVert />
-        </IconButton>
-      </Menu.Trigger>
+    <Menu.Trigger asChild>
+      <IconButton
+        variant="ghost"
+        colorPalette="neutral"
+        aria-label="More options"
+      >
+        <Icons.MoreVert />
+      </IconButton>
+    </Menu.Trigger>
     <Menu.Content>
       <Menu.Item id="menu-item-1">Menu Item</Menu.Item>
       <Menu.Item id="menu-item-2">Menu Item</Menu.Item>
@@ -84,30 +84,40 @@ const App = () => (
         File Menu
       </Button>
     </Menu.Trigger>
-   <Menu.Content>
+    <Menu.Content>
       <Menu.Item id="duplicate">
-        <Icon slot="icon"><Icons.ContentCopy /></Icon>
+        <Icon slot="icon">
+          <Icons.ContentCopy />
+        </Icon>
         <Text slot="label">Duplicate</Text>
         <Kbd slot="keyboard">⌘T</Kbd>
       </Menu.Item>
       <Menu.Item id="rename">
-        <Icon slot="icon"><Icons.Create /></Icon>
+        <Icon slot="icon">
+          <Icons.Create />
+        </Icon>
         <Text slot="label">Rename</Text>
         <Kbd slot="keyboard">⌘R</Kbd>
       </Menu.Item>
       <Menu.Item id="share">
-        <Icon slot="icon"><Icons.IosShare /></Icon>
+        <Icon slot="icon">
+          <Icons.IosShare />
+        </Icon>
         <Text slot="label">Share</Text>
         <Kbd slot="keyboard">⌘W</Kbd>
       </Menu.Item>
       <Menu.Item id="pin">
-        <Icon slot="icon"><Icons.PushPin /></Icon>
+        <Icon slot="icon">
+          <Icons.PushPin />
+        </Icon>
         <Text slot="label">Pin</Text>
         <Kbd slot="keyboard">⌘P</Kbd>
       </Menu.Item>
       <Separator />
       <Menu.Item id="delete" isCritical>
-        <Icon slot="icon"><Icons.Delete /></Icon>
+        <Icon slot="icon">
+          <Icons.Delete />
+        </Icon>
         <Text slot="label">Delete</Text>
         <Kbd slot="keyboard">⌘D</Kbd>
       </Menu.Item>

@@ -113,8 +113,8 @@ const App = () => {
         <Icons.Clear />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 #### Solid and outline
@@ -133,8 +133,8 @@ const App = () => {
         <Icons.Add />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 #### Critical color palette
@@ -156,8 +156,8 @@ const App = () => {
         <Icons.Delete />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 ### Icon placement
@@ -173,11 +173,46 @@ optimizing icon button placement.
 > - Tools are grouped together, and adhere to current common page pattern
 >   design.
 
-<img
-  src="/images/icon-button/icon-placement-do.png"
-  alt="icon placement do guideline"
-  width="447px"
-/>
+```jsx live
+const App = () => (
+  <Stack>
+    <Heading>Organization name</Heading>
+    <Tabs.Root size="lg">
+      <Box position="relative">
+        <Tabs.List>
+          <Tabs.Tab id="teams">Teams</Tabs.Tab>
+          <Tabs.Tab id="settings">Settings</Tabs.Tab>
+          <Tabs.Tab id="views">Views</Tabs.Tab>
+        </Tabs.List>
+        <Stack
+          direction="horizontal"
+          gap="0"
+          position="absolute"
+          top="0"
+          right="0"
+          alignItems="center"
+        >
+          <IconButton colorPalette="primary" variant="ghost" aria-label="Edit">
+            <Icons.Edit />
+          </IconButton>
+          <IconButton
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="Delete"
+          >
+            <Icons.Delete />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Tabs.Panels pt="400">
+        <Tabs.Panel id="teams">Teams</Tabs.Panel>
+        <Tabs.Panel id="settings">Settings</Tabs.Panel>
+        <Tabs.Panel id="views">Views</Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -185,11 +220,46 @@ optimizing icon button placement.
 > - Navigation is higher hierarchy than icon button tools, this is not a common
 >   pattern.
 
-<img
-  src="/images/icon-button/icon-placement-dont.png"
-  alt="icon placement do guideline"
-  width="447px"
-/>
+```jsx live
+const App = () => (
+  <Stack>
+    <Heading>Organization name</Heading>
+    <Tabs.Root size="lg">
+      <Box position="relative">
+        <Stack
+          direction="horizontal"
+          gap="0"
+          position="absolute"
+          top="0"
+          left="0"
+          alignItems="center"
+        >
+          <IconButton colorPalette="primary" variant="ghost" aria-label="Edit">
+            <Icons.Edit />
+          </IconButton>
+          <IconButton
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="Delete"
+          >
+            <Icons.Delete />
+          </IconButton>
+        </Stack>
+        <Tabs.List paddingStart="2000">
+          <Tabs.Tab id="teams">Teams</Tabs.Tab>
+          <Tabs.Tab id="settings">Settings</Tabs.Tab>
+          <Tabs.Tab id="views">Views</Tabs.Tab>
+        </Tabs.List>
+      </Box>
+      <Tabs.Panels pt="400">
+        <Tabs.Panel id="teams">Teams</Tabs.Panel>
+        <Tabs.Panel id="settings">Settings</Tabs.Panel>
+        <Tabs.Panel id="views">Views</Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  </Stack>
+);
+```
 
 ### Button groupings
 
@@ -220,8 +290,8 @@ const App = () => {
         <Icons.MoreVert />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 > [!CAUTION]\
@@ -248,8 +318,8 @@ const App = () => {
         Revert
       </Button>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 > [!TIP]\
@@ -270,8 +340,8 @@ const App = () => {
         <Icons.Search />
       </ToggleButtonGroup.Button>
     </ToggleButtonGroup.Root>
-  )
-}
+  );
+};
 ```
 
 > [!CAUTION]\
@@ -292,8 +362,8 @@ const App = () => {
         <Icons.Search />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 > [!TIP]\
@@ -312,8 +382,8 @@ const App = () => {
         <Icons.Delete />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 > [!CAUTION]\
@@ -332,8 +402,8 @@ const App = () => {
         <Icons.Delete />
       </IconButton>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 ### Tooltips
@@ -357,10 +427,7 @@ const App = () => {
           Table settings
         </Tooltip.Content>
       </Tooltip.Root>
-      <Select.Root
-        aria-label="Select a category"
-        selectedKey=""
-      >
+      <Select.Root aria-label="Select a category" selectedKey="">
         <Select.Options>
           <Select.Option id="productColumns" value="productColumns">
             Product columns
@@ -374,8 +441,8 @@ const App = () => {
         </Select.Options>
       </Select.Root>
     </Stack>
-  )
-}
+  );
+};
 ```
 
 > [!CAUTION]\
@@ -397,10 +464,7 @@ const App = () => {
           Table settings
         </Tooltip.Content>
       </Tooltip.Root>
-      <Select.Root
-        aria-label="Select a category"
-        selectedKey=""
-      >
+      <Select.Root aria-label="Select a category" selectedKey="">
         <Select.Options>
           <Select.Option id="productColumns" value="productColumns">
             Product columns
@@ -424,6 +488,6 @@ const App = () => {
         </Tooltip.Root>
       </Box>
     </Stack>
-  )
-}
+  );
+};
 ```

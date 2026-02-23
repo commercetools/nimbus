@@ -96,11 +96,11 @@ Single icon button, this is a common used control, used to delete the entire
 accordion and content.
 
 ```jsx live
-  const App = () => (
-    <IconButton colorPalette="critical" variant="ghost">
-      <Icons.Delete />
-    </IconButton>
-  );
+const App = () => (
+  <IconButton colorPalette="critical" variant="ghost">
+    <Icons.Delete />
+  </IconButton>
+);
 ```
 
 #### Switch
@@ -108,7 +108,9 @@ accordion and content.
 The use of switch often signals the effect of the settings being applied, or
 activating the content within to be edited by the user.
 
-![](/images/accordion/switch-button-with-label.png)
+```jsx live
+const App = () => <Switch size="md">Inactive</Switch>;
+```
 
 #### Select input
 
@@ -116,9 +118,12 @@ Allowing the users to select from a list. This control often controls the type
 of form that will be shown for user completion.
 
 ```jsx live
-
 const App = () => (
-  <Select.Root aria-label="Select an option" data-testid="select" selectedKey="1" >
+  <Select.Root
+    aria-label="Select an option"
+    data-testid="select"
+    selectedKey="1"
+  >
     <Select.Options>
       <Select.Option id="1">Input value</Select.Option>
     </Select.Options>
@@ -163,7 +168,7 @@ screen space.
   are outgrowing the component. If the content becomes too complex, consider an
   alternative UI component.
 
-#### Accordion nesting
+### Accordion nesting
 
 Avoid nesting accordions because they hide information and make it hard for
 users to predict the content of deeper nested components. Instead, create
@@ -180,18 +185,32 @@ meaningful ways for the user.
 const App = () => (
   <Accordion.Root size="sm">
     <Accordion.Item>
-      <Accordion.Header>
-        General information
-      </Accordion.Header>
+      <Accordion.Header>General information</Accordion.Header>
       <Accordion.Content>
-        Product name
-        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
-        <br />
-        product description
-        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
-        <br />
-        Product key
-        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+        <Stack gap="400">
+          <FormField.Root>
+            <FormField.Label>Product name</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy coffee mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product description</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                size="sm"
+                value="A 15oz hand-thrown mug made by artisans."
+                w="100%"
+              />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product key</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy-coffee-mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
       </Accordion.Content>
     </Accordion.Item>
   </Accordion.Root>
@@ -233,9 +252,7 @@ const App = () => (
             <Accordion.Header>
               Variants
               <Accordion.HeaderRightContent>
-                <IconButton colorPalette="primary" variant="ghost" size="sm">
-                  <Icons.PushPin />
-                </IconButton>
+                <Switch size="sm">Inactive</Switch>
               </Accordion.HeaderRightContent>
             </Accordion.Header>
             <Accordion.Content>
@@ -244,7 +261,11 @@ const App = () => (
                   <Accordion.Header>
                     Attributes
                     <Accordion.HeaderRightContent>
-                      <IconButton colorPalette="critical" variant="ghost" size="sm">
+                      <IconButton
+                        colorPalette="critical"
+                        variant="ghost"
+                        size="sm"
+                      >
                         <Icons.Delete />
                       </IconButton>
                     </Accordion.HeaderRightContent>
@@ -263,7 +284,7 @@ const App = () => (
 );
 ```
 
-#### Accordion controls
+### Accordion controls
 
 Make it easy for users to understand what the attached controls do, and how to
 interact with them when needed.
@@ -283,7 +304,7 @@ const App = () => (
       <Accordion.Header>
         General information
         <Accordion.HeaderRightContent>
-        <Stack direction="horizontal" alignItems="center">
+          <Stack direction="horizontal" alignItems="center">
             <Tooltip.Root>
               <Button colorPalette="primary" size="xs" variant="outline">
                 Cancel
@@ -294,20 +315,38 @@ const App = () => (
               <Button colorPalette="primary" size="xs" variant="solid">
                 Save
               </Button>
-              <Tooltip.Content>Save general information changes</Tooltip.Content>
+              <Tooltip.Content>
+                Save general information changes
+              </Tooltip.Content>
             </Tooltip.Root>
           </Stack>
         </Accordion.HeaderRightContent>
       </Accordion.Header>
       <Accordion.Content>
-        Product name
-        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
-        <br />
-        product description
-        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
-        <br />
-        Product key
-        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+        <Stack gap="400">
+          <FormField.Root>
+            <FormField.Label>Product name</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy coffee mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product description</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                size="sm"
+                value="A 15oz hand-thrown mug made by artisans."
+                w="100%"
+              />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product key</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy-coffee-mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
       </Accordion.Content>
     </Accordion.Item>
   </Accordion.Root>
@@ -328,25 +367,231 @@ const App = () => (
       <Accordion.Header>
         General information
         <Accordion.HeaderRightContent>
-        <Stack direction="horizontal" alignItems="center">
-              <Button colorPalette="primary" size="xs" variant="outline">
-                Cancel
-              </Button>
-              <Button colorPalette="primary" size="xs" variant="solid">
-                Save
-              </Button>
+          <Stack direction="horizontal" alignItems="center">
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.Edit />
+            </IconButton>
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.PushPin />
+            </IconButton>
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.FileCopy />
+            </IconButton>
+            <IconButton colorPalette="critical" variant="ghost" size="sm">
+              <Icons.Delete />
+            </IconButton>
           </Stack>
         </Accordion.HeaderRightContent>
       </Accordion.Header>
       <Accordion.Content>
-        Product name
-        <TextInput size="sm" value="Cozy coffee mug" w="100%"/>
-        <br />
-        product description
-        <TextInput size="sm" value="A 15oz hand-thrown mug made by artisans." w="100%"/>
-        <br />
-        Product key
-        <TextInput size="sm" value="Cozy-coffee-mug" w="100%"/>
+        <Stack gap="400">
+          <FormField.Root>
+            <FormField.Label>Product name</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy coffee mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product description</FormField.Label>
+            <FormField.Input>
+              <TextInput
+                size="sm"
+                value="A 15oz hand-thrown mug made by artisans."
+                w="100%"
+              />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Product key</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="Cozy-coffee-mug" w="100%" />
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
+
+### Content
+
+Whether content is custom or using typical forms, think of basic hierarchy to
+keep content usable and easy to understand.
+
+> [!TIP]\
+> **Do**
+>
+> - Use left alignment and consistent styling for any content within accordions.
+> - Combine like topics and content together well to help the user understand
+>   what is expected within each accordion.
+
+```jsx live
+const App = () => (
+  <Accordion.Root size="sm" w="3/4">
+    <Accordion.Item>
+      <Accordion.Header>Review the B2C sample data feature</Accordion.Header>
+      <Accordion.Content>
+        <Stack gap="400">
+          <Image
+            src="/images/accordion/sample-data.png"
+            alt="B2C sample data"
+            width="100%"
+          />
+          <Text fontWeight="700">Sample data imported</Text>
+          <Text>
+            Great to have you here! We’ve imported sample data, including
+            currency, tax information, shipping methods, products, and
+            customers.
+          </Text>
+          <Button colorPalette="primary" size="sm" variant="solid" w="1/2">
+            <Icons.RemoveRedEye />
+            Let's get started
+          </Button>
+        </Stack>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Do not use anything other than left alignment of text and forms when
+>   possible.
+> - Do not overstuff accordions with unrelated information or odds and ends.
+>   Accordions are not junk drawers.
+> - Do not use controls that are undefined and confusing to use.
+
+```jsx live
+const App = () => (
+  <Accordion.Root size="sm" w="3/4">
+    <Accordion.Item>
+      <Accordion.Header>
+        Internal managed inventory
+        <Accordion.HeaderRightContent>
+          <Stack direction="vertical" alignItems="center">
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.ReceiptLong />
+            </IconButton>
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.Bedtime />
+            </IconButton>
+            <IconButton colorPalette="primary" variant="ghost" size="sm">
+              <Icons.Sell />
+            </IconButton>
+            <IconButton colorPalette="critical" variant="ghost" size="sm">
+              <Icons.Delete />
+            </IconButton>
+          </Stack>
+        </Accordion.HeaderRightContent>
+      </Accordion.Header>
+      <Accordion.Content>
+        <Stack gap="400">
+          <Badge colorPalette="positive" w="1/2">
+            <Icons.Check /> Updated and published
+          </Badge>
+          <Tabs.Root size="md">
+            <Tabs.List>
+              <Tabs.Tab id="packaging">Packaging</Tabs.Tab>
+              <Tabs.Tab id="moodboards">Moodboards</Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panels pt="400">
+              <Tabs.Panel id="packaging">
+                <Stack gap="400" alignItems="center">
+                  <FormField.Root>
+                    <FormField.Label>How did it get here?</FormField.Label>
+                    <FormField.Input>
+                      <RadioInput.Root
+                        orientation="vertical"
+                        name="default-example"
+                      >
+                        <RadioInput.Option value="option1">
+                          Fedex Ground
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option2">
+                          Lime green
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option3">
+                          USPS Premium
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option4">
+                          Yellow
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option5">
+                          UPS Ground
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option6">
+                          Fedex Domestic
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option7">
+                          Carrier pidgeon
+                        </RadioInput.Option>
+                        <RadioInput.Option value="option8">
+                          Pick up from business
+                        </RadioInput.Option>
+                      </RadioInput.Root>
+                    </FormField.Input>
+                  </FormField.Root>
+                  <FormField.Root>
+                    <FormField.Label>Packaging</FormField.Label>
+                    <FormField.Input>
+                      <TextInput
+                        size="sm"
+                        value="Blurple with yellow stars"
+                        w="100%"
+                      />
+                    </FormField.Input>
+                    <FormField.Description>
+                      What is the color of the tissue paper used?
+                    </FormField.Description>
+                  </FormField.Root>
+                </Stack>
+              </Tabs.Panel>
+              <Tabs.Panel id="moodboards">
+                <Stack gap="300" alignItems="start">
+                  <Stack direction="horizontal" gap="200" wrap="wrap">
+                    <Button size="xs" colorPalette="neutral" variant="outline">
+                      Ocean vibes
+                    </Button>
+                    <Button size="xs" colorPalette="primary" variant="solid">
+                      Upload
+                    </Button>
+                    <Button size="xs" colorPalette="neutral" variant="ghost">
+                      #FF5733
+                    </Button>
+                    <TextInput size="sm" placeholder="Search inspiration..." />
+                    <IconButton size="xs" variant="ghost">
+                      <Icons.Star />
+                    </IconButton>
+                  </Stack>
+                  <Text fontSize="xs" color="neutral.600">
+                    Last updated: Never
+                  </Text>
+                  <Stack direction="horizontal" gap="200" wrap="wrap">
+                    <Badge colorPalette="primary">Vintage</Badge>
+                    <Badge colorPalette="neutral">Modern</Badge>
+                    <Badge colorPalette="critical">Urgent</Badge>
+                    <Badge colorPalette="positive">Approved</Badge>
+                  </Stack>
+                  <FormField.Root>
+                    <FormField.Input>
+                      <RadioInput.Root orientation="horizontal">
+                        <RadioInput.Option value="grid">
+                          Grid view
+                        </RadioInput.Option>
+                        <RadioInput.Option value="list">
+                          Slide deck
+                        </RadioInput.Option>
+                      </RadioInput.Root>
+                    </FormField.Input>
+                  </FormField.Root>
+                </Stack>
+              </Tabs.Panel>
+            </Tabs.Panels>
+          </Tabs.Root>
+        </Stack>
       </Accordion.Content>
     </Accordion.Item>
   </Accordion.Root>

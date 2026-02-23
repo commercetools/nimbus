@@ -67,7 +67,7 @@ const App = () => (
   <FormField.Root>
     <FormField.Label>Birth Date</FormField.Label>
     <FormField.Input>
-      <DateInput aria-label="Birth date" />
+      <DateInput aria-label="Birth date" width="1/3" />
     </FormField.Input>
   </FormField.Root>
 );
@@ -82,4 +82,13 @@ const App = () => (
 > - Don't use this component when a calendar selection would be more helpful or
 >   when selecting a date range.
 
-![](/images/date-input/date-input-dont.png)
+```jsx live
+const App = () => (
+  <FormField.Root isInvalid>
+    <FormField.Input>
+      <DateInput aria-label="Date" width="1/3" />
+    </FormField.Input>
+    <FormField.Error>Your date is not a valid input</FormField.Error>
+  </FormField.Root>
+);
+```

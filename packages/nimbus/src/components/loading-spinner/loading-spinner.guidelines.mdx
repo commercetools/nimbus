@@ -77,15 +77,17 @@ within elements.
 > - If the time expected to complete is short, no language is needed.
 
 ```jsx live
-const App = () => <Flex gap="200">
-  <Button colorPalette="primary" variant="solid" isDisabled>
-    <LoadingSpinner colorPalette="white" />
-    Saving...
-  </Button>
-  <Button colorPalette="primary" variant="solid" isDisabled>
-    <LoadingSpinner colorPalette="white" />
-  </Button>
-</Flex>
+const App = () => (
+  <Flex gap="200">
+    <Button colorPalette="primary" variant="solid" isDisabled>
+      <LoadingSpinner colorPalette="white" />
+      Saving...
+    </Button>
+    <Button colorPalette="primary" variant="solid" isDisabled>
+      <LoadingSpinner colorPalette="white" />
+    </Button>
+  </Flex>
+);
 ```
 
 > [!CAUTION]\
@@ -96,22 +98,49 @@ const App = () => <Flex gap="200">
 >   areas, to avoid confusing the user.
 
 ```jsx live
-const App = () => ( 
+const App = () => (
   <Flex gap="200">
     <Button colorPalette="primary" variant="solid">
       <LoadingSpinner colorPalette="white" />
       Remembering details...
     </Button>
   </Flex>
-)
+);
 ```
 
 > [!TIP]\
 > **Do**
 >
 > - Use the loading spinner to show that content will be populated in that area.
+> - Keep loading messages short and clear.
 
-![Do](/images/loading-spinner/combo-box-guideline-do.png)
+```jsx live
+const App = () => (
+  <Stack gap="200" alignItems="start">
+    <Button variant="ghost" size="sm" colorPalette="primary">
+      <Icons.Add />
+      Add filter
+    </Button>
+    <Card.Root elevation="elevated">
+      <Card.Content>
+        <Stack gap="200">
+          <ComboBox.Root
+            inputValue="abc"
+            aria-label="Search filters"
+            allowsEmptyMenu
+          >
+            <ComboBox.Trigger />
+          </ComboBox.Root>
+          <Stack direction="horizontal" alignSelf="center" gap="200">
+            <LoadingSpinner colorPalette="primary" />
+            <Text>Loading results...</Text>
+          </Stack>
+        </Stack>
+      </Card.Content>
+    </Card.Root>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -119,4 +148,35 @@ const App = () => (
 > - Don't use long statements. Try to keep updates and explainers short, as
 >   translation will consistently add about 20% more length.
 
-![Don't](/images/loading-spinner/combo-box-guideline-dont.png)
+```jsx live
+const App = () => (
+  <Stack gap="200" alignItems="start">
+    <Button variant="ghost" size="sm" colorPalette="primary">
+      <Icons.Add />
+      Add filter
+    </Button>
+    <Card.Root elevation="elevated">
+      <Card.Content>
+        <Stack gap="200">
+          <ComboBox.Root
+            inputValue="abc"
+            aria-label="Search filters"
+            allowsEmptyMenu
+          >
+            <ComboBox.Trigger />
+          </ComboBox.Root>
+          <Stack
+            direction="horizontal"
+            gap="200"
+            alignSelf="center"
+            width="2/3"
+          >
+            <LoadingSpinner colorPalette="primary" flexShrink="0" />
+            <Text>this is taking an unusually long time</Text>
+          </Stack>
+        </Stack>
+      </Card.Content>
+    </Card.Root>
+  </Stack>
+);
+```
