@@ -1,0 +1,301 @@
+---
+id: Components-Toast
+title: Toast
+description: Displays brief, temporary notifications that confirm actions without interrupting workflow
+documentState: InitialDraft
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Toast
+tags:
+  - component
+  - notification
+  - feedback
+  - transient
+---
+
+# Toast
+
+Displays brief, temporary notifications that confirm actions or provide status updates without interrupting the user's workflow.
+
+## Overview
+
+Toasts are lightweight, non-modal notifications that appear temporarily at the edge of the screen. They provide contextual feedback about completed actions, system status, or important updates while allowing users to continue their work uninterrupted. Unlike alerts or dialogs, toasts automatically dismiss after a few seconds and don't require user interaction unless an action is provided.
+
+### Key characteristics
+
+- **Non-intrusive**: Appears without blocking content or requiring immediate attention
+- **Temporary**: Auto-dismisses after a configurable duration (default 6 seconds)
+- **Stackable**: Multiple toasts can appear simultaneously in organized regions
+- **Contextual**: Provides immediate feedback at key moments in the user journey
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[ARIA Live Regions Pattern](https://www.w3.org/WAI/ARIA/apg/practices/live-regions/)
+
+## Variables
+
+Get familiar with the features.
+
+### Color palette
+
+Each color palette conveys a specific semantic meaning and visual urgency level.
+
+#### Info (blue)
+
+Use for general informational messages that provide helpful context without requiring action.
+
+```jsx-live
+const App = () => {
+  const showInfoToast = () => {
+    toast.info({
+      title: "Information",
+      description: "Your settings have been synced with the cloud."
+    });
+  };
+
+  return <Button onPress={showInfoToast}>Show Info Toast</Button>;
+}
+```
+
+#### Positive (green)
+
+Use for success confirmations after users complete important actions.
+
+```jsx-live
+const App = () => {
+  const showSuccessToast = () => {
+    toast.success({
+      title: "Success",
+      description: "Your changes have been saved successfully."
+    });
+  };
+
+  return <Button onPress={showSuccessToast}>Show Success Toast</Button>;
+}
+```
+
+#### Warning (orange)
+
+Use for cautionary messages that don't prevent action but require user awareness.
+
+```jsx-live
+const App = () => {
+  const showWarningToast = () => {
+    toast.warning({
+      title: "Warning",
+      description: "You're approaching your storage limit (85% used)."
+    });
+  };
+
+  return <Button onPress={showWarningToast}>Show Warning Toast</Button>;
+}
+```
+
+#### Critical (red)
+
+Use for error messages when actions fail or require immediate attention.
+
+```jsx-live
+const App = () => {
+  const showErrorToast = () => {
+    toast.error({
+      title: "Error",
+      description: "Unable to save changes. Please try again."
+    });
+  };
+
+  return <Button onPress={showErrorToast}>Show Error Toast</Button>;
+}
+```
+
+### Placement
+
+Choose placement based on interface layout and user attention priorities.
+
+#### Top positions
+
+Best for important confirmations that users should notice immediately. Use top-end (default) for most cases as it aligns with reading direction and avoids covering primary content.
+
+- **Top-start**: Left-aligned notifications
+- **Top-end**: Right-aligned (default), recommended for most use cases
+
+#### Bottom positions
+
+Better for less urgent updates or dense interfaces where top placement might obscure important content.
+
+- **Bottom-start**: Left-aligned, use in left-nav interfaces
+- **Bottom-end**: Right-aligned, balances with top-end
+
+### Structure
+
+#### Title and description
+
+Always include a clear title that summarizes the message. Use description for additional context when needed.
+
+```jsx-live
+const App = () => {
+  const showToast = () => {
+    toast.success({
+      title: "Product published",
+      description: "Your product is now live and visible to customers."
+    });
+  };
+
+  return <Button onPress={showToast}>Publish Product</Button>;
+}
+```
+
+#### Custom icons
+
+Override the default type-based icon with a custom icon to provide more specific visual context.
+
+```jsx-live
+const App = () => {
+  const { Bathtub } = Icons;
+
+  const showCustomIconToast = () => {
+    toast.info({
+      title: "Bath is ready",
+      description: "Your bath has reached the perfect temperature.",
+      icon: <Bathtub />
+    });
+  };
+
+  return <Button onPress={showCustomIconToast}>Show Custom Icon Toast</Button>;
+}
+```
+
+#### Action buttons
+
+Include action buttons when users might want to undo or view details. Toasts with actions auto-dismiss after the standard duration (6 seconds by default). Each toast supports a single action button — this keeps notifications scannable and focused. For workflows that involve multiple steps, use `toast.update()` to evolve the same toast through each stage rather than stacking separate notifications (see the [multi-step operations pattern](./toast.dev.mdx#multi-step-operations) in the implementation docs).
+
+```jsx-live
+const App = () => {
+  const [undone, setUndone] = useState(false);
+
+  const handleDelete = () => {
+    setUndone(false);
+    toast({
+      title: "Item deleted",
+      description: "The item has been removed from your list.",
+      type: "info",
+      action: {
+        label: "Undo",
+        onPress: () => setUndone(true)
+      }
+    });
+  };
+
+  return (
+    <Stack direction="column" gap="200">
+      <Button onPress={handleDelete}>Delete Item</Button>
+      {undone && <Text color="positive.fg">Action was undone</Text>}
+    </Stack>
+  );
+}
+```
+
+## Guidelines
+
+Use toasts strategically to confirm actions and provide feedback without disrupting the user experience.
+
+### Best practices
+
+- **Keep messages concise**: Aim for titles under 60 characters and descriptions under 120 characters
+- **Use appropriate urgency**: Match the color palette to the message severity
+- **Provide clear actions**: If including a button, make the action specific ("Undo delete" not "Undo")
+- **Consider timing**: Default 6 seconds works for most messages; use longer durations for complex information
+- **Limit frequency**: Avoid showing multiple toasts simultaneously unless they're from different contexts
+- **Maintain consistency**: Use the same placement throughout your application
+
+### When to use
+
+> [!TIP]\
+> When to use Toast
+
+- **Action confirmations**: "Saved successfully", "Item deleted"
+- **Background task updates**: "Export complete", "Sync finished"
+- **Non-critical errors**: Recoverable failures that don't require immediate action
+- **Undo opportunities**: Allow users to reverse recent actions
+- **Progress notifications**: Brief updates on ongoing operations
+
+> [!CAUTION]\
+> When NOT to use Toast
+
+- **Critical errors requiring action**: Use Dialog instead for errors that block workflow
+- **Complex information**: Use Alert for messages requiring careful reading
+- **Persistent status**: Use Alert for information that should remain visible
+- **Input validation**: Use inline FieldErrors for form validation feedback
+- **Confirmation dialogs**: Use Dialog when user decision is required before proceeding
+- **Success states already visible**: Don't duplicate feedback that's obvious from UI changes
+
+### Writing guidelines
+
+Write clear, actionable messages that users can quickly scan and understand.
+
+#### Message structure
+
+- **Title**: Action + outcome ("Item deleted", "Changes saved")
+- **Description**: Additional context or next steps (optional)
+- **Action button**: Specific verb ("Undo", "View details", "Retry")
+
+#### Preferred words
+
+| Use | When |
+| --- | --- |
+| **Saved** | Confirming data persistence |
+| **Deleted** | Confirming removal |
+| **Updated** | Confirming changes applied |
+| **Published** | Confirming content went live |
+| **Synced** | Confirming data synchronization |
+| **Complete** | Confirming process finished |
+
+#### Avoid these words
+
+| Avoid | Use instead |
+| --- | --- |
+| **Success!** | Specific action ("Saved successfully") |
+| **Error** | Specific problem ("Unable to save changes") |
+| **OK** | Specific action ("View details", "Got it") |
+| **Done** | Specific completion ("Export complete") |
+
+#### Voice and tone
+
+- **Active voice**: "Deleted 3 items" not "3 items were deleted"
+- **Positive framing**: "Saved successfully" not "No errors occurred"
+- **Specific outcomes**: "Product published" not "Operation completed"
+
+## Accessibility
+
+Toasts follow WCAG 2.1 AA guidelines with proper ARIA implementation for screen readers.
+
+### Screen reader announcements
+
+- **Info, Success, and Warning**: Announced politely (role="status") without interrupting current reading
+- **Error**: Announced assertively (role="alert") to immediately notify users of important information
+- The `"aria-live"` option allows overriding the default politeness level for any toast type
+
+### Keyboard navigation
+
+| Key | Action |
+| --- | --- |
+| `Tab` | Navigate between close button and action button (if present) |
+| `Escape` | Dismiss the focused toast |
+| `Ctrl+Shift+[1-9]` | Focus specific placement region (based on numpad position) |
+
+Users can dismiss toasts via keyboard, ensuring full accessibility for non-mouse users.
+
+### Auto-dismiss considerations
+
+- Toasts with action buttons auto-dismiss after the standard duration; use `duration: Infinity` with `closable: true` to create persistent toasts that require user interaction
+- Timers pause when toast is focused or hovered, accommodating users who need more time
+- Default 6-second duration allows sufficient time to read messages (reading time: ~2-3 seconds + comprehension buffer)
+
+## Specs
+
+See the [Implementation tab](./toast.dev.mdx) for the full API reference including `ToastOptions` properties and control methods.

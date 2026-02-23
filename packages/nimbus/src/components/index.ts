@@ -64,5 +64,6 @@ export * from "./data-table";
 export * from "./pagination";
 export * from "./drawer";
 export * from "./tabs";
+export * from "./toast";
 export * from "./localized-field";
 export * from "./steps";

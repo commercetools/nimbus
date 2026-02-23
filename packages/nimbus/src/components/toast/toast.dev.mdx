@@ -1,0 +1,496 @@
+---
+title: Toast Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { toast, type ToastOptions } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+Create toast notifications using the imperative `toast()` API. Toasts are rendered automatically by the `NimbusProvider`.
+
+```jsx-live-dev
+const App = () => {
+  const handleClick = () => {
+    toast({
+      title: "Success",
+      description: "Your changes have been saved.",
+      type: "success"
+    });
+  };
+
+  return (
+    <Button onPress={handleClick}>
+      Show Toast
+    </Button>
+  );
+}
+```
+
+## Usage examples
+
+### Toast types
+
+Four types are available, each with semantic meaning and ARIA roles:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="200" flexWrap="wrap">
+    <Button onPress={() => toast.info({ title: "Information", description: "This is informational." })}>
+      Info Toast
+    </Button>
+    <Button onPress={() => toast.success({ title: "Success", description: "Operation completed." })}>
+      Success Toast
+    </Button>
+    <Button onPress={() => toast.warning({ title: "Warning", description: "Please review this." })}>
+      Warning Toast
+    </Button>
+    <Button onPress={() => toast.error({ title: "Error", description: "An error occurred." })}>
+      Error Toast
+    </Button>
+  </Stack>
+)
+```
+
+**ARIA semantics:**
+- `info`, `success`, and `warning`: `role="status"` (polite announcements)
+- `error`: `role="alert"` (assertive announcements)
+- Use the `"aria-live"` option to override the default politeness level for any toast type
+
+### Placement options
+
+Control where toasts appear on screen using the `placement` prop. Each placement creates an independent toast region:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="200" flexWrap="wrap">
+    <Button onPress={() => toast({ title: "Top Start", placement: "top-start" })}>
+      Top Start
+    </Button>
+    <Button onPress={() => toast({ title: "Top End (Default)", placement: "top-end" })}>
+      Top End
+    </Button>
+    <Button onPress={() => toast({ title: "Bottom Start", placement: "bottom-start" })}>
+      Bottom Start
+    </Button>
+    <Button onPress={() => toast({ title: "Bottom End", placement: "bottom-end" })}>
+      Bottom End
+    </Button>
+  </Stack>
+)
+```
+
+### Auto-dismiss behavior
+
+Toasts auto-dismiss after 6 seconds by default. The timer pauses on hover and focus:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="200" flexWrap="wrap">
+    <Button onPress={() => toast({ title: "Default (6s)", description: "Dismisses after 6 seconds" })}>
+      Default Duration
+    </Button>
+    <Button onPress={() => toast({ title: "Custom Duration", description: "Dismisses after 10 seconds", duration: 10000 })}>
+      10 Second Duration
+    </Button>
+    <Button onPress={() => toast({ title: "Persistent", description: "Never auto-dismisses", duration: Infinity })}>
+      No Auto-Dismiss
+    </Button>
+  </Stack>
+)
+```
+
+**Duration values:**
+- Default: `6000` (6 seconds)
+- Custom: Any positive number in milliseconds
+- Persistent: `Infinity` (never auto-dismisses)
+
+### Action buttons
+
+Add action buttons to toasts. Duration is controlled independently — set `duration: Infinity` if the action requires user acknowledgment:
+
+```jsx-live-dev
+const App = () => {
+  const handleUndo = () => {
+    toast.success({ title: "Undo successful" });
+  };
+
+  const handleDelete = () => {
+    toast({
+      title: "Item deleted",
+      description: "The item has been removed from your list.",
+      type: "info",
+      action: {
+        label: "Undo",
+        onPress: handleUndo
+      }
+    });
+  };
+
+  return (
+    <Button onPress={handleDelete}>
+      Delete Item
+    </Button>
+  );
+}
+```
+
+### Promise pattern
+
+Use `toast.promise()` to show loading, success, and error states for async operations:
+
+```jsx-live-dev
+const App = () => {
+  const simulateAsyncOperation = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        Math.random() > 0.5 ? resolve("Success!") : reject("Failed!");
+      }, 2000);
+    });
+  };
+
+  const handleClick = () => {
+    toast.promise(
+      simulateAsyncOperation(),
+      {
+        loading: { title: "Saving...", description: "Please wait", closable: false },
+        success: { title: "Saved", description: "Your changes have been saved", type: "success" },
+        error: { title: "Error", description: "Failed to save changes", type: "error" }
+      }
+    );
+  };
+
+  return (
+    <Button onPress={handleClick}>
+      Save with Promise
+    </Button>
+  );
+}
+```
+
+### Programmatic control
+
+Update or dismiss toasts programmatically using their IDs:
+
+```jsx-live-dev
+const App = () => {
+  const [toastId, setToastId] = useState<string | null>(null);
+
+  const handleCreate = () => {
+    const id = toast({
+      title: "Processing...",
+      description: "Operation in progress",
+      duration: Infinity
+    });
+    setToastId(id);
+  };
+
+  const handleUpdate = () => {
+    if (toastId) {
+      toast.update(toastId, {
+        title: "Updated!",
+        description: "Toast content has been updated",
+        type: "success"
+      });
+    }
+  };
+
+  const handleDismiss = () => {
+    if (toastId) {
+      toast.dismiss(toastId);
+      setToastId(null);
+    }
+  };
+
+  return (
+    <Stack direction="row" gap="200">
+      <Button onPress={handleCreate}>Create Toast</Button>
+      <Button onPress={handleUpdate} isDisabled={!toastId}>Update Toast</Button>
+      <Button onPress={handleDismiss} isDisabled={!toastId}>Dismiss Toast</Button>
+    </Stack>
+  );
+}
+```
+
+**API methods:**
+- `toast.update(id, options)`: Update toast content
+- `toast.dismiss(id)`: Dismiss with animation (omit `id` to dismiss all)
+- `toast.remove(id)`: Remove immediately without animation (omit `id` to remove all)
+
+### Custom icon
+
+Override the default type-based icon with a custom icon element using the `icon` prop:
+
+```jsx-live-dev
+const App = () => {
+  const { Bathtub } = Icons;
+
+  return (
+    <Stack direction="row" gap="200" flexWrap="wrap">
+      <Button onPress={() => toast.info({ title: "Custom Icon", description: "This toast uses a custom icon", icon: <Bathtub /> })}>
+        Custom Icon Toast
+      </Button>
+      <Button onPress={() => toast.info({ title: "Default Icon", description: "This toast uses the default info icon" })}>
+        Default Icon Toast
+      </Button>
+    </Stack>
+  );
+}
+```
+
+When the `icon` prop is provided, it replaces the default icon for that toast type. The `loading` type always shows a spinner regardless of the `icon` prop.
+
+### Closable control
+
+Control close button visibility with the `closable` prop. Useful for loading states:
+
+```jsx-live-dev
+const App = () => (
+  <Stack direction="row" gap="200">
+    <Button onPress={() => toast({ title: "Closable Toast", description: "Has close button", closable: true })}>
+      With Close Button
+    </Button>
+    <Button onPress={() => toast({ title: "Loading...", description: "Processing your request", closable: false, duration: 3000 })}>
+      No Close Button
+    </Button>
+  </Stack>
+)
+```
+
+### Stacking and queuing
+
+Multiple toasts stack vertically without overlapping. When the maximum (24) is exceeded, additional toasts queue:
+
+```jsx-live-dev
+const App = () => {
+  const handleCreateMultiple = () => {
+    for (let i = 1; i <= 5; i++) {
+      setTimeout(() => {
+        toast({
+          title: `Toast ${i}`,
+          description: `This is toast notification ${i}`,
+          type: i % 2 === 0 ? "success" : "info"
+        });
+      }, i * 300);
+    }
+  };
+
+  return (
+    <Button onPress={handleCreateMultiple}>
+      Create Multiple Toasts
+    </Button>
+  );
+}
+```
+
+## Component requirements
+
+### Zero setup
+
+Toast functionality is automatically available when using `NimbusProvider`. No additional setup is required:
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+const App = () => (
+  <NimbusProvider>
+    {/* Toast is ready to use anywhere in your app */}
+    <YourApp />
+  </NimbusProvider>
+);
+```
+
+The `ToastOutlet` component is rendered internally by `NimbusProvider` and manages all toast regions.
+
+### Accessibility
+
+The Toast component handles accessibility requirements internally via React Aria and Chakra UI.
+
+**ARIA role differentiation:**
+- Info, success, and warning toasts use `role="status"` with `aria-live="polite"` for non-intrusive announcements
+- Error toasts use `role="alert"` with `aria-live="assertive"` for immediate attention
+- The `ariaLive` option allows overriding the default politeness level for any toast type
+
+**Internationalization:**
+The close button uses a localized `aria-label` resolved via `useLocalizedStringFormatter` from `@react-aria/i18n`. Translations are provided for English, German, Spanish, French, and Portuguese.
+
+#### Keyboard navigation
+
+Toast regions support keyboard interaction:
+
+- `Tab`: Navigate between close button and action button (if present)
+- `Escape`: Dismiss the focused toast
+- `Ctrl+Shift+[1-9]`: Focus specific placement regions (works with both number row and numpad)
+  - `Ctrl+Shift+7`: Top-start
+  - `Ctrl+Shift+9`: Top-end (default)
+  - `Ctrl+Shift+1`: Bottom-start
+  - `Ctrl+Shift+3`: Bottom-end
+
+Hotkeys are only active for placements with visible toasts.
+
+## API reference
+
+### `toast(options: ToastOptions): string`
+
+Creates a toast and returns its ID. Also available as convenience methods: `toast.info()`, `toast.success()`, `toast.warning()`, `toast.error()`.
+
+### ToastOptions
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `"info" \| "success" \| "warning" \| "error"` | `"info"` | Visual style and ARIA semantics |
+| `title` | `string` | — | Title text |
+| `description` | `string` | — | Description text |
+| `action` | `{ label: string; onPress: () => void }` | — | Action button |
+| `icon` | `React.ReactElement` | — | Custom icon replacing the default type-based icon |
+| `duration` | `number` | `6000` | Auto-dismiss in ms (`Infinity` = never) |
+| `placement` | `ToastPlacement` | `"top-end"` | Screen position |
+| `closable` | `boolean` | `false` | Show/hide close button (auto-enabled for persistent toasts) |
+| `pauseOnInteraction` | `boolean` | `true` | Pause timer on hover/focus |
+| `variant` | `"solid" \| "subtle" \| "accent-start"` | `"accent-start"` | Visual variant |
+
+### Control methods
+
+| Method | Description |
+| --- | --- |
+| `toast.update(id, options)` | Update toast content |
+| `toast.dismiss(id?)` | Dismiss with animation (omit `id` for all) |
+| `toast.remove(id?)` | Remove immediately (omit `id` for all) |
+| `toast.promise(promise, options, config?)` | Loading → success/error transitions |
+
+## Common patterns
+
+### Error handling with actions
+
+Provide users with recovery options directly in error toasts:
+
+```jsx-live-dev
+const App = () => {
+  const handleRetry = () => {
+    toast.info({ title: "Retrying...", description: "Attempting operation again" });
+  };
+
+  const handleError = () => {
+    toast.error({
+      title: "Network Error",
+      description: "Failed to connect to the server",
+      action: {
+        label: "Retry",
+        onPress: handleRetry
+      }
+    });
+  };
+
+  return (
+    <Button onPress={handleError}>
+      Simulate Error
+    </Button>
+  );
+}
+```
+
+### Success confirmation with undo
+
+Allow users to undo destructive actions:
+
+```jsx-live-dev
+const App = () => {
+  const [items, setItems] = useState(['Item 1', 'Item 2', 'Item 3']);
+  const [lastDeleted, setLastDeleted] = useState<string | null>(null);
+
+  const handleDelete = (item: string) => {
+    setLastDeleted(item);
+    setItems(items.filter(i => i !== item));
+
+    toast.success({
+      title: "Item deleted",
+      description: `${item} has been removed`,
+      action: {
+        label: "Undo",
+        onPress: () => {
+          if (lastDeleted) {
+            setItems([...items, lastDeleted]);
+            setLastDeleted(null);
+            toast.info({ title: "Restored", description: `${lastDeleted} has been restored` });
+          }
+        }
+      }
+    });
+  };
+
+  return (
+    <Stack direction="column" gap="200">
+      {items.map(item => (
+        <Stack key={item} direction="row" gap="200" alignItems="center">
+          <Text>{item}</Text>
+          <Button size="sm" onPress={() => handleDelete(item)}>Delete</Button>
+        </Stack>
+      ))}
+      {items.length === 0 && <Text>No items remaining</Text>}
+    </Stack>
+  );
+}
+```
+
+### Multi-step operations
+
+Track progress through multi-step processes:
+
+```jsx-live-dev
+const App = () => {
+  const handleMultiStep = async () => {
+    const id = toast({
+      title: "Step 1 of 3",
+      description: "Validating data...",
+      type: "info",
+      duration: Infinity
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    toast.update(id, {
+      title: "Step 2 of 3",
+      description: "Processing records..."
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    toast.update(id, {
+      title: "Step 3 of 3",
+      description: "Finalizing..."
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    toast.update(id, {
+      title: "Complete!",
+      description: "All steps finished successfully",
+      type: "success",
+      duration: 6000
+    });
+  };
+
+  return (
+    <Button onPress={handleMultiStep}>
+      Start Multi-Step Process
+    </Button>
+  );
+}
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Toast in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: toast.docs.spec.tsx}}
+
+## Resources
+
+{/* TODO: Add Storybook deep-link once the story is published */}
+- [Chakra UI Toast Documentation](https://www.chakra-ui.com/docs/components/toast)
+- [React Aria Live Regions](https://react-spectrum.adobe.com/react-aria/useLiveAnnouncer.html)
+- [ARIA Live Regions](https://www.w3.org/WAI/ARIA/apg/practices/live-regions/)
