@@ -283,12 +283,21 @@ function loadAndFormatLayerStyles() {
     return {};
   }
 
+  // Parse the object literal statically instead of using eval/new Function.
+  // Convert the TS object literal to JSON so we can JSON.parse it.
   let layerDef;
   try {
-    const fn = new Function(`return (${objSource});`);
-    layerDef = fn();
+    const cleaned = objSource
+      // Wrap unquoted keys in double quotes: `disabled:` → `"disabled":`
+      .replace(/(?<=[{,]\s*)(\w[\w-]*)\s*:/g, '"$1":')
+      // Replace single quotes with double quotes for string values
+      .replace(/'/g, '"')
+      // Remove trailing commas before closing braces (invalid JSON)
+      .replace(/,(\s*[}\]])/g, "$1");
+
+    layerDef = JSON.parse(cleaned);
   } catch (e) {
-    console.warn("Could not evaluate layer styles object:", e.message);
+    console.warn("Could not parse layer styles object:", e.message);
     return {};
   }
 
