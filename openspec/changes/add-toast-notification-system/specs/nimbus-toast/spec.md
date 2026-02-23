@@ -276,7 +276,7 @@ navigation within toasts.
 
 #### Scenario: Per-placement hotkey
 
-- **WHEN** the user presses Alt+Shift+9
+- **WHEN** the user presses Ctrl+Shift+9 (number row or numpad)
 - **THEN** focus moves to the top-end toast region (if toasts are visible)
 - **NOTE**: Hotkeys map to numpad corners: 7=top-start, 9=top-end,
   1=bottom-start, 3=bottom-end

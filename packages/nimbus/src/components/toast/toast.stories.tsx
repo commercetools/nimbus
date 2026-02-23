@@ -1039,7 +1039,7 @@ export const KeyboardNavigation: Story = {
         title: "Keyboard Toast",
         description: "Navigate with Tab and hotkeys",
         type: "info",
-        placement: "top-end", // Alt+Shift+9
+        placement: "top-end", // Ctrl+Shift+9
         closable: true,
         action: {
           label: "Action",
@@ -1054,7 +1054,7 @@ export const KeyboardNavigation: Story = {
           Show Keyboard Toast
         </Button>
         <Text fontSize="sm" color="fg.muted">
-          Use Alt+Shift+9 to focus top-end region, then Tab to navigate
+          Use Ctrl+Shift+9 to focus top-end region, then Tab to navigate
         </Text>
       </Stack>
     );
@@ -1106,19 +1106,20 @@ export const KeyboardNavigation: Story = {
     });
 
     await step(
-      "Alt+Shift+9 hotkey focuses the top-end toast region",
+      "Ctrl+Shift+9 hotkey focuses the top-end toast region",
       async () => {
         // Move focus away from the toast region first
         button.focus();
         expect(button).toHaveFocus();
 
-        // Dispatch native KeyboardEvent matching the hotkey format
-        // Checks: event.altKey && event.shiftKey && event.code === "Digit9"
-        document.dispatchEvent(
+        // Dispatch from document.body (not document) so the event has
+        // a proper Element target — zag-js internals call
+        // target.getAttribute which doesn't exist on the Document node.
+        document.body.dispatchEvent(
           new KeyboardEvent("keydown", {
             code: "Digit9",
             key: "9",
-            altKey: true,
+            ctrlKey: true,
             shiftKey: true,
             bubbles: true,
             cancelable: true,
@@ -1126,6 +1127,31 @@ export const KeyboardNavigation: Story = {
         );
 
         // The hotkey should focus the top-end toast region
+        await waitFor(() => {
+          const activeEl = document.activeElement;
+          const region = activeEl?.closest('[data-placement="top-end"]');
+          expect(region).not.toBeNull();
+        });
+      }
+    );
+
+    await step(
+      "Numpad 9 hotkey also focuses the top-end toast region",
+      async () => {
+        button.focus();
+        expect(button).toHaveFocus();
+
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            code: "Numpad9",
+            key: "9",
+            ctrlKey: true,
+            shiftKey: true,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+
         await waitFor(() => {
           const activeEl = document.activeElement;
           const region = activeEl?.closest('[data-placement="top-end"]');

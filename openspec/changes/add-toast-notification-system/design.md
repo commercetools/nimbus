@@ -104,9 +104,11 @@ exposed to consumers.
 ### Hotkeys: Per-Placement Numpad Mapping
 
 Each toaster gets a unique hotkey based on numpad corner positions:
-`Alt+Shift+7` (top-start), `Alt+Shift+9` (top-end), `Alt+Shift+1`
-(bottom-start), `Alt+Shift+3` (bottom-end). Pressing the hotkey focuses the
-corresponding toast region.
+`Ctrl+Shift+7` (top-start), `Ctrl+Shift+9` (top-end), `Ctrl+Shift+1`
+(bottom-start), `Ctrl+Shift+3` (bottom-end). Pressing the hotkey focuses the
+corresponding toast region. Both number row and numpad keys are supported —
+zag-js handles `Digit*` codes natively, while a supplementary listener in
+`ToastOutlet` handles `Numpad*` equivalents.
 
 ### Modal Interaction: React Aria Top-Layer
 

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Toaster, Toast as ChakraToast } from "@chakra-ui/react";
 import {
   getToasterEntries,
@@ -6,7 +6,7 @@ import {
   onToastersActivated,
 } from "../services/toast.toasters";
 import { ToastContent } from "./toast.content";
-import { COLOR_PALETTE_MAP } from "../constants";
+import { COLOR_PALETTE_MAP, NUMPAD_HOTKEYS } from "../constants";
 import type { ChakraToastData, ToastType } from "../toast.types";
 
 /**
@@ -66,6 +66,23 @@ function subscribeToActivation(onStoreChange: () => void) {
  */
 export function ToastOutlet() {
   const active = useSyncExternalStore(subscribeToActivation, isToastersActive);
+
+  // Supplement zag-js hotkeys with numpad support.
+  // Zag only matches `Digit*` codes; this listener handles `Numpad*` equivalents.
+  useEffect(() => {
+    if (!active) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!event.ctrlKey || !event.shiftKey) return;
+      const regionId = NUMPAD_HOTKEYS[event.code];
+      if (!regionId) return;
+      document.getElementById(regionId)?.focus();
+    };
+
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () =>
+      document.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [active]);
 
   if (!active) {
     return null;
