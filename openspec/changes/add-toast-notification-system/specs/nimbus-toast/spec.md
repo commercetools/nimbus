@@ -247,20 +247,27 @@ slots become available.
 
 ### Requirement: ARIA Role Differentiation
 
-Info and success toasts SHALL use `role="status"` (polite). Warning and error
+Info, success, and warning toasts SHALL use `role="status"` (polite). Error
 toasts SHALL use `role="alert"` (assertive). The `ToastOutlet` SHALL override
 these attributes on `Toast.Root` since Chakra defaults all toasts to
-`role="status"`.
+`role="status"`. Consumers MAY override the default `aria-live` politeness level
+via the `"aria-live"` option on `ToastOptions`.
 
 #### Scenario: Polite announcement
 
-- **WHEN** an info or success toast appears
+- **WHEN** an info, success, or warning toast appears
 - **THEN** it has `role="status"` and `aria-live="polite"`
 
 #### Scenario: Assertive announcement
 
-- **WHEN** a warning or error toast appears
+- **WHEN** an error toast appears
 - **THEN** it has `role="alert"` and `aria-live="assertive"`
+
+#### Scenario: Consumer override
+
+- **GIVEN** a toast is created with `"aria-live": "assertive"`
+- **WHEN** the toast appears
+- **THEN** it has `role="alert"` and `aria-live="assertive"` regardless of type
 
 ### Requirement: Keyboard Navigation
 

@@ -71,9 +71,10 @@ misses the initial toast that triggered the mount.
 
 ### ARIA Roles
 
-`role="status"` (polite) for info/success, `role="alert"` (assertive) for
-warning/error. Chakra defaults all toasts to `role="status"` — the `ToastOutlet`
-overrides role and `aria-live` on `Toast.Root` based on toast type.
+`role="status"` (polite) for info/success/warning, `role="alert"` (assertive) for
+error only. Chakra defaults all toasts to `role="status"` — the `ToastOutlet`
+overrides role and `aria-live` on `Toast.Root` based on toast type. Consumers can
+override the default via the `"aria-live"` option on `ToastOptions`.
 
 ### Auto-Dismiss: 6 Seconds Default
 

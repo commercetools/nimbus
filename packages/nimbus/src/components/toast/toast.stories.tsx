@@ -135,7 +135,7 @@ export const Types: Story = {
     });
 
     await step(
-      "Info and success types have role='status' (polite)",
+      "Info, success, and warning types have role='status' (polite)",
       async () => {
         const infoToast = body.getByText("Info toast");
         const successToast = body.getByText("Success toast");
@@ -150,22 +150,76 @@ export const Types: Story = {
       }
     );
 
+    await step("Warning type has role='status' (polite)", async () => {
+      const warningToast = body.getByText("Warning toast");
+      const warningContainer = warningToast.closest('[role="status"]');
+
+      await expect(warningContainer).toBeInTheDocument();
+      await expect(warningContainer).toHaveAttribute("aria-live", "polite");
+    });
+
+    await step("Error type has role='alert' (assertive)", async () => {
+      const errorToast = body.getByText("Error toast");
+      const errorContainer = errorToast.closest('[role="alert"]');
+
+      await expect(errorContainer).toBeInTheDocument();
+      await expect(errorContainer).toHaveAttribute("aria-live", "assertive");
+    });
+  },
+};
+
+/**
+ * Aria Live Override
+ * Tests the `"aria-live"` option that allows consumers to override
+ * the default politeness level for any toast type.
+ */
+export const AriaLiveOverride: Story = {
+  render: () => {
+    const showToasts = () => {
+      toast.info({
+        title: "Assertive info",
+        description: "Info promoted to assertive",
+        "aria-live": "assertive",
+      });
+      toast.error({
+        title: "Polite error",
+        description: "Error demoted to polite",
+        "aria-live": "polite",
+      });
+    };
+
+    return <Button onPress={showToasts}>Show overridden toasts</Button>;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Create toasts with aria-live overrides", async () => {
+      await userEvent.click(canvas.getByRole("button"));
+      await waitFor(() => {
+        expect(body.getByText("Assertive info")).toBeInTheDocument();
+      });
+    });
+
     await step(
-      "Warning and error types have role='alert' (assertive)",
+      "Info toast with assertive override has role='alert'",
       async () => {
-        const warningToast = body.getByText("Warning toast");
-        const errorToast = body.getByText("Error toast");
+        const infoToast = body.getByText("Assertive info");
+        const infoContainer = infoToast.closest('[role="alert"]');
 
-        const warningContainer = warningToast.closest('[role="alert"]');
-        const errorContainer = errorToast.closest('[role="alert"]');
+        await expect(infoContainer).toBeInTheDocument();
+        await expect(infoContainer).toHaveAttribute("aria-live", "assertive");
+      }
+    );
 
-        await expect(warningContainer).toBeInTheDocument();
-        await expect(warningContainer).toHaveAttribute(
-          "aria-live",
-          "assertive"
-        );
+    await step(
+      "Error toast with polite override has role='status'",
+      async () => {
+        const errorToast = body.getByText("Polite error");
+        const errorContainer = errorToast.closest('[role="status"]');
+
         await expect(errorContainer).toBeInTheDocument();
-        await expect(errorContainer).toHaveAttribute("aria-live", "assertive");
+        await expect(errorContainer).toHaveAttribute("aria-live", "polite");
       }
     );
   },
@@ -1126,7 +1180,9 @@ export const ClosableControl: Story = {
       await userEvent.click(button);
 
       const toastText = await body.findByText("Not closable (default)");
-      const toastContainer = toastText.closest('[role="alert"]') as HTMLElement;
+      const toastContainer = toastText.closest(
+        '[role="status"]'
+      ) as HTMLElement;
       const closeButton = within(toastContainer).queryByRole("button");
 
       // There should be no close button

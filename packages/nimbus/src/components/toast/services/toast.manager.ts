@@ -80,7 +80,12 @@ class ToastManager implements ToastManagerApi {
 
     // Destructure `action` and `icon` to map them to the internal format.
     // `icon` is tunneled through meta so the outlet can access it.
-    const { action: consumerAction, icon, ...restOptions } = safeOptions;
+    const {
+      action: consumerAction,
+      icon,
+      "aria-live": ariaLive,
+      ...restOptions
+    } = safeOptions;
     const action = mapAction(consumerAction);
 
     const toastOptions = {
@@ -92,6 +97,7 @@ class ToastManager implements ToastManagerApi {
         closable,
         variant: safeOptions.variant ?? "accent-start",
         icon,
+        "aria-live": ariaLive,
       },
     };
 
@@ -111,11 +117,20 @@ class ToastManager implements ToastManagerApi {
     const toaster = getToaster(placement);
 
     if (toaster) {
-      const { action, icon, variant, closable, ...rest } = options;
+      const {
+        action,
+        icon,
+        variant,
+        closable,
+        "aria-live": updateAriaLive,
+        ...rest
+      } = options;
       const metaUpdate: Record<string, unknown> = {};
       if (icon !== undefined) metaUpdate.icon = icon;
       if (variant !== undefined) metaUpdate.variant = variant;
       if (closable !== undefined) metaUpdate.closable = closable;
+      if (updateAriaLive !== undefined)
+        metaUpdate["aria-live"] = updateAriaLive;
 
       toaster.update(id, {
         ...rest,
@@ -205,6 +220,7 @@ class ToastManager implements ToastManagerApi {
           icon,
           variant,
           closable,
+          "aria-live": stateAriaLive,
           ...rest
         } = stateOptions;
         const duration = stateOptions.duration ?? DEFAULT_DURATION;
@@ -218,6 +234,7 @@ class ToastManager implements ToastManagerApi {
             closable: resolvedClosable,
             variant: variant ?? "accent-start",
             icon,
+            "aria-live": stateAriaLive,
           },
         };
       };

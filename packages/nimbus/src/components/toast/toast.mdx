@@ -276,8 +276,9 @@ Toasts follow WCAG 2.1 AA guidelines with proper ARIA implementation for screen 
 
 ### Screen reader announcements
 
-- **Info and Success**: Announced politely (role="status") without interrupting current reading
-- **Warning and Error**: Announced assertively (role="alert") to immediately notify users of important information
+- **Info, Success, and Warning**: Announced politely (role="status") without interrupting current reading
+- **Error**: Announced assertively (role="alert") to immediately notify users of important information
+- The `"aria-live"` option allows overriding the default politeness level for any toast type
 
 ### Keyboard navigation
 

@@ -8,7 +8,7 @@ import type React from "react";
  * Toast type determines visual styling and ARIA semantics.
  * - info: Informational messages (role="status", polite)
  * - success: Success confirmations (role="status", polite)
- * - warning: Warning messages (role="alert", assertive)
+ * - warning: Warning messages (role="status", polite)
  * - error: Error messages (role="alert", assertive)
  */
 export type ToastType = "info" | "success" | "warning" | "error" | "loading";
@@ -65,6 +65,11 @@ export type ToastOptions = {
   closable?: boolean;
   /** Pause auto-dismiss on hover/focus (default: true) */
   pauseOnInteraction?: boolean;
+  /**
+   * Override the default `aria-live` politeness level.
+   * By default, `error` toasts use `"assertive"` and all others use `"polite"`.
+   */
+  "aria-live"?: "polite" | "assertive" | "off";
 };
 
 /**
@@ -97,6 +102,7 @@ export type ChakraToastData = {
     closable?: boolean;
     variant?: ToastVariant;
     icon?: React.ReactElement;
+    "aria-live"?: "polite" | "assertive" | "off";
   };
 };
 

@@ -11,14 +11,20 @@ import type { ChakraToastData, ToastType } from "../toast.types";
 
 /**
  * Returns the correct ARIA role and live-region politeness for a toast type.
- * Warning and error toasts use `role="alert"` with `aria-live="assertive"`,
+ * Error toasts use `role="alert"` with `aria-live="assertive"`,
  * all others use `role="status"` with `aria-live="polite"`.
+ *
+ * An explicit `ariaLive` override (from `ToastOptions`) takes precedence
+ * over the type-based default.
  */
-const getARIAAttributes = (type?: ToastType) => {
-  if (type === "warning" || type === "error") {
-    return { role: "alert" as const, "aria-live": "assertive" as const };
-  }
-  return { role: "status" as const, "aria-live": "polite" as const };
+const getARIAAttributes = (
+  type?: ToastType,
+  ariaLive?: "polite" | "assertive" | "off"
+) => {
+  const liveDefault = type === "error" ? "assertive" : "polite";
+  const live = ariaLive ?? liveDefault;
+  const role = live === "assertive" ? ("alert" as const) : ("status" as const);
+  return { role, "aria-live": live as "polite" | "assertive" };
 };
 
 /**
@@ -82,7 +88,7 @@ export function ToastOutlet() {
               <ChakraToast.Root
                 colorPalette={COLOR_PALETTE_MAP[type]}
                 variant={variant}
-                {...getARIAAttributes(type)}
+                {...getARIAAttributes(type, toast.meta?.["aria-live"])}
               >
                 <ToastContent toast={toast} toaster={toaster} />
               </ChakraToast.Root>

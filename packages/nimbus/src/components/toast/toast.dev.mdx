@@ -60,8 +60,9 @@ const App = () => (
 ```
 
 **ARIA semantics:**
-- `info` and `success`: `role="status"` (polite announcements)
-- `warning` and `error`: `role="alert"` (assertive announcements)
+- `info`, `success`, and `warning`: `role="status"` (polite announcements)
+- `error`: `role="alert"` (assertive announcements)
+- Use the `"aria-live"` option to override the default politeness level for any toast type
 
 ### Placement options
 
@@ -313,8 +314,9 @@ The `ToastOutlet` component is rendered internally by `NimbusProvider` and manag
 The Toast component handles accessibility requirements internally via React Aria and Chakra UI.
 
 **ARIA role differentiation:**
-- Info and success toasts use `role="status"` with `aria-live="polite"` for non-intrusive announcements
-- Warning and error toasts use `role="alert"` with `aria-live="assertive"` for immediate attention
+- Info, success, and warning toasts use `role="status"` with `aria-live="polite"` for non-intrusive announcements
+- Error toasts use `role="alert"` with `aria-live="assertive"` for immediate attention
+- The `ariaLive` option allows overriding the default politeness level for any toast type
 
 **Internationalization:**
 The close button uses a localized `aria-label` resolved via `useLocalizedStringFormatter` from `@react-aria/i18n`. Translations are provided for English, German, Spanish, French, and Portuguese.
