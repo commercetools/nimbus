@@ -113,7 +113,7 @@ describe("loadTokenData", () => {
       const colors = data!.categoryValues["colors"];
       const amber = tokens.color["system-palettes"].amber;
       for (const [name, lightVal] of Object.entries(amber.light)) {
-        const darkVal = amber.dark[name];
+        const darkVal = (amber.dark as Record<string, string>)[name];
         const expected =
           lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
         expect(colors[`amber.${name}`]).toBe(expected);
@@ -124,7 +124,7 @@ describe("loadTokenData", () => {
       const colors = data!.categoryValues["colors"];
       const neutral = tokens.color["semantic-palettes"].neutral;
       for (const [name, lightVal] of Object.entries(neutral.light)) {
-        const darkVal = neutral.dark[name];
+        const darkVal = (neutral.dark as Record<string, string>)[name];
         const expected =
           lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
         expect(colors[`neutral.${name}`]).toBe(expected);
