@@ -26,7 +26,10 @@
       }
     }
   },
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -35,15 +38,20 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "dependencies": {
     "@chakra-ui/cli": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
+    "@github-ui/storybook-addon-performance-panel": "catalog:",
     "@internationalized/string": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "dequal": "catalog:utils",
@@ -59,9 +67,9 @@
   },
   "devDependencies": {
     "@chakra-ui/react": "catalog:react",
+    "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
-    "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@react-types/shared": "catalog:tooling",
