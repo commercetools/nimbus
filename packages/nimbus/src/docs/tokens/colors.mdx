@@ -52,12 +52,22 @@ border, and text styles in the design system:
 
 <br />
 
-The Radix color system guarantees that background steps (1–5) always meet
-WCAG AA contrast ratio (4.5:1) with text steps (11–12) across all color scales.
-This is why the scales are interchangeable — swapping one color scale for
+Background steps (1–5) are designed to pair with text steps (11–12) across all
+color scales, and the scales are interchangeable — swapping one color scale for
 another preserves the same contrast relationships. For solid background colors
 (steps 9–10), use the special `contrast` step which provides a black or white
-value guaranteed to meet contrast requirements.
+value optimized for readability.
+
+The Radix color system is designed to produce accessible palettes. Radix uses
+[APCA (Accessible Perceptual Contrast Algorithm)](https://github.com/Myndex/APCA),
+a more advanced method for calculating perceived contrast that accounts for
+human visual perception more accurately than the traditional WCAG 2.x formula.
+
+> **Note:** Some automated accessibility tools still use the older WCAG 2.x
+> synthetic contrast calculation (4.5:1 ratio), which can produce false
+> positives for certain color combinations that APCA considers accessible. If
+> your tooling flags contrast issues with these pairings, verify the results
+> against an APCA-based checker before making changes.
 
 For more details on how the scale is designed, see the
 [Radix color scale documentation](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
