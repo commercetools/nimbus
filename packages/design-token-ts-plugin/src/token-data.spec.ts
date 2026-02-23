@@ -115,7 +115,7 @@ describe("loadTokenData", () => {
       for (const [name, lightVal] of Object.entries(amber.light)) {
         const darkVal = (amber.dark as Record<string, string>)[name];
         const expected =
-          lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
+          lightVal === darkVal ? lightVal : `${lightVal} / ${darkVal} (d)`;
         expect(colors[`amber.${name}`]).toBe(expected);
       }
     });
@@ -126,7 +126,7 @@ describe("loadTokenData", () => {
       for (const [name, lightVal] of Object.entries(neutral.light)) {
         const darkVal = (neutral.dark as Record<string, string>)[name];
         const expected =
-          lightVal === darkVal ? lightVal : `l: ${lightVal} d: ${darkVal}`;
+          lightVal === darkVal ? lightVal : `${lightVal} / ${darkVal} (d)`;
         expect(colors[`neutral.${name}`]).toBe(expected);
       }
     });

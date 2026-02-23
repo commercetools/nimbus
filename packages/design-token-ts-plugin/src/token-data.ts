@@ -250,10 +250,10 @@ export function loadTokenData(): TokenData | undefined {
 
 /**
  * Recursively flatten a color object into dot-notation keys.
- * For light/dark structures, show both values as "l: <light> d: <dark>".
+ * For light/dark structures, show both values as "<light> / <dark> (d)".
  * E.g. { amber: { light: { "1": "hsl(a)" }, dark: { "1": "hsl(b)" } } }
- *   → "amber.1" = "l: hsl(a) d: hsl(b)"
- * E.g. { black: "hsl(...)" } → "black" = "hsl(...)"
+ *   → "amber.1" → "hsl(a) / hsl(b) (d)"
+ * E.g. { black: "hsl(...)" } → "black" → "hsl(...)"
  */
 function flattenColors(
   obj: Record<string, unknown>,
@@ -280,7 +280,7 @@ function flattenColors(
             const darkVal = darkObj?.[step];
             const stepKey = `${colorPrefix}.${step}`;
             if (typeof darkVal === "string" && darkVal !== lightVal) {
-              result[stepKey] = `l: ${lightVal} d: ${darkVal}`;
+              result[stepKey] = `${lightVal} / ${darkVal} (d)`;
             } else {
               result[stepKey] = lightVal;
             }

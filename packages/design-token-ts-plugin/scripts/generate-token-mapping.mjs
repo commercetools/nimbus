@@ -32,16 +32,11 @@ const LAYER_STYLES_PATH = join(
 );
 
 async function main() {
-  const { designTokens, themeTokens } =
-    await import("@commercetools/nimbus-tokens");
+  const { designTokens } = await import("@commercetools/nimbus-tokens");
 
   const lightLookup = buildColorLookup(designTokens.color, "light");
   const darkLookup = buildColorLookup(designTokens.color, "dark");
-  const semanticColors = resolveSemanticColors(
-    lightLookup,
-    darkLookup,
-    themeTokens
-  );
+  const semanticColors = resolveSemanticColors(lightLookup, darkLookup);
   const textStyles = formatTextStyles(designTokens.textStyle);
   const layerStyles = loadAndFormatLayerStyles();
   const letterSpacing = unwrapLetterSpacing(designTokens.letterSpacing);
@@ -144,10 +139,10 @@ function extractObjectFromDefineCall(source, fnCallPrefix) {
  *
  * The source file uses `defineSemanticTokens.colors({...})` which is a type-only
  * wrapper, plus spreads of `themeTokens.color["*-palettes"]` for palette colors.
- * We evaluate the object with real themeTokens and then filter out palette keys
- * to keep only the semantic shortcuts (bg, fg, border.*).
+ * We statically parse the object (stripping spread lines that import palettes)
+ * to extract only the semantic shortcuts (bg, fg, border.*).
  */
-function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
+function resolveSemanticColors(lightLookup, darkLookup) {
   let source;
   try {
     source = readFileSync(SEMANTIC_COLORS_PATH, "utf-8");
@@ -169,32 +164,27 @@ function resolveSemanticColors(lightLookup, darkLookup, themeTokens) {
     return {};
   }
 
-  // Evaluate the object literal with themeTokens in scope.
-  // The spread operators (...themeTokens.color["system-palettes"]) will use the
-  // real themeTokens passed as a parameter.
-  let fullDef;
+  // Parse the object literal statically instead of using eval/new Function.
+  // Strip spread lines (palette imports handled separately by the plugin) and
+  // convert the remaining TS object literal to JSON so we can JSON.parse it.
+  let semanticDefs;
   try {
-    const fn = new Function("themeTokens", `return (${objSource});`);
-    fullDef = fn(themeTokens);
+    const cleaned = objSource
+      // Remove spread lines like: ...themeTokens.color["system-palettes"],
+      .replace(/\.\.\.themeTokens\.[^\n,]+,?/g, "")
+      // Wrap unquoted keys in double quotes: `bg:` → `"bg":`
+      .replace(/(?<=[{,]\s*)(\w+)\s*:/g, '"$1":')
+      // Also handle _light / _dark keys
+      .replace(/(?<=[{,]\s*)(_\w+)\s*:/g, '"$1":')
+      // Replace single quotes with double quotes for string values
+      .replace(/'/g, '"')
+      // Remove trailing commas before closing braces (invalid JSON)
+      .replace(/,(\s*[}\]])/g, "$1");
+
+    semanticDefs = JSON.parse(cleaned);
   } catch (e) {
-    console.warn("Could not evaluate semantic colors object:", e.message);
+    console.warn("Could not parse semantic colors object:", e.message);
     return {};
-  }
-
-  // Identify palette keys that came from the spread operators — these are
-  // already handled by the plugin's existing color flattening logic.
-  const paletteKeys = new Set([
-    ...Object.keys(themeTokens.color?.["system-palettes"] || {}),
-    ...Object.keys(themeTokens.color?.["brand-palettes"] || {}),
-    ...Object.keys(themeTokens.color?.["semantic-palettes"] || {}),
-  ]);
-
-  // Keep only the semantic shortcuts (bg, fg, border, etc.)
-  const semanticDefs = {};
-  for (const [key, val] of Object.entries(fullDef)) {
-    if (!paletteKeys.has(key)) {
-      semanticDefs[key] = val;
-    }
   }
 
   // Flatten nested structure and resolve token references for both modes
@@ -263,7 +253,7 @@ function flattenSemanticTokenDefs(
  */
 function formatLightDark(light, dark) {
   if (light === dark) return light;
-  return `l: ${light} d: ${dark}`;
+  return `${light} / ${dark} (d)`;
 }
 
 // ---------------------------------------------------------------------------

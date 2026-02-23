@@ -59,7 +59,7 @@ export function createPlugin(
     for (const entry of original.entries) {
       const cssValue = values[entry.name];
       if (cssValue !== undefined) {
-        entry.labelDetails = { detail: ` = ${cssValue}` };
+        entry.labelDetails = { detail: ` ${cssValue}` };
       }
     }
 

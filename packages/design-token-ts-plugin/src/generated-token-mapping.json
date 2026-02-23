@@ -1,16 +1,16 @@
 {
   "semanticColors": {
-    "bg": "l: #fff d: hsl(0, 0%, 7%)",
-    "fg": "l: hsl(0, 0%, 13%) d: hsl(0, 0%, 93%)",
-    "border": "l: hsl(0, 0%, 85%) d: hsl(0, 0%, 23%)",
-    "border.muted": "l: hsl(0, 0%, 81%) d: hsl(0, 0%, 28%)",
-    "border.subtle": "l: hsl(0, 0%, 85%) d: hsl(0, 0%, 23%)",
-    "border.emphasized": "l: hsl(0, 0%, 73%) d: hsl(0, 0%, 38%)",
-    "border.inverted": "l: hsl(0, 0%, 55%) d: hsl(0, 0%, 43%)",
-    "border.critical": "l: hsl(359, 70%, 74%) d: hsl(358, 45%, 49%)",
-    "border.warning": "l: hsl(38, 75%, 55%) d: hsl(36, 60%, 35%)",
-    "border.positive": "l: hsl(131, 38%, 56%) d: hsl(131, 32%, 36%)",
-    "border.info": "l: hsl(206, 82%, 65%) d: hsl(211, 65%, 45%)"
+    "bg": "#fff / hsl(0, 0%, 7%) (d)",
+    "fg": "hsl(0, 0%, 13%) / hsl(0, 0%, 93%) (d)",
+    "border": "hsl(0, 0%, 85%) / hsl(0, 0%, 23%) (d)",
+    "border.muted": "hsl(0, 0%, 81%) / hsl(0, 0%, 28%) (d)",
+    "border.subtle": "hsl(0, 0%, 85%) / hsl(0, 0%, 23%) (d)",
+    "border.emphasized": "hsl(0, 0%, 73%) / hsl(0, 0%, 38%) (d)",
+    "border.inverted": "hsl(0, 0%, 55%) / hsl(0, 0%, 43%) (d)",
+    "border.critical": "hsl(359, 70%, 74%) / hsl(358, 45%, 49%) (d)",
+    "border.warning": "hsl(38, 75%, 55%) / hsl(36, 60%, 35%) (d)",
+    "border.positive": "hsl(131, 38%, 56%) / hsl(131, 32%, 36%) (d)",
+    "border.info": "hsl(206, 82%, 65%) / hsl(211, 65%, 45%) (d)"
   },
   "textStyles": {
     "2xs": "fontSize: 10px, lineHeight: 14px",
