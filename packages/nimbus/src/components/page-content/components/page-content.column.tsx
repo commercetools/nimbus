@@ -1,5 +1,9 @@
 import { PageContentColumnSlot } from "../page-content.slots";
 import type { PageContentColumnProps } from "../page-content.types";
+<<<<<<< HEAD
+=======
+import { extractStyleProps } from "@/utils";
+>>>>>>> c2d06a1f7 (feat(page-content): scaffold PageContent compound component with recipe and types)
 
 /**
  * PageContent.Column - A column within a multi-column PageContent layout.
