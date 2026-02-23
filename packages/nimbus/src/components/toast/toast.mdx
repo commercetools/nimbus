@@ -172,7 +172,7 @@ const App = () => {
 
 #### Action buttons
 
-Include action buttons when users might want to undo or view details. Toasts with actions auto-dismiss after the standard duration (6 seconds by default).
+Include action buttons when users might want to undo or view details. Toasts with actions auto-dismiss after the standard duration (6 seconds by default). Each toast supports a single action button — this keeps notifications scannable and focused. For workflows that involve multiple steps, use `toast.update()` to evolve the same toast through each stage rather than stacking separate notifications (see the [multi-step operations pattern](./toast.dev.mdx#multi-step-operations) in the implementation docs).
 
 ```jsx-live
 const App = () => {
