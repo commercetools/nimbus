@@ -1,7 +1,7 @@
 /**
  * TypeScript Language Service Plugin entry point.
  *
- * Shows design token CSS values (e.g., "= 24px") next to token names
+ * Shows design token CSS values (e.g., "24px") next to token names
  * in autocomplete when editing Chakra styled-system properties.
  */
 

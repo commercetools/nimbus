@@ -108,3 +108,42 @@ white will always be white, a black will always be black.
 <br />
 
 <ColorScales ids="blackAlpha, whiteAlpha" />
+
+<br />
+
+## Semantic Color Shortcuts
+
+In addition to the color scales above, Nimbus provides a set of shorthand tokens
+for the most common color use cases. These map to specific steps on the semantic
+palettes and automatically adapt to light and dark mode.
+
+Use these directly in JSX props or recipes without referencing a specific palette
+or step number.
+
+| **Token**            | **Use Case**                      | **Maps to**         |
+| -------------------- | --------------------------------- | ------------------- |
+| `bg`                 | Page / container background       | `#fff` (light) · `neutral.1` (dark) |
+| `fg`                 | Primary text / foreground          | `neutral.12`        |
+| `border`             | Default border color               | `neutral.6`         |
+| `border.muted`       | Subtle border, lower contrast      | `neutral.7`         |
+| `border.subtle`      | Very subtle border / separator     | `neutral.6`         |
+| `border.emphasized`  | Emphasized border, higher contrast | `neutral.8`         |
+| `border.inverted`    | Inverted / strong border           | `neutral.9`         |
+| `border.critical`    | Error / destructive borders        | `critical.8`        |
+| `border.warning`     | Warning borders                    | `warning.8`         |
+| `border.positive`    | Success borders                    | `positive.8`        |
+| `border.info`        | Informational borders              | `info.8`            |
+
+```tsx
+// Usage in JSX props
+<Box bg="bg" color="fg" borderColor="border.muted">
+  content
+</Box>
+
+// Usage in recipes
+base: {
+  bg: "bg",
+  color: "fg",
+  borderColor: "border",
+}
+```

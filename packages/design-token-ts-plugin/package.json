@@ -13,7 +13,8 @@
     "url": "https://github.com/commercetools/nimbus.git"
   },
   "scripts": {
-    "build": "tsc && echo '🎉 Nimbus design token typescript plugin built'",
+    "generate:tokens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-token-mapping.mjs",
+    "build": "pnpm generate:tokens && tsc && cp src/generated-token-mapping.json dist/ && echo '🎉 Nimbus design token typescript plugin built'",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
