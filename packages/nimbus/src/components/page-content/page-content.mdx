@@ -1,0 +1,269 @@
+---
+id: Components-PageContent
+title: PageContent
+exportName: PageContent
+description:
+  A layout component that provides max-width content containers with single and
+  multi-column layout support.
+documentState: InitialDraft
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Layout
+  - PageContent
+tags:
+  - component
+  - layout
+  - page-content
+  - columns
+  - grid
+---
+
+# PageContent
+
+A layout component that constrains page content width and arranges content in
+single or multi-column layouts. It consolidates multiple width-based containers
+into a single compound component with explicit column control.
+
+## Overview
+
+PageContent provides a CSS grid-based centering pattern with configurable
+max-width constraints and column layouts. It supports three width variants
+(wide, narrow, full) and three column configurations (single, equal split, and
+2:1 ratio) with built-in responsive collapse for multi-column layouts.
+
+### Key features
+
+- **Width constraints**: Three variants control the max-width of the content
+  area
+- **Column layouts**: Single, equal-split (1/1), and sidebar (2/1) column
+  configurations
+- **Responsive collapse**: Multi-column layouts collapse to a single column on
+  smaller screens
+- **Sticky sidebar**: Column-level sticky positioning for sidebar patterns
+- **Customizable gap**: Default spacing between columns can be overridden
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Merchant Center Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts)
+
+## Variables
+
+Get familiar with the features.
+
+### Width variants
+
+The `variant` prop controls the max-width constraint of the content area.
+
+#### Wide
+
+The default variant. Content is constrained to a wide max-width, suitable for
+large forms or tables with few columns.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide">
+    <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold">Wide</Text>
+      <Text>Constrained to a wide max-width. Best for large forms or tables with few columns.</Text>
+    </Box>
+  </PageContent.Root>
+)
+```
+
+#### Narrow
+
+Content is constrained to a narrower max-width, suitable for simple forms,
+collapsible panels, and cards.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="narrow">
+    <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold">Narrow</Text>
+      <Text>Constrained to a narrow max-width. Best for simple forms and focused content.</Text>
+    </Box>
+  </PageContent.Root>
+)
+```
+
+#### Full
+
+Content spans the full available width with no max-width constraint. Suitable
+for large tables and content with a horizontal reading flow.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="full">
+    <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold">Full</Text>
+      <Text>No width constraint. Best for large tables and horizontal reading flows.</Text>
+    </Box>
+  </PageContent.Root>
+)
+```
+
+### Column layouts
+
+The `columns` prop controls how content is arranged within the container. Use
+`PageContent.Column` to wrap each column's content.
+
+#### Single column
+
+The default layout. Content flows in a single column. No `PageContent.Column`
+wrappers are needed.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="1">
+    <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold">Single column</Text>
+      <Text>Content flows in a single, full-width column.</Text>
+    </Box>
+  </PageContent.Root>
+)
+```
+
+#### Equal columns (1/1)
+
+Two columns of equal width. Best for grouping related content side by side to
+save vertical space.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="1/1">
+    <PageContent.Column>
+      <Box bg="primary.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="primary.11">Left column</Text>
+        <Text>Equal width with the right column.</Text>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="purple.11">Right column</Text>
+        <Text>Equal width with the left column.</Text>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+#### Sidebar layout (2/1)
+
+A wider main column with a narrower sidebar column. Best for forms with meta
+information or contextual links.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="2/1">
+    <PageContent.Column>
+      <Box bg="primary.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="primary.11">Main content (2fr)</Text>
+        <Text>The wider column for primary content such as forms.</Text>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="purple.11">Sidebar (1fr)</Text>
+        <Text>Narrower column for meta information.</Text>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+### Sticky sidebar
+
+Use the `sticky` prop on a `PageContent.Column` to make it stick to the top of
+the viewport during scroll. This is commonly used for sidebar navigation or meta
+information that should remain visible.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="2/1">
+    <PageContent.Column>
+      <Box bg="primary.3" padding="600" borderRadius="200" minHeight="300px">
+        <Text fontWeight="bold" color="primary.11">Main content</Text>
+        <Text>Tall content area that creates scrollable space.</Text>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column sticky>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="purple.11">Sticky sidebar</Text>
+        <Text>This column stays visible while scrolling.</Text>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+### Custom gap
+
+The default gap between columns is `800` (32px). Override it with the `gap`
+style prop for tighter or wider spacing.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <PageContent.Root variant="wide" columns="1/1">
+      <PageContent.Column>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text fontWeight="bold">Default gap (800)</Text>
+        </Box>
+      </PageContent.Column>
+      <PageContent.Column>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>32px between columns</Text>
+        </Box>
+      </PageContent.Column>
+    </PageContent.Root>
+
+    <PageContent.Root variant="wide" columns="1/1" gap="1600">
+      <PageContent.Column>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text fontWeight="bold">Large gap (1600)</Text>
+        </Box>
+      </PageContent.Column>
+      <PageContent.Column>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>64px between columns</Text>
+        </Box>
+      </PageContent.Column>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+## Specs
+
+<PropsTable id="PageContent" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone.
+
+### Accessibility standards
+
+- **Semantic structure:** PageContent renders semantic `<div>` elements that
+  provide a logical content structure for assistive technologies.
+- **Reading order:** The DOM order matches the visual order, ensuring screen
+  readers present content in the expected sequence.
+- **Responsive reflow:** Multi-column layouts collapse to a single column on
+  smaller screens, maintaining readability and preventing horizontal scrolling
+  (WCAG 1.4.10 Reflow).
+- **Landmark usage:** PageContent is a layout primitive. Wrap content in
+  appropriate landmark elements (`<main>`, `<aside>`, `<section>`) to provide
+  additional context for screen readers.
+
+## Predecessor
+
+PageContent replaces the `PageContentWide`, `PageContentNarrow`, and
+`PageContentFull` components from Merchant Center Application Kit. For detailed
+migration instructions, see the
+[Migration guide](/page-content/implementation#migrating-from-merchant-center-application-kit)
+in the implementation docs. For the original Application Kit documentation, see
+[Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts).
