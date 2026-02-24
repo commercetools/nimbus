@@ -1,10 +1,10 @@
 # Bundle Size Monitoring
 
 Nimbus includes a lightweight bundle size check that runs in CI. It measures the
-gzipped size of every ES module entry point in `packages/nimbus/dist` and
-compares against a checked-in baseline. If any file grows beyond a configured
-threshold the CI job fails, preventing accidental size regressions from being
-merged.
+minified (not gzipped) size of each published package's output and compares
+against a baseline committed to the repo (`bundle-sizes.json`). If any package
+grows beyond a 5% threshold the CI job fails, preventing accidental size
+regressions from being merged.
 
 ## Quick Reference
 
@@ -12,57 +12,59 @@ merged.
 # Check sizes against baseline (what CI runs)
 pnpm check:bundle-size
 
-# Update the full baseline after an intentional size change
-pnpm update:bundle-baseline
-
-# Update the baseline for a single component
-pnpm update:bundle-baseline button
+# Update the baseline after an intentional size change
+node scripts/update-bundle-sizes.mjs
 ```
 
 ## How It Works
 
 The script (`scripts/check-bundle-size.mjs`) does the following:
 
-1. Scans `packages/nimbus/dist/` for `index.es.js`, all `components/*.es.js`
-   files, and all internal chunks in `dist/chunks/`.
-2. Gzips each file (level 9) and records the byte count. Internal chunks are
-   summed into a single **aggregate** entry because their hashed filenames
-   change across builds.
-3. Compares every entry against `.bundle-baseline/bundle-size-baseline.json`.
+1. Measures minified output sizes for each tracked package, broken down by
+   format (ESM and CJS).
+2. Fetches `bundle-sizes.json` from the `main` branch via `git show` as the
+   baseline (falls back to local file if main has no baseline yet).
+3. Compares each package/format — if any exceeds the 5% threshold, it checks
+   whether the PR's local `bundle-sizes.json` has been updated to match the
+   current sizes (the "approval" mechanism).
 4. Prints a table with current size, baseline size, percentage delta, and
    status.
-5. Exits with code 1 if any entry exceeds the **error threshold**.
+5. Exits with code 1 if any entry exceeds the threshold without approval.
 
-## Thresholds
+## Threshold
 
-| Level   | Increase | Effect                           |
-| ------- | -------- | -------------------------------- |
-| OK      | 0 – 15%  | Reported, no action needed       |
-| Warning | > 15%    | Printed in output, does not fail |
-| Error   | > 30%    | CI job fails (exit code 1)       |
+| Increase | Effect            |
+| -------- | ----------------- |
+| 0 – 5%   | OK, no action     |
+| > 5%     | CI fails (exit 1) |
 
-These values are defined at the top of `scripts/check-bundle-size.mjs`
-(`WARN_THRESHOLD` and `ERROR_THRESHOLD`) and can be adjusted as the project
-evolves.
+The threshold is defined at the top of `scripts/check-bundle-size.mjs`
+(`THRESHOLD`) and can be adjusted as the project evolves.
 
 ## What Gets Tracked
 
-- **`index.es.js`** — The main bundle (theme, hooks, utilities). Currently ~7 KB
-  gzipped.
-- **`components/*.es.js`** — One file per component. Most are small re-export
-  stubs (~120–340 B gzipped) that point into shared chunks.
-- **`chunks (aggregate)`** — The combined gzipped size of all internal chunks in
-  `dist/chunks/`. Tracked as a single sum because individual chunk filenames
-  contain content hashes that change across builds.
+Three published packages are tracked, each with ESM and CJS formats:
 
-The baseline file also records when it was last generated, so reviewers can tell
-how fresh it is.
+- **`@commercetools/nimbus`** — The core component library.
+- **`@commercetools/nimbus-icons`** — SVG icons as React components.
+- **`@commercetools/nimbus-tokens`** — Design tokens.
+
+The baseline file (`bundle-sizes.json`) is committed to the repo root and looks
+like this:
+
+```json
+{
+  "@commercetools/nimbus": { "esm": 1541463, "cjs": 60526 },
+  "@commercetools/nimbus-icons": { "esm": 1555358, "cjs": 2159234 },
+  "@commercetools/nimbus-tokens": { "esm": 209, "cjs": 216 }
+}
+```
 
 ## Common Scenarios
 
 ### Your PR Fails the Bundle Size Check
 
-1. Look at the CI output to see which files exceeded the threshold and by how
+1. Look at the CI output to see which packages exceeded the threshold and by how
    much.
 2. If the increase is **unintentional**, investigate what changed. Common
    causes:
@@ -71,33 +73,27 @@ how fresh it is.
      code.
    - Tree-shaking broke due to side effects in a module.
 3. If the increase is **intentional** (e.g. a new feature that legitimately adds
-   code), update the baseline for that component:
+   code), approve it:
 
    ```bash
    pnpm build:packages
-   pnpm update:bundle-baseline button
+   node scripts/update-bundle-sizes.mjs
+   git add bundle-sizes.json
+   git commit -m "chore: approve bundle size increase"
    ```
 
-   This updates only `components/button.es.js` in the baseline while preserving
-   all other entries. You can also run `pnpm update:bundle-baseline` without a
-   component name to regenerate the entire baseline.
+   The reviewer will see the `bundle-sizes.json` diff in the PR review, making
+   bundle increases an explicit, reviewed decision.
 
-   Commit the updated `.bundle-baseline/bundle-size-baseline.json` as part of
-   your PR.
+### A New Package Format Was Added
 
-### A New Component Was Added
+New entries that aren't in the baseline are reported as `new` status and do
+**not** cause a failure. Run `node scripts/update-bundle-sizes.mjs` to include
+them in the baseline.
 
-New files that aren't in the baseline are reported as informational (`new`
-status) and do **not** cause a failure. After the component lands, update the
-baseline so future changes to that component are tracked:
+### A Package Was Removed
 
-```bash
-pnpm update:bundle-baseline
-```
-
-### A Component Was Removed
-
-Removed files are reported as `removed` status. Update the baseline to clean
+Removed entries are reported as `removed` status. Update the baseline to clean
 them out.
 
 ## CI Integration
@@ -110,28 +106,28 @@ The check runs in the `build-and-test` workflow
   run: node scripts/check-bundle-size.mjs
 ```
 
-No additional dependencies or services are required — the script uses only
-Node.js built-ins (`fs`, `zlib`, `path`).
+No additional dependencies, services, or secrets are required — the script uses
+only Node.js built-ins (`fs`, `path`, `child_process`) and git.
 
-### Automatic Baseline Updates
+## Approval Flow
 
-When a PR merges to `main` that touches source files in `packages/nimbus/src/`
-or `packages/tokens/`, a separate workflow
-(`.github/workflows/update-bundle-baseline.yml`) automatically rebuilds and
-updates `bundle-size-baseline.json`. This keeps the baseline in sync without
-manual intervention.
+The approval mechanism is designed so that bundle size increases are visible in
+PR review:
 
-The auto-update commit uses `[skip ci]` to avoid re-triggering workflows. If the
-baseline hasn't changed, the workflow no-ops and no commit is created.
+1. Push PR.
+2. CI fails: "X FAIL: @commercetools/nimbus esm increased 8.2% (threshold 5%)"
+3. You decide this is expected.
+4. Run: `node scripts/update-bundle-sizes.mjs`
+5. Commit the updated `bundle-sizes.json`.
+6. CI re-runs — PR baseline matches measured size — passes.
+7. Reviewer sees the `bundle-sizes.json` diff in the PR.
 
-This means you typically **don't need to manually update the baseline** after
-your PR merges. The only time you need to update it manually is during PR
-development when your changes exceed the 30% error threshold and you need the CI
-check to pass.
+No post-merge CI commits or special GitHub permissions are needed. The PR itself
+carries the baseline update.
 
 ## Running Locally
 
-You need a built `packages/nimbus/dist` directory. If you don't have one:
+You need built packages. If you don't have them:
 
 ```bash
 pnpm build:packages
@@ -146,21 +142,21 @@ pnpm check:bundle-size
 The output looks like this:
 
 ```
-File                                  Current    Baseline     Delta  Status
---------------------------------------------------------------------------
-index.es.js                            7.0 KB      7.0 KB    +0.0%    ok
-components/button.es.js                 125 B       125 B    +0.0%    ok
+Package                                   Format     Current    Baseline     Delta  Status
+----------------------------------------------------------------------------------------
+@commercetools/nimbus-icons                  cjs     2.06 MB     2.06 MB     +0.0%    ok
+@commercetools/nimbus-icons                  esm     1.48 MB     1.48 MB     +0.0%    ok
+@commercetools/nimbus                        esm     1.47 MB     1.47 MB     +0.0%    ok
 ...
 ```
 
-## Adjusting Thresholds
+## Adjusting the Threshold
 
-Edit the constants at the top of `scripts/check-bundle-size.mjs`:
+Edit the constant at the top of `scripts/check-bundle-size.mjs`:
 
 ```js
-const WARN_THRESHOLD = 0.15; // 15% — prints a warning
-const ERROR_THRESHOLD = 0.3; // 30% — fails the build
+const THRESHOLD = 0.05; // 5%
 ```
 
-If we find the thresholds too sensitive or too lenient after a few weeks of
-use, adjust them and commit the change.
+If we find the threshold too sensitive or too lenient after a few weeks of use,
+adjust it and commit the change.

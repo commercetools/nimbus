@@ -12,6 +12,7 @@ export default defineConfig({
       "./packages/nimbus/vitest.storybook.config.ts",
       "./packages/nimbus/vitest.unit.config.ts",
       "./packages/design-token-ts-plugin/vitest.config.ts",
+      "./vitest.scripts.config.ts",
     ],
   },
 });
