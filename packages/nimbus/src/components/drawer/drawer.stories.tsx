@@ -20,6 +20,9 @@ const meta: Meta<typeof Drawer.Root> = {
   title: "Components/Overlay/Drawer",
   component: Drawer.Root,
   tags: ["autodocs"],
+  parameters: {
+    chromatic: { pauseAnimationAtEnd: true },
+  },
   argTypes: {
     placement: {
       control: { type: "select" },
@@ -187,6 +190,17 @@ export const Default: Story = {
           timeout: 1000,
         }
       );
+    });
+
+    // Leave drawer open for Chromatic to snapshot the open/animated state
+    await step("Reopen drawer for Chromatic snapshot", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Accepts anything as trigger",
+      });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
     });
   },
 };
