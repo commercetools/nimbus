@@ -19,6 +19,7 @@ export const pageContentRecipe = defineSlotRecipe({
       '&[data-sticky="true"]': {
         position: "sticky",
         top: 0,
+        alignSelf: "start",
       },
     },
   },

@@ -33,21 +33,22 @@ The `variant` prop controls the max-width constraint. Available values are `wide
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="800">
-    <PageContent.Root variant="wide">
-      <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200">
-        <Text color="blue.6" fontWeight="bold">wide</Text>
+   <PageContent.Root variant="narrow">
+      <Box bg="purple.3" padding="400" borderRadius="200">
+        <Text color="purple.12" fontWeight="bold">narrow</Text>
+        <Text color="neutral.11">The difference from wide is only visible when the viewport is wider than the narrow max-width of 3xl (768px).</Text>
       </Box>
     </PageContent.Root>
 
-    <PageContent.Root variant="narrow">
-      <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
-        <Text color="purple.6" fontWeight="bold">narrow</Text>
+    <PageContent.Root variant="wide">
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text color="blue.12" fontWeight="bold">wide</Text>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="full">
-      <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
-        <Text color="teal.6" fontWeight="bold">full</Text>
+      <Box bg="teal.3" padding="400" borderRadius="200">
+        <Text color="teal.12" fontWeight="bold">full</Text>
       </Box>
     </PageContent.Root>
   </Stack>
@@ -60,29 +61,29 @@ Use the `columns` prop with `PageContent.Column` wrappers for multi-column layou
 
 ```jsx live-dev
 const App = () => (
-  <Stack direction="column" gap="800">
+  <Stack direction="column" gap="800" >
     <PageContent.Root variant="wide" columns="1/1">
       <PageContent.Column>
-        <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200">
-          <Text color="blue.6" fontWeight="bold">Left (equal)</Text>
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text color="blue.12" fontWeight="bold">Left (equal)</Text>
         </Box>
       </PageContent.Column>
       <PageContent.Column>
-        <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
-          <Text color="purple.6" fontWeight="bold">Right (equal)</Text>
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text color="blue.12" fontWeight="bold">Right (equal)</Text>
         </Box>
       </PageContent.Column>
     </PageContent.Root>
 
     <PageContent.Root variant="wide" columns="2/1">
       <PageContent.Column>
-        <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
-          <Text color="teal.6" fontWeight="bold">Main content (2fr)</Text>
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text color="purple.12" fontWeight="bold">Main content (2fr)</Text>
         </Box>
       </PageContent.Column>
       <PageContent.Column>
-        <Box border="solid-25" borderColor="orange.6" padding="400" borderRadius="200">
-          <Text color="orange.6" fontWeight="bold">Sidebar (1fr)</Text>
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text color="purple.12" fontWeight="bold">Sidebar (1fr)</Text>
         </Box>
       </PageContent.Column>
     </PageContent.Root>
@@ -96,15 +97,15 @@ Use the `sticky` prop on a `PageContent.Column` to make it stick during scroll. 
 
 ```jsx live-dev
 const App = () => (
-  <PageContent.Root variant="wide" columns="2/1">
+  <PageContent.Root variant="wide" columns="2/1" maxHeight="250px" overflowY="scroll">
     <PageContent.Column>
-      <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200" minHeight="300px">
-        <Text color="blue.6" fontWeight="bold">Main content area (tall)</Text>
+      <Box bg="blue.3" padding="400" borderRadius="200" minHeight="300px">
+        <Text color="blue.12" fontWeight="bold">Main content area (tall)</Text>
       </Box>
     </PageContent.Column>
     <PageContent.Column sticky top="400">
-      <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
-        <Text color="purple.6" fontWeight="bold">Sticky sidebar</Text>
+      <Box bg="purple.3" padding="400" borderRadius="200">
+        <Text color="purple.12" fontWeight="bold">Sticky sidebar</Text>
       </Box>
     </PageContent.Column>
   </PageContent.Root>
@@ -119,13 +120,13 @@ The default gap between columns is `800` (32px). Override with the `gap` style p
 const App = () => (
   <PageContent.Root variant="wide" columns="1/1" gap="1600">
     <PageContent.Column>
-      <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
-        <Text color="teal.6" fontWeight="bold">Column 1</Text>
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text color="blue.12" fontWeight="bold">Column 1</Text>
       </Box>
     </PageContent.Column>
     <PageContent.Column>
-      <Box border="solid-25" borderColor="orange.6" padding="400" borderRadius="200">
-        <Text color="orange.6" fontWeight="bold">Column 2</Text>
+      <Box bg="purple.3" padding="400" borderRadius="200">
+        <Text color="purple.12" fontWeight="bold">Column 2</Text>
       </Box>
     </PageContent.Column>
   </PageContent.Root>

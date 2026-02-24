@@ -18,10 +18,15 @@ export const PageContentColumn = ({
 }: PageContentColumnProps) => {
   const [styleProps, functionalProps] = extractStyleProps(props);
 
+  const stickyProps = sticky
+    ? { position: "sticky" as const, top: 0, alignSelf: "start" }
+    : {};
+
   return (
     <PageContentColumnSlot
       ref={ref}
       data-sticky={sticky || undefined}
+      {...stickyProps}
       {...styleProps}
       {...functionalProps}
     >

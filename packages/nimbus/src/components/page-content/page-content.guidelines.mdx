@@ -81,28 +81,29 @@ Select the width variant based on the primary content type on the page.
 const App = () => (
   <Stack gap="800">
     <PageContent.Root variant="narrow">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="blue.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Narrow: Simple form</Text>
-          <Text color="fg.subtle">Fields span the focused width.</Text>
+          <Text fontWeight="bold" color="blue.12">Narrow: Simple form</Text>
+          <Text>Fields span the focused width.</Text>
+          <Text color="neutral.11">The difference from wide is only visible when the viewport is wider than the narrow max-width of 3xl (768px).</Text>
         </Stack>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="wide">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="purple.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Wide: Complex form or small table</Text>
-          <Text color="fg.subtle">More room for multi-section layouts.</Text>
+          <Text fontWeight="bold" color="purple.12">Wide: Complex form or small table</Text>
+          <Text>More room for multi-section layouts.</Text>
         </Stack>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="full">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="teal.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Full: Large table</Text>
-          <Text color="fg.subtle">Content spans the entire available width.</Text>
+          <Text fontWeight="bold" color="teal.12">Full: Large table</Text>
+          <Text>Content spans the entire available width.</Text>
         </Stack>
       </Box>
     </PageContent.Root>
@@ -122,19 +123,19 @@ const App = () => (
 const App = () => (
   <Stack gap="800">
     <PageContent.Root variant="full">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="blue.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Full: Simple form (avoid)</Text>
-          <Text color="fg.subtle">This form does not need the full viewport width. Use narrow instead.</Text>
+          <Text fontWeight="bold" color="blue.12">Full: Simple form (avoid)</Text>
+          <Text>This form does not need the full viewport width. Use narrow instead.</Text>
         </Stack>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="narrow">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="purple.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Narrow: Data table (avoid)</Text>
-          <Text color="fg.subtle">Tables need more room. Use wide or full instead.</Text>
+          <Text fontWeight="bold" color="purple.12">Narrow: Data table (avoid)</Text>
+          <Text>Tables need more room. Use wide or full instead.</Text>
         </Stack>
       </Box>
     </PageContent.Root>
@@ -160,9 +161,9 @@ Choose the column layout based on how your content should be organized.
 const App = () => (
   <PageContent.Root variant="wide" columns="2/1">
     <PageContent.Column>
-      <Box bg="primary.3" padding="600" borderRadius="200" minHeight="200px">
+      <Box bg="blue.3" padding="600" borderRadius="200" minHeight="200px">
         <Stack gap="400">
-          <Text fontWeight="bold" color="primary.11">Main content</Text>
+          <Text fontWeight="bold" color="blue.12">Main content</Text>
           <Text>Form fields and primary content live here.</Text>
         </Stack>
       </Box>
@@ -170,7 +171,7 @@ const App = () => (
     <PageContent.Column sticky>
       <Box bg="purple.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold" color="purple.11">Sticky sidebar</Text>
+          <Text fontWeight="bold" color="purple.12">Sticky sidebar</Text>
           <Text>Meta information stays visible on scroll.</Text>
         </Stack>
       </Box>
@@ -192,18 +193,18 @@ const App = () => (
 const App = () => (
   <PageContent.Root variant="wide" columns="1/1">
     <PageContent.Column>
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="blue.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Main form (avoid 1/1 for this)</Text>
-          <Text color="fg.subtle">This content is more important than the sidebar. Use 2/1 to reflect the hierarchy.</Text>
+          <Text fontWeight="bold" color="blue.12">Main form (avoid 1/1 for this)</Text>
+          <Text>This content is more important than the sidebar. Use 2/1 to reflect the hierarchy.</Text>
         </Stack>
       </Box>
     </PageContent.Column>
     <PageContent.Column>
-      <Box bg="neutral.3" padding="600" borderRadius="200">
+      <Box bg="purple.3" padding="600" borderRadius="200">
         <Stack gap="400">
-          <Text fontWeight="bold">Sidebar</Text>
-          <Text color="fg.subtle">Secondary content gets equal space unnecessarily.</Text>
+          <Text fontWeight="bold" color="purple.12">Sidebar</Text>
+          <Text>Secondary content gets equal space unnecessarily.</Text>
         </Stack>
       </Box>
     </PageContent.Column>
@@ -227,20 +228,20 @@ const App = () => (
   <Stack gap="800">
     <PageContent.Root variant="wide" columns="2/1">
       <PageContent.Column>
-        <Box bg="primary.3" padding="600" borderRadius="200">
-          <Text fontWeight="bold" color="primary.11">Wide: Form section</Text>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Wide: Form section</Text>
         </Box>
       </PageContent.Column>
       <PageContent.Column>
-        <Box bg="purple.3" padding="600" borderRadius="200">
-          <Text fontWeight="bold" color="purple.11">Sidebar</Text>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Sidebar</Text>
         </Box>
       </PageContent.Column>
     </PageContent.Root>
 
     <PageContent.Root variant="full">
-      <Box bg="neutral.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold">Full: Data table section</Text>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="purple.12">Full: Data table section</Text>
       </Box>
     </PageContent.Root>
   </Stack>
@@ -258,20 +259,20 @@ const App = () => (
 const App = () => (
   <Stack gap="800">
     <PageContent.Root variant="narrow">
-      <Box bg="neutral.3" padding="400" borderRadius="200">
-        <Text fontWeight="bold">Narrow section</Text>
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="blue.12">Narrow section</Text>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="wide">
-      <Box bg="neutral.3" padding="400" borderRadius="200">
-        <Text fontWeight="bold">Wide section</Text>
+      <Box bg="purple.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="purple.12">Wide section</Text>
       </Box>
     </PageContent.Root>
 
     <PageContent.Root variant="full">
-      <Box bg="neutral.3" padding="400" borderRadius="200">
-        <Text fontWeight="bold">Full section (three variants is too many)</Text>
+      <Box bg="teal.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="teal.12">Full section (three variants is too many)</Text>
       </Box>
     </PageContent.Root>
   </Stack>
@@ -283,6 +284,6 @@ const App = () => (
 PageContent replaces the `PageContentWide`, `PageContentNarrow`, and
 `PageContentFull` components from Merchant Center Application Kit. For detailed
 migration instructions, see the
-[Migration guide](/page-content/implementation#migrating-from-merchant-center-application-kit)
+[Migration guide](/components/layout/pagecontent/dev#migrating-from-merchant-center-application-kit)
 in the implementation docs. For the original Application Kit documentation, see
 [Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts).

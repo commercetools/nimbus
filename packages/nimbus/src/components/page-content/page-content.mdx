@@ -66,8 +66,8 @@ large forms or tables with few columns.
 ```jsx live
 const App = () => (
   <PageContent.Root variant="wide">
-    <Box bg="neutral.3" padding="600" borderRadius="200">
-      <Text fontWeight="bold">Wide</Text>
+    <Box bg="blue.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold" color="blue.12">Wide</Text>
       <Text>Constrained to a wide max-width. Best for large forms or tables with few columns.</Text>
     </Box>
   </PageContent.Root>
@@ -82,9 +82,10 @@ collapsible panels, and cards.
 ```jsx live
 const App = () => (
   <PageContent.Root variant="narrow">
-    <Box bg="neutral.3" padding="600" borderRadius="200">
-      <Text fontWeight="bold">Narrow</Text>
+    <Box bg="purple.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold" color="purple.12">Narrow</Text>
       <Text>Constrained to a narrow max-width. Best for simple forms and focused content.</Text>
+      <Text color="neutral.11">The difference from wide is only visible when the viewport is wider than the narrow max-width of 3xl (768px).</Text>
     </Box>
   </PageContent.Root>
 )
@@ -98,8 +99,8 @@ for large tables and content with a horizontal reading flow.
 ```jsx live
 const App = () => (
   <PageContent.Root variant="full">
-    <Box bg="neutral.3" padding="600" borderRadius="200">
-      <Text fontWeight="bold">Full</Text>
+    <Box bg="teal.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold" color="teal.12">Full</Text>
       <Text>No width constraint. Best for large tables and horizontal reading flows.</Text>
     </Box>
   </PageContent.Root>
@@ -119,8 +120,8 @@ wrappers are needed.
 ```jsx live
 const App = () => (
   <PageContent.Root variant="wide" columns="1">
-    <Box bg="neutral.3" padding="600" borderRadius="200">
-      <Text fontWeight="bold">Single column</Text>
+    <Box bg="blue.3" padding="600" borderRadius="200">
+      <Text fontWeight="bold" color="blue.12">Single column</Text>
       <Text>Content flows in a single, full-width column.</Text>
     </Box>
   </PageContent.Root>
@@ -136,14 +137,14 @@ save vertical space.
 const App = () => (
   <PageContent.Root variant="wide" columns="1/1">
     <PageContent.Column>
-      <Box bg="primary.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold" color="primary.11">Left column</Text>
+      <Box bg="blue.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="blue.12">Left column</Text>
         <Text>Equal width with the right column.</Text>
       </Box>
     </PageContent.Column>
     <PageContent.Column>
       <Box bg="purple.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold" color="purple.11">Right column</Text>
+        <Text fontWeight="bold" color="purple.12">Right column</Text>
         <Text>Equal width with the left column.</Text>
       </Box>
     </PageContent.Column>
@@ -160,14 +161,14 @@ information or contextual links.
 const App = () => (
   <PageContent.Root variant="wide" columns="2/1">
     <PageContent.Column>
-      <Box bg="primary.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold" color="primary.11">Main content (2fr)</Text>
+      <Box bg="blue.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="blue.12">Main content (2fr)</Text>
         <Text>The wider column for primary content such as forms.</Text>
       </Box>
     </PageContent.Column>
     <PageContent.Column>
       <Box bg="purple.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold" color="purple.11">Sidebar (1fr)</Text>
+        <Text fontWeight="bold" color="purple.12">Sidebar (1fr)</Text>
         <Text>Narrower column for meta information.</Text>
       </Box>
     </PageContent.Column>
@@ -185,14 +186,14 @@ information that should remain visible.
 const App = () => (
   <PageContent.Root variant="wide" columns="2/1">
     <PageContent.Column>
-      <Box bg="primary.3" padding="600" borderRadius="200" minHeight="300px">
-        <Text fontWeight="bold" color="primary.11">Main content</Text>
+      <Box bg="blue.3" padding="600" borderRadius="200" minHeight="300px">
+        <Text fontWeight="bold" color="blue.12">Main content</Text>
         <Text>Tall content area that creates scrollable space.</Text>
       </Box>
     </PageContent.Column>
     <PageContent.Column sticky>
       <Box bg="purple.3" padding="600" borderRadius="200">
-        <Text fontWeight="bold" color="purple.11">Sticky sidebar</Text>
+        <Text fontWeight="bold" color="purple.12">Sticky sidebar</Text>
         <Text>This column stays visible while scrolling.</Text>
       </Box>
     </PageContent.Column>
@@ -210,26 +211,26 @@ const App = () => (
   <Stack gap="800">
     <PageContent.Root variant="wide" columns="1/1">
       <PageContent.Column>
-        <Box bg="neutral.3" padding="400" borderRadius="200">
-          <Text fontWeight="bold">Default gap (800)</Text>
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Default gap (800)</Text>
         </Box>
       </PageContent.Column>
       <PageContent.Column>
-        <Box bg="neutral.3" padding="400" borderRadius="200">
-          <Text>32px between columns</Text>
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text color="blue.12">32px between columns</Text>
         </Box>
       </PageContent.Column>
     </PageContent.Root>
 
     <PageContent.Root variant="wide" columns="1/1" gap="1600">
       <PageContent.Column>
-        <Box bg="neutral.3" padding="400" borderRadius="200">
-          <Text fontWeight="bold">Large gap (1600)</Text>
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text fontWeight="bold" color="purple.12">Large gap (1600)</Text>
         </Box>
       </PageContent.Column>
       <PageContent.Column>
-        <Box bg="neutral.3" padding="400" borderRadius="200">
-          <Text>64px between columns</Text>
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text color="purple.12">64px between columns</Text>
         </Box>
       </PageContent.Column>
     </PageContent.Root>
@@ -264,6 +265,6 @@ everyone.
 PageContent replaces the `PageContentWide`, `PageContentNarrow`, and
 `PageContentFull` components from Merchant Center Application Kit. For detailed
 migration instructions, see the
-[Migration guide](/page-content/implementation#migrating-from-merchant-center-application-kit)
+[Migration guide](/components/layout/pagecontent/dev#migrating-from-merchant-center-application-kit)
 in the implementation docs. For the original Application Kit documentation, see
 [Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts).
