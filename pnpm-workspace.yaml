@@ -9,21 +9,21 @@ catalogMode: strict
 
 catalogs:
   tooling:
-    "@fission-ai/openspec": ^1.1.1
+    "@fission-ai/openspec": ^1.2.0
     globals: ^17.3.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.56.0
+    typescript-eslint: ^8.56.1
     tsx: ^4.21.0
     "@babel/core": ^7.29.0
     "@babel/runtime": ^7.28.6
     "@babel/preset-typescript": ^7.28.5
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.33.0
-    eslint: ^10.0.1
+    eslint: ^10.0.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
-    eslint-plugin-react-refresh: ^0.5.1
+    eslint-plugin-react-refresh: ^0.5.2
     express-rate-limit: ^8.2.1
     prettier: ^3.8.1
     "@preconstruct/cli": ^2.8.12
@@ -44,12 +44,12 @@ catalogs:
     "@testing-library/react": ^16.3.2
     playwright: ^1.58.2
     vitest: ^4.0.18
-    storybook: ^10.2.10
-    eslint-plugin-storybook: ^10.2.10
-    "@storybook/addon-a11y": ^10.2.10
-    "@storybook/addon-docs": ^10.2.10
-    "@storybook/addon-vitest": ^10.2.10
-    "@storybook/react-vite": ^10.2.10
+    storybook: ^10.2.11
+    eslint-plugin-storybook: ^10.2.11
+    "@storybook/addon-a11y": ^10.2.11
+    "@storybook/addon-docs": ^10.2.11
+    "@storybook/addon-vitest": ^10.2.11
+    "@storybook/react-vite": ^10.2.11
     "@vueless/storybook-dark-mode": ^10.0.7
     jsdom: ^28.1.0
 
@@ -75,4 +75,4 @@ catalogs:
     dompurify: ^3.3.1
     lodash: ^4.17.23
     "@types/lodash": ^4.17.24
-    "@types/node": ^24.10.1
+    "@types/node": ^24.10.13
