@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/ci
 
       - name: Fetch main ref for bundle size baseline
-        run: git fetch origin main --depth=1
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE" && git fetch origin main --depth=1
         if: github.event_name == 'pull_request'
 
       - name: Check bundle size
