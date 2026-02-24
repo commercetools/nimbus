@@ -6,6 +6,7 @@ import {
   MainPageContent,
   MainPageFooter,
 } from "./components";
+import { PageContentColumn } from "../page-content/components/page-content.column";
 
 /**
  * MainPage
@@ -20,7 +21,7 @@ import {
  * // Info page (no footer)
  * <MainPage.Root>
  *   <MainPage.Header>
- *     <MainPage.Title>Products</MainPage.Title>
+ *     <MainPage.Title title="Products" />
  *     <MainPage.Actions>
  *       <Button>Add Product</Button>
  *     </MainPage.Actions>
@@ -33,7 +34,7 @@ import {
  * // Form page (with footer)
  * <MainPage.Root>
  *   <MainPage.Header>
- *     <MainPage.Title>Settings</MainPage.Title>
+ *     <MainPage.Title title="Settings" />
  *   </MainPage.Header>
  *   <MainPage.Content variant="narrow">
  *     {form fields}
@@ -69,7 +70,7 @@ export const MainPage = {
    * @example
    * ```tsx
    * <MainPage.Header>
-   *   <MainPage.Title>Page Title</MainPage.Title>
+   *   <MainPage.Title title="Page Title" />
    *   <MainPage.Actions>
    *     <Button>Action</Button>
    *   </MainPage.Actions>
@@ -80,11 +81,13 @@ export const MainPage = {
   /**
    * # MainPage.Title
    *
-   * The page title rendered as an h1 element.
+   * The page title with optional subtitle. Uses the Nimbus Heading
+   * component (h1) internally. The Header accepts any content, so you
+   * can replace Title with custom elements if needed.
    *
    * @example
    * ```tsx
-   * <MainPage.Title>Products</MainPage.Title>
+   * <MainPage.Title title="Products" subtitle="Manage your catalog" />
    * ```
    */
   Title: MainPageTitle,
@@ -111,12 +114,28 @@ export const MainPage = {
    * @example
    * ```tsx
    * <MainPage.Content variant="wide" columns="2/1">
-   *   <PageContent.Column>Main</PageContent.Column>
-   *   <PageContent.Column>Sidebar</PageContent.Column>
+   *   <MainPage.Column>Main</MainPage.Column>
+   *   <MainPage.Column>Sidebar</MainPage.Column>
    * </MainPage.Content>
    * ```
    */
   Content: MainPageContent,
+  /**
+   * # MainPage.Column
+   *
+   * A column within a multi-column Content layout. Re-export of
+   * PageContent.Column for convenience. Use with `columns="1/1"` or
+   * `columns="2/1"` on Content.
+   *
+   * @example
+   * ```tsx
+   * <MainPage.Content variant="wide" columns="2/1">
+   *   <MainPage.Column>Main content</MainPage.Column>
+   *   <MainPage.Column sticky>Sidebar</MainPage.Column>
+   * </MainPage.Content>
+   * ```
+   */
+  Column: PageContentColumn,
   /**
    * # MainPage.Footer
    *

@@ -1,0 +1,164 @@
+---
+id: Components-MainPage
+title: MainPage
+exportName: MainPage
+description:
+  A page skeleton compound component providing title, header actions, content
+  area, and optional footer for top-level Merchant Center views.
+documentState: InitialDraft
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Layout
+  - MainPage
+tags:
+  - component
+  - layout
+  - main-page
+  - page-skeleton
+---
+
+# MainPage
+
+A page skeleton compound component that provides the structural layout for
+top-level views. Combines a header (with title and actions), a content area
+(with built-in PageContent width constraints), and an optional footer.
+
+## Overview
+
+MainPage is a compound component that structures top-level views into three
+zones: a header, a content area, and an optional footer.
+
+### Key features
+
+- **MainPage.Header** — Positions a Title on the left and Actions on the right
+- **MainPage.Content** — Controls content width (`variant`) and supports multi-column layouts (`columns`)
+- **MainPage.Column** — Defines individual columns inside a multi-column Content area
+- **MainPage.Footer** — Optional action bar for form pages; omit it and the space collapses automatically
+- **Composable** — Arrange sub-components freely to build info pages, form pages, or tabular pages from the same primitives
+
+### Resources
+
+[MC Application Components - Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages)
+
+## Variables
+
+Get familiar with the sub-components.
+
+### Header with title and actions
+
+The header uses flex layout to position title on the left and actions on the right.
+
+```jsx live
+const App = () => (
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
+    <MainPage.Header>
+      <MainPage.Title title="Page Title" subtitle="Optional subtitle text" />
+      <MainPage.Actions>
+        <Button variant="ghost">Secondary</Button>
+        <Button>Primary Action</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Box bg="neutral.3" padding="600" borderRadius="200">
+        <Text>Content area</Text>
+      </Box>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### Content width variants
+
+The `variant` prop on Content controls width constraints via PageContent.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <MainPage.Root border='solid-25' borderColor='purple.6' borderRadius="200">
+      <MainPage.Header>
+        <MainPage.Title title="Narrow" />
+      </MainPage.Header>
+      <MainPage.Content variant="narrow">
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text color="purple.12">Constrained to narrow max-width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+
+    <MainPage.Root border='solid-25' borderColor='blue.6' borderRadius="200">
+      <MainPage.Header>
+        <MainPage.Title title="Wide" />
+      </MainPage.Header>
+      <MainPage.Content variant="wide">
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text color="blue.12">Constrained to wide max-width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+
+    <MainPage.Root border='solid-25' borderColor='teal.6' borderRadius="200">
+      <MainPage.Header>
+        <MainPage.Title title="Full" />
+      </MainPage.Header>
+      <MainPage.Content variant="full">
+        <Box bg="teal.3" padding="400" borderRadius="200">
+          <Text color="teal.12">Full available width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+  </Stack>
+)
+```
+
+### Multi-column content
+
+Use the `columns` prop on Content with `MainPage.Column` children for multi-column layouts.
+
+```jsx live
+const App = () => (
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
+    <MainPage.Header>
+      <MainPage.Title title="Multi-column" />
+    </MainPage.Header>
+    <MainPage.Content variant="wide" columns="2/1">
+      <MainPage.Column>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Main content (2fr)</Text>
+        </Box>
+      </MainPage.Column>
+      <MainPage.Column>
+        <Box bg="purple.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="purple.12">Sidebar (1fr)</Text>
+        </Box>
+      </MainPage.Column>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### Optional footer
+
+Include Footer for form-like pages with save/cancel actions. Omit it for read-only pages — the grid row collapses automatically.
+
+```jsx live
+const App = () => (
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
+    <MainPage.Header>
+      <MainPage.Title title="With Footer" />
+    </MainPage.Header>
+    <MainPage.Content variant="narrow">
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form content area</Text>
+      </Box>
+    </MainPage.Content>
+    <MainPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button>Save</Button>
+      </Stack>
+    </MainPage.Footer>
+  </MainPage.Root>
+)
+```
