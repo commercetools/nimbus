@@ -114,8 +114,8 @@ catalogs:
       specifier: ^5.5.5
       version: 5.5.5
     eslint-plugin-react-refresh:
-      specifier: ^0.5.1
-      version: 0.5.1
+      specifier: ^0.5.2
+      version: 0.5.2
     eslint-plugin-storybook:
       specifier: ^10.2.10
       version: 10.2.10
@@ -294,7 +294,7 @@ importers:
         version: 10.0.1
       eslint-plugin-react-refresh:
         specifier: catalog:tooling
-        version: 0.5.1(eslint@10.0.1)
+        version: 0.5.2(eslint@10.0.1)
       globals:
         specifier: catalog:tooling
         version: 17.3.0
@@ -466,7 +466,7 @@ importers:
         version: 10.0.1
       eslint-plugin-react-refresh:
         specifier: catalog:tooling
-        version: 0.5.1(eslint@10.0.1)
+        version: 0.5.2(eslint@10.0.1)
       globals:
         specifier: catalog:tooling
         version: 17.3.0
@@ -4331,8 +4331,8 @@ packages:
       eslint-config-prettier:
         optional: true
 
-  eslint-plugin-react-refresh@0.5.1:
-    resolution: {integrity: sha512-Y5sJsreCUdGcF4mLD70iJNa47Z6CX4MsqJoJBARDC/fBhmacSby7k73UuValr0F9M7GfWKpEqS4NMsniWkVxQw==}
+  eslint-plugin-react-refresh@0.5.2:
+    resolution: {integrity: sha512-hmgTH57GfzoTFjVN0yBwTggnsVUF2tcqi7RJZHqi9lIezSs4eFyAMktA68YD4r5kNw1mxyY4dmkyoFDb3FIqrA==}
     peerDependencies:
       eslint: ^9 || ^10
 
@@ -11677,7 +11677,7 @@ snapshots:
     optionalDependencies:
       eslint-config-prettier: 10.1.8(eslint@10.0.1)
 
-  eslint-plugin-react-refresh@0.5.1(eslint@10.0.1):
+  eslint-plugin-react-refresh@0.5.2(eslint@10.0.1):
     dependencies:
       eslint: 10.0.1
 
