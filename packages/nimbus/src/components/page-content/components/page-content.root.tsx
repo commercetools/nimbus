@@ -1,7 +1,6 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { PageContentRootSlot } from "../page-content.slots";
 import type { PageContentProps } from "../page-content.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * PageContent.Root - The root layout container that provides width constraints
@@ -19,16 +18,10 @@ export const PageContentRoot = ({
   ...props
 }: PageContentProps) => {
   const recipe = useSlotRecipe({ key: "nimbusPageContent" });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
-  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+  const [recipeProps, restProps] = recipe.splitVariantProps(props);
 
   return (
-    <PageContentRootSlot
-      ref={ref}
-      {...recipeProps}
-      {...styleProps}
-      {...functionalProps}
-    >
+    <PageContentRootSlot ref={ref} {...recipeProps} {...restProps}>
       <div data-slot="content">{children}</div>
     </PageContentRootSlot>
   );

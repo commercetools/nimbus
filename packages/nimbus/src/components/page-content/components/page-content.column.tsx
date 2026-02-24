@@ -1,6 +1,5 @@
 import { PageContentColumnSlot } from "../page-content.slots";
 import type { PageContentColumnProps } from "../page-content.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * PageContent.Column - A column within a multi-column PageContent layout.
@@ -16,8 +15,6 @@ export const PageContentColumn = ({
   sticky,
   ...props
 }: PageContentColumnProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   const stickyProps = sticky
     ? { position: "sticky" as const, top: 0, alignSelf: "start" }
     : {};
@@ -27,8 +24,7 @@ export const PageContentColumn = ({
       ref={ref}
       data-sticky={sticky || undefined}
       {...stickyProps}
-      {...styleProps}
-      {...functionalProps}
+      {...props}
     >
       {children}
     </PageContentColumnSlot>
