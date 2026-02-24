@@ -20,21 +20,6 @@ const meta: Meta<typeof Drawer.Root> = {
   title: "Components/Overlay/Drawer",
   component: Drawer.Root,
   tags: ["autodocs"],
-  parameters: {
-    // "fullscreen" is required so the drawer's position:fixed overlay fills the
-    // full iframe viewport. Without it, Chromatic clips the snapshot and the
-    // open drawer is invisible in the diff.
-    layout: "fullscreen",
-    chromatic: {
-      // The drawer uses CSS animations (slide-from-right-full). We need to wait
-      // for the animation to finish before Chromatic takes the snapshot.
-      // pauseAnimationAtEnd:true was tried but freezes the animation at frame 0
-      // (offscreen), so we use a delay instead.
-      delay: 500,
-      // Explicit viewport ensures consistent snapshot width across runs.
-      viewports: [1200],
-    },
-  },
   argTypes: {
     placement: {
       control: { type: "select" },
@@ -211,6 +196,27 @@ export const Default: Story = {
  */
 export const ButtonAsTrigger: Story = {
   args: {},
+  parameters: {
+    // Scoped to this story for POC purposes — validates that Chromatic captures
+    // fixed-position overlay components correctly.
+    //
+    // "fullscreen" is required so the drawer's position:fixed overlay fills the
+    // full iframe viewport. Without it, Chromatic clips the snapshot and the
+    // open drawer is invisible in the diff.
+    //
+    // TODO: If all drawer stories need animation capture, consider moving
+    // layout + chromatic params to meta level and auditing the impact on other stories.
+    layout: "fullscreen",
+    chromatic: {
+      // The drawer uses CSS animations (slide-from-right-full). We need to wait
+      // for the animation to finish before Chromatic takes the snapshot.
+      // pauseAnimationAtEnd:true was tried but freezes the animation at frame 0
+      // (offscreen), so we use a delay instead.
+      delay: 500,
+      // Explicit viewport ensures consistent snapshot width across runs.
+      viewports: [1200],
+    },
+  },
   render: (args) => (
     <Drawer.Root {...args}>
       <Drawer.Trigger asChild>
