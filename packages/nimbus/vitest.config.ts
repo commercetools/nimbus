@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import { resolve } from "path";
 
 /**
  * Root Vitest configuration that orchestrates multiple test projects.
@@ -11,9 +12,9 @@ export default defineConfig({
   test: {
     projects: [
       // Storybook tests (browser-based)
-      "./vitest.storybook.config.ts",
+      resolve(__dirname, "./vitest.storybook.config.ts"),
       // Unit tests (JSDOM-based)
-      "./vitest.unit.config.ts",
+      resolve(__dirname, "./vitest.unit.config.ts"),
     ],
   },
 });
