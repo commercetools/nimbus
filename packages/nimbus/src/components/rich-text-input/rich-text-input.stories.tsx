@@ -87,11 +87,13 @@ export const Default: Story = {
     expect(toolbar).toBeInTheDocument();
 
     // Verify placeholder is present (Slate.js handles placeholders differently)
-    const hasPlaceholder =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.textContent === "" ||
-      editor.querySelector(".slate-placeholder");
-    expect(hasPlaceholder).toBeTruthy();
+    await waitFor(() => {
+      const hasPlaceholder =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.textContent === "" ||
+        editor.querySelector(".slate-placeholder");
+      expect(hasPlaceholder).toBeTruthy();
+    });
 
     // Test basic typing
     await userEvent.click(editor);
@@ -114,10 +116,12 @@ export const WithPlaceholder: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Verify placeholder is visible
-    const placeholderElement =
-      editor.querySelector("[data-slate-placeholder]") ||
-      editor.querySelector(".slate-placeholder");
-    expect(placeholderElement || editor.textContent === "").toBeTruthy();
+    await waitFor(() => {
+      const placeholderElement =
+        editor.querySelector("[data-slate-placeholder]") ||
+        editor.querySelector(".slate-placeholder");
+      expect(placeholderElement || editor.textContent === "").toBeTruthy();
+    });
 
     // Test placeholder disappears on input
     await userEvent.click(editor);

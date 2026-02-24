@@ -1,5 +1,4 @@
 import {
-  useMemo,
   useCallback,
   useImperativeHandle,
   useRef,
@@ -8,9 +7,8 @@ import {
 } from "react";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@chakra-ui/react";
-import { createEditor, type Descendant } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import { withHistory } from "slate-history";
+import { type Descendant, type Editor } from "slate";
+import { Slate, Editable } from "slate-react";
 import {
   RichTextInputEditableSlot,
   RichTextInputToolbarSlot,
@@ -18,7 +16,6 @@ import {
 import {
   Element,
   Leaf,
-  withLinks,
   focusEditor,
   resetEditor,
 } from "../utils/slate-helpers";
@@ -27,7 +24,14 @@ import { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";
 import { EDITOR_DEFAULTS } from "../constants";
 
 export type RichTextEditorProps = {
-  value?: Descendant[];
+  /**
+   * The Slate editor instance - created by parent for controlled value support
+   */
+  editor: Editor;
+  /**
+   * Initial value for the editor
+   */
+  initialValue: Descendant[];
   onChange: (value: Descendant[]) => void;
   onFocus?: FocusEventHandler<HTMLDivElement>;
   onBlur?: FocusEventHandler<HTMLDivElement>;
@@ -49,7 +53,8 @@ export type RichTextEditorRef = {
 
 export const RichTextEditor = function RichTextEditor({
   ref: forwardedRef,
-  value,
+  editor,
+  initialValue,
   onChange,
   onFocus,
   onBlur,
@@ -58,16 +63,9 @@ export const RichTextEditor = function RichTextEditor({
   isReadOnly = EDITOR_DEFAULTS.isReadOnly,
   autoFocus = EDITOR_DEFAULTS.autoFocus,
   toolbar,
-  //...props
 }: RichTextEditorProps) {
   const localRef = useRef<RichTextEditorRef>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  // Create editor with plugins
-  const editor = useMemo(() => {
-    const baseEditor = createEditor();
-    return withLinks(withHistory(withReact(baseEditor)));
-  }, []);
 
   // Handle keyboard shortcuts using hook
   const { handleKeyDown } = useKeyboardShortcuts({ editor });
@@ -114,13 +112,15 @@ export const RichTextEditor = function RichTextEditor({
     []
   );
 
-  // Ensure we always have a valid value
+  // Ensure we always have a valid initial value
   const defaultValue = createEmptyValue();
   const safeInitialValue =
-    Array.isArray(value) && value.length > 0 ? value : defaultValue;
+    Array.isArray(initialValue) && initialValue.length > 0
+      ? initialValue
+      : defaultValue;
 
   return (
-    <Slate editor={editor} value={safeInitialValue} onChange={onChange}>
+    <Slate editor={editor} initialValue={safeInitialValue} onChange={onChange}>
       {toolbar && (
         <RichTextInputToolbarSlot>{toolbar}</RichTextInputToolbarSlot>
       )}
