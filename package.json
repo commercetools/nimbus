@@ -1,9 +1,14 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "preconstruct": {
-    "packages": ["packages/tokens"]
+    "packages": [
+      "packages/tokens"
+    ]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
@@ -27,7 +32,10 @@
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
     "test": "pnpm vitest run",
     "test:unit": "pnpm vitest run --project=unit",
-    "test:storybook": "pnpm vitest run --project=storybook"
+    "test:storybook": "pnpm vitest run --project=storybook",
+    "percy:snapshot": "percy storybook ./packages/nimbus/storybook-static",
+    "percy:build-storybook": "pnpm --filter @commercetools/nimbus build-storybook",
+    "percy:run": "pnpm percy:build-storybook && pnpm percy:snapshot"
   },
   "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
   "pnpm": {
@@ -60,11 +68,13 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
-    "@fission-ai/openspec": "catalog:tooling",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.8",
     "@commercetools/nimbus": "workspace:^",
     "@eslint/js": "catalog:tooling",
+    "@fission-ai/openspec": "catalog:tooling",
+    "@percy/cli": "catalog:tooling",
+    "@percy/storybook": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
     "eslint-config-prettier": "catalog:tooling",

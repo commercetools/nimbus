@@ -1,0 +1,8 @@
+version: 2
+
+snapshot:
+  percy-css: |
+    *, *::before, *::after {
+      animation-duration: 0s !important;
+      transition-duration: 0s !important;
+    }
