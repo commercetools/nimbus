@@ -17,7 +17,7 @@
     "build:docs-data": "pnpm --filter docs build:docs",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
-    "build:storybook": "pnpm --filter @commercetools/nimbus build && pnpm --filter @commercetools/nimbus run build-storybook",
+    "build-storybook": "pnpm --filter @commercetools/nimbus build && pnpm --filter @commercetools/nimbus run build-storybook",
     "changeset": "changeset",
     "chromatic": "chromatic",
     "openspec": "openspec",
