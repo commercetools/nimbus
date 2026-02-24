@@ -9,6 +9,69 @@ updates:
       timezone: "Europe/Berlin" # Optional: Specify timezone for the schedule time
     labels:
       - "dependencies"
+    groups:
+      # React ecosystem: react, react-dom, emotion, chakra-ui, next-themes
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+          - "@emotion/*"
+          - "@chakra-ui/*"
+          - "next-themes"
+      # React Aria / React Stately / Internationalized packages
+      react-aria:
+        patterns:
+          - "react-aria"
+          - "react-aria-components"
+          - "react-stately"
+          - "@react-aria/*"
+          - "@react-types/*"
+          - "@react-stately/*"
+          - "@internationalized/*"
+      # Storybook and its addons
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+          - "@vueless/storybook-dark-mode"
+          - "eslint-plugin-storybook"
+      # Vitest, Playwright and testing libraries
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "playwright"
+          - "@playwright/*"
+          - "jsdom"
+          - "@testing-library/*"
+      # Vite, Rollup and build tooling
+      build-tooling:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "vite-*"
+          - "rollup"
+          - "rollup-*"
+          - "@preconstruct/*"
+          - "vite-bundle-analyzer"
+      # TypeScript, ESLint, Prettier and code quality tools
+      linting-and-types:
+        patterns:
+          - "typescript"
+          - "typescript-eslint"
+          - "eslint"
+          - "@eslint/*"
+          - "eslint-*"
+          - "prettier"
+          - "globals"
+          - "glob"
+          - "tsx"
+      # Babel transpilation packages
+      babel:
+        patterns:
+          - "@babel/*"
     ignore:
       # @types/node version must match Node.js runtime version (v24 LTS)
       # Upgrading to @types/node@25+ would add types for APIs not available in our runtime
