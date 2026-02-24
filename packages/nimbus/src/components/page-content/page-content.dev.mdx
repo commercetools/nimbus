@@ -1,0 +1,167 @@
+---
+title: PageContent Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { PageContent, type PageContentProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest usage is a single-column width-constrained layout. No `PageContent.Column` wrappers are needed for single-column content.
+
+```jsx live-dev
+const App = () => (
+  <PageContent.Root variant="wide">
+    <Text>This content is constrained to the wide max-width.</Text>
+  </PageContent.Root>
+)
+```
+
+## Usage examples
+
+### Width variants
+
+The `variant` prop controls the max-width constraint. Available values are `wide`, `narrow`, and `full`.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="800">
+    <PageContent.Root variant="wide">
+      <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200">
+        <Text color="blue.6" fontWeight="bold">wide</Text>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="narrow">
+      <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
+        <Text color="purple.6" fontWeight="bold">narrow</Text>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="full">
+      <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
+        <Text color="teal.6" fontWeight="bold">full</Text>
+      </Box>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+### Multi-column layouts
+
+Use the `columns` prop with `PageContent.Column` wrappers for multi-column layouts.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="800">
+    <PageContent.Root variant="wide" columns="1/1">
+      <PageContent.Column>
+        <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200">
+          <Text color="blue.6" fontWeight="bold">Left (equal)</Text>
+        </Box>
+      </PageContent.Column>
+      <PageContent.Column>
+        <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
+          <Text color="purple.6" fontWeight="bold">Right (equal)</Text>
+        </Box>
+      </PageContent.Column>
+    </PageContent.Root>
+
+    <PageContent.Root variant="wide" columns="2/1">
+      <PageContent.Column>
+        <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
+          <Text color="teal.6" fontWeight="bold">Main content (2fr)</Text>
+        </Box>
+      </PageContent.Column>
+      <PageContent.Column>
+        <Box border="solid-25" borderColor="orange.6" padding="400" borderRadius="200">
+          <Text color="orange.6" fontWeight="bold">Sidebar (1fr)</Text>
+        </Box>
+      </PageContent.Column>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+### Sticky sidebar
+
+Use the `sticky` prop on a `PageContent.Column` to make it stick during scroll. Override the default `top: 0` with the `top` style prop.
+
+```jsx live-dev
+const App = () => (
+  <PageContent.Root variant="wide" columns="2/1">
+    <PageContent.Column>
+      <Box border="solid-25" borderColor="blue.6" padding="400" borderRadius="200" minHeight="300px">
+        <Text color="blue.6" fontWeight="bold">Main content area (tall)</Text>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column sticky top="400">
+      <Box border="solid-25" borderColor="purple.6" padding="400" borderRadius="200">
+        <Text color="purple.6" fontWeight="bold">Sticky sidebar</Text>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+### Custom gap
+
+The default gap between columns is `800` (32px). Override with the `gap` style prop.
+
+```jsx live-dev
+const App = () => (
+  <PageContent.Root variant="wide" columns="1/1" gap="1600">
+    <PageContent.Column>
+      <Box border="solid-25" borderColor="teal.6" padding="400" borderRadius="200">
+        <Text color="teal.6" fontWeight="bold">Column 1</Text>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column>
+      <Box border="solid-25" borderColor="orange.6" padding="400" borderRadius="200">
+        <Text color="orange.6" fontWeight="bold">Column 2</Text>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+## API reference
+
+<PropsTable id="PageContent" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using PageContent within your application.
+
+{{docs-tests: page-content.docs.spec.tsx}}
+
+## Migrating from Merchant Center Application Kit
+
+`PageContent` replaces the three separate page content containers from
+[`@commercetools-frontend/application-components`](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts):
+
+| Application Kit Component | Nimbus Equivalent |
+|---|---|
+| `<PageContentWide>` | `<PageContent.Root variant="wide">` |
+| `<PageContentNarrow>` | `<PageContent.Root variant="narrow">` |
+| `<PageContentFull>` | `<PageContent.Root variant="full">` |
+| `<PageContentWide columns="1/1">` | `<PageContent.Root variant="wide" columns="1/1">` with `<PageContent.Column>` children |
+| `<PageContentWide columns="2/1">` (implicit sticky right column) | `<PageContent.Root variant="wide" columns="2/1">` with `<PageContent.Column sticky>` |
+
+Key differences:
+
+- **Single component** with a `variant` prop instead of three separate components
+- **Explicit columns** via `<PageContent.Column>` instead of implicit `Children.toArray` splitting
+- **Opt-in sticky** via the `sticky` prop instead of automatic sticky on the right column in `2/1` mode
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-pagecontent--docs)
+- [Merchant Center Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts) (predecessor)
