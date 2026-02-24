@@ -2,5 +2,6 @@
   "onlyChanged": true,
   "projectId": "Project:698e33aebdbff7804c1287d4",
   "storybookBaseDir": "packages/nimbus",
+  "buildScriptName": "build:storybook",
   "zip": true
 }

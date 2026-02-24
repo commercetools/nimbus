@@ -66,7 +66,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       },
       md: {
         root: {
-          "--progress-bar-radius": "{radii.200}",
+          "--progress-bar-radius": "{radii.600}",
           "--progress-bar-font-size": "{fontSizes.400}",
           "--progress-bar-height": "{sizes.600}",
           "--progress-bar-line-height": "{fontSizes.600}",
