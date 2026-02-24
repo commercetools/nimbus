@@ -21,7 +21,7 @@ const meta: Meta<typeof Drawer.Root> = {
   component: Drawer.Root,
   tags: ["autodocs"],
   parameters: {
-    chromatic: { pauseAnimationAtEnd: true },
+    chromatic: { delay: 500 },
   },
   argTypes: {
     placement: {
