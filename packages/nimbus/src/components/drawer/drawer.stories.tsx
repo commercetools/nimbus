@@ -21,7 +21,19 @@ const meta: Meta<typeof Drawer.Root> = {
   component: Drawer.Root,
   tags: ["autodocs"],
   parameters: {
-    chromatic: { delay: 500 },
+    // "fullscreen" is required so the drawer's position:fixed overlay fills the
+    // full iframe viewport. Without it, Chromatic clips the snapshot and the
+    // open drawer is invisible in the diff.
+    layout: "fullscreen",
+    chromatic: {
+      // The drawer uses CSS animations (slide-from-right-full). We need to wait
+      // for the animation to finish before Chromatic takes the snapshot.
+      // pauseAnimationAtEnd:true was tried but freezes the animation at frame 0
+      // (offscreen), so we use a delay instead.
+      delay: 500,
+      // Explicit viewport ensures consistent snapshot width across runs.
+      viewports: [1200],
+    },
   },
   argTypes: {
     placement: {
