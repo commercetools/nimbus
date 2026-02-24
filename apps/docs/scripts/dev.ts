@@ -17,13 +17,14 @@ const mdxWatcher = spawn("pnpm", ["tsx", "./scripts/watcher.ts"], {
   stdio: "inherit",
 });
 
-function killChildren() {
+function cleanup() {
   viteProcess.kill();
   mdxWatcher.kill();
+  process.exit();
 }
 
-process.on("SIGINT", killChildren);
-process.on("SIGTERM", killChildren);
+process.on("SIGINT", cleanup);
+process.on("SIGTERM", cleanup);
 
 function waitForExit() {
   return new Promise((resolve) => {
