@@ -1,0 +1,134 @@
+---
+title: MainPage
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+MainPage guidelines focus on composing the sub-components correctly and choosing
+the right Content layout for your page.
+
+### Best practices
+
+- **Start with the simplest composition:** Every page needs Root, Header with
+  Title, and Content. Only add Actions and Footer when the page requires them.
+- **Use subtitle for context:** Add a `subtitle` to Title when the page name
+  alone is not enough to orient the user. Keep subtitles to a single sentence.
+- **Match the content variant:** Choose the Content `variant` based on what the
+  page displays. See
+  [PageContent guidelines](/components/layout/pagecontent/guidelines) for
+  detailed width and column guidance.
+- **Place primary actions on the right:** In both Header Actions and Footer, put
+  the primary action (e.g., "Save", "Add Product") on the right and secondary
+  actions (e.g., "Cancel", "Export") to its left.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Top-level views** that fill the main content area of the application.
+- **Pages that need a consistent header** with title, optional subtitle, and
+  optional action buttons.
+- **Pages that need an optional footer** for form-level actions like save and
+  cancel.
+
+> [!CAUTION]\
+> When not to use
+
+- **Modals, dialogs, or drawers.** MainPage is designed for top-level views
+  only.
+- **Nested inside another MainPage.** Each view should have a single MainPage at
+  its root.
+
+### Header composition
+
+The Header positions Title on the left and Actions on the right.
+
+> [!TIP]\
+> **Do**
+>
+> - Use `MainPage.Title` with `title` and optional `subtitle` for standard
+>   pages.
+> - Place action buttons in `MainPage.Actions` to keep them right-aligned.
+> - Replace Title with custom content when you need elements like badges or
+>   breadcrumbs alongside the heading.
+
+```jsx live
+const App = () => (
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
+    <MainPage.Header>
+      <MainPage.Title title="Products" subtitle="Manage your product catalog" />
+      <MainPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button>Add Product</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Box bg="neutral.3" padding="600" borderRadius="200">
+        <Text>Content area</Text>
+      </Box>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't put form submission buttons (Save, Cancel) in Header Actions. Those
+>   belong in the Footer.
+> - Don't overload the header with too many actions. Keep it to two or three
+>   buttons at most.
+
+### Footer usage
+
+Footer is intended for form-level actions. Omit it entirely for read-only pages
+— the grid row collapses automatically.
+
+> [!TIP]\
+> **Do**
+>
+> - Place the primary action button on the right and secondary actions to its
+>   left.
+> - Use `variant="ghost"` for secondary actions like Cancel to create visual
+>   hierarchy.
+> - Omit the Footer entirely when the page has no form actions.
+
+```jsx live
+const App = () => (
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
+    <MainPage.Header>
+      <MainPage.Title title="Project Settings" />
+    </MainPage.Header>
+    <MainPage.Content variant="narrow">
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form fields</Text>
+      </Box>
+    </MainPage.Content>
+    <MainPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button>Save</Button>
+      </Stack>
+    </MainPage.Footer>
+  </MainPage.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't include a Footer on read-only pages. An empty footer creates confusion
+>   about whether the page expects user input.
+> - Don't use the Footer for navigation or informational content.
+
+### Predecessor
+
+MainPage replaces `InfoMainPage`, `FormMainPage`, `CustomFormMainPage`, and
+`TabularMainPage` from Merchant Center Application Kit. For detailed migration
+instructions, see the
+[Migration guide](/components/layout/mainpage/dev#migrating-from-merchant-center-application-kit)
+in the implementation docs. For the original Application Kit documentation, see
+[Components for Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages).

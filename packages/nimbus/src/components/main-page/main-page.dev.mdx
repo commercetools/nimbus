@@ -1,0 +1,240 @@
+---
+title: MainPage Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { MainPage, type MainPageProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+MainPage provides a page skeleton with header, content, and optional footer. At minimum, you need Root, Header with Title, and Content.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="Page Title" />
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Text>Your page content goes here.</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+## Sub-components
+
+### MainPage.Header
+
+The header section uses flex layout with `justify-content: space-between`. Place Title and Actions inside it.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="Title on the left" />
+      <MainPage.Actions>
+        <Button variant="ghost">Secondary</Button>
+        <Button>Primary</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Title
+
+Renders a Nimbus `Heading` as an `<h1>` element with an optional `subtitle`. Accepts `title` and `subtitle` props.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="Products" subtitle="Manage your product catalog" />
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+The Header accepts any content, so you can replace Title with custom elements if needed.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <Stack direction="row" gap="200" align="center">
+        <Heading as="h1">Custom Title</Heading>
+        <Badge variant="info">Draft</Badge>
+      </Stack>
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Actions
+
+A flex container with gap for action buttons. Positioned on the right side of the header.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="Products" />
+      <MainPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button>Add Product</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content variant="wide">
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Content
+
+Wraps PageContent.Root internally. The `variant` prop controls width constraints and the `columns` prop enables multi-column layouts.
+
+Available `variant` values: `"wide"` (default), `"narrow"`, `"full"`. Available `columns` values: `"1"` (default), `"1/1"`, `"2/1"`. See [PageContent](/components/layout/pagecontent/dev) for details.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="800">
+    <MainPage.Root>
+      <MainPage.Header>
+        <MainPage.Title title="Narrow" />
+      </MainPage.Header>
+      <MainPage.Content variant="narrow">
+        <Box bg="purple.3" padding="400" borderRadius="200">
+          <Text color="purple.12">Constrained to narrow max-width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+
+    <MainPage.Root>
+      <MainPage.Header>
+        <MainPage.Title title="Wide" />
+      </MainPage.Header>
+      <MainPage.Content variant="wide">
+        <Box bg="blue.3" padding="400" borderRadius="200">
+          <Text color="blue.12">Constrained to wide max-width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+
+    <MainPage.Root>
+      <MainPage.Header>
+        <MainPage.Title title="Full" />
+      </MainPage.Header>
+      <MainPage.Content variant="full">
+        <Box bg="teal.3" padding="400" borderRadius="200">
+          <Text color="teal.12">Full available width</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
+  </Stack>
+)
+```
+
+### MainPage.Column
+
+A column within a multi-column Content layout. Re-export of PageContent.Column for convenience. Use with the `columns` prop on Content. Supports `sticky` positioning — see [PageContent](/components/layout/pagecontent/dev) for details.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="Multi-column Layout" />
+    </MainPage.Header>
+    <MainPage.Content variant="wide" columns="2/1">
+      <MainPage.Column>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Main content (2fr)</Text>
+        </Box>
+      </MainPage.Column>
+      <MainPage.Column>
+        <Box bg="purple.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="purple.12">Sidebar (1fr)</Text>
+        </Box>
+      </MainPage.Column>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Footer
+
+Optional footer for page-level actions. Omit it entirely when the page has no form actions. The footer grid row collapses automatically when absent.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title title="With Footer" />
+    </MainPage.Header>
+    <MainPage.Content variant="narrow">
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form content</Text>
+      </Box>
+    </MainPage.Content>
+    <MainPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button>Save</Button>
+      </Stack>
+    </MainPage.Footer>
+  </MainPage.Root>
+)
+```
+
+## API reference
+
+<PropsTable id="MainPage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MainPage within your application.
+
+{{docs-tests: main-page.docs.spec.tsx}}
+
+## Migrating from Merchant Center Application Kit
+
+MainPage replaces the four main page components from
+[`@commercetools-frontend/application-components`](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages):
+
+| Application Kit Component | Nimbus Equivalent |
+|---|---|
+| `<InfoMainPage title="...">` | `<MainPage.Root>` + Header/Title + Content (no Footer) |
+| `<FormMainPage title="..." onPrimaryButtonClick={...}>` | `<MainPage.Root>` + Header/Title + Content + Footer with buttons |
+| `<CustomFormMainPage formControls={...}>` | Same as Form — Footer accepts any children |
+| `<TabularMainPage tabControls={...}>` | `<MainPage.Root>` + Header/Title + Content with `<Tabs.Root>` inside |
+
+Key differences:
+
+- **Composition over configuration** — Instead of 10+ props for button labels, handlers, and visibility, compose your own buttons in Footer or Actions
+- **No built-in tab routing** — Use the Tabs component directly inside Content
+- **Title and subtitle as props** — `<MainPage.Title title="..." subtitle="..." />` replaces `title` and `subtitle` props on the AppKit page components
+- **No `customTitleRow`** — The Header accepts any content, so replace Title with your own elements
+- **No `Intl` static property** — Use your own i18n solution for button labels
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-mainpage--docs)
+- [MC Application Components - Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages) (predecessor)

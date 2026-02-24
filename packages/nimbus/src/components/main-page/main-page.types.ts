@@ -1,4 +1,5 @@
 import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
+import type { HeadingRootSlotProps } from "../heading/heading.types";
 import type { PageContentProps } from "../page-content/page-content.types";
 
 // ============================================================
@@ -40,9 +41,11 @@ export type MainPageHeaderProps = MainPageHeaderSlotProps & {
   ref?: React.Ref<HTMLElement>;
 };
 
-export type MainPageTitleProps = MainPageTitleSlotProps & {
-  /** The page title text or element */
-  children?: React.ReactNode;
+export type MainPageTitleProps = Omit<HeadingRootSlotProps, "children"> & {
+  /** The page title text */
+  title: React.ReactNode;
+  /** Optional subtitle displayed below the title in secondary text */
+  subtitle?: React.ReactNode;
   ref?: React.Ref<HTMLHeadingElement>;
 };
 
