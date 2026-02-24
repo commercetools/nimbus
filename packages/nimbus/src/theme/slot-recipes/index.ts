@@ -17,6 +17,7 @@ import { fieldErrorsRecipe } from "@/components/field-errors/field-errors.recipe
 import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
+import { mainPageRecipe } from "@/components/main-page/main-page.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { pageContentRecipe } from "@/components/page-content/page-content.recipe";
 import { moneyInputRecipe } from "@/components/money-input/money-input.recipe";
@@ -86,6 +87,7 @@ export const slotRecipes = {
   nimbusFormField: formFieldRecipe,
   nimbusList: listSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
+  nimbusMainPage: mainPageRecipe,
   nimbusMenu: menuSlotRecipe,
   nimbusMoneyInput: moneyInputRecipe,
   nimbusMultilineTextInput: multilineTextInputRecipe,
