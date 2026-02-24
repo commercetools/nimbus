@@ -5,16 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
-  default:
-    '@chromatic-com/storybook':
-      specifier: ^5.0.1
-      version: 5.0.1
-    '@internationalized/string-compiler':
-      specifier: ^3.3.0
-      version: 3.3.0
-    chromatic:
-      specifier: ^15.1.0
-      version: 15.1.0
   react:
     '@chakra-ui/cli':
       specifier: ^3.32.0
@@ -59,12 +49,18 @@ catalogs:
     '@babel/preset-typescript':
       specifier: ^7.28.5
       version: 7.28.5
+    '@chromatic-com/storybook':
+      specifier: ^5.0.1
+      version: 5.0.1
     '@eslint/js':
       specifier: ^9.39.2
       version: 9.39.2
     '@fission-ai/openspec':
       specifier: ^1.1.1
       version: 1.1.1
+    '@internationalized/string-compiler':
+      specifier: ^3.3.0
+      version: 3.3.0
     '@preconstruct/cli':
       specifier: ^2.8.12
       version: 2.8.12
@@ -113,6 +109,9 @@ catalogs:
     '@vueless/storybook-dark-mode':
       specifier: ^10.0.7
       version: 10.0.7
+    chromatic:
+      specifier: ^15.1.0
+      version: 15.1.0
     eslint:
       specifier: ^9.39.2
       version: 9.39.2
@@ -237,7 +236,7 @@ importers:
         specifier: catalog:tooling
         version: 2.8.12
       chromatic:
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 15.1.0
       eslint:
         specifier: catalog:tooling
@@ -525,7 +524,7 @@ importers:
   packages/i18n:
     devDependencies:
       '@internationalized/string-compiler':
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 3.3.0
 
   packages/nimbus:
@@ -577,7 +576,7 @@ importers:
         specifier: catalog:react
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@chromatic-com/storybook':
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 5.0.1(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@commercetools/nimbus-icons':
         specifier: workspace:^

@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "@chakra-ui/react": "catalog:react",
-    "@chromatic-com/storybook": "catalog:",
+    "@chromatic-com/storybook": "catalog:tooling",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
