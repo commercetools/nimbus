@@ -16,8 +16,8 @@ export const MainPageContent = ({
   columns,
   ...props
 }: MainPageContentProps) => (
-  <MainPageContentSlot ref={ref} {...props}>
-    <PageContentRoot variant={variant} columns={columns}>
+  <MainPageContentSlot ref={ref} {...props} asChild>
+    <PageContentRoot as="main" variant={variant} columns={columns}>
       {children}
     </PageContentRoot>
   </MainPageContentSlot>
