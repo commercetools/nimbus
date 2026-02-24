@@ -606,9 +606,6 @@ importers:
       '@chromatic-com/storybook':
         specifier: catalog:tooling
         version: 5.0.1(storybook@10.2.17(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
-      '@commercetools/nimbus-design-token-ts-plugin':
-        specifier: workspace:^
-        version: link:../design-token-ts-plugin
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons
