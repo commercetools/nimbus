@@ -22,6 +22,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@types/node": "catalog:utils",
     "typescript": "catalog:tooling",
     "tsx": "catalog:tooling"
   }

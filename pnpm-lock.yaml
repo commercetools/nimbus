@@ -769,6 +769,9 @@ importers:
         specifier: ^3.25.67
         version: 3.25.76
     devDependencies:
+      '@types/node':
+        specifier: catalog:utils
+        version: 24.10.1
       tsx:
         specifier: catalog:tooling
         version: 4.21.0
