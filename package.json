@@ -1,9 +1,14 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "preconstruct": {
-    "packages": ["packages/tokens"]
+    "packages": [
+      "packages/tokens"
+    ]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
@@ -54,6 +59,7 @@
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
+      "@fission-ai/openspec",
       "@swc/core",
       "es5-ext",
       "esbuild",
@@ -63,11 +69,11 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:tooling",
-    "@fission-ai/openspec": "catalog:tooling",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.8",
     "@commercetools/nimbus": "workspace:^",
     "@eslint/js": "catalog:tooling",
+    "@fission-ai/openspec": "catalog:tooling",
     "@preconstruct/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
     "eslint-config-prettier": "catalog:tooling",
