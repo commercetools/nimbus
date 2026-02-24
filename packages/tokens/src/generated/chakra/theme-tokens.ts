@@ -1608,7 +1608,7 @@ export default {
         },
         "7": {
           value: {
-            _light: "hsl(240, 28%, 14%)",
+            _light: "hsl(0, 0%, 81%)",
             _dark: "hsl(0, 0%, 28%)",
           },
         },
@@ -5396,7 +5396,7 @@ export default {
         },
         "7": {
           value: {
-            _light: "hsl(240, 28%, 14%)",
+            _light: "hsl(0, 0%, 81%)",
             _dark: "hsl(0, 0%, 28%)",
           },
         },
@@ -5482,7 +5482,7 @@ export default {
         },
         "7": {
           value: {
-            _light: "hsl(240, 28%, 14%)",
+            _light: "hsl(0, 0%, 81%)",
             _dark: "hsl(0, 0%, 28%)",
           },
         },
