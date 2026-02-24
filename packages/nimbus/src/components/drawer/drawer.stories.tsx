@@ -191,17 +191,6 @@ export const Default: Story = {
         }
       );
     });
-
-    // Leave drawer open for Chromatic to snapshot the open/animated state
-    await step("Reopen drawer for Chromatic snapshot", async () => {
-      const trigger = canvas.getByRole("button", {
-        name: "Accepts anything as trigger",
-      });
-      await userEvent.click(trigger);
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-    });
   },
 };
 
@@ -290,6 +279,17 @@ export const ButtonAsTrigger: Story = {
           interval: 50,
         }
       );
+    });
+
+    // Leave drawer open for Chromatic to snapshot
+    await step("Open drawer for Chromatic snapshot", async () => {
+      const customButton = canvas.getByRole("button", {
+        name: "Open with Custom Button",
+      });
+      await userEvent.click(customButton);
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
     });
   },
 };
