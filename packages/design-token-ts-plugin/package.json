@@ -1,0 +1,31 @@
+{
+  "name": "@commercetools/nimbus-design-token-ts-plugin",
+  "version": "2.7.0",
+  "description": "TypeScript language service plugin that shows design token CSS values in autocomplete",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commercetools/nimbus.git"
+  },
+  "scripts": {
+    "generate:tokens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-token-mapping.mjs",
+    "build": "pnpm generate:tokens && tsc && cp src/generated-token-mapping.json dist/ && echo '🎉 Nimbus design token typescript plugin built'",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@commercetools/nimbus-tokens": "workspace:^"
+  },
+  "devDependencies": {
+    "@commercetools/nimbus-tokens": "workspace:^",
+    "@types/node": "catalog:utils",
+    "typescript": "catalog:tooling",
+    "vitest": "catalog:tooling"
+  },
+  "files": ["dist"]
+}

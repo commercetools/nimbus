@@ -1,5 +1,84 @@
 # @commercetools/nimbus
 
+## 2.7.0
+
+### Minor Changes
+
+- [#1096](https://github.com/commercetools/nimbus/pull/1096)
+  [`6cc65e2`](https://github.com/commercetools/nimbus/commit/6cc65e22a2997eeeabeff6b8d488ac846fe475eb)
+  Thanks [@tylermorrisford](https://github.com/tylermorrisford)! - Allows for
+  programmatically expanding nested rows in the DataTable component.
+
+### Patch Changes
+
+- [#1104](https://github.com/commercetools/nimbus/pull/1104)
+  [`6566e21`](https://github.com/commercetools/nimbus/commit/6566e21235f6a953d958ad85396d7efa47cd31aa)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - FormField: fix error icon
+  shrinking on multiline error messages
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.7.0
+  - @commercetools/nimbus-icons@2.7.0
+
+## 2.6.0
+
+### Minor Changes
+
+- [#1005](https://github.com/commercetools/nimbus/pull/1005)
+  [`91baca2`](https://github.com/commercetools/nimbus/commit/91baca2d3f8a15b0dd5b6bc09635d768b0f0da9d)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Created Steps component and
+  relevant documentation
+
+- [#1064](https://github.com/commercetools/nimbus/pull/1064)
+  [`a030c8e`](https://github.com/commercetools/nimbus/commit/a030c8e2e5b0c18231b7078039dfdfa71a13ea6b)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Adds new
+  @commercetools/nimbus-design-token-ts-plugin package to enable displaying the
+  css value of design tokens in ts intellisense autocomplete. For example, when
+  you type `gap="`, the dropdown shows `600 = 24px` instead of just `600`. Also
+  adds documentation for how to install and use this package in the typescript
+  support section of the nimbus installation guide -
+  https://nimbus-documentation.vercel.app/home/getting-started/installation#typescript-support
+
+- [#965](https://github.com/commercetools/nimbus/pull/965)
+  [`d582980`](https://github.com/commercetools/nimbus/commit/d5829808d61cec1ba62ce2da81dbeb139a9e2b40)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Remove disabled state
+  from Avatar component
+
+### Patch Changes
+
+- [#1065](https://github.com/commercetools/nimbus/pull/1065)
+  [`337e92f`](https://github.com/commercetools/nimbus/commit/337e92f7c8e0e3163f707b2445b01f565cb35546)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Updated parent
+  DataTableBase component to be a generic function that accepts the user's row
+  data type, enabling type inference on data table rows.
+
+- [#1052](https://github.com/commercetools/nimbus/pull/1052)
+  [`d26bb99`](https://github.com/commercetools/nimbus/commit/d26bb995a1637b75317cf07d49e47c2bcd070299)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - DataTable "pin row"
+  cell now renders dark background in dark mode. Tooltip now renders dark text
+  on light background in dark mode.
+
+- [#1082](https://github.com/commercetools/nimbus/pull/1082)
+  [`77a822d`](https://github.com/commercetools/nimbus/commit/77a822d162ed880d43508593b203525eaee75999)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - NumberInput: prevent
+  value from overflowing input when width is constrained
+
+- [#1082](https://github.com/commercetools/nimbus/pull/1082)
+  [`77a822d`](https://github.com/commercetools/nimbus/commit/77a822d162ed880d43508593b203525eaee75999)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Button: Fixes a bug
+  where Button event handlers (onClick, onPress, onFocus, onBlur) fired twice
+  per interaction.
+
+- [#1053](https://github.com/commercetools/nimbus/pull/1053)
+  [`2fb0433`](https://github.com/commercetools/nimbus/commit/2fb04339775a348fc687a730b5f01af4a8f12686)
+  Thanks [@stephsprinkle](https://github.com/stephsprinkle)! - Removed internal
+  `DataTable` components from public API.
+
+- Updated dependencies
+  [[`b436bf8`](https://github.com/commercetools/nimbus/commit/b436bf80954f6e8913f92f0c67d6e4c1fe93fc07)]:
+  - @commercetools/nimbus-icons@2.6.0
+  - @commercetools/nimbus-tokens@2.6.0
+
 ## 2.5.0
 
 ### Minor Changes

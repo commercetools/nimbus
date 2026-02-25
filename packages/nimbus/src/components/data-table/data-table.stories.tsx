@@ -2856,6 +2856,259 @@ export const NestedTable: Story = {
   },
 };
 
+export const NestedTableDefaultExpanded: Story = {
+  render: (args) => {
+    return (
+      <Stack gap="400">
+        <Heading size="md">Default Expanded (Uncontrolled)</Heading>
+        <Text>
+          The first row is expanded by default using the defaultExpanded prop.
+        </Text>
+        <DataTableWithModals {...args} onRowClick={() => {}} />
+      </Stack>
+    );
+  },
+  args: {
+    columns: [
+      {
+        id: "name",
+        header: "Galaxy/Object",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "type",
+        header: "Type",
+        accessor: (row: Record<string, unknown>) => row.type as React.ReactNode,
+      },
+      {
+        id: "distance",
+        header: "Distance",
+        accessor: (row: Record<string, unknown>) =>
+          row.distance as React.ReactNode,
+      },
+    ],
+    rows: modifiedFetchedData,
+    nestedKey: "sky",
+    defaultExpandedRows: new Set(["galaxy-1"]),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Row specified in defaultExpanded is expanded on mount",
+      async () => {
+        await waitFor(async () => {
+          await expect(
+            canvas.getByText("Milky Way Details")
+          ).toBeInTheDocument();
+        });
+
+        // Andromeda should NOT be expanded
+        await expect(
+          canvas.queryByText("Andromeda Details")
+        ).not.toBeInTheDocument();
+      }
+    );
+
+    await step(
+      "User can still toggle expansion in uncontrolled mode",
+      async () => {
+        // Collapse Milky Way
+        const milkyWayRow = canvas
+          .getByText("Milky Way")
+          .closest('[role="row"]');
+        const collapseButton = within(milkyWayRow as HTMLElement).getByRole(
+          "button",
+          { name: /collapse/i }
+        );
+        await userEvent.click(collapseButton);
+
+        await waitFor(async () => {
+          await expect(
+            canvas.queryByText("Milky Way Details")
+          ).not.toBeInTheDocument();
+        });
+
+        // Expand Andromeda
+        const andromedaRow = canvas
+          .getByText("Andromeda")
+          .closest('[role="row"]');
+        const expandButton = within(andromedaRow as HTMLElement).getByRole(
+          "button",
+          { name: /expand/i }
+        );
+        await userEvent.click(expandButton);
+
+        await waitFor(async () => {
+          await expect(
+            canvas.getByText("Andromeda Details")
+          ).toBeInTheDocument();
+        });
+      }
+    );
+  },
+};
+
+export const NestedTableControlledExpansion: Story = {
+  render: (args) => {
+    const [expandedRows, setExpandedRows] = useState<Set<string>>(
+      new Set(["galaxy-1"])
+    );
+
+    return (
+      <Stack gap="400">
+        <Heading size="md">Controlled Expansion</Heading>
+        <Text>
+          Expansion state is controlled externally. Use the buttons below to
+          expand/collapse rows programmatically.
+        </Text>
+        <Flex gap="300">
+          <Button
+            variant="outline"
+            onPress={() => setExpandedRows(new Set(["galaxy-1", "galaxy-2"]))}
+          >
+            Expand All
+          </Button>
+          <Button variant="outline" onPress={() => setExpandedRows(new Set())}>
+            Collapse All
+          </Button>
+          <Button
+            variant="outline"
+            onPress={() =>
+              setExpandedRows((prev) => {
+                const next = new Set(prev);
+                if (next.has("galaxy-2")) {
+                  next.delete("galaxy-2");
+                } else {
+                  next.add("galaxy-2");
+                }
+                return next;
+              })
+            }
+          >
+            Toggle Andromeda
+          </Button>
+        </Flex>
+        <DataTableWithModals
+          {...args}
+          expandedRows={expandedRows}
+          onExpandRowsChange={setExpandedRows}
+          onRowClick={() => {}}
+        />
+      </Stack>
+    );
+  },
+  args: {
+    columns: [
+      {
+        id: "name",
+        header: "Galaxy/Object",
+        accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+      },
+      {
+        id: "type",
+        header: "Type",
+        accessor: (row: Record<string, unknown>) => row.type as React.ReactNode,
+      },
+      {
+        id: "distance",
+        header: "Distance",
+        accessor: (row: Record<string, unknown>) =>
+          row.distance as React.ReactNode,
+      },
+    ],
+    rows: modifiedFetchedData,
+    nestedKey: "sky",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Initially expanded row from controlled state is visible",
+      async () => {
+        await waitFor(async () => {
+          await expect(
+            canvas.getByText("Milky Way Details")
+          ).toBeInTheDocument();
+        });
+
+        await expect(
+          canvas.queryByText("Andromeda Details")
+        ).not.toBeInTheDocument();
+      }
+    );
+
+    await step("Expand All button expands all rows", async () => {
+      const expandAllButton = canvas.getByRole("button", {
+        name: "Expand All",
+      });
+      await userEvent.click(expandAllButton);
+
+      await waitFor(async () => {
+        await expect(canvas.getByText("Milky Way Details")).toBeInTheDocument();
+        await expect(canvas.getByText("Andromeda Details")).toBeInTheDocument();
+      });
+    });
+
+    await step("Collapse All button collapses all rows", async () => {
+      const collapseAllButton = canvas.getByRole("button", {
+        name: "Collapse All",
+      });
+      await userEvent.click(collapseAllButton);
+
+      await waitFor(async () => {
+        await expect(
+          canvas.queryByText("Milky Way Details")
+        ).not.toBeInTheDocument();
+        await expect(
+          canvas.queryByText("Andromeda Details")
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Toggle Andromeda button toggles only Andromeda", async () => {
+      const toggleButton = canvas.getByRole("button", {
+        name: "Toggle Andromeda",
+      });
+      await userEvent.click(toggleButton);
+
+      await waitFor(async () => {
+        await expect(canvas.getByText("Andromeda Details")).toBeInTheDocument();
+      });
+
+      await expect(
+        canvas.queryByText("Milky Way Details")
+      ).not.toBeInTheDocument();
+    });
+
+    await step(
+      "Clicking expand icon in controlled mode calls onExpandChange",
+      async () => {
+        // Click the expand icon for Milky Way
+        const milkyWayRow = canvas
+          .getByText("Milky Way")
+          .closest('[role="row"]');
+        const expandButton = within(milkyWayRow as HTMLElement).getByRole(
+          "button",
+          { name: /expand/i }
+        );
+        await userEvent.click(expandButton);
+
+        // Since the parent state controls expansion via onExpandChange,
+        // both Andromeda and Milky Way should now be visible
+        await waitFor(async () => {
+          await expect(
+            canvas.getByText("Milky Way Details")
+          ).toBeInTheDocument();
+          await expect(
+            canvas.getByText("Andromeda Details")
+          ).toBeInTheDocument();
+        });
+      }
+    );
+  },
+};
+
 export const AllFeatures: Story = {
   render: () => {
     // Feature toggles

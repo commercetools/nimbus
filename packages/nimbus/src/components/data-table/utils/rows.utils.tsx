@@ -87,16 +87,14 @@ export function sortRows<T extends object>(
         if (aValue == null) return 1;
         if (bValue == null) return -1;
 
-        let aSortValue = aValue;
-        let bSortValue = bValue;
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          aSortValue = aValue;
-          bSortValue = bValue;
-        } else {
-          aSortValue = String(aValue).toLowerCase();
-          bSortValue = String(bValue).toLowerCase();
-        }
+        const aSortValue =
+          typeof aValue === "number" && typeof bValue === "number"
+            ? aValue
+            : String(aValue).toLowerCase();
+        const bSortValue =
+          typeof aValue === "number" && typeof bValue === "number"
+            ? bValue
+            : String(bValue).toLowerCase();
 
         if (aSortValue < bSortValue)
           return sortDescriptor.direction === "ascending" ? -1 : 1;

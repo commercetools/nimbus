@@ -1,0 +1,115 @@
+---
+id: Home-Release-Process
+title: Release Process
+description: How Nimbus releases work and how to stay informed
+documentState: InitialDraft
+order: 4
+menu:
+  - Home
+  - Getting Started
+  - Release Process
+tags:
+  - releases
+  - versioning
+  - upgrades
+  - support
+icon: NewReleases
+---
+
+# Release Process
+
+This page explains how Nimbus releases work, what to expect from each release
+type, and how to stay informed about changes that may affect your application.
+
+## Release Cadence
+
+Nimbus follows [Semantic Versioning](https://semver.org/):
+
+| Release Type      | Frequency    | Contents                           |
+| ----------------- | ------------ | ---------------------------------- |
+| **Major (X.0.0)** | As needed    | Breaking changes, major features   |
+| **Minor (x.Y.0)** | As needed    | New features, non-breaking changes |
+| **Patch (x.x.Z)** | As needed    | Bug fixes, security patches        |
+
+We release when there's something to release. Deprecation warnings include
+specific sunset dates so you can plan ahead.
+
+## How to Stay Informed
+
+### Communication Channels
+
+| Channel                                                                        | What You'll Find                     |
+| ------------------------------------------------------------------------------ | ------------------------------------ |
+| [**Changelog**](https://github.com/commercetools/nimbus/releases)        | Release announcements, changelog     |
+| [**GitHub Issues**](https://github.com/commercetools/nimbus/issues)            | Bug reports, feature requests        |
+| [**GitHub Discussions**](https://github.com/commercetools/nimbus/discussions)  | Questions, major release Q&A         |
+| **#ask-nimbus-anything** (Slack)                                               | General questions                    |
+
+### Announcement Format
+
+All release announcements follow a consistent format:
+
+- Version number and release type
+- Summary of changes (3-5 bullet points)
+- Link to full changelog
+- Migration guide (if applicable)
+- Thread for questions
+
+### If Something Goes Wrong
+
+If a release introduces a critical issue:
+
+1. We'll create a [GitHub issue](https://github.com/commercetools/nimbus/issues) documenting the problem
+2. We'll publish a patch that reverts the problematic changes
+3. We'll communicate in #ask-nimbus-anything linking to the issue
+
+## Getting Support
+
+### Self-Service Resources
+
+Most questions can be answered through our documentation:
+
+- **Component documentation** — Usage examples and API reference
+- **Storybook** — Interactive examples and visual testing
+- **Changelog** — Detailed list of all changes
+- **Migration guides** — Step-by-step upgrade instructions
+
+### Asking for Help
+
+If you can't find what you need in the docs:
+
+1. **Search GitHub Issues and Discussions** — Your question may have been answered before
+2. **File an Issue or start a Discussion** — We aim to respond within 24 hours
+3. **Internal developers**: also try #ask-nimbus-anything for quick questions
+
+### What We Can Help With
+
+- Clarifying documentation or API behavior
+- Debugging issues with Nimbus components
+- Migration guidance for breaking changes
+- Feature requests and feedback
+
+### What We Can't Help With
+
+- Updating your application code for you
+- Debugging issues in your application unrelated to Nimbus
+- Guaranteeing specific timelines for feature requests (though we do consider
+  urgency when planning our roadmap)
+
+## Documentation Standards
+
+We maintain documentation alongside code changes:
+
+| Change Type      | Documentation Provided                              |
+| ---------------- | --------------------------------------------------- |
+| New component    | Full docs (examples, API reference) before release  |
+| New prop/feature | Updated component docs in the same release          |
+| Deprecation      | Deprecation notice with timeline and migration path |
+| Breaking change  | Migration guide with before/after examples          |
+| Bug fix          | Changelog entry                                     |
+
+## Questions?
+
+- **Questions & discussions**: [GitHub Discussions](https://github.com/commercetools/nimbus/discussions)
+- **Bugs & feature requests**: [GitHub Issues](https://github.com/commercetools/nimbus/issues)
+- **Internal quick questions**: #ask-nimbus-anything

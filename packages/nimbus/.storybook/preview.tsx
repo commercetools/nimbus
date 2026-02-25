@@ -1,5 +1,7 @@
-import React from "react";
 import type { Preview } from "@storybook/react-vite";
+import addonPerformancePanel, {
+  withPerformanceMonitor,
+} from "@github-ui/storybook-addon-performance-panel";
 
 import { APCACheck } from "./apca-check";
 import { CustomDocsContainer } from "./docs-container";
@@ -17,6 +19,7 @@ const apca = APCACheck("custom", (fontSize: string) => {
 
 const preview: Preview = {
   parameters: {
+    addons: [addonPerformancePanel()],
     darkMode: {
       stylePreview: true,
       classTarget: "html",
@@ -66,6 +69,7 @@ const preview: Preview = {
         </ThemeDecorator>
       );
     },
+    withPerformanceMonitor,
   ],
 };
 

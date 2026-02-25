@@ -240,6 +240,16 @@ watcher
     console.error("Error watching files:", error)
   );
 
+// Graceful shutdown — close chokidar and cancel pending debounced work
+function shutdown() {
+  writeManifestAndSearch.cancel();
+  handleTypeChange.cancel();
+  watcher.close().then(() => process.exit());
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
 // Log watcher status
 const clr = "\x1b[33m%s\x1b[0m";
 console.log(clr, "\n----------------------------------------------------");

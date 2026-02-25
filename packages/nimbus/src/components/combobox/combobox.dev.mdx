@@ -18,18 +18,23 @@ ComboBox supports two patterns for defining options:
 
 #### With items prop (recommended for dynamic data)
 
-Use the `items` prop when working with data from APIs, state, or dynamic sources:
+Use the `items` prop when working with data from APIs, state, or dynamic
+sources:
 
 ```jsx live-dev
 const App = () => {
   const animals = [
-    { id: 'koala', name: 'Koala' },
-    { id: 'panda', name: 'Panda' },
-    { id: 'giraffe', name: 'Giraffe' },
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+    { id: "giraffe", name: "Giraffe" },
   ];
 
   return (
-    <ComboBox.Root items={animals} placeholder="Select an animal..." aria-label="Select an animal">
+    <ComboBox.Root
+      items={animals}
+      placeholder="Select an animal..."
+      aria-label="Select an animal"
+    >
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -40,30 +45,42 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 #### With static children (requires textValue)
 
-For static lists, you **must** include the `textValue` prop on each option for selections to display correctly:
+For static lists, you **must** include the `textValue` prop on each option for
+selections to display correctly:
 
 ```jsx live-dev
 const App = () => (
-  <ComboBox.Root placeholder="Select an animal..." aria-label="Select an animal">
+  <ComboBox.Root
+    placeholder="Select an animal..."
+    aria-label="Select an animal"
+  >
     <ComboBox.Trigger />
     <ComboBox.Popover>
       <ComboBox.ListBox>
-        <ComboBox.Option id="koala" textValue="Koala">Koala</ComboBox.Option>
-        <ComboBox.Option id="panda" textValue="Panda">Panda</ComboBox.Option>
-        <ComboBox.Option id="giraffe" textValue="Giraffe">Giraffe</ComboBox.Option>
+        <ComboBox.Option id="koala" textValue="Koala">
+          Koala
+        </ComboBox.Option>
+        <ComboBox.Option id="panda" textValue="Panda">
+          Panda
+        </ComboBox.Option>
+        <ComboBox.Option id="giraffe" textValue="Giraffe">
+          Giraffe
+        </ComboBox.Option>
       </ComboBox.ListBox>
     </ComboBox.Popover>
   </ComboBox.Root>
-)
+);
 ```
 
 > [!WARNING]\
-> Without `textValue` on static children, selected values will not display in the input field or as tags. Always include `textValue` when not using the `items` prop.
+> Without `textValue` on static children, selected values will not display in
+> the input field or as tags. Always include `textValue` when not using the
+> `items` prop.
 
 ## Usage examples
 
@@ -74,13 +91,18 @@ The `sm` and `md` size variants are available to match your interface density:
 ```jsx live-dev
 const App = () => {
   const options = [
-    { id: '1', name: 'Option 1' },
-    { id: '2', name: 'Option 2' },
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
   ];
 
   return (
     <Stack direction="column" gap="400">
-      <ComboBox.Root size="sm" items={options} placeholder="Small size..." aria-label="Small combobox">
+      <ComboBox.Root
+        size="sm"
+        items={options}
+        placeholder="Small size..."
+        aria-label="Small combobox"
+      >
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -90,7 +112,12 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      <ComboBox.Root size="md" items={options} placeholder="Medium size..." aria-label="Medium combobox">
+      <ComboBox.Root
+        size="md"
+        items={options}
+        placeholder="Medium size..."
+        aria-label="Medium combobox"
+      >
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -102,7 +129,7 @@ const App = () => {
       </ComboBox.Root>
     </Stack>
   );
-}
+};
 ```
 
 ### Visual variants
@@ -112,13 +139,18 @@ Choose between `solid` and `ghost` variants to match your design context:
 ```jsx live-dev
 const App = () => {
   const options = [
-    { id: '1', name: 'Option 1' },
-    { id: '2', name: 'Option 2' },
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
   ];
 
   return (
     <Stack direction="column" gap="400">
-      <ComboBox.Root variant="solid" items={options} placeholder="Solid variant..." aria-label="Solid combobox">
+      <ComboBox.Root
+        variant="solid"
+        items={options}
+        placeholder="Solid variant..."
+        aria-label="Solid combobox"
+      >
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -128,7 +160,12 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      <ComboBox.Root variant="ghost" items={options} placeholder="Ghost variant..." aria-label="Ghost combobox">
+      <ComboBox.Root
+        variant="ghost"
+        items={options}
+        placeholder="Ghost variant..."
+        aria-label="Ghost combobox"
+      >
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -140,7 +177,7 @@ const App = () => {
       </ComboBox.Root>
     </Stack>
   );
-}
+};
 ```
 
 ### Single-select mode
@@ -153,9 +190,9 @@ const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const fruits = [
-    { id: 'apple', name: 'Apple' },
-    { id: 'banana', name: 'Banana' },
-    { id: 'orange', name: 'Orange' },
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+    { id: "orange", name: "Orange" },
   ];
 
   return (
@@ -178,11 +215,13 @@ const App = () => {
         </ComboBox.Popover>
       </ComboBox.Root>
       <Text fontSize="sm">
-        {selectedKeys.length > 0 ? `Selected: ${selectedKeys[0]}` : 'No selection'}
+        {selectedKeys.length > 0
+          ? `Selected: ${selectedKeys[0]}`
+          : "No selection"}
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Multi-select mode
@@ -194,10 +233,10 @@ const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const animals = [
-    { id: 'koala', name: 'Koala' },
-    { id: 'panda', name: 'Panda' },
-    { id: 'giraffe', name: 'Giraffe' },
-    { id: 'elephant', name: 'Elephant' },
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+    { id: "giraffe", name: "Giraffe" },
+    { id: "elephant", name: "Elephant" },
   ];
 
   return (
@@ -220,11 +259,12 @@ const App = () => {
         </ComboBox.Popover>
       </ComboBox.Root>
       <Text fontSize="sm">
-        Selected: {selectedKeys.length} item{selectedKeys.length !== 1 ? 's' : ''}
+        Selected: {selectedKeys.length} item
+        {selectedKeys.length !== 1 ? "s" : ""}
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Leading element
@@ -234,9 +274,9 @@ Add a leading icon to enhance the visual context:
 ```jsx live-dev
 const App = () => {
   const animals = [
-    { id: 'koala', name: 'Koala' },
-    { id: 'panda', name: 'Panda' },
-    { id: 'giraffe', name: 'Giraffe' },
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+    { id: "giraffe", name: "Giraffe" },
   ];
 
   return (
@@ -256,7 +296,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Disabled state
@@ -266,12 +306,17 @@ Use `isDisabled` to disable the combobox:
 ```jsx live-dev
 const App = () => {
   const options = [
-    { id: '1', name: 'Option 1' },
-    { id: '2', name: 'Option 2' },
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
   ];
 
   return (
-    <ComboBox.Root items={options} isDisabled placeholder="Disabled..." aria-label="Disabled combobox">
+    <ComboBox.Root
+      items={options}
+      isDisabled
+      placeholder="Disabled..."
+      aria-label="Disabled combobox"
+    >
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -282,7 +327,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Invalid state
@@ -292,12 +337,17 @@ Mark the combobox as invalid for form validation:
 ```jsx live-dev
 const App = () => {
   const options = [
-    { id: '1', name: 'Option 1' },
-    { id: '2', name: 'Option 2' },
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
   ];
 
   return (
-    <ComboBox.Root items={options} isInvalid placeholder="Select an option..." aria-label="Invalid combobox">
+    <ComboBox.Root
+      items={options}
+      isInvalid
+      placeholder="Select an option..."
+      aria-label="Invalid combobox"
+    >
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -308,7 +358,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Read-only state
@@ -318,8 +368,8 @@ Use `isReadOnly` for display-only scenarios:
 ```jsx live-dev
 const App = () => {
   const fruits = [
-    { id: 'apple', name: 'Apple' },
-    { id: 'banana', name: 'Banana' },
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
   ];
 
   return (
@@ -339,7 +389,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Option groups
@@ -350,27 +400,31 @@ Organize options into sections with headers:
 const App = () => {
   const foodCategories = [
     {
-      id: 'fruits',
-      name: 'Fruits',
+      id: "fruits",
+      name: "Fruits",
       children: [
-        { id: 'apple', name: 'Apple' },
-        { id: 'banana', name: 'Banana' },
-        { id: 'orange', name: 'Orange' },
+        { id: "apple", name: "Apple" },
+        { id: "banana", name: "Banana" },
+        { id: "orange", name: "Orange" },
       ],
     },
     {
-      id: 'vegetables',
-      name: 'Vegetables',
+      id: "vegetables",
+      name: "Vegetables",
       children: [
-        { id: 'carrot', name: 'Carrot' },
-        { id: 'broccoli', name: 'Broccoli' },
-        { id: 'spinach', name: 'Spinach' },
+        { id: "carrot", name: "Carrot" },
+        { id: "broccoli", name: "Broccoli" },
+        { id: "spinach", name: "Spinach" },
       ],
     },
   ];
 
   return (
-    <ComboBox.Root items={foodCategories} placeholder="Select a food..." aria-label="Select a food">
+    <ComboBox.Root
+      items={foodCategories}
+      placeholder="Select a food..."
+      aria-label="Select a food"
+    >
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -391,38 +445,98 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Dynamic options with items
 
-Use the `items` prop for rendering dynamic data efficiently:
+`ComboBox.ListBox` supports the `items` prop, a pattern unique to React Aria
+Components (inherited from React Aria's `ListBox` component). This pattern
+provides an efficient way to render dynamic or large lists of options.
+
+**When to use `items` vs static children:**
+
+- **Use `items` when:**
+  - Rendering options from dynamic data (API responses, filtered lists, computed
+    arrays)
+  - Working with large lists (better performance through virtualization support)
+  - Options change frequently based on user input or state
+  - You need to map over data structures
+
+- **Use static children when:**
+  - Options are known at compile time
+  - You have a small, fixed set of options
+  - You prefer the simpler JSX syntax for readability
+
+**Static children example:**
+
+```jsx live-dev
+const App = () => (
+  <ComboBox.Root
+    placeholder="Select an animal..."
+    aria-label="Select an animal"
+  >
+    <ComboBox.Trigger />
+    <ComboBox.Popover>
+      <ComboBox.ListBox>
+        <ComboBox.Option id="koala" textValue="Koala">
+          Koala
+        </ComboBox.Option>
+        <ComboBox.Option id="panda" textValue="Panda">
+          Panda
+        </ComboBox.Option>
+        <ComboBox.Option id="giraffe" textValue="Giraffe">
+          Giraffe
+        </ComboBox.Option>
+      </ComboBox.ListBox>
+    </ComboBox.Popover>
+  </ComboBox.Root>
+);
+```
+
+**Dynamic items example:**
+
+When using `items`, children must be a render function that receives each item
+and returns a `ComboBox.Option`. This example demonstrates using `items` with
+data that could come from an API, state, or computed values:
 
 ```jsx live-dev
 const App = () => {
+  // In a real app, this data might come from an API, props, or state.
   const animals = [
-    { id: 'koala', name: 'Koala' },
-    { id: 'panda', name: 'Panda' },
-    { id: 'giraffe', name: 'Giraffe' },
-    { id: 'elephant', name: 'Elephant' },
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+    { id: "giraffe", name: "Giraffe" },
+    { id: "elephant", name: "Elephant" },
   ];
 
   return (
-    <ComboBox.Root items={animals} placeholder="Select an animal..." aria-label="Select an animal">
+    <ComboBox.Root
+      items={animals}
+      placeholder="Select an animal..."
+      aria-label="Select an animal"
+    >
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
           {(item) => (
-            <ComboBox.Option key={item.id} id={item.id}>
-              {item.name}
-            </ComboBox.Option>
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
           )}
         </ComboBox.ListBox>
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
+
+The `items` pattern enables React Aria to optimize rendering and provides better
+support for features like virtualization, which can improve performance with
+large option lists.
+
+> [!TIP]\
+> See [React Aria's ComboBox documentation](https://react-spectrum.adobe.com/react-aria/ComboBox.html#sections)
+> for complete API reference and advanced usage, including static and dynamic
+> items.
 
 ### Custom filtering
 
@@ -431,15 +545,15 @@ Customize how options are filtered using the `filter` prop:
 ```jsx live-dev
 const App = () => {
   const animals = [
-    { id: 1, name: 'Koala', category: 'Marsupial' },
-    { id: 2, name: 'Panda', category: 'Bear' },
-    { id: 3, name: 'Giraffe', category: 'Mammal' },
-    { id: 4, name: 'Elephant', category: 'Mammal' },
+    { id: 1, name: "Koala", category: "Marsupial" },
+    { id: 2, name: "Panda", category: "Bear" },
+    { id: 3, name: "Giraffe", category: "Mammal" },
+    { id: 4, name: "Elephant", category: "Mammal" },
   ];
 
   // Use the built-in multi-property filter
   const multiPropertyFilter = useCallback(
-    ComboBox.filters.createMultiPropertyFilter(['name', 'category']),
+    ComboBox.filters.createMultiPropertyFilter(["name", "category"]),
     []
   );
 
@@ -462,7 +576,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Custom options creation
@@ -472,14 +586,14 @@ Allow users to create new options by typing and pressing Enter:
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { id: 1, name: 'Apple' },
-    { id: 2, name: 'Banana' },
-    { id: 3, name: 'Orange' },
+    { id: 1, name: "Apple" },
+    { id: 2, name: "Banana" },
+    { id: 3, name: "Orange" },
   ]);
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const handleCreateOption = useCallback((newItem) => {
-    console.log('Created:', newItem.name);
+    console.log("Created:", newItem.name);
   }, []);
 
   return (
@@ -514,7 +628,7 @@ const App = () => {
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Async data loading
@@ -525,17 +639,17 @@ Load options asynchronously with built-in debouncing and loading states:
 const App = () => {
   // Simulated API call
   const loadPokemon = useCallback(async (filterText, signal) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const allPokemon = [
-      { id: 1, name: 'Bulbasaur' },
-      { id: 2, name: 'Charmander' },
-      { id: 3, name: 'Squirtle' },
-      { id: 4, name: 'Pikachu' },
-      { id: 5, name: 'Jigglypuff' },
+      { id: 1, name: "Bulbasaur" },
+      { id: 2, name: "Charmander" },
+      { id: 3, name: "Squirtle" },
+      { id: 4, name: "Pikachu" },
+      { id: 5, name: "Jigglypuff" },
     ];
 
-    return allPokemon.filter(p =>
+    return allPokemon.filter((p) =>
       p.name.toLowerCase().includes(filterText.toLowerCase())
     );
   }, []);
@@ -562,7 +676,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ### Controlled input value
@@ -571,13 +685,13 @@ Control the input text for advanced scenarios:
 
 ```jsx live-dev
 const App = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const fruits = [
-    { id: 'apple', name: 'Apple' },
-    { id: 'banana', name: 'Banana' },
-    { id: 'orange', name: 'Orange' },
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+    { id: "orange", name: "Orange" },
   ];
 
   return (
@@ -601,10 +715,10 @@ const App = () => {
           </ComboBox.ListBox>
         </ComboBox.Popover>
       </ComboBox.Root>
-      <Text fontSize="sm">Input: {inputValue || '(empty)'}</Text>
+      <Text fontSize="sm">Input: {inputValue || "(empty)"}</Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Menu trigger behavior
@@ -614,17 +728,23 @@ Control when the dropdown menu opens using `menuTrigger`:
 ```jsx live-dev
 const App = () => {
   const options = [
-    { id: '1', name: 'Option 1' },
-    { id: '2', name: 'Option 2' },
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
   ];
 
   return (
     <Stack direction="column" gap="400">
       <Box>
         <Text fontSize="sm" fontWeight="medium" mb="200">
-          menuTrigger="focus" (default) - Opens when clicking input or toggle button
+          menuTrigger="focus" (default) - Opens when clicking input or toggle
+          button
         </Text>
-        <ComboBox.Root items={options} menuTrigger="focus" placeholder="Click to open..." aria-label="Focus trigger">
+        <ComboBox.Root
+          items={options}
+          menuTrigger="focus"
+          placeholder="Click to open..."
+          aria-label="Focus trigger"
+        >
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
@@ -639,7 +759,12 @@ const App = () => {
         <Text fontSize="sm" fontWeight="medium" mb="200">
           menuTrigger="input" - Opens only when typing (try typing in the input)
         </Text>
-        <ComboBox.Root items={options} menuTrigger="input" placeholder="Type to open..." aria-label="Input trigger">
+        <ComboBox.Root
+          items={options}
+          menuTrigger="input"
+          placeholder="Type to open..."
+          aria-label="Input trigger"
+        >
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
@@ -652,9 +777,15 @@ const App = () => {
       </Box>
       <Box>
         <Text fontSize="sm" fontWeight="medium" mb="200">
-          menuTrigger="manual" - Opens only via toggle button (input click does nothing)
+          menuTrigger="manual" - Opens only via toggle button (input click does
+          nothing)
         </Text>
-        <ComboBox.Root items={options} menuTrigger="manual" placeholder="Use button to open..." aria-label="Manual trigger">
+        <ComboBox.Root
+          items={options}
+          menuTrigger="manual"
+          placeholder="Use button to open..."
+          aria-label="Manual trigger"
+        >
           <ComboBox.Trigger />
           <ComboBox.Popover>
             <ComboBox.ListBox>
@@ -667,7 +798,7 @@ const App = () => {
       </Box>
     </Stack>
   );
-}
+};
 ```
 
 ## Component requirements
@@ -722,11 +853,11 @@ const App = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const products = [
-    { id: 1, name: 'MacBook Pro', category: 'Electronics' },
-    { id: 2, name: 'iPhone', category: 'Electronics' },
-    { id: 3, name: 'Desk Chair', category: 'Furniture' },
-    { id: 4, name: 'Standing Desk', category: 'Furniture' },
-    { id: 5, name: 'Coffee Maker', category: 'Appliances' },
+    { id: 1, name: "MacBook Pro", category: "Electronics" },
+    { id: 2, name: "iPhone", category: "Electronics" },
+    { id: 3, name: "Desk Chair", category: "Furniture" },
+    { id: 4, name: "Standing Desk", category: "Furniture" },
+    { id: 5, name: "Coffee Maker", category: "Appliances" },
   ];
 
   // Group products by category
@@ -752,7 +883,7 @@ const App = () => {
           <ComboBox.ListBox>
             {Object.entries(groupedByCategory).map(([category, items]) => (
               <ComboBox.Section key={category} label={category}>
-                {items.map(item => (
+                {items.map((item) => (
                   <ComboBox.Option key={item.id} id={item.id}>
                     {item.name}
                   </ComboBox.Option>
@@ -763,11 +894,12 @@ const App = () => {
         </ComboBox.Popover>
       </ComboBox.Root>
       <Text fontSize="sm">
-        {selectedKeys.length} product{selectedKeys.length !== 1 ? 's' : ''} selected
+        {selectedKeys.length} product{selectedKeys.length !== 1 ? "s" : ""}{" "}
+        selected
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Tag selection with creation
@@ -777,14 +909,14 @@ Enable users to select from existing tags or create new ones:
 ```jsx live-dev
 const App = () => {
   const [tags, setTags] = useState([
-    { id: 1, label: 'React' },
-    { id: 2, label: 'TypeScript' },
-    { id: 3, label: 'JavaScript' },
+    { id: 1, label: "React" },
+    { id: 2, label: "TypeScript" },
+    { id: 3, label: "JavaScript" },
   ]);
   const [selectedKeys, setSelectedKeys] = useState([]);
 
   const handleCreateTag = useCallback((newTag) => {
-    setTags(prev => [...prev, newTag]);
+    setTags((prev) => [...prev, newTag]);
   }, []);
 
   return (
@@ -815,7 +947,7 @@ const App = () => {
       </ComboBox.Popover>
     </ComboBox.Root>
   );
-}
+};
 ```
 
 ## Testing your implementation

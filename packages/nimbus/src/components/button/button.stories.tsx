@@ -100,6 +100,32 @@ export const Disabled: Story = {
       await userEvent.tab();
       await expect(button).not.toHaveFocus();
     });
+
+    await step("Sets disabled attribute on native <button>", async () => {
+      await expect(button).toBeDisabled();
+    });
+  },
+};
+
+export const DisabledAsLink: Story = {
+  args: {
+    children: "Disabled Link Button",
+    isDisabled: true,
+    as: "a",
+    ["data-testid"]: "test",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("test");
+
+    await step(
+      "Sets aria-disabled (not disabled) and role='button' on non-native elements",
+      async () => {
+        await expect(button).toHaveAttribute("aria-disabled", "true");
+        await expect(button).toHaveAttribute("role", "button");
+        await expect(button).not.toHaveAttribute("disabled");
+      }
+    );
   },
 };
 
@@ -348,6 +374,63 @@ export const SmokeTest: Story = {
 };
 
 /**
+ * Verifies that each event handler fires exactly once per interaction,
+ * guarding against the double-firing bug where mergeProps could combine
+ * both the original and React Aria-processed handlers.
+ */
+export const EventHandlersFireOnce: Story = {
+  args: {
+    onClick: fn(),
+    onPress: fn(),
+    onFocus: fn(),
+    onBlur: fn(),
+    onKeyDown: fn(),
+    children: "Click Me",
+    ["data-testid"]: "event-test",
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("event-test");
+
+    await step("onClick fires exactly once per click", async () => {
+      await userEvent.click(button);
+      await expect(args.onClick).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onPress fires exactly once per click", async () => {
+      await expect(args.onPress).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onFocus fires exactly once after click", async () => {
+      await expect(args.onFocus).toHaveBeenCalledTimes(1);
+    });
+
+    await step("onBlur fires exactly once after blur", async () => {
+      await userEvent.tab(); // move focus away
+      await expect(args.onBlur).toHaveBeenCalledTimes(1);
+    });
+
+    await step(
+      "A second click increments all counts to exactly 2",
+      async () => {
+        await userEvent.click(button);
+        await expect(args.onClick).toHaveBeenCalledTimes(2);
+        await expect(args.onPress).toHaveBeenCalledTimes(2);
+      }
+    );
+
+    await step("onKeyDown fires exactly once per keypress", async () => {
+      // onKeyDown accumulated calls from earlier interactions (tab, etc.)
+      const countBefore = (args.onKeyDown as ReturnType<typeof fn>).mock.calls
+        .length;
+      button.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(args.onKeyDown).toHaveBeenCalledTimes(countBefore + 1);
+    });
+  },
+};
+
+/**
  * Demonstrates Button consuming context from React Aria's ButtonContext.
  * This validates the useContextProps integration.
  */
@@ -365,8 +448,8 @@ export const WithinReactAriaContext: Story = {
     await step("Button consumes disabled prop from ButtonContext", async () => {
       const button = canvas.getByRole("button");
 
-      // Verify Button receives disabled attribute from ButtonContext
-      await expect(button).toHaveAttribute("aria-disabled", "true");
+      // Native <button> gets the `disabled` attribute from useButton (not aria-disabled)
+      await expect(button).toBeDisabled();
     });
   },
 };
@@ -395,5 +478,37 @@ export const OverrideContextWithLocalProps: Story = {
         await expect(button).not.toHaveAttribute("aria-disabled");
       }
     );
+  },
+};
+
+/**
+ * Verifies that React Aria event handler props passed via ButtonContext
+ * are not forwarded to the DOM element (which would cause React warnings).
+ */
+export const DOMPropFiltering: Story = {
+  render: () => {
+    return (
+      <Button.Context.Provider
+        value={{
+          onFocusChange: () => {},
+          onHoverStart: () => {},
+          onPressChange: () => {},
+        }}
+      >
+        <Button data-testid="test">Test</Button>
+      </Button.Context.Provider>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Does not forward React Aria event props to DOM", async () => {
+      const button = canvas.getByTestId("test");
+      // These React Aria callback props should be consumed by hooks,
+      // not forwarded as DOM attributes
+      await expect(button).not.toHaveAttribute("onFocusChange");
+      await expect(button).not.toHaveAttribute("onHoverStart");
+      await expect(button).not.toHaveAttribute("onPressChange");
+    });
   },
 };

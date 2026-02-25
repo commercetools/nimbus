@@ -20,6 +20,7 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.stories.tsx"],
   staticDirs: ["../public"],
   addons: [
+    "@github-ui/storybook-addon-performance-panel/preset",
     getAbsolutePackagePath("@storybook/addon-a11y"),
     getAbsolutePackagePath("@vueless/storybook-dark-mode"),
     getAbsolutePackagePath("@storybook/addon-vitest"),

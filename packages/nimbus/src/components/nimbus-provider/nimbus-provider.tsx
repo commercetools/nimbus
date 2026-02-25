@@ -1,9 +1,17 @@
+import { createContext, useContext } from "react";
 import { ChakraProvider } from "@chakra-ui/react/styled-system";
 import { RouterProvider } from "react-aria";
 import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
+import { ToastOutlet } from "@/components/toast/components/toast.outlet";
+
+/**
+ * Prevents duplicate ToastOutlets when NimbusProviders are nested.
+ * Only the outermost provider renders the outlet.
+ */
+const ToastOutletMountedContext = createContext(false);
 
 /**
  * Internal component that loads Inter font from Google Fonts.
@@ -42,13 +50,20 @@ export function NimbusProvider({
   loadFonts = true,
   ...props
 }: NimbusProviderProps) {
+  const hasToastOutlet = useContext(ToastOutletMountedContext);
+
   // Inner content with all the existing providers
   const content = (
     <>
       {loadFonts && <InterFontLoader />}
       <ChakraProvider value={system}>
         <NimbusColorModeProvider enableSystem={false} {...props}>
-          <NimbusI18nProvider locale={locale}>{children}</NimbusI18nProvider>
+          <NimbusI18nProvider locale={locale}>
+            <ToastOutletMountedContext.Provider value={true}>
+              {children}
+              {!hasToastOutlet && <ToastOutlet />}
+            </ToastOutletMountedContext.Provider>
+          </NimbusI18nProvider>
         </NimbusColorModeProvider>
       </ChakraProvider>
     </>

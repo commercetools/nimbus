@@ -32,6 +32,7 @@ export const richTextInputRecipe = defineSlotRecipe({
       },
     },
     editable: {
+      position: "relative", // Required for Slate's absolutely-positioned placeholder
       padding: "400",
       minHeight: "inherit",
       maxHeight: "inherit",
@@ -47,6 +48,7 @@ export const richTextInputRecipe = defineSlotRecipe({
 
       "& [data-slate-placeholder]": {
         opacity: "0.5!",
+        paddingTop: "400",
       },
       // Styling for user-facing editor text
       "& p": {

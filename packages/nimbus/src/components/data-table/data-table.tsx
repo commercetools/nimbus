@@ -5,30 +5,24 @@ import {
   DataTableRoot,
   DataTableTable,
   DataTableHeader,
-  DataTableColumn,
   DataTableBody,
-  DataTableRow,
-  DataTableCell,
   DataTableFooter,
   DataTableManager,
   DataTableContext,
   useDataTableContext,
 } from "./components";
-import {
-  DataTableExpandButton,
-  DataTableNestedIcon,
-  DataTableSelectionCell,
-} from "./data-table.slots";
 import type { DataTableProps } from "./data-table.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "./data-table.messages";
 
 // Default DataTable component that provides the standard structure
-const DataTableBase = function DataTable({
+const DataTableBase = function DataTable<
+  T extends object = Record<string, unknown>,
+>({
   ref: forwardedRef,
   footer,
   ...props
-}: DataTableProps & {
+}: DataTableProps<T> & {
   footer?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 }) {
@@ -101,25 +95,6 @@ export const DataTable = Object.assign(DataTableBase, {
    */
   Header: DataTableHeader,
   /**
-   * # DataTable.Column
-   *
-   * Individual column header component that handles sorting interactions and displays column content.
-   * Used internally by Header but can be used for custom header implementations.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.Root columns={columns} rows={rows}>
-   *   <DataTable.Table>
-   *     <DataTable.Header>
-   *       <DataTable.Column column={customColumn} />
-   *     </DataTable.Header>
-   *     <DataTable.Body />
-   *   </DataTable.Table>
-   * </DataTable.Root>
-   * ```
-   */
-  Column: DataTableColumn,
-  /**
    * # DataTable.Body
    *
    * The table body section that renders all data rows with selection and expansion capabilities.
@@ -136,46 +111,6 @@ export const DataTable = Object.assign(DataTableBase, {
    * ```
    */
   Body: DataTableBody,
-  /**
-   * # DataTable.Row
-   *
-   * Individual row component that renders data cells and handles row-level interactions.
-   * Supports selection, expansion, and click handlers for custom row actions.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.Root columns={columns} rows={rows}>
-   *   <DataTable.Table>
-   *     <DataTable.Header />
-   *     <DataTable.Body>
-   *       <DataTable.Row row={customRow} />
-   *     </DataTable.Body>
-   *   </DataTable.Table>
-   * </DataTable.Root>
-   * ```
-   */
-  Row: DataTableRow,
-  /**
-   * # DataTable.Cell
-   *
-   * Individual cell component that displays data values with proper accessibility attributes.
-   * Supports custom rendering and truncation based on table configuration.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.Root columns={columns} rows={rows}>
-   *   <DataTable.Table>
-   *     <DataTable.Header />
-   *     <DataTable.Body>
-   *       <DataTable.Row>
-   *         <DataTable.Cell>Custom cell content</DataTable.Cell>
-   *       </DataTable.Row>
-   *     </DataTable.Body>
-   *   </DataTable.Table>
-   * </DataTable.Root>
-   * ```
-   */
-  Cell: DataTableCell,
   /**
    * # DataTable.Footer
    *
@@ -216,52 +151,6 @@ export const DataTable = Object.assign(DataTableBase, {
    */
   Manager: DataTableManager,
   /**
-   * # DataTable.ExpandButton
-   *
-   * Button component for expanding/collapsing nested rows in hierarchical data.
-   * Automatically shown when data contains nested structures.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.ExpandButton
-   *   isExpanded={expanded}
-   *   onPress={() => toggleExpand(rowId)}
-   * />
-   * ```
-   */
-  ExpandButton: DataTableExpandButton,
-  /**
-   * # DataTable.NestedIcon
-   *
-   * Icon component that indicates the nesting level and expansion state of hierarchical rows.
-   * Provides visual hierarchy cues for nested data structures.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.NestedIcon
-   *   depth={2}
-   *   isExpanded={expanded}
-   *   hasChildren={hasChildren}
-   * />
-   * ```
-   */
-  NestedIcon: DataTableNestedIcon,
-  /**
-   * # DataTable.SelectionCell
-   *
-   * Specialized cell component that contains selection checkboxes or radio buttons.
-   * Handles row selection state and provides accessible selection controls.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.SelectionCell
-   *   isSelected={selected}
-   *   onSelectionChange={handleSelection}
-   * />
-   * ```
-   */
-  SelectionCell: DataTableSelectionCell,
-  /**
    * # DataTable.Context
    *
    * React context that provides shared state and configuration to all table components.
@@ -296,13 +185,7 @@ export {
   DataTableRoot as _DataTableRoot,
   DataTableTable as _DataTableTable,
   DataTableHeader as _DataTableHeader,
-  DataTableColumn as _DataTableColumn,
   DataTableBody as _DataTableBody,
-  DataTableRow as _DataTableRow,
-  DataTableCell as _DataTableCell,
   DataTableFooter as _DataTableFooter,
   DataTableManager as _DataTableManager,
-  DataTableExpandButton as _DataTableExpandButton,
-  DataTableNestedIcon as _DataTableNestedIcon,
-  DataTableSelectionCell as _DataTableSelectionCell,
 };

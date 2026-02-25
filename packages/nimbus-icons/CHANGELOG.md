@@ -1,5 +1,16 @@
 # @commercetools/nimbus-icons
 
+## 2.7.0
+
+## 2.6.0
+
+### Patch Changes
+
+- [#1080](https://github.com/commercetools/nimbus/pull/1080)
+  [`b436bf8`](https://github.com/commercetools/nimbus/commit/b436bf80954f6e8913f92f0c67d6e4c1fe93fc07)
+  Thanks [@valoriecarli](https://github.com/valoriecarli)! - Fix CheckCircle
+  icon to render as filled instead of outline.
+
 ## 2.5.0
 
 ## 2.4.0

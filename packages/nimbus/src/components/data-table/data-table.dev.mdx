@@ -42,6 +42,48 @@ const App = () => {
 }
 ```
 
+## When to use DataTable
+
+Use the **DataTable** component when you need **interactive data management features** like sorting, filtering, selection, or pagination. It's built for complex, data-intensive interfaces.
+
+### Keep it simple
+
+**Don't use DataTable for static content.** If you only need to display read-only data without interactive features, use the simpler [Table component](/components/data-display/table) instead. It's lighter, faster, and easier to implement.
+
+**Use the Table component when you:**
+- Display static reference data (specifications, comparisons, pricing)
+- Have small datasets (between 10 - 20 rows)
+- Don't need sorting, filtering, or selection
+- Want a straightforward implementation without state management
+
+**Use DataTable when you need:**
+- Sorting columns in ascending or descending order
+- Row selection for bulk actions
+- Column management (show/hide, reorder, resize)
+- Search and filtering across data
+- Pagination for large datasets (> 50 rows)
+- Server-side data operations
+- Nested/hierarchical data with expansion
+- Dense data visualization with configurable row spacing
+
+**Example decision:**
+
+```tsx
+// ✗ Avoid - Overkill for static data
+<DataTable
+  columns={threeStaticColumns}
+  rows={fiveStaticRows}
+/>
+
+// ✓ Better - Use Table for static content
+<Table.Root>
+  <Table.Header>{/* specification headers */}</Table.Header>
+  <Table.Body>{/* specification rows */}</Table.Body>
+</Table.Root>
+```
+
+→ **[See Table component documentation](/components/data-display/table)** for simple table layouts.
+
 ## Working with columns and rows
 
 ### Column configuration
@@ -705,9 +747,6 @@ const App = () => {
 | `DataTable.Table`   | The main table element                                                                                  |
 | `DataTable.Header`  | Table header with column headers                                                                        |
 | `DataTable.Body`    | Table body containing rows                                                                              |
-| `DataTable.Row`     | Individual row component                                                                                |
-| `DataTable.Cell`    | Individual cell component                                                                               |
-| `DataTable.Column`  | Column header component                                                                                 |
 | `DataTable.Footer`  | Footer section for pagination or summaries                                                              |
 | `DataTable.Manager` | Settings panel for column visibility and layout - [see detailed docs below](#advanced-datatablemanager) |
 
@@ -1145,8 +1184,13 @@ application-specific logic.
 
 {{docs-tests: data-table.docs.spec.tsx}}
 
+
 ## Resources
 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-datatable--docs)
 - [React Aria Table](https://react-spectrum.adobe.com/react-aria/Table.html)
 - [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+
+**Related components**
+
+- **[Table Component](/components/data-display/table)** - Use the simpler Table component for static, read-only data without interactive features

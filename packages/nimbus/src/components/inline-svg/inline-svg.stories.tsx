@@ -305,9 +305,8 @@ export const NoAsOrAsChildSupport: Story = {
         expect(svg).toBeInTheDocument();
         expect(svg.tagName.toLowerCase()).toBe("svg");
 
-        // Should not find a div element
-        const div = canvasElement.querySelector("div");
-        expect(div).not.toBeInTheDocument();
+        // The 'as' prop should be ignored — component renders as svg, not div
+        expect(svg.tagName.toLowerCase()).not.toBe("div");
       }
     );
 
