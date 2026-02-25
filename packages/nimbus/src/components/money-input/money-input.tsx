@@ -193,8 +193,14 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onAmountChange?.(stringValue);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange, onValueChange, onAmountChange, value, groupId, name]
+    [
+      onChange,
+      onValueChange,
+      onAmountChange,
+      value,
+      amountInputId,
+      amountInputName,
+    ]
   );
 
   const handleAmountFocus = useCallback(() => {
@@ -206,8 +212,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onFocus, value.amount, id, name]);
+  }, [onFocus, value.amount, amountInputId, amountInputName]);
 
   const handleAmountBlur = useCallback(() => {
     const event: CustomEvent = {
@@ -218,8 +223,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onBlur, value, id, name]);
+  }, [onBlur, value, amountInputId, amountInputName]);
 
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
@@ -241,8 +245,14 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onCurrencyChange?.(currencyCode as CurrencyCode);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange, onValueChange, onCurrencyChange, value, id, name]
+    [
+      onChange,
+      onValueChange,
+      onCurrencyChange,
+      value,
+      currencySelectId,
+      currencySelectName,
+    ]
   );
 
   const handleCurrencyFocus = useCallback(() => {
@@ -254,8 +264,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onFocus, value.currencyCode, id, name]);
+  }, [onFocus, value.currencyCode, currencySelectId, currencySelectName]);
 
   const handleCurrencyBlur = useCallback(() => {
     const event: CustomEvent = {
@@ -266,8 +275,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onBlur, value.currencyCode, id, name]);
+  }, [onBlur, value.currencyCode, currencySelectId, currencySelectName]);
 
   const handleCurrencySelectionChange = useCallback(
     (selectedKey: string | number | null) => {
