@@ -43,6 +43,7 @@ export function useAutogrow(
 
     // Set the new height
     textarea.style.height = `${finalHeight}px`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
   // Set up auto-grow behavior with event listeners
@@ -64,5 +65,6 @@ export function useAutogrow(
     return () => {
       textarea.removeEventListener("input", handleInput);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adjustHeight, enabled]);
 }
