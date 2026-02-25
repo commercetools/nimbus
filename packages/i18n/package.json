@@ -23,6 +23,6 @@
     "clean:intl": "find ../nimbus/src/components -type d -name 'intl' -exec rm -rf {} +"
   },
   "devDependencies": {
-    "@internationalized/string-compiler": "catalog:"
+    "@internationalized/string-compiler": "catalog:tooling"
   }
 }

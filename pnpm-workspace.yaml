@@ -2,16 +2,14 @@ packages:
   - packages/*
   - apps/*
 
-catalog:
-  '@internationalized/string-compiler': ^3.3.0
-  '@github-ui/storybook-addon-performance-panel': ^1.0.0
-  eslint-plugin-react-hooks: ^7.0.1
-
 catalogMode: strict
 
 catalogs:
   tooling:
     "@fission-ai/openspec": ^1.2.0
+    '@github-ui/storybook-addon-performance-panel': ^1.0.0
+    '@internationalized/string-compiler': ^3.3.0
+    eslint-plugin-react-hooks: ^7.0.1
     globals: ^17.3.0
     glob: ^13.0.6
     typescript: ~5.9.3
