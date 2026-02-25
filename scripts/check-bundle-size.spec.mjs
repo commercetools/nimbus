@@ -95,7 +95,9 @@ describe("check-bundle-size failure detection", () => {
     };
     writeFileSync(fixtureBaseline, JSON.stringify(tinyBaseline, null, 2));
 
-    const result = run(CHECK_SCRIPT);
+    // Point GIT_DIR to a nonexistent path so git show fails and the
+    // script falls back to the local (tiny) baseline we just wrote.
+    const result = run(CHECK_SCRIPT, { GIT_DIR: "/nonexistent" });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("FAIL");
     expect(result.stderr).toContain("threshold");
