@@ -113,7 +113,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
-    size: {
+    variant: {
       fullscreen: {
         modal: {
           alignItems: "stretch",

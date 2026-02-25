@@ -990,7 +990,7 @@ export const NestedDrawers: Story = {
 export const Fullscreen: Story = {
   args: {},
   render: (args) => (
-    <Drawer.Root {...args} size="fullscreen" placement="right">
+    <Drawer.Root {...args} variant="fullscreen" placement="right">
       <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
       <Drawer.Content>
         <Drawer.Header>
@@ -1001,7 +1001,7 @@ export const Fullscreen: Story = {
         <Drawer.Body>
           <Stack gap="400">
             <Text>
-              This drawer uses <Code>size="fullscreen"</Code> to fill the
+              This drawer uses <Code>variant="fullscreen"</Code> to fill the
               viewport with a small left indentation, matching the ModalPage
               layout pattern.
             </Text>
@@ -1096,7 +1096,7 @@ export const ShouldDelayOnClose: Story = {
           onOpenChange={handleOpenChange}
           shouldDelayOnClose={hasUnsavedChanges}
           placement="right"
-          size="fullscreen"
+          variant="fullscreen"
         >
           <Drawer.Content>
             <Drawer.Header>

@@ -177,11 +177,11 @@ const App = () => (
 
 ### Fullscreen size
 
-Use the `size="fullscreen"` variant on `Drawer.Root` for a full-viewport drawer with a small left indentation (48px). This matches the ModalPage layout pattern and is ideal for complex editing experiences:
+Use the `variant="fullscreen"` variant on `Drawer.Root` for a full-viewport drawer with a small left indentation (48px). This matches the ModalPage layout pattern and is ideal for complex editing experiences:
 
 ```jsx live-dev
 const App = () => (
-  <Drawer.Root size="fullscreen" placement="right">
+  <Drawer.Root variant="fullscreen" placement="right">
     <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
     <Drawer.Content>
       <Drawer.Header>
@@ -313,7 +313,7 @@ const App = () => {
         onOpenChange={handleOpenChange}
         shouldDelayOnClose={hasUnsavedChanges}
         placement="right"
-        size="fullscreen"
+        variant="fullscreen"
       >
         <Drawer.Content>
           <Drawer.Header>
