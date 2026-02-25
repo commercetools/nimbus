@@ -59,7 +59,6 @@
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
-      "@fission-ai/openspec",
       "@swc/core",
       "es5-ext",
       "esbuild",
