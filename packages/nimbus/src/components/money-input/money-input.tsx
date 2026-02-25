@@ -157,7 +157,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       useGrouping: true, // Keep thousand separators for readability (formatted per locale)
       style: "decimal", // Use decimal to avoid currency symbol conflicts
     };
-  }, [value.currencyCode, ariaLocale]);
+  }, [value.currencyCode]);
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
