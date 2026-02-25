@@ -1,0 +1,29 @@
+{
+  "name": "@commercetools/nimbus-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Nimbus design system",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "nimbus-mcp": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "fuse.js": "^7.1.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:utils",
+    "typescript": "catalog:tooling",
+    "tsx": "catalog:tooling"
+  }
+}
