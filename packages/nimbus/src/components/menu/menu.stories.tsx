@@ -2091,3 +2091,57 @@ export const CollectionPatternDemo: Story = {
     });
   },
 };
+
+export const CustomWidth: Story = {
+  render: (args) => (
+    <Stack direction="row" gap="800">
+      <Menu.Root
+        defaultOpen
+        onOpenChange={args.onOpenChange}
+        onAction={args.onAction}
+      >
+        <Menu.Trigger>Default Width</Menu.Trigger>
+        <Menu.Content>
+          <Menu.Item id="item1">Short</Menu.Item>
+          <Menu.Item id="item2">Item</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+
+      <Menu.Root
+        defaultOpen
+        onOpenChange={args.onOpenChange}
+        onAction={args.onAction}
+      >
+        <Menu.Trigger>Custom Width (400px)</Menu.Trigger>
+        <Menu.Content width="400px">
+          <Menu.Item id="item1">Short</Menu.Item>
+          <Menu.Item id="item2">Item</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    </Stack>
+  ),
+  play: async ({ step }) => {
+    // Menus render in portals outside the canvas, so query from document.body
+    const body = within(document.body);
+
+    await step("Custom width menu should have wider popover", async () => {
+      // Wait for both menus to be rendered (they are defaultOpen)
+      const menus = await waitFor(() => {
+        const found = body.getAllByRole("menu");
+        expect(found).toHaveLength(2);
+        return found;
+      });
+
+      // Each menu's closest [data-expandable] or direct parentElement
+      // is the React Aria Popover container rendered in a portal
+      const defaultPopover = menus[0].parentElement!;
+      const customPopover = menus[1].parentElement!;
+
+      const defaultWidth = defaultPopover.getBoundingClientRect().width;
+      const customWidth = customPopover.getBoundingClientRect().width;
+
+      expect(customWidth).toBeGreaterThanOrEqual(400);
+      expect(customWidth).toBeGreaterThan(defaultWidth);
+    });
+  },
+};

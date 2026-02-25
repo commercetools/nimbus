@@ -76,7 +76,7 @@ export type MenuTriggerProps = OmitInternalProps<
   };
 
 // Menu content/popover component
-export type MenuContentProps = {
+export type MenuContentProps = OmitInternalProps<MenuPopoverSlotProps> & {
   children?: ReactNode;
   ref?: Ref<HTMLDivElement>;
   /**
