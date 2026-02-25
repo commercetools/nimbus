@@ -193,6 +193,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onAmountChange?.(stringValue);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onChange, onValueChange, onAmountChange, value, groupId, name]
   );
 
@@ -205,6 +206,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onFocus, value.amount, id, name]);
 
   const handleAmountBlur = useCallback(() => {
@@ -216,6 +218,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onBlur, value, id, name]);
 
   const handleCurrencyChange = useCallback(
@@ -238,6 +241,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onCurrencyChange?.(currencyCode as CurrencyCode);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onChange, onValueChange, onCurrencyChange, value, id, name]
   );
 
@@ -250,6 +254,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onFocus, value.currencyCode, id, name]);
 
   const handleCurrencyBlur = useCallback(() => {
@@ -261,6 +266,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onBlur, value.currencyCode, id, name]);
 
   const handleCurrencySelectionChange = useCallback(

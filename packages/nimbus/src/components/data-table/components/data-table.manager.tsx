@@ -85,6 +85,7 @@ export const DataTableManager = () => {
         onColumnsChange(updatedColumns);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hiddenItems = useMemo(() => {

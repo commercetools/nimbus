@@ -122,6 +122,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     //   being memoized, including it would cause unnecessary re-syncs. This effect should
     //   primarily respond to changes in the `items` prop, not the key extraction function.
     //   If getKey does need to change mid-lifecycle, it indicates a parent component bug.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   // Notify parent of internal list changes (but not during external sync)
@@ -191,6 +192,7 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
     (key: Key) => {
       list.remove(key);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [list.remove]
   );
 
