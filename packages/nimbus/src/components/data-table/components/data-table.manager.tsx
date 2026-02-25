@@ -48,10 +48,6 @@ export const DataTableManager = () => {
   // Track last notified columns to prevent calling onColumnsChange unnecessarily
   const lastNotifiedColumnsRef = useRef<string[]>(visibleColumns || []);
 
-  if (!visibleColumns || !hiddenColumns) {
-    return null;
-  }
-
   // Handle when visible columns are updated (reordered or removed)
   // Memoized to prevent infinite re-renders in child components
   const handleVisibleColumnsUpdate = useMemo(() => {
@@ -157,6 +153,10 @@ export const DataTableManager = () => {
       }
     }
   }, [onColumnsChange]);
+
+  if (!visibleColumns || !hiddenColumns) {
+    return null;
+  }
 
   return (
     <>

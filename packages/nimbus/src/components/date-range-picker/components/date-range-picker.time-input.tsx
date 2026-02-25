@@ -15,11 +15,6 @@ export const DateRangePickerTimeInput = ({
   const timeInputRef = useRef<HTMLDivElement>(null);
   const previousValueRef = useRef(value);
 
-  // do not show up to the party if you're not invited
-  if (granularity === "day") {
-    return null;
-  }
-
   // Focus the time input when date range changes (user selects dates from calendar)
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -65,6 +60,11 @@ export const DateRangePickerTimeInput = ({
       }
     };
   }, [value]);
+
+  // do not show up to the party if you're not invited
+  if (granularity === "day") {
+    return null;
+  }
 
   return (
     <Flex
