@@ -175,34 +175,6 @@ const App = () => (
 )
 ```
 
-### Fullscreen size
-
-Use `variant="fullscreen"` on `Drawer.Root` for a near-full-viewport drawer. This matches the ModalPage layout pattern and is ideal for complex editing experiences:
-
-```jsx live-dev
-const App = () => (
-  <Drawer.Root variant="fullscreen" placement="right">
-    <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
-    <Drawer.Content>
-      <Drawer.Header>
-        <Drawer.Title>Fullscreen Drawer</Drawer.Title>
-        <Drawer.CloseTrigger />
-      </Drawer.Header>
-      <Drawer.Body>
-        <Text>
-          This drawer fills nearly the full viewport, providing a full-page
-          editing experience while preserving context of the underlying page.
-        </Text>
-      </Drawer.Body>
-      <Drawer.Footer>
-        <Button variant="outline" slot="close">Cancel</Button>
-        <Button variant="solid" slot="close">Save</Button>
-      </Drawer.Footer>
-    </Drawer.Content>
-  </Drawer.Root>
-)
-```
-
 ### Scrollable content
 
 The drawer body automatically handles overflow with scroll support when content exceeds available height:
@@ -312,7 +284,6 @@ const App = () => {
         onOpenChange={handleOpenChange}
         shouldDelayOnClose={hasUnsavedChanges}
         placement="right"
-        variant="fullscreen"
       >
         <Drawer.Content>
           <Drawer.Header>

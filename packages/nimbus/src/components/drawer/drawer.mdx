@@ -108,35 +108,6 @@ const App = () => (
 )
 ```
 
-### Fullscreen
-
-Use `variant="fullscreen"` for a full-viewport drawer that fills the screen with a
-small margin. This is ideal for complex editing workflows like form pages.
-
-```jsx live
-const App = () => (
-  <Drawer.Root variant="fullscreen" placement="right">
-    <Drawer.Trigger asChild>
-      <Button>Open Fullscreen Drawer</Button>
-    </Drawer.Trigger>
-    <Drawer.Content>
-      <Drawer.Header>
-        <Drawer.Title>Fullscreen Drawer</Drawer.Title>
-        <Drawer.CloseTrigger />
-      </Drawer.Header>
-      <Drawer.Body>
-        This drawer fills nearly the full viewport, providing a
-        full-page editing experience.
-      </Drawer.Body>
-      <Drawer.Footer>
-        <Button variant="outline" slot="close">Cancel</Button>
-        <Button slot="close">Save</Button>
-      </Drawer.Footer>
-    </Drawer.Content>
-  </Drawer.Root>
-)
-```
-
 ### Placement Options
 
 Position the drawer at different locations using the `placement` prop. You can
@@ -191,7 +162,7 @@ const App = () => {
 
   return (
     <Stack>
-      <Button onClick={() => setIsOpen(true)}>
+      <Button align-self="flex-start" onPress={() => setIsOpen(true)}>
         Open Controlled Drawer
       </Button>
 
@@ -208,10 +179,10 @@ const App = () => {
               You can open/close it programmatically or through user interaction.
           </Drawer.Body>
           <Drawer.Footer>
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
+            <Button variant="outline" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setIsOpen(false)}>
+            <Button onPress={() => setIsOpen(false)}>
               Save
             </Button>
           </Drawer.Footer>

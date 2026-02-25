@@ -983,78 +983,6 @@ export const NestedDrawers: Story = {
 };
 
 /**
- * Fullscreen drawer variant that fills the viewport, matching the ModalPage
- * layout from merchant-center.
- */
-export const Fullscreen: Story = {
-  args: {},
-  render: (args) => (
-    <Drawer.Root {...args} variant="fullscreen" placement="right">
-      <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
-      <Drawer.Content>
-        <Drawer.Header>
-          <Drawer.Title>Fullscreen Drawer</Drawer.Title>
-          <Drawer.CloseTrigger />
-        </Drawer.Header>
-        <Separator />
-        <Drawer.Body>
-          <Stack gap="400">
-            <Text>
-              This drawer uses <Code>variant="fullscreen"</Code> to fill the
-              viewport with a small margin, matching the ModalPage layout
-              pattern.
-            </Text>
-            <Text>
-              It slides in from the right and provides a full-page editing
-              experience while preserving context of the underlying page.
-            </Text>
-          </Stack>
-        </Drawer.Body>
-        <Separator />
-        <Drawer.Footer>
-          <Button variant="outline" slot="close">
-            Cancel
-          </Button>
-          <Button variant="solid" slot="close">
-            Save
-          </Button>
-        </Drawer.Footer>
-      </Drawer.Content>
-    </Drawer.Root>
-  ),
-
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
-
-    await step("Open fullscreen drawer and verify layout", async () => {
-      const trigger = canvas.getByRole("button", {
-        name: "Open Fullscreen Drawer",
-      });
-      await userEvent.click(trigger);
-
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      expect(
-        canvas.getByRole("heading", { name: "Fullscreen Drawer" })
-      ).toBeInTheDocument();
-    });
-
-    await step("Close fullscreen drawer", async () => {
-      const closeButton = canvas.getByRole("button", { name: /close/i });
-      await userEvent.click(closeButton);
-
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
-    });
-  },
-};
-
-/**
  * Drawer with shouldDelayOnClose prevents accidental closing when forms have
  * unsaved changes. Backdrop click is disabled. Escape key and close buttons
  * still fire onOpenChange(false), allowing the close attempt to be intercepted.
@@ -1097,7 +1025,6 @@ export const ShouldDelayOnClose: Story = {
           onOpenChange={handleOpenChange}
           shouldDelayOnClose={hasUnsavedChanges}
           placement="right"
-          variant="fullscreen"
         >
           <Drawer.Content>
             <Drawer.Header>
