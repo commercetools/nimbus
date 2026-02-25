@@ -176,7 +176,6 @@ export const LocalizedField = ({
       },
       []
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     valuesByLocaleOrCurrency,
     placeholdersByLocaleOrCurrency,
@@ -189,6 +188,9 @@ export const LocalizedField = ({
     isRequired,
     isDisabled,
     isReadOnly,
+    autoFocus,
+    localizationKeys,
+    type,
   ]);
 
   const groupHasInvalidLocalizedFields = getHasInvalidLocalizedFields(
