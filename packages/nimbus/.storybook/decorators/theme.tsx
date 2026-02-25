@@ -48,7 +48,7 @@ export const ThemeDecorator = ({
     });
 
     return () => channel.off(DARK_MODE_EVENT_NAME, setDark);
-  }, [channel]);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");

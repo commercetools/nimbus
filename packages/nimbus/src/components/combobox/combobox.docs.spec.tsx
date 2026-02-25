@@ -306,13 +306,10 @@ describe("ComboBox - Custom options", () => {
         []
       );
 
-      const onCreateOption = useCallback(
-        (newItem: FruitItem) => {
-          setItems((prev) => [...prev, newItem]);
-          handleCreateOption(newItem);
-        },
-        [handleCreateOption]
-      );
+      const onCreateOption = useCallback((newItem: FruitItem) => {
+        setItems((prev) => [...prev, newItem]);
+        handleCreateOption(newItem);
+      }, []);
 
       return (
         <NimbusProvider>
