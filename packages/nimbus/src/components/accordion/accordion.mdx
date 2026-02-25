@@ -131,14 +131,26 @@ const App = () => (
         </Accordion.HeaderRightContent>
       </Accordion.Header>
       <Accordion.Content>
-        First name
-        <TextInput size="sm" value="john" w="100%"/>
-        <br />
-        Last name
-        <TextInput size="sm" value="doe" w="100%"/>
-        <br />
-        Birthday
-        <TextInput size="sm" value="10.05.1982" w="100%"/>
+        <Stack direction="vertical" gap="200">
+          <FormField.Root>
+            <FormField.Label>First name</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="john" w="100%"/>
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Last name</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="doe" w="100%"/>
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Birthday</FormField.Label>
+            <FormField.Input>
+              <TextInput size="sm" value="10.05.1982" w="100%"/>
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
       </Accordion.Content>
     </Accordion.Item>
   </Accordion.Root>
