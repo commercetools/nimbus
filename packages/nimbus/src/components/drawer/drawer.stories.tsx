@@ -1087,7 +1087,9 @@ export const ShouldDelayOnClose: Story = {
 
     return (
       <Stack gap="400">
-        <Button onPress={() => setIsOpen(true)}>Open Protected Drawer</Button>
+        <Button alignSelf="flex-start" onPress={() => setIsOpen(true)}>
+          Open Protected Drawer
+        </Button>
         <Text>Drawer is {isOpen ? "open" : "closed"}</Text>
 
         <Drawer.Root
