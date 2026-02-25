@@ -36,7 +36,7 @@ export const IconSearch = () => {
     });
 
     setFilteredIcons(filtered);
-  }, [q, icons]);
+  }, [q]);
 
   /**
    * Handles the copy request for an icon import statement.

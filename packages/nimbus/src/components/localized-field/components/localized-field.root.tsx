@@ -188,6 +188,9 @@ export const LocalizedField = ({
     isRequired,
     isDisabled,
     isReadOnly,
+    autoFocus,
+    localizationKeys,
+    type,
   ]);
 
   const groupHasInvalidLocalizedFields = getHasInvalidLocalizedFields(

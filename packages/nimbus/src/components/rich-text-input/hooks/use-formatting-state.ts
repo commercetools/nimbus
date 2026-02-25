@@ -39,6 +39,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected script formatting key (superscript or subscript - mutually exclusive)
@@ -48,6 +49,7 @@ export const useFormattingState = ({
       if (isMarkActive(editor, format)) keys.push(format);
     });
     return new Set(keys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children, Editor.marks(editor)]);
 
   // Combine all selected keys for display purposes

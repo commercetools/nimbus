@@ -23,11 +23,6 @@ export const DatePickerTimeInput = ({
   const timeInputRef = useRef<HTMLDivElement>(null);
   const previousDateRef = useRef(dateValue);
 
-  // do not show up to the party if you're not invited
-  if (granularity === "day") {
-    return null;
-  }
-
   // Focus the time input when date changes (user selects a date from calendar)
   useEffect(() => {
     // Check if date changed
@@ -65,6 +60,11 @@ export const DatePickerTimeInput = ({
       }
     };
   }, [dateValue]);
+
+  // do not show up to the party if you're not invited
+  if (granularity === "day") {
+    return null;
+  }
 
   return (
     <Flex

@@ -4327,6 +4327,7 @@ export const WithCustomSettings: Story = {
         }
         return col;
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colorFirstColumn]);
 
     // Apply custom row modifications based on settings

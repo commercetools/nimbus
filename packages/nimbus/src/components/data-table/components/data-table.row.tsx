@@ -248,6 +248,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
    * before the component is fully removed from the React tree.
    */
   useEffect(() => {
+    const counter = counterRef.current;
     return () => {
       // Clear any pending click timeout to prevent memory leaks and stale callbacks
       if (clickTimeoutRef.current) {
@@ -255,16 +256,13 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
         clickTimeoutRef.current = null;
       }
 
-      if (counterRef.current.count >= 1 && counterRef.current.node) {
-        counterRef.current.node.removeEventListener(
+      if (counter.count >= 1 && counter.node) {
+        counter.node.removeEventListener(
           "pointerdown",
           stopPropagationForNonInteractiveElements
         );
-        counterRef.current.node.removeEventListener("mouseup", handleRowClick);
-        counterRef.current.node.removeEventListener(
-          "dblclick",
-          handleRowDoubleClick
-        );
+        counter.node.removeEventListener("mouseup", handleRowClick);
+        counter.node.removeEventListener("dblclick", handleRowDoubleClick);
       }
     };
   }, [handleRowClick, handleRowDoubleClick]);

@@ -157,7 +157,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       useGrouping: true, // Keep thousand separators for readability (formatted per locale)
       style: "decimal", // Use decimal to avoid currency symbol conflicts
     };
-  }, [value.currencyCode, ariaLocale]);
+  }, [value.currencyCode]);
 
   // Recipe setup
   const recipe = useSlotRecipe({ recipe: moneyInputRecipe });
@@ -193,7 +193,14 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onAmountChange?.(stringValue);
     },
-    [onChange, onValueChange, onAmountChange, value, groupId, name]
+    [
+      onChange,
+      onValueChange,
+      onAmountChange,
+      value,
+      amountInputId,
+      amountInputName,
+    ]
   );
 
   const handleAmountFocus = useCallback(() => {
@@ -205,7 +212,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
-  }, [onFocus, value.amount, id, name]);
+  }, [onFocus, value.amount, amountInputId, amountInputName]);
 
   const handleAmountBlur = useCallback(() => {
     const event: CustomEvent = {
@@ -216,7 +223,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
-  }, [onBlur, value, id, name]);
+  }, [onBlur, value, amountInputId, amountInputName]);
 
   const handleCurrencyChange = useCallback(
     (currencyCode: string) => {
@@ -238,7 +245,14 @@ export const MoneyInput = (props: MoneyInputProps) => {
       onValueChange?.(newValueObject);
       onCurrencyChange?.(currencyCode as CurrencyCode);
     },
-    [onChange, onValueChange, onCurrencyChange, value, id, name]
+    [
+      onChange,
+      onValueChange,
+      onCurrencyChange,
+      value,
+      currencySelectId,
+      currencySelectName,
+    ]
   );
 
   const handleCurrencyFocus = useCallback(() => {
@@ -250,7 +264,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onFocus?.(event);
-  }, [onFocus, value.currencyCode, id, name]);
+  }, [onFocus, value.currencyCode, currencySelectId, currencySelectName]);
 
   const handleCurrencyBlur = useCallback(() => {
     const event: CustomEvent = {
@@ -261,7 +275,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
       },
     };
     onBlur?.(event);
-  }, [onBlur, value.currencyCode, id, name]);
+  }, [onBlur, value.currencyCode, currencySelectId, currencySelectName]);
 
   const handleCurrencySelectionChange = useCallback(
     (selectedKey: string | number | null) => {

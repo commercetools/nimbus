@@ -28,6 +28,7 @@ export const FormFieldDescription = ({
         descriptionSlotProps: undefined,
       }));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children, setContext]);
 
   return null;
