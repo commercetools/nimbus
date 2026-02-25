@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "./server.js";
@@ -56,10 +56,6 @@ describe("MCP server — initialize handshake", () => {
 });
 
 describe("MCP server — tools/list", () => {
-  afterEach(async () => {
-    // transports self-close when the client closes
-  });
-
   it("returns a non-empty array of tools", async () => {
     const ctx = createTestClient();
     await ctx.connect();
@@ -79,8 +75,8 @@ describe("MCP server — tools/list", () => {
     for (const tool of tools) {
       expect(typeof tool.name).toBe("string");
       expect(tool.name.length).toBeGreaterThan(0);
-      expect(typeof tool.description).toBe("string");
-      expect(tool.description.length).toBeGreaterThan(0);
+      expect(tool.description).toBeDefined();
+      expect(tool.description!.length).toBeGreaterThan(0);
       expect(tool.inputSchema).toBeDefined();
       expect(tool.inputSchema.type).toBe("object");
     }
