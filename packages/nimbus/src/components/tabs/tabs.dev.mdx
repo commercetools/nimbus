@@ -662,6 +662,101 @@ const App = () => {
 };
 ```
 
+### Router-integrated tabs
+
+Use router-integrated tabs when tab state should be reflected in the URL — enabling shareable links, browser back/forward navigation, and deep linking to specific tabs.
+
+**Use this pattern when:**
+- Tab content represents distinct views users may want to bookmark or share
+- The active tab should survive a page refresh
+- Your app uses react-router for navigation (replaces MC's standalone `tab-header` component)
+
+**Stick with standard tabs when:**
+- Tabs are purely UI-local (no shareable state needed)
+- Tab switches do not represent meaningful navigation steps
+
+Sync tab state with the URL using react-router's `useSearchParams` hook: read the active tab from `?tab=` on mount and write back to it whenever the selection changes.
+
+```tsx
+import { useSearchParams } from 'react-router-dom';
+import { Tabs } from '@commercetools/nimbus';
+
+const DEFAULT_TAB = 'overview';
+
+export const ProductDetailTabs = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') ?? DEFAULT_TAB;
+
+  const handleTabChange = (key: string | number) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set('tab', String(key));
+        return next;
+      },
+      { replace: true } // avoid polluting browser history on every tab click
+    );
+  };
+
+  return (
+    <Tabs.Root selectedKey={activeTab} onSelectionChange={handleTabChange}>
+      <Tabs.List aria-label="Product details">
+        <Tabs.Tab id="overview">Overview</Tabs.Tab>
+        <Tabs.Tab id="variants">Variants</Tabs.Tab>
+        <Tabs.Tab id="inventory">Inventory</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="overview">
+          <p>Product overview content.</p>
+        </Tabs.Panel>
+        <Tabs.Panel id="variants">
+          <p>Variant management content.</p>
+        </Tabs.Panel>
+        <Tabs.Panel id="inventory">
+          <p>Inventory tracking content.</p>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
+For path-based routing (e.g. `/products/:id/overview`), use `useParams` or `useMatch` to determine the active segment, then call `navigate` instead of `setSearchParams`:
+
+```tsx
+import { useNavigate, useParams } from 'react-router-dom';
+import { Tabs } from '@commercetools/nimbus';
+
+export const ProductDetailTabs = () => {
+  const { tab = 'overview' } = useParams<{ tab: string }>();
+  const navigate = useNavigate();
+
+  return (
+    <Tabs.Root
+      selectedKey={tab}
+      onSelectionChange={(key) => navigate(`../${String(key)}`, { relative: 'path' })}
+    >
+      <Tabs.List aria-label="Product details">
+        <Tabs.Tab id="overview">Overview</Tabs.Tab>
+        <Tabs.Tab id="variants">Variants</Tabs.Tab>
+        <Tabs.Tab id="inventory">Inventory</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <Tabs.Panel id="overview">
+          <p>Product overview content.</p>
+        </Tabs.Panel>
+        <Tabs.Panel id="variants">
+          <p>Variant management content.</p>
+        </Tabs.Panel>
+        <Tabs.Panel id="inventory">
+          <p>Inventory tracking content.</p>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs.Root>
+  );
+};
+```
+
 ## Testing your implementation
 
 These examples demonstrate how to test your implementation when using Tabs within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
