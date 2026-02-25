@@ -113,6 +113,23 @@ export const drawerSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
+    size: {
+      fullscreen: {
+        modal: {
+          alignItems: "stretch",
+          justifyContent: "flex-end",
+        },
+        content: {
+          width: "calc(100vw - {spacing.1200})",
+          height: "100dvh",
+          maxH: "100dvh",
+          borderRadius: 0,
+          my: 0,
+          mx: 0,
+          boxShadow: "0px 0px 40px 0px rgba(0, 0, 0, 0.1)",
+        },
+      },
+    },
     showBackdrop: {
       true: {
         modalOverlay: {

@@ -12,6 +12,8 @@ type DrawerRecipeProps = {
   placement?: SlotRecipeProps<"nimbusDrawer">["placement"];
   /** Whether to show backdrop overlay */
   showBackdrop?: SlotRecipeProps<"nimbusDrawer">["showBackdrop"];
+  /** Size variant of the drawer */
+  size?: SlotRecipeProps<"nimbusDrawer">["size"];
 };
 
 // ============================================================
@@ -99,6 +101,17 @@ export type DrawerRootProps = OmitInternalProps<DrawerRootSlotProps> & {
    * @default true
    */
   showBackdrop?: boolean;
+
+  /**
+   * When true, disables backdrop click dismissal. Escape key and close buttons
+   * still fire `onOpenChange(false)`, allowing close attempts to be intercepted
+   * (e.g., to show an "unsaved changes" confirmation before closing).
+   *
+   * Requires controlled mode (`isOpen` + `onOpenChange`).
+   *
+   * @default false
+   */
+  shouldDelayOnClose?: boolean;
 
   /** A Title for the drawer, optional, as long as the Drawer.Title component is used
    * or there is a Heading component used inside the Drawer with

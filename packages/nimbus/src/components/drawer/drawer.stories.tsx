@@ -981,3 +981,258 @@ export const NestedDrawers: Story = {
     });
   },
 };
+
+/**
+ * Fullscreen drawer variant that fills the viewport, matching the ModalPage
+ * layout from merchant-center. Slides in from the right with a small left
+ * indentation (48px).
+ */
+export const Fullscreen: Story = {
+  args: {},
+  render: (args) => (
+    <Drawer.Root {...args} size="fullscreen" placement="right">
+      <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Fullscreen Drawer</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Separator />
+        <Drawer.Body>
+          <Stack gap="400">
+            <Text>
+              This drawer uses <Code>size="fullscreen"</Code> to fill the
+              viewport with a small left indentation, matching the ModalPage
+              layout pattern.
+            </Text>
+            <Text>
+              It slides in from the right and provides a full-page editing
+              experience while preserving context of the underlying page.
+            </Text>
+          </Stack>
+        </Drawer.Body>
+        <Separator />
+        <Drawer.Footer>
+          <Button variant="outline" slot="close">
+            Cancel
+          </Button>
+          <Button variant="solid" slot="close">
+            Save
+          </Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open fullscreen drawer and verify layout", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Fullscreen Drawer",
+      });
+      await userEvent.click(trigger);
+
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      expect(
+        canvas.getByRole("heading", { name: "Fullscreen Drawer" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Close fullscreen drawer", async () => {
+      const closeButton = canvas.getByRole("button", { name: /close/i });
+      await userEvent.click(closeButton);
+
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Drawer with shouldDelayOnClose prevents accidental closing when forms have
+ * unsaved changes. Backdrop click is disabled. Escape key and close buttons
+ * still fire onOpenChange(false), allowing the close attempt to be intercepted.
+ */
+export const ShouldDelayOnClose: Story = {
+  args: {},
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const handleOpenChange = (open: boolean) => {
+      if (open) {
+        setIsOpen(true);
+        return;
+      }
+      // Close attempt — intercept when there are unsaved changes
+      if (hasUnsavedChanges) {
+        setShowConfirmation(true);
+        return;
+      }
+      setIsOpen(false);
+    };
+
+    const handleForceClose = () => {
+      setShowConfirmation(false);
+      setHasUnsavedChanges(false);
+      setIsOpen(false);
+    };
+
+    return (
+      <Stack gap="400">
+        <Button onPress={() => setIsOpen(true)}>Open Protected Drawer</Button>
+        <Text>Drawer is {isOpen ? "open" : "closed"}</Text>
+
+        <Drawer.Root
+          isOpen={isOpen}
+          onOpenChange={handleOpenChange}
+          shouldDelayOnClose={hasUnsavedChanges}
+          placement="right"
+          size="fullscreen"
+        >
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>Edit Form</Drawer.Title>
+              <Drawer.CloseTrigger />
+            </Drawer.Header>
+            <Drawer.Body>
+              <Stack gap="400">
+                <Switch
+                  isSelected={hasUnsavedChanges}
+                  onChange={setHasUnsavedChanges}
+                >
+                  Has unsaved changes
+                </Switch>
+
+                {showConfirmation && (
+                  <Stack
+                    gap="300"
+                    p="400"
+                    borderWidth="1px"
+                    borderColor="border"
+                    borderRadius="200"
+                  >
+                    <Text fontWeight="semibold">
+                      You have unsaved changes. Discard them?
+                    </Text>
+                    <Stack direction="row" gap="300">
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onPress={() => setShowConfirmation(false)}
+                      >
+                        Keep Editing
+                      </Button>
+                      <Button
+                        variant="solid"
+                        size="xs"
+                        onPress={handleForceClose}
+                      >
+                        Discard Changes
+                      </Button>
+                    </Stack>
+                  </Stack>
+                )}
+
+                <Text>
+                  When <Code>shouldDelayOnClose</Code> is <Code>true</Code>,
+                  backdrop click is disabled. Escape key and close buttons still
+                  fire <Code>onOpenChange(false)</Code>, which is intercepted to
+                  show a confirmation dialog.
+                </Text>
+              </Stack>
+            </Drawer.Body>
+            <Drawer.Footer>
+              <Button variant="outline" slot="close">
+                Cancel
+              </Button>
+              <Button
+                variant="solid"
+                onPress={() => {
+                  setHasUnsavedChanges(false);
+                  setIsOpen(false);
+                }}
+              >
+                Save
+              </Button>
+            </Drawer.Footer>
+          </Drawer.Content>
+        </Drawer.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open drawer", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open Protected Drawer",
+      });
+      await userEvent.click(trigger);
+
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Escape key shows confirmation instead of closing", async () => {
+      await userEvent.keyboard("{Escape}");
+
+      // Drawer should still be open
+      expect(canvas.getByRole("dialog")).toBeInTheDocument();
+
+      // Confirmation should appear
+      await waitFor(() => {
+        expect(
+          canvas.getByText("You have unsaved changes. Discard them?")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Dismiss confirmation and keep editing", async () => {
+      const keepButton = canvas.getByRole("button", { name: "Keep Editing" });
+      await userEvent.click(keepButton);
+
+      await waitFor(() => {
+        expect(
+          canvas.queryByText("You have unsaved changes. Discard them?")
+        ).not.toBeInTheDocument();
+      });
+      expect(canvas.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    await step("Close trigger also shows confirmation", async () => {
+      const closeButton = canvas.getByRole("button", { name: /close/i });
+      await userEvent.click(closeButton);
+
+      expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(
+          canvas.getByText("You have unsaved changes. Discard them?")
+        ).toBeInTheDocument();
+      });
+    });
+
+    await step("Force close via discard button", async () => {
+      const discardButton = canvas.getByRole("button", {
+        name: "Discard Changes",
+      });
+      await userEvent.click(discardButton);
+
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
