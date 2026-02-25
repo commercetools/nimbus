@@ -300,7 +300,6 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
       isInvalid,
       isReadOnly,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       selectionMode,
       getKey,
@@ -308,6 +307,8 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
       leadingElement,
       triggerRef,
       inputRef,
+      isLoading,
+      size,
       isDisabled,
       isRequired,
       isInvalid,
@@ -678,8 +679,7 @@ const ComboBoxRootInner = <T extends object>(
       inputRef.current?.focus();
       setFocusStrategy("first");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controlledIsOpen, isOpen, onOpenChange]);
+  }, [controlledIsOpen, isOpen, onOpenChange, inputRef]);
 
   // Input change handler (opens menu when menuTrigger="input")
   const handleInputChange = useCallback(
@@ -779,7 +779,6 @@ const ComboBoxRootInner = <T extends object>(
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       collection,
       selectionMode,
@@ -789,6 +788,8 @@ const ComboBoxRootInner = <T extends object>(
       shouldCloseOnSelect,
       setIsOpen,
       isInputControlled,
+      asyncConfig,
+      onAsyncSelectedItemsChange,
     ]
   );
 
@@ -955,8 +956,13 @@ const ComboBoxRootInner = <T extends object>(
         inputRef.current?.focus();
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [normalizedSelectedKeys, handleSelectionChange, isDisabled, isReadOnly]
+    [
+      normalizedSelectedKeys,
+      handleSelectionChange,
+      isDisabled,
+      isReadOnly,
+      inputRef,
+    ]
   );
 
   // ============================================================
@@ -1125,7 +1131,6 @@ const ComboBoxRootInner = <T extends object>(
     if (selectionMode === "single" && inputValue && inputRef.current) {
       inputRef.current.select();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     menuTrigger,
     isDisabled,
@@ -1133,6 +1138,7 @@ const ComboBoxRootInner = <T extends object>(
     setIsOpen,
     selectionMode,
     inputValue,
+    inputRef,
   ]);
 
   // Close menu on blur (with delay to allow option clicks)
@@ -1166,8 +1172,7 @@ const ComboBoxRootInner = <T extends object>(
     if (autoFocus && inputRef.current && !isDisabled) {
       inputRef.current.focus();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoFocus, isDisabled]);
+  }, [autoFocus, isDisabled, inputRef]);
 
   // Notify parent of open state changes (uncontrolled mode)
   const prevIsOpenRef = useRef(isOpen);
@@ -1318,8 +1323,7 @@ const ComboBoxRootInner = <T extends object>(
     return () => {
       resizeObserver.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [triggerRef]);
 
   // ============================================================
   // CONTEXT PROVIDERS
