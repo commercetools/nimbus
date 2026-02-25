@@ -5,16 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
-  default:
-    '@github-ui/storybook-addon-performance-panel':
-      specifier: ^1.0.0
-      version: 1.1.2
-    '@internationalized/string-compiler':
-      specifier: ^3.3.0
-      version: 3.3.0
-    lost-pixel:
-      specifier: ^3.22.0
-      version: 3.22.0
   react:
     '@chakra-ui/cli':
       specifier: ^3.33.0
@@ -65,6 +55,12 @@ catalogs:
     '@fission-ai/openspec':
       specifier: ^1.2.0
       version: 1.2.0
+    '@github-ui/storybook-addon-performance-panel':
+      specifier: ^1.0.0
+      version: 1.1.2
+    '@internationalized/string-compiler':
+      specifier: ^3.3.0
+      version: 3.3.0
     '@preconstruct/cli':
       specifier: ^2.8.12
       version: 2.8.12
@@ -137,6 +133,9 @@ catalogs:
     jsdom:
       specifier: ^28.1.0
       version: 28.1.0
+    lost-pixel:
+      specifier: ^3.22.0
+      version: 3.22.0
     playwright:
       specifier: ^1.58.2
       version: 1.58.2
@@ -247,7 +246,7 @@ importers:
         specifier: catalog:tooling
         version: 17.3.0
       lost-pixel:
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 3.22.0(@swc/core@1.15.11(@swc/helpers@0.5.17))(@types/node@24.10.13)(playwright-core@1.58.2)(typescript@5.9.3)
       playwright:
         specifier: catalog:tooling
@@ -532,7 +531,7 @@ importers:
   packages/i18n:
     devDependencies:
       '@internationalized/string-compiler':
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 3.3.0
 
   packages/nimbus:
@@ -544,7 +543,7 @@ importers:
         specifier: catalog:react
         version: 1.4.0
       '@github-ui/storybook-addon-performance-panel':
-        specifier: 'catalog:'
+        specifier: catalog:tooling
         version: 1.1.2(@storybook/icons@2.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@storybook/react@10.2.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@10.2.12(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3))(react@19.2.0)(storybook@10.2.12(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@internationalized/string':
         specifier: catalog:react

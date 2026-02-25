@@ -3,6 +3,10 @@
 # Build output
 dist
 
+# Lost Pixel — only baseline images should be committed
+.lostpixel/current/
+.lostpixel/difference/
+
 # Logs
 
 logs

@@ -83,7 +83,7 @@
     "eslint-plugin-prettier": "catalog:tooling",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
-    "lost-pixel": "catalog:",
+    "lost-pixel": "catalog:tooling",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
     "tsx": "catalog:tooling",
