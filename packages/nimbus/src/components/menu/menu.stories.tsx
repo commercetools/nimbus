@@ -2132,16 +2132,13 @@ export const CustomWidth: Story = {
         return found;
       });
 
-      // Each menu's closest [data-expandable] or direct parentElement
-      // is the React Aria Popover container rendered in a portal
-      const defaultPopover = menus[0].parentElement!;
+      // Each menu's parentElement is the React Aria Popover container rendered in a portal
       const customPopover = menus[1].parentElement!;
 
-      const defaultWidth = defaultPopover.getBoundingClientRect().width;
-      const customWidth = customPopover.getBoundingClientRect().width;
-
-      expect(customWidth).toBeGreaterThanOrEqual(400);
-      expect(customWidth).toBeGreaterThan(defaultWidth);
+      // Chakra UI applies style props as inline CSS on the DOM element.
+      // Use getComputedStyle to verify the width style prop was forwarded correctly.
+      const customPopoverStyle = window.getComputedStyle(customPopover);
+      expect(customPopoverStyle.width).toBe("400px");
     });
   },
 };
