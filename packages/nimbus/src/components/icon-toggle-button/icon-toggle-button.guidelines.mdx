@@ -110,13 +110,13 @@ const App = () => (
       </Select.Root>
       <Separator orientation="vertical" />
       <Group>
-        <IconToggleButton size="xs" variant="ghost">
+        <IconToggleButton size="xs" variant="ghost" aria-label="Bold">
           <Icons.FormatBold />
         </IconToggleButton>
-        <IconToggleButton size="xs" variant="ghost">
+        <IconToggleButton size="xs" variant="ghost" aria-label="Italic">
           <Icons.FormatItalic />
         </IconToggleButton>
-        <IconToggleButton size="xs" variant="ghost">
+        <IconToggleButton size="xs" variant="ghost" aria-label="Underline">
           <Icons.FormatUnderlined />
         </IconToggleButton>
         <IconButton size="xs" variant="ghost">
@@ -125,15 +125,15 @@ const App = () => (
       </Group>
       <Separator orientation="vertical" />
       <Group>
-        <IconToggleButton size="xs" variant="ghost">
+        <IconToggleButton size="xs" variant="ghost" aria-label="Bulleted list">
           <Icons.FormatListBulleted />
         </IconToggleButton>
-        <IconToggleButton size="xs" variant="ghost">
+        <IconToggleButton size="xs" variant="ghost" aria-label="Numbered list">
           <Icons.FormatListNumbered />
         </IconToggleButton>
       </Group>
     </Toolbar>
-    <IconToggleButton aria-label="Delete">
+    <IconToggleButton aria-label="Copy">
       <Icons.FileCopy />
     </IconToggleButton>
   </Stack>
