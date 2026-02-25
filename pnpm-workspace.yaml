@@ -2,6 +2,11 @@ packages:
   - packages/*
   - apps/*
 
+# Explicitly block postinstall scripts for packages where we don't need them.
+# Shell completions and other conveniences can be installed manually if needed.
+neverBuiltDependencies:
+  - "@fission-ai/openspec"
+
 catalog:
   "@internationalized/string-compiler": ^3.3.0
 
