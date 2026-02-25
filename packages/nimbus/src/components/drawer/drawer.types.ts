@@ -12,8 +12,6 @@ type DrawerRecipeProps = {
   placement?: SlotRecipeProps<"nimbusDrawer">["placement"];
   /** Whether to show backdrop overlay */
   showBackdrop?: SlotRecipeProps<"nimbusDrawer">["showBackdrop"];
-  /** Layout variant of the drawer */
-  variant?: SlotRecipeProps<"nimbusDrawer">["variant"];
 };
 
 // ============================================================
