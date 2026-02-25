@@ -5,22 +5,23 @@ packages:
 catalog:
   '@internationalized/string-compiler': ^3.3.0
   '@github-ui/storybook-addon-performance-panel': ^1.0.0
+  lost-pixel: ^3.22.0
 
 catalogMode: strict
 
 catalogs:
   tooling:
-    "@fission-ai/openspec": ^1.2.0
+    '@fission-ai/openspec': ^1.2.0
     globals: ^17.3.0
     glob: ^13.0.6
     typescript: ~5.9.3
     typescript-eslint: ^8.56.1
     tsx: ^4.21.0
-    "@babel/core": ^7.29.0
-    "@babel/runtime": ^7.28.6
-    "@babel/preset-typescript": ^7.28.5
-    "@eslint/js": ^10.0.1
-    "@react-types/shared": ^3.33.0
+    '@babel/core': ^7.29.0
+    '@babel/runtime': ^7.28.6
+    '@babel/preset-typescript': ^7.28.5
+    '@eslint/js': ^10.0.1
+    '@react-types/shared': ^3.33.0
     eslint: ^10.0.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
@@ -47,11 +48,11 @@ catalogs:
     vitest: ^4.0.18
     storybook: ^10.2.12
     eslint-plugin-storybook: ^10.2.12
-    "@storybook/addon-a11y": ^10.2.12
-    "@storybook/addon-docs": ^10.2.12
-    "@storybook/addon-vitest": ^10.2.12
-    "@storybook/react-vite": ^10.2.12
-    "@vueless/storybook-dark-mode": ^10.0.7
+    '@storybook/addon-a11y': ^10.2.12
+    '@storybook/addon-docs': ^10.2.12
+    '@storybook/addon-vitest': ^10.2.12
+    '@storybook/react-vite': ^10.2.12
+    '@vueless/storybook-dark-mode': ^10.0.7
     jsdom: ^28.1.0
   react:
     '@types/react': ^19.2.14
@@ -74,5 +75,5 @@ catalogs:
     dequal: ^2.0.3
     dompurify: ^3.3.1
     lodash: ^4.17.23
-    "@types/lodash": ^4.17.24
-    "@types/node": ^24.10.13
+    '@types/lodash': ^4.17.24
+    '@types/node': ^24.10.13

@@ -34,7 +34,11 @@
     "test:unit": "pnpm vitest run --project=unit",
     "test:storybook": "pnpm vitest run --project=storybook",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
-    "update:bundle-sizes": "node scripts/update-bundle-sizes.mjs"
+    "update:bundle-sizes": "node scripts/update-bundle-sizes.mjs",
+    "vr:build": "pnpm --filter @commercetools/nimbus build-storybook",
+    "vr:serve": "npx serve packages/nimbus/storybook-static -l 6006",
+    "vr:update": "npx lost-pixel update",
+    "vr:test": "npx lost-pixel"
   },
   "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
   "pnpm": {
@@ -79,6 +83,7 @@
     "eslint-plugin-prettier": "catalog:tooling",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
+    "lost-pixel": "catalog:",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
     "tsx": "catalog:tooling",
