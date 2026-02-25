@@ -108,6 +108,36 @@ const App = () => (
 )
 ```
 
+### Fullscreen
+
+Use `size="fullscreen"` for a full-viewport drawer that fills the screen with a
+small left indentation. This is ideal for complex editing workflows like form
+pages.
+
+```jsx live
+const App = () => (
+  <Drawer.Root size="fullscreen" placement="right">
+    <Drawer.Trigger asChild>
+      <Button>Open Fullscreen Drawer</Button>
+    </Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Fullscreen Drawer</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        This drawer fills the viewport with a small left indentation,
+        providing a full-page editing experience.
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button slot="close">Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
 ### Placement Options
 
 Position the drawer at different locations using the `placement` prop. You can

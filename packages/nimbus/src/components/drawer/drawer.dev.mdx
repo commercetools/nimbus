@@ -175,6 +175,35 @@ const App = () => (
 )
 ```
 
+### Fullscreen size
+
+Use the `size="fullscreen"` variant on `Drawer.Root` for a full-viewport drawer with a small left indentation (48px). This matches the ModalPage layout pattern and is ideal for complex editing experiences:
+
+```jsx live-dev
+const App = () => (
+  <Drawer.Root size="fullscreen" placement="right">
+    <Drawer.Trigger>Open Fullscreen Drawer</Drawer.Trigger>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Fullscreen Drawer</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Text>
+          This drawer fills the viewport with a small left indentation,
+          providing a full-page editing experience while preserving context
+          of the underlying page.
+        </Text>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button variant="outline" slot="close">Cancel</Button>
+        <Button variant="solid" slot="close">Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+)
+```
+
 ### Scrollable content
 
 The drawer body automatically handles overflow with scroll support when content exceeds available height:
@@ -252,6 +281,86 @@ const App = () => (
 - `isDismissable={true}`: Allow closing by clicking backdrop (default: true)
 - `isKeyboardDismissDisabled={false}`: Allow closing with Escape key (default: false)
 - Both can be combined for fine-grained control
+
+### Preventing accidental close with shouldDelayOnClose
+
+Use `shouldDelayOnClose` to prevent accidental closing when forms have unsaved changes. When enabled, backdrop click is disabled. Escape key and close buttons still fire `onOpenChange(false)`, allowing close attempts to be intercepted:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleOpenChange = (open) => {
+    if (open) {
+      setIsOpen(true);
+      return;
+    }
+    if (hasUnsavedChanges) {
+      setShowConfirmation(true);
+      return;
+    }
+    setIsOpen(false);
+  };
+
+  return (
+    <Stack gap="400">
+      <Button onPress={() => setIsOpen(true)}>Open Protected Drawer</Button>
+
+      <Drawer.Root
+        isOpen={isOpen}
+        onOpenChange={handleOpenChange}
+        shouldDelayOnClose={hasUnsavedChanges}
+        placement="right"
+        size="fullscreen"
+      >
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Edit Form</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Stack gap="400">
+              <Switch isSelected={hasUnsavedChanges} onChange={setHasUnsavedChanges}>
+                Has unsaved changes
+              </Switch>
+              {showConfirmation && (
+                <Stack gap="300" p="400" borderWidth="1px" borderColor="border" borderRadius="200">
+                  <Text fontWeight="semibold">You have unsaved changes. Discard them?</Text>
+                  <Stack direction="row" gap="300">
+                    <Button variant="outline" size="xs" onPress={() => setShowConfirmation(false)}>
+                      Keep Editing
+                    </Button>
+                    <Button variant="solid" size="xs" onPress={() => {
+                      setShowConfirmation(false);
+                      setHasUnsavedChanges(false);
+                      setIsOpen(false);
+                    }}>
+                      Discard Changes
+                    </Button>
+                  </Stack>
+                </Stack>
+              )}
+            </Stack>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button variant="outline" slot="close">Cancel</Button>
+            <Button variant="solid" onPress={() => { setHasUnsavedChanges(false); setIsOpen(false); }}>
+              Save
+            </Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    </Stack>
+  );
+}
+```
+
+**Key behavior:**
+- `shouldDelayOnClose={true}`: Backdrop click is disabled. Escape and close buttons fire `onOpenChange(false)` which can be intercepted to show a confirmation dialog.
+- Requires controlled mode (`isOpen` + `onOpenChange`)
+- The drawer stays open as long as `isOpen` is not set to `false`
 
 ### Uncontrolled mode
 
