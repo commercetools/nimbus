@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, memo } from "react";
+import { useEffect, useMemo, useState, useRef, memo } from "react";
 import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 import { useRouteInfo } from "@/hooks/use-route-info";
@@ -26,6 +26,8 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
   const { baseRoute, viewKey } = useRouteInfo();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const naturalOffsetTop = useRef<number>(0);
 
   // Determine active view - needed to highlight the active tab
   const { activeView } = useMemo(() => {
@@ -50,6 +52,13 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
     };
   }, [tabs, viewKey]);
 
+  // Capture the natural (pre-sticky) offset of the bar once on mount
+  useEffect(() => {
+    if (boxRef.current) {
+      naturalOffsetTop.current = boxRef.current.offsetTop;
+    }
+  }, []);
+
   // Handle scroll direction to show/hide tabs
   useEffect(() => {
     const SCROLL_THRESHOLD = 5; // Minimum scroll distance to trigger hide/show
@@ -66,11 +75,14 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
         return;
       }
 
-      // Show tabs if at the top of the page
-      if (currentScrollY < 10) {
+      // The bar becomes sticky once scroll position exceeds its natural offset
+      const isSticky = currentScrollY >= naturalOffsetTop.current;
+
+      // Show tabs if at the top of the page or not yet sticky
+      if (!isSticky || currentScrollY < 10) {
         setIsVisible(true);
       }
-      // Hide when scrolling down, show when scrolling up
+      // Only hide/show based on scroll direction once the bar is sticky
       else if (currentScrollY > lastScrollY) {
         setIsVisible(false);
       } else if (currentScrollY < lastScrollY) {
@@ -89,6 +101,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
 
   return (
     <Box
+      ref={boxRef}
       width="full"
       id="floating-nav"
       bg="bg"
