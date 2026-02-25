@@ -78,6 +78,7 @@
     "eslint": "catalog:tooling",
     "eslint-config-prettier": "catalog:tooling",
     "eslint-plugin-prettier": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
     "playwright": "catalog:tooling",
