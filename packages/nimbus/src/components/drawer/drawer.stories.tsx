@@ -984,8 +984,7 @@ export const NestedDrawers: Story = {
 
 /**
  * Fullscreen drawer variant that fills the viewport, matching the ModalPage
- * layout from merchant-center. Slides in from the right with a small left
- * indentation (48px).
+ * layout from merchant-center.
  */
 export const Fullscreen: Story = {
   args: {},
@@ -1002,8 +1001,8 @@ export const Fullscreen: Story = {
           <Stack gap="400">
             <Text>
               This drawer uses <Code>variant="fullscreen"</Code> to fill the
-              viewport with a small left indentation, matching the ModalPage
-              layout pattern.
+              viewport with a small margin, matching the ModalPage layout
+              pattern.
             </Text>
             <Text>
               It slides in from the right and provides a full-page editing
