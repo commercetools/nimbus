@@ -155,21 +155,26 @@ function measurePackages() {
 // ---------------------------------------------------------------------------
 
 function fetchMainBaseline() {
-  try {
-    const content = execSync("git show main:bundle-sizes.json", {
-      encoding: "utf-8",
-      cwd: ROOT,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    return JSON.parse(content);
-  } catch {
-    console.warn(
-      "Could not fetch bundle-sizes.json from main branch.\n" +
-        "  This is expected on the initial setup or if main has no baseline yet.\n" +
-        "  Falling back to local bundle-sizes.json.\n"
-    );
-    return null;
+  // Try origin/main first (works in CI shallow clones), then local main
+  for (const ref of ["origin/main", "main"]) {
+    try {
+      const content = execSync(`git show ${ref}:bundle-sizes.json`, {
+        encoding: "utf-8",
+        cwd: ROOT,
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      return JSON.parse(content);
+    } catch {
+      // try next ref
+    }
   }
+
+  console.warn(
+    "Could not fetch bundle-sizes.json from main branch.\n" +
+      "  This is expected on the initial setup or if main has no baseline yet.\n" +
+      "  Falling back to local bundle-sizes.json.\n"
+  );
+  return null;
 }
 
 function loadLocalBaseline() {

@@ -23,6 +23,10 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
+      - name: Fetch main ref for bundle size baseline
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE" && git fetch origin main --depth=1
+        if: github.event_name == 'pull_request'
+
       - name: Check bundle size
         run: node scripts/check-bundle-size.mjs
 
