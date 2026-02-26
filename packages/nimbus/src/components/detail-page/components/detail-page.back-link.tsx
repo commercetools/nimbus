@@ -1,3 +1,6 @@
+import { useRef } from "react";
+import { useLink, useObjectRef, mergeProps } from "react-aria";
+import { mergeRefs } from "@chakra-ui/react";
 import { ArrowBack } from "@commercetools/nimbus-icons";
 import { DetailPageBackLinkSlot } from "../detail-page.slots";
 import type { DetailPageBackLinkProps } from "../detail-page.types";
@@ -11,25 +14,28 @@ import { detailPageMessagesStrings } from "../detail-page.messages";
  * @supportsStyleProps
  */
 export const DetailPageBackLink = ({
-  ref,
+  ref: forwardedRef,
   href,
-  "aria-label": ariaLabel,
   children,
   ...props
 }: DetailPageBackLinkProps) => {
   const msg = useLocalizedStringFormatter(detailPageMessagesStrings);
   const [styleProps, functionalProps] = extractStyleProps(props);
 
+  const localRef = useRef<HTMLAnchorElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const { linkProps } = useLink(
+    { ...functionalProps, href, elementType: "a" },
+    ref
+  );
+
   return (
     <DetailPageBackLinkSlot
       ref={ref}
-      href={href}
-      aria-label={ariaLabel || msg.format("backLink")}
-      {...styleProps}
-      {...functionalProps}
+      {...mergeProps(styleProps, functionalProps, linkProps)}
     >
       <ArrowBack />
-      {children}
+      {children ?? msg.format("backLink")}
     </DetailPageBackLinkSlot>
   );
 };
