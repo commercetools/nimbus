@@ -9,7 +9,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type DetailPageRecipeProps = {
+export type DetailPageRecipeProps = {
   /** Content width variant (wide, narrow, full) */
   contentVariant?: SlotRecipeProps<"nimbusDetailPage">["contentVariant"];
 } & UnstyledProp;
@@ -42,7 +42,6 @@ export type DetailPageFooterSlotProps = HTMLChakraProps<"footer">;
 export type DetailPageProps = OmitInternalProps<DetailPageRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-  [key: `data-${string}`]: unknown;
 };
 
 export type DetailPageHeaderProps =
@@ -73,8 +72,6 @@ export type DetailPageSubtitleProps =
 
 export type DetailPageContentProps =
   OmitInternalProps<DetailPageContentSlotProps> & {
-    /** Content width variant */
-    variant?: "wide" | "narrow" | "full";
     children?: React.ReactNode;
     ref?: React.Ref<HTMLElement>;
   };
