@@ -29,3 +29,15 @@ export interface ToolResult {
     text: string;
   }>;
 }
+
+/** A single entry in the icon catalog. */
+export interface IconCatalogEntry {
+  /** Exported name used in import statements (e.g. "SvgAccountCircle"). */
+  name: string;
+  /** npm import path (always "@commercetools/nimbus-icons"). */
+  importPath: string;
+  /** Whether this is a Material Design icon or a custom commercetools icon. */
+  category: "material" | "custom";
+  /** Searchable keywords derived from the icon name and synonyms. */
+  keywords: string[];
+}
