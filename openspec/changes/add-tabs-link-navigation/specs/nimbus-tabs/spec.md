@@ -63,19 +63,48 @@ selected, forwarding React Aria's `shouldForceMount` prop.
 
 ### Requirement: Namespace Structure
 
-The component SHALL export additional public types for typed consumer wrappers.
+The component SHALL export as compound component namespace and provide typed
+public interfaces for all sub-components.
+
+#### Scenario: Component parts
+
+- **WHEN** Tabs is imported
+- **THEN** SHALL provide Tabs.Root as tabs container
+- **AND** SHALL provide Tabs.List for tab buttons container
+- **AND** SHALL provide Tabs.Tab for individual tab buttons
+- **AND** SHALL provide Tabs.Panels for tab panels container
+- **AND** SHALL provide Tabs.Panel for tab content panels
+- **AND** Root SHALL be first property in namespace
 
 #### Scenario: Type exports
 
 - **WHEN** types are imported from `@commercetools/nimbus`
-- **THEN** SHALL export `TabProps` for individual tab typing
+- **THEN** SHALL export `TabsProps` for root component typing
+- **AND** SHALL export `TabListProps` for tab list typing
+- **AND** SHALL export `TabProps` for individual tab typing
 - **AND** SHALL export `TabPanelsProps` for panels container typing
 - **AND** SHALL export `TabPanelProps` for individual panel typing
-- **AND** SHALL continue exporting `TabsProps`, `TabListProps`, `TabItemProps`
+- **AND** SHALL export `TabItemProps` for simplified API item typing
 
 ### Requirement: Panel Management
 
-#### Scenario: Panel association (updated)
+The component SHALL manage panel visibility and association.
+
+#### Scenario: Active panel
+
+- **WHEN** tab is selected
+- **THEN** SHALL render and display associated panel
+- **AND** SHALL apply visible styling
+- **AND** panel content SHALL be in document flow
+
+#### Scenario: Inactive panels
+
+- **WHEN** tab is not selected
+- **THEN** panel SHALL be hidden via display:none
+- **OR** removed from DOM (default behavior)
+- **AND** SHALL set aria-hidden="true"
+
+#### Scenario: Panel association
 
 - **WHEN** panels render
 - **THEN** each Tab SHALL associate with Panel via `id` prop
@@ -87,6 +116,6 @@ The component SHALL export additional public types for typed consumer wrappers.
 
 ### Requirement: Panel tabs prop
 
-- `TabPanelProps.tabs` has been removed. The `tabs` prop on individual panels
-  was vestigial and non-functional. Panel identity is established via the `id`
-  prop.
+**Reason:** `TabPanelProps.tabs` was vestigial and non-functional. Panel
+identity is established via the `id` prop.
+**Migration:** Replace `tabs` prop usage on `Tabs.Panel` with `id` prop.
