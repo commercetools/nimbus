@@ -100,6 +100,11 @@ export const getRouteManifest = lazyJson<RouteManifest>("route-manifest.json");
 // Per-component route data
 // ---------------------------------------------------------------------------
 
+export interface RouteDataView {
+  mdx: string;
+  toc: Array<{ value: string; href: string; depth: number }>;
+}
+
 export interface RouteData {
   meta: {
     id: string;
@@ -108,9 +113,12 @@ export interface RouteData {
     route: string;
     menu: string[];
     tags: string[];
+    tabs?: Array<{ key: string; title: string; order: number }>;
     toc?: Array<{ id: string; title: string; depth: number }>;
     [key: string]: unknown;
   };
+  mdx?: string;
+  views?: Record<string, RouteDataView>;
   [key: string]: unknown;
 }
 
@@ -139,6 +147,7 @@ export interface TypeData {
       required: boolean;
       type: { name: string };
       defaultValue?: { value: string };
+      parent?: { fileName: string; name: string };
     }
   >;
   methods: unknown[];
