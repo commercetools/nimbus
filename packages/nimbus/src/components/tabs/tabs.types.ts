@@ -1,5 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import { type HTMLChakraProps, type SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
 
 // ============================================================
 // RECIPE PROPS
@@ -32,63 +32,19 @@ type TabsRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
-  /**
-   * The children of the Tabs component.
-   */
-  children?: React.ReactNode;
-  /**
-   * The selected key of the Tabs component.
-   */
-  selectedKey?: string | number;
-  /**
-   * The default selected key of the Tabs component.
-   */
-  defaultSelectedKey?: string | number;
-  /**
-   * The disabled keys of the Tabs component.
-   */
-  disabledKeys?: Iterable<string | number>;
-  /**
-   * The keyboard activation of the Tabs component.
-   */
-  keyboardActivation?: "automatic" | "manual";
-  /**
-   * Callback invoked when the selected tab changes.
-   */
-  onSelectionChange?: (key: string | number) => void;
-};
+export type TabsRootSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
-export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps> & {
-  children?: React.ReactNode;
-};
+export type TabsListSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
-export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps> & {
-  id?: string;
-  isDisabled?: boolean;
-};
+export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps>;
 
-export type TabsPanelsSlotProps = HTMLChakraProps<
-  "div",
-  SlotRecipeProps<"nimbusTabs">
-> & {
-  children?: React.ReactNode;
-};
+export type TabsPanelsSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
-export type TabsPanelSlotProps = HTMLChakraProps<
-  "div",
-  SlotRecipeProps<"nimbusTabs">
-> & {
-  id?: string;
-};
+export type TabsPanelSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
 // ============================================================
 // HELPER TYPES
 // ============================================================
-
-type TabsVariantProps = SlotRecipeProps<"nimbusTabs"> & {
-  [key: `data-${string}`]: unknown;
-};
 
 export type TabItemProps = {
   /**
@@ -118,20 +74,45 @@ export type TabItemProps = {
 // MAIN PROPS
 // ============================================================
 
-export type TabsProps = OmitInternalProps<TabsRootSlotProps> &
-  TabsVariantProps & {
-    children?: React.ReactNode;
-    ref?: React.Ref<HTMLDivElement>;
-    tabs?: TabItemProps[];
-    /**
-     * Accessible label for the tab list when using the simplified `tabs` prop API.
-     * Required for accessibility when not using children-based composition.
-     */
-    tabListAriaLabel?: string;
-  };
+export type TabsProps = OmitInternalProps<TabsRootSlotProps> & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Simplified tab data for automatic rendering.
+   * When provided, the component renders tabs and panels automatically.
+   */
+  tabs?: TabItemProps[];
+  /**
+   * Accessible label for the tab list when using the simplified `tabs` prop API.
+   * Required for accessibility when not using children-based composition.
+   */
+  tabListAriaLabel?: string;
+  /**
+   * The selected key of the Tabs component.
+   */
+  selectedKey?: string | number;
+  /**
+   * The default selected key of the Tabs component.
+   */
+  defaultSelectedKey?: string | number;
+  /**
+   * The disabled keys of the Tabs component.
+   */
+  disabledKeys?: Iterable<string | number>;
+  /**
+   * The keyboard activation of the Tabs component.
+   * @default "automatic"
+   */
+  keyboardActivation?: "automatic" | "manual";
+  /**
+   * Callback invoked when the selected tab changes.
+   */
+  onSelectionChange?: (key: string | number) => void;
+  [key: `data-${string}`]: unknown;
+};
 
 /**
- * Props for individual tab list component
+ * Props for the tab list container component
  */
 export type TabListProps = OmitInternalProps<TabsListSlotProps> & {
   tabs?: TabItemProps[];
@@ -140,11 +121,12 @@ export type TabListProps = OmitInternalProps<TabsListSlotProps> & {
 };
 
 /**
- * Props for individual tab component
+ * Props for an individual tab component
  */
 export type TabProps = OmitInternalProps<TabsTabSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
+  id?: string;
   isDisabled?: boolean;
   /**
    * A URL to link to when the tab is clicked. When provided, the tab renders
@@ -155,7 +137,7 @@ export type TabProps = OmitInternalProps<TabsTabSlotProps> & {
 };
 
 /**
- * Props for tab panels container component
+ * Props for the tab panels container component
  */
 export type TabPanelsProps = OmitInternalProps<TabsPanelsSlotProps> & {
   tabs?: TabItemProps[];
@@ -164,10 +146,10 @@ export type TabPanelsProps = OmitInternalProps<TabsPanelsSlotProps> & {
 };
 
 /**
- * Props for individual tab panel component
+ * Props for an individual tab panel component
  */
 export type TabPanelProps = OmitInternalProps<TabsPanelSlotProps> & {
-  tabs?: TabItemProps[];
+  id?: string;
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };

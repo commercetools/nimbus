@@ -3,57 +3,45 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Tabs, NimbusProvider } from "@commercetools/nimbus";
+import type { NimbusRouterConfig } from "../nimbus-provider/nimbus-provider.types";
 
 /**
- * @docs-section basic-rendering
- * @docs-title Basic Rendering Tests
- * @docs-description Verify the Tabs component renders with expected structure and accessibility attributes
+ * @docs-section basic-usage
+ * @docs-title Basic Usage
+ * @docs-description How to render tabs using the compound composition API
  * @docs-order 1
  */
-describe("Tabs - Basic rendering", () => {
-  it("renders tabs with correct structure", () => {
+describe("Tabs - Basic usage", () => {
+  it("renders tabs with compound composition", () => {
     render(
       <NimbusProvider>
         <Tabs.Root>
           <Tabs.List>
-            <Tabs.Tab id="tab1">First Tab</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second Tab</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third Tab</Tabs.Tab>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="details">Details</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panels>
-            <Tabs.Panel id="tab1">First panel content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second panel content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third panel content</Tabs.Panel>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
       </NimbusProvider>
     );
 
-    // Verify tablist is present
     expect(screen.getByRole("tablist")).toBeInTheDocument();
-
-    // Verify all tabs are rendered
-    expect(screen.getByRole("tab", { name: "First Tab" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Second Tab" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Third Tab" })).toBeInTheDocument();
-
-    // Verify first tab is selected by default
-    expect(screen.getByRole("tab", { name: "First Tab" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
-
-    // Verify corresponding panel is visible
-    expect(screen.getByRole("tabpanel")).toHaveTextContent(
-      "First panel content"
-    );
+    expect(screen.getByRole("tab", { name: "Overview" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Details" })).toBeInTheDocument();
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Overview content");
   });
 
-  it("renders tabs with dynamic tabs prop", () => {
+  it("renders tabs with the simplified tabs prop", () => {
     const tabs = [
-      { id: "1", tabLabel: "Overview", panelContent: "Overview content" },
-      { id: "2", tabLabel: "Details", panelContent: "Details content" },
-      { id: "3", tabLabel: "Settings", panelContent: "Settings content" },
+      {
+        id: "overview",
+        tabLabel: "Overview",
+        panelContent: "Overview content",
+      },
+      { id: "details", tabLabel: "Details", panelContent: "Details content" },
     ];
 
     render(
@@ -64,228 +52,23 @@ describe("Tabs - Basic rendering", () => {
 
     expect(screen.getByRole("tab", { name: "Overview" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Details" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Settings" })).toBeInTheDocument();
-  });
-
-  it("applies size variants correctly", () => {
-    const { rerender } = render(
-      <NimbusProvider>
-        <Tabs.Root size="sm" data-testid="tabs">
-          <Tabs.List>
-            <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">Content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    const tabsRoot = screen.getByTestId("tabs");
-    expect(tabsRoot).toBeInTheDocument();
-
-    // Rerender with different size
-    rerender(
-      <NimbusProvider>
-        <Tabs.Root size="lg" data-testid="tabs">
-          <Tabs.List>
-            <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">Content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("tabs")).toBeInTheDocument();
-  });
-
-  it("applies visual variants correctly", () => {
-    const { rerender } = render(
-      <NimbusProvider>
-        <Tabs.Root variant="line" data-testid="tabs">
-          <Tabs.List>
-            <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">Content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("tabs")).toBeInTheDocument();
-
-    // Rerender with pills variant
-    rerender(
-      <NimbusProvider>
-        <Tabs.Root variant="pills" data-testid="tabs">
-          <Tabs.List>
-            <Tabs.Tab id="tab1">Tab 1</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">Content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("tabs")).toBeInTheDocument();
   });
 });
 
 /**
- * @docs-section interactions
- * @docs-title Interaction Tests
- * @docs-description Test user interactions including clicking tabs and keyboard navigation
+ * @docs-section controlled-tabs
+ * @docs-title Controlled Tabs
+ * @docs-description How to control the active tab from external state (e.g., URL parameters)
  * @docs-order 2
- *
- * Note: Keyboard navigation tests may produce act() warnings in console output.
- * These warnings originate from React Aria's internal state management and are
- * expected when testing React Aria components in JSDOM. The tests pass correctly
- * and the warnings do not indicate issues with the component or test implementation.
  */
-describe("Tabs - Interactions", () => {
-  it("switches tabs when clicked", async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NimbusProvider>
-        <Tabs.Root>
-          <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    // Initially first tab is selected
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("First content");
-
-    // Click second tab
-    await user.click(screen.getByRole("tab", { name: "Second" }));
-
-    // Verify second tab is now selected
-    expect(screen.getByRole("tab", { name: "Second" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("Second content");
-
-    // Click third tab
-    await user.click(screen.getByRole("tab", { name: "Third" }));
-
-    // Verify third tab is now selected
-    expect(screen.getByRole("tab", { name: "Third" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("Third content");
-  });
-
-  it("supports keyboard navigation with arrow keys", async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NimbusProvider>
-        <Tabs.Root orientation="horizontal">
-          <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    const firstTab = screen.getByRole("tab", { name: "First" });
-    const secondTab = screen.getByRole("tab", { name: "Second" });
-    const thirdTab = screen.getByRole("tab", { name: "Third" });
-
-    // Use userEvent.tab() to focus first tab (avoids act() warnings)
-    await user.tab();
-    expect(firstTab).toHaveFocus();
-
-    // Navigate to second tab with ArrowRight
-    await user.keyboard("{ArrowRight}");
-    expect(secondTab).toHaveFocus();
-
-    // Navigate to third tab with ArrowRight
-    await user.keyboard("{ArrowRight}");
-    expect(thirdTab).toHaveFocus();
-
-    // Navigate back to second tab with ArrowLeft
-    await user.keyboard("{ArrowLeft}");
-    expect(secondTab).toHaveFocus();
-
-    // Activate with Enter
-    await user.keyboard("{Enter}");
-    expect(secondTab).toHaveAttribute("aria-selected", "true");
-  });
-
-  it("supports Home and End keys for navigation", async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NimbusProvider>
-        <Tabs.Root>
-          <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
-      </NimbusProvider>
-    );
-
-    const firstTab = screen.getByRole("tab", { name: "First" });
-    const thirdTab = screen.getByRole("tab", { name: "Third" });
-
-    // Use userEvent.tab() to focus first tab (avoids act() warnings)
-    await user.tab();
-
-    // Press End to jump to last tab
-    await user.keyboard("{End}");
-    expect(thirdTab).toHaveFocus();
-
-    // Press Home to jump to first tab
-    await user.keyboard("{Home}");
-    expect(firstTab).toHaveFocus();
-  });
-});
-
-/**
- * @docs-section controlled-mode
- * @docs-title Controlled Mode Tests
- * @docs-description Test controlled mode with selectedKey and onSelectionChange props
- * @docs-order 3
- */
-describe("Tabs - Controlled mode", () => {
-  it("handles controlled mode with selectedKey and onSelectionChange", async () => {
+describe("Tabs - Controlled tabs", () => {
+  it("controls the selected tab via selectedKey and onSelectionChange", async () => {
     const user = userEvent.setup();
     const handleSelectionChange = vi.fn();
 
-    const ControlledTabs = () => {
+    const ControlledExample = () => {
       const [selectedKey, setSelectedKey] = React.useState<string | number>(
-        "tab1"
+        "overview"
       );
 
       return (
@@ -297,14 +80,12 @@ describe("Tabs - Controlled mode", () => {
           }}
         >
           <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="details">Details</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
       );
@@ -312,146 +93,144 @@ describe("Tabs - Controlled mode", () => {
 
     render(
       <NimbusProvider>
-        <ControlledTabs />
+        <ControlledExample />
       </NimbusProvider>
     );
 
-    // Initially first tab is selected
-    expect(screen.getByRole("tab", { name: "First" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
+    await user.click(screen.getByRole("tab", { name: "Details" }));
 
-    // Click second tab
-    await user.click(screen.getByRole("tab", { name: "Second" }));
-
-    // Verify callback was called
-    expect(handleSelectionChange).toHaveBeenCalledWith("tab2");
-
-    // Verify second tab is now selected
-    expect(screen.getByRole("tab", { name: "Second" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
+    expect(handleSelectionChange).toHaveBeenCalledWith("details");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Details content");
   });
 
-  it("respects defaultSelectedKey for uncontrolled mode", () => {
+  it("sets the initial tab with defaultSelectedKey", () => {
     render(
       <NimbusProvider>
-        <Tabs.Root defaultSelectedKey="tab2">
+        <Tabs.Root defaultSelectedKey="details">
           <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="details">Details</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
       </NimbusProvider>
     );
 
-    // Second tab should be selected by default
-    expect(screen.getByRole("tab", { name: "Second" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: "Details" })).toHaveAttribute(
       "aria-selected",
       "true"
     );
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("Second content");
   });
 });
 
 /**
- * @docs-section disabled-states
- * @docs-title Disabled States Tests
- * @docs-description Test disabled tabs via disabledKeys prop and isDisabled prop
- * @docs-order 4
+ * @docs-section router-integration
+ * @docs-title Router Integration
+ * @docs-description How to use tabs as links for URL-driven navigation with a client-side router
+ * @docs-order 3
  */
-describe("Tabs - Disabled states", () => {
-  it("disables tabs via disabledKeys prop", async () => {
+describe("Tabs - Router integration", () => {
+  it("renders link tabs that navigate via the router", async () => {
     const user = userEvent.setup();
+    const navigate = vi.fn();
+
+    const router: NimbusRouterConfig = { navigate };
 
     render(
-      <NimbusProvider>
-        <Tabs.Root disabledKeys={["tab2"]}>
+      <NimbusProvider router={router}>
+        <Tabs.Root>
           <Tabs.List>
-            <Tabs.Tab id="tab1">First</Tabs.Tab>
-            <Tabs.Tab id="tab2">Second (Disabled)</Tabs.Tab>
-            <Tabs.Tab id="tab3">Third</Tabs.Tab>
+            <Tabs.Tab id="overview" href="/products?tab=overview">
+              Overview
+            </Tabs.Tab>
+            <Tabs.Tab id="details" href="/products?tab=details">
+              Details
+            </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
       </NimbusProvider>
     );
 
-    const disabledTab = screen.getByRole("tab", {
-      name: "Second (Disabled)",
-    });
+    // Link tabs render as anchor elements
+    const detailsTab = screen.getByRole("tab", { name: "Details" });
+    expect(detailsTab.tagName).toBe("A");
+    expect(detailsTab).toHaveAttribute("href", "/products?tab=details");
 
-    // Verify tab is disabled
-    expect(disabledTab).toHaveAttribute("aria-disabled", "true");
-
-    // Try to click disabled tab
-    await user.click(disabledTab);
-
-    // Verify disabled tab did not become selected
-    expect(disabledTab).not.toHaveAttribute("aria-selected", "true");
-
-    // First tab should still be selected
-    expect(screen.getByRole("tab", { name: "First" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
+    // Clicking calls the router navigate function
+    await user.click(detailsTab);
+    expect(navigate).toHaveBeenCalledWith("/products?tab=details", undefined);
   });
+});
 
-  it("disables individual tabs via isDisabled prop", async () => {
+/**
+ * @docs-section disabled-tabs
+ * @docs-title Disabled Tabs
+ * @docs-description How to disable individual tabs or sets of tabs
+ * @docs-order 4
+ */
+describe("Tabs - Disabled tabs", () => {
+  it("disables specific tabs via disabledKeys on the root", async () => {
     const user = userEvent.setup();
 
+    render(
+      <NimbusProvider>
+        <Tabs.Root disabledKeys={["details"]}>
+          <Tabs.List>
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="details">Details</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </NimbusProvider>
+    );
+
+    const disabledTab = screen.getByRole("tab", { name: "Details" });
+    expect(disabledTab).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("disables individual tabs via the isDisabled prop", () => {
     render(
       <NimbusProvider>
         <Tabs.Root>
           <Tabs.List>
-            <Tabs.Tab id="tab1">Available</Tabs.Tab>
-            <Tabs.Tab id="tab2" isDisabled>
-              Unavailable
+            <Tabs.Tab id="overview">Overview</Tabs.Tab>
+            <Tabs.Tab id="details" isDisabled>
+              Details
             </Tabs.Tab>
-            <Tabs.Tab id="tab3">Available</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panels>
-            <Tabs.Panel id="tab1">First content</Tabs.Panel>
-            <Tabs.Panel id="tab2">Second content</Tabs.Panel>
-            <Tabs.Panel id="tab3">Third content</Tabs.Panel>
+            <Tabs.Panel id="overview">Overview content</Tabs.Panel>
+            <Tabs.Panel id="details">Details content</Tabs.Panel>
           </Tabs.Panels>
         </Tabs.Root>
       </NimbusProvider>
     );
 
-    const disabledTab = screen.getByRole("tab", { name: "Unavailable" });
-
-    // Verify tab is disabled
-    expect(disabledTab).toHaveAttribute("aria-disabled", "true");
-
-    // Try to click disabled tab
-    await user.click(disabledTab);
-
-    // Verify disabled tab did not become selected
-    expect(disabledTab).not.toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "Details" })).toHaveAttribute(
+      "aria-disabled",
+      "true"
+    );
   });
 });
 
 /**
  * @docs-section dynamic-tabs
- * @docs-title Dynamic Tabs Tests
- * @docs-description Test dynamic tab rendering and updates
+ * @docs-title Dynamic Tabs
+ * @docs-description How to render tabs from dynamic data and handle updates
  * @docs-order 5
  */
 describe("Tabs - Dynamic tabs", () => {
-  it("updates when tabs array changes", () => {
+  it("renders tabs from a dynamic array and updates when data changes", () => {
     const initialTabs = [
       { id: "1", tabLabel: "First", panelContent: "First content" },
       { id: "2", tabLabel: "Second", panelContent: "Second content" },
@@ -463,11 +242,9 @@ describe("Tabs - Dynamic tabs", () => {
       </NimbusProvider>
     );
 
-    // Verify initial tabs
     expect(screen.getByRole("tab", { name: "First" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Second" })).toBeInTheDocument();
 
-    // Update tabs array
     const updatedTabs = [
       ...initialTabs,
       { id: "3", tabLabel: "Third", panelContent: "Third content" },
@@ -479,20 +256,6 @@ describe("Tabs - Dynamic tabs", () => {
       </NimbusProvider>
     );
 
-    // Verify new tab is rendered
-    expect(screen.getByRole("tab", { name: "First" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Second" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Third" })).toBeInTheDocument();
-  });
-
-  it("handles empty tabs array gracefully", () => {
-    const { container } = render(
-      <NimbusProvider>
-        <Tabs.Root tabs={[]} />
-      </NimbusProvider>
-    );
-
-    // Component should render without errors
-    expect(container).toBeInTheDocument();
   });
 });

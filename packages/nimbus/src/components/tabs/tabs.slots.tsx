@@ -16,20 +16,14 @@ const { withProvider, withContext } = createSlotRecipeContext({
  * Root component that provides the styling context for the Tabs component.
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
-export const TabsRootSlot = withProvider<HTMLDivElement, TabsRootSlotProps>(
-  "div",
-  "root"
-);
+export const TabsRootSlot: SlotComponent<HTMLDivElement, TabsRootSlotProps> =
+  withProvider<HTMLDivElement, TabsRootSlotProps>("div", "root");
 
-export const TabsListSlot = withContext<HTMLDivElement, TabsListSlotProps>(
-  "div",
-  "list"
-);
+export const TabsListSlot: SlotComponent<HTMLDivElement, TabsListSlotProps> =
+  withContext<HTMLDivElement, TabsListSlotProps>("div", "list");
 
-export const TabsTabSlot = withContext<HTMLButtonElement, TabsTabSlotProps>(
-  "button",
-  "tab"
-);
+export const TabsTabSlot: SlotComponent<HTMLButtonElement, TabsTabSlotProps> =
+  withContext<HTMLButtonElement, TabsTabSlotProps>("button", "tab");
 
 export const TabsPanelsSlot: SlotComponent<
   HTMLDivElement,
