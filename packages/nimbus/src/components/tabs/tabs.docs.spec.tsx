@@ -176,9 +176,7 @@ describe("Tabs - Router integration", () => {
  * @docs-order 4
  */
 describe("Tabs - Disabled tabs", () => {
-  it("disables specific tabs via disabledKeys on the root", async () => {
-    const user = userEvent.setup();
-
+  it("disables specific tabs via disabledKeys on the root", () => {
     render(
       <NimbusProvider>
         <Tabs.Root disabledKeys={["details"]}>
