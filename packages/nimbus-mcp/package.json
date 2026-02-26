@@ -16,6 +16,7 @@
     "prebuild": "node scripts/prebuild.mjs",
     "build": "pnpm prebuild && tsup",
     "dev": "tsx src/index.ts",
+    "catalog:icons": "tsx scripts/build-icon-catalog.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
   },
