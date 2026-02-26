@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { existsSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
 
@@ -8,7 +11,16 @@ import { createTestClient } from "../test-utils.js";
  * Uses the real route manifest (monorepo mode) so counts and names reflect
  * the actual component catalog. Tests are written to be resilient to new
  * components being added — they assert minimums and shapes, not exact lists.
+ *
+ * Skipped when the route manifest is not available (e.g. CI without a docs build).
  */
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const MANIFEST_PATH = resolve(
+  __dirname,
+  "../../../../apps/docs/src/data/route-manifest.json"
+);
+const HAS_MANIFEST = existsSync(MANIFEST_PATH);
 
 type ComponentSummary = {
   id: string;
@@ -36,7 +48,7 @@ async function callListComponents(
   return JSON.parse(text) as ComponentSummary[];
 }
 
-describe("list_components — no params", () => {
+describe.runIf(HAS_MANIFEST)("list_components — no params", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -51,7 +63,6 @@ describe("list_components — no params", () => {
 
   it("returns all individual component entries", async () => {
     const components = await callListComponents(client);
-    console.log(components);
     // Route manifest currently has 69 individual components; allow for additions
     expect(components.length).toBeGreaterThanOrEqual(60);
   });
@@ -95,7 +106,7 @@ describe("list_components — no params", () => {
   });
 });
 
-describe("list_components — category filter", () => {
+describe.runIf(HAS_MANIFEST)("list_components — category filter", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -138,7 +149,7 @@ describe("list_components — category filter", () => {
   });
 });
 
-describe("list_components — query search", () => {
+describe.runIf(HAS_MANIFEST)("list_components — query search", () => {
   let client: Client;
   let close: () => Promise<void>;
 
