@@ -1,9 +1,10 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   MainPageRootSlotProps,
   MainPageHeaderSlotProps,
   MainPageTitleSlotProps,
+  MainPageSubtitleSlotProps,
   MainPageActionsSlotProps,
   MainPageContentSlotProps,
   MainPageFooterSlotProps,
@@ -31,6 +32,14 @@ export const MainPageTitleSlot: SlotComponent<
   HTMLHeadingElement,
   MainPageTitleSlotProps
 > = withContext<HTMLHeadingElement, MainPageTitleSlotProps>("h1", "title");
+
+export const MainPageSubtitleSlot: SlotComponent<
+  HTMLParagraphElement,
+  MainPageSubtitleSlotProps
+> = withContext<HTMLParagraphElement, MainPageSubtitleSlotProps>(
+  "p",
+  "subtitle"
+);
 
 export const MainPageActionsSlot: SlotComponent<
   HTMLDivElement,

@@ -1,25 +1,20 @@
 import { MainPageContentSlot } from "../main-page.slots";
 import type { MainPageContentProps } from "../main-page.types";
-import { PageContentRoot } from "../../page-content/components/page-content.root";
 
 /**
- * MainPage.Content - The main content area that wraps PageContent.Root
- * internally. Forwards `variant` and `columns` props to PageContent for
- * width constraints and column layouts.
+ * MainPage.Content - The main content area with scrollable overflow and
+ * margin-based spacing. Uses margin (not padding) to preserve sticky
+ * positioning behavior for child components like DataTable.
  *
  * @supportsStyleProps
  */
 export const MainPageContent = ({
   ref,
   children,
-  variant,
-  columns,
   ...props
 }: MainPageContentProps) => (
-  <MainPageContentSlot ref={ref} {...props} asChild>
-    <PageContentRoot as="main" variant={variant} columns={columns}>
-      {children}
-    </PageContentRoot>
+  <MainPageContentSlot ref={ref} {...props}>
+    {children}
   </MainPageContentSlot>
 );
 

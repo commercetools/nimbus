@@ -20,9 +20,9 @@ MainPage provides a page skeleton with header, content, and optional footer. At 
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="Page Title" />
+      <MainPage.Title>Page Title</MainPage.Title>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
       <Text>Your page content goes here.</Text>
     </MainPage.Content>
   </MainPage.Root>
@@ -33,19 +33,19 @@ const App = () => (
 
 ### MainPage.Header
 
-The header section uses flex layout with `justify-content: space-between`. Place Title and Actions inside it.
+The header section uses a two-column grid layout. Title, Subtitle, and any custom content flow into the left column. Actions spans all rows on the right and collapses when not present.
 
 ```jsx live-dev
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="Title on the left" />
+      <MainPage.Title>Title on the left</MainPage.Title>
       <MainPage.Actions>
         <Button variant="ghost">Secondary</Button>
         <Button>Primary</Button>
       </MainPage.Actions>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
       <Text>Content area</Text>
     </MainPage.Content>
   </MainPage.Root>
@@ -54,15 +54,33 @@ const App = () => (
 
 ### MainPage.Title
 
-Renders a Nimbus `Heading` as an `<h1>` element with an optional `subtitle`. Accepts `title` and `subtitle` props.
+Renders a styled `<h1>` element. Accepts children for the title text.
 
 ```jsx live-dev
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="Products" subtitle="Manage your product catalog" />
+      <MainPage.Title>Products</MainPage.Title>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Subtitle
+
+Optional subtitle rendered as a `<p>` element below the title. Place it as a sibling of Title inside the Header.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Products</MainPage.Title>
+      <MainPage.Subtitle>Manage your product catalog</MainPage.Subtitle>
+    </MainPage.Header>
+    <MainPage.Content>
       <Text>Content area</Text>
     </MainPage.Content>
   </MainPage.Root>
@@ -80,7 +98,7 @@ const App = () => (
         <Badge variant="info">Draft</Badge>
       </Stack>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
       <Text>Content area</Text>
     </MainPage.Content>
   </MainPage.Root>
@@ -89,19 +107,19 @@ const App = () => (
 
 ### MainPage.Actions
 
-A flex container with gap for action buttons. Positioned on the right side of the header.
+A flex container with gap for action buttons. Positioned on the right side of the header via CSS grid, spanning all rows.
 
 ```jsx live-dev
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="Products" />
+      <MainPage.Title>Products</MainPage.Title>
       <MainPage.Actions>
         <Button variant="ghost">Export</Button>
         <Button>Add Product</Button>
       </MainPage.Actions>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
       <Text>Content area</Text>
     </MainPage.Content>
   </MainPage.Root>
@@ -110,70 +128,18 @@ const App = () => (
 
 ### MainPage.Content
 
-Wraps PageContent.Root internally. The `variant` prop controls width constraints and the `columns` prop enables multi-column layouts.
-
-Available `variant` values: `"wide"` (default), `"narrow"`, `"full"`. Available `columns` values: `"1"` (default), `"1/1"`, `"2/1"`. See [PageContent](/components/layout/pagecontent/dev) for details.
-
-```jsx live-dev
-const App = () => (
-  <Stack gap="800">
-    <MainPage.Root>
-      <MainPage.Header>
-        <MainPage.Title title="Narrow" />
-      </MainPage.Header>
-      <MainPage.Content variant="narrow">
-        <Box bg="purple.3" padding="400" borderRadius="200">
-          <Text color="purple.12">Constrained to narrow max-width</Text>
-        </Box>
-      </MainPage.Content>
-    </MainPage.Root>
-
-    <MainPage.Root>
-      <MainPage.Header>
-        <MainPage.Title title="Wide" />
-      </MainPage.Header>
-      <MainPage.Content variant="wide">
-        <Box bg="blue.3" padding="400" borderRadius="200">
-          <Text color="blue.12">Constrained to wide max-width</Text>
-        </Box>
-      </MainPage.Content>
-    </MainPage.Root>
-
-    <MainPage.Root>
-      <MainPage.Header>
-        <MainPage.Title title="Full" />
-      </MainPage.Header>
-      <MainPage.Content variant="full">
-        <Box bg="teal.3" padding="400" borderRadius="200">
-          <Text color="teal.12">Full available width</Text>
-        </Box>
-      </MainPage.Content>
-    </MainPage.Root>
-  </Stack>
-)
-```
-
-### MainPage.Column
-
-A column within a multi-column Content layout. Re-export of PageContent.Column for convenience. Use with the `columns` prop on Content. Supports `sticky` positioning — see [PageContent](/components/layout/pagecontent/dev) for details.
+The main content area with scrollable overflow. Uses margin-based spacing to preserve sticky positioning for child components like DataTable.
 
 ```jsx live-dev
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="Multi-column Layout" />
+      <MainPage.Title>Page Title</MainPage.Title>
     </MainPage.Header>
-    <MainPage.Content variant="wide" columns="2/1">
-      <MainPage.Column>
-        <Box bg="blue.3" padding="600" borderRadius="200">
-          <Text fontWeight="bold" color="blue.12">Main content (2fr)</Text>
-        </Box>
-      </MainPage.Column>
-      <MainPage.Column>
-        <Box bg="purple.3" padding="600" borderRadius="200">
-          <Text fontWeight="bold" color="purple.12">Sidebar (1fr)</Text>
-        </Box>
-      </MainPage.Column>
+    <MainPage.Content>
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text color="blue.12">Content area with automatic margin spacing</Text>
+      </Box>
     </MainPage.Content>
   </MainPage.Root>
 )
@@ -187,9 +153,9 @@ Optional footer for page-level actions. Omit it entirely when the page has no fo
 const App = () => (
   <MainPage.Root>
     <MainPage.Header>
-      <MainPage.Title title="With Footer" />
+      <MainPage.Title>With Footer</MainPage.Title>
     </MainPage.Header>
-    <MainPage.Content variant="narrow">
+    <MainPage.Content>
       <Box bg="neutral.3" padding="400" borderRadius="200">
         <Text>Form content</Text>
       </Box>
@@ -230,7 +196,7 @@ Key differences:
 
 - **Composition over configuration** — Instead of 10+ props for button labels, handlers, and visibility, compose your own buttons in Footer or Actions
 - **No built-in tab routing** — Use the Tabs component directly inside Content
-- **Title and subtitle as props** — `<MainPage.Title title="..." subtitle="..." />` replaces `title` and `subtitle` props on the AppKit page components
+- **Title and subtitle as children** — `<MainPage.Title>Products</MainPage.Title>` and `<MainPage.Subtitle>...</MainPage.Subtitle>` replace `title` and `subtitle` props on the AppKit page components
 - **No `customTitleRow`** — The Header accepts any content, so replace Title with your own elements
 - **No `Intl` static property** — Use your own i18n solution for button labels
 

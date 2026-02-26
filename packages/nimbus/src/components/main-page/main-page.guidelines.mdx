@@ -6,19 +6,16 @@ tab-order: 2
 
 ## Guidelines
 
-MainPage guidelines focus on composing the sub-components correctly and choosing
-the right Content layout for your page.
+MainPage guidelines focus on composing the sub-components correctly for your
+page layout.
 
 ### Best practices
 
 - **Start with the simplest composition:** Every page needs Root, Header with
-  Title, and Content. Only add Actions and Footer when the page requires them.
-- **Use subtitle for context:** Add a `subtitle` to Title when the page name
+  Title, and Content. Only add Actions, Subtitle, and Footer when the page
+  requires them.
+- **Use Subtitle for context:** Add a `<MainPage.Subtitle>` when the page name
   alone is not enough to orient the user. Keep subtitles to a single sentence.
-- **Match the content variant:** Choose the Content `variant` based on what the
-  page displays. See
-  [PageContent guidelines](/components/layout/pagecontent/guidelines) for
-  detailed width and column guidance.
 - **Place primary actions on the right:** In both Header Actions and Footer, put
   the primary action (e.g., "Save", "Add Product") on the right and secondary
   actions (e.g., "Cancel", "Export") to its left.
@@ -44,14 +41,15 @@ the right Content layout for your page.
 
 ### Header composition
 
-The Header positions Title on the left and Actions on the right.
+The Header uses a two-column grid to position Title and Subtitle on the left and
+Actions on the right.
 
 > [!TIP]\
 > **Do**
 >
-> - Use `MainPage.Title` with `title` and optional `subtitle` for standard
->   pages.
-> - Place action buttons in `MainPage.Actions` to keep them right-aligned.
+> - Use `<MainPage.Title>` for the page heading and `<MainPage.Subtitle>` for
+>   optional descriptive text.
+> - Place action buttons in `<MainPage.Actions>` to keep them right-aligned.
 > - Replace Title with custom content when you need elements like badges or
 >   breadcrumbs alongside the heading.
 
@@ -59,13 +57,14 @@ The Header positions Title on the left and Actions on the right.
 const App = () => (
   <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
     <MainPage.Header>
-      <MainPage.Title title="Products" subtitle="Manage your product catalog" />
+      <MainPage.Title>Products</MainPage.Title>
+      <MainPage.Subtitle>Manage your product catalog</MainPage.Subtitle>
       <MainPage.Actions>
         <Button variant="ghost">Export</Button>
         <Button>Add Product</Button>
       </MainPage.Actions>
     </MainPage.Header>
-    <MainPage.Content variant="wide">
+    <MainPage.Content>
       <Box bg="neutral.3" padding="600" borderRadius="200">
         <Text>Content area</Text>
       </Box>
@@ -100,9 +99,9 @@ Footer is intended for form-level actions. Omit it entirely for read-only pages
 const App = () => (
   <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
     <MainPage.Header>
-      <MainPage.Title title="Project Settings" />
+      <MainPage.Title>Project Settings</MainPage.Title>
     </MainPage.Header>
-    <MainPage.Content variant="narrow">
+    <MainPage.Content>
       <Box bg="neutral.3" padding="400" borderRadius="200">
         <Text>Form fields</Text>
       </Box>

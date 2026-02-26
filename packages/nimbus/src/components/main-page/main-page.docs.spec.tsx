@@ -21,13 +21,13 @@ describe("MainPage - Usage examples", () => {
       <NimbusProvider>
         <MainPage.Root>
           <MainPage.Header>
-            <MainPage.Title title="Products" />
+            <MainPage.Title>Products</MainPage.Title>
             <MainPage.Actions>
               <Button variant="ghost">Export</Button>
               <Button>Add Product</Button>
             </MainPage.Actions>
           </MainPage.Header>
-          <MainPage.Content variant="wide">
+          <MainPage.Content>
             <Text>Product list content</Text>
           </MainPage.Content>
         </MainPage.Root>
@@ -39,14 +39,33 @@ describe("MainPage - Usage examples", () => {
     expect(screen.getByText("Product list content")).toBeInTheDocument();
   });
 
+  it("renders a page with title and subtitle", () => {
+    render(
+      <NimbusProvider>
+        <MainPage.Root>
+          <MainPage.Header>
+            <MainPage.Title>Products</MainPage.Title>
+            <MainPage.Subtitle>Manage your product catalog</MainPage.Subtitle>
+          </MainPage.Header>
+          <MainPage.Content>
+            <Text>Product list content</Text>
+          </MainPage.Content>
+        </MainPage.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Products")).toBeInTheDocument();
+    expect(screen.getByText("Manage your product catalog")).toBeInTheDocument();
+  });
+
   it("renders a form page with footer", () => {
     render(
       <NimbusProvider>
         <MainPage.Root>
           <MainPage.Header>
-            <MainPage.Title title="Settings" />
+            <MainPage.Title>Settings</MainPage.Title>
           </MainPage.Header>
-          <MainPage.Content variant="narrow">
+          <MainPage.Content>
             <Text>Form fields here</Text>
           </MainPage.Content>
           <MainPage.Footer>
@@ -64,41 +83,17 @@ describe("MainPage - Usage examples", () => {
     expect(screen.getByText("Save")).toBeInTheDocument();
   });
 
-  it("renders a multi-column layout with MainPage.Column", () => {
-    render(
-      <NimbusProvider>
-        <MainPage.Root>
-          <MainPage.Header>
-            <MainPage.Title title="Product Editor" />
-          </MainPage.Header>
-          <MainPage.Content variant="wide" columns="2/1">
-            <MainPage.Column>
-              <Text>Main content</Text>
-            </MainPage.Column>
-            <MainPage.Column>
-              <Text>Sidebar</Text>
-            </MainPage.Column>
-          </MainPage.Content>
-        </MainPage.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByText("Product Editor")).toBeInTheDocument();
-    expect(screen.getByText("Main content")).toBeInTheDocument();
-    expect(screen.getByText("Sidebar")).toBeInTheDocument();
-  });
-
   it("renders a tabular page with tabs", () => {
     render(
       <NimbusProvider>
         <MainPage.Root>
           <MainPage.Header>
-            <MainPage.Title title="Product Details" />
+            <MainPage.Title>Product Details</MainPage.Title>
             <MainPage.Actions>
               <Button>Publish</Button>
             </MainPage.Actions>
           </MainPage.Header>
-          <MainPage.Content variant="wide">
+          <MainPage.Content>
             <Tabs.Root defaultSelectedKey="general">
               <Tabs.List>
                 <Tabs.Tab id="general">General</Tabs.Tab>

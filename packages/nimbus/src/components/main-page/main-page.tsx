@@ -2,11 +2,11 @@ import {
   MainPageRoot,
   MainPageHeader,
   MainPageTitle,
+  MainPageSubtitle,
   MainPageActions,
   MainPageContent,
   MainPageFooter,
 } from "./components";
-import { PageContentColumn } from "../page-content/components/page-content.column";
 
 /**
  * MainPage
@@ -21,12 +21,13 @@ import { PageContentColumn } from "../page-content/components/page-content.colum
  * // Info page (no footer)
  * <MainPage.Root>
  *   <MainPage.Header>
- *     <MainPage.Title title="Products" />
+ *     <MainPage.Title>Products</MainPage.Title>
+ *     <MainPage.Subtitle>Manage your catalog</MainPage.Subtitle>
  *     <MainPage.Actions>
  *       <Button>Add Product</Button>
  *     </MainPage.Actions>
  *   </MainPage.Header>
- *   <MainPage.Content variant="wide">
+ *   <MainPage.Content>
  *     {content}
  *   </MainPage.Content>
  * </MainPage.Root>
@@ -34,9 +35,9 @@ import { PageContentColumn } from "../page-content/components/page-content.colum
  * // Form page (with footer)
  * <MainPage.Root>
  *   <MainPage.Header>
- *     <MainPage.Title title="Settings" />
+ *     <MainPage.Title>Settings</MainPage.Title>
  *   </MainPage.Header>
- *   <MainPage.Content variant="narrow">
+ *   <MainPage.Content>
  *     {form fields}
  *   </MainPage.Content>
  *   <MainPage.Footer>
@@ -57,7 +58,7 @@ export const MainPage = {
    * ```tsx
    * <MainPage.Root>
    *   <MainPage.Header>...</MainPage.Header>
-   *   <MainPage.Content variant="wide">...</MainPage.Content>
+   *   <MainPage.Content>...</MainPage.Content>
    * </MainPage.Root>
    * ```
    */
@@ -65,12 +66,15 @@ export const MainPage = {
   /**
    * # MainPage.Header
    *
-   * The header section with flex layout for title and actions.
+   * The header section using a two-column grid. Title, Subtitle, and
+   * any other content flow into the left column. Actions spans all
+   * rows on the right.
    *
    * @example
    * ```tsx
    * <MainPage.Header>
-   *   <MainPage.Title title="Page Title" />
+   *   <MainPage.Title>Page Title</MainPage.Title>
+   *   <MainPage.Subtitle>Optional subtitle</MainPage.Subtitle>
    *   <MainPage.Actions>
    *     <Button>Action</Button>
    *   </MainPage.Actions>
@@ -81,16 +85,26 @@ export const MainPage = {
   /**
    * # MainPage.Title
    *
-   * The page title with optional subtitle. Uses the Nimbus Heading
-   * component (h1) internally. The Header accepts any content, so you
-   * can replace Title with custom elements if needed.
+   * The page title rendered as an h1. Accepts children for full
+   * flexibility — pass a string or custom JSX.
    *
    * @example
    * ```tsx
-   * <MainPage.Title title="Products" subtitle="Manage your catalog" />
+   * <MainPage.Title>Products</MainPage.Title>
    * ```
    */
   Title: MainPageTitle,
+  /**
+   * # MainPage.Subtitle
+   *
+   * Optional subtitle displayed below the title in secondary text.
+   *
+   * @example
+   * ```tsx
+   * <MainPage.Subtitle>Manage your catalog</MainPage.Subtitle>
+   * ```
+   */
+  Subtitle: MainPageSubtitle,
   /**
    * # MainPage.Actions
    *
@@ -108,34 +122,18 @@ export const MainPage = {
   /**
    * # MainPage.Content
    *
-   * The main content area that wraps PageContent.Root internally.
-   * Forwards `variant` and `columns` props for width constraints.
+   * The main content area with scrollable overflow and margin-based spacing.
+   * Uses margin (not padding) to preserve sticky positioning for child
+   * components like DataTable.
    *
    * @example
    * ```tsx
-   * <MainPage.Content variant="wide" columns="2/1">
-   *   <MainPage.Column>Main</MainPage.Column>
-   *   <MainPage.Column>Sidebar</MainPage.Column>
+   * <MainPage.Content>
+   *   {content}
    * </MainPage.Content>
    * ```
    */
   Content: MainPageContent,
-  /**
-   * # MainPage.Column
-   *
-   * A column within a multi-column Content layout. Re-export of
-   * PageContent.Column for convenience. Use with `columns="1/1"` or
-   * `columns="2/1"` on Content.
-   *
-   * @example
-   * ```tsx
-   * <MainPage.Content variant="wide" columns="2/1">
-   *   <MainPage.Column>Main content</MainPage.Column>
-   *   <MainPage.Column sticky>Sidebar</MainPage.Column>
-   * </MainPage.Content>
-   * ```
-   */
-  Column: PageContentColumn,
   /**
    * # MainPage.Footer
    *
@@ -156,6 +154,7 @@ export {
   MainPageRoot as _MainPageRoot,
   MainPageHeader as _MainPageHeader,
   MainPageTitle as _MainPageTitle,
+  MainPageSubtitle as _MainPageSubtitle,
   MainPageActions as _MainPageActions,
   MainPageContent as _MainPageContent,
   MainPageFooter as _MainPageFooter,
