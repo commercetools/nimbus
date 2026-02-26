@@ -60,11 +60,45 @@ flexible input methods with clear, dynamic feedback.
 > - Ensure accessibility with appropriate ARIA attributes.
 > - Pre-populate with common values if applicable.
 
-<img
-  src="/images/combobox/combobox-do.png"
-  alt="combobox do guideline"
-  width="316px"
-/>
+```jsx live
+const App = () => {
+  const [selectedKeys, setSelectedKeys] = useState(["yellow", "blue"]);
+
+  const colors = [
+    { id: "red", name: "Red" },
+    { id: "yellow", name: "Yellow" },
+    { id: "blue", name: "Blue" },
+    { id: "pink", name: "Pink" },
+  ];
+
+  return (
+    <ComboBox.Root
+      items={colors}
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+      selectionMode="multiple"
+      placeholder="Select colors..."
+      aria-label="Select colors"
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>
+              <Stack gap="100">
+                <Text textStyle="sm">{item.name}</Text>
+                <Text textStyle="xs" color="neutral.11">
+                  key: {item.id}
+                </Text>
+              </Stack>
+            </ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+};
+```
 
 > [!CAUTION]\
 > **Don't**

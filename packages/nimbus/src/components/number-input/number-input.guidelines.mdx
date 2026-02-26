@@ -81,11 +81,29 @@ load, allowing for quick and efficient value management.
 > - Design for clear visual feedback in all states (hover, focus, disabled,
 >   invalid).
 
-<img
-  src="/images/number-input/number-input-do.png"
-  alt="number input do guideline"
-  width="384px"
-/>
+```jsx live
+const App = () => (
+  <Grid templateColumns="auto 1fr" gap="400">
+    <Image
+      width="4000"
+      src="/images/number-input/pencil-sample.png"
+      alt="Number 2 pencils"
+    />
+    <Stack gap="200" alignItems="start">
+      <Text fontWeight="700">#2 Pencils</Text>
+      <FormField.Root>
+        <FormField.Label>Quantity</FormField.Label>
+        <FormField.Input>
+          <NumberInput defaultValue={12} width="2400" />
+        </FormField.Input>
+      </FormField.Root>
+      <Button variant="solid" colorPalette="primary">
+        Add to cart
+      </Button>
+    </Stack>
+  </Grid>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -98,8 +116,13 @@ load, allowing for quick and efficient value management.
 > - Rely solely on visual cues for accessibility; use ARIA attributes.
 > - Present a number input without clear feedback for different states.
 
-<img
-  src="/images/number-input/number-input-dont.png"
-  alt="number input dont guideline"
-  width="275px"
-/>
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Birthdate</FormField.Label>
+    <FormField.Input>
+      <NumberInput placeholder="01/01/1990" />
+    </FormField.Input>
+  </FormField.Root>
+);
+```

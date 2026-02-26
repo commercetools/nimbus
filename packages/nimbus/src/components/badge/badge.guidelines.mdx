@@ -81,7 +81,18 @@ applicable) when using badges.
 >   use yellow (amber). For default or neutral color options, use grey (slate),
 >   blue, or purple (primary).
 
-![](/images/badge/badge-semantic-colors-do.png)
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="200">
+    <Badge colorPalette="positive">Published</Badge>
+    <Badge colorPalette="critical">Expired</Badge>
+    <Badge colorPalette="warning">Modified</Badge>
+    <Badge colorPalette="info">Trial version</Badge>
+    <Badge colorPalette="primary">Premium</Badge>
+    <Badge colorPalette="neutral">Disabled</Badge>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -94,7 +105,24 @@ applicable) when using badges.
 >   and short descriptive label will be the best experience for accessibility
 >   standards.
 
-![](/images/badge/badge-semantic-colors-dont.png)
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="200">
+    <Badge colorPalette="positive">Unpublish</Badge>
+    <Badge colorPalette="critical">Publish</Badge>
+    <Badge colorPalette="warning">
+      <Icons.Campaign />
+    </Badge>
+    <Badge colorPalette="info">Expired</Badge>
+    <Badge colorPalette="primary">
+      <Icons.Delete /> Delete
+    </Badge>
+    <Badge colorPalette="neutral">
+      <Icons.FiberNew /> Updated
+    </Badge>
+  </Stack>
+);
+```
 
 ### Purposeful uses
 
@@ -110,7 +138,32 @@ overwhelming.
 > - If using icons, pair the icon with a label or a tooltip so the user can
 >   understand the meaning.
 
-![](/images/badge/badge-uses-do.png)
+```jsx live
+const App = () => (
+  <Select.Root aria-label="Select..." data-testid="select" w="1/2">
+    <Select.Options>
+      <Select.OptionGroup label="Projects">
+        <Select.Option>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text>Trial project</Text>
+            <Badge colorPalette="critical" size="xs">
+              Expired
+            </Badge>
+          </Flex>
+        </Select.Option>
+        <Select.Option>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text>Main project</Text>
+            <Badge colorPalette="positive" size="xs">
+              Production
+            </Badge>
+          </Flex>
+        </Select.Option>
+      </Select.OptionGroup>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -119,4 +172,42 @@ overwhelming.
 > - Do not be overly descriptive with labels. Keep language as short as
 >   possible.
 
-![](/images/badge/badge-uses-dont.png)
+```jsx live
+const App = () => (
+  <Select.Root aria-label="Select..." data-testid="select" w="1/2">
+    <Select.Options>
+      <Select.OptionGroup label="Projects">
+        <Select.Option>
+          <Flex alignItems="start" justifyContent="space-between">
+            <Text>Trial project</Text>
+            <Stack direction="column" gap="100" alignItems="end">
+              <Badge colorPalette="critical" size="xs">
+                Expired
+              </Badge>
+              <Badge colorPalette="critical" size="xs">
+                Suspended
+              </Badge>
+              <Badge colorPalette="critical" size="xs">
+                Will be deleted soon, in 24 days
+              </Badge>
+            </Stack>
+          </Flex>
+        </Select.Option>
+        <Select.Option>
+          <Flex alignItems="start" justifyContent="space-between">
+            <Text>Main project</Text>
+            <Stack direction="column" gap="100" alignItems="end">
+              <Badge colorPalette="positive" size="xs">
+                Production
+              </Badge>
+              <Badge colorPalette="warning" size="xs">
+                Modified, needs updating
+              </Badge>
+            </Stack>
+          </Flex>
+        </Select.Option>
+      </Select.OptionGroup>
+    </Select.Options>
+  </Select.Root>
+);
+```

@@ -90,7 +90,52 @@ feedback to users for compact binary states.
 > - Do connect buttons that toggle one active state among a small selection of
 >   options.
 
-![Do](/images/icon-toggle-button/icon-toggle-button-do.png)
+```jsx live
+const App = () => (
+  <Stack direction="column" alignItems="start">
+    <Toolbar orientation="horizontal">
+      <Select.Root
+        size="sm"
+        variant="ghost"
+        aria-label="Select a text style"
+        defaultSelectedKey="p"
+        isClearable={false}
+      >
+        <Select.Options>
+          <Select.Option id="h1">Heading 1</Select.Option>
+          <Select.Option id="h2">Heading 2</Select.Option>
+          <Select.Option id="h3">Heading 3</Select.Option>
+          <Select.Option id="p">Paragraph</Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Separator orientation="vertical" />
+      <Group>
+        <IconToggleButton size="xs" variant="ghost" aria-label="Bold">
+          <Icons.FormatBold />
+        </IconToggleButton>
+        <IconToggleButton size="xs" variant="ghost" aria-label="Italic">
+          <Icons.FormatItalic />
+        </IconToggleButton>
+        <IconToggleButton size="xs" variant="ghost" aria-label="Underline">
+          <Icons.FormatUnderlined />
+        </IconToggleButton>
+        <IconButton size="xs" variant="ghost">
+          <Icons.MoreHoriz />
+        </IconButton>
+      </Group>
+      <Separator orientation="vertical" />
+      <Group>
+        <IconToggleButton size="xs" variant="ghost" aria-label="Bulleted list">
+          <Icons.FormatListBulleted />
+        </IconToggleButton>
+        <IconToggleButton size="xs" variant="ghost" aria-label="Numbered list">
+          <Icons.FormatListNumbered />
+        </IconToggleButton>
+      </Group>
+    </Toolbar>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -99,4 +144,18 @@ feedback to users for compact binary states.
 > - Don't use an ambiguous icon without a tooltip or a text label.
 > - Don't use an icon toggle button, when you should use an icon button instead.
 
-![Don't](/images/icon-toggle-button/icon-toggle-button-dont.png)
+```jsx live
+const App = () => (
+  <Stack direction="row">
+    <IconToggleButton aria-label="Sign language">
+      <Icons.SignLanguage />
+    </IconToggleButton>
+    <IconToggleButton aria-label="Delete">
+      <Icons.Delete />
+    </IconToggleButton>
+    <IconToggleButton aria-label="Copy">
+      <Icons.FileCopy />
+    </IconToggleButton>
+  </Stack>
+);
+```

@@ -85,7 +85,20 @@ understand what date information is required and how to provide it correctly.
 > - Do validate the input and provide clear error messages for incorrect formats
 >   or invalid dates.
 
-![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Active promotion range</FormField.Label>
+    <FormField.Input>
+      <DateRangePicker
+        size="md"
+        aria-label="Active promotion range"
+        width="1/2"
+      />
+    </FormField.Input>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -116,7 +129,27 @@ preferences and accessibility needs.
 > - Do consider providing preset date ranges (e.g., "Last Week," "Next Month")
 >   when relevant.
 
-![interaction and selection - do's](/images/date-range-picker/interaction-and-selection-do.png)
+```jsx live
+const App = () => (
+  <FormField.Root>
+    <FormField.Label>Range</FormField.Label>
+    <FormField.Input>
+      <DateRangePicker
+        size="md"
+        aria-label="Active promotion range"
+        width="1/2"
+        defaultValue={{
+          start: new CalendarDate(2025, 5, 2),
+          end: new CalendarDate(2025, 5, 11),
+        }}
+      />
+    </FormField.Input>
+    <FormField.Description>
+      Format MM/DD/YYYY - MM/DD/YYYY
+    </FormField.Description>
+  </FormField.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**

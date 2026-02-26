@@ -50,15 +50,15 @@ not needed.
 ```jsx live
 const App = () => (
   <Menu.Root>
-      <Menu.Trigger asChild>
-        <IconButton
-          variant="ghost"
-          colorPalette="neutral"
-          aria-label="More options"
-        >
-          <Icons.MoreVert />
-        </IconButton>
-      </Menu.Trigger>
+    <Menu.Trigger asChild>
+      <IconButton
+        variant="ghost"
+        colorPalette="neutral"
+        aria-label="More options"
+      >
+        <Icons.MoreVert />
+      </IconButton>
+    </Menu.Trigger>
     <Menu.Content>
       <Menu.Item id="menu-item-1">Menu Item</Menu.Item>
       <Menu.Item id="menu-item-2">Menu Item</Menu.Item>
@@ -84,30 +84,40 @@ const App = () => (
         File Menu
       </Button>
     </Menu.Trigger>
-   <Menu.Content>
+    <Menu.Content>
       <Menu.Item id="duplicate">
-        <Icon slot="icon"><Icons.ContentCopy /></Icon>
+        <Icon slot="icon">
+          <Icons.ContentCopy />
+        </Icon>
         <Text slot="label">Duplicate</Text>
         <Kbd slot="keyboard">⌘T</Kbd>
       </Menu.Item>
       <Menu.Item id="rename">
-        <Icon slot="icon"><Icons.Create /></Icon>
+        <Icon slot="icon">
+          <Icons.Create />
+        </Icon>
         <Text slot="label">Rename</Text>
         <Kbd slot="keyboard">⌘R</Kbd>
       </Menu.Item>
       <Menu.Item id="share">
-        <Icon slot="icon"><Icons.IosShare /></Icon>
+        <Icon slot="icon">
+          <Icons.IosShare />
+        </Icon>
         <Text slot="label">Share</Text>
         <Kbd slot="keyboard">⌘W</Kbd>
       </Menu.Item>
       <Menu.Item id="pin">
-        <Icon slot="icon"><Icons.PushPin /></Icon>
+        <Icon slot="icon">
+          <Icons.PushPin />
+        </Icon>
         <Text slot="label">Pin</Text>
         <Kbd slot="keyboard">⌘P</Kbd>
       </Menu.Item>
       <Separator />
       <Menu.Item id="delete" isCritical>
-        <Icon slot="icon"><Icons.Delete /></Icon>
+        <Icon slot="icon">
+          <Icons.Delete />
+        </Icon>
         <Text slot="label">Delete</Text>
         <Kbd slot="keyboard">⌘D</Kbd>
       </Menu.Item>
@@ -199,7 +209,44 @@ form wide. The menu width should match the width of the field itself.
 > - Longer options flow to the next lines, and when chosen, those longer texts
 >   are truncated so the user can still see the icons clearly.
 
-![](/images/menu/menu-width-do.png)
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="400" alignItems="flex-start">
+    <Menu.Root>
+      <Menu.Trigger asChild>
+        <Button variant="outline" colorPalette="neutral">
+          Project 1
+          <Icons.KeyboardArrowDown />
+        </Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="long-name">Project with a very long name</Menu.Item>
+        <Menu.Item id="project-1">Project 1</Menu.Item>
+        <Menu.Item id="abc">ABC</Menu.Item>
+        <Menu.Item id="even-longer">
+          Project with an even longer name that breaks into 2 lines
+        </Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+    <Menu.Root>
+      <Menu.Trigger asChild>
+        <Button variant="ghost" colorPalette="neutral">
+          Project 1
+          <Icons.KeyboardArrowDown />
+        </Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item id="long-name-2">Project with a very long name</Menu.Item>
+        <Menu.Item id="project-1-2">Project 1</Menu.Item>
+        <Menu.Item id="abc-2">ABC</Menu.Item>
+        <Menu.Item id="even-longer-2">
+          Project with an even longer name that breaks into 2 lines
+        </Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  </Stack>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -207,7 +254,26 @@ form wide. The menu width should match the width of the field itself.
 > - Do not have different widths for select inputs.
 > - Do not change the width of the field to match the content once selected.
 
-![](/images/menu/menu-width-dont.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="ghost" colorPalette="neutral">
+        Project 1
+        <Icons.KeyboardArrowDown />
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content maxW="130px">
+      <Menu.Item id="long-name">Project with a very long name</Menu.Item>
+      <Menu.Item id="project-1">Project 1</Menu.Item>
+      <Menu.Item id="abc">ABC</Menu.Item>
+      <Menu.Item id="even-longer">
+        Project with an even longer name that breaks into 2 lines
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 ### Icons within action lists
 
@@ -223,7 +289,37 @@ with sections.
 >   users.
 > - Use destructive-styled icons for the actions that apply.
 
-![](/images/menu/menu-icons-do.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Actions
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="duplicate">
+        <Icon slot="icon">
+          <Icons.ContentCopy />
+        </Icon>
+        <Text slot="label">Duplicate</Text>
+      </Menu.Item>
+      <Menu.Item id="upload">
+        <Icon slot="icon">
+          <Icons.IosShare />
+        </Icon>
+        <Text slot="label">Upload</Text>
+      </Menu.Item>
+      <Menu.Item id="delete" isCritical>
+        <Icon slot="icon">
+          <Icons.Delete />
+        </Icon>
+        <Text slot="label">Delete</Text>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -232,7 +328,37 @@ with sections.
 >   common and user tested.
 > - Do not use destructive styled actions for actions that are not destructive
 
-![](/images/menu/menu-icons-dont.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Actions
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="dupli">
+        <Icon slot="icon">
+          <Icons.FilterList />
+        </Icon>
+        <Text slot="label">Dupli</Text>
+      </Menu.Item>
+      <Menu.Item id="upload" isCritical>
+        <Icon slot="icon">
+          <Icons.IosShare />
+        </Icon>
+        <Text slot="label">Upload</Text>
+      </Menu.Item>
+      <Menu.Item id="delete" isCritical>
+        <Icon slot="icon">
+          <Icons.Delete />
+        </Icon>
+        <Text slot="label">Delete</Text>
+      </Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 ### Keep menu items concise
 
@@ -248,7 +374,45 @@ content more space.
 >   instructions.
 > - Text can flow to three lines, but truncate further text.
 
-![](/images/menu/menu-concise-do.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Discount type
+        <Icons.KeyboardArrowDown />
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Section label="Product discounts">
+        <Menu.Item id="pct-off-product">Percentage off product</Menu.Item>
+        <Menu.Item id="amt-off-product">Amount off product</Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Cart discounts with line items">
+        <Menu.Item id="pct-off-cart">Percentage off item(s) on cart</Menu.Item>
+        <Menu.Item id="amt-off-cart">Amount off item(s) in cart</Menu.Item>
+        <Menu.Item id="buy-x-get-x">Buy x get x with percentage off</Menu.Item>
+        <Menu.Item id="fixed-price">Fixed-price in cart</Menu.Item>
+        <Menu.Item id="shipping">Discounted shipping</Menu.Item>
+        <Menu.Item id="gift">Gift with purchase</Menu.Item>
+        <Menu.Item id="amt-total">Amount off based on total spend</Menu.Item>
+        <Menu.Item id="pct-total">
+          Percentage off based on total spend
+        </Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Cart discounts with custom line items">
+        <Menu.Item id="custom-pct-off">
+          Percentage off item(s) on cart
+        </Menu.Item>
+        <Menu.Item id="custom-amt-off">Amount off item(s) in cart</Menu.Item>
+        <Menu.Item id="custom-buy-x">Buy x get x with percentage off</Menu.Item>
+      </Menu.Section>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -260,7 +424,109 @@ content more space.
 >   three lines, but truncate further text.
 > - Punctuation is not needed.
 
-![](/images/menu/menu-concise-dont.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Discount type
+        <Icons.KeyboardArrowDown />
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Section label="Product discounts">
+        <Menu.Item id="pct-off-product">
+          <Text slot="label">
+            Discount the target item(s) relative to its price.
+          </Text>
+          <Text slot="description">Discount type: relative</Text>
+        </Menu.Item>
+        <Menu.Item id="amt-off-product">
+          <Text slot="label">
+            Discount the target item(s) by an absolute amount.
+          </Text>
+          <Text slot="description">Discount type: absolute</Text>
+        </Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Cart discounts with line items">
+        <Menu.Item id="pct-off-cart">
+          <Text slot="label">
+            Discount the target item(s) relative to its price.
+          </Text>
+          <Text slot="description">Discount type: relative</Text>
+        </Menu.Item>
+        <Menu.Item id="amt-off-cart">
+          <Text slot="label">
+            Discount the target item(s) by an absolute amount.
+          </Text>
+          <Text slot="description">Discount type: absolute</Text>
+        </Menu.Item>
+        <Menu.Item id="buy-x-get-x">
+          <Text slot="label">
+            A relative (% off) discount is applied when the shopper buys a
+            specified quantity of an item.
+          </Text>
+          <Text slot="description">Discount type: multi-buy</Text>
+        </Menu.Item>
+        <Menu.Item id="fixed-price">
+          <Text slot="label">
+            Discount the target item(s) by setting a fixed price.
+          </Text>
+          <Text slot="description">Discount type: fixed-price</Text>
+        </Menu.Item>
+        <Menu.Item id="shipping">
+          <Text slot="label">
+            Discount the cart's shipping cost for the customer.
+          </Text>
+          <Text slot="description">Discount type: shipping</Text>
+        </Menu.Item>
+        <Menu.Item id="gift">
+          <Text slot="label">
+            Discount adds a free line item(s) to the cart when the specified
+            conditions are met.
+          </Text>
+          <Text slot="description">Discount type: gift line item</Text>
+        </Menu.Item>
+        <Menu.Item id="amt-total">
+          <Text slot="label">
+            Discount an absolute amount based on cart total.
+          </Text>
+          <Text slot="description">Discount type: absolute</Text>
+        </Menu.Item>
+        <Menu.Item id="pct-total">
+          <Text slot="label">
+            Discount an amount relative to the cart total.
+          </Text>
+          <Text slot="description">Discount type: relative</Text>
+        </Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Cart discounts with custom line items">
+        <Menu.Item id="custom-pct-off">
+          <Text slot="label">
+            Discount the target custom line item(s) relative to its price.
+          </Text>
+          <Text slot="description">Discount type: relative</Text>
+        </Menu.Item>
+        <Menu.Item id="custom-amt-off">
+          <Text slot="label">
+            Discount the target custom line item(s) by an absolute amount.
+          </Text>
+          <Text slot="description">Discount type: absolute</Text>
+        </Menu.Item>
+        <Menu.Item id="custom-buy-x">
+          <Text slot="label">
+            A relative (% off) discount is applied when the shopper buys a
+            specified quantity of an item defined as a custom line item.
+          </Text>
+          <Text slot="description">Discount type: multibuy</Text>
+        </Menu.Item>
+      </Menu.Section>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 ### Organize dropdown content when possible
 
@@ -274,7 +540,37 @@ experience. By default, organize by alphabetical order.
 > - If actions lists become bulky and hard to scan, consider another experience
 >   for the user.
 
-![](/images/menu/menu-organize-do.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Actions
+        <Icons.KeyboardArrowDown />
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Section label="Common actions">
+        <Menu.Item id="publish">Publish</Menu.Item>
+        <Menu.Item id="unpublish">Unpublish</Menu.Item>
+        <Menu.Item id="delete">Delete</Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Import">
+        <Menu.Item id="import-csv">Import via CSV</Menu.Item>
+        <Menu.Item id="bulk-unpublish">Bulk unpublish via CSV</Menu.Item>
+        <Menu.Item id="bulk-delete">Bulk delete via CSV</Menu.Item>
+        <Menu.Item id="import-inventories">Import inventories</Menu.Item>
+      </Menu.Section>
+      <Separator />
+      <Menu.Section label="Export">
+        <Menu.Item id="export-products">Export products</Menu.Item>
+        <Menu.Item id="export-inventories">Export Inventories</Menu.Item>
+      </Menu.Section>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -283,4 +579,26 @@ experience. By default, organize by alphabetical order.
 >   prioritize them at the top and group related actions together to facilitate
 >   quick user selection.
 
-![](/images/menu/menu-organize-dont.png)
+```jsx live
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline" colorPalette="neutral">
+        Actions
+        <Icons.KeyboardArrowDown />
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="bulk-delete">Bulk delete via CSV</Menu.Item>
+      <Menu.Item id="bulk-unpublish">Bulk unpublish via CSV</Menu.Item>
+      <Menu.Item id="delete">Delete</Menu.Item>
+      <Menu.Item id="export-inventories">Export Inventories</Menu.Item>
+      <Menu.Item id="export-products">Export products</Menu.Item>
+      <Menu.Item id="import-inventories">Import inventories</Menu.Item>
+      <Menu.Item id="import-csv">Import via CSV</Menu.Item>
+      <Menu.Item id="publish">Publish</Menu.Item>
+      <Menu.Item id="unpublish">Unpublish</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```

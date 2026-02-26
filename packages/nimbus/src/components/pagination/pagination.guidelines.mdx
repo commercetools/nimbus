@@ -50,7 +50,25 @@ users seeking to navigate their data or processes.
 > - Do place pagination controls consistently at the top, bottom, or both, of
 >   the content being paginated.
 
-![pagination in use - do](/images/pagination/pagination-in-use-do.png)
+```jsx live
+const App = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
+
+  return (
+    <Pagination
+      totalItems={10240}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      pageSizeOptions={[4, 10, 20, 50]}
+      enablePageSizeSelector
+      enablePageInput
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -62,4 +80,22 @@ users seeking to navigate their data or processes.
 > - Don't hide or neglect to disable the 'Previous' or 'Next' buttons when they
 >   are no longer functional.
 
-![pagination in use - dont](/images/pagination/pagination-in-use-dont.png)
+```jsx live
+const App = () => {
+  const [currentPage, setCurrentPage] = useState(1483271);
+  const [pageSize, setPageSize] = useState(4);
+
+  return (
+    <Pagination
+      totalItems={9007199254740991}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      pageSizeOptions={[4, 10, 20, 50]}
+      enablePageSizeSelector
+      enablePageInput
+      onPageChange={setCurrentPage}
+      onPageSizeChange={setPageSize}
+    />
+  );
+};
+```

@@ -55,7 +55,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 #### Small
@@ -72,7 +72,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 ### Fixed width
@@ -93,7 +93,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 #### Ghost-styled
@@ -113,7 +113,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 ### Text wrapping
@@ -123,14 +123,44 @@ const App = () => (
 Please encourage short text when possible. When applicable, wrap text onto
 another line when needed.
 
-![](/images/select/text-wrapping-within-popover.png)
+```jsx live
+const App = () => (
+  <Select.Root defaultSelectedKey="project-1" w="6400">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option id="project-2lines">
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 #### Truncate when long line item is selected
 
 If selected, truncate text so it does not overlap over the icons in the select
 input field.
 
-![](/images/select/truncate-when-long-line-item-is-selected.png)
+```jsx live
+const App = () => (
+  <Select.Root defaultSelectedKey="project-2lines" w="6400">
+    <Select.Options placeholder="Select...">
+      <Select.Option id="project-long">
+        Project with a very long name
+      </Select.Option>
+      <Select.Option id="project-1">Project 1</Select.Option>
+      <Select.Option id="abc">ABC</Select.Option>
+      <Select.Option id="project-2lines">
+        Project with an even longer name that breaks into 2 lines
+      </Select.Option>
+    </Select.Options>
+  </Select.Root>
+);
+```
 
 ### Validation
 
@@ -149,7 +179,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 #### Invalid
@@ -167,7 +197,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 #### Disabled
@@ -184,7 +214,7 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```
 
 #### Placeholder
@@ -202,5 +232,5 @@ const App = () => (
       <Select.Option>Cherries</Select.Option>
     </Select.Options>
   </Select.Root>
-)
+);
 ```

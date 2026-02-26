@@ -60,7 +60,16 @@ primary function.
 > - Ensure navigation controls are clearly labeled and their function is
 >   obvious.
 
-![interaction - do's](/images/range-calendar/interaction-do.png)
+```jsx live
+const App = () => (
+  <RangeCalendar
+    defaultValue={{
+      start: new CalendarDate(2025, 5, 2),
+      end: new CalendarDate(2025, 5, 11),
+    }}
+  />
+);
+```
 
 > [!CAUTION]\
 > **Don't**

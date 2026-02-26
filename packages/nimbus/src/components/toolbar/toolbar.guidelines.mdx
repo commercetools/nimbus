@@ -62,7 +62,80 @@ frequently used actions and controls to manage the content directly below it.
 > - Maintain screen space by consolidating many items into a single, compact
 >   bar.
 
-![Do](/images/toolbar/toolbar-do.png)
+```jsx live
+const App = () => (
+  <Toolbar aria-label="Text formatting">
+    <Select.Root
+      size="sm"
+      defaultSelectedKey="paragraph"
+      aria-label="Text style"
+      isClearable={false}
+    >
+      <Select.Options>
+        <Select.Option id="heading1">Heading 1</Select.Option>
+        <Select.Option id="heading2">Heading 2</Select.Option>
+        <Select.Option id="paragraph">Paragraph</Select.Option>
+      </Select.Options>
+    </Select.Root>
+    <Separator orientation="vertical" />
+    <ToggleButtonGroup.Root
+      selectionMode="multiple"
+      defaultSelectedKeys={["bold"]}
+    >
+      <IconToggleButton id="bold" size="xs" variant="ghost" aria-label="Bold">
+        <Icons.FormatBold />
+      </IconToggleButton>
+      <IconToggleButton
+        id="italic"
+        size="xs"
+        variant="ghost"
+        aria-label="Italic"
+      >
+        <Icons.FormatItalic />
+      </IconToggleButton>
+      <IconToggleButton
+        id="underline"
+        size="xs"
+        variant="ghost"
+        aria-label="Underline"
+      >
+        <Icons.FormatUnderlined />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <IconButton size="xs" variant="ghost" aria-label="More formatting options">
+      <Icons.MoreHoriz />
+    </IconButton>
+    <Separator orientation="vertical" />
+    <ToggleButtonGroup.Root selectionMode="single" defaultSelectedKeys={[]}>
+      <IconToggleButton
+        id="bulleted"
+        size="xs"
+        variant="ghost"
+        aria-label="Bulleted list"
+      >
+        <Icons.FormatListBulleted />
+      </IconToggleButton>
+      <IconToggleButton
+        id="numbered"
+        size="xs"
+        variant="ghost"
+        aria-label="Numbered list"
+      >
+        <Icons.FormatListNumbered />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <Separator orientation="vertical" />
+    <Group>
+      <IconButton size="xs" variant="ghost" aria-label="Undo" isDisabled>
+        <Icons.Undo />
+      </IconButton>
+      <IconButton size="xs" variant="ghost" aria-label="Redo">
+        <Icons.Redo />
+      </IconButton>
+    </Group>
+  </Toolbar>
+);
+```
 
 > [!CAUTION]\
 > **Don't**
@@ -77,4 +150,77 @@ frequently used actions and controls to manage the content directly below it.
 > - Don't hide actions that are temporarily disabled, as this causes shifting
 >   elements and breaks muscle memory.
 
-![Don't](/images/toolbar/toolbar-dont.png)
+```jsx live
+const App = () => (
+  <Toolbar aria-label="Text formatting">
+    <IconButton size="xs" variant="ghost" aria-label="View">
+      <Icons.Apps />
+    </IconButton>
+    <ToggleButtonGroup.Root
+      selectionMode="multiple"
+      defaultSelectedKeys={["bold"]}
+    >
+      <IconToggleButton id="bold" size="xs" variant="ghost" aria-label="Bold">
+        <Icons.FormatBold />
+      </IconToggleButton>
+      <IconToggleButton
+        id="italic"
+        size="xs"
+        variant="ghost"
+        aria-label="Italic"
+      >
+        <Icons.FormatItalic />
+      </IconToggleButton>
+      <IconToggleButton
+        id="underline"
+        size="xs"
+        variant="ghost"
+        aria-label="Underline"
+      >
+        <Icons.FormatUnderlined />
+      </IconToggleButton>
+      <IconToggleButton
+        id="strikethrough"
+        size="xs"
+        variant="ghost"
+        aria-label="Strikethrough"
+      >
+        <Icons.FormatStrikethrough />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <IconButton size="xs" variant="ghost" aria-label="Format size">
+      <Icons.FormatSize />
+    </IconButton>
+    <IconButton size="xs" variant="ghost" aria-label="Insert link">
+      <Icons.InsertLink />
+    </IconButton>
+    <IconButton size="xs" variant="ghost" aria-label="Brightness">
+      <Icons.Brightness6 />
+    </IconButton>
+    <ToggleButtonGroup.Root selectionMode="single" defaultSelectedKeys={[]}>
+      <IconToggleButton
+        id="bulleted"
+        size="xs"
+        variant="ghost"
+        aria-label="Bulleted list"
+      >
+        <Icons.FormatListBulleted />
+      </IconToggleButton>
+      <IconToggleButton
+        id="numbered"
+        size="xs"
+        variant="ghost"
+        aria-label="Numbered list"
+      >
+        <Icons.FormatListNumbered />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <IconButton size="xs" variant="ghost" aria-label="Delete">
+      <Icons.Delete />
+    </IconButton>
+    <IconButton size="xs" variant="ghost" aria-label="Upload">
+      <Icons.CloudUpload />
+    </IconButton>
+  </Toolbar>
+);
+```
