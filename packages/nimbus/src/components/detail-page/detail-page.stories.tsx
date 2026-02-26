@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DetailPage, Button, Tabs, Stack, Text } from "@commercetools/nimbus";
-import { within, expect } from "storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 
 const meta: Meta<typeof DetailPage.Root> = {
   title: "Components/DetailPage",
@@ -40,13 +40,15 @@ export const InfoDetailPage: Story = {
     const canvas = within(canvasElement);
 
     await step("Renders the back link", async () => {
-      const backLink = canvas.getByText("Back to products");
+      const backLink = canvas.getByRole("link", { name: /back to products/i });
       await expect(backLink).toBeInTheDocument();
-      await expect(backLink.closest("a")).toHaveAttribute("href", "/products");
+      await expect(backLink).toHaveAttribute("href", "/products");
     });
 
     await step("Renders the title", async () => {
-      await expect(canvas.getByText("Product Details")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("heading", { name: "Product Details" })
+      ).toBeInTheDocument();
     });
 
     await step("Renders the subtitle", async () => {
@@ -94,13 +96,15 @@ export const FormDetailPage: Story = {
     const canvas = within(canvasElement);
 
     await step("Renders the back link", async () => {
-      const backLink = canvas.getByText("Back to orders");
+      const backLink = canvas.getByRole("link", { name: /back to orders/i });
       await expect(backLink).toBeInTheDocument();
-      await expect(backLink.closest("a")).toHaveAttribute("href", "/orders");
+      await expect(backLink).toHaveAttribute("href", "/orders");
     });
 
     await step("Renders title and subtitle", async () => {
-      await expect(canvas.getByText("Edit Order")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("heading", { name: "Edit Order" })
+      ).toBeInTheDocument();
       await expect(canvas.getByText("Order #ORD-2024-001")).toBeInTheDocument();
     });
 
@@ -111,6 +115,7 @@ export const FormDetailPage: Story = {
     });
 
     await step("Renders footer with action buttons", async () => {
+      await expect(canvas.getByRole("contentinfo")).toBeInTheDocument();
       await expect(canvas.getByText("Save")).toBeInTheDocument();
       await expect(canvas.getByText("Cancel")).toBeInTheDocument();
     });
@@ -161,28 +166,41 @@ export const TabularDetailPage: Story = {
     const canvas = within(canvasElement);
 
     await step("Renders the back link", async () => {
-      const backLink = canvas.getByText("Back to customers");
+      const backLink = canvas.getByRole("link", { name: /back to customers/i });
       await expect(backLink).toBeInTheDocument();
-      await expect(backLink.closest("a")).toHaveAttribute("href", "/customers");
+      await expect(backLink).toHaveAttribute("href", "/customers");
     });
 
     await step("Renders title and subtitle", async () => {
-      await expect(canvas.getByText("Customer Details")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("heading", { name: "Customer Details" })
+      ).toBeInTheDocument();
       await expect(
         canvas.getByText("customer@example.com")
       ).toBeInTheDocument();
     });
 
     await step("Renders tab controls", async () => {
-      await expect(canvas.getByText("General")).toBeInTheDocument();
-      await expect(canvas.getByText("Addresses")).toBeInTheDocument();
-      await expect(canvas.getByText("Orders")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "General" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Addresses" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Orders" })
+      ).toBeInTheDocument();
     });
 
     await step("Renders default tab content", async () => {
       await expect(
         canvas.getByText("General information content")
       ).toBeInTheDocument();
+    });
+
+    await step("Clicking Addresses tab shows addresses content", async () => {
+      await userEvent.click(canvas.getByRole("tab", { name: "Addresses" }));
+      await expect(canvas.getByText("Addresses content")).toBeInTheDocument();
     });
   },
 };

@@ -37,7 +37,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       gap: "100",
       color: "neutral.11",
       textDecoration: "none",
-      fontSize: "200",
+      fontSize: "250",
       lineHeight: "1",
       cursor: "pointer",
       _hover: {
@@ -52,7 +52,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       color: "neutral.12",
     },
     subtitle: {
-      fontSize: "200",
+      fontSize: "250",
       color: "neutral.11",
     },
     content: {

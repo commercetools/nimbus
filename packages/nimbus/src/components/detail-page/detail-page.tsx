@@ -17,6 +17,7 @@ import {
  * Replaces the structural layout of MC's `form-detail-page`,
  * `info-detail-page`, `tabular-detail-page`, and `custom-form-detail-page`.
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/layout/detail-page}
  * @example
  * ```tsx
  * <DetailPage.Root>
@@ -101,14 +102,16 @@ export const DetailPage = {
   /**
    * # DetailPage.Content
    *
-   * The main content area. Accepts a `variant` prop to control width
-   * (`wide`, `narrow`, `full`).
+   * The main content area. The content width is controlled by the
+   * `contentVariant` prop on `DetailPage.Root` (`wide`, `narrow`, `full`).
    *
    * @example
    * ```tsx
-   * <DetailPage.Content variant="narrow">
-   *   Form fields here
-   * </DetailPage.Content>
+   * <DetailPage.Root contentVariant="narrow">
+   *   <DetailPage.Content>
+   *     Form fields here
+   *   </DetailPage.Content>
+   * </DetailPage.Root>
    * ```
    */
   Content: DetailPageContent,

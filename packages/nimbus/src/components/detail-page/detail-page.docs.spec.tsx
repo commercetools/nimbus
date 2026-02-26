@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { DetailPage, NimbusProvider } from "@commercetools/nimbus";
+import { DetailPage, Tabs, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section info-detail-page
@@ -85,17 +85,35 @@ describe("DetailPage - Tabular page (with tabs)", () => {
             <DetailPage.Title>Customer Details</DetailPage.Title>
             <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
           </DetailPage.Header>
-          <DetailPage.Content>
-            Tab content would be rendered here
-          </DetailPage.Content>
+          <Tabs.Root defaultSelectedKey="general">
+            <Tabs.List aria-label="Customer sections">
+              <Tabs.Tab id="general">General</Tabs.Tab>
+              <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
+              <Tabs.Tab id="orders">Orders</Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panels>
+              <Tabs.Panel id="general">
+                <DetailPage.Content>
+                  General information content
+                </DetailPage.Content>
+              </Tabs.Panel>
+              <Tabs.Panel id="addresses">
+                <DetailPage.Content>Addresses content</DetailPage.Content>
+              </Tabs.Panel>
+              <Tabs.Panel id="orders">
+                <DetailPage.Content>Orders content</DetailPage.Content>
+              </Tabs.Panel>
+            </Tabs.Panels>
+          </Tabs.Root>
         </DetailPage.Root>
       </NimbusProvider>
     );
 
     expect(screen.getByText("Customer Details")).toBeInTheDocument();
     expect(screen.getByText("customer@example.com")).toBeInTheDocument();
-    expect(
-      screen.getByText("Tab content would be rendered here")
-    ).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "General" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Addresses" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Orders" })).toBeInTheDocument();
+    expect(screen.getByText("General information content")).toBeInTheDocument();
   });
 });
