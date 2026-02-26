@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import type { LinkRootSlotProps } from "./link.types";
 
 const { withContext } = createRecipeContext({ key: "nimbusLink" });

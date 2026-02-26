@@ -2,7 +2,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { DateValue } from "react-aria";
 import type { DateRangePickerProps as RaDateRangePickerProps } from "react-aria-components";
 

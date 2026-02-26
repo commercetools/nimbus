@@ -4,7 +4,7 @@ import {
   useCallback,
   type ReactElement,
 } from "react";
-import { Steps as ChakraSteps, useStepsContext } from "@chakra-ui/react";
+import { Steps as ChakraSteps, useStepsContext } from "@chakra-ui/react/steps";
 import { extractStyleProps } from "@/utils";
 import type { StepsPrevTriggerProps } from "../steps.types";
 

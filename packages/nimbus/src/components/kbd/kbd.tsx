@@ -1,5 +1,5 @@
 import { KeyboardContext, useContextProps } from "react-aria-components";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { type KbdProps as ChakraKbdProps } from "@chakra-ui/react/kbd";
 import { useRef } from "react";
 import type React from "react";

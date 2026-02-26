@@ -2,7 +2,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { type InputProps as RaInputProps } from "react-aria-components";
 import type {
   AriaButtonProps as RaButtonProps,

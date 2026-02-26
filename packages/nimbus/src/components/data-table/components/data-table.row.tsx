@@ -4,7 +4,7 @@ import {
   Collection as RaCollection,
   useTableOptions,
 } from "react-aria-components";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";

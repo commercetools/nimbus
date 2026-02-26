@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
 import type {
   TabsRootSlotProps,

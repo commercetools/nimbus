@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import { Button as RaButton, Input as RaInput } from "react-aria-components";
 import type {
   NumberInputRootSlotProps,

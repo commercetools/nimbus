@@ -4,7 +4,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { FC } from "react";
 
 // ============================================================

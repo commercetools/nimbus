@@ -4,7 +4,7 @@ import type {
   CustomEvent,
   CurrencyCode,
 } from "../money-input/money-input.types";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================

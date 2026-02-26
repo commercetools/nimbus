@@ -1,4 +1,4 @@
-import { createToaster } from "@chakra-ui/react";
+import { createToaster } from "@chakra-ui/react/toast";
 import type { ToastPlacement } from "../toast.types";
 import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "../constants";
 

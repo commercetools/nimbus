@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { BadgeRoot } from "./badge.slots";
 import type { BadgeProps } from "./badge.types";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { useObjectRef, mergeProps } from "react-aria";
 /**
  * # Badge

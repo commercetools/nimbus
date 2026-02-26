@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import { Popover as RaPopover } from "react-aria-components";
 import type { PopoverProps, PopoverComponent } from "./popover.types";
 

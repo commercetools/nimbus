@@ -1,5 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import type { AriaCheckboxProps } from "react-aria";
 
 // ============================================================

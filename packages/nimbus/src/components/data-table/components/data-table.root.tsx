@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useRef } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import { DataTableContext, CustomSettingsContext } from "./data-table.context";
 import type {

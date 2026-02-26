@@ -1,4 +1,4 @@
-import { defineSemanticTokens } from "@chakra-ui/react";
+import { defineSemanticTokens } from "@chakra-ui/react/styled-system";
 import { themeTokens } from "@commercetools/nimbus-tokens";
 
 export const colors = defineSemanticTokens.colors({

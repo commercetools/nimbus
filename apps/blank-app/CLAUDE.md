@@ -72,7 +72,7 @@ The app shows the minimal setup required to use Nimbus:
 // src/main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react/provider'
 import { nimbusTheme } from '@commercetools/nimbus'
 import messages from '@commercetools/nimbus-i18n/compiled-data/core.json'
 import App from './App'
@@ -134,7 +134,7 @@ function App() {
 Shows how to customize the Nimbus theme (optional):
 
 ```typescript
-import { createSystem, defaultConfig } from "@chakra-ui/react";
+import { createSystem, defaultConfig } from "@chakra-ui/react/styled-system";
 import { nimbusRecipes } from "@commercetools/nimbus";
 
 // Extend or customize Nimbus theme

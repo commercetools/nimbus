@@ -1,5 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react/styled-system";
 import type {
   RadioGroupProps as RaRadioGroupProps,
   RadioProps as RaRadioProps,

@@ -1,10 +1,10 @@
 import {
-  Steps as ChakraSteps,
   useSlotRecipe,
-  useBreakpointValue,
-  useChakraContext,
   type SlotRecipeProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
+import { Steps as ChakraSteps } from "@chakra-ui/react/steps";
+import { useBreakpointValue } from "@chakra-ui/react/hooks";
+import { useChakraContext } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import type { StepsRootProps } from "../steps.types";
 import { StepsRootSlot } from "../steps.slots";

@@ -1,5 +1,5 @@
 import type { ReactNode, Ref } from "react";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import type { FormFieldProps } from "@/components";
 import type {
   GridListProps as RaGridListProps,

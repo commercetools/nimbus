@@ -2,7 +2,9 @@
 
 ## Package Overview
 
-The `@commercetools/nimbus-tokens` package generates design tokens using Style Dictionary:
+The `@commercetools/nimbus-tokens` package generates design tokens using Style
+Dictionary:
+
 - Source tokens in JSON format
 - Outputs CSS variables, TypeScript constants, and Chakra UI format
 - Consumed by all other packages (must build first in build order)
@@ -47,6 +49,7 @@ Tokens are defined in JSON files in `src/`:
 ### Style Dictionary Configuration
 
 Configuration lives in `src/style-dictionary.config.js`:
+
 - Custom transforms for token values
 - Output formats (CSS, TypeScript, Chakra)
 - Build platforms and destinations
@@ -93,24 +96,24 @@ Components consume tokens via Chakra UI recipes:
 
 ```typescript
 // In a recipe file
-import { defineRecipe } from '@chakra-ui/react'
+import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 export const buttonRecipe = defineRecipe({
   base: {
-    fontSize: 'nimbus.fontSize.md',     // Token reference
-    padding: 'nimbus.spacing.md',       // Token reference
-    borderRadius: 'nimbus.borderRadius.md'
-  }
-})
+    fontSize: "nimbus.fontSize.md", // Token reference
+    padding: "nimbus.spacing.md", // Token reference
+    borderRadius: "nimbus.borderRadius.md",
+  },
+});
 ```
 
 ### Direct Import
 
 ```typescript
 // Import tokens directly
-import { colors } from '@commercetools/nimbus-tokens'
+import { colors } from "@commercetools/nimbus-tokens";
 
-const primaryColor = colors.primary
+const primaryColor = colors.primary;
 ```
 
 ### CSS Custom Properties
@@ -125,14 +128,17 @@ const primaryColor = colors.primary
 
 ## Build Dependencies
 
-**This package must build before all others** - it's the foundation of the design system.
+**This package must build before all others** - it's the foundation of the
+design system.
 
 Build order:
+
 1. **tokens** (this package) ← Build first
 2. All other packages (nimbus, nimbus-icons, etc.)
 3. Apps (docs, blank-app)
 
-Without building tokens first, dependent packages will fail because they can't resolve token imports.
+Without building tokens first, dependent packages will fail because they can't
+resolve token imports.
 
 ## Common Tasks
 
@@ -154,6 +160,7 @@ Without building tokens first, dependent packages will fail because they can't r
 ### Verifying Token Output
 
 After building, check:
+
 - `dist/` - Contains compiled modules
 - `generated/ts/tokens.ts` - TypeScript constants
 - `generated/chakra/tokens.ts` - Chakra UI theme tokens

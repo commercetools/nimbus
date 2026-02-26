@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import shouldForwardProp from "@emotion/is-prop-valid";
 import { system } from "@/theme";
 import type { ToggleButtonRootSlotProps } from "./toggle-button.types";

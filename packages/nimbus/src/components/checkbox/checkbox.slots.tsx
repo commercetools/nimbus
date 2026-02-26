@@ -1,4 +1,4 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import { Checkbox as RaCheckbox } from "react-aria-components";
 import type { SlotComponent } from "@/type-utils/slot-types";
 import type {

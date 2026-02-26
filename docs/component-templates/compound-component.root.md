@@ -12,7 +12,7 @@ component-name, componentName Location: components/component-name.root.tsx
 
 import { useRef } from "react";
 import { useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 // Uncomment if using React Aria
 // import { ComponentName as RaComponentName } from 'react-aria-components';
 import { ComponentNameRootSlot } from "../component-name.slots";

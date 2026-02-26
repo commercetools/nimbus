@@ -1,4 +1,4 @@
-import { defineLayerStyles } from "@chakra-ui/react";
+import { defineLayerStyles } from "@chakra-ui/react/styled-system";
 
 type LayerStylesType = ReturnType<typeof defineLayerStyles>;
 

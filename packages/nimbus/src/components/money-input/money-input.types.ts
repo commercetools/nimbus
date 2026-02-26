@@ -1,4 +1,4 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import type { MoneyInputValue, CurrencyCode } from "./utils";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 

@@ -1,4 +1,4 @@
-import { defineGlobalStyles } from "@chakra-ui/react";
+import { defineGlobalStyles } from "@chakra-ui/react/styled-system";
 
 export const globalCss = defineGlobalStyles({
   "*": {

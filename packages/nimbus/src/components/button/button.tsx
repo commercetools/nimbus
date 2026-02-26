@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useButton, useObjectRef } from "react-aria";
 import { ButtonContext, useContextProps } from "react-aria-components";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { ButtonRoot } from "./button.slots.tsx";
 import type { ButtonProps } from "./button.types.ts";
 

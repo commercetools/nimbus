@@ -2,8 +2,8 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
-import type { Steps as ChakraSteps } from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
+import type { Steps as ChakraSteps } from "@chakra-ui/react/steps";
 import type { ReactNode, Ref } from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 

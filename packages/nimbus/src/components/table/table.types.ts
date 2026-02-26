@@ -1,4 +1,4 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS

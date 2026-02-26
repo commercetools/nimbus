@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import {
   TagGroup as RaTagGroup,
   TagList as RaTagList,

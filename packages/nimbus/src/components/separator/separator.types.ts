@@ -3,7 +3,7 @@ import type {
   RecipeProps,
   UnstyledProp,
   HTMLChakraProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS

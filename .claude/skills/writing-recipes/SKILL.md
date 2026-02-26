@@ -1,6 +1,5 @@
 ---
-description:
-  Create, update, or validate Chakra UI recipes with Nimbus design tokens
+description: Create, update, or validate Chakra UI recipes with Nimbus design tokens
 argument-hint: create|update|validate ComponentName [details]
 ---
 
@@ -89,7 +88,7 @@ packages/nimbus/src/components/{component}/
 ### Standard Recipe Template
 
 ```typescript
-import { defineRecipe } from '@chakra-ui/react'
+import { defineRecipe } from '@chakra-ui/react/styled-system'
 
 /**
  * Recipe for the {ComponentName} component.
@@ -125,7 +124,7 @@ export const {componentName}Recipe = defineRecipe({
 ### Slot Recipe Template
 
 ```typescript
-import { defineSlotRecipe } from '@chakra-ui/react'
+import { defineSlotRecipe } from '@chakra-ui/react/styled-system'
 
 /**
  * Recipe for the {ComponentName} component slots.
@@ -162,7 +161,7 @@ export const {componentName}Recipe = defineSlotRecipe({
 You MUST update the component's types file:
 
 ```typescript
-import { type RecipeVariantProps } from '@chakra-ui/react'
+import { type RecipeVariantProps } from '@chakra-ui/react/styled-system'
 import { type {componentName}Recipe } from './recipes/{component}.recipe'
 
 /**
@@ -183,7 +182,7 @@ export type {ComponentName}Props = {ComponentName}RecipeProps & {
 You MUST create a slots file for slot recipes:
 
 ```typescript
-import { createSlotRecipeContext } from '@chakra-ui/react'
+import { createSlotRecipeContext } from '@chakra-ui/react/styled-system'
 import { {componentName}Recipe } from './recipes/{component}.recipe'
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -272,7 +271,7 @@ You MUST validate against these requirements:
 
 - [ ] Recipe file location MUST be:
       `packages/nimbus/src/components/{component}/recipes/{component}.recipe.ts`
-- [ ] Import MUST be from `@chakra-ui/react`
+- [ ] Import MUST be from `@chakra-ui/react/styled-system` (never the barrel `@chakra-ui/react`)
 - [ ] Export name MUST follow pattern: `{componentName}Recipe`
 
 #### Recipe Definition
