@@ -1,7 +1,16 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
-import { Box, Button, Heading, Stack, Tabs, Text } from "@commercetools/nimbus";
+import { expect, fn, userEvent, within } from "storybook/test";
+import {
+  Box,
+  Button,
+  Heading,
+  NimbusProvider,
+  Stack,
+  Tabs,
+  Text,
+} from "@commercetools/nimbus";
+import type { NimbusRouterConfig } from "@commercetools/nimbus";
 import { SentimentSatisfied } from "@commercetools/nimbus-icons";
 
 /**
@@ -1127,6 +1136,123 @@ export const ControlledWithExternalState: Story = {
       // External button should still work after tab click
       await userEvent.click(examplesButton);
       await expect(examplesTab).toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
+/**
+ * Demonstrates tabs that render as links with `href` props.
+ * When `href` is provided, each tab renders as an anchor element (`<a>`)
+ * instead of a button, enabling native browser navigation and router integration.
+ *
+ * This pattern is useful for:
+ * - URL-driven tab navigation (each tab maps to a route)
+ * - SEO-friendly tabbed content where each section has a unique URL
+ * - Integration with client-side routers (React Router, Next.js, etc.)
+ */
+const mockNavigate = fn();
+const mockRouter: NimbusRouterConfig = {
+  navigate: mockNavigate,
+};
+
+export const LinkTabs: Story = {
+  args: {
+    "data-testid": "link-tabs",
+  },
+  render: (args) => (
+    <NimbusProvider router={mockRouter}>
+      <Tabs.Root {...args}>
+        <Tabs.List>
+          <Tabs.Tab id="overview" href="/overview">
+            Overview
+          </Tabs.Tab>
+          <Tabs.Tab id="usage" href="/usage">
+            Usage
+          </Tabs.Tab>
+          <Tabs.Tab id="api" href="/api?version=2">
+            API Reference
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels>
+          <Tabs.Panel id="overview">
+            Overview content — this tab links to /overview.
+          </Tabs.Panel>
+          <Tabs.Panel id="usage">
+            Usage content — this tab links to /usage.
+          </Tabs.Panel>
+          <Tabs.Panel id="api">
+            API reference content — this tab links to /api.
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </NimbusProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Link tabs render as anchor elements", async () => {
+      const overviewTab = await canvas.findByRole("tab", { name: "Overview" });
+      const usageTab = await canvas.findByRole("tab", { name: "Usage" });
+      const apiTab = await canvas.findByRole("tab", {
+        name: "API Reference",
+      });
+
+      // Tabs with href should render as <a> elements
+      await expect(overviewTab.tagName).toBe("A");
+      await expect(usageTab.tagName).toBe("A");
+      await expect(apiTab.tagName).toBe("A");
+    });
+
+    await step("Link tabs have correct href attributes", async () => {
+      const overviewTab = canvas.getByRole("tab", { name: "Overview" });
+      const usageTab = canvas.getByRole("tab", { name: "Usage" });
+      const apiTab = canvas.getByRole("tab", { name: "API Reference" });
+
+      await expect(overviewTab).toHaveAttribute("href", "/overview");
+      await expect(usageTab).toHaveAttribute("href", "/usage");
+      await expect(apiTab).toHaveAttribute("href", "/api?version=2");
+    });
+
+    await step(
+      "Clicking a link tab calls the router navigate function",
+      async () => {
+        mockNavigate.mockClear();
+
+        const usageTab = canvas.getByRole("tab", { name: "Usage" });
+        await userEvent.click(usageTab);
+
+        await expect(mockNavigate).toHaveBeenCalledWith("/usage", undefined);
+      }
+    );
+
+    await step(
+      "URL parameters are forwarded to the router navigate function",
+      async () => {
+        mockNavigate.mockClear();
+
+        const apiTab = canvas.getByRole("tab", { name: "API Reference" });
+        await userEvent.click(apiTab);
+
+        await expect(mockNavigate).toHaveBeenCalledWith(
+          "/api?version=2",
+          undefined
+        );
+      }
+    );
+
+    await step("Link tabs support keyboard navigation", async () => {
+      const overviewTab = canvas.getByRole("tab", { name: "Overview" });
+
+      overviewTab.focus();
+      await expect(overviewTab).toHaveFocus();
+
+      await userEvent.keyboard("{ArrowRight}");
+      const usageTab = canvas.getByRole("tab", { name: "Usage" });
+      await expect(usageTab).toHaveFocus();
+
+      await userEvent.keyboard("{ArrowRight}");
+      const apiTab = canvas.getByRole("tab", { name: "API Reference" });
+      await expect(apiTab).toHaveFocus();
     });
   },
 };
