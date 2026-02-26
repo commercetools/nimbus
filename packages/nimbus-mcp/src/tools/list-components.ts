@@ -79,11 +79,11 @@ export function registerListComponents(server: McpServer): void {
           routes = routes.filter((r) => r.menu[1]?.toLowerCase() === needle);
         }
 
-        // Fuzzy search over title, description, and tags.
+        // Fuzzy search over title, description, tags, and exportName.
         // ignoreLocation allows matching anywhere in the string, not just prefix.
         if (query) {
           const fuse = new Fuse(routes, {
-            keys: ["title", "description", "tags"],
+            keys: ["title", "description", "tags", "exportName"],
             threshold: 0.6,
             ignoreLocation: true,
             minMatchCharLength: 3,
