@@ -1,7 +1,7 @@
 ---
-"@commercetools/nimbus": minor
+"@commercetools/nimbus": patch
 ---
 
-Add `shouldDelayOnClose` to Drawer component. When `true`, backdrop dismissal is
-disabled while Escape and close buttons still fire `onOpenChange(false)`,
-allowing close attempts to be intercepted for unsaved changes confirmation.
+Add documentation and story for intercepting Drawer close attempts using
+`isDismissable` with controlled mode, demonstrating the unsaved changes
+confirmation pattern.

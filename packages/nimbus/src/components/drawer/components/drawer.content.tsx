@@ -26,29 +26,23 @@ export const DrawerContent = (props: DrawerContentProps) => {
     isDismissable = true, // Default to true so clicking outside closes the drawer
     isKeyboardDismissDisabled,
     shouldCloseOnInteractOutside,
-    shouldDelayOnClose = false,
     isOpen,
     onOpenChange,
     defaultOpen,
   } = useDrawerRootContext();
-
-  // When shouldDelayOnClose is true, disable backdrop dismissal to prevent
-  // accidental close. Escape key and close buttons still fire onOpenChange(false),
-  // allowing the consumer to show confirmation before closing.
-  const effectiveIsDismissable = shouldDelayOnClose ? false : isDismissable;
 
   // When there's a Drawer.Trigger, DialogTrigger manages state via React Context
   // When there's NO Drawer.Trigger, ModalOverlay must manage its own state
   const modalProps = hasDrawerTrigger
     ? {
         // With trigger: Only pass dismissal props, state is managed by DialogTrigger
-        isDismissable: effectiveIsDismissable,
+        isDismissable,
         isKeyboardDismissDisabled,
         shouldCloseOnInteractOutside,
       }
     : {
         // Without trigger: Pass state management props to ModalOverlay
-        isDismissable: effectiveIsDismissable,
+        isDismissable,
         isKeyboardDismissDisabled,
         shouldCloseOnInteractOutside,
         isOpen,

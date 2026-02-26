@@ -253,9 +253,9 @@ const App = () => (
 - `isKeyboardDismissDisabled={false}`: Allow closing with Escape key (default: false)
 - Both can be combined for fine-grained control
 
-### Preventing accidental close with shouldDelayOnClose
+### Intercepting close for unsaved changes
 
-Use `shouldDelayOnClose` to prevent accidental closing when forms have unsaved changes. When enabled, backdrop click is disabled. Escape key and close buttons still fire `onOpenChange(false)`, allowing close attempts to be intercepted:
+Use `isDismissable={false}` with controlled mode to prevent accidental closing when forms have unsaved changes. Backdrop click is disabled, while Escape key and close buttons still fire `onOpenChange(false)`, allowing close attempts to be intercepted:
 
 ```jsx live-dev
 const App = () => {
@@ -282,7 +282,7 @@ const App = () => {
       <Drawer.Root
         isOpen={isOpen}
         onOpenChange={handleOpenChange}
-        shouldDelayOnClose={hasUnsavedChanges}
+        isDismissable={!hasUnsavedChanges}
         placement="right"
       >
         <Drawer.Content>
@@ -328,9 +328,9 @@ const App = () => {
 ```
 
 **Key behavior:**
-- `shouldDelayOnClose={true}`: Backdrop click is disabled. Escape and close buttons fire `onOpenChange(false)` which can be intercepted to show a confirmation dialog.
-- Requires controlled mode (`isOpen` + `onOpenChange`)
-- The drawer stays open as long as `isOpen` is not set to `false`
+- `isDismissable={false}`: Backdrop click is disabled. Escape and close buttons still fire `onOpenChange(false)` which can be intercepted to show a confirmation dialog.
+- Combine with controlled mode (`isOpen` + `onOpenChange`) to intercept close attempts
+- Toggle `isDismissable` dynamically based on form state (e.g. `isDismissable={!hasUnsavedChanges}`)
 
 ### Uncontrolled mode
 

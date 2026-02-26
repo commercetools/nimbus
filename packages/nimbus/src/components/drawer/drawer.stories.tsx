@@ -983,11 +983,12 @@ export const NestedDrawers: Story = {
 };
 
 /**
- * Drawer with shouldDelayOnClose prevents accidental closing when forms have
- * unsaved changes. Backdrop click is disabled. Escape key and close buttons
- * still fire onOpenChange(false), allowing the close attempt to be intercepted.
+ * Demonstrates intercepting close attempts for unsaved changes confirmation.
+ * Uses `isDismissable={false}` to disable backdrop click while Escape key
+ * and close buttons still fire `onOpenChange(false)`, which is intercepted
+ * to show a confirmation dialog before closing.
  */
-export const ShouldDelayOnClose: Story = {
+export const UnsavedChangesConfirmation: Story = {
   args: {},
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -1023,7 +1024,7 @@ export const ShouldDelayOnClose: Story = {
         <Drawer.Root
           isOpen={isOpen}
           onOpenChange={handleOpenChange}
-          shouldDelayOnClose={hasUnsavedChanges}
+          isDismissable={!hasUnsavedChanges}
           placement="right"
         >
           <Drawer.Content>
@@ -1071,7 +1072,7 @@ export const ShouldDelayOnClose: Story = {
                 )}
 
                 <Text>
-                  When <Code>shouldDelayOnClose</Code> is <Code>true</Code>,
+                  When <Code>isDismissable</Code> is <Code>false</Code>,
                   backdrop click is disabled. Escape key and close buttons still
                   fire <Code>onOpenChange(false)</Code>, which is intercepted to
                   show a confirmation dialog.
