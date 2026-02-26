@@ -126,7 +126,7 @@ const App = () => (
     <ComponentName size="md">Medium (default)</ComponentName>
     <ComponentName size="lg">Large</ComponentName>
   </Stack>
-)
+);
 ```
 ````
 
@@ -140,7 +140,7 @@ const App = () => (
     <ComponentName colorPalette="primary">Primary</ComponentName>
     <ComponentName colorPalette="critical">Critical</ComponentName>
   </Stack>
-)
+);
 ```
 
 ````

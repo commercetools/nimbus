@@ -69,14 +69,14 @@ import { Select as RaSelect } from "react-aria-components";
 
 ### When to Create Recipes/Slots
 
-| Scenario                                         | Create Recipe? | Recipe Type         |
-| ------------------------------------------------ | -------------- | ------------------- |
-| **New visual styling** (colors, spacing, layout) | ✅ Yes         | Depends on elements |
-| **Variants/sizes** needed                        | ✅ Yes         | Standard or Slot    |
-| **Single DOM element**                           | ✅ Yes         | Standard Recipe     |
-| **Multiple DOM elements**                        | ✅ Yes         | Slot Recipe         |
-| **Pure composition with existing styled components** | ❌ No      | Use existing styles |
-| **No new visual styling**                        | ❌ No          | No recipe needed    |
+| Scenario                                             | Create Recipe? | Recipe Type         |
+| ---------------------------------------------------- | -------------- | ------------------- |
+| **New visual styling** (colors, spacing, layout)     | ✅ Yes         | Depends on elements |
+| **Variants/sizes** needed                            | ✅ Yes         | Standard or Slot    |
+| **Single DOM element**                               | ✅ Yes         | Standard Recipe     |
+| **Multiple DOM elements**                            | ✅ Yes         | Slot Recipe         |
+| **Pure composition with existing styled components** | ❌ No          | Use existing styles |
+| **No new visual styling**                            | ❌ No          | No recipe needed    |
 
 ### Examples
 
@@ -156,15 +156,15 @@ export const Menu = {
 
 ### File Location Rules
 
-| File Type           | Location               | When                   |
-| ------------------- | ---------------------- | ---------------------- |
-| **Main component**  | Root (`component.tsx`) | Single component       |
-| **Main component**  | Root (exports only)    | Compound component     |
-| **Implementations** | `components/`          | Compound components    |
-| **Hooks**           | `hooks/`               | ALWAYS (never in root) |
-| **Context**         | Root (`{component}-context.tsx`) | State sharing needed |
-| **Utils**           | `utils/`               | Pure functions         |
-| **Constants**       | `constants/`           | Static values          |
+| File Type           | Location                         | When                   |
+| ------------------- | -------------------------------- | ---------------------- |
+| **Main component**  | Root (`component.tsx`)           | Single component       |
+| **Main component**  | Root (exports only)              | Compound component     |
+| **Implementations** | `components/`                    | Compound components    |
+| **Hooks**           | `hooks/`                         | ALWAYS (never in root) |
+| **Context**         | Root (`{component}-context.tsx`) | State sharing needed   |
+| **Utils**           | `utils/`                         | Pure functions         |
+| **Constants**       | `constants/`                     | Static values          |
 
 ## State Management Decisions
 
@@ -191,7 +191,7 @@ type Props = {
   value?: string; // Controlled
   defaultValue?: string; // Uncontrolled
   onChange?: (value: string) => void;
-}
+};
 ```
 
 ## Complexity Levels
@@ -359,7 +359,6 @@ export const AccordionRoot = (props: AccordionRootProps) => {
   );
 };
 ```
-
 
 ## Migration Strategies
 

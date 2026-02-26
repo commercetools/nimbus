@@ -4,7 +4,10 @@ import type {
   MenuProps as RaMenuProps,
 } from "react-aria-components";
 import type { ButtonProps } from "../button/button.types";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS

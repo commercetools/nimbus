@@ -8,7 +8,10 @@ import type {
   MenuSectionProps as RaMenuSectionProps,
   SubmenuTriggerProps as RaSubmenuTriggerProps,
 } from "react-aria-components";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================

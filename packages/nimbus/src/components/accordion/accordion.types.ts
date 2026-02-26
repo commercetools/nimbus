@@ -1,4 +1,7 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { ReactNode, Ref } from "react";
 import type {
   DisclosureGroupProps as RaDisclosureGroupProps,

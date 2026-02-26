@@ -1,4 +1,7 @@
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { ToggleButtonProps as RaToggleButtonProps } from "react-aria-components";
 import type { SemanticPalettesOnly } from "@/type-utils";
 

@@ -29,7 +29,10 @@ bridge React Aria components with the Nimbus styling system.
 
 ### MUST Use Explicit Return Type Annotations
 
-**All slot component exports MUST include explicit return type annotations** using the `SlotComponent<TElement, TProps>` utility type. This prevents TypeScript TS2742 errors during declaration file generation by avoiding inferred types that reference peer dependency internals.
+**All slot component exports MUST include explicit return type annotations**
+using the `SlotComponent<TElement, TProps>` utility type. This prevents
+TypeScript TS2742 errors during declaration file generation by avoiding inferred
+types that reference peer dependency internals.
 
 ### MUST Export Both Components AND Types
 
@@ -58,14 +61,21 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
 
 ## SlotComponent Utility Type
 
-The `SlotComponent<TElement, TProps>` utility type provides explicit return type annotations for slot components created with Chakra UI's `withProvider` and `withContext` HOCs.
+The `SlotComponent<TElement, TProps>` utility type provides explicit return type
+annotations for slot components created with Chakra UI's `withProvider` and
+`withContext` HOCs.
 
 **Why this is required:**
 
-- TypeScript infers return types for `withProvider`/`withContext` that reference Chakra's internal generated recipe types
-- These inferred types create non-portable references to `node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen`
-- During declaration file (`.d.ts`) generation, this causes TS2742 errors because the types reference peer dependency internals that won't exist in consumer projects
-- Explicit return type annotations using `SlotComponent` override the inference and create stable, portable types
+- TypeScript infers return types for `withProvider`/`withContext` that reference
+  Chakra's internal generated recipe types
+- These inferred types create non-portable references to
+  `node_modules/@chakra-ui/react/dist/types/styled-system/generated/recipes.gen`
+- During declaration file (`.d.ts`) generation, this causes TS2742 errors
+  because the types reference peer dependency internals that won't exist in
+  consumer projects
+- Explicit return type annotations using `SlotComponent` override the inference
+  and create stable, portable types
 
 **Type Definition:**
 
@@ -314,7 +324,8 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
 
 - [ ] Slot file exists with `.tsx` extension
 - [ ] **`SlotComponent` utility type imported** from `../utils/slot-types`
-- [ ] **All slot component exports have explicit return type annotations** using `SlotComponent<TElement, TProps>`
+- [ ] **All slot component exports have explicit return type annotations** using
+      `SlotComponent<TElement, TProps>`
 - [ ] **Slot components exported** (types can be in slots file or types file)
 - [ ] Types use `HTMLChakraProps` or appropriate interface
 - [ ] Naming follows appropriate pattern (see Naming Conventions table)

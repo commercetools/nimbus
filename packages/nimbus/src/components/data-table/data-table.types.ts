@@ -8,7 +8,10 @@ import type {
   CellProps as RaCellProps,
   Selection,
 } from "react-aria-components";
-import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  UnstyledProp,
+} from "@chakra-ui/react/styled-system";
 import type { UPDATE_ACTIONS } from "./constants";
 import type { OmitInternalProps } from "../../type-utils";
 

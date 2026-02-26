@@ -1,4 +1,7 @@
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { TextProps } from "../text/text";
 import type { ButtonProps } from "../button/button.types";
 import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
