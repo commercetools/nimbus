@@ -123,7 +123,6 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
               ? `/${baseRoute}`
               : `/${baseRoute}/${tab.key}`;
             return (
-              // @ts-expect-error - href on tab is not properly typed
               <Tabs.Tab flexGrow="1" href={href} key={tab.key} id={tab.key}>
                 {tab.title}
               </Tabs.Tab>

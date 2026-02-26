@@ -107,6 +107,11 @@ export type TabItemProps = {
    * Whether the tab item is disabled
    */
   isDisabled?: boolean;
+  /**
+   * A URL to link to when the tab is clicked. When provided, the tab renders
+   * as an anchor element instead of a button.
+   */
+  href?: string;
 };
 
 // ============================================================
@@ -141,6 +146,12 @@ export type TabProps = OmitInternalProps<TabsTabSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLButtonElement>;
   isDisabled?: boolean;
+  /**
+   * A URL to link to when the tab is clicked. When provided, the tab renders
+   * as an anchor element (`<a>`) instead of a button, enabling native browser
+   * navigation and router integration.
+   */
+  href?: string;
 };
 
 /**
