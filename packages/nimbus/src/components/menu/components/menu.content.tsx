@@ -13,6 +13,7 @@ export const MenuContent = ({
   children,
   placement: placementOverride,
   ref,
+  ...styleProps
 }: MenuContentProps) => {
   const contextProps = useMenuContext();
 
@@ -26,7 +27,7 @@ export const MenuContent = ({
 
   return (
     <MenuSectionProvider value={{ selectionMode: menuProps.selectionMode }}>
-      <MenuPopoverSlot asChild>
+      <MenuPopoverSlot {...styleProps} asChild>
         <Popover placement={finalPlacement} offset={4} shouldFlip>
           <MenuContentSlot asChild>
             <Menu ref={ref} shouldFocusWrap autoFocus="first" {...menuProps}>
