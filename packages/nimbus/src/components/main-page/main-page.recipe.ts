@@ -6,7 +6,15 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * optional footer areas.
  */
 export const mainPageRecipe = defineSlotRecipe({
-  slots: ["root", "header", "title", "actions", "content", "footer"],
+  slots: [
+    "root",
+    "header",
+    "title",
+    "subtitle",
+    "actions",
+    "content",
+    "footer",
+  ],
 
   className: "nimbus-main-page",
 
@@ -19,8 +27,8 @@ export const mainPageRecipe = defineSlotRecipe({
       width: "100%",
     },
     header: {
-      display: "flex",
-      justifyContent: "space-between",
+      display: "grid",
+      gridTemplateColumns: "1fr auto",
       alignItems: "center",
       paddingX: "600",
       paddingY: "400",
@@ -28,17 +36,28 @@ export const mainPageRecipe = defineSlotRecipe({
       borderColor: "neutral.6",
     },
     title: {
-      display: "flex",
-      alignItems: "center",
+      fontSize: "500",
+      fontWeight: "600",
+      lineHeight: "tight",
+      color: "neutral.12",
+    },
+    subtitle: {
+      fontSize: "250",
+      color: "neutral.11",
     },
     actions: {
       display: "flex",
       alignItems: "center",
       gap: "200",
+      gridColumn: "2",
+      gridRow: "1 / -1",
     },
     content: {
-      overflowY: "auto",
-      paddingY: "600",
+      overflow: "auto",
+      // Uses margin (not padding) to preserve sticky positioning
+      // for child components like DataTable, matching appKit behavior.
+      marginX: "600",
+      marginY: "600",
     },
     footer: {
       borderTop: "solid-25",

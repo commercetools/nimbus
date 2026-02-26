@@ -1,6 +1,4 @@
 import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
-import type { HeadingRootSlotProps } from "../heading/heading.types";
-import type { PageContentProps } from "../page-content/page-content.types";
 
 // ============================================================
 // RECIPE PROPS
@@ -18,6 +16,8 @@ export type MainPageHeaderSlotProps = HTMLChakraProps<"header">;
 
 export type MainPageTitleSlotProps = HTMLChakraProps<"h1">;
 
+export type MainPageSubtitleSlotProps = HTMLChakraProps<"p">;
+
 export type MainPageActionsSlotProps = HTMLChakraProps<"div">;
 
 export type MainPageContentSlotProps = HTMLChakraProps<"main">;
@@ -28,45 +28,54 @@ export type MainPageFooterSlotProps = HTMLChakraProps<"footer">;
 // MAIN PROPS
 // ============================================================
 
-export type MainPageProps = MainPageRootSlotProps & {
+export type MainPageRootProps = MainPageRootSlotProps & {
   /** The page sections (Header, Content, Footer) */
   children?: React.ReactNode;
+  /** Ref to the root div element */
   ref?: React.Ref<HTMLDivElement>;
-  [key: `data-${string}`]: unknown;
 };
+
+/** Convenience alias for MainPageRootProps */
+export type MainPageProps = MainPageRootProps;
 
 export type MainPageHeaderProps = MainPageHeaderSlotProps & {
   /** The header content (Title and/or Actions) */
   children?: React.ReactNode;
+  /** Ref to the header element */
   ref?: React.Ref<HTMLElement>;
 };
 
-export type MainPageTitleProps = Omit<HeadingRootSlotProps, "children"> & {
-  /** The page title text */
-  title: React.ReactNode;
-  /** Optional subtitle displayed below the title in secondary text */
-  subtitle?: React.ReactNode;
+export type MainPageTitleProps = MainPageTitleSlotProps & {
+  /** The page title content */
+  children?: React.ReactNode;
+  /** Ref to the heading element */
   ref?: React.Ref<HTMLHeadingElement>;
+};
+
+export type MainPageSubtitleProps = MainPageSubtitleSlotProps & {
+  /** The subtitle content */
+  children?: React.ReactNode;
+  /** Ref to the paragraph element */
+  ref?: React.Ref<HTMLParagraphElement>;
 };
 
 export type MainPageActionsProps = MainPageActionsSlotProps & {
   /** Action buttons or controls */
   children?: React.ReactNode;
+  /** Ref to the actions container element */
   ref?: React.Ref<HTMLDivElement>;
 };
 
-export type MainPageContentProps = Omit<MainPageContentSlotProps, "asChild"> & {
+export type MainPageContentProps = MainPageContentSlotProps & {
   /** The main page content */
   children?: React.ReactNode;
+  /** Ref to the main content element */
   ref?: React.Ref<HTMLElement>;
-  /** Width constraint variant forwarded to PageContent.Root */
-  variant?: PageContentProps["variant"];
-  /** Column layout pattern forwarded to PageContent.Root */
-  columns?: PageContentProps["columns"];
 };
 
 export type MainPageFooterProps = MainPageFooterSlotProps & {
   /** Footer content (e.g., FormActionBar or custom buttons) */
   children?: React.ReactNode;
+  /** Ref to the footer element */
   ref?: React.Ref<HTMLElement>;
 };

@@ -1,30 +1,21 @@
-import { Heading } from "../../heading/heading";
-import { Text } from "../../text/text";
+import { MainPageTitleSlot } from "../main-page.slots";
 import type { MainPageTitleProps } from "../main-page.types";
 
 /**
- * MainPage.Title - The page title area with heading and optional subtitle.
- * Uses the Nimbus Heading component internally for consistent typography
- * matching the AppKit page title styling.
+ * MainPage.Title - The page title rendered as an h1. Accepts children
+ * for full flexibility — pass a string for simple titles or custom
+ * JSX for advanced use cases.
  *
  * @supportsStyleProps
  */
 export const MainPageTitle = ({
   ref,
-  title,
-  subtitle,
+  children,
   ...props
 }: MainPageTitleProps) => (
-  <div ref={ref as React.Ref<HTMLDivElement>}>
-    <Heading as="h1" {...props}>
-      {title}
-    </Heading>
-    {subtitle && (
-      <Text color="neutral.11" textStyle="sm">
-        {subtitle}
-      </Text>
-    )}
-  </div>
+  <MainPageTitleSlot ref={ref} {...props}>
+    {children}
+  </MainPageTitleSlot>
 );
 
 MainPageTitle.displayName = "MainPage.Title";

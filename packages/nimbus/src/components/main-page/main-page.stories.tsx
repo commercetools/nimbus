@@ -12,6 +12,10 @@ import { within, expect } from "storybook/test";
 const meta: Meta<typeof MainPage.Root> = {
   title: "Components/MainPage",
   component: MainPage.Root,
+  parameters: {
+    layout: "fullscreen",
+  },
+  tags: ["autodocs"],
 };
 
 export default meta;
@@ -24,40 +28,30 @@ type Story = StoryObj<typeof MainPage.Root>;
  */
 export const Base: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="main-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Products" />
+        <MainPage.Title>Products</MainPage.Title>
       </MainPage.Header>
-      <MainPage.Content variant="wide">
+      <MainPage.Content>
         <Text>Page content goes here.</Text>
       </MainPage.Content>
     </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("main-page");
-
-    await step("Root renders as a <div>", async () => {
-      await expect(root.tagName).toBe("DIV");
-    });
 
     await step("Header renders as semantic <header>", async () => {
-      await expect(root.querySelector("header")).not.toBeNull();
+      await expect(canvas.getByRole("banner")).toBeInTheDocument();
     });
 
     await step("Title renders as <h1> with correct text", async () => {
-      const h1 = root.querySelector("h1");
-      await expect(h1).not.toBeNull();
-      await expect(h1).toHaveTextContent("Products");
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
+        "Products"
+      );
     });
 
     await step("Content renders as semantic <main>", async () => {
-      await expect(root.querySelector("main")).not.toBeNull();
+      await expect(canvas.getByRole("main")).toBeInTheDocument();
     });
 
     await step("Content children are rendered", async () => {
@@ -67,41 +61,33 @@ export const Base: Story = {
     });
 
     await step("Footer is absent when not composed", async () => {
-      await expect(root.querySelector("footer")).toBeNull();
+      await expect(canvas.queryByRole("contentinfo")).not.toBeInTheDocument();
     });
   },
 };
 
 /**
- * Title with subtitle prop renders heading and secondary text.
+ * Title with Subtitle renders heading and secondary text.
  */
 export const TitleWithSubtitle: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="subtitle-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title
-          title="Products"
-          subtitle="Manage your product catalog"
-        />
+        <MainPage.Title>Products</MainPage.Title>
+        <MainPage.Subtitle>Manage your product catalog</MainPage.Subtitle>
       </MainPage.Header>
-      <MainPage.Content variant="wide">
+      <MainPage.Content>
         <Text>Content area</Text>
       </MainPage.Content>
     </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("subtitle-page");
 
     await step("Title renders as <h1>", async () => {
-      const h1 = root.querySelector("h1");
-      await expect(h1).not.toBeNull();
-      await expect(h1).toHaveTextContent("Products");
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
+        "Products"
+      );
     });
 
     await step("Subtitle text is rendered", async () => {
@@ -110,9 +96,9 @@ export const TitleWithSubtitle: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Subtitle is not a heading element", async () => {
-      const headings = root.querySelectorAll("h1, h2, h3, h4, h5, h6");
-      await expect(headings.length).toBe(1);
+    await step("Subtitle renders as a <p> element", async () => {
+      const subtitle = canvas.getByText("Manage your product catalog");
+      await expect(subtitle.tagName).toBe("P");
     });
   },
 };
@@ -122,30 +108,27 @@ export const TitleWithSubtitle: Story = {
  */
 export const TitleWithoutSubtitle: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="no-subtitle-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Settings" />
+        <MainPage.Title>Settings</MainPage.Title>
       </MainPage.Header>
-      <MainPage.Content variant="narrow">
+      <MainPage.Content>
         <Text>Content area</Text>
       </MainPage.Content>
     </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
-    const root = within(canvasElement).getByTestId("no-subtitle-page");
+    const canvas = within(canvasElement);
 
     await step("Title renders as <h1>", async () => {
-      await expect(root.querySelector("h1")).toHaveTextContent("Settings");
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
+        "Settings"
+      );
     });
 
-    await step("No subtitle element is rendered", async () => {
-      const h1 = root.querySelector("h1")!;
-      await expect(h1.parentElement!.children.length).toBe(1);
+    await step("No <p> subtitle element is rendered in header", async () => {
+      const header = canvas.getByRole("banner");
+      await expect(header.querySelector("p")).toBeNull();
     });
   },
 };
@@ -155,37 +138,39 @@ export const TitleWithoutSubtitle: Story = {
  */
 export const HeaderActions: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="actions-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Products" />
+        <MainPage.Title>Products</MainPage.Title>
         <MainPage.Actions>
           <Button variant="ghost">Export</Button>
           <Button>Add Product</Button>
         </MainPage.Actions>
       </MainPage.Header>
-      <MainPage.Content variant="wide">
+      <MainPage.Content>
         <Text>Content area</Text>
       </MainPage.Content>
     </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("actions-page");
 
     await step("Action buttons are rendered", async () => {
-      await expect(canvas.getByText("Export")).toBeInTheDocument();
-      await expect(canvas.getByText("Add Product")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: "Export" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: "Add Product" })
+      ).toBeInTheDocument();
     });
 
     await step("Actions are inside the <header>", async () => {
-      const header = root.querySelector("header")!;
-      await expect(within(header).getByText("Export")).toBeInTheDocument();
-      await expect(within(header).getByText("Add Product")).toBeInTheDocument();
+      const header = canvas.getByRole("banner");
+      await expect(
+        within(header).getByRole("button", { name: "Export" })
+      ).toBeInTheDocument();
+      await expect(
+        within(header).getByRole("button", { name: "Add Product" })
+      ).toBeInTheDocument();
     });
   },
 };
@@ -195,16 +180,11 @@ export const HeaderActions: Story = {
  */
 export const WithFooter: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="footer-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Project Settings" />
+        <MainPage.Title>Project Settings</MainPage.Title>
       </MainPage.Header>
-      <MainPage.Content variant="narrow">
+      <MainPage.Content>
         <Stack gap="400">
           <Box bg="neutral.3" padding="400" borderRadius="200">
             <Text>Project name field</Text>
@@ -224,67 +204,26 @@ export const WithFooter: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("footer-page");
 
     await step("Footer renders as semantic <footer>", async () => {
-      await expect(root.querySelector("footer")).not.toBeNull();
+      await expect(canvas.getByRole("contentinfo")).toBeInTheDocument();
     });
 
     await step("Footer children are rendered inside <footer>", async () => {
-      const footer = root.querySelector("footer")!;
-      await expect(within(footer).getByText("Cancel")).toBeInTheDocument();
-      await expect(within(footer).getByText("Save")).toBeInTheDocument();
+      const footer = canvas.getByRole("contentinfo");
+      await expect(
+        within(footer).getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      await expect(
+        within(footer).getByRole("button", { name: "Save" })
+      ).toBeInTheDocument();
     });
 
     await step("Footer buttons are not in the header", async () => {
-      const header = root.querySelector("header")!;
-      expect(within(header).queryByText("Save")).toBeNull();
-    });
-  },
-};
-
-/**
- * Content with columns prop renders MainPage.Column children in a grid.
- */
-export const MultiColumnContent: Story = {
-  render: () => (
-    <MainPage.Root
-      data-testid="multi-column-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
-      <MainPage.Header>
-        <MainPage.Title title="Product Editor" />
-      </MainPage.Header>
-      <MainPage.Content variant="wide" columns="2/1">
-        <MainPage.Column>
-          <Box bg="blue.3" padding="600" borderRadius="200">
-            <Text fontWeight="bold" color="blue.12">
-              Main form content (2fr)
-            </Text>
-          </Box>
-        </MainPage.Column>
-        <MainPage.Column>
-          <Box bg="purple.3" padding="600" borderRadius="200">
-            <Text fontWeight="bold" color="purple.12">
-              Sidebar metadata (1fr)
-            </Text>
-          </Box>
-        </MainPage.Column>
-      </MainPage.Content>
-    </MainPage.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Both column children are rendered", async () => {
+      const header = canvas.getByRole("banner");
       await expect(
-        canvas.getByText("Main form content (2fr)")
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByText("Sidebar metadata (1fr)")
-      ).toBeInTheDocument();
+        within(header).queryByRole("button", { name: "Save" })
+      ).not.toBeInTheDocument();
     });
   },
 };
@@ -294,20 +233,15 @@ export const MultiColumnContent: Story = {
  */
 export const InfoPage: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="info-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Products" />
+        <MainPage.Title>Products</MainPage.Title>
         <MainPage.Actions>
           <Button variant="ghost">Export</Button>
           <Button>Add Product</Button>
         </MainPage.Actions>
       </MainPage.Header>
-      <MainPage.Content variant="wide">
+      <MainPage.Content>
         <Box bg="neutral.3" padding="600" borderRadius="200">
           <Text fontWeight="bold">Product list table would go here</Text>
         </Box>
@@ -316,16 +250,21 @@ export const InfoPage: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("info-page");
 
     await step("Title is rendered", async () => {
-      await expect(root.querySelector("h1")).toHaveTextContent("Products");
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
+        "Products"
+      );
     });
 
     await step("Actions are rendered in header", async () => {
-      const header = root.querySelector("header")!;
-      await expect(within(header).getByText("Export")).toBeInTheDocument();
-      await expect(within(header).getByText("Add Product")).toBeInTheDocument();
+      const header = canvas.getByRole("banner");
+      await expect(
+        within(header).getByRole("button", { name: "Export" })
+      ).toBeInTheDocument();
+      await expect(
+        within(header).getByRole("button", { name: "Add Product" })
+      ).toBeInTheDocument();
     });
 
     await step("Content is rendered", async () => {
@@ -335,7 +274,7 @@ export const InfoPage: Story = {
     });
 
     await step("No footer is rendered", async () => {
-      await expect(root.querySelector("footer")).toBeNull();
+      await expect(canvas.queryByRole("contentinfo")).not.toBeInTheDocument();
     });
   },
 };
@@ -345,16 +284,11 @@ export const InfoPage: Story = {
  */
 export const FormPage: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="form-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Project Settings" />
+        <MainPage.Title>Project Settings</MainPage.Title>
       </MainPage.Header>
-      <MainPage.Content variant="narrow">
+      <MainPage.Content>
         <Stack gap="400">
           <Box bg="neutral.3" padding="400" borderRadius="200">
             <Text>Project name field</Text>
@@ -377,10 +311,9 @@ export const FormPage: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("form-page");
 
     await step("Title is rendered", async () => {
-      await expect(root.querySelector("h1")).toHaveTextContent(
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
         "Project Settings"
       );
     });
@@ -395,11 +328,14 @@ export const FormPage: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Footer renders as <footer> with buttons", async () => {
-      const footer = root.querySelector("footer")!;
-      await expect(footer).not.toBeNull();
-      await expect(within(footer).getByText("Cancel")).toBeInTheDocument();
-      await expect(within(footer).getByText("Save")).toBeInTheDocument();
+    await step("Footer renders with buttons", async () => {
+      const footer = canvas.getByRole("contentinfo");
+      await expect(
+        within(footer).getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      await expect(
+        within(footer).getByRole("button", { name: "Save" })
+      ).toBeInTheDocument();
     });
   },
 };
@@ -409,19 +345,14 @@ export const FormPage: Story = {
  */
 export const TabularPage: Story = {
   render: () => (
-    <MainPage.Root
-      data-testid="tabular-page"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
       <MainPage.Header>
-        <MainPage.Title title="Product Details" />
+        <MainPage.Title>Product Details</MainPage.Title>
         <MainPage.Actions>
           <Button>Publish</Button>
         </MainPage.Actions>
       </MainPage.Header>
-      <MainPage.Content variant="wide">
+      <MainPage.Content>
         <Tabs.Root defaultSelectedKey="general">
           <Tabs.List>
             <Tabs.Tab id="general">General</Tabs.Tab>
@@ -451,23 +382,30 @@ export const TabularPage: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("tabular-page");
 
     await step("Title is rendered", async () => {
-      await expect(root.querySelector("h1")).toHaveTextContent(
+      await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
         "Product Details"
       );
     });
 
     await step("Actions are rendered in header", async () => {
-      const header = root.querySelector("header")!;
-      await expect(within(header).getByText("Publish")).toBeInTheDocument();
+      const header = canvas.getByRole("banner");
+      await expect(
+        within(header).getByRole("button", { name: "Publish" })
+      ).toBeInTheDocument();
     });
 
     await step("Content renders Tabs children", async () => {
-      await expect(canvas.getByText("General")).toBeInTheDocument();
-      await expect(canvas.getByText("Variants")).toBeInTheDocument();
-      await expect(canvas.getByText("Images")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "General" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Variants" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("tab", { name: "Images" })
+      ).toBeInTheDocument();
     });
 
     await step("Active tab panel content is visible", async () => {
