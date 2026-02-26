@@ -22,8 +22,6 @@ const SECTION_KEYS = [
   "recipe",
 ] as const;
 
-type SectionKey = (typeof SECTION_KEYS)[number];
-
 /**
  * Maps our canonical section keys to the view keys used in the route JSON.
  * "props" and "recipe" are synthesised from type/recipe data, not from views.
@@ -143,10 +141,7 @@ async function resolveComponent(
   return manifest.routes
     .filter((r) => r.category === "Components" && r.menu.length === 3)
     .find((r) => {
-      const exportName = (r as Record<string, unknown>).exportName as
-        | string
-        | undefined;
-      if (exportName?.toLowerCase() === needle) return true;
+      if (r.exportName?.toLowerCase() === needle) return true;
       if (r.title.toLowerCase() === needle) return true;
       // Match against the name portion after "Components-"
       const idName = r.id.replace(/^Components-/, "");
@@ -187,10 +182,7 @@ function buildMetadataResponse(
     sections: availableSections,
   };
 
-  const exportName = (entry as Record<string, unknown>).exportName as
-    | string
-    | undefined;
-  if (exportName) meta.exportName = exportName;
+  if (entry.exportName) meta.exportName = entry.exportName;
 
   const subcategory = entry.menu[1];
   if (subcategory) meta.subcategory = subcategory;
@@ -283,9 +275,7 @@ export function registerGetComponent(server: McpServer): void {
 
         // Section: props
         if (section === "props") {
-          const exportName =
-            ((entry as Record<string, unknown>).exportName as string) ??
-            entry.title;
+          const exportName = entry.exportName ?? entry.title;
           try {
             const typeData = await getTypeData(exportName);
             const filtered = filterProps(typeData);
@@ -320,9 +310,7 @@ export function registerGetComponent(server: McpServer): void {
 
         // Section: recipe
         if (section === "recipe") {
-          const exportName =
-            ((entry as Record<string, unknown>).exportName as string) ??
-            entry.title;
+          const exportName = entry.exportName ?? entry.title;
           try {
             const typeData = await getTypeData(exportName);
             const recipe = extractRecipeFromTypes(typeData);
