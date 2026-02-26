@@ -9,6 +9,7 @@ interface ComponentSummary {
   title: string;
   description: string;
   path: string;
+  exportName?: string;
   subcategory?: string;
   tags?: string[];
 }
@@ -21,6 +22,8 @@ function toSummary(route: RouteManifestEntry): ComponentSummary {
     description: route.description,
     path: route.path,
   };
+
+  if (route.exportName) summary.exportName = route.exportName;
 
   // menu[1] is the subcategory (e.g. "Inputs", "Buttons")
   const subcategory = route.menu[1];
