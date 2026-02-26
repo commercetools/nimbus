@@ -135,11 +135,38 @@ const App = () => (
 
 ## Accessibility
 
-- `DetailPage.Title` renders as an `h1` element, ensuring proper heading hierarchy
-- `DetailPage.BackLink` renders as a semantic `<a>` element with proper navigation
+The DetailPage component follows WCAG 2.1 AA guidelines by using semantic HTML landmarks and proper heading hierarchy.
+
+#### Landmark roles
+
 - `DetailPage.Header` uses the `<header>` landmark element
 - `DetailPage.Content` uses the `<main>` landmark element
-- `DetailPage.Footer` uses the `<footer>` landmark element
+- `DetailPage.Footer` uses the `<footer>` landmark (`contentinfo`) element
+- `DetailPage.Title` renders as an `<h1>` element, ensuring proper heading hierarchy
+- `DetailPage.BackLink` renders as a semantic `<a>` element with an `aria-label` defaulting to "Go back"
+
+#### Labeling
+
+- `DetailPage.BackLink` receives a default `aria-label` of "Go back" via i18n. Override with a custom `aria-label` when the destination context is important (e.g. `aria-label="Back to products"`).
+- When composing with `Tabs`, provide an `aria-label` on `Tabs.List` to describe the tab group for screen readers.
+
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between interactive elements (back link, tabs, content, footer actions) |
+| `Shift + Tab` | Move focus in reverse order |
+| `Enter` / `Space` | Activate the focused link or button |
+
+#### Screen reader behavior
+
+| Element | Role | Announced as |
+|---------|------|--------------|
+| `DetailPage.Header` | `banner` | "banner" landmark |
+| `DetailPage.BackLink` | `link` | Link with aria-label (e.g. "Go back" or custom label) |
+| `DetailPage.Title` | `heading` (level 1) | "Product Details, heading level 1" |
+| `DetailPage.Content` | `main` | "main" landmark |
+| `DetailPage.Footer` | `contentinfo` | "contentinfo" landmark |
 
 ## API reference
 
