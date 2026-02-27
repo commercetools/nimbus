@@ -4,7 +4,7 @@ packages:
 
 catalog:
   '@internationalized/string-compiler': ^3.3.0
-  '@github-ui/storybook-addon-performance-panel': ^1.0.0
+  '@github-ui/storybook-addon-performance-panel': ^1.1.4
 
 catalogMode: strict
 
