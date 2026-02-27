@@ -15,7 +15,13 @@
       "@commercetools/nimbus-design-token-ts-plugin"
     ]
   ],
-  "ignore": ["@commercetools/nimbus-i18n", "color-tokens", "blank-app", "docs"],
+  "ignore": [
+    "@commercetools/nimbus-i18n",
+    "color-tokens",
+    "blank-app",
+    "docs",
+    "nimbus-mcp"
+  ],
   "access": "restricted",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false,
