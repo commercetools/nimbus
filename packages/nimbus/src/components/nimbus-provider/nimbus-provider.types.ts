@@ -114,4 +114,9 @@ export type NimbusProviderProps = ColorModeProviderProps & {
    * - `useHref`: Optional function to transform hrefs (useful for base paths)
    */
   router?: NimbusRouterConfig | TypedNimbusRouterConfig;
+  /**
+   * Load Inter font from Google Fonts. Set to false if fonts are loaded by host application.
+   * @default true
+   */
+  loadFonts?: boolean;
 };

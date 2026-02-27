@@ -14,10 +14,32 @@ import { ToastOutlet } from "@/components/toast/components/toast.outlet";
 const ToastOutletMountedContext = createContext(false);
 
 /**
+ * Internal component that loads Inter font from Google Fonts.
+ * React 19 automatically hoists these link tags to the document head.
+ */
+function InterFontLoader() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+        data-nimbus-fonts=""
+        precedence="default"
+      />
+    </>
+  );
+}
+
+/**
  * # NimbusProvider
  *
  * Provides an environment for the rest of the components to work in.
  * Components use `useLocale()` from `react-aria-components` to get the locale.
+ *
+ * By default, loads Inter font from Google Fonts. Set `loadFonts={false}` if your
+ * application already loads fonts.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/utilities/nimbusprovider}
  */
@@ -25,22 +47,26 @@ export function NimbusProvider({
   children,
   locale,
   router,
+  loadFonts = true,
   ...props
 }: NimbusProviderProps) {
   const hasToastOutlet = useContext(ToastOutletMountedContext);
 
   // Inner content with all the existing providers
   const content = (
-    <ChakraProvider value={system}>
-      <NimbusColorModeProvider enableSystem={false} {...props}>
-        <NimbusI18nProvider locale={locale}>
-          <ToastOutletMountedContext.Provider value={true}>
-            {children}
-            {!hasToastOutlet && <ToastOutlet />}
-          </ToastOutletMountedContext.Provider>
-        </NimbusI18nProvider>
-      </NimbusColorModeProvider>
-    </ChakraProvider>
+    <>
+      {loadFonts && <InterFontLoader />}
+      <ChakraProvider value={system}>
+        <NimbusColorModeProvider enableSystem={false} {...props}>
+          <NimbusI18nProvider locale={locale}>
+            <ToastOutletMountedContext.Provider value={true}>
+              {children}
+              {!hasToastOutlet && <ToastOutlet />}
+            </ToastOutletMountedContext.Provider>
+          </NimbusI18nProvider>
+        </NimbusColorModeProvider>
+      </ChakraProvider>
+    </>
   );
 
   // If router config is provided, wrap with RouterProvider for client-side routing

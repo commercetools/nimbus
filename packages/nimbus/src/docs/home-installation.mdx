@@ -169,6 +169,45 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
+### Font Loading
+
+By default, `NimbusProvider` automatically loads the Inter font family from Google Fonts. This ensures consistent typography across all Nimbus components.
+
+```tsx
+// Default behavior - fonts are loaded automatically
+<NimbusProvider>
+  <App />
+</NimbusProvider>
+```
+
+> [!WARNING]
+> **Existing Applications**: If your application already loads Inter fonts (e.g., via global stylesheets, CDN links, or font files), you **must** set `loadFonts={false}` to prevent duplicate font loading, which can cause performance regressions.
+
+```tsx
+// Disable font loading if your app already loads fonts
+<NimbusProvider loadFonts={false}>
+  <App />
+</NimbusProvider>
+```
+
+**Check for existing font loading:**
+
+Search your codebase for existing Inter font imports:
+- `<link>` tags in your HTML pointing to Google Fonts
+- `@import` statements in CSS files
+- `@font-face` declarations
+- Font files in your assets directory
+
+**When to use `loadFonts={false}`:**
+- ✅ Your application already loads Inter fonts globally
+- ✅ You're using a custom font or brand-specific typography
+- ✅ You're migrating an existing application to Nimbus
+
+**When to use the default (`loadFonts={true}`):**
+- ✅ New applications without existing font loading
+- ✅ You want Nimbus to handle all font requirements
+- ✅ You're building a standalone app or prototype
+
 > [!NOTE]\
 > Checkout the [NimbusProvider documentation](/components/utilities/nimbusprovider)
 > for more details on how to set up **i18n** and **routing**.

@@ -69,6 +69,57 @@ export default function App() {
 **Fallback behavior:**
 If no locale is provided, NimbusProvider uses `navigator.language`. If the detected locale is not available, it falls back to English.
 
+### Font loading (Inter)
+
+By default, NimbusProvider automatically loads the Inter font family from Google Fonts CSS API v2 with optimal settings for performance:
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+export default function App() {
+  return (
+    <NimbusProvider>
+      {/* Inter font loads automatically */}
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+**Default behavior:**
+- Loads Inter with all 9 weights (100-900) to match Nimbus design tokens
+- Uses `display=swap` to minimize FOUT (Flash of Unstyled Text)
+- Includes preconnect links to Google Fonts origins for optimal performance
+- Gracefully falls back to system fonts if Google Fonts is unavailable
+- Automatically deduplicated across multiple provider instances
+
+**Disabling font loading:**
+
+If your application already loads the Inter font (e.g., via a separate stylesheet or Merchant Center/app-kit), set `loadFonts={false}` to avoid duplicate loading:
+
+```tsx
+import { NimbusProvider } from '@commercetools/nimbus';
+
+export default function App() {
+  return (
+    <NimbusProvider loadFonts={false}>
+      {/* Fonts loaded by host application */}
+      <YourApp />
+    </NimbusProvider>
+  );
+}
+```
+
+**When to disable font loading:**
+- Your application already loads Inter font globally
+- You're using Nimbus within Merchant Center (app-kit loads fonts)
+- You want to self-host fonts instead of using Google Fonts
+- You're using a different font family (not recommended for visual consistency)
+
+**Multiple NimbusProvider instances:**
+
+If you have nested or multiple providers on the same page, fonts are automatically deduplicated - only one set of font links is injected regardless of how many providers are rendered.
+
 ### Color mode configuration
 
 NimbusProvider integrates with `next-themes` for color mode management. Configure color mode behavior through props inherited from `ThemeProviderProps`:
@@ -518,7 +569,109 @@ function CustomLink({ href, children }) {
 
 **Note:** Most Nimbus components handle routing automatically. You typically don't need to access router context directly.
 
+## Migration guides
+
+### Merchant Center integration
+
+> [!WARNING]
+> **Action Required for Merchant Center Applications**
+>
+> If you're using Nimbus within Merchant Center or any application where app-kit/ui-kit already loads the Inter font, you **must** add `loadFonts={false}` to prevent duplicate font loading and performance regressions.
+
+**Before (causes duplicate font loading):**
+```tsx
+<NimbusProvider locale={locale} router={router}>
+  <App />
+</NimbusProvider>
+```
+
+**After (prevents duplicates):**
+```tsx
+<NimbusProvider locale={locale} router={router} loadFonts={false}>
+  <App />
+</NimbusProvider>
+```
+
+**Impact of not updating:**
+- Duplicate network requests for Inter font files (performance regression)
+- Increased page load time due to redundant font downloads
+- Potential FOUT (Flash of Unstyled Text) issues
+- Unnecessary bandwidth consumption for users
+
+**How to verify fonts are loaded:**
+
+Open your browser's DevTools and check the Network tab:
+1. Filter by "fonts" or search for "googleapis"
+2. If you see Inter font requests from Google Fonts, fonts are being loaded
+3. If `loadFonts={false}` is set, no Google Fonts requests should appear
+4. Check the Elements tab → `<head>` for `<link rel="stylesheet" data-nimbus-fonts>` - this link should not exist when disabled
+
+**Testing:**
+
+After adding `loadFonts={false}`:
+1. Verify no duplicate font network requests in DevTools
+2. Run visual regression tests to ensure fonts still render correctly
+3. Confirm Inter font is visible in the computed styles (DevTools → Elements → Computed)
+
+### Upgrading from previous Nimbus versions
+
+If you're upgrading from a version before font loading was added:
+
+**No action required for most applications:**
+- Fonts will automatically load with default behavior
+- Existing applications will work without changes
+
+**Action required for Merchant Center:**
+- Add `loadFonts={false}` to prevent duplicate font loading
+- See "Merchant Center integration" above for details
+
+**If you experience issues:**
+- Font flash (FOUT): This is expected with Google Fonts; minimize by preloading
+- Multiple font loads: Check for multiple NimbusProvider instances or conflicting font loaders
+- See "Troubleshooting" section below for common issues
+
 ## Troubleshooting
+
+### Fonts not loading
+
+**Issue:** Text renders in system fonts instead of Inter.
+
+**Solution:**
+1. Verify `loadFonts` is not explicitly set to `false`
+2. Check browser DevTools Network tab for Google Fonts requests
+3. Look for `<link data-nimbus-fonts>` in document head
+4. Verify Google Fonts is not blocked by ad blockers or CSP policies
+5. Check that the fallback font stack includes Inter:
+   ```css
+   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+   ```
+
+### Duplicate font loading
+
+**Issue:** Multiple font requests or warnings about duplicate stylesheet links.
+
+**Solution:**
+1. Check for multiple NimbusProvider instances on the same page
+2. If using Merchant Center/app-kit, set `loadFonts={false}` on all providers
+3. Verify no manual `<link>` tags for Google Fonts in your HTML
+4. Check that only one version of Nimbus is installed (`npm ls @commercetools/nimbus`)
+
+**Note:** Built-in deduplication prevents duplicate injection from multiple providers, but manual font loading elsewhere needs to be managed.
+
+### Font flash (FOUT)
+
+**Issue:** Brief flash of system font before Inter loads.
+
+**Explanation:** This is expected behavior with web fonts. The `display=swap` strategy shows text immediately with fallback fonts, then swaps to Inter when loaded.
+
+**Mitigation strategies:**
+1. Accept FOUT as expected behavior (preferred - better UX than invisible text)
+2. Preload fonts in document head (reduces flash duration):
+   ```html
+   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+   ```
+3. Use a font loading library to add custom loading states
+4. Self-host fonts for faster loading (requires disabling Google Fonts)
 
 ### Missing provider error
 

@@ -71,6 +71,32 @@ Configure client-side routing to enable navigation for interactive Nimbus compon
 </NimbusProvider>
 ```
 
+### Font loading
+
+By default, `NimbusProvider` automatically loads the Inter font family from Google Fonts to ensure consistent typography across all Nimbus components.
+
+```tsx
+// Default behavior - fonts are loaded automatically
+<NimbusProvider>
+  <YourApp />
+</NimbusProvider>
+```
+
+If your application already loads Inter fonts (e.g., via global stylesheets, CDN links, or font files), set `loadFonts={false}` to prevent duplicate font loading and potential performance issues:
+
+```tsx
+<NimbusProvider loadFonts={false}>
+  <YourApp />
+</NimbusProvider>
+```
+
+**When to disable font loading:**
+- Your application already loads Inter fonts globally
+- You're using a custom font or brand-specific typography
+- You're migrating an existing application that manages fonts independently
+
+**Performance consideration:** Loading fonts twice can cause unnecessary network requests and slower page loads. Always check if your application already loads Inter before deploying a Nimbus update.
+
 ### Theme
 
 Control color mode (light/dark) through props inherited from `next-themes`. Common options include `defaultTheme`, `enableSystem`, and `storageKey`. See the [Implementation tab](./nimbus-provider.dev.mdx) for detailed configuration examples.

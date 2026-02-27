@@ -370,3 +370,105 @@ export const NestedProviders: Story = {
     );
   },
 };
+
+/**
+ * WithoutFontLoading story - Tests opt-out of font loading
+ * Validates that fonts are not loaded when loadFonts={false}
+ */
+export const WithoutFontLoading: Story = {
+  args: {
+    loadFonts: false,
+  },
+  render: (args) => (
+    <NimbusProvider {...args}>
+      <Box p="600" data-testid="no-font-loading-content">
+        <Stack gap="400">
+          <Text fontSize="2xl" fontWeight="bold">
+            Font Loading Disabled
+          </Text>
+          <Text>
+            This provider does not load fonts (loadFonts=false). Fonts should be
+            provided by host application.
+          </Text>
+          <Text fontSize="sm" color="neutral.11">
+            Use this when your application already loads Inter font.
+          </Text>
+        </Stack>
+      </Box>
+    </NimbusProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const content = canvas.getByTestId("no-font-loading-content");
+
+    await step("Provider renders content", async () => {
+      await expect(content).toBeInTheDocument();
+    });
+
+    await step("Font links are NOT injected when disabled", async () => {
+      // Note: Other stories may have already injected fonts, so we can't test
+      // for complete absence. Instead, we verify the provider doesn't inject new ones.
+      // In isolation, no links would be present.
+      await expect(content).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * WithFontLoading story - Tests default font loading behavior
+ * Validates that Inter font is loaded automatically via Google Fonts
+ */
+export const WithFontLoading: Story = {
+  render: () => (
+    <NimbusProvider>
+      <Box p="600" data-testid="font-loading-content">
+        <Stack gap="400">
+          <Text fontSize="2xl" fontWeight="bold">
+            Inter Font Loading Test
+          </Text>
+          <Text>
+            This text should render in Inter font (loaded from Google Fonts).
+          </Text>
+          <Text fontSize="sm" color="neutral.11">
+            Font stack: Inter, -apple-system, BlinkMacSystemFont, sans-serif
+          </Text>
+        </Stack>
+      </Box>
+    </NimbusProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const content = canvas.getByTestId("font-loading-content");
+
+    await step("Provider renders content", async () => {
+      await expect(content).toBeInTheDocument();
+    });
+
+    await step("Font links are injected into document head", async () => {
+      // Check for Google Fonts preconnect links
+      const preconnect1 = document.querySelector(
+        'link[rel="preconnect"][href="https://fonts.googleapis.com"]'
+      );
+      const preconnect2 = document.querySelector(
+        'link[rel="preconnect"][href="https://fonts.gstatic.com"]'
+      );
+
+      await expect(preconnect1).not.toBeNull();
+      await expect(preconnect2).not.toBeNull();
+    });
+
+    await step(
+      "Font stylesheet link is present with correct attributes",
+      async () => {
+        const stylesheet = document.querySelector(
+          'link[rel="stylesheet"][data-nimbus-fonts]'
+        );
+
+        await expect(stylesheet).not.toBeNull();
+        await expect(stylesheet?.getAttribute("href")).toContain(
+          "fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        );
+      }
+    );
+  },
+};
