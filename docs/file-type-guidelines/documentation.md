@@ -96,12 +96,11 @@ documentAudiences: []
 
 Based on analysis of existing component MDX files, follow this structure:
 
+The component title and description are rendered automatically from the
+frontmatter `title` and `description` fields. Do not duplicate them in the body
+content.
+
 ```markdown
-# Component Name
-
-Brief introduction paragraph explaining what the component is and when to use
-it.
-
 ## Overview
 
 Detailed explanation of the component's purpose, behavior, and primary use
@@ -561,7 +560,7 @@ Supported in the Nimbus documentation site:
 - [ ] Unique `id` field following `Components-{ComponentName}` pattern
 - [ ] Proper `menu` hierarchy with category placement
 - [ ] Tags array including `component` and relevant keywords
-- [ ] H1 title matching component name
+- [ ] No duplicate `# Title` heading in body (title comes from frontmatter)
 - [ ] Overview section explaining component purpose
 
 ### Content Requirements

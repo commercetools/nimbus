@@ -76,7 +76,7 @@ This command will:
 5. Coordinate nimbus-coder to implement all required files
 6. Invoke nimbus-reviewer to validate compliance
 
-### Fixing a Bug
+### Fixing a Bug or Refactoring a Pattern
 
 Just implement the fix directly:
 
@@ -84,6 +84,19 @@ Just implement the fix directly:
 Read the file, understand the issue, make the change, test it.
 No OpenSpec proposal needed for bug fixes.
 ```
+
+**Important: Keep docs and tooling in sync.** When you change a pattern (file
+structure, naming convention, code style, template format, etc.), check whether
+that pattern is documented or codified anywhere else and update those locations
+too. Common places patterns are referenced:
+
+- **Skills** (`.claude/skills/`) — templates and validation checklists
+- **Commands** (`.claude/commands/`) — step-by-step instructions and examples
+- **Guidelines** (`docs/file-type-guidelines/`) — documented conventions
+- **Templates** (`docs/component-templates/`, `docs/engineering-docs-template*`)
+
+A pattern change is not complete until all references to the old pattern are
+updated.
 
 ### Updating Documentation
 
