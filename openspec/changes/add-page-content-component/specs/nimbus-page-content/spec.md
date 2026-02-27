@@ -90,10 +90,11 @@ The PageContent.Column component SHALL support sticky positioning.
 - **WHEN** sticky={true} is set on a Column
 - **THEN** SHALL apply `position: sticky` with `top: 0`
 
-#### Scenario: Sticky with token offset
+#### Scenario: Sticky with custom offset
 
-- **WHEN** sticky is set to a spacing token value (e.g., "400")
+- **WHEN** sticky={true} and a `top` style prop is provided (e.g., top="400")
 - **THEN** SHALL apply `position: sticky` with `top` set to that token value
+- **AND** SHALL override the default `top: 0`
 
 #### Scenario: No sticky (default)
 
@@ -103,8 +104,8 @@ The PageContent.Column component SHALL support sticky positioning.
 #### Scenario: Sticky type
 
 - **WHEN** sticky prop type is checked
-- **THEN** SHALL accept `boolean | ConditionalValue<UtilityValues["top"]>`
-- **AND** SHALL integrate with Chakra's token system for spacing values
+- **THEN** SHALL accept `boolean`
+- **AND** consumers SHALL use the `top` style prop for custom offsets
 
 ### Requirement: Responsive Behavior
 

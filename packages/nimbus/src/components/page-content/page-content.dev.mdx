@@ -97,7 +97,7 @@ Use the `sticky` prop on a `PageContent.Column` to make it stick during scroll. 
 
 ```jsx live-dev
 const App = () => (
-  <PageContent.Root variant="wide" columns="2/1" maxHeight="250px" overflowY="scroll">
+  <PageContent.Root variant="wide" columns="2/1" maxHeight="250px" overflowY="auto">
     <PageContent.Column>
       <Box bg="blue.3" padding="400" borderRadius="200" minHeight="300px">
         <Text color="blue.12" fontWeight="bold">Main content area (tall)</Text>

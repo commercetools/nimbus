@@ -15,13 +15,7 @@ export const pageContentRecipe = defineSlotRecipe({
       width: "100%",
       gap: "800",
     },
-    column: {
-      '&[data-sticky="true"]': {
-        position: "sticky",
-        top: 0,
-        alignSelf: "start",
-      },
-    },
+    column: {},
   },
 
   variants: {

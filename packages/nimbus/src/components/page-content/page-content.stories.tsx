@@ -211,7 +211,7 @@ export const StickySidebar: Story = {
 export const CustomGap: Story = {
   render: () => (
     <Stack gap="800">
-      <PageContent.Root variant="wide" columns="1/1">
+      <PageContent.Root variant="wide" columns="1/1" data-testid="default-gap">
         <PageContent.Column>
           <PlaceholderBox color="blue">Default gap (800 = 32px)</PlaceholderBox>
         </PageContent.Column>
@@ -220,7 +220,12 @@ export const CustomGap: Story = {
         </PageContent.Column>
       </PageContent.Root>
 
-      <PageContent.Root variant="wide" columns="1/1" gap="1600">
+      <PageContent.Root
+        variant="wide"
+        columns="1/1"
+        gap="1600"
+        data-testid="large-gap"
+      >
         <PageContent.Column>
           <PlaceholderBox color="purple">
             Large gap (1600 = 64px)
@@ -232,6 +237,14 @@ export const CustomGap: Story = {
       </PageContent.Root>
     </Stack>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Both gap configurations render", async () => {
+      await expect(canvas.getByTestId("default-gap")).toBeInTheDocument();
+      await expect(canvas.getByTestId("large-gap")).toBeInTheDocument();
+    });
+  },
 };
 
 /**
@@ -253,6 +266,62 @@ export const WithoutCompound: Story = {
       await expect(root).toHaveTextContent(
         "Direct children without PageContent.Column wrappers"
       );
+    });
+  },
+};
+
+/**
+ * SmokeTest - renders all variant × columns combinations
+ */
+export const SmokeTest: Story = {
+  render: () => (
+    <Stack gap="1200">
+      {variants.map((variant) => (
+        <Stack key={variant} gap="800">
+          {columnOptions.map((columns) => {
+            const id = `smoke-${variant}-${columns}`;
+            return (
+              <PageContent.Root
+                key={id}
+                variant={variant}
+                columns={columns}
+                data-testid={id}
+              >
+                {columns === "1" ? (
+                  <PlaceholderBox color={variantColors[variant]}>
+                    {variant} / {columns}
+                  </PlaceholderBox>
+                ) : (
+                  <>
+                    <PageContent.Column>
+                      <PlaceholderBox color={variantColors[variant]}>
+                        {variant} / {columns} — Left
+                      </PlaceholderBox>
+                    </PageContent.Column>
+                    <PageContent.Column>
+                      <PlaceholderBox color={columnColors[columns]}>
+                        {variant} / {columns} — Right
+                      </PlaceholderBox>
+                    </PageContent.Column>
+                  </>
+                )}
+              </PageContent.Root>
+            );
+          })}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All variant × columns combinations render", async () => {
+      for (const variant of variants) {
+        for (const columns of columnOptions) {
+          const el = canvas.getByTestId(`smoke-${variant}-${columns}`);
+          await expect(el).toBeInTheDocument();
+        }
+      }
     });
   },
 };
