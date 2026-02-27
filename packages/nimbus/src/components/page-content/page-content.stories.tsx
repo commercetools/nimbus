@@ -211,7 +211,7 @@ export const StickySidebar: Story = {
 export const CustomGap: Story = {
   render: () => (
     <Stack gap="800">
-      <PageContent.Root variant="wide" columns="1/1" data-testid="default-gap">
+      <PageContent.Root variant="wide" columns="1/1">
         <PageContent.Column>
           <PlaceholderBox color="blue">Default gap (800 = 32px)</PlaceholderBox>
         </PageContent.Column>
@@ -220,12 +220,7 @@ export const CustomGap: Story = {
         </PageContent.Column>
       </PageContent.Root>
 
-      <PageContent.Root
-        variant="wide"
-        columns="1/1"
-        gap="1600"
-        data-testid="large-gap"
-      >
+      <PageContent.Root variant="wide" columns="1/1" gap="1600">
         <PageContent.Column>
           <PlaceholderBox color="purple">
             Large gap (1600 = 64px)
@@ -282,28 +277,23 @@ export const SmokeTest: Story = {
       {variants.map((variant) => (
         <Stack key={variant} gap="800">
           {columnOptions.map((columns) => {
-            const id = `smoke-${variant}-${columns}`;
+            const label = `${variant} / ${columns}`;
             return (
-              <PageContent.Root
-                key={id}
-                variant={variant}
-                columns={columns}
-                data-testid={id}
-              >
+              <PageContent.Root key={label} variant={variant} columns={columns}>
                 {columns === "1" ? (
                   <PlaceholderBox color={variantColors[variant]}>
-                    {variant} / {columns}
+                    {label}
                   </PlaceholderBox>
                 ) : (
                   <>
                     <PageContent.Column>
                       <PlaceholderBox color={variantColors[variant]}>
-                        {variant} / {columns} — Left
+                        {label} — Left
                       </PlaceholderBox>
                     </PageContent.Column>
                     <PageContent.Column>
                       <PlaceholderBox color={columnColors[columns]}>
-                        {variant} / {columns} — Right
+                        {label} — Right
                       </PlaceholderBox>
                     </PageContent.Column>
                   </>
@@ -321,8 +311,14 @@ export const SmokeTest: Story = {
     await step("All variant × columns combinations render", async () => {
       for (const variant of variants) {
         for (const columns of columnOptions) {
-          const el = canvas.getByTestId(`smoke-${variant}-${columns}`);
-          await expect(el).toBeInTheDocument();
+          const label = `${variant} / ${columns}`;
+          if (columns === "1") {
+            await expect(canvas.getByText(label)).toBeInTheDocument();
+          } else {
+            await expect(
+              canvas.getByText(`${label} — Left`)
+            ).toBeInTheDocument();
+          }
         }
       }
     });
