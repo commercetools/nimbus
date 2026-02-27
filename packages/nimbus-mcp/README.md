@@ -68,6 +68,15 @@ pnpm install
 pnpm --filter @commercetools/nimbus-mcp build
 ```
 
+### Regenerating the icon catalog
+
+The bundled icon catalog (`data/icons.json`) is pre-generated and committed.
+Regenerate it after changes to `packages/nimbus-icons/src/`:
+
+```bash
+pnpm --filter @commercetools/nimbus-mcp catalog:icons
+```
+
 ### Running from source (no build needed)
 
 ```bash
@@ -133,7 +142,9 @@ That's it — no other files need changing.
 
 ## Data Availability
 
-The server has two runtime modes:
+### Component and token docs
+
+The server has two runtime modes for docs data:
 
 - **Monorepo mode** (detected automatically): reads live data from
   `apps/docs/src/data/`. Run `pnpm build:docs` first to generate these files.
@@ -142,3 +153,16 @@ The server has two runtime modes:
 
 Tools that depend on docs data will return a graceful error message if data
 files are not present.
+
+### Icon catalog
+
+`data/icons.json` is always read from the bundled `data/` directory regardless
+of runtime mode. It is pre-generated from `packages/nimbus-icons/src/` and
+committed to the repo. Regenerate it with:
+
+```bash
+pnpm --filter @commercetools/nimbus-mcp catalog:icons
+```
+
+The catalog includes every icon's export name, import path, category (`material`
+or `custom`), and searchable keywords.
