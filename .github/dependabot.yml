@@ -13,8 +13,6 @@ updates:
       # React ecosystem: react, react-dom, emotion, chakra-ui, next-themes
       react:
         patterns:
-          - "react"
-          - "react-dom"
           - "@types/react"
           - "@types/react-dom"
           - "@emotion/*"
@@ -73,6 +71,10 @@ updates:
         patterns:
           - "@babel/*"
     ignore:
+      # react and react-dom use intentionally broad ranges (^19.0.0) to avoid
+      # forcing specific patch versions on consumers. Don't narrow them.
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
       # @types/node version must match Node.js runtime version (v24 LTS)
       # Upgrading to @types/node@25+ would add types for APIs not available in our runtime
       - dependency-name: "@types/node"
