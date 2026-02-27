@@ -83,13 +83,13 @@ figmaLink: https://www.figma.com/design/...
 
 ## Content Structure (REQUIRED)
 
-### 1. Title and Overview
+### 1. Overview
+
+The component title and description are rendered from frontmatter. Content starts
+directly with the Overview section—do not add a `# Component Name` heading or
+introductory paragraph in the body.
 
 ```markdown
-# Component Name
-
-Brief introduction (1-2 sentences) from design perspective.
-
 ## Overview
 
 Explain: design purpose, key visual characteristics, primary use cases, design
@@ -242,8 +242,7 @@ links, clearer explanations.
 
 #### Content Structure (SHOULD have unless inapplicable)
 
-- [ ] H1 title matching component name (UX clarity)
-- [ ] Introduction paragraph (sets context)
+- [ ] No duplicate `# Component Name` heading in body (title comes from frontmatter)
 - [ ] Overview section explaining design purpose (design rationale)
 - [ ] Resources section with links (reference materials)
 - [ ] Variables section with jsx live examples (shows options)

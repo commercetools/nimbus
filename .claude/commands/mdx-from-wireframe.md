@@ -94,11 +94,11 @@ figmaLink: >-
 
 Based on analyzed examples, use this structure:
 
+The component title and description are rendered from frontmatter. Do not add a
+`# Component Name` heading or introductory paragraph in the body. Content starts
+directly with the first `##` section.
+
 ```markdown
-# Component Name
-
-Brief introduction paragraph.
-
 ## Overview
 
 Detailed explanation of purpose and behavior.
