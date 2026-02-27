@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@typescript-eslint/types": "^8.48.1",
-    "@typescript-eslint/typescript-estree": "^8.53.0",
+    "@typescript-eslint/typescript-estree": "^8.56.1",
     "gray-matter": "^4.0.3",
     "react-docgen-typescript": "^2.4.0",
     "remark": "^15.0.1",
