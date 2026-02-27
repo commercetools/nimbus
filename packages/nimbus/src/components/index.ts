@@ -61,6 +61,7 @@ export * from "./date-range-picker";
 export * from "./toolbar";
 export * from "./rich-text-input";
 export * from "./data-table";
+export * from "./page-content";
 export * from "./pagination";
 export * from "./drawer";
 export * from "./tabs";

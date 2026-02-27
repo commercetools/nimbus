@@ -216,6 +216,9 @@ fi
 AUTH=$(printf '%s:%s' "$JIRA_EMAIL" "$JIRA_API_TOKEN" | base64)
 LINK_TYPE="${JIRA_LINK_TYPE:-dependency}"
 
+OK_COUNT=0
+FAIL_COUNT=0
+
 create_link() {
   local predecessor="$1"
   local successor="$2"
@@ -233,14 +236,23 @@ create_link() {
     }")
 
   if [[ "$status" == "201" ]]; then
-    echo "  OK  $predecessor → $successor ($reason)"
+    echo "  OK  $predecessor -> $successor ($reason)"
+    OK_COUNT=$((OK_COUNT + 1))
   else
-    echo "  FAIL[$status]  $predecessor → $successor ($reason)"
+    echo "  FAIL[$status]  $predecessor -> $successor ($reason)"
+    FAIL_COUNT=$((FAIL_COUNT + 1))
   fi
 }
 
 # --- Links ---
 # create_link PREDECESSOR SUCCESSOR "reason"
+
+# --- Summary ---
+# echo ""
+# echo "=== Summary ==="
+# echo "  OK: $OK_COUNT"
+# echo "  FAIL: $FAIL_COUNT"
+# echo "  Total: $((OK_COUNT + FAIL_COUNT))"
 ```
 
 ### Script Requirements
@@ -248,6 +260,8 @@ create_link() {
 - The script MUST be executable (`chmod +x`)
 - The script MUST print a summary count at the end
 - The script MUST clearly label each section of links
+- The script MUST NOT use `((var++))` for counters — with `set -e`, post-increment
+  from 0 returns falsy and kills the script. Use `var=$((var + 1))` instead.
 - The script SHOULD include a `--cleanup` flag to remove links from a prior bad
   run (query each ticket's links, filter by type, DELETE each link ID)
 

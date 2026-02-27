@@ -1,0 +1,289 @@
+---
+title: PageContent
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+PageContent guidelines focus on selecting the correct width constraint and
+column layout for your content, ensuring visual hierarchy and a consistent
+reading experience across page types and screen sizes.
+
+### Best practices
+
+- **Choose the right width:** Match the `variant` to the content type. Use
+  `narrow` for simple forms, `wide` for complex forms or small tables, and
+  `full` for large tables with many columns.
+- **Limit layout types per page:** Use a maximum of two different width variants
+  on a single page to maintain a consistent visual hierarchy.
+- **Use explicit columns:** Always wrap column content in `PageContent.Column`
+  components when using multi-column layouts (`1/1` or `2/1`). This makes the
+  layout structure clear and intentional.
+- **Sticky sidebar for context:** Use the `sticky` prop on sidebar columns that
+  contain meta information, navigation links, or status details that should
+  remain visible while the user scrolls through primary content.
+- **Responsive awareness:** Multi-column layouts automatically collapse to a
+  single column on smaller screens. Design content within each column to work
+  well in both its multi-column and collapsed single-column states.
+- **Consistent spacing:** Use the default gap of `800` (32px) between columns
+  for most layouts. Only override the gap when the content demands tighter or
+  wider spacing.
+
+### Usage
+
+PageContent provides the structural foundation for page-level layouts. The
+correct layout choice depends on the type of content being displayed and the
+reading patterns it supports.
+
+> [!TIP]\
+> When to use
+
+- **Simple forms and focused content:** Use `variant="narrow"` when form fields
+  should span the available width and the content is straightforward.
+- **Complex forms or small tables:** Use `variant="wide"` for forms with
+  multiple sections or tables with a moderate number of columns.
+- **Large tables and horizontal content:** Use `variant="full"` when content has
+  a strong horizontal reading flow, such as wide data tables.
+- **Side-by-side content grouping:** Use `columns="1/1"` to group related
+  content into equal columns, saving vertical space.
+- **Main content with sidebar:** Use `columns="2/1"` for forms or content that
+  benefits from adjacent meta information, links, or status indicators.
+
+> [!CAUTION]\
+> When not to use
+
+- **Don't use narrow for tables:** Tables generally need more horizontal space.
+  Use `wide` or `full` instead.
+- **Don't use full for simple forms:** Forms without many columns do not benefit
+  from the full viewport width and become harder to read.
+- **Don't nest PageContent within PageContent:** Each page section should use a
+  single PageContent. Nesting creates unexpected layout behavior.
+- **Don't use equal columns (1/1) for forms and tables:** Equal columns are best
+  for grouped informational content, not for forms or tabular data.
+
+### Choosing a width variant
+
+Select the width variant based on the primary content type on the page.
+
+> [!TIP]\
+> **Do**
+>
+> - Use `narrow` for simple forms where fields span the full width. This
+>   focuses the user's attention and reduces unnecessary horizontal scanning.
+> - Use `wide` for forms with more complexity or small tables. Consider using
+>   `horizontalConstraint` on form fields to limit their width within the wider
+>   container.
+> - Use `full` for large data tables that benefit from the entire viewport
+>   width.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <PageContent.Root variant="narrow">
+      <Box bg="blue.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="blue.12">Narrow: Simple form</Text>
+          <Text>Fields span the focused width.</Text>
+          <Text color="neutral.11">The difference from wide is only visible when the viewport is wider than the narrow max-width of 3xl (768px).</Text>
+        </Stack>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="wide">
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="purple.12">Wide: Complex form or small table</Text>
+          <Text>More room for multi-section layouts.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="full">
+      <Box bg="teal.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="teal.12">Full: Large table</Text>
+          <Text>Content spans the entire available width.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use `full` width for simple forms. The excessive width makes the
+>   content harder to read and creates an unfocused layout.
+> - Don't use `narrow` for data tables. The constrained width clips columns and
+>   forces horizontal scrolling.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <PageContent.Root variant="full">
+      <Box bg="blue.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="blue.12">Full: Simple form (avoid)</Text>
+          <Text>This form does not need the full viewport width. Use narrow instead.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="narrow">
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="purple.12">Narrow: Data table (avoid)</Text>
+          <Text>Tables need more room. Use wide or full instead.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+### Column layout selection
+
+Choose the column layout based on how your content should be organized.
+
+> [!TIP]\
+> **Do**
+>
+> - Use `columns="2/1"` for a main content area with a sidebar for meta
+>   information, related links, or status indicators.
+> - Use the `sticky` prop on the sidebar column so it remains visible as the
+>   user scrolls through primary content.
+> - Use `columns="1/1"` to group related content side by side when both
+>   sections are equally important.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="2/1">
+    <PageContent.Column>
+      <Box bg="blue.3" padding="600" borderRadius="200" minHeight="200px">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="blue.12">Main content</Text>
+          <Text>Form fields and primary content live here.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column sticky>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="purple.12">Sticky sidebar</Text>
+          <Text>Meta information stays visible on scroll.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use equal columns (`1/1`) for a primary content area with a secondary
+>   sidebar. The visual weight should reflect the content hierarchy. Use `2/1`
+>   instead.
+> - Don't place tables inside multi-column layouts. Tables need the full
+>   available width of a single-column layout.
+
+```jsx live
+const App = () => (
+  <PageContent.Root variant="wide" columns="1/1">
+    <PageContent.Column>
+      <Box bg="blue.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="blue.12">Main form (avoid 1/1 for this)</Text>
+          <Text>This content is more important than the sidebar. Use 2/1 to reflect the hierarchy.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Column>
+    <PageContent.Column>
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Stack gap="400">
+          <Text fontWeight="bold" color="purple.12">Sidebar</Text>
+          <Text>Secondary content gets equal space unnecessarily.</Text>
+        </Stack>
+      </Box>
+    </PageContent.Column>
+  </PageContent.Root>
+)
+```
+
+### Combining layouts on a page
+
+Multiple PageContent sections can be stacked on a single page, but limit the
+number of different width variants to maintain visual consistency.
+
+> [!TIP]\
+> **Do**
+>
+> - Stack multiple PageContent sections vertically for different content zones.
+> - Use a maximum of two different width variants on a page.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <PageContent.Root variant="wide" columns="2/1">
+      <PageContent.Column>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Wide: Form section</Text>
+        </Box>
+      </PageContent.Column>
+      <PageContent.Column>
+        <Box bg="blue.3" padding="600" borderRadius="200">
+          <Text fontWeight="bold" color="blue.12">Sidebar</Text>
+        </Box>
+      </PageContent.Column>
+    </PageContent.Root>
+
+    <PageContent.Root variant="full">
+      <Box bg="purple.3" padding="600" borderRadius="200">
+        <Text fontWeight="bold" color="purple.12">Full: Data table section</Text>
+      </Box>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use more than two different layout types on a single page. Mixing
+>   narrow, wide, and full on the same page creates a disjointed visual
+>   experience.
+
+```jsx live
+const App = () => (
+  <Stack gap="800">
+    <PageContent.Root variant="narrow">
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="blue.12">Narrow section</Text>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="wide">
+      <Box bg="purple.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="purple.12">Wide section</Text>
+      </Box>
+    </PageContent.Root>
+
+    <PageContent.Root variant="full">
+      <Box bg="teal.3" padding="400" borderRadius="200">
+        <Text fontWeight="bold" color="teal.12">Full section (three variants is too many)</Text>
+      </Box>
+    </PageContent.Root>
+  </Stack>
+)
+```
+
+### Predecessor
+
+PageContent replaces the `PageContentWide`, `PageContentNarrow`, and
+`PageContentFull` components from Merchant Center Application Kit. For detailed
+migration instructions, see the
+[Migration guide](/components/layout/pagecontent/dev#migrating-from-merchant-center-application-kit)
+in the implementation docs. For the original Application Kit documentation, see
+[Page Content Layouts](https://docs.commercetools.com/merchant-center-customizations/development/page-content-layouts).

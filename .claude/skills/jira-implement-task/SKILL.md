@@ -1,5 +1,6 @@
 ---
-description: Fetch a Jira ticket, create a branch, implement changes, commit incrementally, push, and open a PR.
+description:
+  Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
 argument-hint: <ticket-key>
 ---
 
@@ -74,6 +75,8 @@ Read the ticket description carefully and implement all requested changes:
 - If the ticket is a documentation change, focus on content accuracy
 - If the ticket is a code change, follow the project's component guidelines
 - If the ticket is ambiguous, ask the user for clarification before proceeding
+- If the ticket implements a new component, implement an OpenSpec proposal using
+  the `/propose-component` command.
 - Use the appropriate agents (nimbus-researcher, nimbus-coder, nimbus-reviewer)
   when the task complexity warrants it
 
