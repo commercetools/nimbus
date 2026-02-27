@@ -360,7 +360,7 @@ import { extractStyleProps } from "@/utils";
 
 export const SelectRoot = (props: SelectRootProps) => {
   // Standard pattern: Split recipe variants
-  const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
+  const recipe = useSlotRecipe({ key: "nimbusSelect" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
 
   // Standard pattern: Extract style props

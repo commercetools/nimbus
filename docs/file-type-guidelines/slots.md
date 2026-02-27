@@ -103,11 +103,10 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { buttonRecipe } from "./button.recipe";
 import type { SlotComponent } from "../utils/slot-types";
 
 const { withContext } = createRecipeContext({
-  recipe: buttonRecipe,
+  key: "button",
 });
 
 // Export both type and component - type name = component name + "Props"
@@ -126,11 +125,10 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { menuSlotRecipe } from "./menu.recipe";
 import type { SlotComponent } from "../utils/slot-types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: menuSlotRecipe,
+  key: "nimbusMenu",
 });
 
 // Root slot - provides context
@@ -301,11 +299,10 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { buttonRecipe } from "./button.recipe";
 import type { SlotComponent } from "../utils/slot-types";
 
 const { withContext } = createRecipeContext({
-  recipe: buttonRecipe,
+  key: "button",
 });
 
 // Export both type and component with explicit return type annotation
@@ -334,7 +331,8 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
 - [ ] Root slot uses `withProvider` (for multi-slot components)
 - [ ] Child slots use `withContext` (for multi-slot components)
 - [ ] Single-slot components use `withContext`
-- [ ] Recipe imported and used in context creation
+- [ ] Recipe `key` string used in context creation (matches the registered
+      recipe key in `theme/slot-recipes/index.ts`)
 - [ ] `asChild` pattern used with React Aria when needed
 - [ ] Slot names match recipe slot definitions
 

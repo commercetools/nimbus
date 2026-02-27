@@ -15,11 +15,10 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { componentNameRecipe } from "./component-name.recipe";
 
-// Create context for standard recipe
+// Create context using the registered recipe key
 const { withContext } = createRecipeContext({
-  recipe: componentNameRecipe,
+  key: "componentName",
 });
 
 // CRITICAL: Export both type AND component

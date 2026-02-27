@@ -1,0 +1,206 @@
+---
+title: MainPage Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { MainPage, type MainPageProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+MainPage provides a page skeleton with header, content, and optional footer. At minimum, you need Root, Header with Title, and Content.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Page Title</MainPage.Title>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Your page content goes here.</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+## Sub-components
+
+### MainPage.Header
+
+The header section uses a two-column grid layout. Title, Subtitle, and any custom content flow into the left column. Actions spans all rows on the right and collapses when not present.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Title on the left</MainPage.Title>
+      <MainPage.Actions>
+        <Button variant="ghost">Secondary</Button>
+        <Button>Primary</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Title
+
+Renders a styled `<h1>` element. Accepts children for the title text.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Products</MainPage.Title>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Subtitle
+
+Optional subtitle rendered as a `<p>` element below the title. Place it as a sibling of Title inside the Header.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Products</MainPage.Title>
+      <MainPage.Subtitle>Manage your product catalog</MainPage.Subtitle>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+The Header accepts any content, so you can replace Title with custom elements if needed.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <Stack direction="row" gap="200" align="center">
+        <Heading as="h1">Custom Title</Heading>
+        <Badge variant="info">Draft</Badge>
+      </Stack>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Actions
+
+A flex container with gap for action buttons. Positioned on the right side of the header via CSS grid, spanning all rows.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Products</MainPage.Title>
+      <MainPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button>Add Product</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Content
+
+The main content area with scrollable overflow. Uses margin-based spacing to preserve sticky positioning for child components like DataTable.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Page Title</MainPage.Title>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Box bg="blue.3" padding="400" borderRadius="200">
+        <Text color="blue.12">Content area with automatic margin spacing</Text>
+      </Box>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### MainPage.Footer
+
+Optional footer for page-level actions. Omit it entirely when the page has no form actions. The footer grid row collapses automatically when absent.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>With Footer</MainPage.Title>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form content</Text>
+      </Box>
+    </MainPage.Content>
+    <MainPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button>Save</Button>
+      </Stack>
+    </MainPage.Footer>
+  </MainPage.Root>
+)
+```
+
+## API reference
+
+<PropsTable id="MainPage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using MainPage within your application.
+
+{{docs-tests: main-page.docs.spec.tsx}}
+
+## Migrating from Merchant Center Application Kit
+
+MainPage replaces the four main page components from
+[`@commercetools-frontend/application-components`](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages):
+
+| Application Kit Component | Nimbus Equivalent |
+|---|---|
+| `<InfoMainPage title="...">` | `<MainPage.Root>` + Header/Title + Content (no Footer) |
+| `<FormMainPage title="..." onPrimaryButtonClick={...}>` | `<MainPage.Root>` + Header/Title + Content + Footer with buttons |
+| `<CustomFormMainPage formControls={...}>` | Same as Form — Footer accepts any children |
+| `<TabularMainPage tabControls={...}>` | `<MainPage.Root>` + Header/Title + Content with `<Tabs.Root>` inside |
+
+Key differences:
+
+- **Composition over configuration** — Instead of 10+ props for button labels, handlers, and visibility, compose your own buttons in Footer or Actions
+- **No built-in tab routing** — Use the Tabs component directly inside Content
+- **Title and subtitle as children** — `<MainPage.Title>Products</MainPage.Title>` and `<MainPage.Subtitle>...</MainPage.Subtitle>` replace `title` and `subtitle` props on the AppKit page components
+- **No `customTitleRow`** — The Header accepts any content, so replace Title with your own elements
+- **No `Intl` static property** — Use your own i18n solution for button labels
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-mainpage--docs)
+- [MC Application Components - Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages) (predecessor)
