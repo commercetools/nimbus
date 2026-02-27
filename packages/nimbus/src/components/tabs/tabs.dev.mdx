@@ -501,6 +501,83 @@ const App = () => {
 };
 ```
 
+### Router-integrated tabs
+
+Tabs can render as links for URL-driven navigation by providing an `href` prop. When used with a `NimbusProvider` router configuration, clicking a tab calls the router's navigate function instead of triggering a full page reload.
+
+```jsx live-dev
+const App = () => {
+  // In a real app, this would be your router's navigate function
+  // e.g. React Router's useNavigate() or Next.js router.push()
+  const router = {
+    navigate: (href) => {
+      alert(`Navigating to: ${href}`);
+    },
+  };
+
+  return (
+    <NimbusProvider router={router}>
+      <Tabs.Root>
+        <Tabs.List>
+          <Tabs.Tab id="overview" href="/products/overview">
+            Overview
+          </Tabs.Tab>
+          <Tabs.Tab id="details" href="/products/details">
+            Details
+          </Tabs.Tab>
+          <Tabs.Tab id="reviews" href="/products/reviews">
+            Reviews
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels>
+          <Tabs.Panel id="overview">
+            <Text>Product overview content.</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="details">
+            <Text>Product detail specifications.</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="reviews">
+            <Text>Customer reviews and ratings.</Text>
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </NimbusProvider>
+  );
+};
+```
+
+Link tabs also work with the simplified `tabs` prop API:
+
+```jsx live-dev
+const App = () => {
+  const router = {
+    navigate: (href) => {
+      alert(`Navigating to: ${href}`);
+    },
+  };
+
+  const tabs = [
+    { id: 'overview', tabLabel: 'Overview', href: '/products/overview', panelContent: 'Product overview content.' },
+    { id: 'details', tabLabel: 'Details', href: '/products/details', panelContent: 'Product detail specifications.' },
+    { id: 'reviews', tabLabel: 'Reviews', href: '/products/reviews', panelContent: 'Customer reviews and ratings.' },
+  ];
+
+  return (
+    <NimbusProvider router={router}>
+      <Tabs.Root tabs={tabs} tabListAriaLabel="Product sections" />
+    </NimbusProvider>
+  );
+};
+```
+
+Additional link props like `target` and `rel` can be used for external links:
+
+```tsx
+<Tabs.Tab id="docs" href="https://docs.example.com" target="_blank" rel="noopener noreferrer">
+  External Docs
+</Tabs.Tab>
+```
+
 ## Component requirements
 
 ## Accessibility

@@ -58,6 +58,34 @@ without leaving the context of the main page.
 - **Linear workflows:** Avoid using tabs to guide users through a mandatory,
   step-by-step process.
 
+### Router-integrated tabs
+
+When tabs represent distinct views that map to URLs (e.g., `/products/overview`,
+`/products/details`), use the `href` prop to render tabs as links. This enables:
+
+- **SEO-friendly URLs:** Each tab section gets a unique, shareable URL.
+- **Browser history integration:** Users can navigate back/forward between tabs.
+- **Accessibility:** Tabs render as `<a>` elements, providing native link
+  semantics.
+
+> [!TIP]\
+> **Do**
+>
+> - Use `href` tabs when each tab represents a distinct page or route in your
+>   application.
+> - Configure a router via `NimbusProvider` to enable client-side navigation
+>   without full page reloads.
+> - Use `target="_blank"` and `rel="noopener noreferrer"` for tabs that link to
+>   external resources.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use `href` tabs for content that should switch instantly without URL
+>   changes (use standard tabs instead).
+> - Don't mix `href` and non-`href` tabs within the same tab list, as this
+>   creates inconsistent navigation behavior.
+
 ### Tab labeling
 
 > [!TIP]\

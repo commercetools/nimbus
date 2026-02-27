@@ -26,7 +26,15 @@ export const TabsList = ({ tabs, children, ...props }: TabListProps) => {
       <RATabList items={tabs as TabItemProps[]} {...restProps}>
         {tabs
           ? (tab: TabItemProps) => (
-              <TabsTab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
+              <TabsTab
+                key={tab.id}
+                id={tab.id}
+                isDisabled={tab.isDisabled}
+                href={tab.href}
+                target={tab.target}
+                rel={tab.rel}
+                routerOptions={tab.routerOptions}
+              >
                 {tab.tabLabel}
               </TabsTab>
             )

@@ -9,10 +9,26 @@ import type { TabProps } from "../tabs.types";
  *
  * @supportsStyleProps
  */
-export const TabsTab = ({ children, isDisabled, ...props }: TabProps) => {
+export const TabsTab = ({
+  children,
+  isDisabled,
+  href,
+  target,
+  rel,
+  routerOptions,
+  ...props
+}: TabProps) => {
   return (
     <TabsTabSlot asChild {...props}>
-      <RATab isDisabled={isDisabled}>{children}</RATab>
+      <RATab
+        isDisabled={isDisabled}
+        href={href}
+        target={target}
+        rel={rel}
+        routerOptions={routerOptions}
+      >
+        {children}
+      </RATab>
     </TabsTabSlot>
   );
 };
