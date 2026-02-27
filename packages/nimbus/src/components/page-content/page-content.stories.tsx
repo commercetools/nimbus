@@ -38,12 +38,12 @@ const PlaceholderBox = ({
 export const Base: Story = {
   args: {
     variant: "wide",
-    "data-testid": "test-page-content",
+    "aria-label": "Page content",
     children: <PlaceholderBox>Single column content</PlaceholderBox>,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("test-page-content");
+    const root = canvas.getByLabelText("Page content");
 
     await step("Renders a <div> by default", async () => {
       await expect(root.tagName).toBe("DIV");
@@ -71,7 +71,7 @@ export const WidthVariants: Story = {
         <PageContent.Root
           key={variant}
           variant={variant}
-          data-testid={`variant-${variant}`}
+          aria-label={`${variant} variant`}
         >
           <PlaceholderBox color={variantColors[variant]}>
             variant=&quot;{variant}&quot;
@@ -85,7 +85,7 @@ export const WidthVariants: Story = {
 
     await step("All width variants render", async () => {
       for (const variant of variants) {
-        const el = canvas.getByTestId(`variant-${variant}`);
+        const el = canvas.getByLabelText(`${variant} variant`);
         await expect(el).toBeInTheDocument();
       }
     });
@@ -111,7 +111,7 @@ export const ColumnLayouts: Story = {
             key={columns}
             variant="wide"
             columns={columns}
-            data-testid={`columns-${columns}`}
+            aria-label={`${columns} columns`}
           >
             {columns === "1" ? (
               <PlaceholderBox color={c}>
@@ -139,7 +139,7 @@ export const ColumnLayouts: Story = {
 
     await step("All column layouts render", async () => {
       for (const columns of columnOptions) {
-        const el = canvas.getByTestId(`columns-${columns}`);
+        const el = canvas.getByLabelText(`${columns} columns`);
         await expect(el).toBeInTheDocument();
       }
     });
@@ -157,14 +157,14 @@ export const StickySidebar: Story = {
       maxHeight="300px"
       overflowY="auto"
       tabIndex={0}
-      data-testid="sticky-layout"
+      aria-label="Sticky layout"
     >
       <PageContent.Column>
         <PlaceholderBox height="800px" color="blue">
           Main content top label
         </PlaceholderBox>
       </PageContent.Column>
-      <PageContent.Column sticky data-testid="sticky-column">
+      <PageContent.Column sticky aria-label="Sidebar">
         <PlaceholderBox color="purple">Sticky sidebar</PlaceholderBox>
       </PageContent.Column>
     </PageContent.Root>
@@ -173,15 +173,15 @@ export const StickySidebar: Story = {
     const canvas = within(canvasElement);
 
     await step("Sticky column has data-sticky attribute", async () => {
-      const stickyCol = canvas.getByTestId("sticky-column");
+      const stickyCol = canvas.getByLabelText("Sidebar");
       await expect(stickyCol).toHaveAttribute("data-sticky", "true");
     });
 
     await step(
       "Sticky column stays visible after scrolling past main content label",
       async () => {
-        const scrollContainer = canvas.getByTestId("sticky-layout");
-        const stickyCol = canvas.getByTestId("sticky-column");
+        const scrollContainer = canvas.getByLabelText("Sticky layout");
+        const stickyCol = canvas.getByLabelText("Sidebar");
 
         // Scroll down far enough that the main content label is out of view
         scrollContainer.scrollTop = 400;
@@ -211,7 +211,7 @@ export const StickySidebar: Story = {
 export const CustomGap: Story = {
   render: () => (
     <Stack gap="800">
-      <PageContent.Root variant="wide" columns="1/1" data-testid="default-gap">
+      <PageContent.Root variant="wide" columns="1/1">
         <PageContent.Column>
           <PlaceholderBox color="blue">Default gap (800 = 32px)</PlaceholderBox>
         </PageContent.Column>
@@ -220,12 +220,7 @@ export const CustomGap: Story = {
         </PageContent.Column>
       </PageContent.Root>
 
-      <PageContent.Root
-        variant="wide"
-        columns="1/1"
-        gap="1600"
-        data-testid="large-gap"
-      >
+      <PageContent.Root variant="wide" columns="1/1" gap="1600">
         <PageContent.Column>
           <PlaceholderBox color="purple">
             Large gap (1600 = 64px)
@@ -241,8 +236,12 @@ export const CustomGap: Story = {
     const canvas = within(canvasElement);
 
     await step("Both gap configurations render", async () => {
-      await expect(canvas.getByTestId("default-gap")).toBeInTheDocument();
-      await expect(canvas.getByTestId("large-gap")).toBeInTheDocument();
+      await expect(
+        canvas.getByText("Default gap (800 = 32px)")
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByText("Large gap (1600 = 64px)")
+      ).toBeInTheDocument();
     });
   },
 };
@@ -252,7 +251,7 @@ export const CustomGap: Story = {
  */
 export const WithoutCompound: Story = {
   render: () => (
-    <PageContent.Root variant="narrow" data-testid="no-compound">
+    <PageContent.Root variant="narrow">
       <PlaceholderBox>
         Direct children without PageContent.Column wrappers
       </PlaceholderBox>
@@ -262,10 +261,9 @@ export const WithoutCompound: Story = {
     const canvas = within(canvasElement);
 
     await step("Renders direct children without Column wrappers", async () => {
-      const root = canvas.getByTestId("no-compound");
-      await expect(root).toHaveTextContent(
-        "Direct children without PageContent.Column wrappers"
-      );
+      await expect(
+        canvas.getByText("Direct children without PageContent.Column wrappers")
+      ).toBeInTheDocument();
     });
   },
 };
@@ -279,28 +277,23 @@ export const SmokeTest: Story = {
       {variants.map((variant) => (
         <Stack key={variant} gap="800">
           {columnOptions.map((columns) => {
-            const id = `smoke-${variant}-${columns}`;
+            const label = `${variant} / ${columns}`;
             return (
-              <PageContent.Root
-                key={id}
-                variant={variant}
-                columns={columns}
-                data-testid={id}
-              >
+              <PageContent.Root key={label} variant={variant} columns={columns}>
                 {columns === "1" ? (
                   <PlaceholderBox color={variantColors[variant]}>
-                    {variant} / {columns}
+                    {label}
                   </PlaceholderBox>
                 ) : (
                   <>
                     <PageContent.Column>
                       <PlaceholderBox color={variantColors[variant]}>
-                        {variant} / {columns} — Left
+                        {label} — Left
                       </PlaceholderBox>
                     </PageContent.Column>
                     <PageContent.Column>
                       <PlaceholderBox color={columnColors[columns]}>
-                        {variant} / {columns} — Right
+                        {label} — Right
                       </PlaceholderBox>
                     </PageContent.Column>
                   </>
@@ -318,8 +311,14 @@ export const SmokeTest: Story = {
     await step("All variant × columns combinations render", async () => {
       for (const variant of variants) {
         for (const columns of columnOptions) {
-          const el = canvas.getByTestId(`smoke-${variant}-${columns}`);
-          await expect(el).toBeInTheDocument();
+          const label = `${variant} / ${columns}`;
+          if (columns === "1") {
+            await expect(canvas.getByText(label)).toBeInTheDocument();
+          } else {
+            await expect(
+              canvas.getByText(`${label} — Left`)
+            ).toBeInTheDocument();
+          }
         }
       }
     });
