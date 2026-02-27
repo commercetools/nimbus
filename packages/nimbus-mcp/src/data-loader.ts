@@ -231,8 +231,6 @@ export async function getIconData(): Promise<DocEntry | undefined> {
 // ---------------------------------------------------------------------------
 
 export interface IconCatalog {
-  /** ISO timestamp of when this catalog was generated. */
-  generated: string;
   /** Total number of icons in the catalog. */
   count: number;
   /** All icon entries. */

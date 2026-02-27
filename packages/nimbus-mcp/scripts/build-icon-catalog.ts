@@ -224,8 +224,6 @@ export interface IconCatalogEntry {
 }
 
 export interface IconCatalog {
-  /** ISO timestamp of when this catalog was generated. */
-  generated: string;
   /** Total number of icons in the catalog. */
   count: number;
   /** All icon entries. */
@@ -338,7 +336,6 @@ function buildIconCatalog(): void {
   const allIcons = Array.from(byName.values());
 
   const catalog: IconCatalog = {
-    generated: new Date().toISOString(),
     count: allIcons.length,
     icons: allIcons,
   };

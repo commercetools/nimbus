@@ -12,8 +12,6 @@ describe("icon catalog — structure", () => {
   it("has required top-level fields", async () => {
     const catalog = await getIconCatalog();
 
-    expect(typeof catalog.generated).toBe("string");
-    expect(new Date(catalog.generated).toISOString()).toBe(catalog.generated);
     expect(typeof catalog.count).toBe("number");
     expect(Array.isArray(catalog.icons)).toBe(true);
   });
