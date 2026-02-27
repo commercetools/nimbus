@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, type Context } from "react";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   useObjectRef,

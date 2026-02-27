@@ -42,7 +42,7 @@ export type ComponentNameRootProps = ComponentNameRootSlotProps & {
   defaultValue?: string;
   onChange?: (value: string) => void;
   // Add more configuration/state props...
-}
+};
 
 /**
  * Props for ComponentName.Trigger
@@ -56,7 +56,7 @@ export type ComponentNameTriggerProps = ComponentNameTriggerSlotProps & {
 
   icon?: ReactNode;
   // Add more behavioral props...
-}
+};
 
 /**
  * Props for ComponentName.Item
@@ -75,7 +75,7 @@ export type ComponentNameItemProps = ComponentNameItemSlotProps & {
 
   onSelect?: (value: string) => void;
   // Add more item-specific props...
-}
+};
 
 // Add additional component prop interfaces following the same pattern...
 
@@ -87,7 +87,7 @@ export type UseComponentNameOptions = {
   defaultIsOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   // Add hook-specific options...
-}
+};
 
 export type UseComponentNameReturn = {
   isOpen: boolean;
@@ -95,7 +95,7 @@ export type UseComponentNameReturn = {
   close: () => void;
   toggle: () => void;
   // Add hook-specific return values...
-}
+};
 
 // =============================================================================
 // Context Types (if component uses context for state sharing)
@@ -110,12 +110,13 @@ export type ComponentNameContextValue = {
   // Reference slot props for variants/sizes
   variant?: ComponentNameRootSlotProps["variant"];
   size?: ComponentNameRootSlotProps["size"];
-}
+};
 ```
 
 ## Pattern Summary
 
 **The Type Hierarchy:**
+
 ```
 SlotProps (from *.slots.tsx)
   ├─ HTMLChakraProps<Element> (HTML element props)
@@ -126,8 +127,11 @@ ComponentProps (*.types.ts)
 ```
 
 **Key Principles:**
+
 1. **Always extend slot props** - Never extend raw `ComponentProps<Element>`
-2. **Root handles configuration** - Variants, sizes, state management on Root only
+2. **Root handles configuration** - Variants, sizes, state management on Root
+   only
 3. **Sub-components are behavioral** - Only define interaction/behavior props
-4. **Controlled/Uncontrolled** - Support both with `value`/`defaultValue` patterns
+4. **Controlled/Uncontrolled** - Support both with `value`/`defaultValue`
+   patterns
 5. **Document everything** - All props need JSDoc with `@default` tags

@@ -1,8 +1,5 @@
-import {
-  createSystem,
-  defaultBaseConfig,
-  defineConfig,
-} from "@chakra-ui/react";
+import { createSystem, defineConfig } from "@chakra-ui/react/styled-system";
+import { defaultBaseConfig } from "@chakra-ui/react/preset-base";
 import { animationStyles } from "./animation-styles";
 import { breakpoints } from "./breakpoints";
 import { conditions } from "./conditions";

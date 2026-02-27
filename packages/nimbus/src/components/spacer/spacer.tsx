@@ -5,7 +5,7 @@
  * Uses flexGrow="1" to fill remaining space.
  */
 
-import { Box } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react/box";
 import type { SpacerProps } from "./spacer.types";
 
 /**

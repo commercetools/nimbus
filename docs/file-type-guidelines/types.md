@@ -11,7 +11,10 @@ contract** for a component - interfaces and types intended for consumer use.
 They ensure type safety and provide clear contracts for component APIs, while
 keeping implementation details encapsulated.
 
-All types files follow a consistent, layered architecture that makes them discoverable, maintainable, and self-documenting. This architecture enables `react-docgen-typescript` to extract comprehensive API documentation for the Nimbus documentation site.
+All types files follow a consistent, layered architecture that makes them
+discoverable, maintainable, and self-documenting. This architecture enables
+`react-docgen-typescript` to extract comprehensive API documentation for the
+Nimbus documentation site.
 
 ## When to Use
 
@@ -22,8 +25,8 @@ All types files follow a consistent, layered architecture that makes them discov
 - Shared/reusable types across component parts
 
 **Note:** Hook types can be defined either in the component's types file or
-colocated in the hook file itself, depending on whether the hook is primarily
-an internal implementation detail or a public API exported for consumers.
+colocated in the hook file itself, depending on whether the hook is primarily an
+internal implementation detail or a public API exported for consumers.
 
 ## Core Architecture
 
@@ -46,14 +49,18 @@ type ConflictingProps = keyof AriaProps;
 type ExcludedProps = "css" | "colorScheme";
 
 // Layer 4: Main Props (Public API)
-export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | ExcludedProps> &
+export type ComponentProps = Omit<
+  ComponentRootSlotProps,
+  ConflictingProps | ExcludedProps
+> &
   AriaProps & {
     ref?: React.Ref<HTMLElement>;
     customProp?: string;
   };
 ```
 
-**Key Principle:** Slot props are ALWAYS the foundation. Never build props from scratch.
+**Key Principle:** Slot props are ALWAYS the foundation. Never build props from
+scratch.
 
 ## Type Visibility and Organization
 
@@ -121,13 +128,15 @@ type InternalComponentState = {
 
 ## Component Tiers
 
-Components are classified into four tiers based on complexity. Understanding your component's tier helps determine the appropriate type structure.
+Components are classified into four tiers based on complexity. Understanding
+your component's tier helps determine the appropriate type structure.
 
 ### Tier 1: Simple Components
 
 **Examples:** Button, Avatar, Separator, Icon, Badge
 
 **Characteristics:**
+
 - Single props type
 - 2-3 type layers
 - Standard recipe (or no recipe)
@@ -142,6 +151,7 @@ Components are classified into four tiers based on complexity. Understanding you
 **Examples:** TextInput, NumberInput, MoneyInput, PasswordInput, SearchInput
 
 **Characteristics:**
+
 - Multiple slot prop types for internal elements
 - Slot recipe for multi-element styling
 - React Aria integration
@@ -150,6 +160,7 @@ Components are classified into four tiers based on complexity. Understanding you
 **Type Structure:** `RecipeProps → Multiple SlotProps → MainProps`
 
 **Slot Pattern:**
+
 - `RootSlotProps` - Container element
 - `InputSlotProps` - Input element
 - `LeadingElementSlotProps` - Start decoration
@@ -162,6 +173,7 @@ Components are classified into four tiers based on complexity. Understanding you
 **Examples:** Menu, Dialog, Card, Tabs, Accordion, Tooltip
 
 **Characteristics:**
+
 - Multiple sub-component prop types
 - Slot recipe with context
 - Root component handles configuration
@@ -170,8 +182,10 @@ Components are classified into four tiers based on complexity. Understanding you
 **Type Structure:** `RootSlotProps (with recipe) + Multiple SubComponentProps`
 
 **Naming Pattern:**
+
 - Root: `{Component}RootProps`
-- Parts: `{Component}{Part}Props` (e.g., `MenuTriggerProps`, `DialogContentProps`)
+- Parts: `{Component}{Part}Props` (e.g., `MenuTriggerProps`,
+  `DialogContentProps`)
 
 **Files:** ~100-200 lines of types
 
@@ -180,6 +194,7 @@ Components are classified into four tiers based on complexity. Understanding you
 **Examples:** DataTable, DatePicker, Pagination, ComboBox, RichTextInput
 
 **Characteristics:**
+
 - All Tier 3 features plus:
 - Context types for state sharing
 - Generic types for data structures
@@ -189,6 +204,7 @@ Components are classified into four tiers based on complexity. Understanding you
 **Type Structure:** `All of above + ContextValue + Helper types + Generics`
 
 **Additional Patterns:**
+
 - Generic types: `<T extends object>`
 - Context value types
 - Helper types (SortDescriptor, ColumnItem, etc.)
@@ -203,7 +219,10 @@ Every types file follows this sequential reading order for maximum clarity:
 
 ```typescript
 // Start directly with imports (no file-level JSDoc preamble)
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -238,7 +257,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -285,7 +304,10 @@ export type ButtonProps = ButtonRootSlotProps & {
 ### Compound Component Pattern (Tier 3)
 
 ```typescript
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type {
   MenuProps as RaMenuProps,
   MenuItemProps as RaMenuItemProps,
@@ -345,23 +367,24 @@ export type MenuTriggerProps = MenuTriggerSlotProps & {
 /**
  * Props for the Menu.Item component.
  */
-export type MenuItemProps = MenuItemSlotProps & RaMenuItemProps & {
-  /**
-   * Unique value for the menu item
-   */
-  value: string;
+export type MenuItemProps = MenuItemSlotProps &
+  RaMenuItemProps & {
+    /**
+     * Unique value for the menu item
+     */
+    value: string;
 
-  /**
-   * Whether the item is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
+    /**
+     * Whether the item is disabled
+     * @default false
+     */
+    isDisabled?: boolean;
 
-  /**
-   * Reference to the item element
-   */
-  ref?: React.Ref<HTMLDivElement>;
-};
+    /**
+     * Reference to the item element
+     */
+    ref?: React.Ref<HTMLDivElement>;
+  };
 ```
 
 ### Complex Component Pattern (Tier 4)
@@ -372,7 +395,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -395,7 +418,10 @@ type DataTableRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type DataTableRootSlotProps = HTMLChakraProps<"div", DataTableRecipeProps>;
+export type DataTableRootSlotProps = HTMLChakraProps<
+  "div",
+  DataTableRecipeProps
+>;
 export type DataTableTableSlotProps = HTMLChakraProps<"table">;
 // ... additional slot props
 
@@ -450,17 +476,17 @@ export type DataTableProps<T extends object = Record<string, unknown>> =
 
 All naming follows these exact patterns for maximum consistency:
 
-| Type Category | Pattern | Example |
-|--------------|---------|---------|
-| **Recipe Props** | `{Component}RecipeProps` | `ButtonRecipeProps` |
-| **Slot Props (Root)** | `{Component}RootSlotProps` | `MenuRootSlotProps` |
-| **Slot Props (Parts)** | `{Component}{Part}SlotProps` | `MenuTriggerSlotProps` |
-| **Main Props** | `{Component}Props` | `ButtonProps` |
-| **Sub-component Props** | `{Component}{Part}Props` | `MenuTriggerProps` |
-| **React Aria Imports** | `Ra{Component}` prefix | `RaButton`, `RaMenuProps` |
-| **Helper Types** | `Excluded{Component}Props` | `ExcludedNumberInputProps` |
-| **Utility Types** | Descriptive names | `SortDescriptor`, `ColumnItem` |
-| **Context Values** | `{Component}ContextValue` | `DataTableContextValue` |
+| Type Category           | Pattern                      | Example                        |
+| ----------------------- | ---------------------------- | ------------------------------ |
+| **Recipe Props**        | `{Component}RecipeProps`     | `ButtonRecipeProps`            |
+| **Slot Props (Root)**   | `{Component}RootSlotProps`   | `MenuRootSlotProps`            |
+| **Slot Props (Parts)**  | `{Component}{Part}SlotProps` | `MenuTriggerSlotProps`         |
+| **Main Props**          | `{Component}Props`           | `ButtonProps`                  |
+| **Sub-component Props** | `{Component}{Part}Props`     | `MenuTriggerProps`             |
+| **React Aria Imports**  | `Ra{Component}` prefix       | `RaButton`, `RaMenuProps`      |
+| **Helper Types**        | `Excluded{Component}Props`   | `ExcludedNumberInputProps`     |
+| **Utility Types**       | Descriptive names            | `SortDescriptor`, `ColumnItem` |
+| **Context Values**      | `{Component}ContextValue`    | `DataTableContextValue`        |
 
 ### Import Naming Convention
 
@@ -532,10 +558,10 @@ export type BoxProps = BoxSlotProps & {
 
 **Recipe variants are automatically inherited through slot props:**
 
-Slot props automatically include recipe variants through Chakra UI's `RecipeProps`
-type. When your component props type extends a slot props type, it
-inherits all recipe variants (like `variant`, `size`, `colorPalette`) without needing
-explicit declarations.
+Slot props automatically include recipe variants through Chakra UI's
+`RecipeProps` type. When your component props type extends a slot props type, it
+inherits all recipe variants (like `variant`, `size`, `colorPalette`) without
+needing explicit declarations.
 
 ```typescript
 import { type ButtonSlotProps } from "./button.slots";
@@ -839,7 +865,6 @@ export type UseDatePickerReturn = {
 };
 ```
 
-
 ## Related Guidelines
 
 - [Main Component](./main-component.md) - Using types in components
@@ -849,12 +874,14 @@ export type UseDatePickerReturn = {
 ## Validation Checklist
 
 ### File Structure
+
 - [ ] Types file exists with `.ts` extension
 - [ ] Section dividers in correct order (Recipe → Slot → Helper → Main)
 - [ ] **Only consumer-facing types in `{component-name}.types.ts`**
 - [ ] **Internal types colocated with their usage**
 
 ### Naming Conventions
+
 - [ ] All naming follows conventions table
 - [ ] Props follow naming convention (`{ComponentName}Props`)
 - [ ] React Aria imports use "Ra" prefix
@@ -863,13 +890,16 @@ export type UseDatePickerReturn = {
 - [ ] Helper types: `Excluded{Component}Props` or descriptive names
 
 ### Type Construction
+
 - [ ] Uses `type` syntax (not `interface`)
 - [ ] Extends appropriate base type (slot props for recipe-based components)
-- [ ] **Recipe variants automatically inherited through slot props (not explicit)**
+- [ ] **Recipe variants automatically inherited through slot props (not
+      explicit)**
 - [ ] **Explicit variant declarations only when functional overlap exists**
 - [ ] Conflicts explicitly documented in Helper Types section
 
 ### Documentation
+
 - [ ] **JSDoc comments for all properties within types**
 - [ ] JSDoc comments for types when they are complex or public-facing (optional)
 - [ ] Default values documented with `@default` (especially recipe props)
@@ -877,6 +907,7 @@ export type UseDatePickerReturn = {
 - [ ] Event handlers properly typed
 
 ### Type Safety
+
 - [ ] Generic types used appropriately
 - [ ] No inline complex types
 - [ ] **No implementation details leaked in public API types**

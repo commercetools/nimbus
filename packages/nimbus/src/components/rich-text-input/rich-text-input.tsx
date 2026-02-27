@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
-import { useSlotRecipe } from "@chakra-ui/react";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { createEditor } from "slate";
 import { withReact } from "slate-react";
 import { withHistory } from "slate-history";

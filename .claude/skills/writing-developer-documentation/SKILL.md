@@ -1,6 +1,5 @@
 ---
-description:
-  Create, update, or validate developer-facing MDX documentation files
+description: Create, update, or validate developer-facing MDX documentation files
 argument-hint: create|update|validate ComponentName [base|field] [details]
 ---
 
@@ -177,11 +176,8 @@ with FormField and FieldErrors.
 ```jsx live-dev
 // Field pattern example
 const App = () => (
-  <ComponentNameField
-    label="Field Label"
-    errors={['Error message']}
-  />
-)
+  <ComponentNameField label="Field Label" errors={["Error message"]} />
+);
 ```
 ````
 
@@ -190,9 +186,9 @@ const App = () => (
 const App = () => (
   <FormField label="Field Label">
     <ComponentName />
-    <FieldErrors errors={['Error message']} />
+    <FieldErrors errors={["Error message"]} />
   </FormField>
-)
+);
 ```
 
 ````
@@ -215,10 +211,8 @@ perspective.
 
 ```jsx live-dev
 const App = () => (
-  <ComponentName onPress={() => alert('Pressed')}>
-    Basic Example
-  </ComponentName>
-)
+  <ComponentName onPress={() => alert("Pressed")}>Basic Example</ComponentName>
+);
 ```
 
 ````
@@ -268,15 +262,10 @@ Description with technical details.
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
 
-  return (
-    <ComponentName
-      value={value}
-      onChange={setValue}
-    />
-  );
-}
+  return <ComponentName value={value} onChange={setValue} />;
+};
 ```
 
 ````
@@ -370,10 +359,8 @@ Description of common implementation pattern or use case.
 ```jsx live-dev
 const App = () => {
   // Implementation showing the pattern
-  return (
-    <ComponentName>Pattern Example</ComponentName>
-  );
-}
+  return <ComponentName>Pattern Example</ComponentName>;
+};
 ```
 ````
 
@@ -384,10 +371,8 @@ Description of alternative approach or advanced usage.
 ```jsx live-dev
 const App = () => {
   // More complex example
-  return (
-    <ComponentName>Advanced Pattern</ComponentName>
-  );
-}
+  return <ComponentName>Advanced Pattern</ComponentName>;
+};
 ```
 
 ````
@@ -430,11 +415,7 @@ documentation:
 
 ````markdown
 ```jsx live-dev
-const App = () => (
-  <ComponentName>
-    Developer Example
-  </ComponentName>
-)
+const App = () => <ComponentName>Developer Example</ComponentName>;
 ```
 ````
 

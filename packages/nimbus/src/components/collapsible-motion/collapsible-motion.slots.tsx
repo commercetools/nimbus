@@ -1,7 +1,7 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
 import type { CollapsibleMotionRootSlotProps } from "./collapsible-motion.types";
 

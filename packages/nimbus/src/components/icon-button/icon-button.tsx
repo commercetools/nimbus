@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 

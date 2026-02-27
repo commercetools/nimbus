@@ -1,4 +1,4 @@
-import { defineAnimationStyles } from "@chakra-ui/react";
+import { defineAnimationStyles } from "@chakra-ui/react/styled-system";
 
 type AnimationStylesType = ReturnType<typeof defineAnimationStyles>;
 

@@ -1,4 +1,4 @@
-import { defineTextStyles } from "@chakra-ui/react";
+import { defineTextStyles } from "@chakra-ui/react/styled-system";
 import { themeTokens } from "@commercetools/nimbus-tokens";
 
 type TextStylesType = ReturnType<typeof defineTextStyles>;

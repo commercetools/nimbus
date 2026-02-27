@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { useDataTableContext } from "./data-table.context";

@@ -6,7 +6,7 @@
  */
 
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-import type { BoxProps } from "@chakra-ui/react";
+import type { BoxProps } from "@chakra-ui/react/box";
 
 // ============================================================
 // MAIN PROPS

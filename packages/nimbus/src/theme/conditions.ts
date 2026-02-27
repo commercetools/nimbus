@@ -1,4 +1,4 @@
-import { defineConditions } from "@chakra-ui/react";
+import { defineConditions } from "@chakra-ui/react/styled-system";
 
 /**
  * Custom conditions for React Aria Components state management

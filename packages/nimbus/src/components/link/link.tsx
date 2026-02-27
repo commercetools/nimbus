@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { LinkRoot } from "./link.slots";
 import type { LinkProps } from "./link.types";
 import { useLink, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 
 /**
  * # Link

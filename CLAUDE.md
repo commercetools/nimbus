@@ -1,14 +1,18 @@
 <!-- OPENSPEC:START -->
+
 # OpenSpec Instructions
 
 These instructions are for AI assistants working in this project.
 
 Always open `@/openspec/AGENTS.md` when the request:
+
 - Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Introduces new capabilities, breaking changes, architecture shifts, or big
+  performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `@/openspec/AGENTS.md` to learn:
+
 - How to create and apply change proposals
 - Spec format and conventions
 - Project structure and guidelines
@@ -345,6 +349,23 @@ pnpm changeset:status
 - **packages/i18n**: Translation messages and internationalization support
 - **apps/docs**: Documentation SPA with interactive examples and auto-generated
   content
+
+### Chakra UI Imports (CRITICAL)
+
+**NEVER use barrel imports from `@chakra-ui/react`.** Always use modular subpath
+imports to avoid pulling in the entire component library:
+
+```typescript
+// ✅ Correct - modular imports
+import { defineRecipe, HTMLChakraProps } from "@chakra-ui/react/styled-system";
+import { Box } from "@chakra-ui/react/box";
+import { Steps } from "@chakra-ui/react/steps";
+import { useBreakpointValue } from "@chakra-ui/react/hooks";
+import { mergeRefs } from "@/utils"; // local utility, not from Chakra
+
+// ❌ WRONG - barrel import loads every component
+import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
+```
 
 ### Component Development
 

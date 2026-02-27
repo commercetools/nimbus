@@ -1,6 +1,8 @@
 # Nimbus Types Architecture Reference
 
-This document provides the established patterns and architecture for all Nimbus component type definitions, based on the comprehensive types standardization completed in January 2025.
+This document provides the established patterns and architecture for all Nimbus
+component type definitions, based on the comprehensive types standardization
+completed in January 2025.
 
 ## Universal Four-Layer Architecture
 
@@ -21,18 +23,23 @@ type ConflictingProps = keyof AriaProps;
 type ExcludedProps = "css" | "colorScheme";
 
 // Layer 4: Main Props (Public API)
-export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | ExcludedProps> &
+export type ComponentProps = Omit<
+  ComponentRootSlotProps,
+  ConflictingProps | ExcludedProps
+> &
   AriaProps & {
     ref?: React.Ref<HTMLElement>;
     customProp?: string;
   };
 ```
 
-**Key Principle:** Slot props are ALWAYS the foundation. Never build props from scratch.
+**Key Principle:** Slot props are ALWAYS the foundation. Never build props from
+scratch.
 
 ## Component Tier System
 
 ### Tier 1: Simple Components
+
 **Examples:** Button, Avatar, Separator, Icon, Badge
 
 - Single props interface
@@ -42,6 +49,7 @@ export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | Exc
 - File Size: ~10-30 lines
 
 ### Tier 2: Slot-Based Components
+
 **Examples:** TextInput, NumberInput, MoneyInput, PasswordInput, SearchInput
 
 - Multiple slot prop types
@@ -51,6 +59,7 @@ export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | Exc
 - File Size: ~50-100 lines
 
 ### Tier 3: Compound Components
+
 **Examples:** Menu, Dialog, Card, Tabs, Accordion, Tooltip
 
 - Multiple sub-component prop interfaces
@@ -60,6 +69,7 @@ export type ComponentProps = Omit<ComponentRootSlotProps, ConflictingProps | Exc
 - File Size: ~100-200 lines
 
 ### Tier 4: Complex Compositions
+
 **Examples:** DataTable, DatePicker, Pagination, ComboBox, RichTextInput
 
 - All Tier 3 features plus:
@@ -108,17 +118,17 @@ Every types file follows this sequential structure with section dividers:
 
 ## Naming Conventions
 
-| Type Category | Pattern | Example |
-|--------------|---------|---------|
-| **Recipe Props** | `{Component}RecipeProps` | `ButtonRecipeProps` |
-| **Slot Props (Root)** | `{Component}RootSlotProps` | `MenuRootSlotProps` |
-| **Slot Props (Parts)** | `{Component}{Part}SlotProps` | `MenuTriggerSlotProps` |
-| **Main Props** | `{Component}Props` | `ButtonProps` |
-| **Sub-component Props** | `{Component}{Part}Props` | `MenuTriggerProps` |
-| **React Aria Imports** | `Ra{Component}` prefix | `RaButton`, `RaMenuProps` |
-| **Helper Types** | `Excluded{Component}Props` | `ExcludedNumberInputProps` |
-| **Utility Types** | Descriptive names | `SortDescriptor`, `ColumnItem` |
-| **Context Values** | `{Component}ContextValue` | `DataTableContextValue` |
+| Type Category           | Pattern                      | Example                        |
+| ----------------------- | ---------------------------- | ------------------------------ |
+| **Recipe Props**        | `{Component}RecipeProps`     | `ButtonRecipeProps`            |
+| **Slot Props (Root)**   | `{Component}RootSlotProps`   | `MenuRootSlotProps`            |
+| **Slot Props (Parts)**  | `{Component}{Part}SlotProps` | `MenuTriggerSlotProps`         |
+| **Main Props**          | `{Component}Props`           | `ButtonProps`                  |
+| **Sub-component Props** | `{Component}{Part}Props`     | `MenuTriggerProps`             |
+| **React Aria Imports**  | `Ra{Component}` prefix       | `RaButton`, `RaMenuProps`      |
+| **Helper Types**        | `Excluded{Component}Props`   | `ExcludedNumberInputProps`     |
+| **Utility Types**       | Descriptive names            | `SortDescriptor`, `ColumnItem` |
+| **Context Values**      | `{Component}ContextValue`    | `DataTableContextValue`        |
 
 ### React Aria Import Pattern
 
@@ -138,7 +148,8 @@ import { Button } from "react-aria-components";
 1. **File-level JSDoc**: Required on every types file with tier classification
 2. **Property-level JSDoc**: Required on every property in interfaces/types
 3. **@default tags**: Required for all properties with defaults
-4. **Interface-level JSDoc**: Recommended for complex or public-facing interfaces
+4. **Interface-level JSDoc**: Recommended for complex or public-facing
+   interfaces
 
 ```typescript
 /**
@@ -154,18 +165,20 @@ export type ButtonProps = ButtonSlotProps & {
    * @default false
    */
   isLoading?: boolean;
-}
+};
 ```
 
 ## Conflict Resolution Patterns
 
 ### Strategy 1: Omit with keyof (Preferred)
+
 ```typescript
 type FunctionalProps = AriaComponentProps &
   Omit<SlotProps, keyof AriaComponentProps>;
 ```
 
 ### Strategy 2: Explicit Exclusion List (Best for Documentation)
+
 ```typescript
 /**
  * Props excluded due to conflicts with React Aria.
@@ -174,7 +187,10 @@ type FunctionalProps = AriaComponentProps &
  */
 type ExcludedComponentProps = "onChange" | "value" | "defaultValue";
 
-export type ComponentProps = Omit<SlotProps, keyof AriaProps | ExcludedComponentProps> &
+export type ComponentProps = Omit<
+  SlotProps,
+  keyof AriaProps | ExcludedComponentProps
+> &
   AriaProps;
 ```
 
@@ -198,7 +214,7 @@ export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
 export type ButtonProps = ButtonRootSlotProps & {
   isLoading?: boolean;
   ref?: React.Ref<HTMLButtonElement>;
-}
+};
 ```
 
 ### Tier 3 - Compound (Menu)
@@ -218,11 +234,11 @@ export type MenuItemSlotProps = HTMLChakraProps<"div">;
 export type MenuRootProps = MenuRootSlotProps & {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
-}
+};
 
 export type MenuTriggerProps = MenuTriggerSlotProps & {
   ref?: React.Ref<HTMLButtonElement>;
-}
+};
 ```
 
 ### Tier 4 - Complex (DataTable)
@@ -280,14 +296,13 @@ export type DataTableProps<T extends object> = DataTableRootProps & {
 
 This architecture is implemented across 19 refactored component types files:
 
-**Tier 1 (5 files):** Button, Avatar, Separator, Icon, Badge
-**Tier 2 (7 files):** TextInput, NumberInput, MoneyInput, PasswordInput, SearchInput, MultilineTextInput, TimeInput
-**Tier 3 (4 files):** Menu, Dialog, Card, Tabs
+**Tier 1 (5 files):** Button, Avatar, Separator, Icon, Badge **Tier 2 (7
+files):** TextInput, NumberInput, MoneyInput, PasswordInput, SearchInput,
+MultilineTextInput, TimeInput **Tier 3 (4 files):** Menu, Dialog, Card, Tabs
 **Tier 4 (3 files):** DataTable, DatePicker, Pagination
 
 Refer to these files for production-ready examples of each pattern.
 
 ---
 
-**Last Updated:** January 2025
-**Standardization Completed:** January 2025
+**Last Updated:** January 2025 **Standardization Completed:** January 2025

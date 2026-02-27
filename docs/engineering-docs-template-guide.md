@@ -45,13 +45,11 @@ Include these sections only when relevant to your component:
 Before copying the template, thoroughly review:
 
 1. **Component's TypeScript props interface** (`.types.ts` file)
-
    - Identify all props and their types
    - Note which features exist (size?, variant?, isDisabled?, isInvalid?, etc.)
    - Understand controlled/uncontrolled patterns (value/defaultValue)
 
 2. **Component implementation** (main `.tsx` file)
-
    - Identify React Aria integration
    - Note external library dependencies
    - Understand keyboard interactions
@@ -131,9 +129,7 @@ Show the simplest possible usage. Use uncontrolled mode for field components, or
 the most basic configuration for other components.
 
 ```jsx live-dev
-const App = () => (
-  <ComponentName />
-)
+const App = () => <ComponentName />;
 ```
 
 ### Library-Specific Sections (Conditional)
@@ -189,7 +185,6 @@ your component.
 **Approach:**
 
 1. **Review the component's TypeScript props interface**
-
    - Look for `size?`, `variant?`, `isDisabled?`, `isInvalid?`, `isReadOnly?`
      props
    - Look for `items` prop (dynamic collections) and slot props
@@ -198,7 +193,6 @@ your component.
    - Understand controlled/uncontrolled patterns
 
 2. **Match examples to actual props**
-
    - ✅ Component has `isDisabled` prop → Include "Disabled state" subsection
    - ❌ Component has no `isDisabled` prop → Don't include "Disabled state"
    - ✅ Component has unique `granularity` prop → Document it!
@@ -241,7 +235,7 @@ const App = () => (
     <ComponentName size="sm" />
     <ComponentName size="md" />
   </Stack>
-)
+);
 ```
 
 #### State Management Patterns
@@ -253,11 +247,11 @@ Always use props interface for type inference:
 ```jsx live-dev
 const App = () => {
   // ✅ Correct - infers from component props
-  const [value, setValue] = useState<ComponentNameProps["value"]>(null);
+  const [value, setValue] = useState < ComponentNameProps["value"] > null;
 
   // ❌ Incorrect - inline type definition
   // const [value, setValue] = useState<string | null>(null);
-}
+};
 ```
 
 **State Display Pattern:**
@@ -266,17 +260,15 @@ Controlled examples should always show the current value:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<ComponentNameProps["value"]>(null);
+  const [value, setValue] = useState < ComponentNameProps["value"] > null;
 
   return (
     <Stack direction="column" gap="400">
       <ComponentName value={value} onChange={setValue} />
-      <Text fontSize="sm">
-        {value ? `Selected: ${value}` : 'No selection'}
-      </Text>
+      <Text fontSize="sm">{value ? `Selected: ${value}` : "No selection"}</Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Component Requirements
@@ -514,10 +506,8 @@ Include when relevant:
 const App = () => {
   const [value, setValue] = useState(initialValue);
 
-  return (
-    <ComponentName value={value} onChange={setValue} />
-  );
-}
+  return <ComponentName value={value} onChange={setValue} />;
+};
 ```
 
 **Guidelines:**
@@ -547,10 +537,10 @@ type ComponentProps = {
 ```jsx live-dev
 const App = () => {
   // ✓ Good: Proper type annotation
-  const [value, setValue] = useState<ComponentProps["value"]>(null);
+  const [value, setValue] = useState < ComponentProps["value"] > null;
 
   // ✓ Good: Clear state initialization
-  const [touched, setTouched] = useState<boolean>(false);
+  const [touched, setTouched] = useState < boolean > false;
 
   // ✓ Good: Derived state
   const isValid = value !== null;
@@ -562,7 +552,7 @@ const App = () => {
       onBlur={() => setTouched(true)}
     />
   );
-}
+};
 ```
 
 ## Writing Style Guidelines
@@ -665,12 +655,10 @@ Before publishing, verify:
 If you're unsure about any aspect of the template:
 
 1. **Review existing documentation:**
-
    - `packages/nimbus/src/components/date-range-picker/date-range-picker.dev.mdx`
    - `packages/nimbus/src/patterns/fields/date-range-picker-field/date-range-picker-field.dev.mdx`
 
 2. **Check component guidelines:**
-
    - `docs/file-type-guidelines/documentation.md`
 
 3. **Ask the team:**

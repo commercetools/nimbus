@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { TextFieldProps as RaTextFieldProps } from "react-aria-components";
 
 // ============================================================

@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import type { LoadingSpinnerRootSlotProps } from "./loading-spinner.types";
 
 const { withContext } = createRecipeContext({ key: "nimbusLoadingSpinner" });

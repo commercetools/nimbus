@@ -54,6 +54,7 @@ component-name/
 ## Utils Patterns
 
 ### Pure Helper Functions
+
 - Date formatting and localization functions
 - String manipulation utilities (truncation, sanitization)
 - Mathematical calculations and conversions
@@ -61,20 +62,24 @@ component-name/
 - Array and object transformation utilities
 
 ### Utils Index File
+
 Export all utility functions from a centralized index file for clean imports.
 
 ## Constants Patterns
 
 ### Configuration Constants
+
 - Pagination settings and defaults
 - Date picker configuration values
 - Form validation rules and limits
 
 ### Constant Values and Lookup Tables
 
-Constants should contain **values**, not type definitions. Type definitions belong in the types file.
+Constants should contain **values**, not type definitions. Type definitions
+belong in the types file.
 
 **Constants Examples:**
+
 - Keyboard key constants (`ENTER_KEY = 'Enter'`, `ESCAPE_KEY = 'Escape'`)
 - Validation limits (`MAX_FILE_SIZE = 5000000`, `MIN_PASSWORD_LENGTH = 8`)
 - HTTP status codes or error codes
@@ -82,30 +87,38 @@ Constants should contain **values**, not type definitions. Type definitions belo
 - Arrays of valid options (when needed for validation/iteration)
 
 **Note:** Component variants (size, visual style) are defined in:
+
 - **Recipe files** for styling variants
 - **Types files** for type definitions like `type Size = 'sm' | 'md' | 'lg'`
-- **Not in constants** unless you need an array of valid values for validation/iteration purposes
+- **Not in constants** unless you need an array of valid values for
+  validation/iteration purposes
 
 ### Default Values
+
 - Default option arrays for select components
 - Default table column configurations
 - Default color palettes for theming
 
 ### Regex Patterns
+
 - Common validation patterns (email, URL, phone numbers)
 - Input format validators
 - Credit card number patterns
 
 ### Constants Index File
+
 Export all constants from a centralized index file for clean imports.
 
 ## TypeScript Best Practices
 
 ### Type-Safe Constants
+
 Use `as const` assertions to ensure immutable, type-safe constant definitions.
 
 ### Pure Function Types
-Provide explicit TypeScript types for all utility functions with proper parameter and return type definitions.
+
+Provide explicit TypeScript types for all utility functions with proper
+parameter and return type definitions.
 
 ## Related Guidelines
 

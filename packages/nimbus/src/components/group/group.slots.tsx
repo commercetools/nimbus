@@ -1,4 +1,4 @@
-import { createRecipeContext } from "@chakra-ui/react";
+import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import { Group as RaGroup } from "react-aria-components";
 import type { SlotComponent } from "@/type-utils";
 import type { GroupRootSlotProps } from "./group.types";

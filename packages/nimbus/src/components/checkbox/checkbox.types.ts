@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { ReactNode, Ref } from "react";
 import type { CheckboxProps as RaCheckboxProps } from "react-aria-components";
 

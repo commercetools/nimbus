@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import { type ToolbarProps as RaToolbarProps } from "react-aria-components";
 
 // ============================================================

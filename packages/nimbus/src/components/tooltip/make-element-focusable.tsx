@@ -11,7 +11,7 @@ import {
   type FocusableOptions,
 } from "react-aria";
 
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 
 export type MakeElementFocusableProps = PropsWithChildren<
   FocusableOptions<HTMLElement>

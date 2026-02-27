@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { extractStyleProps, mergeRefs } from "@/utils";
 
 import {
   KeyboardArrowDown as DropdownIndicatorIcon,
@@ -24,7 +24,6 @@ import {
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectProps } from "./../select.types";
 import { selectSlotRecipe } from "../select.recipe";
-import { extractStyleProps } from "@/utils";
 
 /**
  * Select.Root - The root component that provides context and state management for the select

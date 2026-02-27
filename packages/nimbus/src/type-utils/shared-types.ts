@@ -8,7 +8,7 @@ import {
  * This module provides convenient access to commonly used types from
  * third-party libraries that are used across multiple Nimbus components.
  */
-import type { ConditionalValue } from "@chakra-ui/react";
+import type { ConditionalValue } from "@chakra-ui/react/styled-system";
 /**
  * Date value type from @internationalized/date
  * Used by: Calendar, DatePicker, DateInput, DateRangePicker

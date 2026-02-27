@@ -1,6 +1,9 @@
 import type { DateValue } from "@internationalized/date";
 import type { CalendarProps as RaCalendarProps } from "react-aria-components";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================

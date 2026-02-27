@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { type Descendant, type Editor } from "slate";
 import { Slate, Editable } from "slate-react";
 import {

@@ -1,4 +1,4 @@
-import { Steps as ChakraSteps } from "@chakra-ui/react";
+import { Steps as ChakraSteps } from "@chakra-ui/react/steps";
 import { extractStyleProps } from "@/utils";
 import type { StepsIndicatorProps } from "../steps.types";
 import { StepsIndicatorSlot } from "../steps.slots";

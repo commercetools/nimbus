@@ -24,7 +24,7 @@ const mockToasterInstance = {
 
 const mockCreateToaster = vi.fn(() => mockToasterInstance);
 
-vi.mock("@chakra-ui/react", () => ({
+vi.mock("@chakra-ui/react/toast", () => ({
   createToaster: mockCreateToaster,
 }));
 

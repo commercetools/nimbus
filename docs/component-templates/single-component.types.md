@@ -10,7 +10,7 @@ componentName
  */
 
 import { type ComponentProps } from "react";
-import { type RecipeVariantProps } from "@chakra-ui/react";
+import { type RecipeVariantProps } from "@chakra-ui/react/styled-system";
 import { componentNameRecipe } from "./component-name.recipe";
 
 /**
@@ -18,28 +18,28 @@ import { componentNameRecipe } from "./component-name.recipe";
  */
 export type ComponentNameProps = ComponentProps<"div"> & // Change element type as needed
   RecipeVariantProps<typeof componentNameRecipe> & {
-  /**
-   * Component content
-   */
-  children?: React.ReactNode;
+    /**
+     * Component content
+     */
+    children?: React.ReactNode;
 
-  /**
-   * Whether the component is disabled
-   * @default false
-   */
-  isDisabled?: boolean;
+    /**
+     * Whether the component is disabled
+     * @default false
+     */
+    isDisabled?: boolean;
 
-  /**
-   * Whether the component is in a loading state
-   * @default false
-   */
-  isLoading?: boolean;
+    /**
+     * Whether the component is in a loading state
+     * @default false
+     */
+    isLoading?: boolean;
 
-  // Add component-specific props here
-  /**
-   * Custom prop description
-   * @default 'default'
-   */
-  customProp?: string;
-}
+    // Add component-specific props here
+    /**
+     * Custom prop description
+     * @default 'default'
+     */
+    customProp?: string;
+  };
 ```

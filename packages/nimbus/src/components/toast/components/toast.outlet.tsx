@@ -1,5 +1,5 @@
 import { useEffect, useSyncExternalStore } from "react";
-import { Toaster, Toast as ChakraToast } from "@chakra-ui/react";
+import { Toaster, Toast as ChakraToast } from "@chakra-ui/react/toast";
 import {
   getToasterEntries,
   isToastersActive,

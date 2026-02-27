@@ -4,7 +4,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS

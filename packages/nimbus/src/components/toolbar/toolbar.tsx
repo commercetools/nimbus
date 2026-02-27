@@ -1,10 +1,8 @@
 import { ToolbarRoot } from "./toolbar.slots.tsx";
 import type { ToolbarComponent, ToolbarProps } from "./toolbar.types.ts";
-import {
-  useBreakpointValue,
-  useChakraContext,
-  useRecipe,
-} from "@chakra-ui/react";
+import { useRecipe } from "@chakra-ui/react/styled-system";
+import { useBreakpointValue } from "@chakra-ui/react/hooks";
+import { useChakraContext } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { toolbarRecipe } from "./toolbar.recipe.ts";
 import { Toolbar as RaToolbar } from "react-aria-components";

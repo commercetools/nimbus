@@ -1,8 +1,8 @@
 import type {
   HTMLChakraProps,
-  SystemStyleObject,
   ConditionalValue,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
+import type { SystemStyleObject } from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // HELPER TYPES

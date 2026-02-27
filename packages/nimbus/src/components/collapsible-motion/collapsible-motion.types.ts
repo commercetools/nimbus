@@ -1,6 +1,9 @@
 import type { ReactNode, RefObject } from "react";
 import type { AriaButtonProps as RaButtonProps } from "react-aria";
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================

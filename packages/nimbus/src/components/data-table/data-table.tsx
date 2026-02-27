@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import {
   DataTableRoot,
   DataTableTable,

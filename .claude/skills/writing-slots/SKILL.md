@@ -1,6 +1,5 @@
 ---
-description:
-  Create, update, or validate Chakra UI slot components for styling integration
+description: Create, update, or validate Chakra UI slot components for styling integration
 argument-hint: create|update|validate ComponentName [details]
 ---
 

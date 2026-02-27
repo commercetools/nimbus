@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { DataTableFooter as DataTableFooterSlot } from "../data-table.slots";
 
 export type DataTableFooterProps = {

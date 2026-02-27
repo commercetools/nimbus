@@ -1,7 +1,7 @@
 import {
   createSlotRecipeContext,
   type HTMLChakraProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type {
   SelectRootSlotProps,
   SelectTriggerSlotProps,

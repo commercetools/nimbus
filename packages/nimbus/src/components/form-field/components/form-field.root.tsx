@@ -9,7 +9,7 @@ import {
 } from "react";
 import type { FormFieldProps } from "../form-field.types";
 import { useField, useObjectRef } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import {
   FormFieldContext,
   type FormFieldContextPayloadType,

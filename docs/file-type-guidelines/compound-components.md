@@ -46,8 +46,12 @@ export const Menu = {
 ```
 
 **IMPORTANT**:
-- Sub-components must be imported from the barrel export index (`./components/index.ts`), not from individual files
-- Each part must have JSDoc documentation in the main file. See [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts) for detailed documentation requirements.
+
+- Sub-components must be imported from the barrel export index
+  (`./components/index.ts`), not from individual files
+- Each part must have JSDoc documentation in the main file. See
+  [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts)
+  for detailed documentation requirements.
 
 ### 2. Root Component is MANDATORY
 
@@ -249,21 +253,27 @@ MenuTrigger.displayName = 'Menu.Trigger';
 
 **Implementation File JSDoc Requirement:**
 
-JSDoc tags like `@supportsStyleProps` must be placed **directly above the component function** in implementation files (e.g., `components/menu.trigger.tsx`) for `react-docgen-typescript` to extract metadata for documentation generation.
+JSDoc tags like `@supportsStyleProps` must be placed **directly above the
+component function** in implementation files (e.g.,
+`components/menu.trigger.tsx`) for `react-docgen-typescript` to extract metadata
+for documentation generation.
 
 #### Parser Behavior
 
-The `react-docgen-typescript` parser extracts JSDoc tags from component function definitions in implementation files. Place the `@supportsStyleProps` tag in individual subcomponent implementation files where the parser can process it.
+The `react-docgen-typescript` parser extracts JSDoc tags from component function
+definitions in implementation files. Place the `@supportsStyleProps` tag in
+individual subcomponent implementation files where the parser can process it.
 
 #### Implementation File JSDoc Pattern
 
-Each component implementation file must include JSDoc directly above the component export:
+Each component implementation file must include JSDoc directly above the
+component export:
 
 ```typescript
 // components/menu.trigger.tsx
-import { Button } from 'react-aria-components';
-import { MenuTriggerSlot } from '../menu.slots';
-import type { MenuTriggerProps } from '../menu.types';
+import { Button } from "react-aria-components";
+import { MenuTriggerSlot } from "../menu.slots";
+import type { MenuTriggerProps } from "../menu.types";
 
 /**
  * Menu.Trigger - The button or element that opens the menu
@@ -279,14 +289,15 @@ export const MenuTrigger = ({
   // Implementation...
 };
 
-MenuTrigger.displayName = 'Menu.Trigger';
+MenuTrigger.displayName = "Menu.Trigger";
 ```
 
 #### Main Export File Namespace JSDoc
 
-The main export file documents each part with JSDoc for developer convenience (IDE tooltips and code readability):
+The main export file documents each part with JSDoc for developer convenience
+(IDE tooltips and code readability):
 
-```typescript
+````typescript
 // menu.tsx
 export const Menu = {
   /**
@@ -305,9 +316,11 @@ export const Menu = {
    */
   Trigger: MenuTrigger,
 };
-```
+````
 
-**Note**: Place `@supportsStyleProps` tags in implementation files for documentation generation. The parser extracts metadata from implementation files, not namespace objects.
+**Note**: Place `@supportsStyleProps` tags in implementation files for
+documentation generation. The parser extracts metadata from implementation
+files, not namespace objects.
 
 ### Components Index File
 
@@ -467,7 +480,8 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] **Sub-components imported from barrel export (`./components/index.ts`)**
 - [ ] **`.Root` component exists and is first property**
 - [ ] Root component in `components/component-name.root.tsx`
-- [ ] All sub-components in separate files following pattern: `components/component-name.{part}.tsx`
+- [ ] All sub-components in separate files following pattern:
+      `components/component-name.{part}.tsx`
 - [ ] Components index file exports all parts
 
 ### Documentation (in main file)
@@ -479,9 +493,12 @@ For comprehensive type patterns and examples for compound components, see:
 
 ### Documentation (in implementation files)
 
-- [ ] **Each component implementation has JSDoc directly above the component function**
-- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (required for doc generation)
-- [ ] **`@supportsStyleProps` tag placed in implementation files where parser can extract it**
+- [ ] **Each component implementation has JSDoc directly above the component
+      function**
+- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files**
+      (required for doc generation)
+- [ ] **`@supportsStyleProps` tag placed in implementation files where parser
+      can extract it**
 
 ### Standard Patterns
 

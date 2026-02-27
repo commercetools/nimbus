@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   SlotRecipeProps,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 import type { FC, Ref } from "react";
 import {
   TagGroup as RaTagGroup,

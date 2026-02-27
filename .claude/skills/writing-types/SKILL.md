@@ -1,6 +1,5 @@
 ---
-description:
-  Create, update, or validate TypeScript type definitions for components
+description: Create, update, or validate TypeScript type definitions for components
 argument-hint: create|update|validate ComponentName [details]
 ---
 
@@ -126,7 +125,7 @@ import type {
   HTMLChakraProps,
   RecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -195,7 +194,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -262,7 +261,10 @@ RootSlotProps (with recipe) + Multiple SubComponentProps
 **Template:**
 
 ```typescript
-import type { HTMLChakraProps, SlotRecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  SlotRecipeProps,
+} from "@chakra-ui/react/styled-system";
 import type {
   MenuProps as RaMenuProps,
   MenuItemProps as RaMenuItemProps,
@@ -368,7 +370,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -450,7 +452,10 @@ Every types file MUST follow this order:
 
 ```typescript
 // Start directly with imports (no file-level JSDoc preamble)
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
+import type {
+  HTMLChakraProps,
+  RecipeProps,
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -665,7 +670,7 @@ import type {
   HTMLChakraProps,
   RecipeProps, // or SlotRecipeProps for multi-slot
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // For React Aria integration:
 import type { ButtonProps as RaButtonProps } from "react-aria-components";

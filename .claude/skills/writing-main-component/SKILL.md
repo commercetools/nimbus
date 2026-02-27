@@ -498,7 +498,7 @@ Before creating the main component, ensure these files exist:
 ````typescript
 import { useRef } from 'react';
 import { useObjectRef, mergeProps } from 'react-aria';
-import { mergeRefs } from '@chakra-ui/react';
+import { mergeRefs } from '@/utils';
 import { Button as RaButton } from 'react-aria-components';
 import { ComponentRoot } from './component.slots';
 import type { ComponentProps } from './component.types';
@@ -768,7 +768,7 @@ export const Component = (props: ComponentProps) => {
 import { useRef } from 'react';
 import { Button as RaButton } from 'react-aria-components';
 import { useObjectRef } from 'react-aria';
-import { mergeRefs } from '@chakra-ui/react';
+import { mergeRefs } from '@/utils';
 
 export const Component = (props: ComponentProps) => {
   const { ref: forwardedRef, ...rest } = props;

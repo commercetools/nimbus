@@ -44,7 +44,8 @@ Component with multiple coordinated parts.
 
 - [i18n.template.md](./i18n.template.md) - i18n messages template
 
-> **Note**: Hooks, context, utils, and constants templates are not yet available but can be modeled after existing component implementations.
+> **Note**: Hooks, context, utils, and constants templates are not yet available
+> but can be modeled after existing component implementations.
 
 ## Usage Instructions
 

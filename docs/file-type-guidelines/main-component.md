@@ -26,7 +26,7 @@ Implementation lives directly in the main file:
 // button.tsx - IMPLEMENTATION
 import { useRef } from "react";
 import { useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { Button as RaButton } from 'react-aria-components';
 import { ButtonSlot } from './button.slots';
 import type { ButtonProps } from './button.types';
