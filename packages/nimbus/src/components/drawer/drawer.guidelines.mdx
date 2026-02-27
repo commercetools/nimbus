@@ -16,11 +16,14 @@ experience.
 - **Keep content focused**: Drawers should have a single, clear purpose
 - **Provide clear actions**: Always include obvious ways to proceed or dismiss
 - **Make dismissal easy**: Support Escape key, close buttons, and click-outside
-  behavior
+  behavior. For forms with unsaved changes, use `isDismissable={false}` with
+  controlled mode to intercept close attempts and show a confirmation before
+  discarding data
 - **Maintain focus flow**: Focus should move logically through interactive
   elements
 - **Size appropriately**: Choose sizes that fit your content without
-  overwhelming the viewport
+  overwhelming the viewport. For complex full-page editing workflows, use the
+  ModalPage component instead
 - **Consider mobile**: Ensure drawers work well on small screens
 
 > [!TIP]\

@@ -253,6 +253,85 @@ const App = () => (
 - `isKeyboardDismissDisabled={false}`: Allow closing with Escape key (default: false)
 - Both can be combined for fine-grained control
 
+### Intercepting close for unsaved changes
+
+Use `isDismissable={false}` with controlled mode to prevent accidental closing when forms have unsaved changes. Backdrop click is disabled, while Escape key and close buttons still fire `onOpenChange(false)`, allowing close attempts to be intercepted:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleOpenChange = (open) => {
+    if (open) {
+      setIsOpen(true);
+      return;
+    }
+    if (hasUnsavedChanges) {
+      setShowConfirmation(true);
+      return;
+    }
+    setIsOpen(false);
+  };
+
+  return (
+    <Stack gap="400">
+      <Button onPress={() => setIsOpen(true)}>Open Protected Drawer</Button>
+
+      <Drawer.Root
+        isOpen={isOpen}
+        onOpenChange={handleOpenChange}
+        isDismissable={!hasUnsavedChanges}
+        placement="right"
+      >
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Edit Form</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>
+            <Stack gap="400">
+              <Switch isSelected={hasUnsavedChanges} onChange={setHasUnsavedChanges}>
+                Has unsaved changes
+              </Switch>
+              {showConfirmation && (
+                <Stack gap="300" p="400" borderWidth="1px" borderColor="border" borderRadius="200">
+                  <Text fontWeight="semibold">You have unsaved changes. Discard them?</Text>
+                  <Stack direction="row" gap="300">
+                    <Button variant="outline" size="xs" onPress={() => setShowConfirmation(false)}>
+                      Keep Editing
+                    </Button>
+                    <Button variant="solid" size="xs" onPress={() => {
+                      setShowConfirmation(false);
+                      setHasUnsavedChanges(false);
+                      setIsOpen(false);
+                    }}>
+                      Discard Changes
+                    </Button>
+                  </Stack>
+                </Stack>
+              )}
+            </Stack>
+          </Drawer.Body>
+          <Drawer.Footer>
+            <Button variant="outline" slot="close">Cancel</Button>
+            <Button variant="solid" onPress={() => { setHasUnsavedChanges(false); setIsOpen(false); }}>
+              Save
+            </Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Root>
+    </Stack>
+  );
+}
+```
+
+**Key behavior:**
+- `isDismissable={false}`: Backdrop click is disabled. Escape and close buttons still fire `onOpenChange(false)` which can be intercepted to show a confirmation dialog.
+- Combine with controlled mode (`isOpen` + `onOpenChange`) to intercept close attempts
+- Toggle `isDismissable` dynamically based on form state (e.g. `isDismissable={!hasUnsavedChanges}`)
+
 ### Uncontrolled mode
 
 For simpler use cases, use uncontrolled mode with `defaultOpen` and `onOpenChange`:

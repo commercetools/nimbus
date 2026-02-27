@@ -162,7 +162,7 @@ const App = () => {
 
   return (
     <Stack>
-      <Button onClick={() => setIsOpen(true)}>
+      <Button alignSelf="flex-start" onPress={() => setIsOpen(true)}>
         Open Controlled Drawer
       </Button>
 
@@ -179,10 +179,10 @@ const App = () => {
               You can open/close it programmatically or through user interaction.
           </Drawer.Body>
           <Drawer.Footer>
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
+            <Button variant="outline" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setIsOpen(false)}>
+            <Button onPress={() => setIsOpen(false)}>
               Save
             </Button>
           </Drawer.Footer>
