@@ -1,14 +1,9 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "apps/*"],
   "preconstruct": {
-    "packages": [
-      "packages/tokens"
-    ]
+    "packages": ["packages/tokens"]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
