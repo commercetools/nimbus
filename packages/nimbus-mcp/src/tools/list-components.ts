@@ -79,16 +79,36 @@ export function registerListComponents(server: McpServer): void {
           routes = routes.filter((r) => r.menu[1]?.toLowerCase() === needle);
         }
 
-        // Fuzzy search over title, description, tags, and exportName.
-        // ignoreLocation allows matching anywhere in the string, not just prefix.
+        // Two-pass search: exact substring first, fuzzy fallback.
         if (query) {
-          const fuse = new Fuse(routes, {
-            keys: ["title", "description", "tags", "exportName"],
-            threshold: 0.6,
-            ignoreLocation: true,
-            minMatchCharLength: 3,
+          const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+
+          // Pass 1: exact substring match — a route matches if every token
+          // appears in at least one of its searchable fields.
+          const exactMatches = routes.filter((r) => {
+            const haystack = [
+              r.title,
+              r.description,
+              r.exportName ?? "",
+              ...r.tags,
+            ]
+              .join(" ")
+              .toLowerCase();
+            return tokens.every((t) => haystack.includes(t));
           });
-          routes = fuse.search(query).map((r) => r.item);
+
+          if (exactMatches.length > 0) {
+            routes = exactMatches;
+          } else {
+            // Pass 2: fuzzy fallback with a tighter threshold.
+            const fuse = new Fuse(routes, {
+              keys: ["title", "description", "tags", "exportName"],
+              threshold: 0.3,
+              ignoreLocation: true,
+              minMatchCharLength: 3,
+            });
+            routes = fuse.search(query).map((r) => r.item);
+          }
         }
 
         const summaries = routes.map(toSummary);
