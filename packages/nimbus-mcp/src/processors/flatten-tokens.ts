@@ -31,7 +31,7 @@ export interface FlatTokenData {
 }
 
 // ---------------------------------------------------------------------------
-// DTCG helpers
+// DTCG (Design Token Community Group) helpers
 // ---------------------------------------------------------------------------
 
 /** Keys that are DTCG metadata, not child tokens. */
