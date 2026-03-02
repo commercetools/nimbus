@@ -177,7 +177,6 @@ function pathToSlug(path: string): string {
 // ---------------------------------------------------------------------------
 
 interface ComponentMetadata {
-  id: string;
   name: string;
   exportName?: string;
   description: string;
@@ -192,7 +191,6 @@ function buildMetadataResponse(
   availableSections: string[]
 ): ComponentMetadata {
   const meta: ComponentMetadata = {
-    id: entry.id,
     name: entry.title,
     description: entry.description,
     path: entry.path,
