@@ -31,6 +31,7 @@
     "start:docs": "pnpm --filter './apps/docs' run dev",
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
     "start:mcp-inspector": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector",
+    "start:mcp-inspector:cli": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector:cli",
     "test": "pnpm vitest run",
     "test:unit": "pnpm vitest run --project=unit",
     "test:storybook": "pnpm vitest run --project=storybook",
