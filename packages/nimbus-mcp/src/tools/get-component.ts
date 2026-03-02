@@ -1,4 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import Fuse from "fuse.js";
 import { z } from "zod";
 import {
   getRouteManifest,
@@ -132,8 +133,9 @@ function extractRecipeFromTypes(typeData: TypeData): RecipeInfo {
 const CATALOG_CATEGORIES = new Set(["Components", "Patterns"]);
 
 /**
- * Resolves a component or pattern name (case-insensitive) to its manifest entry.
- * Matches against exportName first, then title, then the name portion of the id.
+ * Resolves a component or pattern name to its manifest entry.
+ * Pass 1: exact match (case-insensitive) against exportName, title, or id.
+ * Pass 2: fuzzy fallback with a tight threshold for typo tolerance.
  */
 async function resolveComponent(
   name: string
@@ -141,15 +143,27 @@ async function resolveComponent(
   const manifest = await getRouteManifest();
   const needle = name.toLowerCase();
 
-  return manifest.routes
-    .filter((r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3)
-    .find((r) => {
-      if (r.exportName?.toLowerCase() === needle) return true;
-      if (r.title.toLowerCase() === needle) return true;
-      // Match against the name portion after "Components-" or "Patterns-"
-      const idName = r.id.replace(/^(Components|Patterns)-/, "");
-      return idName.toLowerCase() === needle;
-    });
+  const catalog = manifest.routes.filter(
+    (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
+  );
+
+  // Pass 1: exact match
+  const exact = catalog.find((r) => {
+    if (r.exportName?.toLowerCase() === needle) return true;
+    if (r.title.toLowerCase() === needle) return true;
+    const idName = r.id.replace(/^(Components|Patterns)-/, "");
+    return idName.toLowerCase() === needle;
+  });
+  if (exact) return exact;
+
+  // Pass 2: fuzzy fallback for typo tolerance
+  const fuse = new Fuse(catalog, {
+    keys: ["title", "exportName"],
+    threshold: 0.3,
+    ignoreLocation: true,
+  });
+  const fuzzyResults = fuse.search(name);
+  return fuzzyResults[0]?.item;
 }
 
 /** Derives the route data slug from a manifest entry's path. */
