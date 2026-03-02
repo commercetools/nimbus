@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "mcp-inspector": "mcp-inspector tsx src/index.ts",
+    "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
@@ -22,6 +24,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@modelcontextprotocol/inspector": "catalog:tooling",
     "@types/node": "catalog:utils",
     "typescript": "catalog:tooling",
     "tsx": "catalog:tooling"
