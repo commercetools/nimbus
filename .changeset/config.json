@@ -20,7 +20,7 @@
     "color-tokens",
     "blank-app",
     "docs",
-    "nimbus-mcp"
+    "@commercetools/nimbus-mcp"
   ],
   "access": "restricted",
   "baseBranch": "main",
