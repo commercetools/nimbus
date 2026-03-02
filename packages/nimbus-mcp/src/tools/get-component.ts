@@ -128,8 +128,11 @@ function extractRecipeFromTypes(typeData: TypeData): RecipeInfo {
 // Route resolution helpers
 // ---------------------------------------------------------------------------
 
+/** Categories that contain individual component/pattern pages. */
+const CATALOG_CATEGORIES = new Set(["Components", "Patterns"]);
+
 /**
- * Resolves a component name (case-insensitive) to its manifest entry.
+ * Resolves a component or pattern name (case-insensitive) to its manifest entry.
  * Matches against exportName first, then title, then the name portion of the id.
  */
 async function resolveComponent(
@@ -139,12 +142,12 @@ async function resolveComponent(
   const needle = name.toLowerCase();
 
   return manifest.routes
-    .filter((r) => r.category === "Components" && r.menu.length === 3)
+    .filter((r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3)
     .find((r) => {
       if (r.exportName?.toLowerCase() === needle) return true;
       if (r.title.toLowerCase() === needle) return true;
-      // Match against the name portion after "Components-"
-      const idName = r.id.replace(/^Components-/, "");
+      // Match against the name portion after "Components-" or "Patterns-"
+      const idName = r.id.replace(/^(Components|Patterns)-/, "");
       return idName.toLowerCase() === needle;
     });
 }
@@ -210,14 +213,14 @@ export function registerGetComponent(server: McpServer): void {
     {
       title: "Get Component",
       description:
-        "Returns detailed information about a Nimbus component. " +
+        "Returns detailed information about a Nimbus component or pattern. " +
         "With name only: returns metadata and available sections. " +
         "With name + section: returns section content (overview, guidelines, implementation, accessibility, props, recipe).",
       inputSchema: {
         name: z
           .string()
           .describe(
-            'Component name, e.g. "Button", "TextInput", "DataTable". Case-insensitive.'
+            'Component or pattern name, e.g. "Button", "TextInput", "MoneyInputField". Case-insensitive.'
           ),
         section: z
           .enum(SECTION_KEYS)
