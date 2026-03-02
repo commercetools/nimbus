@@ -69,6 +69,8 @@ detailed guidelines:
   and providers
 - **[Architecture Decisions](./file-type-guidelines/architecture-decisions.md)** -
   Decision matrix for component design
+- **[Component vs Pattern](./file-type-guidelines/component-vs-pattern.md)** -
+  When to create a component vs a pattern
 
 ### Cross-Cutting Standards
 
