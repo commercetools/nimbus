@@ -23,7 +23,6 @@ const MANIFEST_PATH = resolve(
 const HAS_MANIFEST = existsSync(MANIFEST_PATH);
 
 type ComponentSummary = {
-  id: string;
   title: string;
   description: string;
   path: string;
@@ -70,17 +69,9 @@ describe.runIf(HAS_MANIFEST)("list_components — no params", () => {
   it("every entry has the required fields", async () => {
     const components = await callListComponents(client);
     for (const c of components) {
-      expect(typeof c.id).toBe("string");
       expect(typeof c.title).toBe("string");
       expect(typeof c.description).toBe("string");
       expect(typeof c.path).toBe("string");
-    }
-  });
-
-  it("every entry has an id starting with 'Components-'", async () => {
-    const components = await callListComponents(client);
-    for (const c of components) {
-      expect(c.id).toMatch(/^Components-/);
     }
   });
 

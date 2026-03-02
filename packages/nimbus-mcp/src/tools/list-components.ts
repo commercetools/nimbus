@@ -5,7 +5,6 @@ import { getRouteManifest, type RouteManifestEntry } from "../data-loader.js";
 
 /** Shape returned for each component in the response array. */
 interface ComponentSummary {
-  id: string;
   title: string;
   description: string;
   path: string;
@@ -17,7 +16,6 @@ interface ComponentSummary {
 /** Normalises a route entry into a sparse ComponentSummary. */
 function toSummary(route: RouteManifestEntry): ComponentSummary {
   const summary: ComponentSummary = {
-    id: route.id,
     title: route.title,
     description: route.description,
     path: route.path,
@@ -103,7 +101,7 @@ export function registerListComponents(server: McpServer): void {
             // Pass 2: fuzzy fallback with a tighter threshold.
             const fuse = new Fuse(routes, {
               keys: ["title", "description", "tags", "exportName"],
-              threshold: 0.3,
+              threshold: 0.4,
               ignoreLocation: true,
               minMatchCharLength: 3,
             });
