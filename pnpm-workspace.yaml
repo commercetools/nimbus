@@ -16,6 +16,7 @@ catalogs:
     typescript: ~5.9.3
     typescript-eslint: ^8.56.1
     tsx: ^4.21.0
+    "@modelcontextprotocol/inspector": ^0.21.1
     "@babel/core": ^7.29.0
     "@babel/runtime": ^7.28.6
     "@babel/preset-typescript": ^7.28.5
