@@ -87,6 +87,7 @@ export interface RouteManifestEntry {
   menu: string[];
   order: number;
   chunkName: string;
+  exportName?: string;
   tabs?: Array<{ key: string; title: string; order: number }>;
 }
 

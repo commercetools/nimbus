@@ -1,44 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createServer } from "./server.js";
+import { createTestClient } from "./test-utils.js";
 
 /**
- * Integration tests for the Nimbus MCP server.
+ * Integration tests for the Nimbus MCP server infrastructure.
  *
- * These tests run the server in-process using InMemoryTransport so no
- * child-process spawning or stdio wiring is needed. Add new tools freely —
- * the tool-list tests only assert structure and cardinality, never specific
- * tool names, so they won't break when new tools are registered.
+ * Tests initialize handshake and tool-list structure. Assertions intentionally
+ * avoid specific tool names so adding new tools never breaks these tests.
+ * For individual tool behavior, see src/tools/*.spec.ts.
  */
-
-function createTestClient() {
-  const server = createServer();
-  const [clientTransport, serverTransport] =
-    InMemoryTransport.createLinkedPair();
-  const client = new Client(
-    { name: "test-client", version: "1.0.0" },
-    { capabilities: {} }
-  );
-
-  return {
-    server,
-    client,
-    clientTransport,
-    serverTransport,
-    async connect() {
-      await server.connect(serverTransport);
-      await client.connect(clientTransport);
-    },
-    async close() {
-      await client.close();
-    },
-  };
-}
 
 describe("MCP server — initialize handshake", () => {
   it("responds to initialize with server info and capabilities", async () => {
-    // client.connect() performs the initialize handshake automatically
     const ctx = createTestClient();
     await ctx.connect();
 
