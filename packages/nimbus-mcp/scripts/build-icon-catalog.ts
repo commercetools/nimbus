@@ -330,10 +330,10 @@ function buildIconCatalog(): void {
   // Merge, with custom icons taking priority over material ones of the same
   // name. This mirrors how nimbus-icons/src/index.ts re-exports: custom
   // exports override the `export * from "./material-icons"` barrel.
-  const byName = new Map<string, IconCatalogEntry>();
-  for (const icon of materialIcons) byName.set(icon.name, icon);
-  for (const icon of customIcons) byName.set(icon.name, icon);
-  const allIcons = Array.from(byName.values());
+  const iconByName = new Map<string, IconCatalogEntry>();
+  for (const icon of materialIcons) iconByName.set(icon.name, icon);
+  for (const icon of customIcons) iconByName.set(icon.name, icon);
+  const allIcons = Array.from(iconByName.values());
 
   const catalog: IconCatalog = {
     count: allIcons.length,
