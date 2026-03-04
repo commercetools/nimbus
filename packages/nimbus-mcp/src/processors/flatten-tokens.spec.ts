@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -10,15 +9,21 @@ import {
 } from "./flatten-tokens.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const TOKENS_PATH = resolve(__dirname, "../../../tokens/src/base/tokens.json");
-const HAS_TOKENS = existsSync(TOKENS_PATH);
+const THEME_TOKENS_PATH = resolve(
+  __dirname,
+  "../../../tokens/src/generated/chakra/theme-tokens.ts"
+);
+const BASE_TOKENS_PATH = resolve(
+  __dirname,
+  "../../../tokens/src/base/tokens.json"
+);
 
 // ---------------------------------------------------------------------------
 // Unit tests (synthetic data — always run)
 // ---------------------------------------------------------------------------
 
 describe("flattenTokenTree — unit", () => {
-  it("flattens a simple DTCG tree", () => {
+  it("flattens a simple token tree", () => {
     const tree = {
       spacing: {
         $type: "spacing",
@@ -57,19 +62,22 @@ describe("flattenTokenTree — unit", () => {
     expect(data.byCategory.fontSize).toHaveLength(1);
   });
 
-  it("handles nested color structures with light/dark modes", () => {
+  it("handles _light/_dark color-mode values", () => {
     const tree = {
       color: {
-        $type: "color",
-        "semantic-palettes": {
-          primary: {
-            light: {
-              "1": { $value: "#e6f0ff" },
-              "2": { $value: "#cce0ff" },
+        "system-palettes": {
+          amber: {
+            "1": {
+              value: {
+                _light: "hsl(40, 60%, 99%)",
+                _dark: "hsl(36, 29%, 7%)",
+              },
             },
-            dark: {
-              "1": { $value: "#0a1a33" },
-              "2": { $value: "#142d52" },
+            "2": {
+              value: {
+                _light: "hsl(51, 91%, 95%)",
+                _dark: "hsl(39, 32%, 9%)",
+              },
             },
           },
         },
@@ -78,11 +86,18 @@ describe("flattenTokenTree — unit", () => {
 
     const data = flattenTokenTree(tree);
 
-    expect(data.tokens).toHaveLength(4);
+    // Two tokens (one per step), NOT four (no light/dark split in name)
+    expect(data.tokens).toHaveLength(2);
 
     const names = data.tokens.map((t) => t.name);
-    expect(names).toContain("color.semantic-palettes.primary.light.1");
-    expect(names).toContain("color.semantic-palettes.primary.dark.1");
+    expect(names).toContain("color.system-palettes.amber.1");
+    expect(names).toContain("color.system-palettes.amber.2");
+
+    // Display value is combined
+    const amber1 = data.tokens.find(
+      (t) => t.name === "color.system-palettes.amber.1"
+    );
+    expect(amber1?.value).toBe("hsl(40, 60%, 99%) / hsl(36, 29%, 7%)");
 
     // All belong to "color" category
     for (const t of data.tokens) {
@@ -90,7 +105,77 @@ describe("flattenTokenTree — unit", () => {
     }
   });
 
-  it("builds reverse-lookup index", () => {
+  it("registers both _light and _dark values in reverse lookup", () => {
+    const tree = {
+      color: {
+        "system-palettes": {
+          amber: {
+            "1": {
+              value: {
+                _light: "hsl(40, 60%, 99%)",
+                _dark: "hsl(36, 29%, 7%)",
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const data = flattenTokenTree(tree);
+
+    // Both mode values should resolve to the same token
+    expect(reverseLookup(data, "hsl(40, 60%, 99%)")).toContain(
+      "color.system-palettes.amber.1"
+    );
+    expect(reverseLookup(data, "hsl(36, 29%, 7%)")).toContain(
+      "color.system-palettes.amber.1"
+    );
+  });
+
+  it("enriches reverse lookup with hex values from base color tree", () => {
+    const themeTree = {
+      color: {
+        "system-palettes": {
+          amber: {
+            "1": {
+              value: {
+                _light: "hsl(40, 60%, 99%)",
+                _dark: "hsl(36, 29%, 7%)",
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const baseColorTree = {
+      "system-palettes": {
+        amber: {
+          light: {
+            "1": { $value: "#fefdfb" },
+          },
+          dark: {
+            "1": { $value: "#16120c" },
+          },
+        },
+      },
+    };
+
+    const data = flattenTokenTree(themeTree, baseColorTree);
+
+    // Hex values should resolve to the same Chakra token name
+    expect(reverseLookup(data, "#fefdfb")).toContain(
+      "color.system-palettes.amber.1"
+    );
+    expect(reverseLookup(data, "#16120c")).toContain(
+      "color.system-palettes.amber.1"
+    );
+    expect(reverseLookup(data, "#FEFDFB")).toContain(
+      "color.system-palettes.amber.1"
+    );
+  });
+
+  it("builds reverse-lookup index for simple values", () => {
     const tree = {
       spacing: { $type: "spacing", "400": { $value: "16px" } },
       blur: { $type: "dimension", "400": { $value: "16px" } },
@@ -109,7 +194,6 @@ describe("flattenTokenTree — unit", () => {
   it("reverse-lookup is case-insensitive for hex values", () => {
     const tree = {
       color: {
-        $type: "color",
         primary: { $value: "#FFC53D" },
       },
     };
@@ -128,11 +212,9 @@ describe("flattenTokenTree — unit", () => {
   it("supports both $value and value leaf tokens", () => {
     const tree = {
       aspectRatio: {
-        $type: "number",
         square: { value: 1 },
       },
       spacing: {
-        $type: "spacing",
         "100": { $value: "4px" },
       },
     };
@@ -161,17 +243,36 @@ describe("flattenTokenTree — unit", () => {
     expect(data.tokens).toHaveLength(1);
     expect(data.tokens[0].name).toBe("spacing.100");
   });
+
+  it("handles simple color values without _light/_dark", () => {
+    const tree = {
+      color: {
+        "blacks-and-whites": {
+          black: { value: "hsl(0, 0%, 0%)" },
+          white: { value: "hsl(0, 0%, 100%)" },
+        },
+      },
+    };
+
+    const data = flattenTokenTree(tree);
+    expect(data.tokens).toHaveLength(2);
+
+    const black = data.tokens.find(
+      (t) => t.name === "color.blacks-and-whites.black"
+    );
+    expect(black?.value).toBe("hsl(0, 0%, 0%)");
+  });
 });
 
 // ---------------------------------------------------------------------------
-// Integration tests (real tokens.json — skipped if not present)
+// Integration tests (real theme tokens)
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_TOKENS)("flattenTokensFromFile — integration", () => {
+describe("flattenTokensFromFile — integration", () => {
   let data: FlatTokenData;
 
-  it("flattens all 500+ tokens from tokens.json", async () => {
-    data = await flattenTokensFromFile(TOKENS_PATH);
+  it("flattens all tokens from theme-tokens.ts", async () => {
+    data = await flattenTokensFromFile(THEME_TOKENS_PATH, BASE_TOKENS_PATH);
     expect(data.tokens.length).toBeGreaterThan(500);
   });
 
@@ -190,11 +291,28 @@ describe.runIf(HAS_TOKENS)("flattenTokensFromFile — integration", () => {
     expect(matches.some((n) => n.startsWith("spacing."))).toBe(true);
   });
 
-  it("reverse-lookup works for color hex values", () => {
-    // #000 is black, should be in the tokens
-    const matches = reverseLookup(data, "#000");
+  it("reverse-lookup works for HSL color values", () => {
+    const matches = reverseLookup(data, "hsl(40, 60%, 99%)");
     expect(matches.length).toBeGreaterThan(0);
-    expect(matches.some((n) => n.startsWith("color."))).toBe(true);
+    expect(matches).toContain("color.system-palettes.amber.1");
+  });
+
+  it("reverse-lookup works for hex color values from base tokens", () => {
+    const matches = reverseLookup(data, "#fefdfb");
+    expect(matches.length).toBeGreaterThan(0);
+    expect(matches).toContain("color.system-palettes.amber.1");
+  });
+
+  it("reverse-lookup works for dark-mode hex values", () => {
+    const matches = reverseLookup(data, "#16120c");
+    expect(matches.length).toBeGreaterThan(0);
+    expect(matches).toContain("color.system-palettes.amber.1");
+  });
+
+  it("reverse-lookup works for dark-mode HSL values", () => {
+    const matches = reverseLookup(data, "hsl(36, 29%, 7%)");
+    expect(matches.length).toBeGreaterThan(0);
+    expect(matches).toContain("color.system-palettes.amber.1");
   });
 
   it("reverse-lookup works for font sizes", () => {
@@ -202,13 +320,17 @@ describe.runIf(HAS_TOKENS)("flattenTokensFromFile — integration", () => {
     expect(matches.length).toBeGreaterThan(0);
   });
 
-  it("handles light/dark color tokens", () => {
+  it("color tokens do NOT include light/dark in path", () => {
     const colorTokens = data.byCategory.color;
-    const lightTokens = colorTokens.filter((t) => t.path.includes("light"));
-    const darkTokens = colorTokens.filter((t) => t.path.includes("dark"));
+    const systemPaletteTokens = colorTokens.filter((t) =>
+      t.name.startsWith("color.system-palettes.")
+    );
 
-    expect(lightTokens.length).toBeGreaterThan(0);
-    expect(darkTokens.length).toBeGreaterThan(0);
+    // No token should have "light" or "dark" as a path segment
+    for (const t of systemPaletteTokens) {
+      expect(t.path).not.toContain("light");
+      expect(t.path).not.toContain("dark");
+    }
   });
 
   it("all tokens have required fields", () => {
