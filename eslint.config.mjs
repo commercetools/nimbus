@@ -10,6 +10,7 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
+import reactHooks from "eslint-plugin-react-hooks";
 
 // Import storybook plugin using createRequire for CommonJS compatibility
 import { createRequire } from "module";
@@ -63,6 +64,20 @@ export default tseslint.config(
     },
     rules: {
       "prettier/prettier": "error",
+    },
+  },
+  /**
+   * React Hooks rules (classic only — no React Compiler rules)
+   * Using manual config instead of `recommended` preset which includes
+   * 17 Compiler rules that produce false positives without React Compiler.
+   */
+  {
+    plugins: {
+      "react-hooks": reactHooks,
+    },
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
   // Spread storybook configurations if available
