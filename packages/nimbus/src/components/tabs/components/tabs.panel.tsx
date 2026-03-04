@@ -9,7 +9,12 @@ import type { TabPanelProps } from "../tabs.types";
  *
  * @supportsStyleProps
  */
-export const TabsPanel = ({ children, ref, ...props }: TabPanelProps) => {
+export const TabsPanel = ({
+  children,
+  ref,
+  shouldForceMount,
+  ...props
+}: TabPanelProps) => {
   // Ensure TabPanel always has children
   if (!children) {
     throw new Error("Tabs.Panel: children prop is required");
@@ -17,7 +22,7 @@ export const TabsPanel = ({ children, ref, ...props }: TabPanelProps) => {
 
   return (
     <TabsPanelSlot asChild ref={ref} {...props}>
-      <RATabPanel>{children}</RATabPanel>
+      <RATabPanel shouldForceMount={shouldForceMount}>{children}</RATabPanel>
     </TabsPanelSlot>
   );
 };

@@ -31,6 +31,9 @@ export const TabsList = ({ tabs, children, ...props }: TabListProps) => {
                 id={tab.id}
                 isDisabled={tab.isDisabled}
                 href={tab.href}
+                target={tab.target}
+                rel={tab.rel}
+                routerOptions={tab.routerOptions}
               >
                 {tab.tabLabel}
               </TabsTab>
