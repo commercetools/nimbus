@@ -24,6 +24,9 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@commercetools/nimbus": "workspace:^",
+    "@commercetools/nimbus-icons": "workspace:^",
+    "@commercetools/nimbus-tokens": "workspace:^",
     "@modelcontextprotocol/inspector": "catalog:tooling",
     "@types/node": "catalog:utils",
     "tsup": "catalog:tooling",
