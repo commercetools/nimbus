@@ -1156,6 +1156,9 @@ const mockRouter: NimbusRouterConfig = {
 };
 
 export const LinkTabs: Story = {
+  beforeEach: () => {
+    mockNavigate.mockClear();
+  },
   args: {
     "data-testid": "link-tabs",
   },
