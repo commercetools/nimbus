@@ -51,7 +51,7 @@
   "dependencies": {
     "@chakra-ui/cli": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
-    "@github-ui/storybook-addon-performance-panel": "catalog:",
+    "@github-ui/storybook-addon-performance-panel": "catalog:tooling",
     "@internationalized/string": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "dequal": "catalog:utils",
